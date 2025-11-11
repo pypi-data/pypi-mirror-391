@@ -1,0 +1,1664 @@
+vos-data-utils <br>
+[![PyPI version](https://badge.fury.io/py/vos-data-utils.svg)](https://pypi.org/project/vos-data-utils/)
+[![Python version](https://img.shields.io/pypi/pyversions/vos-data-utils)](https://pypi.org/project/vos-data-utils/)
+[![License](https://img.shields.io/pypi/l/vos-data-utils.svg)](https://github.com/pandas-dev/vos-data-utils/blob/main/LICENSE)
+========
+
+vos-data-utils is a shared utility library essential for 'Value of Space' data works
+
+</br>
+
+# Notable Changes
+
+<details>
+<summary><strong>Version 1.0.0 - 2024.01</strong></summary>
+
+<div style="color: gray;">
+
+-   공간의가치 데이터 작업 공용 유틸리티 라이브러리 최초 배포
+-   구성원의 개별 라이브러리([vos-mjjo](https://pypi.org/project/vos-mjjo/), [nqnq](https://pypi.org/project/nqnq/)) 기능 통합
+-   업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 1월 1일: '경기도 부천시' 관련 행정구역 변경
+        -   2024년 1월 18일: '전북특별자치도' 관련 행정구역 변경
+    -   법정동 데이터 저장 규칙 업데이트 및 데이터 폴더 구조 업데이트
+        -   다중 시점의 법정동 데이터 저장
+    -   법정동 관련 모듈 클래스 인스턴스 `base_dt` 속성값 추가 및 `base_dt` 기준으로 적정시점 법정동 읽기 방식 적용
+        -   모듈 클래스 인스턴스 생성시 `base_dt` 속성값 이전 시점중 최신 시점 법정동 데이터 선택 및 읽기
+    -   genpnu 모듈 업데이트
+        -   np.pnu 기반 모듈
+        -   모듈 내 함수 리팩터링(refactoring)
+        -   모듈 내 함수 타입힌트 강화 및 예외처리 추가
+        -   유닛 테스트 코드(`test_genpnu`) 작성
+    -   vid 모듈 업데이트
+        -   np.pnu 기반 모듈
+        -   모듈 내 함수 리팩터링(refactoring)
+        -   유닛 테스트 코드(`test_vid`) 작성
+    -   배포 관련 업데이트
+        -   github action 배포시 파이썬 버전별 빌드(build), 테스트(test) 적용
+            -   빌드 및 테스트 파이썬 버전: 3.7, 3.8, 3.9, 3.10, 3.11
+
+</details>
+<details>
+<summary><strong>Version 1.0.1 - 2024.02</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 2월 1일: '경상북도 영천군 호명읍' 관련 행정구역 변경
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.2 - 2024.04</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.3 - 2024.07</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.4 - 2024.08</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 8월 1일: '경상북도 성주군 금수강산면' 관련 행정구역 변경
+    -   날짜 빈도 학습 모델 업데이트
+        -   날짜 빈도 학습 모델 생성시 이상데이터 필터링 강화, 이상치 탐지 z-score 조정
+    -   날짜 빈도 dictionary 업데이트
+    -   유닛 테스트 코드(`test_convaddr`) 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.5 - 2024.11</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.6 - 2024.11</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 경로 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.7 - 2025.01</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   convaddr 모듈 업데이트
+        -   지번 주소 중 '외 필지' 와 같은 다중 지번과 관련된 문자열 필터링 추가
+        -   유닛 테스트 코드(`test_convaddr`) 업데이트
+    -   genpnu 모듈 업데이트
+        -   지번 주소를 입력받아 pnu로 변환하는 기능 및 보조 기능 추가
+        -   유닛 테스트 코드(`test_genpnu`) 업데이트
+    -   날짜 빈도 dictionary 경로 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.8 - 2025.03</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 경로 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.9 - 2025.06</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 5월 13일: '경기도 화성시 서신면 사곳리' 관련 행정구역 변경
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.10 - 2025.07</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   Window 환경 cp949 인코딩 이슈 처리
+        -   모듈 내 주소 데이터 읽어오는 부분 encoding 옵션 명시되지 않은 부분 self.encoding 으로 수정하여 default 옵션 적용 되지 않도록 변경
+    -   한자 포함 법정동명 예외 처리 이슈
+        -   법정동 데이터 생성 시 한자 표기 유지되도록 변경
+        -   평사리 특수 케이스 처리 적용
+        -   genpnu 모듈 bjd_nm 입력변수로 받는 메서드의 예외처리 업데이트
+    -   convaddr 모듈 업데이트
+        -   법정동 변경사항 보조 데이터 업데이트
+        -   입력된 문자열(한글 주소)에 변경전 법정동이 포함되어있으면 변경후 법정동명으로 교환하여 반환하는 기능 업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 6월 30일: '경상북도 영덕군 영해면 대리' 관련 행정구역 변경
+    -   날짜 빈도 dictionary 업데이트
+    -   유닛 테스트 코드(`test_genpnu`) 업데이트
+        -   dummy 데이터의 base_dt 하드코딩 부분 self.instance.base_dt_print 적용
+
+</details>
+<details>
+<summary><strong>Version 1.0.11 - 2025.09</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   날짜 빈도 dictionary 업데이트
+
+</details>
+<details>
+<summary><strong>Version 1.0.12 - 2025.11</strong></summary>
+
+<div style="color: gray;">
+
+-   업데이트
+    -   법정동 데이터 업데이트(행정구역 변경사항 반영)
+        -   2024년 10월 17일: '경상남도 통영시 산양읍 삼덕리' 관련 행정구역 변경
+    -   날짜 빈도 dictionary 업데이트
+    -   유닛 테스트 모듈 개선
+        -   유닛 테스트 모듈(`test_convaddr`) 타입 검증 정비 및 법정동 변경 테스트 추가
+        -   유닛 테스트 모듈(`test_cordate`) 타입 검증 정비 및 SuggestItem 타입 검증 및 관련 import 추가
+        -   유닛 테스트 모듈(`test_genpnu`) 타입 검증 정비
+        -   유닛 테스트 모듈(`test_vid`) 타입 검증 정비
+    -   배포 관련 업데이트
+        -   github action 배포시 파이썬 버전별 빌드(build), 테스트(test) 적용 버전 파이썬 3.12 추가
+
+</details>
+</br>
+
+# Install
+
+```python
+pip install vos-data-utils
+```
+
+</br>
+
+# Usage
+
+## Cordate(Correct Date)
+
+8자리의 날짜(`YYYYMMDD`) 형식으로 작성되어 있지 못하고 6자리(`YYYYMM` or `YYMMDD`, ...) 혹은 다른 자리수로 날짜와 오타 혹은 오기입으로 현재시점에서 부적절한 날짜가 제공되었을 경우, 이를 교정하여 8자리의 날짜(`YYYYMMDD`) 형식으로 전달하는 모듈\
+해당 날짜 교정 모듈은 **건축물대장 날짜**(`착공연월`, `허가연월`, `준공연월`)를 교정하기 위해 개발되었으며 건축물대장 날짜 특성상 현재 기준으로 미래 날짜는 존재할 수 없기 때문에 현재를 기준으로 과거 날짜로만 교정됨
+
+해당 날짜 교정 모듈에서 날짜를 교정하는 알고리즘은 2가지로\
+첫번째는 연, 월, 일의 범위와 규칙을 이용하여 `현재 날짜` 까지 생성 가능한 모든 날짜 리스트와 최신 날짜로 교정하는 방법\
+두번째는 미리 생성되어 있는 건축물대장 날짜 빈도 딕셔너리(`data.date_dictionary.txt`)에서 거리(날짜 문자열간의 차이 문자열 개수)와 빈도를 이용하여 가장 유사한 리스트와 최유사 날짜로 교정하는 방법으로 구성되어 있음
+
+<details>
+<summary><strong>Show instructions</strong></summary>
+<br></br>
+
+**`cordate.get_correct_array`**
+
+-   입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜를 리스트로 리턴
+-   날짜 생성 규칙이란 연, 월, 일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지를 의미하며 `YYYYMMDD` 형식의 날짜에서 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지함
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        cordate.get_correct_array("99990101")
+        cordate.get_correct_array("9990101")
+        cordate.get_correct_array("990101")
+        cordate.get_correct_array("199901")
+        cordate.get_correct_array("019991")
+        cordate.get_correct_array("19991")
+        cordate.get_correct_array("1999")
+        cordate.get_correct_array("9901")
+
+        ```
+
+    -   Output
+
+        ```python
+        []
+        ["19990101"]
+        ["19900101", "19901001", "19990101"]
+        ["01990901", "19990101"]
+        ["01990901", "19990101"]
+        ["01990901", "19990101"]
+        ["01990109", "00190909", "01990901", "19990101"]
+        ["19900101", "00090901", "19990101"]
+        ```
+
+</br>
+
+**`cordate.get_correct_one`**
+
+-   입력된 문자열을 이용해 날짜 생성 규칙에 따라 현재 날짜까지 생성 가능한 모든 날짜 리스트중 가장 최신날짜를 리턴
+-   날짜 생성 규칙이란 연,월,일의 범위를 이용하는것으로 연도는 올해연도까지, 월은 1부터 12월까지, 일은 월별로 지정된 일까지를 의미하며 YYYYMMDD 형식의 날짜에서 연도는 4자리, 월, 일은 2자리로 표기하지만 자리수 범위는 각 [0:4],[0:2],[0:2] 차지
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        cordate.get_correct_one("99990101")
+        cordate.get_correct_one("9990101")
+        cordate.get_correct_one("990101")
+        cordate.get_correct_one("199901")
+        cordate.get_correct_one("019991")
+        cordate.get_correct_one("19991")
+        cordate.get_correct_one("1999")
+        cordate.get_correct_one("9901")
+
+        ```
+
+    -   Output
+
+        ```python
+        None
+        "19990101"
+        "19990101"
+        "19990101"
+        "19990101"
+        "19990101"
+        "19990101"
+        "19990101"
+        ```
+
+</br>
+
+**`cordate.look_up_array`**
+
+-   건축물대장 날짜 빈도 딕셔너리(`data.date_dictionary.txt`) 로드 필요
+-   입력된 문자열을 이용해 data 건축물대장 날짜 빈도 딕셔너리(`data.date_dictionary.txt`) 에서 Symspellpy(`max_distance=2`) 알고리즘 적용하여 유사한 날짜 리스트 리턴
+-   유사도 가중은 거리, 빈도 순으로 거리가 가까운 순서로 빈도수가 많은 순서로 정렬
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+        CD.look_up_array("99990101")
+        ```
+
+    -   Output
+
+        ```python
+        [<symspellpy.suggest_item.SuggestItem at 0x7fe5facdab60>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad145e0>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad15960>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad14220>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad164a0>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad151e0>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad155a0>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5facf5870>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad0c4c0>,
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad0c520>,
+        ...]
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+
+        suggestions = CD.look_up_array("99990101")
+        for sugg in suggestions: # symspellpy.suggest_item 타입의 리스트는 반복문을 이용해 값을 확인 가능
+            print(sugg)
+        ```
+
+    -   Output
+
+        ```python
+        19990101, 1, 716 # term, distance, count
+        19980101, 2, 1361
+        19960101, 2, 1351
+        19970101, 2, 1317
+        19950101, 2, 1286
+        19940101, 2, 1236
+        19920101, 2, 870
+        19930101, 2, 843
+        19910101, 2, 816
+        19990901, 2, 743
+        ...
+        ```
+
+</br>
+
+**`cordate.look_up_one`**
+
+-   건축물대장 날짜 빈도 딕셔너리(`data.date_dictionary.txt`) 로드 필요
+-   입력된 문자열을 이용해 data 건축물대장 날짜 빈도 딕셔너리(`data.date_dictionary.txt`) 에서 Symspellpy(`max_distance=2`) 알고리즘 적용하여 거리, 빈도 순으로 유사도 정렬된 날짜 리스트 중 첫번째 날짜(최유사)를 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+        CD.look_up_one("99990101")
+        ```
+
+    -   Output
+
+        ```python
+        <symspellpy.suggest_item.SuggestItem at 0x7fe5fad0c190>
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+        print(CD.look_up_one("99990101")) # symspellpy.suggest_item 타입의 값 출력문을 이용해 확인 가능
+        ```
+
+    -   Output
+
+        ```python
+        19990101, 1, 158 # term, distance, count
+        ```
+
+</br>
+
+**`cordate.look_up_array_clean`**
+
+-   cordate.look_up_array 와 동일하지만 symspellypy.suggest_item.SuggestItem 타입 리스트를 정렬을 유지한 날짜값만 추출하여 리스트 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+        CD.look_up_array_clean("99990101")
+        ```
+
+    -   Output
+
+        ```python
+        ['19990101',
+        '19980101',
+        '19960101',
+        '19970101',
+        '19950101',
+        '19940101',
+        '19920101',
+        '19930101',
+        '19910101',
+        ...]
+        ```
+
+</br>
+
+**`cordate.look_up_one_clean`**
+
+-   cordate.look_up_one 과 동일하지만 symspellypy.suggest_item.SuggestItem 타입 리스트를 정렬을 유지한 날짜값만 추출하여 리스트 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import cordate
+
+        CD = cordate.CorDate()
+        CD.load_date_dictionary() # 라이브러리 배포 폴더에 있는 date_dictionary.txt 로드
+        CD.look_up_one_clean("99990101")
+        ```
+
+    -   Output
+
+        ```python
+        '19990101'
+        ```
+
+</br>
+
+</details><br>
+
+## ConvAddr(Convert Address)
+
+법정동 변경내역을 기반으로 과거 법정동명의 주소를 입력시에 현행 법정동으로 변환하여 전달하는 모듈\
+입력되는 주소는 시도, 시군구, 읍면동, 동리, 번지 순으로 기재되는 지번 체계를 기반으로 하며 해당 법정동 교정 모듈에서는 법정동(시도, 시군구, 읍면동, 동리)와 번지 사이의 공백을 일부 교정하고 과거 법정동명으로 입력되었을 경우 현행 법정동명으로 교체함\
+법정동명 교체 예시로는 `인천직할시` -> `인천광역시`, `강원도` -> `강원특별자치도`, `경북 군위군` -> `대구 군위군` 등을 들 수 있으며 시도, 시군구, 읍면동, 동리 모든 변경사항에 적용됨
+
+<details>
+<summary><strong>Show instructions</strong></summary>
+<br></br>
+
+**`convaddr.replace_etc_land_string`**
+
+-   입력된 주소 문자열(한글로 이루어진 지번 체계 주소)의 번지('0000-0000')와 '외 필지' 가 결합되어 있을 경우 '외' 앞에 공백을 추가하여 분리된 문자열로 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.replace_etc_land_string(addr="서울시 강남구 삼성동 1외 1필지"))
+        ```
+
+    -   Output
+
+        ```python
+        서울시 강남구 삼성동 1 외 1필지
+        ```
+
+</br>
+
+**`convaddr.correct_simple_spacing`**
+
+-   입력된 주소 문자열(한글로 이루어진 지번 체계 주소)의 2개 이상의 연속된 공백을 단일 공백으로 변환하여 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_simple_spacing(addr="서울시 강남구  삼성동 1"))
+        ```
+
+    -   Output
+
+        ```python
+        서울시 강남구 삼성동 1
+        ```
+
+</br>
+
+**`convaddr.correct_smallest_bjd_spacing`**
+
+-   입력된 주소 문자열(한글로 이루어진 지번 체계 주소)의 최소 단위 법정동명("가", "동", "로", "리")과 번지 사이의 공백이 없을경우 단일 공백을 추가하여 리턴
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_smallest_bjd_spacing(addr="서울시 강남구 삼성동1"))
+        ```
+
+    -   Output
+
+        ```python
+        서울시 강남구 삼성동 1
+        ```
+
+</br>
+
+**`convaddr.correct_changed_bjd`**
+
+-   입력된 주소 문자열(한글로 이루어진 지번 체계 주소)의 과거 법정동명이 존재하면 변경 후 법정동명으로 변환하여 리턴
+-   is_log == True 일 경우, 변경 전 후 법정동명을 출력
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_changed_bjd(addr="강원도 춘천시 서면 현암리 1-1", is_log=False))
+        ```
+
+    -   Output
+
+        ```python
+        강원특별자치도 춘천시 서면 현암리 1-1
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_changed_bjd(addr="강원도 춘천시 서면 현암리 1-1", is_log=True))
+        ```
+
+    -   Output
+
+        ```python
+        2024-01-17 14:03:27 | [INFO] | 강원도 춘천시 서면 현암리
+        2024-01-17 14:03:27 | [INFO] | 해당 법정동명은 변경되었습니다. 변경전 : [ 강원도 춘천시 서면 현암리 ] 변경후 : [ 강원특별자치도 춘천시 서면 현암리 ]
+        강원특별자치도 춘천시 서면 현암리
+        ```
+
+</br>
+
+**`convaddr.correct_bjd`**
+
+-   입력된 주소 문자열(한글로 이루어진 지번 체계 주소)의 correct_simple_spacing(법정동 사이 2개 이상의 연속된 공백을 단일 공백으로 변경하는 함수), correct_smallest_bjd_spacing(최소단위 법정동과 번지 사이 공백 수정하는 함수), correct_changed_bjd(과거 법정동명 현행 법정동명으로 교정하는 함수) 순차적으로 실행하여 교정된 현행 주소 문자열을 리턴
+-   is_log == True 일 경우, 변경 전 후 법정동명을 출력
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_bjd(addr="서울시 강남구 삼성동 1", is_log=False))
+        ```
+
+    -   Output
+
+        ```python
+        서울시 강남구 삼성동 1
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils import convaddr
+
+        CA = convaddr.ConvAddr()
+        print(CA.correct_bjd(addr="강원도춘천시 서면 현암리 1-1", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천 시 서면 현암리 1-1", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천시 서면 현암리", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천시 서면 현암리 1-1", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천시 서면 현암리1-1", is_log=False))
+        print(CA.correct_bjd(addr="강원도   춘천시 서면 현암리 1-1", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천시 서면 현암리 1-1외 1필지", is_log=False))
+        print(CA.correct_bjd(addr="강원도 춘천시 서면 현암리 1-1 외 1필지", is_log=False))
+        ```
+
+    -   Output
+
+        ```python
+        강원도춘천시 서면 현암리 1-1 # 시도, 시군구와 같이 최소단위 법정동의 띄어쓰기가 올바르지 않을 경우, 변환 불가
+        강원도 춘천 시 서면 현암리 1-1 # 시도, 시군구와 같이 최소단위 법정동의 띄어쓰기가 올바르지 않을 경우, 변환 불가
+        강원특별자치도 춘천시 서면 현암리
+        강원특별자치도 춘천시 서면 현암리 1-1
+        강원특별자치도 춘천시 서면 현암리 1-1
+        강원특별자치도 춘천시 서면 현암리 1-1
+        강원특별자치도 춘천시 서면 현암리 1-1 외 1필지
+        강원특별자치도 춘천시 서면 현암리 1-1 외 1필지
+        ```
+
+    </details><br>
+
+## BjdConnector
+
+관리중인 전체기간(1988-)의 법정동의 전체 및 단위(시도, 시군구, 읍면동, 동리) 법정동을 오브젝트(Object)화하고 이를 법정동 체계에 따라 단위 법정동(시도, 시군구, 읍면동, 동리)간의 관계와 변경내역을 기반으로 변경 전 후 법정동의 관계를 그래프(Graph)화하여 딕셔너리로 생성하는 모듈\
+법정동의 전체 및 단위 오브젝트 예시로는 `서울특별시 강남구 삼성동`의 경우,
+
+-   전체 법정동은 `서울특별시 강남구 삼성동`
+-   단위 법정동은 시도 단위의 `서울특별시`, 시군구 단위의 `강남구`, 읍면동 단위의 `삼성동`, 동리 단위는 `없음(Null)`
+-   단위 법정동은 시도 단위 > 시군구 단위 > 읍면동 단위 > 동리 단위 순으로 포함관계, 부모자식관계이며 BjdConnectorGraph는 위와 같은 단위 법정동 관계들을 구조적으로 형성한 딕셔너리임
+
+해당 모듈에서 관리하는 인스턴스는 총 5개로 다음과 같음
+
+-   `BjdObject`: BjdConnector 의 metadata 로 법정동 타입과 코드, 명, 상하위 단위 법정동별 유무, 코드, 명, 생성일자 등이 관리되는 객체
+-   `BjdConnector`: 단위 법정동별 객체로 법정동 타입과 코드, 명, 상하위 단위 법정동 객체, 최소단위 법정동 유무 등이 관리되는 객체
+-   `BjdConnectorGraph`: 법정동 코드: BjdConnector 가 KeyValue 로 입력된 딕셔너리 형식의 객체로 각 BjdConnector 이 상위 법정동(`top_bjd`), 하위 법정동(`bottom_bjd`) 으로 연결되어 있는 구조
+-   `FullBjdConnector`: 전체 법정동별 객체로 현시점 존재유무, 생성일, 삭제일, 전체 법정동 코드, 명, 변경 전 법정동, 변경 후 법정동, 소속된 단위 법정동 BjdConnector, 코드, 명 등이 관리되는 객체
+-   `FullBjdConnectorGraph`: 법정동 코드: FullBjdConnector 가 KeyValue 로 입력된 딕셔너리 형식의 객체로 각 FullBjdConnector 의 변경 전 법정동(`before`) 변경 후 법정동(`after`) 으로 연결되어 있는 구조
+
+<details>
+<summary><strong>Show instructions</strong></summary>
+<br></br>
+
+**`BjdConnectorGraph`**
+
+-   단위 법정동 커넥터 그래프(Graph) 클래스
+-   단위 법정동 커넥터 그래프(Graph) 는 **단위 법정동간의 관계**를 정의한 그래프
+    ```
+    |-- 시도 (Node)
+    |   |
+    |   |-- 시군구 (Node)
+    |   |   |
+    |   |   |-- 읍면동 (Node)
+    |   |   |   |
+    |   |   |   |-- 동리 (Node)
+    |   |   |   |-- 동리 (Node)
+    |   |   |   |-- ...
+    |   |   |-- 읍면동 (Node)
+    |   |   |   |
+    |   |   |   |-- 동리 (Node)
+    |   |   |   |-- 동리 (Node)
+    |   |   |   |-- ...
+    |   |   |-- ...
+    |   |
+    |   |-- 시군구 (Node)
+    |   |   |
+    |   |   |-- 읍면동 (Node)
+    |   |   |-- 읍면동 (Node)
+    |   |   |-- ...
+    |   |-- ...
+    |-- ...
+    ```
+-   단위 법정동 커넥터 그래프(Graph) 는 단위 법정동 커넥터(Connector)들을 생성하고 관계를 설정하여 각 단위 법정동 커넥터(Connector)의 값을 업데이트 함. 또한 결과물을 key, value{단위 법정동 코드: 단위 법정동 커넥터(Connector)} 형태의 딕셔너리(dictionary) `bjd_connectors` 와 데이터프레임(pandas.DataFrame()) `bjd_current_df` 로 생성하고 편집하여 보유함
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.bjdconnector import BjdConnectorGraph
+
+        BCG = BjdConnectorGraph()
+        BCG.bjd_connectors
+        ```
+
+    -   Output
+
+        ```
+        {'1100000000': BjdConnector(),
+        '1111000000': BjdConnector(),
+        '1111010100': BjdConnector(),
+        '1111010200': BjdConnector(),
+        '1111010300': BjdConnector(),
+        '1111010400': BjdConnector(),
+        '1111010500': BjdConnector(),
+        '1111010600': BjdConnector(),
+        '1111010700': BjdConnector(),
+        '1111010800': BjdConnector(),
+        '1111010900': BjdConnector(),
+        ...}
+        ```
+
+</br>
+
+**`BjdConnector`**
+
+-   단위 법정동 커넥터(Connector) 클래스
+-   단위 법정동 커넥터(Connector) 는 해당 단위 법정동의 오브젝트(Object)를 메타데이터(metadata)로 보유하며, 단위 법정동 코드(`bjd_cd`), 단위 법정동 명(`bjd_nm`), 단위 법정동 타입(`typ`), 상위 법정동 코드 리스트(`top_bjd_cd`), 상위 법정동 명 리스트(`top_bjd_nm`), 상위 법정동 커넥터(`top_bjd`), 하위 법정동 코드(`bottom_bjd_cd`), 하위 법정동 명(`bottom_bjd_nm`), 하위 법정동 커넥터(`bottom_bjd`) 등의 데이터를 포함하고 있음
+-   단위 법정동 커넥터 구조는 아래와 같음
+
+    -   Class
+
+        ```python
+        @dataclass
+        class BjdConnector():
+
+            def __init__(
+                self,
+                bjd_cd: str,
+                full_bjd_nm: str
+            ):
+                self.typ: str = None
+                self.bjd_cd: str = bjd_cd
+                self.bjd_nm: str = None
+                self.full_bjd_nm: str = full_bjd_nm
+                self.metadata: BjdObject() = None
+                self.top_bjd_typ: Optional[str] = None
+                self.top_bjd_cd: List[str] = []
+                self.top_bjd_nm: List[str] = []
+                self.top_bjd: List[BjdConnector()] = []
+                self.bottom_bjd_cd: List[str] = []
+                self.bottom_bjd_nm: List[str] = []
+                self.bottom_bjd: List[BjdConnector()] = []
+                self.is_smallest: bool = None
+                self._update_metadata()
+                self._update_top_bjd()
+        ```
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.bjdconnector import BjdConnectorGraph
+
+        BCG = BjdConnectorGraph()
+        BCG.bjd_connectors.get('1100000000')._print()
+        ```
+
+    -   Output
+
+        ```
+        typ: sido
+        bjd_cd: 1100000000
+        bjd_nm: 서울특별시
+        full_bjd_nm: 서울특별시
+        metadata: BjdObject()
+        top_bjd_typ: None
+        top_bjd_cd: []
+        top_bjd_nm: []
+        top_bjd: []
+        bottom_bjd_cd: ['1111000000', '1114000000', '1117000000', '1120000000', '1121500000', '1123000000', '1126000000', '1129000000', '1130500000', '1132000000', '1135000000', '1138000000', '1141000000', '1144000000', '1147000000', '1150000000', '1153000000', '1154500000', '1156000000', '1159000000', '1162000000', '1165000000', '1168000000', '1171000000', '1174000000']
+        bottom_bjd_nm: ['종로구', '중구', '용산구', '성동구', '광진구', '동대문구', '중랑구', '성북구', '강북구', '도봉구', '노원구', '은평구', '서대문구', '마포구', '양천구', '강서구', '구로구', '금천구', '영등포구', '동작구', '관악구', '서초구', '강남구', '송파구', '강동구']
+        bottom_bjd: [BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector()]
+        is_smallest: False
+        ```
+
+</br>
+
+**`BjdObject`**
+
+-   단위 법정동 오브젝트(Object) 클래스
+-   단위 법정동 오브젝트(Object) 는 해당 단위 법정동의 단위 법정동 코드(`bjd_cd`), 단위 법정동 명(`bjd_nm`), 단위 법정동 타입(`typ`) 등의 데이터를 포함하고 있음
+-   BjdConnector 의 메타데이터(metadata) 값으로 되어있음
+-   단위 법정동 오브젝트(Object) 구조는 아래와 같음
+
+    -   Class
+
+        ```python
+        @dataclass
+        class BjdObject():
+
+            def __init__(
+                self,
+                bjd_cd: str,
+                full_bjd_nm: str
+            ):
+                self.bjd_cd: str = bjd_cd
+                self.full_bjd_nm: str = full_bjd_nm
+                self.typ: str = None
+                self.sido: Optional[bool] = None
+                self.sgg: Optional[bool] = None
+                self.emd: Optional[bool] = None
+                self.ri: Optional[bool] = None
+                self.sido_nm: Optional[str] = None
+                self.sgg_nm: Optional[str] = None
+                self.emd_nm: Optional[str] = None
+                self.ri_nm: Optional[str] = None
+                self.sido_cd: Optional[str] = None
+                self.sgg_cd: Optional[str] = None
+                self.emd_cd: Optional[str] = None
+                self.ri_cd: Optional[str] = None
+                self.bjd_nm: str = None
+                self._prepare()
+        ```
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.bjdconnector import BjdConnectorGraph
+
+        BCG = BjdConnectorGraph()
+        BCG.bjd_connectors.get('1100000000').metadata._print()
+        ```
+
+    -   Output
+
+        ```
+        bjd_cd: 1100000000
+        bjd_nm: 서울특별시
+        full_bjd_nm: 서울특별시
+        typ: sido
+        sido: True
+        sgg: None
+        emd: None
+        ri: None
+        sido_nm: 서울특별시
+        sgg_nm: None
+        emd_nm: None
+        ri_nm: None
+        sido_cd: 1100000000
+        sgg_cd: None
+        emd_cd: None
+        ri_cd: None
+        ```
+
+</br>
+
+**`FullBjdConnectorGraph`**
+
+-   법정동 커넥터 그래프(Graph) 클래스
+-   법정동 커넥터 그래프(Graph) 는 BjdConnectorGraph 에 **변경 전 후 관계**를 추가한 그래프
+-   법정동 커넥터 그래프(Graph) 는 법정동 커넥터(Connector)들을 생성하고 관계를 설정하여 각 법정동 커넥터(Connector)의 값을 업데이트 함. 또한 결과물을 key, value{법정동 코드: 법정동 커넥터(Connector)} 형태의 딕셔너리(dictionary) `full_bjd_connectors` 와 데이터프레임(pandas.DataFrame()) `bjd_df` 로 생성하고 편집하여 보유함
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.bjdconnector import FullBjdConnectorGraph
+
+        FBCG = FullBjdConnectorGraph()
+        FBCG.bjd_connectors
+        ```
+
+    -   Output
+
+        ```
+        {'1100000000': FullBjdConnector(),
+        '1111000000': FullBjdConnector(),
+        '1111010100': FullBjdConnector(),
+        '1111010200': FullBjdConnector(),
+        '1111010300': FullBjdConnector(),
+        '1111010400': FullBjdConnector(),
+        '1111010500': FullBjdConnector(),
+        '1111010600': FullBjdConnector(),
+        '1111010700': FullBjdConnector(),
+        '1111010800': FullBjdConnector(),
+        '1111010900': FullBjdConnector(),
+        ...}
+        ```
+
+</br>
+
+**`FullBjdConnector`**
+
+-   법정동 커넥터(Connector) 클래스
+-   법정동 커넥터(Connector) 는 법정동 코드(`full_bjd_cd`), 법정동 명(`full_bjd_nm`), 현재 존재 여부(`is_exist`), 생성일(`created_dt`), 삭제일(`deleted_dt`), 변경 전 법정동 코드(`before_bjd_cd`), 변경 전 법정동 커넥터 리스트(`before`), 변경 후 법정동 커넥터 리스트(`after`), 각 단위 법정동별 BjdConnector(`sido_bjd_connector`, `sgg_bjd_connector`, `emd_bjd_connector`, `ri_bjd_connector`) 등의 데이터를 포함하고 있음
+-   변경 전 법정동 커넥터 리스트(`before`)와 변경 후 법정동 커넥터 리스트(`after`)가 리스트 타입인 이유는 여러 법정동의 일정 영역을 분리해서 새로운 법정동이 생성되거나 사라지는 등의 법정동의 관계가 일대일 관계가 일대다 혹은 다대일 관계와 같은 예외적인 경우도 존재하기 때문
+-   법정동 커넥터 구조는 아래와 같음
+
+    -   Class
+
+        ```python
+        @dataclass
+        class FullBjdConnector():
+
+            def __init__(
+                self,
+                full_bjd_cd: str,
+                full_bjd_nm: str,
+                created_dt: str,
+                deleted_dt: str,
+                before_bjd_cd: str
+            ):
+                self.full_bjd_cd: str = full_bjd_cd
+                self.full_bjd_nm: str = full_bjd_nm
+                self.is_exist: bool = None
+                self.created_dt: Optional[str] = created_dt
+                self.deleted_dt: Optional[str] = deleted_dt
+                self.before_bjd_cd: Optional[str] = before_bjd_cd
+                self.before: List[FullBjdConnector] = []
+                self.after: List[FullBjdConnector] = []
+                self.is_smallest: bool = None
+                self.sido: Optional[bool] = None
+                self.sgg: Optional[bool] = None
+                self.emd: Optional[bool] = None
+                self.ri: Optional[bool] = None
+                self.sido_nm: Optional[str] = None
+                self.sgg_nm: Optional[str] = None
+                self.emd_nm: Optional[str] = None
+                self.ri_nm: Optional[str] = None
+                self.sido_cd: Optional[str] = None
+                self.sgg_cd: Optional[str] = None
+                self.emd_cd: Optional[str] = None
+                self.ri_cd: Optional[str] = None
+                self.sido_bjd_connector: Optional[BjdConnector] = None
+                self.sgg_bjd_connector: Optional[BjdConnector] = None
+                self.emd_bjd_connector: Optional[BjdConnector] = None
+                self.ri_bjd_connector: Optional[BjdConnector] = None
+                self.is_exist = self._get_is_exist()
+                self._get_bjd_connectors()
+        ```
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.bjdconnector import FullBjdConnectorGraph
+
+        FBCG = FullBjdConnectorGraph()
+        FBCG.full_bjd_connectors.get('5100000000')._print()
+        ```
+
+    -   Output
+
+        ```
+        full_bjd_cd: 5100000000
+        full_bjd_nm: 강원특별자치도
+        is_exist: True
+        created_dt: 2023-06-09
+        deleted_dt: None
+        before: [FullBjdConnector()]
+        after: []
+        is_smallest: None
+        sido: True
+        sgg: None
+        emd: None
+        ri: None
+        sido_nm: 강원특별자치도
+        sgg_nm: None
+        emd_nm: None
+        ri_nm: None
+        sido_cd: 5100000000
+        sgg_cd: None
+        emd_cd: None
+        ri_cd: None
+        sido_bjd_connector: BjdConnector()
+        sgg_bjd_connector: None
+        emd_bjd_connector: None
+        ri_bjd_connector: None
+        ```
+
+    -   Run
+
+        ```python
+        # 5100000000 의 단위 법정동별 BjdConnector 또한 조회 가능하며 5100000000 의 경우, 시도 단위 법정동이므로 시도 단위 BjdConnector 를 조회하면 아래와 같은 출력을 확인가능 함
+        FBCG.full_bjd_connectors.get('5100000000').sido_bjd_connector._print()
+        ```
+
+    -   Output
+
+        ```
+        typ: sido
+        bjd_cd: 5100000000
+        bjd_nm: 강원특별자치도
+        full_bjd_nm: 강원특별자치도
+        metadata: BjdObject()
+        top_bjd_typ: None
+        top_bjd_cd: []
+        top_bjd_nm: []
+        top_bjd: []
+        bottom_bjd_cd: ['5111000000', '5113000000', '5115000000', '5117000000', '5119000000', '5121000000', '5123000000', '5172000000', '5173000000', '5175000000', '5176000000', '5177000000', '5178000000', '5179000000', '5180000000', '5181000000', '5182000000', '5183000000']
+        bottom_bjd_nm: ['춘천시', '원주시', '강릉시', '동해시', '태백시', '속초시', '삼척시', '홍천군', '횡성군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군']
+        bottom_bjd: [BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector()]
+        is_smallest: False
+        ```
+
+    -   Run
+
+        ```python
+        # 5100000000 의 변경 전 법정동 데이터는 .before 를 통해서 조회 가능하며 해당 데이터는 리스트 타입이기 때문에 순서값을 지정해줘야 함
+        # 다수의 법정동의 일부 영역에서 분리되어 생성된 예외적인 경우도 존재하나 일반적으로는 첫번째 값으로 조회가능 함
+        FBCG.full_bjd_connectors.get('5100000000').before[0]._print()
+        ```
+
+    -   Output
+
+        ```
+        full_bjd_cd: 4200000000
+        full_bjd_nm: 강원도
+        is_exist: False
+        created_dt: 1988-04-23
+        deleted_dt: 2023-06-09
+        before: []
+        after: [FullBjdConnector()] # 변경 전 법정동 데이터이므로 after 에 변경 후 법정동 데이터가 존재
+        is_smallest: None
+        sido: True
+        sgg: None
+        emd: None
+        ri: None
+        sido_nm: 강원도
+        sgg_nm: None
+        emd_nm: None
+        ri_nm: None
+        sido_cd: 4200000000
+        sgg_cd: None
+        emd_cd: None
+        ri_cd: None
+        sido_bjd_connector: BjdConnector()
+        sgg_bjd_connector: None
+        emd_bjd_connector: None
+        ri_bjd_connector: None
+        ```
+
+    -   Run
+
+        ```python
+        # 5100000000 의 변경 전 법정동 데이터의 단위 법정동별 BjdConnector 또한 조회 가능하며 5100000000 의 변경 전 법정동 데이터 경우도 시도 단위 법정동이므로 시도 단위 BjdConnector 를 조회하면 아래와 같은 출력을 확인가능 함
+        FBCG.full_bjd_connectors.get('5100000000').before[0].sido_bjd_connector._print()
+        ```
+
+    -   Output
+
+        ```
+        typ: sido
+        bjd_cd: 4200000000
+        bjd_nm: 강원도
+        full_bjd_nm: 강원도
+        metadata: BjdObject()
+        top_bjd_typ: None
+        top_bjd_cd: []
+        top_bjd_nm: []
+        top_bjd: []
+        bottom_bjd_cd: ['4205000000', '4211000000', '4213000000', '4215000000', '4217000000', '4219000000', '4221000000', '4223000000', '4271000000', '4271500000', '4272000000', '4273000000', '4274000000', '4274500000', '4275000000', '4276000000', '4277000000', '4278000000', '4279000000', '4280000000', '4281000000', '4282000000', '4283000000', '4284000000', '4285000000']
+        bottom_bjd_nm: ['울진군', '춘천시', '원주시', '강릉시', '동해시', '태백시', '속초시', '삼척시', '춘성군', '춘천군', '홍천군', '횡성군', '원성군', '원주군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군', '명주군', '삼척군']
+        bottom_bjd: [BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector(), BjdConnector()]
+        is_smallest: False
+        ```
+
+</details><br>
+<br>
+
+## GenPnu
+
+주소 문자열을 입력받아 공간의가치(`ValueOfSpace`)에서 사용중인 필지관리코드(`pnu`)로 반환하는 기능 및 이와 관련된 부분 기능들을 제공하는 모듈
+
+-   공간의가치(`ValueOfSpace`)에서 사용중인 필지관리코드(`pnu`)는 19자리의 숫자문자열로 10자리의 법정동코드와 1자리의 산코드, 8자리의 번지코드로 구성되어 있으며 해당 모듈은 현행시점의 존재하는 법정동 데이터를 기반으로 동작하나 해당 모듈 클래스 인스턴스 `base_dt` 속성값에 따라 시점은 다르게 적용가능 \
+-   `base_dt` 속성값을 기준으로 보관중인 법정동 데이터 중 선정하며 `base_dt` 이전 시점 중 가장 빠른 시점으로 선정함\
+    즉, `base_dt='20231231'` 이고 법정동 데이터가 20230101, 20230701, 20240118 와 같이 세 시점이 존재할 경우 `base_dt` 보다 이전이며 그 중 가장 빠른 20230701 을 선정하게 됨
+-   `base_dt` 는 **BjdConnector**, **ConvAddr** 동일하게 적용됨
+
+<details>
+<summary><strong>Show instructions</strong></summary>
+<br></br>
+
+**`genpnu(GeneratePNU)`**
+
+-   초기 모듈 인스턴스 생성시 `base_dt(default=None)` 를 제공하지 않으면 보유중인 법정동 데이터 중 최신 시점으로 호출하며 `base_dt` 전달시에는 위의 base_dt 설명과 동일하게 동작하며 호출된 법정동 데이터 시점을 로그로 출력함
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        ```
+
+    -   Output
+
+        ```
+        YYYY-MM-DD HH:MM:SS | [INFO] | 적용 법정동 데이터 시점: 20240118
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu(base_dt='20231231')
+        ```
+
+    -   Output
+
+        ```
+        YYYY-MM-DD HH:MM:SS | [INFO] | 적용 법정동 데이터 시점: 20230701
+        ```
+
+<br>
+
+**`genpnu.get_bjd_cd`**
+
+-   입력된 문자열(한글 법정동명)의 법정동 코드로 리턴
+-   입력 문자열은 string 타입이어야 하며, 한글과 숫자, 공백으로만 이루어진 문자열이어야 함
+-   입력된 문자열의 타입과 형식 오류는 예외 처리되나 이 외의 경우 예외형식의 응답을 반환하며 error, msg 를 통해 예외유무를 확인할 수 있음
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.get_bjd_cd(bjd_nm='서울특별시 강남구 삼성동') # 정상적인 법정동명 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': False,
+        'bjd_cd': '1168010500',
+        'deleted_dt': None,
+        'base_dt': '{base_dt}',
+        'msg': ''}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.get_bjd_cd(bjd_nm='부산광역시 강남구 삼성동') # 비정상적인 법정동명 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'bjd_cd': None,
+        'deleted_dt': None,
+        'base_dt': '{base_dt}',
+        'msg': "'부산광역시 강남구 삼성동' is not a valid legal district name"}
+        ```
+
+<br>
+
+**`genpnu.get_bjd_data`**
+
+-   입력된 문자열(법정동 코드)에 해당하는 법정동 데이터(각 단위 법정동명, 생성일자, 삭제일자)를 리턴
+-   입력 문자열은 string 타입이어야 하며, 법정동 코드 형식인 10자리의 숫자 문자열이어야 함
+-   입력된 문자열의 타입과 형식 오류는 예외 처리되나 이 외의 경우 예외형식의 응답을 반환하며 error, msg 를 통해 예외유무를 확인할 수 있음
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.get_bjd_data(bjd_cd='1168010500') # 정상적인 법정동코드 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': False,
+        'sido_nm': '서울특별시',
+        'sgg_nm': '강남구',
+        'emd_nm': '삼성동',
+        'ri_nm': None,
+        'full_bjd_nm': '서울특별시 강남구 삼성동',
+        'created_dt': '1988-04-23',
+        'deleted_dt': None,
+        'base_dt': '{base_dt}',
+        'msg': ''}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.get_bjd_data(bjd_cd='1234567890') # 비정상적인 법정동코드 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'sido_nm': None,
+        'sgg_nm': None,
+        'emd_nm': None,
+        'ri_nm': None,
+        'full_bjd_nm': None,
+        'created_dt': None,
+        'deleted_dt': None,
+        'base_dt': '{base_dt}',
+        'msg': "'1234567890' is not a valid legal district code"}
+        ```
+
+<br>
+
+**`genpnu.generate_pnu`**
+
+-   입력된 문자열(법정동 코드, 지번)을 필지관리번호(pnu)로 변환하여 반환
+-   입력 문자열 중 법정동 코드는 string 타입이어야 하며, 법정동 코드 형식인 10자리의 숫자 문자열이어야 함
+-   입력 문자열 중 지번은 string 타입이어야 하며, '산'을 포함한 본번과 부번이 결합된 문자열이어야 하며 본번과 부번은 최대 4자리의 숫자 문자열이어야 함
+-   입력 문자열 중 지번에서 '산'과 번지 사이에 공백 유무는 상관없으며 지번의 올바른 형식은 다음과 같음
+    -   산 0000-0000 (산0000-0000)
+    -   산 0000 (산0000)
+    -   0000-0000
+    -   0000
+-   입력된 문자열의 타입과 형식 오류는 예외 처리되나 이 외의 경우 예외형식의 응답을 반환하며 error, msg 를 통해 예외유무를 확인할 수 있음
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu(
+            bjd_cd='1168010500',
+            jibun='1-1'
+        ) # 정상적인 법정동코드, 지번 입력
+
+        ```
+
+    -   Output
+
+        ```
+        {'error': False,
+        'pnu': '1168010500100010001',
+        'bjd_cd': '1168010500',
+        'mountain_cd': '1',
+        'bunji_cd': '00010001',
+        'bjd_datas': {
+            'error': False,
+            'sido_nm': '서울특별시',
+            'sgg_nm': '강남구',
+            'emd_nm': '삼성동',
+            'ri_nm': None,
+            'full_bjd_nm': '서울특별시 강남구 삼성동',
+            'created_dt': '1988-04-23',
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': '1',
+        'ji': '1',
+        'base_dt': '{base_dt}',
+        'msg': ''}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu(
+            bjd_cd='1234567890',
+            jibun='1-1'
+        ) # 존재하지 않는 법정동코드, 정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': None,
+        'bjd_cd': None,
+        'mountain_cd': None,
+        'bunji_cd': None,
+        'bjd_datas': {
+            'error': True,
+            'sido_nm': None,
+            'sgg_nm': None,
+            'emd_nm': None,
+            'ri_nm': None,
+            'full_bjd_nm': None,
+            'created_dt': None,
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': "'1234567890' is not a valid legal district code"
+        },
+        'bun': None,
+        'ji': None,
+        'base_dt': '{base_dt}',
+        'msg': "'1234567890' is not a valid legal district code"}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu(
+            bjd_cd='1168010500',
+            jibun=''
+        ) # 정상적인 법정동코드, 비정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': '1168010500100000000',
+        'bjd_cd': '1168010500',
+        'mountain_cd': '1',
+        'bunji_cd': '00000000',
+        'bjd_datas': {
+            'error': False,
+            'sido_nm': '서울특별시',
+            'sgg_nm': '강남구',
+            'emd_nm': '삼성동',
+            'ri_nm': None,
+            'full_bjd_nm': '서울특별시 강남구 삼성동',
+            'created_dt': '1988-04-23',
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': '0',
+        'ji': '0',
+        'msg': '블록지번',
+        'base_dt': '{base_dt}'}
+        ```
+
+**`genpnu.generate_pnu_from_bjd_nm`**
+
+-   입력된 문자열(법정동 명, 지번)을 필지관리번호(pnu)로 변환하여 반환
+-   입력 문자열은 string 타입이어야 하며, 한글과 숫자, 공백으로만 이루어진 문자열이어야 함
+-   입력 문자열 중 지번은 string 타입이어야 하며, '산'을 포함한 본번과 부번이 결합된 문자열이어야 하며 본번과 부번은 최대 4자리의 숫자 문자열이어야 함. 본번과 부번은 '-' 으로 구분함
+-   입력 문자열 중 지번에서 '산'과 번지 사이에 공백 유무는 상관없으며 지번의 올바른 형식은 다음과 같음
+    -   산 0000-0000 (산0000-0000)
+    -   산 0000 (산0000)
+    -   0000-0000
+    -   0000
+-   입력된 문자열의 타입과 형식 오류는 예외 처리되나 이 외의 경우 예외형식의 응답을 반환하며 error, msg 를 통해 예외유무를 확인할 수 있음
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_bjd_nm(
+            bjd_nm='서울특별시 강남구 삼성동',
+            jibun='산 1000-1000'
+        ) # 정상적인 법정동명, 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': False,
+        'pnu': '1168010500210001000',
+        'bjd_cd': '1168010500',
+        'mountain_cd': '2',
+        'bunji_cd': '10001000',
+        'bjd_datas': {
+            'error': False,
+            'sido_nm': '서울특별시',
+            'sgg_nm': '강남구',
+            'emd_nm': '삼성동',
+            'ri_nm': None,
+            'full_bjd_nm': '서울특별시 강남구 삼성동',
+            'created_dt': '1988-04-23',
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': '1000',
+        'ji': '1000',
+        'base_dt': '{base_dt}',
+        'msg': ''}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_bjd_nm(
+            bjd_nm='부산광역시 강남구 삼성동',
+            jibun='산 1000-1000'
+        ) # 존재하지 않는 법정동명, 정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': None,
+        'bjd_cd': None,
+        'mountain_cd': None,
+        'bunji_cd': None,
+        'bjd_datas': {
+            'error': True,
+            'sido_nm': None,
+            'sgg_nm': None,
+            'emd_nm': None,
+            'ri_nm': None,
+            'full_bjd_nm': None,
+            'created_dt': None,
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': None,
+        'ji': None,
+        'base_dt': '{base_dt}',
+        'msg': "'부산광역시 강남구 삼성동' is not a valid legal district name"}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_bjd_nm(
+            bjd_nm='서울특별시 강남구 삼성동',
+            jibun=''
+        ) # 정상적인 법정동코드, 비정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': None,
+        'bjd_cd': None,
+        'mountain_cd': None,
+        'bunji_cd': None,
+        'bjd_datas': {
+            'error': True,
+            'sido_nm': None,
+            'sgg_nm': None,
+            'emd_nm': None,
+            'ri_nm': None,
+            'full_bjd_nm': None,
+            'created_dt': None,
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': None,
+        'ji': None,
+        'base_dt': '{base_dt}',
+        'msg': "Invalid 'jibun' format. Please follow the specified format."}
+        ```
+
+**`genpnu.generate_pnu_from_address`**
+
+-   입력된 문자열(주소)을 필지관리번호(pnu)로 변환하여 반환
+-   입력 문자열(주소)은 지번 주소 규칙을 기반으로 해야하며 string 타입이어야 함
+-   번지는 '산'을 포함한 본번과 부번이 결합된 문자열이어야 하며 본번과 부번은 최대 4자리의 숫자 문자열이어야 함. 본번과 부번은 '-' 으로 구분함
+-   입력 문자열 중 지번에서 '산'과 번지 사이에 공백 유무는 상관없으며 지번의 올바른 형식은 다음과 같음
+    -   산 0000-0000 (산0000-0000)
+    -   산 0000 (산0000)
+    -   0000-0000
+    -   0000
+-   입력된 문자열의 타입과 형식 오류는 예외 처리되나 이 외의 경우 예외형식의 응답을 반환하며 error, msg 를 통해 예외유무를 확인할 수 있음
+
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_address(
+            address='서울특별시 강남구 삼성동 산 1000-1000'
+        ) # 정상적인 법정동명, 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': False,
+        'pnu': '1168010500210001000',
+        'bjd_cd': '1168010500',
+        'mountain_cd': '2',
+        'bunji_cd': '10001000',
+        'bjd_datas': {
+            'error': False,
+            'sido_nm': '서울특별시',
+            'sgg_nm': '강남구',
+            'emd_nm': '삼성동',
+            'ri_nm': None,
+            'full_bjd_nm': '서울특별시 강남구 삼성동',
+            'created_dt': '1988-04-23',
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': '1000',
+        'ji': '1000',
+        'base_dt': '{base_dt}',
+        'msg': ''}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_address(
+            address='부산광역시 강남구 삼성동 산 1000-1000'
+        ) # 존재하지 않는 법정동명, 정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': None,
+        'bjd_cd': None,
+        'mountain_cd': None,
+        'bunji_cd': None,
+        'bjd_datas': {
+            'error': True,
+            'sido_nm': None,
+            'sgg_nm': None,
+            'emd_nm': None,
+            'ri_nm': None,
+            'full_bjd_nm': None,
+            'created_dt': None,
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': None,
+        'ji': None,
+        'base_dt': '{base_dt}',
+        'msg': 'Failed to extract bjd name from address: 부산광역시 강남구 삼성동 산 1000-1000'}
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.genpnu import GenPnu
+
+        GP = GenPnu()
+        GP.generate_pnu_from_address(
+            address = '서울특별시 강남구 삼성동 10000'
+        ) # 정상적인 법정동코드, 비정상적인 지번 입력
+        ```
+
+    -   Output
+
+        ```
+        {'error': True,
+        'pnu': None,
+        'bjd_cd': None,
+        'mountain_cd': None,
+        'bunji_cd': None,
+        'bjd_datas': {
+            'error': True,
+            'sido_nm': None,
+            'sgg_nm': None,
+            'emd_nm': None,
+            'ri_nm': None,
+            'full_bjd_nm': None,
+            'created_dt': None,
+            'deleted_dt': None,
+            'base_dt': '{base_dt}',
+            'msg': ''
+        },
+        'bun': None,
+        'ji': None,
+        'base_dt': '{base_dt}',
+        'msg': "Invalid 'jibun' format. Please follow the specified format."}
+        ```
+
+</details><br>
+<br>
+
+## Vid
+
+공간의가치(`ValueOfSpace`) 거래사례코드(`vid`)를 생성하는 기능 및 이와 관련된 부분 기능들을 제공하는 모듈
+
+<details>
+<summary><strong>Show instructions</strong></summary>
+<br></br>
+
+**`vid.generate_registration_vid`**
+
+-   주어진 입력값(pnu, contract_ymd, price, unit_ar, lot_ar, seller, buyer) 를 변환 새시값으로 생성하여 리턴
+-   각 입력값들의 타입정의 및 형식이 명확하지 않아, TypeError, ValueError 를 정의하지 않고 모든 오류에 대해 동일한 예외용 응답만을 반환
+-   Example
+
+    -   Run
+
+        ```python
+        from vdutils.vid import Vid
+
+        V = Vid()
+        V.generate_registration_vid(
+            pnu='1234567890123456789',
+            contract_ymd='20240101',
+            price='100',
+            unit_ar='100.1',
+            lot_ar=100.1,
+            seller='seller,
+            buyer='buyer',
+        )
+        ```
+
+    -   Output
+
+        ```
+        ['R_1234567890_581e28e445_0000',
+        '581e28e4457103048784572e858c5ed1297cf8747169a8454e98a19233036f55',
+        '1234567890123456789_20240101_100_100.1_100.1_seller_buyer']
+        ```
+
+    -   Run
+
+        ```python
+        from vdutils.vid import Vid
+
+        V = Vid()
+        V.generate_registration_vid(
+            pnu='12345678901234567890', # 비정상적인 pnu 입력
+            contract_ymd='20240101',
+            price='100',
+            unit_ar='100.1',
+            lot_ar=100.1,
+            seller='seller,
+            buyer='buyer',
+        )
+        ```
+
+    -   Output
+
+        ```
+        ['R_pnu10dhead_hashstring_0000', None, None]
+        ```
+
+<br>
+
+</details><br>
+<br>
+
+# Usage(Administrator Only)
+
+## Bjd
+
+공공데이터 법정동 관련 API 를 수집하고 자체 관리중인 보조 데이터들을 이용하여 BjdConnector, ConvAddr 에 사용하는 법정동 관련 데이터프레임을 생성 및 편집하고 텍스트 형식으로 저장하는 모듈\
+관리중인 법정동 데이터 파일 목록
+
+-   `bjd.txt`: 공공데이터에서 제공중인 전체기간(1988-)의 법정동 개요 데이터이며 과거법정동코드, 법정동코드, 삭제일자, 생성일자, 순위, 시도명, 시군구명, 읍면동명, 리명, 법정동명이 포함됨
+-   `bjd_current.txt`: 공공데이터에서 제공중인 전체기간(1988-)의 법정동 개요 데이터 중 삭제되거나 변경된 법정동을 제외한 **현행 법정동** 개요 데이터
+-   `bjd_changed.txt`: 공공데이터에서 제공중인 전체기간(1988-)의 법정동 변경사항 데이터이며 법정동코드*변경후, 법정동명*변경후, 생성일자*변경후, 삭제일자*변경후, 법정동코드*변경전, 법정동명*변경전, 생성일자*변경전, 삭제일자*변경전, 변경내역이 포함됨
+-   `bjd_smallest.txt`: 현행 법정동 개요 데이터 중 최소 단위 법정동명 데이터
+-   `bjd_frequency_dictionary.txt`: 현행 법정동 개요 데이터의 단위 법정동명별 빈도수 딕셔너리
+
+공공데이터 법정동 관련 API 수집은 관리자가 보유중인 api-key 를 이용하여 법정동 변경사항 및 업데이트 필요한 시점에 재수집 및 재새성하여 배포하며, 배포 시점의 법정동 데이터 파일은 /data 를 통해 확인가능
