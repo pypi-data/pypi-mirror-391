@@ -1,0 +1,27 @@
+Metadata-Version: 2.1
+Name: odoo-addon-l10n_pt_certification
+Version: 18.0.1.0.0.2
+Requires-Python: >=3.10
+Requires-Dist: odoo-addon-l10n_pt_future_account==18.0.*
+Requires-Dist: odoo==18.0.*
+Summary: Portugal - Accounting (Certification)
+Home-page: https://github.com/OCA/l10n-portugal
+License: LGPL-3
+Author: Odoo
+Classifier: Programming Language :: Python
+Classifier: Framework :: Odoo
+Classifier: Framework :: Odoo :: 18.0
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Description-Content-Type: text/x-rst
+
+
+This bridge module adds the technical requirements of the Portuguese Certification regulation (Administrative Decree no. 363/2010) that stipulates certain criteria concerning the inalterability and authenticity of invoicing data.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The module adds the following features:
+
+- AT Series: allows the creation of document series, under which documents must be emitted.
+- Digital signature: documents are signed after they are emitted. After being signed, key data cannot be modified.
+- QR Code: a QR Code is added to signed documents
+- Hash integrity report is available based on the digital signature
+    
