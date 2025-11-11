@@ -1,0 +1,116 @@
+Metadata-Version: 2.4
+Name: glomar_gridding
+Version: 1.0.1
+Summary: National Oceanography Centre library for performing gridding.
+Project-URL: Repository, https://git.noc.ac.uk/nocsurfaceprocesses/glomar_gridding.git
+Author-email: Joseph Siddons <josidd@noc.ac.uk>, Agnieszka Faulkner <agfaul@noc.ac.uk>, Richard Cornes <rcornes@noc.ac.uk>, Steven Chan <stchan@noc.ac.uk>
+Maintainer-email: Joseph Siddons <josidd@noc.ac.uk>, Agnieszka Faulkner <agfaul@noc.ac.uk>, Steven Chan <stchan@noc.ac.uk>
+License-File: LICENSE
+Keywords: covariance,gridding,interpolation,kriging,observations,ordinary,simple
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.11
+Requires-Dist: geopandas
+Requires-Dist: netcdf4
+Requires-Dist: numpy!=2.2.6
+Requires-Dist: pandas
+Requires-Dist: polars
+Requires-Dist: pyarrow
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: scikit-learn
+Requires-Dist: scipy
+Requires-Dist: statsmodels>=0.14.4
+Requires-Dist: tqdm
+Requires-Dist: xarray
+Provides-Extra: all
+Requires-Dist: cartopy; extra == 'all'
+Requires-Dist: ipykernel; extra == 'all'
+Requires-Dist: matplotlib; extra == 'all'
+Requires-Dist: sphinx-autodoc-typehints>=3.1.0; extra == 'all'
+Requires-Dist: sphinx-rtd-theme>=3.0.2; extra == 'all'
+Requires-Dist: sphinx>=8.2.0; extra == 'all'
+Provides-Extra: docs
+Requires-Dist: sphinx-autodoc-typehints>=3.1.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=3.0.2; extra == 'docs'
+Requires-Dist: sphinx>=8.2.0; extra == 'docs'
+Provides-Extra: extra
+Requires-Dist: ipykernel; extra == 'extra'
+Provides-Extra: notebooks
+Requires-Dist: cartopy; extra == 'notebooks'
+Requires-Dist: matplotlib; extra == 'notebooks'
+Provides-Extra: test
+Requires-Dist: pytest-cov>=6.1.1; extra == 'test'
+Requires-Dist: pytest>=8.3.4; extra == 'test'
+Description-Content-Type: text/markdown
+
+# GloMar Gridding
+
+Library for performing Gridding as used by the GloMar datasets produced by the National Oceanography
+Centre.
+
+Part of the NOC Surface Processes _GloMar_ suite of libraries and datasets.
+
+## Installation
+
+`GloMarGridding` is available on [PyPI](https://pypi.org/project/glomar_gridding/), as
+`glomar_gridding`:
+
+```bash
+pip install glomar_gridding
+```
+
+Or using uv:
+
+```bash
+uv add glomar_gridding
+```
+
+### Development
+
+Clone the repository
+
+```bash
+git clone https://github.com/NOCSurfaceProcesses/GloMarGridding.git /path/to/glomar_gridding
+```
+
+Create virtual environment and install dependencies. We recommend using
+[uv](https://docs.astral.sh/uv/) for python as an alternative to `pip`.
+
+```bash
+cd /path/to/glomar_gridding
+uv sync --all-extras --python 3.11  # Install dependencies, recommended python version
+```
+
+#### `pip` instructions
+
+For development:
+
+```bash
+cd /path/to/glomar_gridding
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## Documentation
+
+Documentation PDF can be found in the docs directory. Or
+[here](https://github.com/NOCSurfaceProcesses/GloMarGridding/blob/main/docs/Documentation.pdf).
+
+An example workflow can be found in the documentation PDF, or in the notebooks directory.
+
+## Citation
+
+Richard C. Cornes, Steven. C. Chan, Archie Cable et al. GloMarGridding: A Python Package for Spatial
+Interpolation to Support Structural Uncertainty Assessment of Climate Datasets, 22 August 2025,
+PREPRINT (Version 1) available at Research Square
+[https://doi.org/10.21203/rs.3.rs-7427869/v1](https://doi.org/10.21203/rs.3.rs-7427869/v1)
+
+## Acknowledgements
+
+Supported by the Natural Environmental Research Council through National Capability funding
+(AtlantiS: NE/Y005589/1)
