@@ -1,0 +1,34 @@
+[CDF-25332] 😀 DatapointsIO (#2186)
+
+# Description
+
+Implements support for uploading Datapoints using protobuf
+serialization.
+
+* Adds `DataBodyRequests` to have request messages with bytes directly,
+[here](https://github.com/cognitedata/toolkit/pull/2186/files#diff-4fb12b236dfc26468a9963baaf3317c3811072151f79e48bcb013d0992417284R177)
+* Extends the dtype conversion with `epoch`,
+[here](https://github.com/cognitedata/toolkit/pull/2186/files#diff-12fc440f1c69bc1f42ef62f6349288112c37371db942dc36135b8747efd9102bR490).
+This is needed to create epoch timestamps.
+* Adding `source_id` to `row_to_resource` interface,
+[here](https://github.com/cognitedata/toolkit/pull/2186/files#diff-2ab3a7cd764ca1cf9f9f669767652ac2faa76240c3cef2ea60c9004626cbdabeR243).
+This is for improved error messages.
+
+## Changelog
+
+- [x] Patch
+- [ ] Skip
+
+## cdf
+
+### Added
+
+- [alpha] The `cdf data upload` command now supports datapoints.
+
+## templates
+
+No changes.
+
+---------
+
+Co-authored-by: Aashutosh-cognite <aashutosh.chaubey@cognite.com>
