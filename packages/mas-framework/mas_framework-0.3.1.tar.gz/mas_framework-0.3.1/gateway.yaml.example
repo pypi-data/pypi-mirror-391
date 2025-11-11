@@ -1,0 +1,40 @@
+# Gateway Service Configuration Example
+# Copy this file to gateway.yaml and customize for your environment
+#
+# NOTE: All features are enabled by default for production security.
+# For development/testing, you may want to disable some features for speed.
+
+redis:
+  url: redis://localhost:6379
+  decode_responses: true
+  socket_timeout: null  # Optional: set timeout in seconds
+
+rate_limit:
+  per_minute: 100   # Messages per minute per agent
+  per_hour: 1000    # Messages per hour per agent
+
+# Feature flags (production-ready defaults - all enabled)
+features:
+  dlp: true                # Data Loss Prevention scanning
+  priority_queue: true     # Message priority routing
+  rbac: true              # Role-Based Access Control (Phase 2)
+  message_signing: true   # HMAC message signatures (Phase 2)
+  circuit_breaker: true   # Circuit breaker for reliability
+
+circuit_breaker:
+  failure_threshold: 5
+  success_threshold: 2
+  timeout_seconds: 60
+  window_seconds: 300
+
+priority_queue:
+  default_ttl: 300
+  critical_weight: 10
+  high_weight: 5
+  normal_weight: 2
+  low_weight: 1
+  bulk_weight: 0
+
+message_signing:
+  max_timestamp_drift: 300
+  nonce_ttl: 300
