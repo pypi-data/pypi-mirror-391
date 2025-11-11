@@ -1,0 +1,267 @@
+Metadata-Version: 2.4
+Name: odino
+Version: 0.1.4
+Summary: Local semantic search CLI tool for codebases using embeddings
+Home-page: https://github.com/cesp99/odino
+Author: Carlo Esposito
+Author-email: Carlo Esposito <carlo@aploi.de>
+License: GPL-3.0-only
+Project-URL: Homepage, https://github.com/cesp99/odino
+Project-URL: Repository, https://github.com/cesp99/odino
+Project-URL: Issues, https://github.com/cesp99/odino/issues
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Indexing
+Classifier: Topic :: Utilities
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer>=0.9.0
+Requires-Dist: chromadb>=0.4.0
+Requires-Dist: sentence-transformers>=2.2.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: tqdm>=4.64.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: pathspec>=0.11.0
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Odino: Local Semantic Search CLI
+
+A fast local semantic search tool that helps you find code using natural language queries. No internet required, everything runs locally using the embeddinggemma-300m model.
+
+<p align="center">
+<a href="https://pypi.org/project/odino/"><img alt="PyPI" src="https://badge.fury.io/py/odino.svg"></a>
+<a href="https://www.gnu.org/licenses/gpl-3.0"><img alt="License: GPL v3" src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a>
+<a href="https://pypi.org/project/odino"><img alt="Supported Python Versions" src="https://img.shields.io/pypi/pyversions/odino?color=brightgreen"></a>
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+</p>
+
+## Quick Start
+
+Install Odino directly from PyPI:
+
+```bash
+pip install odino
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/cesp99/odino.git
+cd odino
+pip install -e .
+```
+
+For detailed installation instructions, including uninstallation and troubleshooting, see [INSTALL.md](INSTALL.md).
+
+## Usage
+
+### Index your codebase
+```bash
+# Index current directory
+odino index .
+
+# Index specific directory
+odino index /path/to/project
+
+# Index with custom model (optional)
+odino index /path/to/project --model <your-own-model>
+```
+
+### Search your code
+```bash
+# Basic search (returns 2 results by default)
+odino -q "function that handles user authentication"
+
+# Search with custom number of results
+odino -q "database connection" -r 10
+
+# Search specific file types
+odino -q "error handling" --include "*.py"
+```
+
+### Check status
+```bash
+odino status
+```
+
+## Examples
+
+Find authentication code:
+```bash
+odino -q "user login function"
+```
+
+Search for database queries:
+```bash
+odino -q "sql select statement" --include "*.sql"
+```
+
+Find error handling patterns:
+```bash
+odino -q "try catch exception handling"
+```
+
+## Project Structure
+
+```
+odino/
+├── odino/
+│   ├── __init__.py
+│   ├── cli.py              # CLI entry point
+│   ├── indexer.py          # File indexing logic
+│   ├── searcher.py         # Semantic search implementation
+│   └── utils.py            # Utility functions
+├── pyproject.toml          # Project configuration
+├── README.md              # This file
+└── .odinoignore           # Default ignore patterns
+```
+
+## Configuration
+
+Odino creates a `.odino/` directory in your project root with:
+- `config.json` - Configuration settings
+- `chroma_db/` - Vector database storage
+- `indexed_files.json` - File tracking metadata
+
+Default configuration:
+```json
+{
+  "model_name": "EmmanuelEA/eea-embedding-gemma",
+  "chunk_size": 512,
+  "chunk_overlap": 50,
+  "max_results": 2,
+  "embedding_batch_size": 32,
+  "device_preference": "auto"
+}
+```
+
+## How It Works
+
+1. **Indexing**: Scans your codebase, chunks files, and generates embeddings using the embeddinggemma-300m model
+2. **Storage**: Saves embeddings locally in ChromaDB vector database
+3. **Search**: Converts your natural language query to embeddings and finds semantically similar code
+4. **Results**: Displays file paths, similarity scores, and code snippets
+
+## Features
+
+- **Local Processing**: No internet required, everything runs offline
+- **Fast Indexing**: embeddinggemma-300m model optimized for speed
+- **Smart Chunking**: Handles large files by splitting into manageable chunks
+- **Beautiful Output**: Rich console formatting with syntax highlighting
+- **Incremental Updates**: Only reindexes changed files
+- **Flexible Filtering**: Search by file type, limit results, custom patterns
+
+## Advanced Usage
+
+### Custom Ignore Patterns
+Create a `.odinoignore` file in your project root:
+```
+# Ignore specific directories
+build/
+dist/
+node_modules/
+
+# Ignore file patterns
+*.log
+*.tmp
+*.cache
+```
+
+### Force Reindex
+```bash
+odino index . --force
+```
+
+### Status Check
+```bash
+odino status
+```
+
+## Troubleshooting
+
+### Model Download Issues
+The embeddinggemma-300m model downloads automatically on first use. Ensure you have:
+- Stable internet connection for initial download
+- Sufficient disk space (~300MB for model)
+
+### Permission Errors
+Make sure you have read permissions for files you want to index and write permissions for the `.odino/` directory.
+
+### Memory Issues
+For very large codebases, consider:
+- Reducing chunk size in configuration
+- Excluding large directories with `.odinoignore`
+- Indexing in batches
+
+#### MPS (Apple Silicon) Memory Issues
+If you encounter MPS backend out of memory errors on Apple Silicon:
+
+1. **Reduce batch size** in your `.odino/config.json`:
+```json
+{
+  "embedding_batch_size": 16,
+  "device_preference": "auto"
+}
+```
+
+2. **Force CPU usage** for stable processing:
+```json
+{
+  "device_preference": "cpu"
+}
+```
+
+3. **Use smaller batch sizes** if memory issues persist:
+```json
+{
+  "embedding_batch_size": 8
+}
+```
+
+The system automatically handles MPS memory management with:
+- Automatic batch processing in configurable sizes
+- MPS memory clearing after each batch
+- Automatic CPU fallback when MPS runs out of memory
+- Smart device selection based on availability
+
+For advanced memory management configuration and more detailed troubleshooting, see [MEMORY_MANAGEMENT.md](MEMORY_MANAGEMENT.md).
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## For AI Agents
+
+AI agents working with this codebase should refer to the [ODINO.md](ODINO.md) file for detailed usage instructions and best practices. This file contains comprehensive documentation on:
+
+- **Basic Commands**: Indexing and searching operations
+- **Advanced Search Options**: Filtering, path targeting, and result limiting
+- **Semantic Search Capabilities**: How to find files by meaning rather than exact keywords
+- **Best Practices**: When to use Odino vs traditional grep, filtering strategies, and query optimization
+- **Workflow Examples**: Real-world usage patterns for code discovery
+
+The ODINO.md file is specifically designed to help AI agents understand how to effectively use Odino's semantic search capabilities to navigate and understand codebases during development tasks.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built with [Typer](https://typer.tiangolo.com/) for the CLI
+- Uses [Sentence Transformers](https://www.sbert.net/) for embeddings
+- Powered by [ChromaDB](https://www.trychroma.com/) for vector storage
+- Formatted with [Rich](https://rich.readthedocs.io/) for beautiful output
+
