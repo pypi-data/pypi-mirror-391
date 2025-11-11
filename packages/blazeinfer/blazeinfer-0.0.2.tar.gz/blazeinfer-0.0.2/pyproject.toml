@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blazeinfer"
+version = "0.0.2"
+authors = [
+  { name="Wenyi Xu", email="wenyixu101@email.com" },
+]
+description = "A high-performance, light-weight llm inference framework."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+# == Core Dependencies ==
+# Pinned torch to version 2.9 as requested.
+# Note: Installing PyTorch with specific CUDA versions may require using --index-url.
+# e.g., pip install -r requirements.txt --index-url https://download.pytorch.org/whl/cu121
+dependencies = [
+    "torch>=2.10.0",
+    "numpy>=1.26.0",
+    "transformers>=4.40.0", # For tokenizers and model configurations
+    "accelerate>=0.32.0",   # For device_map and advanced model loading
+    "tqdm", # For progress bars
+]
+
+[project.urls]
+"Homepage" = "https://github.com/xuwenyihust/BlazeInfer"
+"Bug Tracker" = "https://github.com/xuwenyihust/BlazeInfer/issues"
+
+# == Optional Dependencies ==
+# For developers of the framework
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff", # For linting and formatting
+]
+
+[project.scripts]
+blazeinfer = "blazeinfer.main:main"
+
+[tool.setuptools]
+packages = { find = {} }
