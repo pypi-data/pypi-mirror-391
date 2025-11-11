@@ -1,0 +1,116 @@
+[project]
+name = "langgraph-checkpoint-cassandra"
+version = "0.1.1"
+description = "LangGraph checkpointer for Cassandra"
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langgraph>=1.0,<2.0",
+    "cassandra-driver>=3.29.0,<4.0",
+    "cassandra-asyncio-driver~=0.1.4",
+]
+
+[project.urls]
+Repository = "https://github.com/johntrimble/langgraph-checkpoint-cassandra"
+
+[build-system]
+requires = ["uv_build>=0.8.24,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.140.3",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "ruff>=0.8.6",
+    "mypy>=1.18.2",
+]
+
+[tool.tox.env_run_base]
+package = "wheel"                 # build wheel via your uv_build backend
+wheel_build_env = ".pkg"
+dependency_groups = ["dev"]
+changedir = "{envtmpdir}"         # run *outside* your repo
+setenv = { PYTHONSAFEPATH = "1" } # don't prepend CWD to sys.path
+
+# Copy tests into the temp dir before running (portable Python one-liner)
+commands_pre = [
+  [
+    "python",
+    "-c",
+    "import shutil,sys; shutil.rmtree(sys.argv[2], ignore_errors=True); shutil.copytree(sys.argv[1], sys.argv[2]); print('Copied tests to', sys.argv[2])",
+    "{toxinidir}/tests",
+    "{envtmpdir}/tests"
+  ]
+]
+
+# Sanity-check we import from site-packages, then run pytest
+commands = [
+  [
+    "python",
+    "-c",
+    "import inspect,langgraph_checkpoint_cassandra as p; pth=inspect.getfile(p); print('Imported from:', pth); assert 'site-packages' in pth, pth"
+  ],
+  ["pytest", "-q", "--import-mode=importlib", "tests"]
+]
+
+[tool.ruff]
+lint.select = [
+  "E",  # pycodestyle
+  "F",  # Pyflakes
+  "UP", # pyupgrade
+  "B",  # flake8-bugbear
+  "I",  # isort
+]
+lint.ignore = ["E501", "B008"]
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+# Indent with spaces
+indent-style = "space"
+# Respect magic trailing comma
+skip-magic-trailing-comma = false
+# Automatically detect line ending
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+pretty = true
+namespace_packages = true
+files = [
+    "langgraph_checkpoint_cassandra",
+    "tests",
+]
+
+[[tool.mypy.overrides]]
+module = [
+  "cassandra.*",
+  "cassandra_asyncio.*",
+  "cassandra_asyncio_driver.*",
+  "aiofiles",
+  "aiofiles.*",
+  "msgpack",
+  "msgpack.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
