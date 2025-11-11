@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: actimai-genix
+Version: 1.0.0
+Summary: A production-ready Python package named genix
+Author-email: Billie Delos Santos <billiedelossantos@actimai.com>
+License: Actimai Philippines Inc.
+Project-URL: Homepage, https://github.com/billiedelossantos/genix
+Project-URL: Documentation, https://github.com/billiedelossantos/genix#readme
+Project-URL: Repository, https://github.com/billiedelossantos/genix.git
+Project-URL: Issues, https://github.com/billiedelossantos/genix/issues
+Keywords: python,library,genix
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: black>=24.0; extra == "dev"
+Requires-Dist: ruff>=0.5.0; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Dynamic: license-file
+
+# Genix
+
+Genix is a Python package for sending emails via **Gmail** and **Outlook** using **App Passwords**. It supports both plain text and HTML emails, making it easy to automate email sending for applications, notifications, or batch workflows.
+
+---
+
+## Features
+
+- Send emails via Gmail (SSL) or Outlook (TLS)  
+- Support for **HTML content** and plain text fallback  
+- Simple API for quick integration  
+- Works with Python 3.11+  
+- Easily testable with `pytest`  
+
+---
+
+## Installation
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Install package in editable mode (for development)
+pip install -e .
