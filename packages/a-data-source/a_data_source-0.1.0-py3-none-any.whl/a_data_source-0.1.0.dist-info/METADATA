@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: a-data-source
+Version: 0.1.0
+Summary: Data sources is module for simplifying data fetching and processing
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: drf
+Requires-Dist: djangorestframework>=3.14.0; extra == "drf"
+Provides-Extra: django
+Requires-Dist: django>=4.2.0; extra == "django"
+Provides-Extra: all
+Requires-Dist: djangorestframework>=3.14.0; extra == "all"
+Requires-Dist: django>=4.2.0; extra == "all"
+Dynamic: license-file

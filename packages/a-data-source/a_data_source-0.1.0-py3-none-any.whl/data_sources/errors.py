@@ -1,0 +1,2 @@
+class NotSingleEntityError(Exception):
+    pass
