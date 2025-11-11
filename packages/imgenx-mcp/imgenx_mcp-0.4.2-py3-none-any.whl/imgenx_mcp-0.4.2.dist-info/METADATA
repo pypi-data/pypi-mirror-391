@@ -1,0 +1,655 @@
+Metadata-Version: 2.4
+Name: imgenx-mcp
+Version: 0.4.2
+Summary: AI Image/Video Generation MCP Server with OSS Upload - Powered by Doubao API
+Project-URL: Homepage, https://github.com/helios123/imgenx-mcp
+Project-URL: Repository, https://github.com/helios123/imgenx-mcp
+Project-URL: Issues, https://github.com/helios123/imgenx-mcp/issues
+Project-URL: Documentation, https://github.com/helios123/imgenx-mcp/blob/main/README.md
+Author-email: helios123 <your-email@example.com>
+License: MIT
+License-File: LICENSE
+Keywords: ai,aliyun,doubao,image-generation,mcp,oss,video-generation
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Requires-Dist: fastmcp>=2.12.4
+Requires-Dist: oss2>=2.19.1
+Requires-Dist: pillow>=12.0.0
+Requires-Dist: python-dotenv>=1.1.1
+Requires-Dist: requests>=2.25.0
+Requires-Dist: volcengine-python-sdk[ark]>=4.0.22
+Description-Content-Type: text/markdown
+
+<div align="center">
+  <img src="logo.jpg" alt="ImgenX MCP Server Logo" width="800" height="400">
+
+  [![Version](https://img.shields.io/badge/Version-0.4.1-brightgreen.svg)](https://github.com/helios123/imgenx-mcp/releases)
+  [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
+  [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
+  [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](#许可证)
+
+**一站式 AI 图片/视频生成与处理套件，支持文本/图生图、文本/图生视频、图片分析与常用编辑（裁剪、缩放、转换、调参），自动上传到阿里云 OSS 并返回永久 CDN URL。可作为命令行工具或 MCP Server 使用**
+</div>
+
+https://github.com/user-attachments/assets/92749d6f-727e-4874-a008-6ded8b4d9e7b
+
+## 功能特性
+
+- **文本生成图片**: 根据文本描述生成图片，自动上传到 OSS 并返回永久 CDN URL ⭐
+- **图片生成图片**: 基于输入图片和文本描述生成新图片，自动上传到 OSS ⭐
+- **文本/图片生成视频**: 支持提示词生成视频，或基于首尾帧生成视频，自动上传到 OSS ⭐
+- **图片处理工具**: 提供完整的图片处理功能
+  - **图片信息获取**: 查看图片格式、尺寸、模式等信息
+  - **图片裁剪**: 按指定区域裁剪图片（支持小数比例坐标）
+  - **尺寸调整**: 调整图片大小，支持保持宽高比
+  - **格式转换**: 支持 PNG、JPEG、JPG、WEBP 格式转换
+  - **图像调整**: 调整亮度、对比度、饱和度
+  - **图片粘贴**: 将图片粘贴到背景图片的指定位置
+- **图片理解与分析**: 基于视觉模型分析图片内容，输出结构化或文本结果
+- **☁️ 自动 OSS 上传**: 生成图片/视频后自动上传到阿里云 OSS，无需手动操作 ⭐
+  - 永久有效的 CDN URL，无需担心临时链接过期
+  - 自动下载并上传，无需本地存储
+  - 支持自定义业务目录（images、videos 等）
+  - 智能命名：`{业务目录}/{年月}/{时间戳}_{UUID}.{扩展名}`
+- **多种分辨率支持**: 支持 1K、2K、4K 分辨率以及多种自定义像素尺寸
+- **插件化架构**: 基于工厂模式设计，支持扩展新的图片生成服务提供商
+- **MCP 协议支持**: 兼容 Model Context Protocol 标准
+
+## 当前支持的服务提供商
+
+- **豆包 (Doubao)**: 基于火山引擎的图片生成服务
+
+## 安装
+
+### 配置环境变量
+
+```bash
+# 图片视频生成模型配置
+export IMGENX_IMAGE_MODEL="doubao:doubao-seedream-4-0-250828"   # 图片生成模型
+export IMGENX_VIDEO_MODEL="doubao:doubao-seedance-1-0-pro-fast-251015" # 视频生成模型（可选）
+export IMGENX_ANALYZER_MODEL="doubao:doubao-seed-1-6-vision-250815"   # 图片分析模型（可选）
+export IMGENX_API_KEY="your_api_key"
+
+# 阿里云 OSS 配置（可选，用于文件上传）
+export OSS_ACCESS_KEY_ID="your_oss_access_key_id"
+export OSS_ACCESS_KEY_SECRET="your_oss_access_key_secret"
+export OSS_BUCKET="your_bucket_name"
+export OSS_ENDPOINT="oss-cn-shanghai.aliyuncs.com"
+export OSS_CDN_URL="https://your-cdn-domain.com/"
+```
+或写入 .env 文件中
+
+### 安装步骤
+
+#### 方式一：pip 安装（推荐）
+
+```bash
+pip install imgenx-mcp
+```
+
+#### 方式二：从源码安装
+```bash
+git clone https://github.com/helios123/imgenx-mcp.git
+cd imgenx-mcp
+pip install -e .
+```
+
+## 使用方法
+
+### 作为命令行运行
+
+```
+# 生成图片（文本或图生图）
+imgenx image "一只在云上飞翔的猫"
+imgenx image "一只在云上飞翔的猫" --size 2K
+imgenx image "一只在云上飞翔的猫" --size 2048x2048 --output test.jpg
+imgenx image "一只在云上飞翔的猫" --images test.jpg --size 2048x2048 --output out_dir/
+
+# 生成视频（文本或基于首尾帧）
+imgenx video "一个人在运动" --resolution 720p --ratio 16:9 --duration 5 --output video.mp4
+imgenx video "一个人在运动" --first_frame logo.jpg --resolution 720p --ratio 16:9 --duration 5 --output video.mp4
+```
+
+### 作为 MCP 服务器运行
+
+#### 标准输入输出模式 (stdio) - 推荐
+
+**配置文件位置：**
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+**配置示例（使用 uvx，无需安装）：**
+```json
+{
+  "mcpServers": {
+    "imgenx": {
+      "command": "uvx",
+      "args": ["imgenx-mcp"],
+      "env": {
+        "IMGENX_IMAGE_MODEL": "doubao:doubao-seedream-4-0-250828",
+        "IMGENX_VIDEO_MODEL": "doubao:doubao-seedance-1-0-pro-fast-251015",
+        "IMGENX_ANALYZER_MODEL": "doubao:doubao-seed-1-6-vision-250815",
+        "IMGENX_API_KEY": "your_api_key_here",
+        "OSS_ACCESS_KEY_ID": "your_oss_key",
+        "OSS_ACCESS_KEY_SECRET": "your_oss_secret",
+        "OSS_BUCKET": "your_bucket",
+        "OSS_ENDPOINT": "oss-cn-shanghai.aliyuncs.com",
+        "OSS_CDN_URL": "https://your-cdn.com/"
+      },
+      "timeout": 600
+    }
+  }
+}
+```
+
+**配置示例（使用已安装的包）：**
+```json
+{
+  "mcpServers": {
+    "imgenx": {
+      "command": "python",
+      "args": ["-m", "imgenx.main"],
+      "env": {
+        "IMGENX_IMAGE_MODEL": "doubao:doubao-seedream-4-0-250828",
+        "IMGENX_API_KEY": "your_api_key_here"
+      },
+      "timeout": 600
+    }
+  }
+}
+```
+
+**配置后重启 Claude Desktop 即可使用。**
+
+#### HTTP 服务器模式
+```bash
+imgenx server --transport streamable-http --host 0.0.0.0 --port 8000
+imgenx server --transport streamable-http --no_tools text_to_video image_to_video  # 禁用视频生成工具
+```
+
+```json
+{
+  "mcpServers": {
+    "imgenx-mcp": {
+      "url": "http://127.0.0.1:8000/mcp",
+      "headers": {
+        "IMGENX_IMAGE_MODEL": "doubao:doubao-seedream-4-0-250828",
+        "IMGENX_VIDEO_MODEL": "doubao:doubao-seedance-1-0-pro-fast-251015",
+        "IMGENX_ANALYZER_MODEL": "doubao:doubao-seed-1-6-vision-250815",
+        "IMGENX_API_KEY": "api-key"
+      },
+      "timeout": 600
+    }
+  }
+}
+```
+
+### 可用工具（11 个）
+
+#### 1. text_to_image
+根据文本描述生成图片，**自动上传到 OSS** 并返回永久 CDN URL。
+
+#### 2. image_to_image
+基于输入图片和文本描述生成新图片，**自动上传到 OSS** 并返回永久 CDN URL。
+
+#### 3. text_to_video
+根据文本提示生成视频，**自动上传到 OSS** 并返回永久 CDN URL。
+
+#### 4. image_to_video
+基于首帧与可选尾帧生成视频，**自动上传到 OSS** 并返回永久 CDN URL。
+
+#### 5. analyze_image
+分析图片内容，返回结构化或文本结果。
+
+#### 6. get_image_info
+获取图片信息（格式、尺寸、模式等）。
+
+#### 7. crop_image
+裁剪图片（支持小数比例坐标）。
+
+#### 8. resize_image
+调整图片尺寸（支持保持宽高比）。
+
+#### 9. convert_image
+转换图片格式（PNG、JPEG、JPG、WEBP）。
+
+#### 10. adjust_image
+调整图片的亮度、对比度和饱和度。
+
+#### 11. paste_image
+将图片粘贴到背景图片的指定位置。
+
+## 项目结构
+
+```
+imgenx-mcp-server/
+├── imgenx/
+│   ├── server.py                  # MCP 服务器主文件（工具定义与运行）
+│   ├── factory.py                 # 预测器工厂（图片/视频/分析）
+│   ├── operator.py                # 图片处理操作模块
+│   ├── main.py                    # CLI 入口（imgenx）
+│   ├── script.py                  # 命令行生成图片/视频脚本
+│   └── predictor/
+│       ├── base/
+│       │   ├── base_image_generator.py   # 基础图片生成器接口
+│       │   ├── base_video_generator.py   # 基础视频生成器接口
+│       │   └── base_image_analyzer.py    # 基础图片分析器接口
+│       └── generators/
+│           ├── doubao_image_generator.py   # 豆包图片生成器实现
+│           ├── doubao_video_generator.py   # 豆包视频生成器实现
+│           └── doubao_image_analyzer.py    # 豆包图片分析器实现
+├── pyproject.toml                 # 项目配置（入口脚本等）
+├── uv.lock                        # 依赖锁（可选）
+└── README.md                      # 项目说明
+```
+
+## 扩展新的服务提供商
+
+要扩展新的服务提供商：
+
+1. 在 `imgenx/predictor/generators/` 目录下创建实现文件，命名规范：
+   - 图片生成器：`{provider}_image_generator.py`
+   - 视频生成器（可选）：`{provider}_video_generator.py`
+   - 图片分析器（可选）：`{provider}_image_analyzer.py`
+
+2. 实现 `BaseImageGenerator` 接口：
+```python
+from typing import List, Dict
+from imgenx.predictor.base.base_image_generator import BaseImageGenerator
+
+class ProviderImageGenerator(BaseImageGenerator):
+    def __init__(self, model: str, api_key: str):
+        self.model = model
+        self.api_key = api_key
+        # 其他初始化代码
+    
+    def text_to_image(self, prompt: str, size: str) -> List[Dict[str, str]]:
+        # 实现文本生成图片逻辑
+        # 返回格式: [{"url": "图片URL"}]
+        pass
+    
+    def image_to_image(self, prompt: str, images: List[str], size: str) -> List[Dict[str, str]]:
+        # 实现图片生成图片逻辑（可选）
+        # 返回格式: [{"url": "图片URL"}]
+        pass
+```
+
+3. 工厂类会自动发现并加载新的实现（基于文件名），模型字符串需为 `provider:model` 格式，例如：`doubao:doubao-seedream-4-0-250828`
+
+## 依赖项
+
+- `fastmcp>=2.12.4`: MCP 协议实现
+- `python-dotenv>=1.1.1`: 环境变量加载
+- `volcengine-python-sdk[ark]>=4.0.22`: 火山引擎 SDK（豆包服务）
+- `requests>=2.25.0`: HTTP 请求库（用于图片下载）
+- `pillow>=12.0.0`: 图片处理库（用于图片编辑操作）
+- `oss2>=2.19.1`: 阿里云 OSS SDK（用于文件上传）
+
+## 使用示例
+
+### 在 Claude Desktop 中使用
+
+配置完成后，在 Claude 中可以直接使用自然语言：
+
+```
+生成一只小猫在天上飞的图片
+```
+
+Claude 会自动调用 `text_to_image` 工具，生成图片并自动上传到 OSS，返回永久 CDN URL。
+
+```
+生成一个日落海滩的视频，5秒，1080p
+```
+
+Claude 会自动调用 `text_to_video` 工具，生成视频并自动上传到 OSS，返回永久 CDN URL。
+
+## 部署到阿里云服务器
+
+### 准备工作
+
+1. **服务器要求**
+   - Ubuntu 20.04+ / CentOS 7+ / Debian 10+
+   - Python 3.10 或更高版本
+   - 至少 1GB 内存
+   - 开放端口（如需 HTTP 模式）
+
+2. **获取服务器访问权限**
+   ```bash
+   ssh root@your-server-ip
+   ```
+
+### 安装步骤
+
+#### 1. 安装 Python 3.10+
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install -y python3.10 python3.10-venv python3-pip
+```
+
+**CentOS/RHEL:**
+```bash
+sudo yum install -y python3.10 python3-pip
+```
+
+#### 2. 创建工作目录
+
+```bash
+mkdir -p /opt/imgenx-mcp
+cd /opt/imgenx-mcp
+```
+
+#### 3. 创建虚拟环境并安装
+
+```bash
+python3.10 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install imgenx-mcp
+```
+
+#### 4. 配置环境变量
+
+创建配置文件：
+```bash
+nano /opt/imgenx-mcp/.env
+```
+
+添加以下内容（替换为您的真实凭证）：
+```bash
+# 图片视频生成模型配置
+IMGENX_IMAGE_MODEL=doubao:doubao-seedream-4-0-250828
+IMGENX_VIDEO_MODEL=doubao:doubao-seedance-1-0-pro-fast-251015
+IMGENX_ANALYZER_MODEL=doubao:doubao-seed-1-6-vision-250815
+IMGENX_API_KEY=your_doubao_api_key_here
+
+# 阿里云 OSS 配置
+OSS_ACCESS_KEY_ID=your_oss_access_key_id
+OSS_ACCESS_KEY_SECRET=your_oss_access_key_secret
+OSS_BUCKET=your_bucket_name
+OSS_ENDPOINT=oss-cn-shanghai.aliyuncs.com
+OSS_CDN_URL=https://your-cdn-domain.com/
+```
+
+保存并退出（Ctrl+X, Y, Enter）。
+
+#### 5. 测试服务
+
+```bash
+source venv/bin/activate
+cd /opt/imgenx-mcp
+source .env
+python -m imgenx.main image "测试图片生成" --size 1K --output test.jpg
+```
+
+如果成功生成图片，说明配置正确。
+
+### 部署为 HTTP 服务器（可选）
+
+#### 方式一：使用 systemd 服务
+
+1. **创建 systemd 服务文件**
+
+```bash
+sudo nano /etc/systemd/system/imgenx-mcp.service
+```
+
+添加以下内容：
+```ini
+[Unit]
+Description=ImgenX MCP HTTP Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/imgenx-mcp
+Environment="PATH=/opt/imgenx-mcp/venv/bin"
+EnvironmentFile=/opt/imgenx-mcp/.env
+ExecStart=/opt/imgenx-mcp/venv/bin/python -m imgenx.main server --transport streamable-http --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+2. **启动服务**
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable imgenx-mcp
+sudo systemctl start imgenx-mcp
+```
+
+3. **查看状态**
+
+```bash
+sudo systemctl status imgenx-mcp
+```
+
+4. **查看日志**
+
+```bash
+sudo journalctl -u imgenx-mcp -f
+```
+
+#### 方式二：使用 screen 或 tmux
+
+```bash
+# 安装 screen
+sudo apt install screen  # Ubuntu/Debian
+sudo yum install screen  # CentOS/RHEL
+
+# 创建新会话
+screen -S imgenx-mcp
+
+# 启动服务
+cd /opt/imgenx-mcp
+source venv/bin/activate
+source .env
+python -m imgenx.main server --transport streamable-http --host 0.0.0.0 --port 8000
+
+# 按 Ctrl+A, D 退出会话（服务继续运行）
+# 重新连接: screen -r imgenx-mcp
+```
+
+### 配置防火墙（如需远程访问）
+
+**Ubuntu/Debian (ufw):**
+```bash
+sudo ufw allow 8000/tcp
+sudo ufw reload
+```
+
+**CentOS/RHEL (firewalld):**
+```bash
+sudo firewall-cmd --permanent --add-port=8000/tcp
+sudo firewall-cmd --reload
+```
+
+### 在 Claude Desktop 中连接
+
+更新 Claude Desktop 配置文件，使用服务器 IP：
+
+```json
+{
+  "mcpServers": {
+    "imgenx-mcp": {
+      "url": "http://your-server-ip:8000/mcp",
+      "headers": {
+        "IMGENX_IMAGE_MODEL": "doubao:doubao-seedream-4-0-250828",
+        "IMGENX_VIDEO_MODEL": "doubao:doubao-seedance-1-0-pro-fast-251015",
+        "IMGENX_ANALYZER_MODEL": "doubao:doubao-seed-1-6-vision-250815",
+        "IMGENX_API_KEY": "your_api_key_here"
+      },
+      "timeout": 600
+    }
+  }
+}
+```
+
+**注意**: 如果使用 HTTP 模式，环境变量通过 `headers` 传递，服务器上的 `.env` 文件不会生效。建议服务器配置 `.env` 并在 headers 中省略这些配置。
+
+### 使用 Nginx 反向代理（推荐）
+
+如果需要 HTTPS 或自定义域名：
+
+1. **安装 Nginx**
+
+```bash
+sudo apt install nginx  # Ubuntu/Debian
+sudo yum install nginx  # CentOS/RHEL
+```
+
+2. **配置 Nginx**
+
+```bash
+sudo nano /etc/nginx/sites-available/imgenx-mcp
+```
+
+添加以下内容：
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location /mcp {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 600s;
+    }
+}
+```
+
+3. **启用配置并重启**
+
+```bash
+sudo ln -s /etc/nginx/sites-available/imgenx-mcp /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+4. **配置 SSL (可选，使用 Let's Encrypt)**
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d your-domain.com
+```
+
+### 维护命令
+
+```bash
+# 停止服务
+sudo systemctl stop imgenx-mcp
+
+# 重启服务
+sudo systemctl restart imgenx-mcp
+
+# 查看日志
+sudo journalctl -u imgenx-mcp -n 100
+
+# 更新版本
+cd /opt/imgenx-mcp
+source venv/bin/activate
+pip install --upgrade imgenx-mcp
+sudo systemctl restart imgenx-mcp
+```
+
+## 更新日志
+
+### v0.4.1 (当前版本)
+
+#### 🐛 Bug 修复
+- **类型验证错误修复**: 修复 OSS 上传返回值类型错误（移除整数 status 字段）
+- 确保所有返回值符合 `Dict[str, str]` 类型要求
+- 修复 MCP 工具调用时的类型验证问题
+
+#### 🔒 安全更新
+- 清理 Git 历史中的敏感信息
+- 所有配置示例使用占位符
+- 用户需私下配置真实凭证
+
+### v0.4.0
+
+#### ⭐ 重大更新：自动 OSS 上传
+- **无感上传**: 图片/视频生成后自动上传到 OSS，无需手动操作
+- **一步到位**: 直接返回永久 CDN URL，无需临时链接
+- **简化工具**: 删除 `download`、`upload_to_oss`、`download_and_upload_to_oss` 工具
+- **工具数量**: 从 14 个精简到 11 个
+
+#### 📊 API 变化
+- `text_to_image` / `image_to_image` 返回格式：
+  ```python
+  [{'cdn_url': 'https://...', 'oss_url': 'https://...', 'object_key': 'images/...'}]
+  ```
+- `text_to_video` / `image_to_video` 返回格式：
+  ```python
+  {'cdn_url': 'https://...', 'oss_url': 'https://...', 'object_key': 'videos/...'}
+  ```
+
+#### 🎯 用户体验提升
+- ✅ 无需多次操作，一步完成
+- ✅ 立即获得永久 URL
+- ✅ 自动化流程，减少等待时间
+
+### v0.3.0
+
+#### 新增功能
+- **☁️ 阿里云 OSS 上传**: 新增 `upload_to_oss` 和 `download_and_upload_to_oss` 工具
+- **CDN 加速支持**: 上传后自动返回 CDN 加速地址
+- **完整工作流**: 生成图片/视频 -> 上传 OSS -> 获取 CDN URL
+
+#### 性能优化
+- 移除不必要的文件验证步骤，提升上传速度约 35%
+- 优化文件上传流程，减少网络请求
+
+### v0.2.3
+
+#### 新增功能
+- **图片粘贴**: 新增 `paste_image` 工具，支持将图片粘贴到背景图片的指定位置
+- **工具控制**: 新增 `--no_tools` 参数，支持在运行 MCP 服务器时禁用特定工具
+
+#### 功能优化
+- 完善图片处理工具集，增强图片编辑能力
+
+### v0.2.0
+
+#### 新增功能
+- **视频生成**: 支持 `text_to_video` 与 `image_to_video` 两种方式
+- **图片分析**: 新增 `analyze_image` 工具，支持视觉模型分析
+- **图片处理工具集完善**: `get_image_info`、`crop_image`（比例坐标）、`resize_image`、`convert_image`、`adjust_image`
+
+#### 技术改进
+- 工厂模式统一图片/视频/分析三类预测器的发现与加载
+- 环境变量分离为 `IMGENX_IMAGE_MODEL`、`IMGENX_VIDEO_MODEL`、`IMGENX_ANALYZER_MODEL`
+- MCP 工具集扩展，HTTP 服务器提供 `/health`、`/healthy` 健康检查路由
+- 支持本地文件与 URL 两种图片输入方式；下载工具统一图片/视频
+
+## 许可证
+
+本项目的许可证信息请查看项目仓库。
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request 来改进这个项目。
+
+## 联系方式
+
+- GitHub: [@helios123](https://github.com/helios123)
+- Issues: [提交问题](https://github.com/helios123/imgenx-mcp/issues)
+- 原作者 Email: zhangslwork@yeah.net
