@@ -1,0 +1,73 @@
+Metadata-Version: 2.4
+Name: transkribus_metagrapho_api
+Version: 0.2.0
+Summary: Transkribus Metagrapho API Client.
+Author-email: "J. Nathanael Philipp" <nathanael@philipp.land>
+License: GPLv3+
+Project-URL: Homepage, https://github.com/jnphilipp/transkribus_metagrapho_api
+Project-URL: Bug Tracker, http://github.com/jnphilipp/transkribus_metagrapho_api/issues
+Keywords: transkribus,api
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Pillow~=11.1.0
+Requires-Dist: requests~=2.32.0
+Dynamic: license-file
+
+# Transkribus Processing API Client
+
+![Tests](https://github.com/jnphilipp/transkribus_metagrapho_api/actions/workflows/tests.yml/badge.svg)
+[![pypi Version](https://img.shields.io/pypi/v/transkribus_metagrapho_api.svg?logo=pypi&logoColor=white)](https://pypi.org/project/transkribus_metagrapho_api/)
+
+Python bindings for the [Transkribus Metagrapho/Processing API](https://www.transkribus.org/metagrapho/documentation).
+
+## Usage
+
+### with ContextManager
+
+```python
+from time import sleep
+from transkribus_metagrapho_api import transkribus_metagrapho_api
+
+with transkribus_metagrapho_api(USERNAME, PASSWORD) as api:
+    process_id = api.process(IMAGE_PATH, line_detection=49272, htr_id=51170)
+    while True:
+        match api.status(process_id).upper():
+            case "FINISHED":
+                print(api.apge(process_id))
+                break
+            case "FAILED":
+                print("FAILED")
+                break
+        sleep(10)
+```
+
+or
+
+```python
+with transkribus_metagrapho_api(USERNAME, PASSWORD) as api:
+    for image_path, page_xml in zip(IMAGES, api(IMAGES*, line_detection=49272, htr_id=51170)):
+        with open(
+            Path(image_path.parent, image_path.name.replace(image_path.suffix, ".xml")),
+            "w",
+            encoding="utf8"
+        ) as f:
+            f.write(page_xml)
+```
+
+### from command line
+
+```bash
+$ python3 -m transkribus_metagrapho_api --username USERNAME --password PASSWORD --images images/*.tiff
+```
