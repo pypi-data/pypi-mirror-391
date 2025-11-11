@@ -1,0 +1,125 @@
+# Copyright (c) 2021-2025 Cubillos & Blecic
+# Pyrat Bay is open-source software under the GPL-2.0 license (see LICENSE)
+
+__all__ = [
+    'Kurucz',
+]
+
+import numpy as np
+
+from ... import tools as pt
+
+
+class Kurucz():
+    """
+    Rayleigh-scattering models from Dalgarno (1962), Kurucz (1970), and
+    Dalgarno & Williams (1962).
+    """
+    def __init__(self, wn, species):
+        """
+        Parameters
+        ----------
+        wn: 1D float ndarray
+           Wavenumber in cm-1.
+        species: String
+           The species, which can be H, He, H2, or e-.
+        """
+        self.name = f'rayleigh_{species}'
+        self.species = species
+        self.set_wn(wn)
+        self.npars = 0
+        self.pars = []
+        self.pnames = []
+        self.texnames = []
+
+    def set_wn(self, wn):
+        """
+        When wn is updated the cross-sections must be re-calculated.
+        """
+        self.wn = wn
+        if self.species == 'H':
+            self.coef = np.array([5.799e-45, 1.422e-54, 2.784e-64])
+            self._calc_H_cross_section()
+        elif self.species == 'He':
+            self.coef = np.array([5.484e-46, 2.440e-11, 5.940e-42, 2.900e-11])
+            self._calc_He_cross_section()
+        elif self.species == 'H2':
+            self.coef = np.array([8.140e-45, 1.280e-54, 1.610e-64])
+            self._calc_H_cross_section()
+        elif self.species == 'e-':
+            self._calc_e_cross_section()
+
+    def _calc_H_cross_section(self):
+        """
+        Rayleigh H/H2 cross section in cm2 molec-1 units.
+        Sections 5.4 and 5.13, Kurucz (1970).
+        """
+        self.cross_section = (
+            self.coef[0]*self.wn**4.0 +
+            self.coef[1]*self.wn**6.0 +
+            self.coef[2]*self.wn**8.0
+        )
+
+    def _calc_He_cross_section(self):
+        """
+        Rayleigh He cross section in cm2 molec-1 units.
+        Section 5.8, Kurucz (1970)
+        """
+        self.cross_section = self.coef[0]*self.wn**4 * (
+            1.0 +
+            self.coef[1]*self.wn**2 +
+            self.coef[2]*self.wn**4/(1 - self.coef[3]*self.wn**2)
+        )**2.0
+
+    def _calc_e_cross_section(self):
+        """
+        e- cross section in cm2 molec-1 units.
+        Sections 5.13, Kurucz (1970).
+        """
+        # Note there is a typo in Kurucz 1070, the exp should be -25
+        self.cross_section = np.tile(6.653e-25, len(self.wn))
+
+    def calc_extinction_coefficient(self, density, layer=None):
+        """
+        Calculate extinction-coefficient (cm-1 units) over wavelength
+        and layers grid.
+
+        Parameters
+        ----------
+        density: 1D float array
+            Number density of this species over an atmospheric profile
+            (molecules cm-3 units)
+        layer: Integer
+            If not None, compute the extinction coefficient only
+            at the given index in density array.
+
+        Returns
+        -------
+        extinction_coefficient: 2D float array
+            The Rayleigh extinction for this species for the given
+            atmosphere (cm-1 units).
+        """
+        # Extinction coefficient at single layer (cm-1):
+        if layer is not None:
+            return self.cross_section * density[layer]
+
+        # Extinction coefficient profile (cm-1):
+        return self.cross_section * np.expand_dims(density, axis=1)
+
+
+    def __str__(self):
+        fw = pt.Formatted_Write()
+        fw.write(f"Model name (name): '{self.name}'")
+        fw.write(f'Model species (species): {self.species}')
+        fw.write(f'Number of model parameters (npars): {self.npars}')
+        fw.write(
+            'Wavenumber (wn, cm-1):\n   {}',
+            self.wn,
+            fmt={'float':'{:.2f}'.format},
+        )
+        fw.write(
+            'Cross section (cross_section, cm2 molec-1):\n   {}',
+            self.cross_section,
+            fmt={'float':'{:.3e}'.format},
+        )
+        return fw.text
