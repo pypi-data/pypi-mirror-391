@@ -1,0 +1,12 @@
+include *.txt
+include *.md
+include LICENSE
+
+include lyrpy/logging*.*
+recursive-include lyrpy/data *
+recursive-include lyrpy/templates *
+recursive-include lyrpy/static *
+recursive-include docs *
+# recursive-include tests *
+
+include config/*.cfg
