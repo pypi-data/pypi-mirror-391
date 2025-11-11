@@ -1,0 +1,16 @@
+services:
+  jupyterlab:
+    build:
+      context: .
+      dockerfile: Dockerfile.visual-test
+    ports:
+      - "8888:8888"
+    volumes:
+      - test-notebooks:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --ServerApp.token='' --ServerApp.password='' --IdentityProvider.token=''
+
+volumes:
+  test-notebooks:
+

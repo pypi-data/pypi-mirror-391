@@ -1,0 +1,16 @@
+FROM jupyter/scipy-notebook:latest
+
+USER root
+
+# Install build tools
+RUN pip install --no-cache-dir build wheel
+
+# Copy and install the latest wheel
+COPY dist/jupyterlab_biolm-1.1.0-py3-none-any.whl /tmp/
+RUN pip install --no-cache-dir /tmp/jupyterlab_biolm-1.1.0-py3-none-any.whl
+
+USER $NB_UID
+
+# Expose JupyterLab port
+EXPOSE 8888
+
