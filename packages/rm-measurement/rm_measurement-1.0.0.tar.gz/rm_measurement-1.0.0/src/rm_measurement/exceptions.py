@@ -1,0 +1,4 @@
+
+
+class UnequalSequenceLength(Exception):
+    pass;
