@@ -1,0 +1,18 @@
+defaults:
+  - config
+
+exp_name: "rm_only"
+
+stages:
+  reward_model:
+    enabled: True
+    script: "experl.trainer.reward_model_trainer"
+  sft:
+    enabled: False
+    script: "experl.trainer.sft_trainer"
+  ppo:
+    enabled: False
+    script: "experl.trainer.ppo_trainer"
+  eval:
+    enabled: False
+    script: "experl.evaluation.ppo_evaluator"
