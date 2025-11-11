@@ -1,0 +1,75 @@
+[project]
+name = "eConEXG"
+dynamic = ["version"]
+authors = [{ name = "Alex You", email = "yoyialex@outlook.com" }]
+maintainers = [{ name = "Ethan Xie", email = "xiewenxuan0000@gmail.com" }]
+description = "SDK for Niantong devices."
+license = { file = "LICENSE" }
+keywords = ["eeg", "emg", "niantong", "econ"]
+dependencies = ["numpy", "pyserial>=3.5"]
+readme = "README.md"
+requires-python = ">= 3.9"
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[tool.hatch.version]
+path = "src/eConEXG/version.py"
+
+[project.urls]
+Homepage = "https://github.com/Niantong-Intelligence/eConEXG"
+Issues = "https://github.com/Niantong-Intelligence/eConEXG/issues"
+Documentation = "https://niantong-intelligence.github.io/eConEXG/"
+Changelog = "https://niantong-intelligence.github.io/eConEXG/changelog/"
+
+[project.optional-dependencies]
+bdf = ["pyEDFlib>=0.1.38"]
+lsl = ["pylsl>=1.16.2"]
+usb = ["pyusb>=1.2.1"]
+wifi = [
+  "netifaces;platform_system=='Windows'",
+  "netifaces;platform_system=='Darwin'",
+  "netifaces2;platform_system=='Linux'",
+  "pywifi>=1.1.12;platform_system=='Windows'",
+  "comtypes;platform_system=='Windows'",
+  "pyobjc-framework-CoreWLAN;platform_system=='Darwin'",
+  "pyobjc-framework-CoreLocation;platform_system=='Darwin'",
+]
+
+[build-system]
+requires = ["hatchling==1.26.3", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+universal = true
+dev-dependencies = [
+  "pytest>=8.1.1",
+  "mkdocs>=1.6.0",
+  "mkdocstrings[python]>=0.25.1",
+  "mkdocs-material>=9.5.25",
+  "mkdocs-include-markdown-plugin>=6.2.1",
+  "scipy>=1.14.0",
+]
+
+[tool.hatch.build]
+artifacts = ["*.so", "*.dll", "*.pyd"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.sdist]
+include = ["src"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/eConEXG"]
+
+[tool.hatch.publish.index]
+disable = true

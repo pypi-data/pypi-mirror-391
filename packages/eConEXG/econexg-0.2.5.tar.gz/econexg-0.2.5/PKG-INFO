@@ -1,0 +1,107 @@
+Metadata-Version: 2.3
+Name: eConEXG
+Version: 0.2.5
+Summary: SDK for Niantong devices.
+Project-URL: Homepage, https://github.com/Niantong-Intelligence/eConEXG
+Project-URL: Issues, https://github.com/Niantong-Intelligence/eConEXG/issues
+Project-URL: Documentation, https://niantong-intelligence.github.io/eConEXG/
+Project-URL: Changelog, https://niantong-intelligence.github.io/eConEXG/changelog/
+Author-email: Alex You <yoyialex@outlook.com>
+Maintainer-email: Ethan Xie <xiewenxuan0000@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Niantong-Intelligence
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Keywords: econ,eeg,emg,niantong
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Requires-Dist: numpy
+Requires-Dist: pyserial>=3.5
+Provides-Extra: bdf
+Requires-Dist: pyedflib>=0.1.38; extra == 'bdf'
+Provides-Extra: lsl
+Requires-Dist: pylsl>=1.16.2; extra == 'lsl'
+Provides-Extra: usb
+Requires-Dist: pyusb>=1.2.1; extra == 'usb'
+Provides-Extra: wifi
+Requires-Dist: comtypes; (platform_system == 'Windows') and extra == 'wifi'
+Requires-Dist: netifaces2; (platform_system == 'Linux') and extra == 'wifi'
+Requires-Dist: netifaces; (platform_system == 'Darwin') and extra == 'wifi'
+Requires-Dist: netifaces; (platform_system == 'Windows') and extra == 'wifi'
+Requires-Dist: pyobjc-framework-corelocation; (platform_system == 'Darwin') and extra == 'wifi'
+Requires-Dist: pyobjc-framework-corewlan; (platform_system == 'Darwin') and extra == 'wifi'
+Requires-Dist: pywifi>=1.1.12; (platform_system == 'Windows') and extra == 'wifi'
+Description-Content-Type: text/markdown
+
+# eConEXG
+## SDK for Niantong devices.
+
+[![PyPI version](https://img.shields.io/pypi/v/econexg.svg)](https://pypi.org/project/econexg/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/econexg.svg?label=Downloads)](
+https://pypi.org/project/econexg/)
+[![image](https://img.shields.io/pypi/l/econexg.svg)](https://github.com/niantong-intelligence/econexg/blob/main/LICENSE)
+[![Rye](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/rye/main/artwork/badge.json)](https://rye.astral.sh/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+<!-- [![image](https://img.shields.io/pypi/pyversions/econexg.svg)](https://pypi.python.org/pypi/econexg) -->
+
+For more information, see the online [documentation](https://niantong-intelligence.github.io/eConEXG/).
+<!-- released start -->
+
+## Installation
+
+`pip install econexg`
+
+
+Optional dependencies can be installed via `pip install econexg[option1,option2,...]`
+
+    Available options:
+        bdf: save to BDF file functionality support.
+        lsl: LSL stream functionality support.
+        usb: iSense USB model support.
+        wifi: iRecorder W32 wifi model support, msvc build tools required.
+
+## Quick Start
+
+Example code can be found in [examples](https://github.com/Niantong-Intelligence/eConEXG/tree/main/examples).
+
+## Platform Support
+| Hardware         | Windows| macOS | Linux  |
+|:-----------------|:---------:|:--------:|:------:|
+| iSense USB       |✓|✓|✓|
+| iRecorder USB    |✓|✓|✓|
+| iRecorder W8\|16 |✓|𐄂|𐄂|
+| iRecorder W32    |✓|✓|✓|
+| iFocus           |✓|✓|✓|
+| TriggerBox       |✓|✓|✓|
+
+
+## More
+
+* [Discussion Forum](https://github.com/Niantong-Intelligence/eConEXG/discussions), to discuss the project
+  on GitHub
+* [Issue Tracker](https://github.com/Niantong-Intelligence/eConEXG/issues), if you run into bugs or have suggestions
