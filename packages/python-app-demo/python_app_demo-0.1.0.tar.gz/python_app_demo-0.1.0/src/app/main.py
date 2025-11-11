@@ -1,0 +1,69 @@
+"""应用入口模块，包含命令行执行逻辑。"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("python_app")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """构建命令行参数解析器。"""
+    parser = argparse.ArgumentParser(description="简单的问候程序")
+    parser.add_argument(
+        "--name",
+        default="世界",
+        help="需要问候的对象名称",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=("cli", "mcp"),
+        default="cli",
+        help="运行模式，cli 输出问候语，mcp 启动 MCP 服务。",
+    )
+    return parser
+
+
+def greet(name: str) -> str:
+    """返回问候语，同时记录日志。"""
+    logger.debug("准备生成问候语，参数 name=%s", name)
+    greeting = f"你好，{name}！"
+    logger.info("生成问候语: %s", greeting)
+    return greeting
+
+
+def main(raw_args: list[str] | None = None) -> int:
+    """入口函数，在命令行环境和 tests 中复用。"""
+    logger.debug("应用启动，raw_args=%s", raw_args)
+    parser = build_parser()
+    args = parser.parse_args(raw_args)
+    logger.debug("解析参数完成，args=%s", args)
+
+    if args.mode == "mcp":
+        logger.info("进入 MCP 模式，开始启动服务")
+        try:
+            from .mcp_service import run_mcp_server
+        except ImportError as exc:
+            logger.exception("加载 MCP 服务模块失败: %s", exc)
+            return 1
+        run_mcp_server()
+        logger.info("MCP 服务正常退出")
+        return 0
+
+    logger.debug("进入 CLI 模式，准备生成问候信息")
+    message = greet(args.name)
+    logger.debug("即将输出问候语: %s", message)
+    print(message)
+
+    logger.info("程序执行完毕，没有出现错误")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
