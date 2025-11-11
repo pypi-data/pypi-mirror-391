@@ -1,0 +1,52 @@
+Metadata-Version: 2.4
+Name: zoomy_core
+Version: 0.1.14
+Summary: A simulation software for dimensionally-reduced free surface flows.
+Author-email: Ingo Steldermann <steldermann@mbd.rwth-aachen.de>
+License: GNU
+Project-URL: Homepage, https://github.com/mbd-rwth/Zoomy
+Project-URL: Documentation, https://mbd-rwth.github.io/Zoomy
+Project-URL: Source, https://github.com/mbd-rwth/Zoomy
+Project-URL: Issues, https://github.com/mbd-rwth/Zoomy/issues
+Keywords: simulation,shallow flow,free surface flow,shallow moments,shallow water,VAM
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Framework :: Jupyter
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: attrs
+Requires-Dist: sympy>=1.14
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: loguru
+Requires-Dist: h5py
+Requires-Dist: matplotlib
+Requires-Dist: meshio
+Requires-Dist: pytest
+Provides-Extra: gui
+Requires-Dist: pyvista; extra == "gui"
+Requires-Dist: trame; extra == "gui"
+Requires-Dist: trame-vtk; extra == "gui"
+Requires-Dist: trame-vuetify; extra == "gui"
+Requires-Dist: panel; extra == "gui"
+Provides-Extra: coupling
+Requires-Dist: precice; extra == "coupling"
+Provides-Extra: testing
+Requires-Dist: swashes; extra == "testing"
+Requires-Dist: pyswashes; extra == "testing"
+Provides-Extra: mesh
+Requires-Dist: gmsh; extra == "mesh"
+Requires-Dist: python-gmsh; extra == "mesh"
+Requires-Dist: rasterio; extra == "mesh"
+Provides-Extra: dev
+Requires-Dist: watchfiles; extra == "dev"
+Requires-Dist: Cython; extra == "dev"
+Requires-Dist: pytest-html; extra == "dev"
+Dynamic: license-file
+
+# zoomy-core
+
+This repository is a submodule of the the [Zoomy Lab](https://github.com/ZoomyLab/Zoomy) repository.
+
