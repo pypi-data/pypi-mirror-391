@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ocr-poetry-pkg"
+version = "0.1.0"
+description = " OCR CLI for Arabic images using unsloth/surya"
+authors = ["alka gupta <alka.gupta@ksolves.com>"]
+readme = "README.md"
+packages = [{ include = "ocr_poetry_pkg", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pillow = "^12.0.0"
+click = "^8.3.0"
+
+[tool.poetry.scripts]
+ocr-batch = "ocr_poetry_pkg.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
