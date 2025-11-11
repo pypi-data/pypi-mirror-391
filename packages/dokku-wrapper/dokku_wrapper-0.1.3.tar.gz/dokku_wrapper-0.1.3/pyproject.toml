@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dokku-wrapper"
+version = "0.1.3"
+description = "Um wrapper em Python para gerenciar aplicações Dokku"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+  { name = "Jonatan Rodrigues da Silva", email = "jonatanjrss@gmail.com" }
+]
+keywords = ["dokku", "deploy", "automation", "wrapper"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
+
+dependencies = [
+    "pytest",
+    "pytest-mock"
+]
+
+[project.urls]
+Homepage = "https://github.com/Jonatanjrss/dokku-wrapper"
+Issues = "https://github.com/Jonatanjrss/dokku-wrapper/issues"
+
+[tool.bumpver]
+current_version = "0.1.3"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit_message = "Bump version: {old_version} → {new_version}"
+commit = true          # ✅ necessário se push = true
+push = false            # faz push automático da tag e do commit
+tag = true
+tag_message = "v{new_version}"
+tag_name = "v{new_version}"
+
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    '^version = "{version}"',            # só o version do [project]
+    '^current_version = "{version}"',    # só o current_version do bumpver
+]
+
+[tool.taskipy.tasks]
+publish = {cmd="bumpver update --patch && git push github --tags", help="Publica no Pypi"}
