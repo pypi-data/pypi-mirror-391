@@ -1,0 +1,19 @@
+FROM python:3.12-slim-bullseye
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Copy the uv configuration files and README (required by pyproject.toml)
+COPY pyproject.toml uv.lock README.md ./
+
+# Install project dependencies (including dev dependencies for testing)
+RUN uv sync --frozen --all-extras
+
+# Copy the rest of the application code
+COPY . .
+
+# Set the entrypoint script
+CMD ["bash"]

@@ -1,0 +1,28 @@
+splat-private/
+dist/
+invoke.json
+splat/prince
+splat/fonts/*
+!splat/fonts/fonts.conf
+# Downloaded prince binaries and their extracted directories
+prince*
+# Resulting zip files
+splat.zip
+requests_layer.zip
+# Optional zip file containing fonts to be available to prince
+fonts.zip
+# Generated PDFs from tests can be ignored
+*.pdf
+# Prince licence file
+license.dat
+# Layer working directory
+python/
+fonts
+fonts/*
+fonts/
+minio/
+__pycache__
+
+# uv
+.venv/
+.python-version

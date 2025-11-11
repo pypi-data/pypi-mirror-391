@@ -1,0 +1,52 @@
+[tools]
+uv = 'latest'
+python = { version= '3.12'}
+awscli = '2.31.33'
+
+[tasks.sync]
+description = "Sync dependencies"
+run = "uv sync --all-extras"
+
+[tasks.format]
+description = "Run all formatters"
+run = "uv run ruff format ."
+
+[tasks.ruff-check]
+description = "Run ruff checker"
+run = "uv run ruff check --fix ."
+
+[tasks.lint]
+description = "Run all linters"
+depends = ['format', 'ruff-check']
+
+[tasks.test]
+description = "Run all tests"
+run = "docker compose --profile test run --rm -it dev pytest ."
+
+[tasks."ci:test"]
+description = "Run all tests"
+run = "docker compose --profile test run --rm dev pytest ."
+depends = ["build"]
+
+[tasks.ci]
+description = "Runs everything for CI"
+depends = ['lint', 'ci:test']
+
+[tasks.install]
+description = "Sets up dev dependencies"
+run = [
+  "mise install",
+  "uv sync --all-extras",
+  "pre-commit install",
+]
+depends = ["build"]
+
+[tasks.start]
+description = "Run a local server"
+run = [
+  "docker compose up --watch "
+]
+
+[tasks.build]
+description = "Build the docker image"
+run = "docker compose build"
