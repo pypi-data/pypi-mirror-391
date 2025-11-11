@@ -1,0 +1,124 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/sandstone/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="https://codepen.io/username/pen/aBcDef.css" />
+
+    <script src="jquery.js"></script>
+    <script src="mark.js"></script>
+    <script src="bootstrap.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h2><a href="https://markjs.io/" target="_blank">mark.js</a> demo</h2>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <form class="row">
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="keyword">Search term:</label>
+                <input
+                  type="text"
+                  class="form-control input-sm"
+                  value="Lorem"
+                  name="keyword"
+                  id="keyword"
+                />
+              </div>
+              <button
+                type="button"
+                class="btn btn-default btn-sm"
+                name="perform"
+              >
+                Perform
+              </button>
+            </div>
+            <div class="col-xs-6">
+              <div class="form-group">
+                <label for="accuracy">Accuracy:</label>
+                <select
+                  class="form-control input-sm"
+                  name="accuracy"
+                  id="accuracy"
+                >
+                  <option value="exactly">exactly</option>
+                  <option value="partially" selected>partially</option>
+                  <option value="complementary">complementary</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="element" class="noTransform">Element</label>
+                <input
+                  type="text"
+                  class="form-control input-sm"
+                  value="mark"
+                  name="element"
+                  id="element"
+                />
+              </div>
+              <div class="form-group">
+                <label for="className" class="noTransform">Class name</label>
+                <input
+                  type="text"
+                  class="form-control input-sm"
+                  value="highlight"
+                  name="className"
+                  id="className"
+                />
+              </div>
+              <div class="form-group">
+                <label for="diacritics" class="noTransform"
+                  ><input
+                    type="checkbox"
+                    value="true"
+                    name="diacritics"
+                    id="diacritics"
+                    checked
+                  />
+                  diacritics</label
+                >
+              </div>
+              <div class="form-group">
+                <label for="separateWordSearch" class="noTransform"
+                  ><input
+                    type="checkbox"
+                    value="true"
+                    name="separateWordSearch"
+                    id="separateWordSearch"
+                    checked
+                  />
+                  separate word search</label
+                >
+              </div>
+            </div>
+          </form>
+          <strong
+            >For a full list of methods and options visit the
+            <a href="https://markjs.io/configurator.html" target="_blank"
+              >configurator</a
+            ></strong
+          >
+        </div>
+        <div class="panel-body context">
+          <p>
+            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+            erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
+            et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
+            Lörem ipsum dolor sit amet. Lorem ipsüm dolor sit amet, consetetur
+            sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
+            et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+            accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+            no sea takimata sanctus est Lorem ipsum dolor sit amet.
+          </p>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
