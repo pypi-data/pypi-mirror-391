@@ -1,0 +1,276 @@
+Metadata-Version: 2.4
+Name: airbyte-connector-builder-mcp
+Version: 0.6.0
+Summary: MCP server for Airbyte connector building operations with AI ownership focus
+Author-email: Airbyte <contact@airbyte.io>
+Requires-Python: >=3.11
+Requires-Dist: airbyte-cdk<8.0,>=7.4.1
+Requires-Dist: fastmcp<3.0,>=2.12.1
+Requires-Dist: jsonschema<5.0,>=4.0.0
+Requires-Dist: privatebin<1.0,>=0.3.0
+Requires-Dist: pydantic<3.0,>=2.11.9
+Requires-Dist: python-dotenv<2.0,>=1.1.1
+Requires-Dist: pyyaml<7.0,>=6.0.0
+Requires-Dist: requests<3.0,>=2.25.0
+Requires-Dist: ruamel-yaml<0.18,>=0.17.21
+Description-Content-Type: text/markdown
+
+# connector-builder-mcp
+
+*Helping robots build Airbyte connectors.*
+
+## Overview
+
+A Model Context Protocol (MCP) server for Airbyte connector building operations, enabling **AI ownership** of the complete connector development lifecycle - from manifest validation to automated testing and PR creation.
+
+### Key Features
+
+- **Manifest Operations**: Validate and resolve connector manifests
+- **Stream Testing**: Test connector stream reading capabilities  
+- **Configuration Management**: Validate connector configurations
+- **Test Execution**: Run connector tests with proper limits and constraints
+
+## MCP Client Configuration
+
+To use with MCP clients like Claude Desktop, add the following configuration:
+
+### Stable Version (Latest PyPI Release)
+
+```json
+{
+  "mcpServers": {
+    "connector-builder-mcp--stable": {
+      "command": "uvx",
+      "args": [
+        "airbyte-connector-builder-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Suggested MCP Server Config
+
+For streamlined onboarding, the below config contains both a PyAirbyte MCP and Connector Builder MCP implementation.
+
+```json
+{
+  "mcpServers": {
+    "airbyte-connector-builder-mcp": {
+      "command": "uvx",
+      "args": [
+        "airbyte-connector-builder-mcp"
+      ]
+    },
+    "airbyte-mcp": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--python=3.11",
+        "--from=airbyte@latest",
+        "airbyte-mcp"
+      ],
+      "env": {
+        "AIRBYTE_MCP_ENV_FILE": "/Users/{YOUR-USER-ID}/.mcp/airbyte_mcp.env",
+        "AIRBYTE_CLOUD_MCP_SAFE_MODE": "1",
+        "AIRBYTE_CLOUD_MCP_READ_ONLY": "0"
+      }
+    }
+  }
+}
+```
+
+Important:
+
+- Remember to update the `AIRBYTE_MCP_ENV_FILE` path to your actual path, and to create a new file there at that path. Note that the file can be empty to start.
+- For complete setup instructions and environment variable documentation, see the [PyAirbyte MCP documentation](https://airbytehq.github.io/PyAirbyte/airbyte/mcp.html).
+
+### Sample Prompts to Get Started
+
+Below is a simple prompt to get started.
+
+> Please create an Airbyte source connector for the `Sentry API` from scratch using the connector-builder-mcp server tools. Report back to me if your tools do not appear to be working correctly, and don't get creative without permission.
+>
+> I have a populated a `.env` file that contains my secrets for the API:
+>
+> - `AUTH_TOKEN`
+> - `ORGANIZATION`
+> - `PROJECT`
+> - `HOSTNAME`
+>
+> The path to the .env is: `/path/to/secrets/my-connector-secrets.env`. You should pass the absolute path your tools but you should not look inside or try to edit the file.
+
+If testing this process on a connector that already exists, you may also want to append this guidance.
+
+> Don't cheat or use any pre-existing connector definitions.
+
+If you want to also publish to Builder, and assuming you've provided your Cloud creds to the PyAirbyte MCP server, you can add:
+
+> When this is fully working and tested you can use your other Airbyte MCP server to publish to my Airbyte Cloud workspace.
+
+### Running from Source
+
+For information on running from source, see the [Contributing Guide](./CONTRIBUTING.md).
+
+### Complementary MCP Servers
+
+The below MCP servers have been tested to work well with the Connector Builder MCP server and will complement its capabilities.
+
+- **Claude Code and Claude Desktop Users:** You should only need the PyAirbyte MCP server for most tasks. Specifically, this enables publishing to Airbyte Cloud, running local tests, and validating manifests and configurations.
+- **Other Clients:** Depending on your client, you may want to add the Timer MCP and/or the Playwright MCP for web browsing capabilities.
+
+- **PyAirbyte MCP** (Recommended): Enables publishing to Airbyte Cloud, running local tests, and syncing data to a local cache for validation.
+- **Playwright MCP** (Optional): Provides web browsing capabilities for researching API documentation.
+- **Timer MCP** (Optional): Adds timekeeping capabilities if your client doesn't have built-in time awareness.
+
+**Note:** The Connector Builder MCP server manages connector manifest YAML contents via session-based resources, so you do not need a separate file server for manifest storage. However, you may want to enable a Files server in order to store the final manifest contents locally at a path of your choosing.
+
+#### PyAirbyte MCP
+
+The [PyAirbyte MCP Server](https://airbytehq.github.io/PyAirbyte/airbyte/mcp.html) (powered by [PyAirbyte](https://github.com/airbytehq/PyAirbyte)) gives the ability to publish and test connector definitions to your Airbyte Cloud workspace. It also includes tools for more extensive local tests, including syncing data locally to a cache and querying the results with SQL.
+
+```jsonc
+{
+  "mcpServers": {
+    // ... other servers defined here ...
+    "airbyte-mcp": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--python=3.11",
+        "--from=airbyte@latest",
+        "airbyte-mcp"
+      ],
+      "env": {
+        "AIRBYTE_MCP_ENV_FILE": "/Users/{YOUR-USER-ID}/.mcp/airbyte_mcp.env",
+        "AIRBYTE_CLOUD_MCP_SAFE_MODE": "1",
+        "AIRBYTE_CLOUD_MCP_READ_ONLY": "0"
+      }
+    }
+  }
+}
+```
+
+Note:
+
+- Make sure to replace `/Users/{YOUR-USER-ID}/.mcp/airbyte_mcp.env` with the actual path to your `airbyte_mcp.env` file.
+  - See below for details on the contents of this file.
+- For information about the `AIRBYTE_CLOUD_MCP_SAFE_MODE` and `AIRBYTE_CLOUD_MCP_READ_ONLY` environment variables, see the [PyAirbyte MCP Safety documentation](https://airbytehq.github.io/PyAirbyte/airbyte/mcp.html#airbyte-cloud-mcp-server-safety).
+
+Your `airbyte_mcp.env` file should contain your Airbyte Cloud credentials:
+
+```ini
+# Airbyte Project Artifacts Directory
+AIRBYTE_PROJECT_DIR=/path/to/any/writeable/project-dir
+
+# Airbyte Cloud Credentials (Required for Airbyte Cloud Operations)
+AIRBYTE_CLOUD_WORKSPACE_ID=your_workspace_id
+AIRBYTE_CLOUD_CLIENT_ID=your_api_key
+AIRBYTE_CLOUD_CLIENT_SECRET=your_api_secret
+
+# Optional: Google Creds to Use for GCP GSM (Google Secret Manager):
+GCP_GSM_CREDENTIALS_JSON={...inline-json...}
+```
+
+For more detailed setup instructions, please see the [PyAirbyte MCP docs](https://airbytehq.github.io/PyAirbyte/airbyte/mcp.html).
+
+#### Files Server MCP
+
+_Note: In most cases, you will not need a Files server._
+
+If your agent doesn't already have the ability to read-write files, you can add this:
+
+```json
+{
+  "mcpServers": {
+    // ... other servers defined here ...
+    "files-server": {
+      "command": "npx",
+      "args": [
+        "mcp-server-filesystem",
+        "/path/to/your/build-artifacts/"
+      ]
+    }
+  }
+}
+```
+
+#### Playwright MCP (Web Browsing)
+
+Playwright is the most common tool used for web browsing, and it doesn't require an API key and it can accomplish most web tasks.
+
+```jsonc
+{
+  "mcpServers": {
+    // ... other servers defined here ...
+    "playwright-web-browser": {
+      "command": "npx",
+      "args": [
+          "@playwright/mcp@latest",
+          "--headless"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+#### Timer MCP
+
+If you'd like to time your agent and it does not already include timekeeping ability, you can add this timer tool:  
+
+```json
+{
+  "mcpServers": {
+    // ... other servers defined here ...
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time", "--local-timezone", "America/Los_Angeles"]
+    }
+  }
+}
+```
+
+### VS Code MCP Extension
+
+For VS Code users with the MCP extension, use the included configuration in `.vscode/mcp.json`.
+
+## Environment Variables
+
+The Connector Builder MCP server supports the following environment variable for configuration:
+
+### Session Manifest Path Configuration
+
+- **`CONNECTOR_BUILDER_MCP_SESSIONS_DIR`** - Session storage directory
+  - Example: `/path/to/sessions`
+  - If set, session-specific subdirectories will be created based on session ID hash
+  - Default: `{temp_dir}/connector-builder-mcp-sessions/{session_id_hash}/manifest.yaml`
+
+## Contributing and Testing Guides
+
+- **[Contributing Guide](./CONTRIBUTING.md)** - Development setup, workflows, and contribution guidelines
+- **[Testing Guide](./TESTING.md)** - Comprehensive testing instructions and best practices
+
+## Reporting Issues
+
+If you encounter bugs, have feature requests, or need help:
+
+1. **Check Existing Issues**: Search the [GitHub Issues](https://github.com/airbytehq/connector-builder-mcp/issues) to see if your issue has already been reported
+2. **Create a New Issue**: If your issue is new, [open an issue](https://github.com/airbytehq/connector-builder-mcp/issues/new) with:
+   - A clear, descriptive title
+   - Detailed description of the problem or feature request
+   - Steps to reproduce (for bugs)
+   - Expected vs actual behavior
+   - Your environment details (OS, Python version, MCP client)
+   - Relevant logs or error messages
+3. **Community Support**: For questions and discussions, you can also reach out through the [Airbyte Community Slack](https://airbyte.com/community)
+
+When reporting issues related to specific connectors or the Connector Builder UI itself, please file those in the main [Airbyte repository](https://github.com/airbytehq/airbyte/issues) instead.
+
+## Troubleshooting
+
+### Claude Code Troubleshooting
+
+In Claude Code, you can run `/mcp` to investigate your MCP Server configuration. This will also print the paths being used for the MCP JSON config.
+
+If for any reason, `/mcp` does not find your servers, run `/doctor` to ensure the file can be parsed. If a parsing error is occurring, it will be noted in the `/doctor` output but not in the `/mcp` output.
