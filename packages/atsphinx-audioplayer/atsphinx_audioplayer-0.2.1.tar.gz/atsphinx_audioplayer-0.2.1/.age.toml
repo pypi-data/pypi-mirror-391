@@ -1,0 +1,43 @@
+current_version = "0.2.1"
+
+[[files]]
+path = "pyproject.toml"
+
+search = "version = \"{{current_version}}\""
+replace = "version = \"{{new_version}}\""
+
+
+[[files]]
+path = "src/atsphinx/audioplayer/__init__.py"
+
+search = "version = \"{{current_version}}\""
+replace = "version = \"{{new_version}}\""
+
+[[files]]
+path = "CHANGES.rst"
+
+search = """
+Change logs
+===========
+"""
+replace = """
+Change logs
+===========
+
+v{{new_version}}
+{{#sameLengthChars}}=@v{{new_version}}{{/sameLengthChars}}
+
+:Date: {{ nowFormat.dateISO }} (Asia/Tokyo)
+
+Breaking changes
+----------------
+
+Features
+--------
+
+Fixes
+-----
+
+Others
+------
+"""

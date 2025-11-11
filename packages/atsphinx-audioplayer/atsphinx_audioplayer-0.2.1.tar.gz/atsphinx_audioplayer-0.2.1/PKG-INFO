@@ -1,0 +1,55 @@
+Metadata-Version: 2.4
+Name: atsphinx-audioplayer
+Version: 0.2.1
+Summary: Register directive to render audio element
+Project-URL: Home, https://github.com/atsphinx/audioplayer
+Project-URL: Documentation, https://atsphinx.github.io/audioplayer/
+Author-email: Kazuya Takei <myself@attakei.net>
+License-Expression: Apache-2.0
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: Sphinx
+Classifier: Framework :: Sphinx :: Extension
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Documentation :: Sphinx
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Documentation
+Requires-Python: >=3.9
+Requires-Dist: sphinx
+Description-Content-Type: text/x-rst
+
+====================
+atsphinx-audioplayer
+====================
+
+Register directive to render audio element
+
+Getting started
+===============
+
+.. code:: console
+
+   pip install atsphinx-audioplayer
+
+Usage
+=====
+
+Write ``audio`` directive into your document.
+
+.. code:: rst
+
+   .. audio:: talk.mp3
+
+You can write as role too.
+
+.. code:: rst
+
+   :audio:`talk.mp3`
