@@ -1,0 +1,250 @@
+---
+alwaysApply: true
+---
+# Code Quality
+
+Universal code quality standards.
+
+## Design Principles
+
+Follow fundamental software design principles.
+
+**SOLID Principles:**
+- **Single Responsibility** - Each module/class/function does one thing
+- **Open/Closed** - Open for extension, closed for modification
+- **Liskov Substitution** - Subtypes must be substitutable for base types
+- **Interface Segregation** - Many specific interfaces better than one general
+- **Dependency Inversion** - Depend on abstractions, not concretions
+
+**DRY (Don't Repeat Yourself):**
+- Extract common code into reusable components
+- Avoid duplication across codebase
+- Single source of truth for each concept
+- Refactor when duplication appears
+
+**KISS (Keep It Simple):**
+- Simple solutions over clever ones
+- Clear and straightforward code
+- Avoid premature optimization
+- Complexity when justified, not by default
+
+**Separation of Concerns:**
+- Each module has clear, focused purpose
+- Minimize coupling between components
+- Maximize cohesion within components
+- Clear boundaries and interfaces
+
+## Function Design
+
+Write clear, focused functions.
+
+**Keep functions small:**
+- Each function does one thing well
+- Single responsibility per function
+- Aim for < 50 lines when possible
+- Split large functions into smaller ones
+
+**Clear purpose:**
+- Function name describes what it does
+- Easy to understand at a glance
+- Obvious inputs and outputs
+- Predictable behavior
+
+**Limited parameters:**
+- 3-4 parameters maximum ideal
+- More parameters suggest function doing too much
+- Consider parameter objects for many related values
+- Avoid boolean flags (split into separate functions)
+
+**Return early:**
+- Handle edge cases and errors first
+- Reduce nesting depth
+- Make main logic path clear
+- Improve readability
+
+**Avoid side effects:**
+- Pure functions when possible
+- Clear about mutations
+- Predictable behavior
+- Easier to test and reason about
+
+## Naming Conventions
+
+Use clear, consistent, descriptive names following your language and framework conventions.
+
+**Universal principles:**
+- Names should reveal intent
+- Avoid abbreviations unless standard in your domain
+- Use pronounceable names
+- Be consistent across codebase
+- **Follow language/framework naming conventions**
+
+**Follow your language conventions for:**
+- Case style (camelCase, snake_case, PascalCase, kebab-case)
+- Variable naming patterns
+- Function/method naming patterns
+- Class/type naming patterns
+- Constant naming patterns
+- File and directory naming
+
+**General patterns (adapt to your language):**
+- Variables: descriptive nouns
+- Boolean variables: typically prefixed (`is`, `has`, `can`, `should`)
+- Functions: verb or verb-noun pattern describing action
+- Classes/Types: nouns describing what they represent
+- Constants: descriptive of value or purpose
+
+**Project-level conventions:**
+- Document naming conventions in project-specific local rules
+- Be consistent within the project
+- Follow established patterns in existing codebase
+- Use linters to enforce conventions
+
+## Type Safety
+
+Use type systems to catch errors early.
+
+**Prefer typed code:**
+- Use type systems when language supports them
+- Strongly-typed code reduces runtime errors
+- Types serve as inline documentation
+- Consider typed alternatives when available
+
+**Define clear interfaces:**
+- Explicit contracts between components
+- Document expected inputs and outputs
+- Easier to refactor with confidence
+- Tools can catch interface violations
+
+**Validate at boundaries:**
+- Validate external inputs
+- Check data from APIs, user input, files
+- Type system can't catch everything
+- Fail fast on invalid data
+
+**Avoid implicit conversions:**
+- Be explicit about type conversions
+- Prevent unexpected behavior
+- Make assumptions visible
+- Easier to debug
+
+## Code Comments
+
+Comment what and why, not how.
+
+**When to comment:**
+- Complex algorithms or business logic
+- Non-obvious decisions and tradeoffs
+- Workarounds and their reasons
+- Public APIs and interfaces
+- Important constraints or assumptions
+
+**What to avoid:**
+- Stating the obvious ("increment i")
+- Commenting what code already shows
+- Leaving commented-out code
+- Outdated or misleading comments
+- Redundant information
+
+**Good comments:**
+- Explain WHY, not WHAT
+- Provide context for decisions
+- Warn about edge cases
+- Link to relevant documentation or issues
+- Keep comments up to date with code
+
+**Documentation comments:**
+- Use language-appropriate docstring format
+- Describe purpose, parameters, return values
+- Include usage examples when helpful
+- Document exceptions or errors thrown
+- Keep documentation close to code
+
+## Linting and Formatting
+
+Use automated tools for consistency.
+
+**Linting:**
+- Use language-appropriate linters
+- Catch common errors and anti-patterns
+- Enforce coding standards automatically
+- Run in IDE and CI/CD
+- Choose tools standard for your language ecosystem
+
+**Formatting:**
+- Consistent code style across team
+- Automate formatting (don't debate spaces)
+- Format on save in IDE
+- Check formatting in CI/CD
+- Reduces cognitive load
+
+**Configuration:**
+- Store linter/formatter config in project root
+- Version control configuration files
+- Document any custom rules
+- Keep configuration minimal and standard
+- Update tools regularly
+
+**Fix issues before committing:**
+- Run linter locally before push
+- Fix all linting errors
+- Address warnings when possible
+- Don't disable rules without good reason
+- Document rule exceptions with comments
+
+## Error Handling
+
+Handle errors gracefully and explicitly.
+
+**Follow language conventions:**
+- Use language-appropriate error handling mechanisms
+- Exception-based, result types, error returns, or other patterns
+- Follow framework best practices
+- Be consistent with ecosystem patterns
+
+**Fail fast:**
+- Detect errors as early as possible
+- Validate inputs at entry points
+- Don't propagate invalid state
+- Make failures visible and debuggable
+
+**Error messages:**
+- Clear and actionable
+- Include relevant context
+- Avoid exposing internal details to users
+- Log detailed information for debugging
+
+**Recovery and cleanup:**
+- Handle errors at appropriate level
+- Clean up resources (files, connections, memory)
+- Use language-appropriate cleanup patterns
+- Don't swallow errors silently
+- Make error handling explicit
+
+## Refactoring Practices
+
+Continuous improvement of code quality.
+
+**Refactor continuously:**
+- Small improvements regularly
+- Don't wait for big refactoring projects
+- Leave code better than you found it
+- Make it part of normal workflow
+
+**Boy Scout Rule:**
+- "Leave the campground cleaner than you found it"
+- Fix small issues when you see them
+- Improve names, extract functions, remove duplication
+- Compound improvements over time
+
+**When changing code:**
+- Understand existing code first
+- Make changes incrementally
+- Keep tests passing
+- Commit refactorings separately from features
+
+**Know when to stop:**
+- Good enough is often sufficient
+- Perfect is enemy of done
+- Balance improvement with delivery
+- Focus on high-impact areas

@@ -1,0 +1,367 @@
+name: Documentation Update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'repomanager/**/*.py'
+      - 'config.yaml.example'
+      - 'docs/**'
+
+  pull_request:
+    paths:
+      - 'repomanager/**/*.py'
+      - 'config.yaml.example'
+      - 'docs/**'
+
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Type of documentation to update'
+        required: true
+        type: choice
+        options:
+          - all
+          - api
+          - config
+          - changelog
+        default: 'all'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-docs:
+    name: Check Documentation
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pydoc-markdown
+
+      - name: Check for broken links in docs
+        id: broken-links
+        continue-on-error: true
+        run: |
+          pip install markdown-link-check || pip install linkchecker
+          find docs -name "*.md" -exec echo "Checking {}" \; || true
+
+      - name: Check for outdated API documentation
+        id: api-check
+        run: |
+          # Check if there are new Python modules without documentation
+          echo "Checking for undocumented modules..."
+
+          # List all Python modules
+          find repomanager -name "*.py" -not -name "__init__.py" | sort > current_modules.txt
+
+          # Check if IMPLEMENTATION_STEPS.md mentions them
+          MISSING_DOCS=""
+          while read module; do
+            MODULE_NAME=$(basename "$module" .py)
+            if ! grep -q "$MODULE_NAME" docs/IMPLEMENTATION_STEPS.md; then
+              MISSING_DOCS="$MISSING_DOCS\n- $MODULE_NAME"
+            fi
+          done < current_modules.txt
+
+          if [ -n "$MISSING_DOCS" ]; then
+            echo "missing_modules<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$MISSING_DOCS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "has_missing=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_missing=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check for outdated config documentation
+        id: config-check
+        run: |
+          # Extract config keys from config.yaml.example
+          grep -E "^[a-z_]+:" config.yaml.example | cut -d: -f1 | sort > config_keys.txt
+
+          # Check if CONFIG.md documents all keys
+          MISSING_CONFIGS=""
+          while read key; do
+            if ! grep -q "$key" docs/CONFIG.md; then
+              MISSING_CONFIGS="$MISSING_CONFIGS\n- $key"
+            fi
+          done < config_keys.txt
+
+          if [ -n "$MISSING_CONFIGS" ]; then
+            echo "missing_configs<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$MISSING_CONFIGS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "has_missing=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_missing=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate API documentation
+        if: github.event_name == 'workflow_dispatch' && (inputs.update_type == 'all' || inputs.update_type == 'api')
+        run: |
+          # Generate API docs from docstrings
+          mkdir -p docs/api
+
+          for module in debrepomanager/*.py; do
+            if [ "$(basename $module)" != "__init__.py" ]; then
+              MODULE_NAME=$(basename "$module" .py)
+              echo "Generating docs for $MODULE_NAME..."
+              python -m pydoc repomanager.$MODULE_NAME > "docs/api/$MODULE_NAME.md" || true
+            fi
+          done
+
+      - name: Check TODO progress
+        id: todo-check
+        run: |
+          # Count completed and total tasks in TODO.md
+          if [ -f "docs/TODO.md" ]; then
+            TOTAL=$(grep -c "- \[" docs/TODO.md || echo "0")
+            COMPLETED=$(grep -c "- \[x\]" docs/TODO.md || echo "0")
+
+            # Avoid division by zero
+            if [ "$TOTAL" -gt 0 ]; then
+              PERCENTAGE=$((COMPLETED * 100 / TOTAL))
+            else
+              PERCENTAGE=0
+            fi
+
+            echo "total=$TOTAL" >> $GITHUB_OUTPUT
+            echo "completed=$COMPLETED" >> $GITHUB_OUTPUT
+            echo "percentage=$PERCENTAGE" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update SUMMARY.md with progress
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if [ -f "docs/SUMMARY.md" ]; then
+            TOTAL="${{ steps.todo-check.outputs.total }}"
+            COMPLETED="${{ steps.todo-check.outputs.completed }}"
+            PERCENTAGE="${{ steps.todo-check.outputs.percentage }}"
+
+            # Update progress bar in SUMMARY.md
+            sed -i "s/Общий прогресс.*%/Общий прогресс: ~$PERCENTAGE%/" docs/SUMMARY.md || true
+          fi
+
+      - name: Check CHANGELOG.md
+        id: changelog-check
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Check if there are commits not mentioned in CHANGELOG
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -n "$LAST_TAG" ]; then
+            COMMITS=$(git log $LAST_TAG..HEAD --oneline)
+            if [ -n "$COMMITS" ]; then
+              echo "unreleased_commits<<EOF" >> $GITHUB_OUTPUT
+              echo "$COMMITS" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+              echo "has_unreleased=true" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Post documentation report
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            let comment = '## 📚 Documentation Check\n\n';
+
+            // Missing API docs
+            const hasMissingModules = '${{ steps.api-check.outputs.has_missing }}' === 'true';
+            if (hasMissingModules) {
+              comment += '### ⚠️ Missing Module Documentation\n';
+              comment += 'The following modules are not documented in `docs/IMPLEMENTATION_STEPS.md`:\n';
+              comment += '${{ steps.api-check.outputs.missing_modules }}\n\n';
+            } else {
+              comment += '### ✅ All modules documented\n\n';
+            }
+
+            // Missing config docs
+            const hasMissingConfigs = '${{ steps.config-check.outputs.has_missing }}' === 'true';
+            if (hasMissingConfigs) {
+              comment += '### ⚠️ Missing Config Documentation\n';
+              comment += 'The following config keys are not documented in `docs/CONFIG.md`:\n';
+              comment += '${{ steps.config-check.outputs.missing_configs }}\n\n';
+            } else {
+              comment += '### ✅ All config options documented\n\n';
+            }
+
+            // TODO progress
+            const total = '${{ steps.todo-check.outputs.total }}';
+            const completed = '${{ steps.todo-check.outputs.completed }}';
+            const percentage = '${{ steps.todo-check.outputs.percentage }}';
+
+            if (total > 0) {
+              comment += `### 📊 Progress\n`;
+              comment += `${completed}/${total} tasks completed (${percentage}%)\n\n`;
+            }
+
+            comment += '---\n';
+            if (hasMissingModules || hasMissingConfigs) {
+              comment += '⚠️ Please update the documentation before merging.\n';
+            } else {
+              comment += '✅ Documentation is up to date!\n';
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+  auto-update-docs:
+    name: Auto-Update Documentation
+    runs-on: [self-hosted, ubuntu-latest]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: check-docs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Update module list in PROJECT_STRUCTURE.md
+        run: |
+          # Auto-generate module list
+          echo "Updating module list..."
+
+          MODULE_LIST="### Основные модули\n\n\`\`\`\nrepomanager/\n"
+          for file in debrepomanager/*.py; do
+            if [ -f "$file" ]; then
+              MODULE_NAME=$(basename "$file")
+              # Get first line of docstring if exists
+              DESCRIPTION=$(python3 .github/scripts/get_module_docstring.py "$file" 2>/dev/null || echo "")
+
+              MODULE_LIST="$MODULE_LIST├── $MODULE_NAME"
+              if [ -n "$DESCRIPTION" ]; then
+                MODULE_LIST="$MODULE_LIST  # $DESCRIPTION"
+              fi
+              MODULE_LIST="$MODULE_LIST\n"
+            fi
+          done
+          MODULE_LIST="$MODULE_LIST\`\`\`\n"
+
+          echo -e "$MODULE_LIST" > module_list.txt
+
+      - name: Update README badges
+        run: |
+          # Add/update badges in README
+          if ! grep -q "![Python Version]" README.md; then
+            # Add Python version badge
+            sed -i '3i\![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)' README.md || true
+          fi
+
+      - name: Generate requirements badge
+        run: |
+          # Count dependencies
+          DEPS=$(grep -v "^#" requirements.txt | grep -v "^$" | wc -l)
+          echo "Dependencies: $DEPS" > deps_count.txt
+
+      - name: Commit documentation updates
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if git diff --quiet; then
+            echo "No documentation changes to commit"
+          else
+            git add docs/ README.md
+            git commit -m "docs: auto-update documentation [skip ci]" || true
+            git push || true
+          fi
+
+  generate-changelog:
+    name: Update Changelog
+    runs-on: [self-hosted, ubuntu-latest]
+    if: github.event_name == 'workflow_dispatch' && (inputs.update_type == 'all' || inputs.update_type == 'changelog')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate changelog entries
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$LAST_TAG" ]; then
+            COMMITS=$(git log --oneline --no-merges)
+          else
+            COMMITS=$(git log $LAST_TAG..HEAD --oneline --no-merges)
+          fi
+
+          # Parse commits by type
+          echo "## [Unreleased]" > new_changelog.md
+          echo "" >> new_changelog.md
+
+          # Features
+          echo "$COMMITS" | grep "^[a-f0-9]* feat" | sed 's/^[a-f0-9]* feat/- /' > features.txt
+          if [ -s features.txt ]; then
+            echo "### Added" >> new_changelog.md
+            cat features.txt >> new_changelog.md
+            echo "" >> new_changelog.md
+          fi
+
+          # Fixes
+          echo "$COMMITS" | grep "^[a-f0-9]* fix" | sed 's/^[a-f0-9]* fix/- /' > fixes.txt
+          if [ -s fixes.txt ]; then
+            echo "### Fixed" >> new_changelog.md
+            cat fixes.txt >> new_changelog.md
+            echo "" >> new_changelog.md
+          fi
+
+          # Changes
+          echo "$COMMITS" | grep "^[a-f0-9]* chore\\|refactor" | sed 's/^[a-f0-9]* \(chore\|refactor\)/- /' > changes.txt
+          if [ -s changes.txt ]; then
+            echo "### Changed" >> new_changelog.md
+            cat changes.txt >> new_changelog.md
+            echo "" >> new_changelog.md
+          fi
+
+      - name: Prepend to CHANGELOG.md
+        run: |
+          if [ -f new_changelog.md ] && [ -s new_changelog.md ]; then
+            # Backup current changelog
+            cp docs/CHANGELOG.md docs/CHANGELOG.md.bak
+
+            # Prepend new entries
+            cat new_changelog.md > temp_changelog.md
+            echo "" >> temp_changelog.md
+            tail -n +3 docs/CHANGELOG.md >> temp_changelog.md
+            mv temp_changelog.md docs/CHANGELOG.md
+
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add docs/CHANGELOG.md
+            git commit -m "docs: update CHANGELOG [skip ci]"
+            git push
+          fi
+
+
+
