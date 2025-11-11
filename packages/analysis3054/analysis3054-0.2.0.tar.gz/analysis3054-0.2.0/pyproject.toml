@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analysis3054"
+version = "0.2.0"
+description = "Advanced time-series analytics and forecasting toolkit for commodity / power trading (5-year bands, ML, regime switching, hierarchical utilities)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+  {name = "secret", email = "john23114693@gmial.com"}
+]
+keywords = [
+  "time-series",
+  "forecasting",
+  "power-trading",
+  "commodity",
+  "energy",
+  "analytics",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Financial and Insurance Industry",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Office/Business :: Financial",
+]
+
+# core deps: keep these light so a normal install doesn't drag in TF, prophet, etc.
+dependencies = [
+  "pandas>=1.5",
+  "numpy>=1.24",
+  "plotly>=5.20",
+  "statsmodels>=0.13",
+  "scipy>=1.10"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/analysis3054/"
+Repository = "https://github.com/yourname/analysis3054"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["analysis3054*"]
+
+[project.optional-dependencies]
+# classical / econometric add-ons
+stats = [
+  "pmdarima>=2.0",
+  "arch>=6.0"
+]
+
+# ML models you added: RF/ElasticNet/SVR already use scikit-learn,
+# and we added xgboost/lightgbm/catboost hooks
+ml = [
+  "scikit-learn>=1.2",
+  "xgboost>=2.0",
+  "lightgbm>=4.0",
+  "catboost>=1.2"
+]
+
+# deep learning models (TCN, transformer)
+dl = [
+  "tensorflow>=2.12"
+]
+
+# Prophet / NeuralProphet family
+prophet = [
+  "prophet>=1.1",
+  "neuralprophet>=0.6.0"
+]
+
+# TBATS / BATS for gnarly seasonality
+tbats = [
+  "tbats>=1.1.3"
+]
+
+# plotting / notebooks (already have plotly, but keep it explicit)
+plot = [
+  "plotly>=5.20"
+]
+
+# install-everything combo
+all = [
+  "analysis3054[stats,ml,dl,prophet,tbats,plot]"
+]
