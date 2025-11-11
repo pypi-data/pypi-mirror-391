@@ -1,0 +1,16 @@
+client:
+  server: ws://localhost:8081
+  subdomain: myapp
+  local_port: 3000
+  
+dashboard:
+  enabled: true
+  port: 8080
+  
+database:
+  path: ./client.db
+  
+logging:
+  level: INFO
+  file: ./client.log
+
