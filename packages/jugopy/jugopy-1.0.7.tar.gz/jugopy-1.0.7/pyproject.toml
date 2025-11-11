@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jugopy"                     
+version = "1.0.7"                   
+description = "Mini-framework WSGI en Python"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name="Jean Junior LOGBO", email="jeanjuniorlogbo94@gmail.com"}]
+keywords = ["wsgi", "framework", "web", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = ["jinja2", "pymysql"]
