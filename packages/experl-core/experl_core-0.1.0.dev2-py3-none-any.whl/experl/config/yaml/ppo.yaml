@@ -1,0 +1,22 @@
+defaults:
+  - ppo: rlhf
+  - model: model
+  - dataset: dataset
+  - config
+  - _self_
+
+config_name: "ppo"
+
+stages:
+  reward_model:
+    enabled: True
+    script: "experl.trainer.reward_model_trainer"
+  sft:
+    enabled: True
+    script: "experl.trainer.sft_trainer"
+  ppo:
+    enabled: True
+    script: "experl.trainer.ppo_trainer"
+  eval:
+    enabled: True
+    script: "experl.evaluation.ppo_evaluator"
