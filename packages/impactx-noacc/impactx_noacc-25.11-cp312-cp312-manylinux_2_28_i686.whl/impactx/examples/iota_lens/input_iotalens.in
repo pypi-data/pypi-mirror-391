@@ -1,0 +1,58 @@
+###############################################################################
+# Particle Beam(s)
+###############################################################################
+beam.npart = 10000
+beam.units = static
+beam.kin_energy = 2.5
+beam.charge = 1.0e-9
+beam.particle = proton
+beam.distribution = waterbag
+beam.lambdaX = 2.0e-3
+beam.lambdaY = beam.lambdaX
+beam.lambdaT = 1.0e-3
+beam.lambdaPx = 3.0e-4
+beam.lambdaPy = beam.lambdaPx
+beam.lambdaPt = 0.0
+beam.muxpx = 0.0
+beam.muypy = 0.0
+beam.mutpt = 0.0
+
+
+###############################################################################
+# Beamline: lattice elements and segments
+###############################################################################
+lattice.elements = monitor const_end nllens foclens const_end monitor
+
+foclens.type = line
+foclens.elements = const nllens
+foclens.repeat = 17
+
+nllens.type = nonlinear_lens
+nllens.knll = 4.0e-6
+nllens.cnll = 0.01
+
+const_end.type = constf
+const_end.ds = 0.05
+const_end.kx = 1.0
+const_end.ky = 1.0
+const_end.kt = 1.0e-12
+
+const.type = constf
+const.ds = 0.1
+const.kx = 1.0
+const.ky = 1.0
+const.kt = 1.0e-12
+
+monitor.type = beam_monitor
+monitor.backend = h5
+monitor.nonlinear_lens_invariants = true
+monitor.alpha = 0.0
+monitor.beta = 1.0
+monitor.tn = 0.4
+monitor.cn = 0.01
+
+
+###############################################################################
+# Algorithms
+###############################################################################
+algo.space_charge = false
