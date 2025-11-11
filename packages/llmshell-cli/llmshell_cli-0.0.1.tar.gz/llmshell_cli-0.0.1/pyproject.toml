@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmshell-cli"
+version = "0.0.1"
+description = "Convert natural language to shell commands using LLMs (GPT4All, OpenAI, Ollama)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Naresh Reddy Gurijala", email = "naresh.gurijala@gmail.com"}
+]
+maintainers = [
+    {name = "Naresh Reddy Gurijala", email = "naresh.gurijala@gmail.com"}
+]
+keywords = ["gpt", "shell", "cli", "llm", "gpt4all", "openai", "ollama", "command-line", "natural-language", "aishell", "intelligent-shell"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "typer>=0.9.0",
+    "pyyaml>=6.0",
+    "gpt4all>=2.0.0",
+    "requests>=2.31.0",
+    "rich>=13.0.0",
+    "openai>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/imgnr/llmshell"
+Repository = "https://github.com/imgnr/llmshell"
+Issues = "https://github.com/imgnr/llmshell/issues"
+
+[project.scripts]
+llmshell = "gpt_shell.main:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gpt_shell = ["py.typed"]

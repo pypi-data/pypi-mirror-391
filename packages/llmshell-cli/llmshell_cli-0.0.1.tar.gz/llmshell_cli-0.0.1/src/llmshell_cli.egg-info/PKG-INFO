@@ -1,0 +1,446 @@
+Metadata-Version: 2.4
+Name: llmshell-cli
+Version: 0.0.1
+Summary: Convert natural language to shell commands using LLMs (GPT4All, OpenAI, Ollama)
+Author-email: Naresh Reddy Gurijala <naresh.gurijala@gmail.com>
+Maintainer-email: Naresh Reddy Gurijala <naresh.gurijala@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/imgnr/llmshell
+Project-URL: Repository, https://github.com/imgnr/llmshell
+Project-URL: Issues, https://github.com/imgnr/llmshell/issues
+Keywords: gpt,shell,cli,llm,gpt4all,openai,ollama,command-line,natural-language,aishell,intelligent-shell
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer>=0.9.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: gpt4all>=2.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: openai>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Dynamic: license-file
+
+# 🐚 llmshell-cli
+
+A powerful Python CLI tool that converts natural language into Linux/Unix shell commands using LLMs.
+
+## ✨ Features
+
+- 🤖 **Multiple LLM Backends**: GPT4All (local, default), OpenAI, Ollama, or custom APIs
+- 🔒 **Privacy-First**: Uses GPT4All locally by default - no data leaves your machine
+- 🎯 **Smart Command Generation**: Converts natural language to accurate shell commands
+- ✅ **Safe Execution**: Confirmation prompts before running commands
+- 🎨 **Beautiful Output**: Colored terminal output using Rich
+- ⚙️ **Flexible Configuration**: YAML-based config at `~/.llmshell/config.yaml`
+- 🔧 **Easy Setup**: Auto-downloads models, handles fallbacks gracefully
+
+## 📦 Installation
+
+```bash
+pip install llmshell-cli
+```
+
+### Development Installation
+
+```bash
+git clone https://github.com/yourusername/llmshell.git
+cd llmshell
+pip install -e ".[dev]"
+```
+
+## 🚀 Quick Start
+
+### Generate a Command
+
+```bash
+llmshell run "list all docker containers"
+# Output: docker ps -a
+```
+
+### Get Command with Explanation
+
+```bash
+llmshell run "find large files" --explain
+```
+
+### Dry Run (Don't Execute)
+
+```bash
+llmshell run "remove all logs" --dry-run
+```
+
+### Auto-Execute (Skip Confirmation)
+
+```bash
+llmshell run "show disk usage" --execute
+# Note: Dangerous commands will still require confirmation
+```
+
+## 📖 CLI Commands
+
+### `llmshell run`
+
+Generate and optionally execute shell commands:
+
+```bash
+llmshell run "your natural language request"
+llmshell run "list python files" --dry-run
+llmshell run "check memory usage" --explain
+llmshell run "restart nginx" --execute
+```
+
+**Options:**
+- `--dry-run` / `-d`: Show command without executing
+- `--explain` / `-x`: Include explanation with the command
+- `--execute` / `-e`: Skip confirmation prompt (except for dangerous commands)
+- `--backend` / `-b`: Override default backend (gpt4all, openai, ollama, custom)
+
+**Safety Note:** Dangerous commands (like `rm -rf /`, `mkfs`, etc.) will **always** require confirmation, even with `--execute`.
+
+### `llmshell config`
+
+Manage configuration:
+
+```bash
+# Show current configuration
+llmshell config show
+
+# Set a configuration value
+llmshell config set llm_backend openai
+llmshell config set backends.openai.api_key sk-xxxxx
+
+# List available backends
+llmshell config backends
+```
+
+### `llmshell model`
+
+Manage GPT4All models:
+
+```bash
+# Show available models to download
+llmshell model show-available
+
+# Install/download the default model
+llmshell model install
+
+# Install a specific model
+llmshell model install --name Meta-Llama-3-8B-Instruct.Q4_0.gguf
+
+# List installed models
+llmshell model list
+```
+
+### `llmshell doctor`
+
+Diagnose setup and check backend availability:
+
+```bash
+llmshell doctor
+```
+
+Output shows:
+- Configuration file status
+- Available backends
+- Model installation status
+- API connectivity
+
+## ⚙️ Configuration
+
+Configuration is stored at `~/.llmshell/config.yaml`:
+
+```yaml
+llm_backend: gpt4all
+
+backends:
+  gpt4all:
+    model: mistral-7b-instruct-v0.2.Q4_0.gguf
+    model_path: null  # Auto-detected
+  
+  openai:
+    api_key: sk-your-api-key-here
+    model: gpt-4-turbo
+    base_url: null  # Optional custom endpoint
+  
+  ollama:
+    model: llama3
+    api_url: http://localhost:11434
+  
+  custom:
+    api_url: https://your-llm-endpoint/v1/chat/completions
+    headers:
+      Authorization: Bearer YOUR_TOKEN
+
+execution:
+  auto_execute: false
+  confirmation_required: true
+
+output:
+  colored: true
+  verbose: false
+```
+
+## 🔧 Backend Setup
+
+### GPT4All (Default - Local)
+
+No setup required! On first run:
+```bash
+# Show available models
+llmshell model show-available
+
+# Install a model (default: Meta Llama 3)
+llmshell model install
+
+# Or install a specific model
+llmshell model install --name Phi-3-mini-4k-instruct.Q4_0.gguf
+```
+
+This downloads the model locally (~2-5GB depending on the model).
+
+### OpenAI
+
+1. Get API key from [OpenAI](https://platform.openai.com)
+2. Configure:
+```bash
+llmshell config set backends.openai.api_key sk-xxxxx
+llmshell config set llm_backend openai
+```
+
+### Ollama
+
+1. Install [Ollama](https://ollama.ai)
+2. Pull a model:
+```bash
+ollama pull llama3
+```
+3. Configure:
+```bash
+llmshell config set llm_backend ollama
+```
+
+### Custom API
+
+For any OpenAI-compatible API:
+```bash
+llmshell config set llm_backend custom
+llmshell config set backends.custom.api_url https://your-endpoint
+llmshell config set backends.custom.headers.Authorization "Bearer TOKEN"
+```
+
+## 💡 Usage Examples
+
+```bash
+# Docker commands
+llmshell run "stop all running containers"
+llmshell run "remove unused images"
+
+# File operations
+llmshell run "find files modified in last 24 hours"
+llmshell run "compress all logs to archive"
+
+# System monitoring
+llmshell run "show top 10 memory-consuming processes"
+llmshell run "check disk space on all mounts"
+
+# Git operations
+llmshell run "show commits from last week"
+llmshell run "list branches sorted by recent activity"
+
+# Network operations
+llmshell run "check if port 8080 is open"
+llmshell run "show active network connections"
+```
+
+## 🐍 Python API
+
+You can also use llmshell programmatically:
+
+```python
+from gpt_shell.config import Config
+from gpt_shell.llm_manager import LLMManager
+
+# Initialize
+config = Config()
+manager = LLMManager(config)
+
+# Generate command
+command = manager.generate_command("list all docker containers")
+print(f"Generated: {command}")
+
+# With explanation
+result = manager.generate_command("find large files", explain=True)
+print(result)
+```
+
+## 🐳 Docker Support
+
+Run llmshell in a Docker container for isolated environments.
+
+### Quick Start
+
+```bash
+# Build the image
+docker build -t llmshell:latest .
+
+# Run a command
+docker run --rm llmshell:latest run "list files"
+
+# With persistent config
+docker run -it --rm \
+  -v llmshell-data:/root/.llmshell \
+  llmshell:latest model install
+```
+
+### Using Docker Compose
+
+```bash
+# Interactive mode
+docker-compose run --rm llmshell
+
+# Inside container
+llmshell run "show disk usage"
+```
+
+For detailed Docker instructions, see [DOCKER.md](DOCKER.md)
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=gpt_shell --cov-report=html
+
+# Run specific test file
+pytest tests/test_config.py
+```
+
+## 🛠️ Development
+
+### Setup
+
+```bash
+# Clone and install
+git clone https://github.com/yourusername/llmshell.git
+cd llmshell
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# Format code
+black src tests
+
+# Type checking
+mypy src
+
+# Linting
+flake8 src tests
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new features
+4. Ensure all tests pass
+5. Submit a pull request
+
+## 📋 Requirements
+
+- Python 3.8+
+- ~4GB disk space for GPT4All model (optional)
+- Internet connection (for OpenAI/Ollama/custom backends)
+
+## 🔒 Privacy
+
+- **GPT4All**: All processing happens locally, no data sent anywhere
+- **OpenAI/Custom APIs**: Commands are sent to external services
+- **Ollama**: Runs locally, no data sent to external servers
+
+## 🐛 Troubleshooting
+
+### GPT4All model not found
+```bash
+llmshell model install
+```
+
+### OpenAI API errors
+```bash
+llmshell config set backends.openai.api_key sk-xxxxx
+llmshell doctor
+```
+
+### Ollama not connecting
+```bash
+# Check if Ollama is running
+curl http://localhost:11434/api/tags
+
+# Start Ollama
+ollama serve
+```
+
+### Configuration issues
+```bash
+# Reset to defaults
+rm ~/.llmshell/config.yaml
+llmshell config show
+```
+
+## 📝 License
+
+MIT License - see LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- [GPT4All](https://gpt4all.io/) - Local LLM runtime
+- [Typer](https://typer.tiangolo.com/) - CLI framework
+- [Rich](https://rich.readthedocs.io/) - Terminal formatting
+- [OpenAI](https://openai.com/) - API integration
+- [Ollama](https://ollama.ai/) - Local LLM platform
+
+## 📚 More Examples
+
+### System Administration
+```bash
+llmshell run "create a backup of /etc directory"
+llmshell run "find processes using more than 1GB RAM"
+llmshell run "schedule a cron job for midnight"
+```
+
+### Development
+```bash
+llmshell run "count lines of code in this project"
+llmshell run "find all TODO comments in python files"
+llmshell run "generate requirements.txt from imports"
+```
+
+### Data Processing
+```bash
+llmshell run "extract column 2 from CSV file"
+llmshell run "convert all PNG images to JPG"
+llmshell run "merge all text files into one"
+```
+
+---
+
+**Made with ❤️ for developers who prefer typing naturally**
