@@ -1,0 +1,96 @@
+Metadata-Version: 2.1
+Name: kudio
+Version: 1.2.0.0
+Summary: Audio Toolbox™ KUDIO
+Home-page: UNKNOWN
+Author: K
+Author-email: 
+License: MIT
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: >=3.6.0
+Description-Content-Type: text/markdown
+Requires-Dist: numpy (<=1.20,>=1.19.5)
+Requires-Dist: scipy (<=1.5.4,>=1.4.1)
+Requires-Dist: resampy (<=0.3.1,>=0.2.2)
+Requires-Dist: numba (<=0.48.0,>=0.38.0)
+Requires-Dist: llvmlite (<=0.32.1,>=0.31.0)
+Requires-Dist: librosa (<=0.7.2,>=0.6.2)
+Requires-Dist: tqdm (>=4.41.0)
+Requires-Dist: matplotlib (<=3.5.2,>=3.2.2)
+Requires-Dist: pandas (<=1.3,>=1.1.4)
+Requires-Dist: pyaudio (<=0.2.13,>=0.2.11)
+Requires-Dist: PyYAML (>=5.3.1)
+Requires-Dist: PyWavelets (>=1.4.1)
+Requires-Dist: pycryptodome (==3.23.0)
+
+
+🔊 KUDIO Toolbox
+=================================================================================
+
+### Audio Processing Toolbox™
+
+-----------------
+
+### 1.1.5
+
+- AudioEvaluate
+- Synthesizer
+- file_load
+- wave_separate
+- save_wave
+- load_waves
+- copy_waves
+- concat_mfcc
+- concat_mfcc_
+- concat_logspec
+- concat_logspec_
+- contextual_LogSpectrogram
+- wav2mfcc
+- wav2spec
+- spec2wav
+- wavform2spec
+- spec2wavform
+- w2s
+- s2w
+- denoise_wav2spec
+- denoise_spec2wav
+- wave_slicing
+- features2matrix
+- wav2mel
+- check_input
+- AudioDataManager
+- wave_decode
+- wave_encode
+- play_audio
+- CheckDevice
+- Recorder
+- RemoteStreamReader
+- LocalStreamReader
+- AudioBuffer
+- trad_enhance
+- visualizer
+- WaveVisualizer
+- timer
+- Timer
+
+### 1.1.4
+
+- is_available
+- check_device
+- kudio_timer
+- KudioTimer
+- wave_slicing
+- check_path
+- check_file
+
+License
+-----------------
+This is free and unencumbered software released into the public domain.
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any means.
+
+
