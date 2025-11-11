@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "chora-mcp-manifest"
+version = "0.1.0"
+description = "Registry management server for MCP ecosystem"
+authors = ["Liminal Commons <team@liminalcommons.org>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/liminalcommons/chora-mcp-manifest"
+repository = "https://github.com/liminalcommons/chora-mcp-manifest"
+keywords = ["mcp", "registry", "manifest", "discovery"]
+packages = [{include = "chora_mcp_manifest", from = "src"}]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/liminalcommons/chora-mcp-manifest/issues"
+
+[tool.poetry.scripts]
+manifest-server = "chora_mcp_manifest.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.109.0"
+httpx = "^0.26.0"
+pydantic = "^2.5.0"
+uvicorn = "^0.27.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.23.0"
+pytest-bdd = "^7.0.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
