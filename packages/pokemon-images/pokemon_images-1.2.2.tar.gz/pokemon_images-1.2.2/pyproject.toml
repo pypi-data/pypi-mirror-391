@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2024 Tomodachi94 and contributors
+#
+# SPDX-License-Identifier: MIT
+
+[tool.poetry]
+name = "pokemon-images"
+version = "1.2.2"
+description = "Randomly get images of Pokémon from the official Pokémon website"
+authors = ["Tomodachi94"]
+license = "MIT"
+readme = "README.md"
+classifiers = [ "Topic :: Internet :: WWW/HTTP", "Topic :: Multimedia", "Topic :: Utilities", "Typing :: Typed" ]
+[tool.poetry.urls]
+Homepage = "https://github.com/tomodachi94/pokemon-images.py"
+Source = "https://github.com/tomodachi94/pokemon-images.py"
+"Bug Tracker" = "https://github.com/tomodachi94/pokemon-images.py/issues"
+Discord = "https://discord.gg/Xs3VKNJrMb"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+requests = "^2.32"
+
+[tool.ruff]
+respect-gitignore = true
+src = [ "pokemon_images" ]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
