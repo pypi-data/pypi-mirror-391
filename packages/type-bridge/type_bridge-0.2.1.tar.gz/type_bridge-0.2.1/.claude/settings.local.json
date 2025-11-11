@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv pip install:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv run pyright:*)",
+      "Bash(pyright:*)",
+      "Bash(find:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(git mv:*)",
+      "Bash(tree:*)",
+      "WebFetch(domain:typedb.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
