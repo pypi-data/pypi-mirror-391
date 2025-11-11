@@ -1,0 +1,32 @@
+Metadata-Version: 2.4
+Name: sids-basic-processor
+Version: 0.0.2
+Summary: A simple utility for text preprocessing (lower, punct removal, stop words).
+Author: sidsassignment
+Author-email: nikamsiddhant736@gmail.comm
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+
+# sids-basic-processor
+
+A simple, basic utility package for common natural language text preprocessing tasks. It is designed to quickly clean raw text for analysis.
+
+## Features
+
+The `TextProcessor` class performs the following sequential steps:
+
+1.  **Lowercasing**: Converts all text to lowercase.
+2.  **Punctuation Removal**: Removes all common punctuation marks.
+3.  **Tokenization**: Splits the cleaned text into a list of words.
+4.  **Stop Word Removal**: Filters out a predefined set of common English stop words (like "the", "is", "a", etc.).
+
+## Installation
+
+You can install the package using Python's package manager, `pip`:
+
+```bash
+pip install sids-basic-processor
