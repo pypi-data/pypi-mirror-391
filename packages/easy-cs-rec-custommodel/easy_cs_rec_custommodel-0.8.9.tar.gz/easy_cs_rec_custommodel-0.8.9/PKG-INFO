@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: easy-cs-rec-custommodel
+Version: 0.8.9
+Summary: An easy-to-use framework for Recommendation
+Home-page: https://github.com/alibaba/EasyRec
+Author: EasyRec Team
+Author-email: easy_rec@alibaba-inc.com
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+License-File: LICENSE
+Requires-Dist: eas_prediction==0.24; python_version < "3.0"
+Requires-Dist: eas_prediction; python_version >= "3.0"
+Requires-Dist: future
+Requires-Dist: matplotlib
+Requires-Dist: numpy<=1.23
+Requires-Dist: oss2
+Requires-Dist: pandas
+Requires-Dist: psutil
+Requires-Dist: pyarrow
+Requires-Dist: pyodps
+Requires-Dist: PyYAML
+Requires-Dist: scikit-learn
+Requires-Dist: xlrd>=0.9.0
+Provides-Extra: all
+Requires-Dist: eas_prediction==0.24; python_version < "3.0" and extra == "all"
+Requires-Dist: eas_prediction; python_version >= "3.0" and extra == "all"
+Requires-Dist: future; extra == "all"
+Requires-Dist: matplotlib; extra == "all"
+Requires-Dist: numpy<=1.23; extra == "all"
+Requires-Dist: oss2; extra == "all"
+Requires-Dist: pandas; extra == "all"
+Requires-Dist: psutil; extra == "all"
+Requires-Dist: pyarrow; extra == "all"
+Requires-Dist: pyodps; extra == "all"
+Requires-Dist: PyYAML; extra == "all"
+Requires-Dist: scikit-learn; extra == "all"
+Requires-Dist: xlrd>=0.9.0; extra == "all"
+Provides-Extra: tests
+Requires-Dist: configparser; extra == "tests"
+Requires-Dist: docformatter; extra == "tests"
+Requires-Dist: flake8; extra == "tests"
+Requires-Dist: flake8-docstrings; extra == "tests"
+Requires-Dist: isort==4.3.21; extra == "tests"
+Requires-Dist: mdformat; python_version > "3" and extra == "tests"
+Requires-Dist: mdformat-tables; python_version > "3" and extra == "tests"
+Requires-Dist: pre-commit; extra == "tests"
+Requires-Dist: yapf; extra == "tests"
