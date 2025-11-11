@@ -1,0 +1,36 @@
+{% extends 'template_content/template_content_base.html' %}
+{% load i18n %}
+
+{% block subcontent %}
+<h4 class="mt-5">{{ navigation }}</h4>
+<div class="row">
+    <div id="navigation-entries" class="col-12">
+        {% if navigation_entries %}
+            {% include 'template_content/ajax/navigation_entries_tree.html' %}
+        {% else %}
+            {% trans 'no entries yet' %}
+        {% endif %}
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12">
+        {% if max_entries and navigation_entries|length < max_entries %}
+            <button type="button" class="xhr btn btn-outline-primary" data-url="{% url 'create_template_content_navigation_entry' app.uid navigation.id %}" ajax-target="ModalContent">{% trans 'add entry' %}</button>
+        {% else %}
+            {% if max_entries %}
+                <div class="alert alert-info" role="alert">
+                    {% blocktrans with max_entries=max_entries %}
+                        Maximum number of entries ({{ max_entries }}) reached.
+                    {% endblocktrans %}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+    {% include 'template_content/snippets/navigation_entry_ordering.html' %}
+</script>
+{% endblock %}
