@@ -1,0 +1,16 @@
+
+config_name: "ppo"
+
+model_name_or_path: "trl-internal-testing/tiny-Qwen2ForCausalLM-2.5"
+max_seq_length: 128
+
+project_name: "default-project-name"
+exp_name: "all-stages"
+state_sleep_interval: 3
+report_to: "mlflow"
+root_dir: "experl_output"
+run_name:
+run_base_dir: ""
+seed: 42
+mlflow:
+  enabled: True
