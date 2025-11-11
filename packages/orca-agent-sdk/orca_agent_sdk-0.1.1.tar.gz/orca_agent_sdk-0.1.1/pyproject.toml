@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "orca-agent-sdk"
+version = "0.1.1"
+description = "A production-ready Python SDK for running paid AI agents on your marketplace"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "0rca Network", email = "contact@0rca.network"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "flask>=2.0.0",
+    "flask-cors>=4.0.0",
+    "py-algorand-sdk>=2.0.0",
+    "algokit-utils>=2.0.0",
+    "requests>=2.25.0",
+]
+
+[project.optional-dependencies]
+agno = ["agno"]
+
+[project.urls]
+Homepage = "https://github.com/0rca-network/0rca-agent-sdk"
+Repository = "https://github.com/0rca-network/0rca-agent-sdk"
+Issues = "https://github.com/0rca-network/0rca-agent-sdk/issues"
