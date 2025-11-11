@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_mcp-tool"
+version = "1.0.0"
+description = "一个基于 FastMCP 的天气查询服务"
+readme = "README.md"
+requires-python = ">=3.12.0"
+license = {text = "MIT"}
+authors = [
+    {name = "Mr.Car", email = "534192336car@gmail.com"}
+]
+keywords = ["weather", "mcp", "fastmcp", "api"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "fastmcp>=0.4.1,<0.5.0",
+    "httpx>=0.28.1,<0.29.0",
+    "python-dotenv>=1.0.1,<2.0.0",
+    "pinyin>=0.4.0,<0.5.0",
+]
+
+[project.scripts]
+mcp-tool = "weather_server.server:main"
+
+[project.urls]
+Source = "https://github.com/MrCare/mcp_tool"
+"Bug Reports" = "https://github.com/MrCare/mcp_tool/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
