@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantaroute-geocoding"
+version = "1.0.7"
+authors = [
+    {name = "QuantaRoute", email = "hello@quantaroute.com"},
+]
+description = "Revolutionary Python SDK for QuantaRoute Geocoding API with Location Lookup and offline DigiPin processing"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["geocoding", "digipin", "gis", "location", "india", "address", "coordinates", "administrative-boundaries", "pincode", "postal-lookup", "location-intelligence"]
+dependencies = [
+    "requests>=2.25.0",
+    "pandas>=1.3.0",
+    "digipin>=1.0.0",
+    "tqdm>=4.60.0",
+    "click>=8.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.910",
+]
+
+[project.urls]
+Homepage = "https://quantaroute.com"
+Documentation = "https://api.quantaroute.com/v1/digipin/docs"
+Repository = "https://github.com/quantaroute/quantaroute-geocoding-python"
+"Bug Tracker" = "https://github.com/quantaroute/quantaroute-geocoding-python/issues"
+
+[project.scripts]
+quantaroute-geocode = "quantaroute_geocoding.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["quantaroute_geocoding*"]
+exclude = ["tests*"]
