@@ -1,0 +1,191 @@
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    branches: [ master ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependabot-auto-merge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest
+
+    - name: Run unit tests
+      id: unit_tests
+      continue-on-error: true
+      run: |
+        pytest tests/test_validator.py -v --tb=short > test-output.txt 2>&1
+        if [ $? -eq 0 ]; then
+          echo "unit_tests_passed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Run CLI tests
+      id: cli_tests
+      continue-on-error: true
+      run: |
+        pytest tests/test_cli.py -v --tb=short >> test-output.txt 2>&1
+        if [ $? -eq 0 ]; then
+          echo "cli_tests_passed=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Check if security update
+      id: check_security
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} --json body --jq .body)
+
+        if echo "$PR_BODY" | grep -iq "security"; then
+          echo "is_security_update=true" >> $GITHUB_OUTPUT
+          echo "🔒 This is a security update"
+        else
+          echo "is_security_update=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Auto-approve and merge
+      if: steps.unit_tests.outputs.unit_tests_passed == 'true' && steps.cli_tests.outputs.cli_tests_passed == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Approve the PR
+        gh pr review ${{ github.event.pull_request.number }} --approve --body "✅ All tests passed. Auto-approving Dependabot PR."
+
+        # Enable auto-merge
+        gh pr merge ${{ github.event.pull_request.number }} --auto --squash --delete-branch
+
+        echo "✅ Auto-merge enabled for Dependabot PR #${{ github.event.pull_request.number }}"
+
+    - name: Create release for security updates
+      if: |
+        steps.unit_tests.outputs.unit_tests_passed == 'true' &&
+        steps.cli_tests.outputs.cli_tests_passed == 'true' &&
+        steps.check_security.outputs.is_security_update == 'true'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Wait for PR to merge
+        sleep 15
+
+        # Get current version
+        VERSION=$(python -c "import re; content=open('pyresolvers/lib/core/__version__.py').read(); print(re.search(r\"'([^']+)'\", content).group(1))")
+
+        # Calculate new patch version
+        IFS='.' read -ra PARTS <<< "$VERSION"
+        MAJOR="${PARTS[0]}"
+        MINOR="${PARTS[1]}"
+        PATCH="${PARTS[2]}"
+        NEW_PATCH=$((PATCH + 1))
+        NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+        # Update version file
+        echo "__version__ = '$NEW_VERSION'" > pyresolvers/lib/core/__version__.py
+
+        # Commit and push
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add pyresolvers/lib/core/__version__.py
+        git commit -m "Bump version to $NEW_VERSION for Dependabot security update"
+        git push
+
+        # Create GitHub release (this will trigger PyPI publish)
+        PR_NUM="${{ github.event.pull_request.number }}"
+
+        cat > /tmp/release-notes.md <<-'EOFNOTES'
+        ## Automated Security Update from Dependabot
+
+        This release includes security updates from Dependabot.
+
+        ### Changes
+        - Dependabot security dependency updates
+        - All tests passed ✅
+
+        ### Automated Process
+        This release was automatically created after Dependabot's PR passed all tests.
+        EOFNOTES
+
+        echo "" >> /tmp/release-notes.md
+        echo "Original PR: #${PR_NUM}" >> /tmp/release-notes.md
+
+        gh release create "v$NEW_VERSION" \
+          --title "v$NEW_VERSION - Dependabot Security Update" \
+          --notes-file /tmp/release-notes.md
+
+        echo "✅ Created release v$NEW_VERSION - PyPI publish triggered"
+
+    - name: Send Discord notification on test failure
+      if: |
+        steps.unit_tests.outputs.unit_tests_passed != 'true' ||
+        steps.cli_tests.outputs.cli_tests_passed != 'true'
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      run: |
+        TEST_OUTPUT=$(cat test-output.txt 2>/dev/null | tail -50 || echo "No test output available")
+        TEST_OUTPUT=$(echo "$TEST_OUTPUT" | jq -Rs .)
+
+        PR_TITLE=$(gh pr view ${{ github.event.pull_request.number }} --json title --jq .title)
+        PR_URL="https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
+
+        curl -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"🚨 Dependabot PR Tests Failed - Manual Review Required\",
+              \"description\": \"A Dependabot security update PR has failing tests.\",
+              \"color\": 15158332,
+              \"fields\": [
+                {
+                  \"name\": \"Repository\",
+                  \"value\": \"${{ github.repository }}\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"PR\",
+                  \"value\": \"[#${{ github.event.pull_request.number }}]($PR_URL)\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Run ID\",
+                  \"value\": \"[${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"⚠️ Issue\",
+                  \"value\": \"Dependabot created a security update PR but tests failed.\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"📋 PR Title\",
+                  \"value\": \"$PR_TITLE\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"🧪 Test Output (last 50 lines)\",
+                  \"value\": \"\`\`\`\n\" + $TEST_OUTPUT + \"\n\`\`\`\",
+                  \"inline\": false
+                },
+                {
+                  \"name\": \"🔗 Actions\",
+                  \"value\": \"Please review the [PR]($PR_URL) and [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) to fix the failing tests.\",
+                  \"inline\": false
+                }
+              ],
+              \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"
+            }]
+          }" \
+          "$DISCORD_WEBHOOK"
