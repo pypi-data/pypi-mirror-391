@@ -1,0 +1,6 @@
+Name: bullet_robotics_gui
+Description: Bullet GUI extras for robotics
+Requires: bullet
+Version: 2.89
+Libs: -L/project/_skbuild/linux-x86_64-3.8/cmake-install/giskardpy_bullet_bindings/lib -lBulletRoboticsGUI
+Cflags: -DBT_USE_DOUBLE_PRECISION -I/project/_skbuild/linux-x86_64-3.8/cmake-install/giskardpy_bullet_bindings/include/bullet -I/project/_skbuild/linux-x86_64-3.8/cmake-install/giskardpy_bullet_bindings/include/bullet_robotics_gui
