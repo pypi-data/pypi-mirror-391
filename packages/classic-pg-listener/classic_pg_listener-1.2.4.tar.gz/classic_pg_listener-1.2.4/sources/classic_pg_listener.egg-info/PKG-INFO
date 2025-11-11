@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: classic-pg-listener
+Version: 1.2.4
+Summary: Simple in-process scheduler
+Author-email: Sergei Variasov <variasov@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/variasov/classic-pg-listener
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: classic-actors~=0.2
+Requires-Dist: psycopg~=3.2.1
+Requires-Dist: classic-thread-pool-executor~=1.1.0
+Provides-Extra: dev
+Requires-Dist: build~=1.2.2.post1; extra == "dev"
+Requires-Dist: pytest==8.3.4; extra == "dev"
+Requires-Dist: pytest-cov==6.0.0; extra == "dev"
+Dynamic: license-file
+
+# classic-pg-listener
+
+Библиотека дает простой класс Listener для добавления реакций на уведомления,
+передаваемые PostgreSQL при использовании команд LISTEN и NOTIFY.
+
+Для использования необходимо передать функцию-фабрику,
+порождающую соединение. Соединение должно быть с autocommit=True.
+
+Для добавления коллбеков используется метод .add_callback(). В него
+следует передать коллбек и название канала. Коллбек будет вызван при приеме
+уведомления в соответствующем канале.
+
+Методом .remove_callback() можно убрать коллбек, если он больше не нужен.
+
+Например:
+```python
+from classic.pg.listener import Listener
+from psycopg import connect, Notify
+
+listener = Listener(
+lambda: connect(
+user='test',
+password='test',
+host='127.0.0.1',
+port='5432',
+dbname='test',
+autocommit=True,
+)
+)
+
+def some_task(notify: Notify):
+print(notify)
+
+listener.add_callback(some_task, 'some_channel')
+listener.run()
+```
+
+Может работать в двух режимах:
+- "Блокирующий режим". При нем исполнение происходит в текущем потоке.
+Для этого используется блокирующий метод .run()
+
+- "Фоновый режим". При нем запускается внутренний поток для обслуживания
+соединения с базой и приема сообщений. В этом режиме класс похож на
+класс Thread из модуля threading. Метод .start() запускает фоновый поток,
+в котором происходит установка и обслуживание соединения, метод .stop()
+используется для запроса остановки фонового потока, методом .join() можно
+дождаться остановки внутреннего потока.
+
+Пример использования в фоновом режиме:
+```python
+from classic.pg.listener import Listener
+from psycopg import connect, Notify
+
+listener = Listener(
+lambda: connect(
+user='test',
+password='test',
+host='127.0.0.1',
+port='5432',
+dbname='test',
+autocommit=True,
+)
+)
+
+def some_task(notify: Notify):
+print(notify)
+
+listener.add_callback(some_task, 'some_channel')
+listener.start()
+
+print('Основной поток все еще свободен!')
+
+listener.stop()
+listener.join() # Дожидается остановки
+```
+
+Коллбеки, назначенные каналам, по умолчанию выполняются во внутреннем
+ThreadPoolExecutor. Параметром max_workers в конструкторе можно повлиять
+на размер пула. При max_workers исполнение будет происходить без пула,
+в том же потоке, что и обслуживает соединение. Таким образом, при запуске
+через метод .run() и значении max_workers=0 все, и обслуживание соединения,
+и исполнение коллбека будет происходить в одном потоке.
+
+Методы .add_callback() и .remove_callback() выполняют свою работу не сразу.
+Оба метода возвращают future, в результате которого будет None,
+если добавление произошло успешно, либо выкинет исключение,
+произошедшее в потоке, обслуживающем слушателя.
+
+Listener умеет регулярно опрашивать БД, в случае, если обновления не приходят в
+определённый период. Период устанавливается параметром ping_period в
+конструкторе Listener. По умолчанию 1 минута. Если ping_period=0, то проверка
+выполняться не будет.
