@@ -1,0 +1,42 @@
+[build-system]
+build-backend = "uv_build"
+requires = ["uv_build>=0.9.4,<0.10.0"]
+
+[dependency-groups]
+dev = [
+  "isort>=6.0.1",
+  "pre-commit>=4.3.0",
+  "pytest>=8.4.1",
+  "pytest-cov>=6.2.1",
+  "ruff>=0.12.10"
+]
+
+[project]
+dependencies = [
+  "bs4>=0.0.2",
+  "fake-useragent>=2.2.0",
+  "requests>=2.32.5",
+  "selenium>=4.35.0"
+]
+description = "Amazon product description scraper"
+name = "amzsc"
+readme = "README.md"
+requires-python = ">=3.10"
+version = "0.1.1"
+
+[tool.pytest.ini_options]
+addopts = "--cov=amzsc --cov-fail-under=80 --cov-report=html --cov-report=xml --maxfail=1"
+testpaths = "tests"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+ignore = []
+select = ["E", "F", "W", "I001"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv.build-backend]
+module-name = "amzsc"
