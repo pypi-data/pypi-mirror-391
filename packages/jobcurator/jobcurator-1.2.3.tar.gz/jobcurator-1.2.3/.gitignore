@@ -1,0 +1,101 @@
+# --- Python bytecode / cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Packaging / build artifacts ---
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+.wheelhouse/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Outils
+.pytest_cache/
+.mypy_cache/
+.cache/
+.coverage
+htmlcov/
+
+# --- Virtual environments / Python env managers ---
+.venv/
+venv/
+env/
+.env/
+.conda/
+.python-version
+
+# --- Logs & debug ---
+*.log
+logs/
+debug.log
+pytest-debug.log
+
+# --- Tests / coverage / linters ---
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+coverage.xml
+
+# --- Editors / IDEs ---
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# --- OS cruft ---
+.DS_Store
+Thumbs.db
+
+# --- Jupyter / notebooks ---
+.ipynb_checkpoints/
+*.ipynb
+
+# --- Local data & artifacts produced by demos/tests ---
+# (incremental pipeline + local store examples)
+local_store/
+data/
+tmp/
+*.jsonl
+*.jsonl.gz
+*.json.gz
+*.pkl
+*.pickle
+
+# --- FAISS indices (if persisted) ---
+*.faiss
+*.index
+
+# --- SQLite / local DB files ---
+*.db
+*.sqlite
+*.sqlite3
+
+# --- Env / secrets ---
+*.env
+.env.*
+*.secrets*
+*.key
+*.pem
+
+# --- Docs build output ---
+docs/_build/
+site/
+builddocs/
+
+
