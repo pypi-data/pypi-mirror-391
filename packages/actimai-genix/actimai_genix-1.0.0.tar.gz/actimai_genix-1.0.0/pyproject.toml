@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "actimai-genix"
+version = "1.0.0"
+description = "A production-ready Python package named genix"
+authors = [{name = "Billie Delos Santos", email = "billiedelossantos@actimai.com"}]
+license = {text = "Actimai Philippines Inc."}
+readme = "README.md"
+keywords = ["python", "library", "genix"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/billiedelossantos/genix"
+Documentation = "https://github.com/billiedelossantos/genix#readme"
+Repository = "https://github.com/billiedelossantos/genix.git"
+Issues = "https://github.com/billiedelossantos/genix/issues"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "black>=24.0", "ruff>=0.5.0", "build", "twine"]
+
+[tool.setuptools]
+packages = ["genix"]
+include-package-data = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra -q"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+extend-select = ["I", "E", "F"]
