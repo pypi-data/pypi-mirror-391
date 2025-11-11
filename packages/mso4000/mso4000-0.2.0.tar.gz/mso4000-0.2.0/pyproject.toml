@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mso4000"
+version = "0.2.0"
+description = "Simple library for Tektronix MSO4000 series oscilloscopes with correct time axis calculation and raw data capture"
+readme = "README.md"
+requires-python = ">=3.6"
+license = "MIT"
+authors = [
+    {name = "Asaf Ayalon", email = "ayalon.asaf.c0@s.mail.nagoya-u.ac.jp"}
+]
+keywords = ["oscilloscope", "tektronix", "mso4000", "visa", "measurement"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    "pyvisa>=1.11.0",
+    "numpy>=1.16.0",
+]
+
+[project.optional-dependencies]
+dev = ["setuptools", "wheel", "twine"]
+
+[project.urls]
+
+[tool.setuptools]
+py-modules = ["mso4000"]
+
