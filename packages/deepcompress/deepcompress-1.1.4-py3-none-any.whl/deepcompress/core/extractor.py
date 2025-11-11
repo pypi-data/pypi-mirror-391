@@ -1,0 +1,1327 @@
+"""
+OCR extraction using DeepSeek-OCR integration.
+"""
+
+import asyncio
+import hashlib
+import time
+from pathlib import Path
+from typing import Any, Optional
+
+from deepcompress.core.config import DeepCompressConfig
+from deepcompress.exceptions import GPUError, OCRError
+from deepcompress.models.document import Entity, ExtractedDocument, Page, Table
+
+
+class OCRExtractor:
+    """
+    DeepSeek-OCR integration for vision-based document extraction.
+
+    Uses a 3B parameter vision-language model with:
+    - SAM-base vision encoder
+    - CLIP-large global attention
+    - MoE decoder (64 experts, 6 active)
+    - 16× compression of vision tokens
+    """
+
+    def __init__(self, config: DeepCompressConfig) -> None:
+        self.config = config
+        self._model: Any = None
+        self._tokenizer: Any = None
+        self._device: str = config.ocr_device
+
+    async def initialize(self) -> None:
+        """
+        Initialize the OCR model and tokenizer.
+
+        Loads DeepSeek-OCR model onto GPU with bfloat16 precision.
+        """
+        try:
+            import torch
+            from transformers import AutoModel, AutoTokenizer
+            import warnings
+            import logging
+            
+            logger = logging.getLogger(__name__)
+            
+            # Log initialization
+            logger.info(f"Initializing DeepSeek-OCR on device: {self._device}")
+            logger.info(f"Model: {self.config.ocr_model}, Mode: {self.config.ocr_mode}")
+            
+            # Suppress known warnings from DeepSeek-OCR model
+            warnings.filterwarnings("ignore", message=".*model of type.*not supported for all configurations.*")
+            warnings.filterwarnings("ignore", message=".*deepseek_vl_v2.*DeepseekOCR.*")
+            warnings.filterwarnings("ignore", message=".*not initialized from the model checkpoint.*")
+            warnings.filterwarnings("ignore", message=".*do_sample.*temperature.*")
+            warnings.filterwarnings("ignore", message=".*attention mask.*pad token.*")
+            warnings.filterwarnings("ignore", message=".*Flash Attention 2.0.*")
+            warnings.filterwarnings("ignore", message=".*past_key_value.*deprecated.*")
+            
+            # Apply compatibility patch for newer transformers versions
+            logger.info("Applying transformers compatibility patches...")
+            self._apply_transformers_compatibility_patch()
+
+            # DeepSeek-OCR uses AutoTokenizer, not AutoProcessor
+            self._tokenizer = AutoTokenizer.from_pretrained(
+                self.config.ocr_model,
+                revision=self.config.ocr_model_revision,
+                trust_remote_code=True,
+            )
+            
+            # Ensure pad_token is set to avoid warnings
+            if self._tokenizer.pad_token is None:
+                if self._tokenizer.eos_token is not None:
+                    self._tokenizer.pad_token = self._tokenizer.eos_token
+                else:
+                    # Add a default pad token if none exists
+                    self._tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
+            # Determine device_map for optimal loading
+            device_map = None
+            if self._device.startswith("cuda"):
+                # Load directly on specified GPU
+                device_map = {"": self._device}
+                
+                # Set GPU memory fraction if configured
+                if self.config.gpu_memory_fraction < 1.0:
+                    device_idx = int(self._device.split(":")[-1]) if ":" in self._device else 0
+                    torch.cuda.set_per_process_memory_fraction(
+                        self.config.gpu_memory_fraction,
+                        device=device_idx,
+                    )
+            
+            # Base model kwargs
+            model_kwargs = {
+                "torch_dtype": torch.bfloat16 if self.config.use_bfloat16 else torch.float32,
+                "trust_remote_code": True,
+                "revision": self.config.ocr_model_revision,
+                "low_cpu_mem_usage": True,  # Optimize memory usage during loading
+            }
+            
+            # Add device_map if using CUDA
+            if device_map is not None:
+                model_kwargs["device_map"] = device_map
+
+            # Attempt to use flash attention 2 if available and enabled
+            if self.config.enable_flash_attention and self._device.startswith("cuda"):
+                try:
+                    self._model = AutoModel.from_pretrained(
+                        self.config.ocr_model,
+                        attn_implementation="flash_attention_2",
+                        **model_kwargs,
+                    )
+                except (ImportError, ValueError, Exception) as e:
+                    # Fall back to eager attention if flash attention not available
+                    warnings.warn(f"Flash Attention 2 not available, falling back to eager: {e}")
+                    model_kwargs.pop("attn_implementation", None)
+                    self._model = AutoModel.from_pretrained(
+                        self.config.ocr_model,
+                        attn_implementation="eager",
+                        **model_kwargs,
+                    )
+            else:
+                # Use eager attention (standard)
+                self._model = AutoModel.from_pretrained(
+                    self.config.ocr_model,
+                    attn_implementation="eager",
+                    **model_kwargs,
+                )
+
+            # Move to device if not already there (for CPU fallback)
+            if device_map is None and self._device != "cpu":
+                self._model = self._model.to(self._device)
+
+            self._model.eval()
+            
+            logger.info(f"DeepSeek-OCR initialized successfully")
+            logger.info(f"PyTorch version: {torch.__version__}")
+            try:
+                import transformers
+                logger.info(f"Transformers version: {transformers.__version__}")
+            except:
+                pass
+
+        except ImportError as e:
+            error_msg = str(e)
+            if "flash_attn" in error_msg.lower():
+                raise OCRError(
+                    "Flash Attention library not installed. Install with: pip install flash-attn --no-build-isolation",
+                    details={"error": error_msg},
+                )
+            raise OCRError(
+                "Failed to import required libraries. Install with: pip install deepcompress[gpu]",
+                details={"error": error_msg},
+            )
+        except Exception as e:
+            error_msg = str(e)
+            logger.error(f"Failed to initialize OCR model on {self._device}: {error_msg}")
+
+            # Try fallback to CPU if CUDA failed
+            if self._device.startswith("cuda") and "CUDA" in error_msg:
+                logger.info("CUDA initialization failed, trying CPU fallback...")
+                try:
+                    self._device = "cpu"
+                    self.config.ocr_device = "cpu"
+
+                    # Retry initialization with CPU
+                    import torch
+                    from transformers import AutoModel, AutoTokenizer
+
+                    self._tokenizer = AutoTokenizer.from_pretrained(
+                        self.config.ocr_model,
+                        revision=self.config.ocr_model_revision,
+                        trust_remote_code=True,
+                    )
+
+                    if self._tokenizer.pad_token is None:
+                        if self._tokenizer.eos_token is not None:
+                            self._tokenizer.pad_token = self._tokenizer.eos_token
+                        else:
+                            self._tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
+                    # Use CPU model
+                    model_kwargs = {
+                        "torch_dtype": torch.float32,  # Use float32 for CPU
+                        "trust_remote_code": True,
+                        "revision": self.config.ocr_model_revision,
+                        "low_cpu_mem_usage": True,
+                    }
+
+                    self._model = AutoModel.from_pretrained(
+                        self.config.ocr_model,
+                        **model_kwargs,
+                    )
+
+                    self._model.eval()
+                    logger.info("Successfully initialized DeepSeek-OCR on CPU")
+
+                except Exception as cpu_e:
+                    logger.error(f"CPU fallback also failed: {cpu_e}")
+                    raise GPUError(
+                        "Failed to initialize OCR model on both GPU and CPU",
+                        details={"gpu_error": error_msg, "cpu_error": str(cpu_e)},
+                    )
+            else:
+                raise GPUError(
+                    "Failed to initialize OCR model",
+                    details={"device": self._device, "error": error_msg},
+                )
+
+    async def extract(
+        self,
+        file_path: str,
+        document_id: Optional[str] = None,
+    ) -> ExtractedDocument:
+        """
+        Extract document content using DeepSeek-OCR.
+
+        Args:
+            file_path: Path to document (PDF or image)
+            document_id: Optional document ID (generated if None)
+
+        Returns:
+            ExtractedDocument with extracted entities, tables, and text
+
+        Raises:
+            OCRError: If extraction fails
+            GPUError: If GPU operations fail
+        """
+        if self._model is None:
+            await self.initialize()
+
+        start_time = time.time()
+
+        try:
+            images = await self._load_images(file_path)
+
+            if document_id is None:
+                document_id = self._generate_document_id(file_path)
+
+            # Process pages in batches for better performance
+            pages = await self._extract_pages_in_batches(images)
+
+            processing_time_ms = (time.time() - start_time) * 1000
+
+            return ExtractedDocument(
+                document_id=document_id,
+                page_count=len(pages),
+                mode=self.config.ocr_mode,
+                pages=pages,
+                metadata={
+                    "processing_time_ms": processing_time_ms,
+                    "model": self.config.ocr_model,
+                    "device": self._device,
+                },
+            )
+
+        except Exception as e:
+            raise OCRError(
+                f"Failed to extract document: {file_path}",
+                details={"error": str(e)},
+            )
+
+    async def _extract_pages_in_batches(self, images: list[Any]) -> list[Page]:
+        """
+        Extract pages in configurable batches for better performance.
+        
+        Args:
+            images: List of PIL Images to process
+            
+        Returns:
+            List of extracted Page objects in original order
+        """
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        batch_size = self.config.ocr_batch_size
+        total_pages = len(images)
+        
+        logger.info(f"Processing {total_pages} pages in batches of {batch_size}")
+        
+        all_pages = []
+        
+        # Process images in batches
+        for batch_start in range(0, total_pages, batch_size):
+            batch_end = min(batch_start + batch_size, total_pages)
+            batch_images = images[batch_start:batch_end]
+            batch_numbers = range(batch_start + 1, batch_end + 1)
+            
+            logger.info(f"Processing batch: pages {batch_start + 1}-{batch_end} of {total_pages}")
+            
+            # Create async tasks for all pages in this batch
+            tasks = [
+                self._extract_page(image, page_num)
+                for image, page_num in zip(batch_images, batch_numbers)
+            ]
+            
+            # Execute batch concurrently
+            batch_start_time = time.time()
+            batch_pages = await asyncio.gather(*tasks, return_exceptions=True)
+            batch_time = time.time() - batch_start_time
+            
+            # Check for errors in batch
+            for i, result in enumerate(batch_pages):
+                if isinstance(result, Exception):
+                    page_num = batch_start + i + 1
+                    logger.error(f"Failed to process page {page_num}: {result}")
+                    raise OCRError(
+                        f"Failed to extract page {page_num}",
+                        details={"error": str(result)},
+                    )
+            
+            all_pages.extend(batch_pages)
+            
+            logger.info(f"Batch complete: {len(batch_pages)} pages in {batch_time:.2f}s "
+                       f"({batch_time/len(batch_pages):.2f}s per page)")
+        
+        return all_pages
+    
+    async def _load_images(self, file_path: str) -> list[Any]:
+        """
+        Load images from PDF or image file.
+
+        Args:
+            file_path: Path to file
+
+        Returns:
+            List of PIL Images
+        """
+        from PIL import Image
+
+        path = Path(file_path)
+
+        if path.suffix.lower() == ".pdf":
+            try:
+                from pdf2image import convert_from_path
+
+                loop = asyncio.get_event_loop()
+                images = await loop.run_in_executor(
+                    None,
+                    lambda: convert_from_path(
+                        str(path),
+                        dpi=300,
+                        fmt="png",
+                    ),
+                )
+                return images
+            except ImportError:
+                raise OCRError(
+                    "pdf2image not installed. Install with: pip install deepcompress[gpu]"
+                )
+        else:
+            image = Image.open(path).convert("RGB")
+            return [image]
+
+    async def _extract_page(self, image: Any, page_number: int) -> Page:
+        """
+        Extract single page using DeepSeek-OCR.
+
+        Args:
+            image: PIL Image
+            page_number: Page number (1-indexed)
+
+        Returns:
+            Page with extracted entities and tables
+        """
+        import torch
+        import tempfile
+        import os
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        logger.debug(f"Extracting page {page_number} (image size: {image.size})")
+
+        # DeepSeek-OCR expects images to be provided as file paths
+        # We need to save the PIL image temporarily
+        tmp_dir = tempfile.mkdtemp()
+        tmp_image_path = os.path.join(tmp_dir, 'page.png')
+        image.save(tmp_image_path, format='PNG')
+        logger.debug(f"Saved temporary image to: {tmp_image_path}")
+        
+        try:
+            # Map OCR mode to base_size and image_size
+            # small=640, base=1024, large=1280
+            mode_config = {
+                "small": {"base_size": 640, "image_size": 640},
+                "base": {"base_size": 1024, "image_size": 640},
+                "large": {"base_size": 1280, "image_size": 640},
+            }
+            config = mode_config.get(self.config.ocr_mode, mode_config["small"])
+            
+            # Use DeepSeek-OCR's custom infer method
+            # Simple prompt to avoid the model repeating instructions
+            # Note: Verbose prompts cause DeepSeek-OCR to hallucinate by repeating the prompt text
+            prompt = "<image>\nText:"
+            
+            # Create a unique output directory for each page to avoid conflicts
+            # This is critical - reusing the same directory can cause the model to return None
+            output_dir = os.path.join(tmp_dir, f'output_page_{page_number}')
+            os.makedirs(output_dir, exist_ok=True)
+            
+            logger.debug(f"Running model inference with base_size={config['base_size']}, image_size={config['image_size']}")
+            
+            # Prepare generation parameters to prevent hallucination and limit output
+            generation_kwargs = {
+                "max_new_tokens": self.config.ocr_max_new_tokens,
+                "temperature": self.config.ocr_temperature,
+                "do_sample": True if self.config.ocr_temperature > 0 else False,
+                "repetition_penalty": self.config.ocr_repetition_penalty,
+                "top_p": 0.95,  # Nucleus sampling
+                "eos_token_id": self._tokenizer.eos_token_id,
+            }
+            
+            logger.debug(f"Generation parameters: max_new_tokens={generation_kwargs['max_new_tokens']}, "
+                        f"temperature={generation_kwargs['temperature']}, "
+                        f"repetition_penalty={generation_kwargs['repetition_penalty']}")
+            
+            # Try to pass generation parameters if the model supports them
+            result = None
+            inference_attempts = []
+            inference_exception = None
+            captured_stdout = None
+            captured_stderr = None
+            
+            # CRITICAL: The DeepSeek-OCR model prints output to stdout/stderr instead of returning it
+            # We need to capture stdout/stderr during inference
+            import io
+            import sys
+            from contextlib import redirect_stdout, redirect_stderr
+            
+            stdout_capture = io.StringIO()
+            stderr_capture = io.StringIO()
+            
+            try:
+                with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
+                    result = self._model.infer(
+                        self._tokenizer,
+                        prompt=prompt,
+                        image_file=tmp_image_path,
+                        output_path=output_dir,  # Required by the model
+                        base_size=config["base_size"],
+                        image_size=config["image_size"],
+                        crop_mode=True,
+                        save_results=False,
+                        test_compress=False,  # Set to False to avoid compression artifacts
+                        **generation_kwargs,  # Pass generation parameters
+                    )
+                captured_stdout = stdout_capture.getvalue()
+                captured_stderr = stderr_capture.getvalue()
+                inference_attempts.append("with generation parameters")
+                if result is None:
+                    logger.warning("Model infer() returned None even though no exception was raised")
+            except TypeError as e:
+                # If the infer method doesn't accept these parameters, fall back without them
+                logger.warning(f"Model infer() doesn't accept generation parameters, falling back: {e}")
+                inference_exception = e
+                stdout_capture = io.StringIO()
+                stderr_capture = io.StringIO()
+                try:
+                    with redirect_stdout(stdout_capture), redirect_stderr(stderr_capture):
+                        result = self._model.infer(
+                            self._tokenizer,
+                            prompt=prompt,
+                            image_file=tmp_image_path,
+                            output_path=output_dir,
+                            base_size=config["base_size"],
+                            image_size=config["image_size"],
+                            crop_mode=True,
+                            save_results=False,
+                            test_compress=False,  # Set to False to avoid compression artifacts
+                        )
+                    captured_stdout = stdout_capture.getvalue()
+                    captured_stderr = stderr_capture.getvalue()
+                    inference_attempts.append("without generation parameters")
+                    if result is None:
+                        logger.warning("Model infer() returned None in fallback call")
+                except Exception as infer_e:
+                    captured_stdout = stdout_capture.getvalue()
+                    captured_stderr = stderr_capture.getvalue()
+                    logger.error(f"Model inference failed: {infer_e}", exc_info=True)
+                    inference_attempts.append(f"failed: {infer_e}")
+                    inference_exception = infer_e
+            except Exception as e:
+                captured_stdout = stdout_capture.getvalue()
+                captured_stderr = stderr_capture.getvalue()
+                logger.error(f"Unexpected error during model inference: {e}", exc_info=True)
+                inference_attempts.append(f"error: {e}")
+                inference_exception = e
+                # Don't re-raise here - we'll check for files and retry first
+            
+            # The result from infer() is typically a string with the extracted text
+            # However, some versions of DeepSeek-OCR may write to files instead
+            # OR print to stdout/stderr instead of returning it
+            # Check both the return value, captured stdout/stderr, and output files BEFORE raising errors
+            result_text = None
+            
+            if result is not None:
+                result_text = result if isinstance(result, str) else str(result)
+            
+            # CRITICAL: Extract OCR text from captured stdout/stderr if result is None
+            # The DeepSeek-OCR model prints output to stdout/stderr instead of returning it
+            if (not result_text or result_text.strip() in ["", "None", "null"]) and (captured_stdout or captured_stderr):
+                logger.debug("Attempting to extract OCR text from captured stdout/stderr")
+                logger.debug(f"Captured stdout length: {len(captured_stdout) if captured_stdout else 0}")
+                logger.debug(f"Captured stderr length: {len(captured_stderr) if captured_stderr else 0}")
+                combined_output = (captured_stdout or "") + "\n" + (captured_stderr or "")
+                
+                # Log first 500 chars of captured output for debugging
+                if combined_output:
+                    logger.debug(f"First 500 chars of captured output: {combined_output[:500]}")
+                
+                # Try to extract text from various patterns in the output
+                extracted_text = self._extract_text_from_output(combined_output, page_number, logger)
+                if extracted_text and len(extracted_text.strip()) > 10:
+                    logger.info(f"Successfully extracted {len(extracted_text)} characters from stdout/stderr")
+                    result_text = extracted_text
+                else:
+                    logger.warning(f"Could not extract text from captured output (extracted length: {len(extracted_text) if extracted_text else 0})")
+            
+            # If result is None or empty, check if the model wrote output to a file
+            # This is CRITICAL - the model might print to stdout but write results to files
+            if not result_text or result_text.strip() in ["", "None", "null"]:
+                logger.debug(f"Result is None or empty, checking output directory for result files: {output_dir}")
+                
+                # Check the original output directory
+                if os.path.exists(output_dir):
+                    output_files = []
+                    try:
+                        # Log what's in the directory for debugging
+                        dir_contents = os.listdir(output_dir)
+                        logger.debug(f"Output directory contains: {dir_contents}")
+                        # Look for common output file patterns
+                        for ext in ['.txt', '.json', '.md', '.text']:
+                            if os.path.exists(output_dir):
+                                for file in os.listdir(output_dir):
+                                    if file.endswith(ext):
+                                        output_files.append(os.path.join(output_dir, file))
+                        
+                        # Also check for files without extension (but not image files)
+                        if os.path.exists(output_dir):
+                            for file in os.listdir(output_dir):
+                                file_path = os.path.join(output_dir, file)
+                                if os.path.isfile(file_path) and not file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')):
+                                    if file_path not in output_files:
+                                        output_files.append(file_path)
+                        
+                        # Sort by modification time (newest first) and try reading them
+                        output_files.sort(key=lambda x: os.path.getmtime(x) if os.path.exists(x) else 0, reverse=True)
+                        
+                        # Also check subdirectories for output files
+                        for root, dirs, files in os.walk(output_dir):
+                            for file in files:
+                                file_path = os.path.join(root, file)
+                                if os.path.isfile(file_path) and not file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp')):
+                                    if file_path not in output_files:
+                                        output_files.append(file_path)
+                        
+                        # Re-sort after adding subdirectory files
+                        output_files.sort(key=lambda x: os.path.getmtime(x) if os.path.exists(x) else 0, reverse=True)
+                        
+                        # Try to read output files
+                        for output_file in output_files:
+                            try:
+                                with open(output_file, 'r', encoding='utf-8', errors='ignore') as f:
+                                    file_content = f.read().strip()
+                                    if file_content and len(file_content) > 10 and file_content not in ["", "None", "null"]:
+                                        logger.info(f"Found output in file: {output_file} ({len(file_content)} chars)")
+                                        result_text = file_content
+                                        break
+                            except Exception as read_e:
+                                logger.debug(f"Could not read output file {output_file}: {read_e}")
+                    except Exception as dir_e:
+                        logger.debug(f"Error checking output directory: {dir_e}")
+            
+            # If still no result, try retry strategies
+            if not result_text or result_text.strip() in ["", "None", "null"]:
+                logger.warning(f"Model inference returned None/empty for page {page_number} after attempts: {inference_attempts}")
+                
+                # Strategy 1: Try with a fresh output directory (in case of directory conflicts)
+                if result is None:  # Only retry if result was None (not if it was empty string)
+                    try:
+                        fresh_output_dir = os.path.join(tmp_dir, f'output_fresh_{page_number}')
+                        os.makedirs(fresh_output_dir, exist_ok=True)
+                        logger.info(f"Attempting retry with fresh output directory...")
+                        
+                        # Capture stdout/stderr for retry too
+                        retry_stdout = io.StringIO()
+                        retry_stderr = io.StringIO()
+                        with redirect_stdout(retry_stdout), redirect_stderr(retry_stderr):
+                            retry_result = self._model.infer(
+                                self._tokenizer,
+                                prompt=prompt,
+                                image_file=tmp_image_path,
+                                output_path=fresh_output_dir,
+                                base_size=config["base_size"],
+                                image_size=config["image_size"],
+                                crop_mode=True,
+                                save_results=False,
+                                test_compress=False,
+                            )
+                        retry_captured_stdout = retry_stdout.getvalue()
+                        retry_captured_stderr = retry_stderr.getvalue()
+                        
+                        if retry_result is not None:
+                            result_text = retry_result if isinstance(retry_result, str) else str(retry_result)
+                            if result_text and result_text.strip() not in ["", "None", "null"]:
+                                logger.info("Retry with fresh directory succeeded")
+                                output_dir = fresh_output_dir
+                                result = retry_result
+                        elif retry_captured_stdout or retry_captured_stderr:
+                            # Try to extract from captured output
+                            combined_retry = (retry_captured_stdout or "") + "\n" + (retry_captured_stderr or "")
+                            extracted_retry = self._extract_text_from_output(combined_retry, page_number, logger)
+                            if extracted_retry and len(extracted_retry.strip()) > 10:
+                                logger.info("Retry with fresh directory succeeded - extracted from stdout/stderr")
+                                result_text = extracted_retry
+                                output_dir = fresh_output_dir
+                        else:
+                            # Check for files in fresh directory too
+                            if os.path.exists(fresh_output_dir):
+                                for file in os.listdir(fresh_output_dir):
+                                    file_path = os.path.join(fresh_output_dir, file)
+                                    if os.path.isfile(file_path) and not file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                                        try:
+                                            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                                                content = f.read().strip()
+                                                if content and len(content) > 10:
+                                                    logger.info(f"Found output in retry directory file: {file_path}")
+                                                    result_text = content
+                                                    output_dir = fresh_output_dir
+                                                    break
+                                        except:
+                                            pass
+                    except Exception as retry_e:
+                        logger.warning(f"Retry with fresh directory failed: {retry_e}")
+                
+                # Strategy 2: Try with different image size if still None
+                if (not result_text or result_text.strip() in ["", "None", "null"]) and result is None:
+                    try:
+                        logger.info("Attempting retry with smaller image size...")
+                        smaller_config = {
+                            "base_size": min(config["base_size"], 640),
+                            "image_size": min(config["image_size"], 640),
+                        }
+                        
+                        # Capture stdout/stderr for retry too
+                        retry_stdout = io.StringIO()
+                        retry_stderr = io.StringIO()
+                        with redirect_stdout(retry_stdout), redirect_stderr(retry_stderr):
+                            retry_result = self._model.infer(
+                                self._tokenizer,
+                                prompt=prompt,
+                                image_file=tmp_image_path,
+                                output_path=output_dir,
+                                base_size=smaller_config["base_size"],
+                                image_size=smaller_config["image_size"],
+                                crop_mode=True,
+                                save_results=False,
+                                test_compress=False,
+                            )
+                        retry_captured_stdout = retry_stdout.getvalue()
+                        retry_captured_stderr = retry_stderr.getvalue()
+                        
+                        if retry_result is not None:
+                            result_text = retry_result if isinstance(retry_result, str) else str(retry_result)
+                            if result_text and result_text.strip() not in ["", "None", "null"]:
+                                logger.info("Retry with smaller image size succeeded")
+                        elif retry_captured_stdout or retry_captured_stderr:
+                            # Try to extract from captured output
+                            combined_retry = (retry_captured_stdout or "") + "\n" + (retry_captured_stderr or "")
+                            extracted_retry = self._extract_text_from_output(combined_retry, page_number, logger)
+                            if extracted_retry and len(extracted_retry.strip()) > 10:
+                                logger.info("Retry with smaller image size succeeded - extracted from stdout/stderr")
+                                result_text = extracted_retry
+                    except Exception as retry_e:
+                        logger.warning(f"Retry with smaller image size failed: {retry_e}")
+                
+                # Strategy 3: Log suggestion for CPU fallback
+                if (not result_text or result_text.strip() in ["", "None", "null"]) and self._device.startswith("cuda"):
+                    logger.warning("Consider setting ocr_device='cpu' if GPU inference continues to fail")
+
+                # Final check - raise error only if we truly have no result
+                if not result_text or result_text.strip() in ["", "None", "null"]:
+                    # Final error with detailed diagnostics
+                    error_details = {
+                        "page_number": page_number,
+                        "model": self.config.ocr_model,
+                        "prompt": prompt[:100],
+                        "device": self._device,
+                        "model_type": str(type(self._model)),
+                        "inference_attempts": inference_attempts,
+                        "image_size": image.size,
+                        "base_size": config["base_size"],
+                        "image_size_param": config["image_size"],
+                        "output_dir": output_dir,
+                        "output_dir_exists": os.path.exists(output_dir) if output_dir else False,
+                    }
+                    logger.error(f"All inference attempts failed for page {page_number}")
+                    logger.error(f"Diagnostics: {error_details}")
+                    
+                    raise OCRError(
+                        f"Model inference returned None/empty for page {page_number} after all retry attempts. "
+                        f"This may be due to: 1) DeepSeek-OCR model compatibility issues, "
+                        f"2) GPU memory issues, 3) Model internal errors, 4) Model writing to files we cannot read. "
+                        f"Try: ocr_device='cpu', reducing ocr_batch_size, or updating the model.",
+                        details=error_details
+                    )
+            
+            # Final fallback: convert result to string if we still don't have text (shouldn't reach here)
+            if result_text is None:
+                result_text = result if isinstance(result, str) else str(result) if result is not None else ""
+            
+            # CRITICAL: Aggressive hallucination filtering
+            # DeepSeek-OCR has a known issue where it repeats prompt instructions
+            if result_text:
+                result_text = self._filter_prompt_hallucinations(result_text, page_number, logger)
+            
+            # Ensure we have some output
+            if not result_text or result_text.strip() in ["", "None", "null"]:
+                import warnings
+                warnings.warn(f"Model returned empty or invalid result for page {page_number}: {result_text}")
+                result_text = ""
+            else:
+                logger.debug(f"Successfully extracted {len(result_text)} characters from page {page_number}")
+                
+                # Safety check: detect repetitive hallucinations
+                # If the model is repeating the same pattern, truncate it
+                result_text = self._detect_and_fix_repetitions(result_text, page_number, logger)
+            
+        except Exception as e:
+            logger.error(f"Error during model inference on page {page_number}: {str(e)}", exc_info=True)
+            raise
+        finally:
+            # Clean up temporary directory and all its contents
+            import shutil
+            if os.path.exists(tmp_dir):
+                shutil.rmtree(tmp_dir, ignore_errors=True)
+            
+            # Clear GPU cache after each page to prevent memory buildup
+            # This is especially important when processing multiple pages
+            if self._device.startswith("cuda"):
+                try:
+                    import torch
+                    torch.cuda.empty_cache()
+                    if hasattr(torch.cuda, 'synchronize'):
+                        torch.cuda.synchronize()
+                except Exception as cache_e:
+                    logger.debug(f"Could not clear GPU cache: {cache_e}")
+
+        entities, tables = self._parse_ocr_output(result_text)
+        logger.debug(f"Parsed {len(entities)} entities and {len(tables)} tables from page {page_number}")
+        
+        # Estimate tokens based on text length (rough approximation)
+        estimated_tokens = len(result_text.split()) * 1.3  # ~1.3 tokens per word
+
+        return Page(
+            page_number=page_number,
+            layout="multi_column",
+            entities=entities,
+            tables=tables,
+            raw_text=result_text,
+            metadata={"vision_tokens": int(estimated_tokens)},
+        )
+
+    def _extract_text_from_output(self, output: str, page_number: int, logger: Any) -> str:
+        """
+        Extract OCR text from captured stdout/stderr output.
+        
+        The DeepSeek-OCR model prints output in various formats:
+        - After "```plaintext" markers
+        - As LaTeX formatted text like `\[ \text{...} \]`
+        - Direct text output
+        
+        Args:
+            output: Combined stdout/stderr output
+            page_number: Page number for logging
+            logger: Logger instance
+            
+        Returns:
+            Extracted OCR text, or empty string if not found
+        """
+        import re
+        
+        if not output:
+            return ""
+        
+        extracted_texts = []
+        
+        # Pattern 1: Extract text after "```plaintext" markers
+        plaintext_pattern = r'```plaintext\s*\n(.*?)(?:\n```|$)'
+        matches = re.findall(plaintext_pattern, output, re.DOTALL)
+        for match in matches:
+            text = match.strip()
+            if text and len(text) > 10:
+                extracted_texts.append(text)
+        
+        # Pattern 2: Extract LaTeX formatted text like `\[ \text{...} \]`
+        latex_pattern = r'\\\[\\text\{([^}]+)\}\\\]'
+        latex_matches = re.findall(latex_pattern, output)
+        if latex_matches:
+            latex_text = ' '.join(latex_matches)
+            if latex_text and len(latex_text) > 10:
+                extracted_texts.append(latex_text)
+        
+        # Pattern 3: Extract text between "=====================" markers (debug output)
+        # Look for substantial text blocks (more than 50 chars) that aren't debug info
+        lines = output.split('\n')
+        current_block = []
+        in_text_block = False
+        
+        for line in lines:
+            # Skip debug markers and empty lines
+            if line.strip() in ['', '====================='] or line.strip().startswith('BASE:') or line.strip().startswith('PATCHES:'):
+                if current_block and len(' '.join(current_block)) > 50:
+                    block_text = ' '.join(current_block).strip()
+                    # Filter out lines that look like debug output
+                    if not any(debug_word in block_text.lower() for debug_word in ['torch.size', 'base:', 'patches:']):
+                        extracted_texts.append(block_text)
+                current_block = []
+                in_text_block = False
+                continue
+            
+            # Skip lines that are clearly debug output
+            if any(debug_word in line.lower() for debug_word in ['torch.size', 'base:', 'patches:', 'warning:', 'error:']):
+                continue
+            
+            # Collect substantial text lines
+            if len(line.strip()) > 5:
+                current_block.append(line.strip())
+                in_text_block = True
+        
+        # Add final block if substantial
+        if current_block and len(' '.join(current_block)) > 50:
+            block_text = ' '.join(current_block).strip()
+            if not any(debug_word in block_text.lower() for debug_word in ['torch.size', 'base:', 'patches:']):
+                extracted_texts.append(block_text)
+        
+        # Combine all extracted texts, removing duplicates and very short ones
+        if extracted_texts:
+            # Join all texts, preferring longer ones
+            extracted_texts.sort(key=len, reverse=True)
+            combined = '\n\n'.join(extracted_texts[:3])  # Take top 3 longest blocks
+            
+            # Clean up: remove LaTeX markers if present
+            combined = re.sub(r'\\\[\\text\{([^}]+)\}\\\]', r'\1', combined)
+            combined = re.sub(r'\\\[', '', combined)
+            combined = re.sub(r'\\\]', '', combined)
+            
+            logger.debug(f"Extracted {len(combined)} characters from stdout/stderr for page {page_number}")
+            return combined
+        
+        return ""
+    
+    def _filter_prompt_hallucinations(self, text: str, page_number: int, logger: Any) -> str:
+        """
+        Filter out prompt-based hallucinations where the model repeats instructions.
+        
+        DeepSeek-OCR has a known issue where it repeats the prompt text instead of
+        extracting actual content. This method aggressively filters such hallucinations.
+        
+        Args:
+            text: The OCR output text
+            page_number: Page number for logging
+            logger: Logger instance
+            
+        Returns:
+            Cleaned text with prompt hallucinations removed
+        """
+        if not text:
+            return text
+        
+        # Common hallucination phrases that indicate the model is repeating instructions
+        hallucination_phrases = [
+            "Output only the extracted text",
+            "without repetition or elaboration",
+            "Input only the extracted text",
+            "Extract the text content",
+            "Focus on accuracy and completeness",
+            "without repetition",
+            "or elaboration",
+            "and elaboration",
+        ]
+        
+        # Check if the text contains excessive repetition of hallucination phrases
+        for phrase in hallucination_phrases:
+            phrase_count = text.lower().count(phrase.lower())
+            if phrase_count > 3:  # More than 3 occurrences = likely hallucination
+                logger.warning(f"Page {page_number}: Detected prompt hallucination ('{phrase}' repeated {phrase_count} times)")
+                
+                # Find where the hallucination starts (first occurrence)
+                phrase_lower = phrase.lower()
+                text_lower = text.lower()
+                first_idx = text_lower.find(phrase_lower)
+                
+                if first_idx > 50:  # If there's real content before the hallucination
+                    # Truncate at the hallucination point
+                    text = text[:first_idx].strip()
+                    logger.warning(f"Page {page_number}: Truncated at hallucination start (position {first_idx})")
+                else:
+                    # If hallucination is at the start, try to find any real content
+                    lines = text.split('\n')
+                    clean_lines = []
+                    for line in lines:
+                        line_lower = line.lower()
+                        # Skip lines that are mostly hallucination phrases
+                        has_hallucination = any(hp.lower() in line_lower for hp in hallucination_phrases)
+                        if not has_hallucination and len(line.strip()) > 10:
+                            clean_lines.append(line)
+                        if len(clean_lines) >= 50:  # Max 50 clean lines
+                            break
+                    
+                    if clean_lines:
+                        text = '\n'.join(clean_lines)
+                        logger.warning(f"Page {page_number}: Extracted {len(clean_lines)} clean lines from hallucinated output")
+                    else:
+                        text = ""
+                        logger.error(f"Page {page_number}: Entire output appears to be hallucination, returning empty")
+                
+                break  # Stop after first detected hallucination pattern
+        
+        # Hard length limit to prevent infinite generation
+        max_length = 50000  # 50K characters should be enough for any page
+        if len(text) > max_length:
+            logger.warning(f"Page {page_number}: Text exceeds {max_length} chars, truncating")
+            text = text[:max_length]
+        
+        return text
+    
+    def _detect_and_fix_repetitions(self, text: str, page_number: int, logger: Any) -> str:
+        """
+        Detect and fix repetitive hallucinations in OCR output.
+        
+        Args:
+            text: The OCR output text
+            page_number: Page number for logging
+            logger: Logger instance
+            
+        Returns:
+            Cleaned text with repetitions removed
+        """
+        import re
+        
+        # If text is excessively long (> 50K chars), likely a hallucination
+        max_reasonable_length = 50000
+        if len(text) > max_reasonable_length:
+            logger.warning(f"Page {page_number}: Text too long ({len(text)} chars), truncating to {max_reasonable_length}")
+            text = text[:max_reasonable_length]
+        
+        # Detect patterns like "[123]" repeated many times
+        # This catches the "College Algebra [1]...[2]...[3]..." pattern
+        bracket_pattern = r'\[(\d+)\]'
+        bracket_matches = re.findall(bracket_pattern, text)
+        
+        if len(bracket_matches) > 50:  # If more than 50 numbered references, likely hallucination
+            logger.warning(f"Page {page_number}: Detected {len(bracket_matches)} numbered references, likely hallucination")
+            # Find where the repetition starts (usually after legitimate content)
+            # Look for the first occurrence of a pattern that repeats 3+ times
+            sentences = text.split('.')
+            for i, sentence in enumerate(sentences):
+                if i > 0 and i < len(sentences) - 2:
+                    # If this sentence is very similar to the next one, truncate here
+                    if len(sentence) > 20:  # Only check substantial sentences
+                        next_similar_count = sum(1 for s in sentences[i+1:i+5] if self._similarity(sentence, s) > 0.7)
+                        if next_similar_count >= 2:
+                            logger.warning(f"Page {page_number}: Found repetition starting at sentence {i}, truncating")
+                            text = '.'.join(sentences[:i+1])
+                            break
+        
+        # Detect repeated phrases (same phrase appearing 5+ times in a row)
+        words = text.split()
+        if len(words) > 100:
+            # Check for phrases that repeat
+            for phrase_len in range(5, 20):  # Check phrases of 5-20 words
+                for i in range(len(words) - phrase_len * 3):
+                    phrase = ' '.join(words[i:i+phrase_len])
+                    next_phrase = ' '.join(words[i+phrase_len:i+phrase_len*2])
+                    if self._similarity(phrase, next_phrase) > 0.8:
+                        # Count how many times it repeats
+                        repeat_count = 1
+                        pos = i + phrase_len
+                        while pos < len(words) - phrase_len:
+                            test_phrase = ' '.join(words[pos:pos+phrase_len])
+                            if self._similarity(phrase, test_phrase) > 0.8:
+                                repeat_count += 1
+                                pos += phrase_len
+                            else:
+                                break
+                        
+                        if repeat_count >= 3:
+                            logger.warning(f"Page {page_number}: Found phrase repeating {repeat_count} times, truncating")
+                            text = ' '.join(words[:i])
+                            break
+        
+        return text
+    
+    def _similarity(self, s1: str, s2: str) -> float:
+        """
+        Calculate simple similarity between two strings (0-1).
+        
+        Args:
+            s1: First string
+            s2: Second string
+            
+        Returns:
+            Similarity score (0-1)
+        """
+        if not s1 or not s2:
+            return 0.0
+        
+        # Simple character-based similarity
+        s1_clean = s1.lower().strip()
+        s2_clean = s2.lower().strip()
+        
+        if s1_clean == s2_clean:
+            return 1.0
+        
+        # Count matching characters in same positions
+        max_len = max(len(s1_clean), len(s2_clean))
+        if max_len == 0:
+            return 0.0
+        
+        matches = sum(1 for i in range(min(len(s1_clean), len(s2_clean))) 
+                     if s1_clean[i] == s2_clean[i])
+        
+        return matches / max_len
+    
+    def _parse_ocr_output(self, output: str) -> tuple[list[Entity], list[Table]]:
+        """
+        Parse DeepSeek-OCR JSON output into entities and tables.
+
+        Args:
+            output: JSON string from OCR model
+
+        Returns:
+            Tuple of (entities, tables)
+        """
+        import orjson
+
+        try:
+            data = orjson.loads(output)
+        except Exception:
+            data = {"entities": [], "tables": []}
+
+        entities = []
+        for ent_data in data.get("entities", []):
+            entities.append(
+                Entity(
+                    type=ent_data.get("type", "unknown"),
+                    text=ent_data.get("text", ""),
+                    bbox=ent_data.get("bbox"),
+                    confidence=ent_data.get("confidence", 1.0),
+                )
+            )
+
+        tables = []
+        for table_data in data.get("tables", []):
+            tables.append(
+                Table(
+                    headers=table_data.get("headers", []),
+                    rows=table_data.get("rows", []),
+                    bbox=table_data.get("bbox"),
+                    confidence=table_data.get("confidence", 1.0),
+                )
+            )
+
+        return entities, tables
+
+    def _generate_document_id(self, file_path: str) -> str:
+        """
+        Generate unique document ID from file path.
+
+        Args:
+            file_path: Path to file
+
+        Returns:
+            Document ID (hash of file path)
+        """
+        return hashlib.sha256(file_path.encode()).hexdigest()[:16]
+
+    def _apply_transformers_compatibility_patch(self) -> None:
+        """
+        Apply compatibility patches for newer transformers versions.
+        
+        This fixes multiple compatibility issues:
+        1. LlamaFlashAttention2 import error in older transformers
+        2. DynamicCache.get_max_length() -> get_seq_length() API change
+        3. LlamaAttention position_embeddings argument requirement in v4.46+
+        """
+        try:
+            from transformers.models.llama import modeling_llama
+            import inspect
+            
+            # Patch 1: Fix LlamaFlashAttention2 missing in newer transformers
+            if not hasattr(modeling_llama, 'LlamaFlashAttention2'):
+                if hasattr(modeling_llama, 'LlamaAttention'):
+                    modeling_llama.LlamaFlashAttention2 = modeling_llama.LlamaAttention
+                elif hasattr(modeling_llama, 'LlamaSdpaAttention'):
+                    modeling_llama.LlamaFlashAttention2 = modeling_llama.LlamaSdpaAttention
+                else:
+                    class LlamaFlashAttention2Fallback:
+                        """Fallback class for missing LlamaFlashAttention2"""
+                        pass
+                    modeling_llama.LlamaFlashAttention2 = LlamaFlashAttention2Fallback
+            
+            # Patch 3: Fix position_embeddings requirement in transformers >= 4.46
+            # This wraps LlamaAttention classes to make position_embeddings optional
+            for attention_class_name in ['LlamaAttention', 'LlamaFlashAttention2', 'LlamaSdpaAttention']:
+                if hasattr(modeling_llama, attention_class_name):
+                    original_class = getattr(modeling_llama, attention_class_name)
+                    if not hasattr(original_class, '_deepcompress_patched'):
+                        original_forward = original_class.forward
+                        
+                        # Check if position_embeddings is already in the signature
+                        sig = inspect.signature(original_forward)
+                        accepts_position_embeddings = 'position_embeddings' in sig.parameters
+
+                        def create_wrapped_forward(orig_forward):
+                            def wrapped_forward(self, hidden_states, attention_mask=None,
+                                                position_ids=None, past_key_value=None,
+                                                output_attentions=False, use_cache=False,
+                                                cache_position=None, position_embeddings=None, **kwargs):
+                                rotary_emb = getattr(self, 'rotary_emb', None)
+                                computed_position_embeddings = position_embeddings
+                                
+                                if rotary_emb is not None and accepts_position_embeddings and computed_position_embeddings is None:
+                                    import torch
+
+                                    seq_len = hidden_states.size(1)
+                                    pos_ids = position_ids
+                                    if pos_ids is None:
+                                        if cache_position is not None:
+                                            pos_ids = cache_position.view(1, -1).to(hidden_states.device)
+                                        else:
+                                            past_length = 0
+                                            if past_key_value is not None:
+                                                try:
+                                                    if hasattr(past_key_value, "get_usable_length"):
+                                                        past_length = int(past_key_value.get_usable_length(seq_len) or 0)
+                                                    elif hasattr(past_key_value, "seen_tokens"):
+                                                        past_length = int(past_key_value.seen_tokens or 0)
+                                                except Exception:
+                                                    past_length = 0
+                                            pos_ids = torch.arange(
+                                                past_length,
+                                                past_length + seq_len,
+                                                dtype=torch.long,
+                                                device=hidden_states.device,
+                                            ).unsqueeze(0)
+
+                                    try:
+                                        heads = getattr(self, "num_key_value_heads", getattr(self, "num_heads", 0))
+                                        head_dim = getattr(self, "head_dim", 0)
+                                        if heads and head_dim:
+                                            dummy = torch.zeros(
+                                                hidden_states.size(0),
+                                                heads,
+                                                seq_len,
+                                                head_dim,
+                                                dtype=hidden_states.dtype,
+                                                device=hidden_states.device,
+                                            )
+                                            import inspect as _inspect
+                                            rotary_callable = getattr(rotary_emb, "forward", rotary_emb)
+                                            rotary_sig = _inspect.signature(rotary_callable)
+                                            if "cache_position" in rotary_sig.parameters:
+                                                cos, sin = rotary_emb(dummy, pos_ids, cache_position=cache_position)
+                                            else:
+                                                cos, sin = rotary_emb(dummy, pos_ids)
+                                            computed_position_embeddings = (cos, sin)
+                                    except Exception as e:
+                                        # Log the error but continue - the model may work without it
+                                        import warnings
+                                        warnings.warn(f"Failed to compute position embeddings: {e}")
+
+                                kwargs_payload = {
+                                    "hidden_states": hidden_states,
+                                    "attention_mask": attention_mask,
+                                    "position_ids": position_ids,
+                                    "past_key_value": past_key_value,
+                                    "output_attentions": output_attentions,
+                                    "use_cache": use_cache,
+                                    "cache_position": cache_position,
+                                }
+                                kwargs_payload.update(kwargs)
+                                # Only add position_embeddings if we successfully computed it
+                                if accepts_position_embeddings and computed_position_embeddings is not None:
+                                    kwargs_payload["position_embeddings"] = computed_position_embeddings
+
+                                return orig_forward(self, **kwargs_payload)
+
+                            return wrapped_forward
+                        
+                        original_class.forward = create_wrapped_forward(original_forward)
+                        original_class._deepcompress_patched = True
+        except (ImportError, AttributeError) as e:
+            # Log but don't fail - patches are optional
+            import warnings
+            warnings.warn(f"Could not apply all compatibility patches: {e}")
+        
+        # Patch 2: Fix DynamicCache API change (get_max_length -> get_seq_length)
+        try:
+            from transformers.cache_utils import DynamicCache
+            
+            # Check if get_max_length is missing but get_seq_length exists
+            if not hasattr(DynamicCache, 'get_max_length') and hasattr(DynamicCache, 'get_seq_length'):
+                # Add get_max_length as an alias to get_seq_length
+                DynamicCache.get_max_length = DynamicCache.get_seq_length
+
+            # Add seen_tokens compatibility shim for newer transformers
+            if not hasattr(DynamicCache, 'seen_tokens'):
+                def _get_seen_tokens(self):
+                    """
+                    Provide a unified accessor for the number of cached tokens.
+                    """
+                    try:
+                        if hasattr(self, 'get_seq_length'):
+                            return self.get_seq_length()
+                        if hasattr(self, 'get_max_length'):
+                            return self.get_max_length()
+                    except Exception:
+                        # Fall back to inspecting the key cache shape
+                        pass
+
+                    cache = getattr(self, "key_value_cache", None) or getattr(self, "key_cache", None)
+                    if cache:
+                        first = None
+                        if isinstance(cache, dict):
+                            first = next(iter(cache.values()), None)
+                        elif isinstance(cache, (list, tuple)) and cache:
+                            first = cache[0]
+                        if isinstance(first, (list, tuple)) and first:
+                            first = first[0]
+                        if hasattr(first, "shape"):
+                            return first.shape[-2]
+                    return getattr(self, "_deepcompress_seen_tokens", 0)
+
+                def _set_seen_tokens(self, value):
+                    """
+                    Map seen_tokens assignments to the new API when available.
+                    """
+                    if hasattr(self, 'set_seq_length'):
+                        try:
+                            self.set_seq_length(value)
+                            return
+                        except Exception:
+                            pass
+                    if hasattr(self, '_set_seen_tokens'):
+                        try:
+                            self._set_seen_tokens(value)
+                            return
+                        except Exception:
+                            pass
+                    self._deepcompress_seen_tokens = value
+
+                DynamicCache.seen_tokens = property(_get_seen_tokens, _set_seen_tokens)
+
+            # Add get_usable_length shim (renamed in newer transformers)
+            if not hasattr(DynamicCache, 'get_usable_length'):
+                def _get_usable_length(self, seq_length=None):
+                    """
+                    Return usable token length expected by older DeepSeek builds.
+                    """
+                    try:
+                        if hasattr(self, 'get_seq_length'):
+                            return self.get_seq_length()
+                        if hasattr(self, 'get_max_length'):
+                            return self.get_max_length()
+                    except Exception:
+                        pass
+
+                    length = None
+                    if hasattr(self, 'seen_tokens'):
+                        try:
+                            length = self.seen_tokens
+                        except Exception:
+                            length = None
+
+                    if length is None:
+                        cache = getattr(self, "key_value_cache", None) or getattr(self, "key_cache", None)
+                        if cache:
+                            first = None
+                            if isinstance(cache, dict):
+                                first = next(iter(cache.values()), None)
+                            elif isinstance(cache, (list, tuple)) and cache:
+                                first = cache[0]
+                            if isinstance(first, (list, tuple)) and first:
+                                first = first[0]
+                            if hasattr(first, "shape"):
+                                length = first.shape[-2]
+
+                    if length is None:
+                        length = getattr(self, "_deepcompress_seen_tokens", 0)
+
+                    if seq_length is not None:
+                        return min(length, seq_length)
+                    return length
+
+                DynamicCache.get_usable_length = _get_usable_length
+        except (ImportError, AttributeError):
+            pass
+
+    async def extract_batch(
+        self,
+        file_paths: list[str],
+    ) -> list[ExtractedDocument]:
+        """
+        Extract multiple documents in batch.
+
+        Args:
+            file_paths: List of file paths
+
+        Returns:
+            List of ExtractedDocuments
+        """
+        tasks = [self.extract(fp) for fp in file_paths]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        documents = []
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                raise OCRError(
+                    f"Batch extraction failed for {file_paths[i]}",
+                    details={"error": str(result)},
+                )
+            documents.append(result)
+
+        return documents
+
