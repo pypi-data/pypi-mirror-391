@@ -1,0 +1,180 @@
+Metadata-Version: 2.1
+Name: pelican-avatar
+Version: 1.0.11
+Summary: Libravatar/Gravatar plugin for Pelican
+Keywords: pelican,plugin,libravatar,gravatar
+Author-Email: =?utf-8?q?Rafael_Laboissi=C3=A8re?= <rafael@laboissiere.net>
+License: AGPL-3.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Framework :: Pelican
+Classifier: Framework :: Pelican :: Plugins
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Project-URL: Homepage, https://github.com/pelican-plugins/avatar
+Project-URL: Issue Tracker, https://github.com/pelican-plugins/avatar/issues
+Project-URL: Changelog, https://github.com/pelican-plugins/avatar/blob/main/CHANGELOG.md
+Project-URL: Funding, https://donate.getpelican.com/
+Requires-Python: >=3.10
+Requires-Dist: pelican>=4.5
+Requires-Dist: libgravatar>=0.2.5
+Requires-Dist: py3dns>=3.2
+Requires-Dist: pylibravatar>=1.7
+Provides-Extra: markdown
+Requires-Dist: markdown>=3.4; extra == "markdown"
+Description-Content-Type: text/markdown
+
+Avatar: A Plugin for Pelican
+============================
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pelican-plugins/avatar/main.yml?branch=main)](https://github.com/pelican-plugins/avatar/actions)
+[![PyPI Version](https://img.shields.io/pypi/v/pelican-avatar)](https://pypi.org/project/pelican-avatar/)
+[![Downloads](https://img.shields.io/pypi/dm/pelican-avatar)](https://pypi.org/project/pelican-avatar/)
+[![License](https://img.shields.io/pypi/l/pelican-avatar?color=blue)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+
+This plugin allows the inclusion of [Libravatar][] or [Gravatar][] user profile pictures, corresponding to the email address of the article's author.
+
+[Libravatar]: http://www.libravatar.org
+[Gravatar]: http://www.gravatar.com
+
+Installation
+------------
+
+This plugin can be installed via:
+
+    python -m pip install pelican-avatar
+
+As long as you have not explicitly added a `PLUGINS` setting to your Pelican settings file, the newly-installed plugin should be detected and enabled automatically. Otherwise, you must add `avatar` to your existing `PLUGINS` list. For more information, please refer to the [How to Use Plugins](https://docs.getpelican.com/en/latest/plugins.html#how-to-use-plugins) documentation.
+
+Usage
+-----
+
+### Specifying the Author's Email Address
+
+The default email address is taken from the `AVATAR_AUTHOR_EMAIL` variable in the Pelican settings file. This default value can be overridden on a per-article basis by specifying an email address in the article's metadata:
+
+For reStructuredText:
+
+```rst
+:email: bart.simpson@example.com
+```
+
+For Markdown:
+
+```markdown
+Email: bart.simpson@example.com
+```
+
+First, the plugin tries to find a corresponding avatar image for the specified email at Libravatar. If it is not found there, the plugin searches Gravatar. If an avatar is not found at either service, a default picture is shown. The “missing picture” default can be defined in the configuration variable `AVATAR_MISSING`.
+
+### Adjusting the Template
+
+This plugin assigns the `author_avatar` variable to the avatar image URL and makes that variable available within the article's context. For instance, you can add the following code to a template file, such as the `article_infos.html` template file, just before the author information:
+
+```html
+{% if article.author_avatar %}
+<div align="center">
+        <img src="{{ article.author_avatar }}">
+</div>
+{% endif %}
+
+```
+
+This will yield the following result (with the [notmyidea][] theme):
+
+![figure](https://github.com/pelican-plugins/avatar/raw/main/avatar-example.png)
+
+[notmyidea]: https://github.com/getpelican/pelican/tree/master/pelican/themes/notmyidea
+
+Page templates work in a similar way:
+
+```html
+{% if page.author_avatar %}
+<div align="center">
+        <img src="{{ page.author_avatar }}">
+</div>
+{% endif %}
+```
+
+To use in common templates, such as `base.html`, you can do something like this:
+
+```html
+{% if author_avatar %}
+<div align="center">
+        <img src="{{ author_avatar }}">
+</div>
+{% endif %}
+```
+
+If you want to allow the email address to be overridden in articles or pages while still using the global configuration if neither is available, you can do so:
+
+```html
+{% if article and article.author_avatar %}
+  {% set author_avatar = article.author_avatar %}
+{% elif page and page.author_avatar %}
+  {% set author_avatar = page.author_avatar %}
+{% endif %}
+{% if author_avatar %}
+<div align="center">
+        <img src="{{ author_avatar }}">
+</div>
+{% endif %}
+```
+
+Configuration
+-------------
+
+The following variables can be configured in the Pelican settings file:
+
+- `AVATAR_AUTHOR_EMAIL`: The site-wide default for the author's email address.
+
+- `AVATAR_MISSING`: The default for the missing picture. It can be either a URL (e.g., `"http://example.com/nobody.png"`) or the name of a logo library (e.g., `"wavatar"`. For the full set of alternatives, see the [Libravatar API](https://wiki.libravatar.org/api/)).
+
+- `AVATAR_SIZE`: The size, in pixels, of the profile picture (it is always square, so the height is equal to the width). If not specified, the default size (80×80) is returned by Libravatar.
+
+- `AVATAR_USE_GRAVATAR`: The plugin looks up avatars via the Libravatar service by default. Searching the Gravatar service can be forced by setting this configuration variable to `True`.
+
+Credits
+-------
+
+The inspiration for this plugin came from the [Gravatar plugin](https://github.com/getpelican/pelican-plugins/tree/master/gravatar).
+
+Contributing
+------------
+
+Contributions are welcome and much appreciated. Every little bit helps. You can contribute by improving the documentation, adding missing features, and fixing bugs. You can also help out by reviewing and commenting on [existing issues][].
+
+To start contributing to this plugin, review the [Contributing to Pelican][] documentation, beginning with the **Contributing Code** section.
+
+[existing issues]: https://github.com/pelican-plugins/avatar/issues
+[Contributing to Pelican]: https://docs.getpelican.com/en/latest/contribute.html
+
+Acknowledgments
+---------------
+
+Thanks to [Justin Mayer][] for helping migrate of this plugin under the Pelican Plugins organization, to [Troy Curtis][] for adding support for page and global generator context and for improving the Poetry workflow (even though we are now using PDM), to [Lucas Cimon][] for fixing the test suite and providing CI support, and to [Christian Clauss][] for the Python 3 port.
+
+
+[Justin Mayer]: https://github.com/justinmayer
+[Troy Curtis]: https://github.com/troycurtisjr
+[Lucas Cimon]: https://github.com/Lucas-C
+[Christian Clauss]: https://github.com/cclauss
+
+Author
+------
+
+Copyright (C) 2015, 2021-2025  Rafael Laboissière (<rafael@laboissiere.net>)
+
+License
+-------
+
+This project is licensed under the terms of the AGPL 3.0 license.
