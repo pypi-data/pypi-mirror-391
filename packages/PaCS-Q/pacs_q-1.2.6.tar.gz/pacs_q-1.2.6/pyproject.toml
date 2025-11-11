@@ -1,0 +1,32 @@
+[project]
+name = "PaCS-Q"
+version = "1.2.6"
+authors = [
+  { name="Lian Duan", email="duanlian0810@gmail.com" },
+]
+description = "PaCS-Q is a Python toolkit designed to assist with Parallel Cascade Selection simulations (PaCS) for studying protein structural transitions in MD and QM/MM MD level."
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+  "MDAnalysis>=2.9.0",
+  "numpy<2.3",
+  "parmed>=4.3.0",
+  "netCDF4",
+  "cftime"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.scripts]
+pacs_q = "pacsq_toolkit.pacs_q:main"
+pacs_q_md = "pacsq_toolkit.pacs_q_md:main"
+
+[project.urls]
+Homepage = "https://https://github.com/nyelidl/PaCS-Q"

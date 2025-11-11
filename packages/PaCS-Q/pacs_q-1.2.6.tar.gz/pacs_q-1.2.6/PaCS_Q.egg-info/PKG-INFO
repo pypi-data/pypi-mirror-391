@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: PaCS-Q
+Version: 1.2.6
+Summary: PaCS-Q is a Python toolkit designed to assist with Parallel Cascade Selection simulations (PaCS) for studying protein structural transitions in MD and QM/MM MD level.
+Author-email: Lian Duan <duanlian0810@gmail.com>
+License-Expression: MIT
+Project-URL: Homepage, https://https://github.com/nyelidl/PaCS-Q
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: MDAnalysis>=2.9.0
+Requires-Dist: numpy<2.3
+Requires-Dist: parmed>=4.3.0
+Requires-Dist: netCDF4
+Requires-Dist: cftime
+Dynamic: license-file
+
+This is README file
+Welcome to PaCS-Q v1.2.6 by L.Duan 2025.11.11
+github: https://github.com/nyelidl/PaCS-Q
+  
+**PaCS-Q** is a Python toolkit designed to assist with
+Parallel Cascade Selection simulations (PaCS) for studying
+protein structural transitions in MD and QM/MM MD level.
+  
+
+Please cite paper:
+Lian Duan, Kowit Hengphasatporn, Ryuhei Harada, Yasuteru Shigeta. JCTC https://doi.org/10.1021/acs.jctc.5c00169
+Lian Duan, Kowit Hengphasatporn, Yasuteru Shigeta. JCIM https://doi.org/10.1021/acs.jcim.5c00936
+
+                    ██████╗░░█████╗░░█████╗░░██████╗░░░░░░░░░██████╗░
+                    ██╔══██╗██╔══██╗██╔══██╗██╔════╝░░░░░░░░██╔═══██╗
+                    ██████╔╝███████║██║░░╚═╝╚█████╗░░█████╗║██╗██░██║
+                    ██╔═══╝░██╔══██║██║░░██╗░╚═══██╗░╚════╝░╚██████╔╝
+                    ██║░░░░░██║░░██║╚█████╔╝██████╔╝░░░░░░░░░╚═██╔═╝░
+                    ╚═╝░░░░░╚═╝░░╚═╝░╚════╝░╚═════╝░░░░░░░░░░░░╚═╝░░░
+
+**##Prerequisites**
+#Before installing and running PaCS-Q, ensure you have the following:
+
+- **AMBER** (version 22 or later) compiled with **MPI** support
+- **Miniconda** (for environment management)
+- Python packages:
+  - [MDAnalysis](https://www.mdanalysis.org/)
+
+**##Installation**
+#1. Clone or Download the Toolkit
+#Using the following command:
+
+```bash
+wget https://github.com/DLCCS/PaCS-Q/archive/refs/heads/main.zip
+unzip main.zip
+mv PaCS-Q-main PaCS-Q
+
+```Or clone it using Git:
+
+git clone https://github.com/DLCCS/PaCS-Q.git
+
+
+#2. Export the Path in ~/.bashrc
+export PATH="/path/to/PaCS-Q:$PATH"
+export PATH="/path/to/PaCS-Q/pacsq_toolkit:$PATH"
+
+source ~/.bashrc
+
+
+#3.Create and Activate Conda Environment
+conda create -n pacs-q
+conda init
+conda activate pacs-q
+
+
+#4. Install Required Python Packages
+pip install MDAnalysis biopython
+
+
+#5. Input Files
+- For LB-PaCS-MD (Distance-based PaCS-Q)
+	Topology file from (.top) tLEaP and the coordinate file (.rst or .crd) obtained from after heating up step.
+	You can adjust any MD parameter in "md.in".
+
+- For QM/MM MD (RMSD-based PaCS-Q)
+	 In this simulation we need to prepare initial and reference structures, as follows.
+	 Topology file from tLEaP (.top), the coordinate file (.rst or .crd) obtained from after heating up step, and reference structure in PDB file format (.pdb).
+         You can adjust any MD parameter in "qmmm.in".
+
+
+#6. Extend and Generate Trajectory
+- To extend the simulation, please use "--rerun" in the command line.
+- To generate the trajectory and the lastframe in pdb file, please use "cpp.sh" and "pdb_last.sh".
+- To clean all of MD directory, please use "clean.sh".
+
+
+#7. MD Analysis
+- Generate CV and 2D-PES by "pacsana_dis_collection.py"
+- PCA analysis by "pacsana_procupine.py"
+- Create QM input from PaCS-Q Trajectory "pacsana_QM_input.py"
+
+
+**##For More Detail of PaCS-Q Usage:**
+PaCS-Q -h
