@@ -1,0 +1,47 @@
+
+[project]
+name = "hsys"
+description = "System Information for Herlegon tools"
+readme = "README.md"
+authors = [
+    {name = "Jep Etau"},
+]
+requires-python = ">= 3.12"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["hardware information", "system info"]
+dependencies = [
+    "psutil",
+    "hytils",
+    "nvidia-ml-py",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/herlegon/hsys"
+
+[project.scripts]
+hsys_report = "hsys.hsys_report:main"
+
+[build-system]
+requires = ["setuptools >= 80.9.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hsys*"]
+exclude = ["tests*", "scripts"]
+
+[tool.setuptools.dynamic]
+version = { attr = "hsys.__version__" }
+
+[tool.black]
+line-length = 90
+target-version = ['py312']
+
+[tool.ruff]
+exclude = ["*"]
