@@ -1,0 +1,888 @@
+Metadata-Version: 2.4
+Name: leapocr
+Version: 0.0.2
+Summary: Official Python SDK for LeapOCR - Transform documents into structured data using AI-powered OCR
+Project-URL: Homepage, https://leapocr.com
+Project-URL: Documentation, https://docs.leapocr.com
+Project-URL: Repository, https://github.com/leapocr/leapocr-python
+Project-URL: Issues, https://github.com/leapocr/leapocr-python/issues
+Author-email: LeapOCR <support@leapocr.com>
+License:                                  Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (which shall not include Communications that are clearly marked or
+              otherwise designated in writing by the copyright owner as "Not a Work").
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is clearly marked or otherwise designated
+              in writing by the copyright owner as "Not a Contribution".
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright [yyyy] [name of copyright owner]
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+License-File: LICENSE
+Keywords: ai,document-processing,ocr,pdf,text-extraction
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: pydantic<2.0,>=1.10.13
+Requires-Dist: typing-extensions>=4.8.0
+Provides-Extra: dev
+Requires-Dist: mypy>=1.7.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.5.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.1; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.3; extra == 'dev'
+Requires-Dist: ruff>=0.1.6; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# LeapOCR Python SDK
+
+[![PyPI version](https://badge.fury.io/py/leapocr.svg)](https://badge.fury.io/py/leapocr)
+[![Python Support](https://img.shields.io/pypi/pyversions/leapocr.svg)](https://pypi.org/project/leapocr/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Official Python SDK for [LeapOCR](https://www.leapocr.com/) - Transform documents into structured data using AI-powered OCR.
+
+## Overview
+
+LeapOCR provides enterprise-grade document processing with AI-powered data extraction. This SDK offers a Python-native, async-first interface for seamless integration into your applications.
+
+## Installation
+
+```bash
+pip install leapocr
+```
+
+Or using [uv](https://github.com/astral-sh/uv):
+
+```bash
+uv add leapocr
+```
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.9 or higher
+- LeapOCR API key ([sign up here](https://www.leapocr.com/signup))
+
+### Basic Example
+
+```python
+import asyncio
+import os
+from leapocr import LeapOCR, ProcessOptions, Format
+
+async def main():
+    # Initialize the SDK with your API key
+    async with LeapOCR(os.getenv("LEAPOCR_API_KEY")) as client:
+        # Submit document for processing
+        job = await client.ocr.process_url(
+            "https://example.com/document.pdf",
+            options=ProcessOptions(
+                format=Format.STRUCTURED,
+            ),
+        )
+
+        print(f"Job created: {job.job_id}")
+
+        # Wait for processing to complete
+        result = await client.ocr.wait_until_done(job.job_id)
+
+        print(f"Credits used: {result.credits_used}")
+        print(f"Pages processed: {len(result.pages)}")
+        print(f"Extracted text: {result.pages[0].text[:200]}...")
+
+        # Optional: Delete job after processing (auto-deleted after 7 days)
+        await client.ocr.delete_job(job.job_id)
+
+asyncio.run(main())
+```
+
+## Key Features
+
+- **Async-First Design** - Built on asyncio with httpx for high-performance concurrent processing
+- **Type-Safe API** - Full type hints and mypy strict mode support
+- **Multiple Processing Formats** - Structured data extraction, markdown output, or per-page processing
+- **Flexible Model Selection** - Choose from standard, pro, or custom AI models
+- **Custom Schema Support** - Define extraction schemas for your specific use case
+- **Built-in Retry Logic** - Automatic exponential backoff for transient failures
+- **Context Manager Support** - Proper resource cleanup with async context managers
+- **Direct File Upload** - Efficient multipart uploads for local files
+- **Progress Tracking** - Real-time callbacks for long-running operations
+- **Automatic Cleanup** - Jobs and files are automatically deleted after 7 days, or delete immediately with `delete_job()`
+
+## Processing Models
+
+Use the `model` parameter in `ProcessOptions` to specify a model. Defaults to `Model.STANDARD_V1`.
+
+You can also use custom model strings for organization-specific models:
+
+```python
+from leapocr import ProcessOptions
+
+options = ProcessOptions(
+    model="my-custom-model-v1",  # Custom string model
+)
+```
+
+## Usage Examples
+
+### Processing from URL
+
+```python
+import asyncio
+from leapocr import LeapOCR, ProcessOptions, Format, Model
+
+async def process_url():
+    async with LeapOCR("your-api-key") as client:
+        # Submit job
+        job = await client.ocr.process_url(
+            "https://example.com/invoice.pdf",
+            options=ProcessOptions(
+                format=Format.STRUCTURED,
+                model=Model.PRO_V1,  # Use premium model for better accuracy
+                instructions="Extract invoice number, date, and total amount",
+            ),
+        )
+
+        # Wait for completion
+        result = await client.ocr.wait_until_done(job.job_id)
+
+        print(f"Processing time: {result.processing_time_seconds:.2f}s")
+        print(f"Credits used: {result.credits_used}")
+        print(f"Pages: {len(result.pages)}")
+
+        await client.ocr.delete_job(job.job_id)
+
+asyncio.run(process_url())
+```
+
+### Processing Local Files
+
+```python
+from pathlib import Path
+
+async def process_file():
+    async with LeapOCR("your-api-key") as client:
+        # Submit file
+        job = await client.ocr.process_file(
+            Path("invoice.pdf"),
+            options=ProcessOptions(
+                format=Format.STRUCTURED,
+                model=Model.ENGLISH_PRO_V1,  # High-accuracy for English documents
+            ),
+        )
+
+        # Wait for completion
+        result = await client.ocr.wait_until_done(job.job_id)
+
+        for page in result.pages:
+            print(f"Page {page.page_number}: {len(page.text)} characters")
+
+        await client.ocr.delete_job(job.job_id)
+
+asyncio.run(process_file())
+```
+
+### Custom Schema Extraction
+
+```python
+async def extract_with_schema():
+    schema = {
+        "type": "object",
+        "properties": {
+            "patient_name": {"type": "string"},
+            "date_of_birth": {"type": "string"},
+            "medications": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "dosage": {"type": "string"},
+                    },
+                },
+            },
+        },
+    }
+
+    async with LeapOCR("your-api-key") as client:
+        # Submit with schema
+        job = await client.ocr.process_file(
+            "medical-record.pdf",
+            options=ProcessOptions(
+                format=Format.STRUCTURED,
+                schema=schema,
+                instructions="Extract patient information and medications",
+            ),
+        )
+
+        # Wait for completion
+        result = await client.ocr.wait_until_done(job.job_id)
+
+        # Parse the structured data
+        import json
+        data = json.loads(result.pages[0].text)
+        print(f"Patient: {data['patient_name']}")
+        print(f"Medications: {len(data['medications'])}")
+
+        await client.ocr.delete_job(job.job_id)
+
+asyncio.run(extract_with_schema())
+```
+
+### Output Formats
+
+| Format                       | Description        | Use Case                                       |
+| ---------------------------- | ------------------ | ---------------------------------------------- |
+| `Format.STRUCTURED`          | Single JSON object | Extract specific fields across entire document |
+| `Format.MARKDOWN`            | Text per page      | Convert document to readable text              |
+| `Format.PER_PAGE_STRUCTURED` | JSON per page      | Extract fields from multi-section documents    |
+
+### Manual Job Management
+
+```python
+async def manual_polling():
+    async with LeapOCR("your-api-key") as client:
+        # Start processing
+        job = await client.ocr.process_url(
+            "https://example.com/document.pdf",
+            options=ProcessOptions(format=Format.MARKDOWN),
+        )
+
+        print(f"Job created: {job.job_id}")
+
+        # Poll for status
+        import asyncio
+        while True:
+            status = await client.ocr.get_job_status(job.job_id)
+            print(f"Status: {status.status.value} - {status.progress:.1f}%")
+
+            if status.status.value == "completed":
+                break
+
+            await asyncio.sleep(2)
+
+        # Get results
+        result = await client.ocr.get_results(job.job_id)
+        print(f"Processing complete: {len(result.pages)} pages")
+
+asyncio.run(manual_polling())
+```
+
+### Progress Tracking
+
+```python
+from leapocr import PollOptions
+
+async def track_progress():
+    def progress_callback(status):
+        print(f"Progress: {status.progress:.1f}% "
+              f"({status.processed_pages}/{status.total_pages} pages)")
+
+    async with LeapOCR("your-api-key") as client:
+        # Submit job
+        job = await client.ocr.process_file("large-document.pdf")
+
+        # Wait with progress tracking
+        result = await client.ocr.wait_until_done(
+            job.job_id,
+            poll_options=PollOptions(
+                poll_interval=2.0,
+                max_wait=300.0,
+                on_progress=progress_callback,
+            ),
+        )
+
+asyncio.run(track_progress())
+```
+
+### Using Templates
+
+Use pre-configured templates for common document types. Templates include predefined schemas, instructions, and model settings:
+
+```python
+async def use_template():
+    async with LeapOCR("your-api-key") as client:
+        # Use a pre-configured template by its slug
+        job = await client.ocr.process_file(
+            "invoice.pdf",
+            options=ProcessOptions(
+                template_slug="invoice-extraction",  # Reference existing template
+            ),
+        )
+
+        result = await client.ocr.wait_until_done(job.job_id)
+        print(f"Extracted data: {result.pages[0].text}")
+
+        await client.ocr.delete_job(job.job_id)
+
+asyncio.run(use_template())
+```
+
+**Common Template Use Cases:**
+
+- Invoice extraction
+- Receipt processing
+- Medical records
+- Identity documents
+- Custom organizational templates
+
+### Deleting Jobs
+
+**Automatic Deletion**: All jobs and their associated files are automatically deleted after **7 days** for security and storage management.
+
+**Manual Deletion**: Delete jobs immediately after processing to remove sensitive data or free up resources sooner:
+
+```python
+async def delete_after_processing():
+    async with LeapOCR("your-api-key") as client:
+        # Submit and process document
+        job = await client.ocr.process_file("sensitive-doc.pdf")
+        result = await client.ocr.wait_until_done(job.job_id)
+
+        # Use the extracted data
+        print(f"Extracted data: {result.pages[0].text}")
+
+        # Delete job immediately (redacts content and marks as deleted)
+        await client.ocr.delete_job(result.job_id)
+        print("Job deleted successfully")
+
+asyncio.run(delete_after_processing())
+```
+
+**Best Practices:**
+
+- **Sensitive Data**: Delete jobs containing PII/PHI immediately after use
+- **Compliance**: Manual deletion helps meet data retention requirements
+- **Auto-Cleanup**: All jobs are automatically purged after 7 days regardless
+- **Irreversible**: Deleted jobs cannot be recovered
+
+### Concurrent Batch Processing
+
+```python
+async def batch_process():
+    urls = [
+        "https://example.com/doc1.pdf",
+        "https://example.com/doc2.pdf",
+        "https://example.com/doc3.pdf",
+    ]
+
+    async with LeapOCR("your-api-key") as client:
+        # Submit all documents concurrently
+        jobs = await asyncio.gather(*[
+            client.ocr.process_url(url)
+            for url in urls
+        ])
+
+        # Wait for all to complete
+        results = await asyncio.gather(*[
+            client.ocr.wait_until_done(job.job_id)
+            for job in jobs
+        ])
+
+        total_credits = sum(r.credits_used for r in results)
+        total_pages = sum(len(r.pages) for r in results)
+
+        print(f"Processed {len(results)} documents")
+        print(f"Total credits: {total_credits}")
+        print(f"Total pages: {total_pages}")
+
+        await asyncio.gather(*[
+            client.ocr.delete_job(job.job_id)
+            for job in jobs
+        ])
+
+asyncio.run(batch_process())
+```
+
+For more examples, see the [`examples/`](./examples) directory.
+
+## Configuration
+
+### Custom Configuration
+
+```python
+from leapocr import LeapOCR, ClientConfig
+
+config = ClientConfig(
+    base_url="https://api.leapocr.com/api/v1",
+    timeout=120.0,
+    max_retries=5,
+    retry_delay=2.0,
+    retry_multiplier=2.0,
+)
+
+async with LeapOCR("your-api-key", config) as client:
+    # Use client with custom configuration
+    pass
+```
+
+### Environment Variables
+
+```bash
+export LEAPOCR_API_KEY="your-api-key"
+export OCR_BASE_URL="https://api.leapocr.com/api/v1"  # optional
+```
+
+## Error Handling
+
+The SDK provides a comprehensive error hierarchy for robust error handling:
+
+```python
+from leapocr import (
+    LeapOCRError,
+    AuthenticationError,
+    ValidationError,
+    APIError,
+    JobError,
+    NetworkError,
+)
+
+async def handle_errors():
+    try:
+        async with LeapOCR("your-api-key") as client:
+            result = await client.ocr.process_and_wait("document.pdf")
+
+    except AuthenticationError as e:
+        print(f"Authentication failed: {e.message}")
+
+    except ValidationError as e:
+        print(f"Invalid input: {e.message}")
+        if e.field:
+            print(f"  Field: {e.field}")
+
+    except JobError as e:
+        print(f"Job failed: {e.message}")
+        print(f"  Job ID: {e.job_id}")
+
+    except NetworkError as e:
+        print(f"Network error: {e.message}")
+        # Implement retry logic
+
+    except APIError as e:
+        print(f"API error: {e.message}")
+        print(f"  Status code: {e.status_code}")
+
+    except LeapOCRError as e:
+        print(f"SDK error: {e.message}")
+
+asyncio.run(handle_errors())
+```
+
+### Error Types
+
+- `LeapOCRError` - Base class for all SDK errors
+- `AuthenticationError` - Invalid or missing API key
+- `RateLimitError` - Rate limit exceeded
+- `ValidationError` - Invalid input parameters
+- `FileError` - File-related errors (not found, too large, etc.)
+- `JobError` - Job processing errors
+- `JobFailedError` - Job processing failed
+- `JobTimeoutError` - Job processing timed out
+- `NetworkError` - Network connectivity issues
+- `APIError` - API returned an error response
+- `InsufficientCreditsError` - Not enough credits
+
+## API Reference
+
+### Core Classes
+
+#### `LeapOCR`
+
+Main client class for interacting with the LeapOCR API.
+
+```python
+class LeapOCR:
+    def __init__(self, api_key: str, config: ClientConfig | None = None)
+    async def close(self) -> None
+    async def health(self) -> bool
+
+    # Use as async context manager
+    async with LeapOCR(api_key) as client:
+        ...
+```
+
+#### `OCRService`
+
+OCR operations service accessible via `client.ocr`.
+
+```python
+# Process file or URL (submit job)
+async def process_file(
+    file: str | Path | BinaryIO,
+    options: ProcessOptions | None = None,
+) -> ProcessResult
+
+async def process_url(
+    url: str,
+    options: ProcessOptions | None = None,
+) -> ProcessResult
+
+# Wait for job completion
+async def wait_until_done(
+    job_id: str,
+    poll_options: PollOptions | None = None,
+) -> JobResult
+
+# Job management
+async def get_job_status(job_id: str) -> JobStatus
+async def get_results(job_id: str, page: int = 1, limit: int = 100) -> JobResult
+async def delete_job(job_id: str) -> dict[str, Any]
+```
+
+### Data Models
+
+#### `ProcessOptions`
+
+```python
+@dataclass
+class ProcessOptions:
+    format: Format = Format.STRUCTURED
+    model: Model | None = None
+    schema: dict[str, Any] | None = None
+    instructions: str | None = None
+    template_slug: str | None = None  # Use existing template by slug
+    metadata: dict[str, str] = field(default_factory=dict)
+```
+
+#### `PollOptions`
+
+```python
+@dataclass
+class PollOptions:
+    poll_interval: float = 2.0  # seconds
+    max_wait: float = 300.0  # seconds (5 minutes)
+    on_progress: Callable[[JobStatus], None] | None = None
+```
+
+#### `ClientConfig`
+
+```python
+@dataclass
+class ClientConfig:
+    base_url: str = "https://api.leapocr.com/api/v1"
+    timeout: float = 30.0
+    max_retries: int = 3
+    retry_delay: float = 1.0
+    retry_multiplier: float = 2.0
+```
+
+## Development
+
+### Prerequisites
+
+- Python 3.9+
+- [uv](https://github.com/astral-sh/uv) (recommended) or pip
+- [OpenAPI Generator](https://openapi-generator.tech/) (for code generation)
+- Java 21+ (for OpenAPI Generator)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/leapocr/leapocr-python.git
+cd leapocr-python
+
+# Install dependencies
+make dev-install
+
+# Or using uv directly
+uv sync
+```
+
+### Common Tasks
+
+```bash
+make test               # Run unit tests
+make test-cov           # Run tests with coverage
+make test-integration   # Run integration tests (requires API key)
+make lint               # Run linters
+make format             # Format code
+make type-check         # Run type checking
+make check              # Run all checks (format, lint, type-check)
+```
+
+### Code Generation
+
+The SDK includes generated client code from the OpenAPI specification:
+
+```bash
+make fetch-spec         # Download OpenAPI spec
+make generate           # Generate client code
+make regenerate         # Fetch + generate (full refresh)
+```
+
+### Running Tests
+
+```bash
+# Unit tests only
+pytest tests/unit/
+
+# Integration tests (requires API key)
+export LEAPOCR_API_KEY="your-api-key"
+pytest tests/integration/
+
+# All tests with coverage
+pytest tests/ --cov=leapocr --cov-report=html
+```
+
+### Project Structure
+
+```
+leapocr-python/
+├── leapocr/               # Main package
+│   ├── __init__.py        # Public API
+│   ├── client.py          # Main client class
+│   ├── ocr.py             # OCR service
+│   ├── models.py          # Data models
+│   ├── errors.py          # Error classes
+│   ├── config.py          # Configuration
+│   ├── _internal/         # Internal utilities
+│   │   ├── retry.py       # Retry logic
+│   │   ├── upload.py      # File upload
+│   │   ├── polling.py     # Status polling
+│   │   ├── validation.py  # Input validation
+│   │   └── utils.py       # Common utilities
+│   └── generated/         # Generated OpenAPI client
+├── tests/
+│   ├── unit/              # Unit tests
+│   └── integration/       # Integration tests
+├── examples/              # Usage examples
+├── scripts/               # Development scripts
+└── Makefile               # Common development tasks
+```
+
+## Contributing
+
+We welcome contributions! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Standards
+
+- Follow PEP 8 style guide
+- Add type hints for all functions
+- Write docstrings for public APIs
+- Add tests for new features
+- Update documentation as needed
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support & Resources
+
+- **Documentation**: [docs.leapocr.com](https://docs.leapocr.com)
+- **API Reference**: [API Documentation](https://docs.leapocr.com/api)
+- **Issues**: [GitHub Issues](https://github.com/leapocr/leapocr-python/issues)
+- **Examples**: [examples/](./examples)
+- **Website**: [leapocr.com](https://www.leapocr.com)
+- **Support**: support@leapocr.com
+
+---
+
+**Version**: 0.0.2
