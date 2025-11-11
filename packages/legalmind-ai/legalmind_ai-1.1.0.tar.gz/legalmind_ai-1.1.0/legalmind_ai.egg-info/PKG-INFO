@@ -1,0 +1,93 @@
+Metadata-Version: 2.4
+Name: legalmind-ai
+Version: 1.1.0
+Summary: AI-Powered Legal Assistant for Indonesian Law with KUHP Baru 2026 Support
+Home-page: https://github.com/creatoross/legalmind-ai
+Author: LegalMind AI
+Author-email: contact@legalmind.ai
+License: MIT
+Project-URL: Homepage, https://github.com/creatoross/legalmind-ai
+Project-URL: Documentation, https://legalmind-ai.readthedocs.io
+Project-URL: Source, https://github.com/creatoross/legalmind-ai
+Project-URL: Tracker, https://github.com/creatoross/legalmind-ai/issues
+Project-URL: Changelog, https://github.com/creatoross/legalmind-ai/releases
+Keywords: legal,ai,artificial-intelligence,indonesian-law,hukum,indonesia,legal-tech,law-ai,kuhp-baru,kuhp-2026,legal-analysis,contract-review,legal-research,nlp
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Topic :: Office/Business
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: fastapi>=0.68.0
+Requires-Dist: uvicorn>=0.15.0
+Requires-Dist: python-dotenv>=0.19.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: scikit-learn>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: pre-commit>=2.15; extra == "dev"
+Provides-Extra: web
+Requires-Dist: jinja2>=3.0; extra == "web"
+Requires-Dist: aiofiles>=0.7; extra == "web"
+Requires-Dist: python-multipart>=0.0.5; extra == "web"
+Provides-Extra: ml
+Requires-Dist: transformers>=4.0; extra == "ml"
+Requires-Dist: torch>=1.9; extra == "ml"
+Requires-Dist: sentence-transformers>=2.0; extra == "ml"
+Provides-Extra: docs
+Requires-Dist: sphinx>=4.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.0; extra == "docs"
+Requires-Dist: myst-parser>=0.15; extra == "docs"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: platform
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# LegalMind AI - Indonesian Legal AI Assistant
+
+🌐 **Multiple AI Providers** - Qodo AI, OpenAI, and fallback options  
+📚 **Indonesian Law Focused** - Specialized for Indonesian legal system  
+🔧 **Easy to Use API** - Simple integration for developers  
+🚀 **Production Ready** - Battle-tested in real environments  
+
+## Installation
+
+```bash
+pip install legalmind-ai
+## What's New in v1.0.1
+- Added 19 real-world legal study cases
+- Included analysis scripts for legal research  
+- Enhanced documentation and examples
+- Improved package structure
+## 🎉 Version 1.0.2 - Study Cases Release
+- Successfully integrated 17 legal study cases
+- Enhanced package with real-world examples  
+- Ready for developer use and research
