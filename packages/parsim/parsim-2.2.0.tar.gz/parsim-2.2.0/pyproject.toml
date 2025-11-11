@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"] 
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parsim"
+authors = [
+    {name = "Ola Widlund", email = "ola.widlund@ri.se"},
+]
+description = "A tool for working with parameterized simulation models"
+readme = "README.rst"
+requires-python = ">=3.8"
+keywords = ["simulation", "numerical modeling", "doe", 
+    "design of experiments", "sampling", "dakota", "vvuq",
+    "quality assurance", "qa", "uq", "uncertainty quantification",
+    "parameterization", "parameterized models"]
+license = "GPL-3.0-only"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Environment :: Console"
+]
+dependencies = [
+    "pyexpander>=1.9",
+    "numpy",
+    "scipy",
+    "pyDOE3",
+    "pandas"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://gitlab.com/olwi/psm"
+Documentation = "https://parsim.readthedocs.io/en/latest/index.html"
+Repository = "https://gitlab.com/olwi/psm.git"
+Issues = "https://gitlab.com/olwi/psm/-/issues"
+Changelog = "https://gitlab.com/olwi/psm/-/blob/master/CHANGELOG.rst"
+
+[project.scripts]
+psm = "parsim.cli:psm_command"
+psm_dakota_driver = "parsim.dakota:psm_dakota_driver"
+
+[tool.setuptools.dynamic]
+version = {attr = "parsim.__release__"}

@@ -1,0 +1,38 @@
+#! /usr/bin/env python
+
+from __future__ import print_function
+import json
+
+# Model parameters
+
+#- Geometry
+length = $(length)
+width = $(width)
+height = $(height)
+
+#- Material properties
+density = $(density) # kg/m3
+color = '$(color)'
+
+# Calculations...
+
+base_area = length * width
+volume = base_area * height
+
+mass = volume * density
+
+# Print output (in json format)
+
+output = {
+            'base_area': base_area,
+            'volume': volume,
+            'mass': mass
+         }
+
+print('base_area =', base_area)
+print('volume =', volume)
+print('mass =', mass)
+
+with open('$(output_file)', 'w') as f:
+    f.write(json.dumps(output))
+    print('Successfully written results to output file "%s"' % '$(output_file)')

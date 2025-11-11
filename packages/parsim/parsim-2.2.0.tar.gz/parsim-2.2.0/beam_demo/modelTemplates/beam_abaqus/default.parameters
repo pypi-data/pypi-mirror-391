@@ -1,0 +1,43 @@
+### Script to prepare an abaqus input file for studying a steel beam under
+### 4 point bending using parameters to define the geometry, material
+### properties and the loading. Beam is exposed to fire, but the
+### uncertainty wrt this is handled outside of abaqus in the script.
+###
+### David Lange, Johan Anderson
+###
+#  Uncertain parameters are:
+# beam_length
+# flange_width
+# flange_thickness
+# web_depth
+# web_thickness
+# load_posn1
+# load_posn2
+# c_s
+# rho_s
+# E_s 
+# sigma_y_sa 
+# density 
+# elongation 
+# Load 
+#------------------------------------------------
+beam_length = 5200.0
+flange_width = 300
+flange_thickness = 19.
+web_depth = 300-2*19   # This works, because the parameter definition is parses as a Python expression. One could also write 'flange_width-2*flange_thickness'...
+web_thickness = 11.
+load_posn1 = 1400.
+load_posn2 = 3800.
+
+c_s = 460.
+
+E_s = 210000.           # Youngs Modulus of steel 
+sigma_y_sa = 355        # Yield stress of steel
+density = 7850e-9
+elongation = 14e-6      # thermal expansion, gradient
+Load = -100000.
+       
+h_c = 25e-6
+emissivity = 0.7
+
+job_id = 0

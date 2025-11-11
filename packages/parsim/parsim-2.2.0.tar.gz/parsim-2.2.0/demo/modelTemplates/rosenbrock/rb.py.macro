@@ -1,0 +1,35 @@
+"""
+Compute Rosenbrock function.
+"""
+from __future__ import print_function
+
+import json
+
+def rb(x1, x2):
+    return 100*(x2 - x1**2)**2 + (1 - x1)**2
+
+#-----------------------------------
+# Input data
+#-----------------------------------
+
+x1 = $(x1)
+x2 = $(x2)
+
+#-----------------------------------
+# Calculation/simulation
+#-----------------------------------
+
+f = rb(x1, x2)
+
+#-----------------------------------
+# Results output
+#-----------------------------------
+
+#print('x1', 'x2', 'f')
+#print(x1, x2, f)
+
+with open('results.out', 'w') as fout:
+    fout.write('%s\n' % str(f))
+
+with open('results.json', 'w') as fjson:
+    fjson.write(json.dumps({'f': f}))
