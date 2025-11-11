@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fluxloop"
+version = "0.1.4"
+description = "FluxLoop SDK for agent instrumentation and tracing"
+authors = [
+    {name = "FluxLoop Team", email = "team@fluxloop.dev"}
+]
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "pydantic>=2.0",
+    "httpx>=0.24.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.14.0",
+    "pexpect>=4.9.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "black>=23.0",
+]
+
+langchain = [
+    "langchain>=0.1.0",
+]
+
+langgraph = [
+    "langgraph>=0.0.20",
+]
+
+[project.urls]
+Homepage = "https://github.com/chuckgu/fluxloop"
+Documentation = "https://docs.fluxloop.dev"
+Repository = "https://github.com/chuckgu/fluxloop"
+Issues = "https://github.com/chuckgu/fluxloop/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fluxloop*"]
+exclude = ["tests*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+addopts = "-v --cov=fluxloop --cov-report=html --cov-report=term"
