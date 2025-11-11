@@ -1,0 +1,143 @@
+# Tristero
+[![PyPI version](https://badge.fury.io/py/tristero.svg)](https://badge.fury.io/py/tristero)
+[![Python Support](https://img.shields.io/pypi/pyversions/tristero.svg)](https://pypi.org/project/tristero/)
+
+This repository is home to Tristero's trading library.
+
+### Installation
+```
+pip install tristero
+```
+
+### Quick Start
+
+Execute a cross-chain swap in just a few lines:
+
+```py
+import os
+from tristero.client import TokenSpec, execute_swap
+from eth_account import Account
+from web3 import AsyncWeb3
+from tristero.api import ChainID
+
+private_key = os.getenv("EVM_PRIVATE_KEY")
+account = Account.from_key(private_key)
+w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("https://arbitrum-one-rpc.publicnode.com"))
+
+result = await execute_swap(
+    w3=w3,
+    account=account,
+    src_t=TokenSpec(chain_id=ChainID.arbitrum, token_address="0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"),  # USDT
+    dst_t=TokenSpec(chain_id=ChainID.base, token_address="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),  # USDC
+    raw_amount=10000000  # Raw token amount (multiply by 10^decimals)
+)
+```
+
+### How it works
+
+Tristero swaps happen in two steps:
+
+1. Quote & Sign - Request a quote from the server and sign it with your private key
+2. Submit & Fill - Submit the signed order to be filled at a later date
+
+This library provides both high-level convenience functions and lower-level components for precise control.
+
+### API Reference
+
+#### Execute Full Swap
+`execute_swap` handles the entire workflow automatically: quoting, signing, submitting, and monitoring.
+```py
+from tristero.swap import execute_swap, TokenSpec
+from web3 import AsyncWeb3
+from eth_account.signers.local import LocalAccount
+
+w3 = AsyncWeb3(...)  # Your Web3 provider
+account: LocalAccount = ...  # Your account
+
+result = await execute_swap(
+    w3=w3,
+    account=account,
+    src_t=TokenSpec(chain_id=ChainID.ethereum, token_address="0xA0b8..."),
+    dst_t=TokenSpec(chain_id=ChainID.arbitrum, token_address="0xaf88..."),
+    raw_amount=10*(10**18),
+    retry=True,
+    timeout=300.0  # 5 minutes
+)
+```
+
+#### Requesting a quote
+
+`get_quote` requests a quote for a particular swap, letting you see output amounts and gas fees.
+
+```py
+from tristero.api import get_quote, ChainID
+
+quote = await get_quote(
+    from_wallet="0x1234...",           # Source wallet address
+    to_wallet="0x5678...",             # Destination wallet address
+    from_chain_id=ChainID.ethereum,    # Source chain
+    from_address="0xA0b8...",          # Source token address (or "native")
+    to_chain_id=ChainID.arbitrum,      # Destination chain
+    to_address="0xaf88...",            # Destination token address (or "native")
+    amount=10*(10**18),                # Amount in smallest unit (wei)
+)
+```
+
+#### Creating a signed order
+`create_order` creates and signs an order without submitting to be filled.
+
+```py
+from tristero.api import get_quote, ChainID
+
+w3 = AsyncWeb3(...)  # Your Web3 provider
+account: LocalAccount = ...  # Your account
+
+data, sig = await create_order(
+    w3,
+    account,
+    from_chain_id=ChainID.ethereum,
+    from_address="0xA0b8...",
+    to_chain_id=ChainID.arbitrum,
+    to_address="0xaf88...",
+    raw_amount=10*(10**18),
+)
+
+```
+
+#### Submit order
+
+`fill_order` submits a signed order for execution.
+
+```py
+from tristero.api import fill_order
+
+data, sig = ... # from earlier
+
+response = await fill_order(
+    signature=str(sig.signature.to_0x_hex()),
+    domain=data.domain.model_dump(by_alias=True, mode="json"),
+    message=data.message.model_dump(by_alias=True, mode="json"),
+)
+
+order_id = response['id']
+```
+
+#### Subscribing for updates
+
+Orders can be monitored for changes and status live
+
+```py
+from tristero.api import poll_updates
+import json
+
+ws = await poll_updates(order_id)
+
+async for msg in ws:
+    update = json.loads(msg)
+    print(f"Completed: {update['completed']}")
+    print(f"Failed: {update['failed']}")
+
+    if update["completed"] or update["failed"]:
+        await ws.close()
+        break
+```
