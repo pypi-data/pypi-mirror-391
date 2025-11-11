@@ -1,0 +1,127 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm[toml]>=6.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grasp-sdk"
+version = "0.2.0"
+description = "Official Python SDK for the Grasp browser automation platform"
+readme = "README.md"
+authors = [{ name = "Grasp Team", email = "dev@getgrasp.ai" }]
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["browser", "automation", "chrome", "devtools", "cdp", "playwright", "puppeteer"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Internet :: WWW/HTTP :: Browsers"
+]
+dependencies = [
+  "httpx>=0.24.0",
+  "pydantic>=2.0",
+  "pydantic-core>=2.0",
+  "python-dateutil>=2.8",
+  "typing-extensions>=4.0; python_version<'3.10'"
+]
+
+[project.optional-dependencies]
+dev = [
+  # Core testing
+  "pytest>=7.0",
+  "pytest-asyncio>=0.20",
+  "pytest-httpx>=0.22",
+
+  # Enhanced testing output (Vitest-like)
+  "pytest-sugar>=0.9.7",      # Beautiful output with progress bars
+  "pytest-watch>=4.2.0",       # Watch mode like Vitest
+  "pytest-xdist>=3.0",         # Parallel test execution
+  "rich>=13.0",                # Beautiful terminal formatting
+  "pytest-cov>=4.0",           # Coverage reports
+
+  # Browser automation
+  "playwright>=1.40",
+
+  # Code quality
+  "black>=23.0",
+  "mypy>=1.0",
+  "ruff>=0.1.0",
+
+  # Build & publish
+  "build>=0.10",
+  "twine>=4.0"
+]
+
+[project.urls]
+Homepage = "https://getgrasp.ai"
+Documentation = "https://docs.getgrasp.ai"
+Repository = "https://github.com/getgrasp-ai/grasp"
+Issues = "https://github.com/getgrasp-ai/grasp/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["grasp*"]
+
+[tool.setuptools.package-data]
+"grasp" = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = [
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # flake8-bugbear
+  "C4", # flake8-comprehensions
+  "UP"  # pyupgrade
+]
+ignore = [
+  "E501",  # line too long (handled by black)
+  "B008",  # do not perform function calls in argument defaults
+  "W191"   # indentation contains tabs
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+no_implicit_optional = true
+check_untyped_defs = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["src"]
+# Enhanced output options
+addopts = [
+  "-v",                    # Verbose output
+  "--tb=short",           # Short traceback format
+  "--color=yes",          # Force colored output
+  "-ra",                  # Show all test summary info
+  "--strict-markers",     # Enforce marker registration
+  # Ensure sequential execution (no parallel)
+  "-p", "no:xdist",        # Disable xdist plugin to prevent parallel execution
+]
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "integration: integration tests",
+  "unit: unit tests",
+]
