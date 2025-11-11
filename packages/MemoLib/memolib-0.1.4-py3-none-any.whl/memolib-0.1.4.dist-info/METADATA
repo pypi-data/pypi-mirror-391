@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: MemoLib
+Version: 0.1.4
+Summary: A Python library for machine learning model training and inference
+Author-email: Your Name <your.email@example.com>
+Maintainer-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/MemoLib
+Project-URL: Repository, https://github.com/yourusername/MemoLib
+Project-URL: Documentation, https://github.com/yourusername/MemoLib#readme
+Project-URL: Bug Tracker, https://github.com/yourusername/MemoLib/issues
+Keywords: machine learning,deep learning,pytorch,yolo,efficientnet
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: torch>=1.12.0
+Requires-Dist: torchvision>=0.13.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: opencv-python>=4.5.0
+Requires-Dist: pillow>=8.0.0
+Requires-Dist: ultralytics>=8.0.0
+Requires-Dist: efficientnet-pytorch>=0.7.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: mypy>=0.900; extra == "dev"
+Provides-Extra: openvino
+Requires-Dist: openvino>=2023.0.0; extra == "openvino"
+Provides-Extra: all
+Requires-Dist: openvino>=2023.0.0; extra == "all"
+
+# MemoLib
+
+A Python library for machine learning model training and inference, supporting classification and object detection tasks.
+
+## Features
+
+- **Model Support**: EfficientNet (B0-B7, V2), YOLO models
+- **Tasks**: Classification and Object Detection
+- **Export**: Support for ONNX and OpenVINO formats
+- **Training**: Built-in training pipeline with callbacks
+- **Utilities**: Dataset format conversion, custom loss functions
+
+## Installation
+
+```bash
+pip install MemoLib
+```
+
+## Quick Start
+
+```python
+from MemoLib import MemoModel, eModelTask, eClassifyModel
+
+# Create a classification model
+model = MemoModel(eModelTask.Classification, eClassifyModel.EfficientNetB0)
+
+# Load weights and labels
+model.LoadWeight("path/to/weights.pth")
+model.LoadLabelName("path/to/labels.txt")
+
+# Make predictions
+result = model.Predict(image)
+print(f"Prediction: {result.label}, Confidence: {result.confidence}")
+```
+
+## Modules
+
+- **Model**: Core model classes and interfaces
+- **DataSerializer**: Configuration and serialization utilities
+- **DatasetFormatConvert**: Dataset format conversion tools
+- **Loss**: Custom loss functions (FocalLoss)
+
+## Requirements
+
+- Python >= 3.8
+- PyTorch >= 1.12.0
+- OpenCV >= 4.5.0
+- Other dependencies listed in pyproject.toml
+
+## License
+
+MIT License
