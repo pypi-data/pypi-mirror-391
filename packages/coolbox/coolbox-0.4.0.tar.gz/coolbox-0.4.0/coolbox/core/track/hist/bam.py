@@ -1,0 +1,45 @@
+from .base import HistBase, HistData, GenomeRange
+from coolbox.utilities.reader.tab import process_bam, coverage_by_samtools
+
+
+class BAMCov(HistBase):
+    """
+    Alignment reads coverage track.
+
+    Parameters
+    ----------
+    file: str
+        File path of bam file.
+
+    num_bins: int, optional
+        Number of bins to plot hist fig.
+
+
+    """
+
+    DEFAULT_PROPERTIES = {
+        "height": 3,
+        "style": HistBase.STYLE_FILL,
+        "color": "#6688ff",
+        "num_bins": 200
+    }
+
+    def __init__(self, file, **kwargs):
+        properties = BAMCov.DEFAULT_PROPERTIES.copy()
+        properties.update({
+            'file': file,
+            **kwargs,
+        })
+        super().__init__(**properties)
+        self.indexed_bam = process_bam(file)
+
+    def fetch_data(self, gr: GenomeRange, **kwargs) -> HistData:
+        bins = self.properties.get("num_bins", 200)
+        return self.fetch_coverage(gr, bins)
+
+    def fetch_coverage(self, genome_range: GenomeRange, bins=100):
+        return coverage_by_samtools(
+            self.indexed_bam,
+            str(genome_range),
+            bins
+        )
