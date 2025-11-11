@@ -1,0 +1,326 @@
+"""Clean semantic LLM message types with minimal, maintainable design."""
+
+from enum import Enum
+from typing import Any, Dict, Optional
+
+from playbooks.core.enums import LLMMessageRole, LLMMessageType
+from playbooks.llm.messages.base import LLMMessage
+from playbooks.state.variables import Artifact
+
+
+class FrameType(Enum):
+    """Frame type for state compression (video codec metaphor).
+
+    I-frame (Intra-frame): Full state - independent, can be decoded alone
+    P-frame (Predicted-frame): Delta state - depends on previous I-frame
+    """
+
+    I = "I"  # Full state  # noqa: E741
+    P = "P"  # Delta state
+
+
+# Core semantic message types - minimal set covering all use cases
+
+
+class SystemPromptLLMMessage(LLMMessage):
+    """System prompts and instructions."""
+
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.SYSTEM,
+            type=LLMMessageType.SYSTEM_PROMPT,
+        )
+
+
+class UserInputLLMMessage(LLMMessage):
+    """User inputs and instructions."""
+
+    def __init__(self, content: str, frame_type: FrameType = FrameType.I) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.USER_INPUT,
+        )
+        self.frame_type = frame_type
+
+    def to_compact_message(self) -> Optional[Dict[str, Any]]:
+        """Remove user inputs during compaction."""
+        return None
+
+
+class AssistantResponseLLMMessage(LLMMessage):
+    """LLM responses."""
+
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.ASSISTANT,
+            type=LLMMessageType.ASSISTANT_RESPONSE,
+        )
+
+    def to_compact_message(self) -> Dict[str, Any]:
+        """Use first two lines (execution_id and recap) for compaction."""
+        lines = self.content.strip("```python").strip("```").strip().split("\n")
+        lines = lines[:2]
+        return {"role": self.role.value, "content": "\n".join(lines)}
+
+
+class PlaybookImplementationLLMMessage(LLMMessage):
+    """Playbook markdown implementation."""
+
+    def __init__(self, content: str, playbook_name: str) -> None:
+        self.playbook_name = self._validate_string_param(playbook_name, "playbook_name")
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.PLAYBOOK_IMPLEMENTATION,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return super().__eq__(other) and self.playbook_name == other.playbook_name
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.playbook_name,
+            )
+        )
+
+
+class ExecutionResultLLMMessage(LLMMessage):
+    """Playbook execution results."""
+
+    def __init__(self, content: str, playbook_name: str, success: bool = True) -> None:
+        self.playbook_name = self._validate_string_param(playbook_name, "playbook_name")
+        if not isinstance(success, bool):
+            raise TypeError(f"success must be a boolean, got {type(success).__name__}")
+        self.success = success
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.EXECUTION_RESULT,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return (
+            super().__eq__(other)
+            and self.playbook_name == other.playbook_name
+            and self.success == other.success
+        )
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.playbook_name,
+                self.success,
+            )
+        )
+
+
+class AgentCommunicationLLMMessage(LLMMessage):
+    """Inter-agent communications."""
+
+    def __init__(self, content: str, sender_agent: str, target_agent: str) -> None:
+        self.sender_agent = self._validate_string_param(sender_agent, "sender_agent")
+        self.target_agent = self._validate_string_param(target_agent, "target_agent")
+
+        # Note: sender_agent can be the same as target_agent in meeting contexts
+        # or when an agent is processing its own messages
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.AGENT_COMMUNICATION,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return (
+            super().__eq__(other)
+            and self.sender_agent == other.sender_agent
+            and self.target_agent == other.target_agent
+        )
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.sender_agent,
+                self.target_agent,
+            )
+        )
+
+
+class MeetingLLMMessage(LLMMessage):
+    """Meeting-related communications."""
+
+    def __init__(self, content: str, meeting_id: str) -> None:
+        self.meeting_id = self._validate_string_param(meeting_id, "meeting_id")
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.MEETING_MESSAGE,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return super().__eq__(other) and self.meeting_id == other.meeting_id
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.meeting_id,
+            )
+        )
+
+
+class TriggerInstructionsLLMMessage(LLMMessage):
+    """Playbook trigger instructions."""
+
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.TRIGGER_INSTRUCTIONS,
+        )
+
+
+class AgentInfoLLMMessage(LLMMessage):
+    """Current agent information."""
+
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.AGENT_INFO,
+        )
+
+
+class OtherAgentInfoLLMMessage(LLMMessage):
+    """Other available agents information."""
+
+    def __init__(self, content: str) -> None:
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.OTHER_AGENT_INFO,
+        )
+
+
+class FileLoadLLMMessage(LLMMessage):
+    """File content loading."""
+
+    def __init__(self, content: str, file_path: str) -> None:
+        self.file_path = self._validate_string_param(file_path, "file_path")
+        # Note: Content size validation is now handled by base class
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.FILE_LOAD,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return super().__eq__(other) and self.file_path == other.file_path
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.file_path,
+            )
+        )
+
+
+class SessionLogLLMMessage(LLMMessage):
+    """Session logging and status updates."""
+
+    def __init__(self, content: str, log_level: str = "INFO") -> None:
+        # Validate log level
+        valid_levels = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+        if not isinstance(log_level, str):
+            raise TypeError(
+                f"log_level must be a string, got {type(log_level).__name__}"
+            )
+        if log_level not in valid_levels:
+            raise ValueError(
+                f"log_level must be one of {valid_levels}, got {log_level!r}"
+            )
+        self.log_level = log_level
+
+        super().__init__(
+            content=content,
+            role=LLMMessageRole.SYSTEM,  # Fixed: logs are system-level information
+            type=LLMMessageType.SESSION_LOG,
+        )
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality including custom attributes."""
+        if not isinstance(other, self.__class__):
+            return False
+        return super().__eq__(other) and self.log_level == other.log_level
+
+    def __hash__(self) -> int:
+        """Hash including custom attributes."""
+        return hash(
+            (
+                self.__class__.__name__,
+                self.content,
+                self.role,
+                self.type,
+                self.log_level,
+            )
+        )
+
+
+class ArtifactLLMMessage(LLMMessage):
+    """Artifacts."""
+
+    def __init__(self, artifact: Artifact) -> None:
+        self.artifact = artifact
+
+        super().__init__(
+            content=f"**Artifact {('$' + artifact.name) if not artifact.name.startswith('$') else artifact.name}**\n\n*Summary:*\n{artifact.summary}\n\n*Contents:*\n{artifact.value}\n\n",
+            role=LLMMessageRole.USER,
+            type=LLMMessageType.ARTIFACT,
+        )
