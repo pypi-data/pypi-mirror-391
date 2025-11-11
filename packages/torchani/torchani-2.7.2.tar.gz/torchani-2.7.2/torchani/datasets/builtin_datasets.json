@@ -1,0 +1,318 @@
+{
+ "TestData": {
+  "default-lot": "wb97x-631gd",
+  "info": "GDB subset, only for debugging and code test purposes",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "TestData-sample-wb97x-631gd.tar.gz",
+    "files": [
+     "test_data1.h5",
+     "test_data2.h5"
+    ]
+   }
+  }
+ },
+ "TestDataIons": {
+  "default-lot": "b973c-def2mtzvp",
+  "info": "Only for debugging and test purposes, includes forces, dipoles and charges",
+  "lot": {
+   "b973c-def2mtzvp": {
+    "archive": "TestData-ions-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "ANI-1x_sample-B973c-def2mTZVP.h5",
+     "Ions-sample-B973c-def2mTZVP.h5"
+    ]
+   }
+  }
+ },
+ "TestDataForcesDipoles": {
+  "default-lot": "b973c-def2mtzvp",
+  "info": "Only for debugging and code testing purposes, includes forces and dipoles",
+  "lot": {
+   "b973c-def2mtzvp": {
+    "archive": "TestData-forces_dipoles-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "ANI-1x_sample-B973c-def2mTZVP.h5"
+    ]
+   }
+  }
+ },
+ "IonsVeryHeavy": {
+  "default-lot": "b973c-def2mtzvp",
+  "info": "Dataset that includes ions, with H,C,N,O,F,S,Cl elements and at least one of Si,As,Br,Se,P,B,I (disjoint from LightIons and IonsHeavy) This dataset is not meant to be trained to on its own",
+  "lot": {
+   "b973c-def2mtzvp": {
+    "archive": "Ions-very_heavy-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "Ions-very_heavy-B973c-def2mTZVP.h5"
+    ]
+   }
+  }
+ },
+ "IonsHeavy": {
+  "default-lot": "b973c-def2mtzvp",
+  "info": "WARNING: This dataset may have incorrect energies and/or forces. Dataset that includes ions, with H,C,N,O elements and at least one of F,S,Cl (disjoint from IonsLight) This dataset is not meant to be trained to on its own",
+  "lot": {
+   "b973c-def2mtzvp": {
+    "archive": "Ions-heavy-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "Ions-heavy-B973c-def2mTZVP.h5"
+    ]
+   }
+  }
+ },
+ "IonsLight": {
+  "default-lot": "b973c-def2mtzvp",
+  "info": "WARNING: This dataset may have incorrect energies and/or forces. Dataset that includes ions, with H,C,N,O elements only. Not meant to be trained to on its own",
+  "lot": {
+   "b973c-def2mtzvp": {
+    "archive": "Ions-light-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "Ions-light-B973c-def2mTZVP.h5"
+    ]
+   }
+  }
+ },
+ "ANI1q": {
+  "default-lot": "wb97x-631gd",
+  "doi": "10.1038/s41597-020-0473-z",
+  "article": "The ANI-1ccx and ANI-1x data sets, coupled-cluster and density functional theory properties for molecules",
+  "info": "Very limited subset of ANI-1x for which 'atomic CM5 charges' are available. This dataset is not meant to be trained to on its own",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "ANI-1q-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-1q-wB97X-631Gd.h5"
+    ]
+   }
+  }
+ },
+ "ANI2qHeavy": {
+  "info": "Subset of ANI-2x 'heavy' for which 'atomic CM5 charges' are available. This dataset is not meant to be trained to on its own",
+  "doi": "TODO",
+  "article": "TODO",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "ANI-2q_heavy-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-2q_heavy-wB97X-631Gd.h5"
+    ]
+   }
+  },
+  "default-lot": "wb97x-631gd"
+ },
+ "ANI1ccx": {
+  "default-lot": "ccsd(t)star-cbs",
+  "doi": "10.1038/s41597-020-0473-z",
+  "article": "The ANI-1ccx and ANI-1x data sets, coupled-cluster and density functional theory properties for molecules",
+  "info": "This dataset also has Hartree Fock (HF) energies, RI-MP2 energies and forces and DPLNO-CCSD(T) energies for different basis sets and PNO settings. This dataset was originally used for transfer learning, not direct training",
+  "lot": {
+   "ccsd(t)star-cbs": {
+    "archive": "ANI-1ccx-ccsd_t_star-cbs.tar.gz",
+    "files": [
+     "ANI-1ccx-CCSD_parentheses_T_star-CBS.h5"
+    ]
+   }
+  }
+ },
+ "ANI1x": {
+  "doi": "10.1038/s41597-020-0473-z",
+  "article": "The ANI-1ccx and ANI-1x data sets, coupled-cluster and density functional theory properties for molecules",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "ANI-1x-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-1x-wB97X-631Gd.h5"
+    ]
+   },
+   "b973c-def2mtzvp": {
+    "archive": "ANI-1x-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "ANI-1x-B973c-def2mTZVP.h5"
+    ]
+   },
+   "wb97md3bj-def2tzvpp": {
+    "archive": "ANI-1x-wb97md3bj-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wB97MD3BJ-def2TZVPP.h5"
+    ]
+   },
+   "wb97mv-def2tzvpp": {
+    "archive": "ANI-1x-wb97mv-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wB97MV-def2TZVPP.h5"
+    ]
+   },
+   "wb97x-def2tzvpp": {
+    "archive": "ANI1x-wb97x-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wb97x-def2tzvpp.h5"
+    ]
+   }
+  },
+  "default-lot": "wb97x-631gd"
+ },
+ "ANI2x": {
+  "doi": "TODO",
+  "article": "TODO",
+  "info": "In all cases the 'v2' and '2x' datasets are supersets of the 'v1' and '1x' datasets, so everything that is in the v1/1x datasets is also in the v2/2x datasets, which contain extra structures, except for some wb97X/def2-TZVPP data points for which there are 'v1' values but not 'v2' values",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "ANI-2x-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-1x-wB97X-631Gd.h5",
+     "ANI-2x_heavy-wB97X-631Gd.h5",
+     "ANI-2x_dimers-wB97X-631Gd.h5"
+    ]
+   },
+   "b973c-def2mtzvp": {
+    "archive": "ANI-2x-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "ANI-1x-B973c-def2mTZVP.h5",
+     "ANI-2x_heavy_and_dimers-B973c-def2mTZVP.h5"
+    ]
+   },
+   "wb97md3bj-def2tzvpp": {
+    "archive": "ANI-2x-wb97md3bj-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wB97MD3BJ-def2TZVPP.h5",
+     "ANI-2x_heavy_and_dimers-wB97MD3BJ-def2TZVPP.h5"
+    ]
+   },
+   "wb97mv-def2tzvpp": {
+    "archive": "ANI-2x-wb97mv-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wB97MV-def2TZVPP.h5",
+     "ANI-2x_heavy_and_dimers-wB97MV-def2TZVPP.h5"
+    ]
+   },
+   "wb97x-def2tzvpp": {
+    "archive": "ANI2x-wb97x-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-1x-wb97x-def2tzvpp.h5",
+     "ANI-2x_subset-wb97x-def2tzvpp.h5"
+    ]
+   }
+  },
+  "default-lot": "wb97x-631gd"
+ },
+ "COMP6v1": {
+  "doi": "TODO",
+  "article": "TODO",
+  "info": "Test set, not meant for direct training. In all cases the 'v2' and '2x' datasets are supersets of the 'v1' and '1x' datasets, so everything that is in the v1/1x datasets is also in the v2/2x datasets, which contain extra structures, except for some wb97X/def2-TZVPP data points for which there are 'v1' values but not 'v2' values. Note that the ANI-BenchMD, S66x8 and the ``13`` molecules (with 13 heavy atoms) of GDB-10to13 were recalculated using ORCA 5.0 instead of 4.2, with default integration grids. The numerical difference is not significant for the purposes of training",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "COMP6-v1-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-BenchMD-wB97X-631Gd.h5",
+     "S66x8-v1-wB97X-631Gd.h5",
+     "DrugBank-testset-wB97X-631Gd.h5",
+     "Tripeptides-v1-wB97X-631Gd.h5",
+     "GDB11-07-wB97X-631Gd.h5",
+     "GDB11-08-wB97X-631Gd.h5",
+     "GDB11-09-wB97X-631Gd.h5",
+     "GDB11-10-wB97X-631Gd.h5",
+     "GDB11-11-wB97X-631Gd.h5",
+     "GDB13-12-wB97X-631Gd.h5",
+     "GDB13-13-wB97X-631Gd.h5"
+    ]
+   },
+   "b973c-def2mtzvp": {
+    "archive": "COMP6-v1-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "COMP6-v1_full-B973c-def2mTZVP.h5"
+    ]
+   },
+   "wb97md3bj-def2tzvpp": {
+    "archive": "COMP6-v1-wb97md3bj-def2tzvpp.tar.gz",
+    "files": [
+     "COMP6-v1_full-wB97MD3BJ-def2TZVPP.h5"
+    ]
+   },
+   "wb97mv-def2tzvpp": {
+    "archive": "COMP6-v1-wb97mv-def2tzvpp.tar.gz",
+    "files": [
+     "COMP6-v1_full-wB97MV-def2TZVPP.h5"
+    ]
+   },
+   "wb97x-def2tzvpp": {
+    "archive": "COMP6-v1-wb97x-def2tzvpp.tar.gz",
+    "files": [
+     "ANI-BenchMD-wB97X-def2TZVPP.h5",
+     "S66x8-v1-wB97X-def2TZVPP.h5",
+     "DrugBank-testset-wB97X-def2TZVPP.h5",
+     "Tripeptides-v1-wB97X-def2TZVPP.h5",
+     "GDB-7to9-wB97X-def2TZVPP.h5",
+     "GDB-10to13-wB97X-def2TZVPP.h5"
+    ]
+   }
+  },
+  "default-lot": "wb97x-631gd"
+ },
+ "COMP6v2": {
+  "doi": "TODO",
+  "article": "TODO",
+  "info": "Test set, not meant for direct training. Note that the ANI-BenchMD, S66x8 and the ``13`` molecules (with 13 heavy atoms) of GDB-10to13 were recalculated using ORCA 5.0 instead of 4.2, with default integration grids. The numerical difference is not significant for the purposes of training",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "COMP6-v2-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI-BenchMD-wB97X-631Gd.h5",
+     "S66x8-v1-wB97X-631Gd.h5",
+     "DrugBank-testset-wB97X-631Gd.h5",
+     "Tripeptides-v1-wB97X-631Gd.h5",
+     "GDB11-07-wB97X-631Gd.h5",
+     "GDB11-08-wB97X-631Gd.h5",
+     "GDB11-09-wB97X-631Gd.h5",
+     "GDB11-10-wB97X-631Gd.h5",
+     "GDB11-11-wB97X-631Gd.h5",
+     "GDB13-12-wB97X-631Gd.h5",
+     "GDB13-13-wB97X-631Gd.h5",
+     "GDB-heavy07-wB97X-631Gd.h5",
+     "GDB-heavy08-wB97X-631Gd.h5",
+     "GDB-heavy09-wB97X-631Gd.h5",
+     "GDB-heavy10-wB97X-631Gd.h5",
+     "GDB-heavy11-wB97X-631Gd.h5",
+     "Tripeptides-sulphur-wB97X-631Gd.h5",
+     "DrugBank-SFCl-wB97X-631Gd.h5"
+    ]
+   },
+   "b973c-def2mtzvp": {
+    "archive": "COMP6-v2-b973c-def2mtzvp.tar.gz",
+    "files": [
+     "COMP6-v1_full-B973c-def2mTZVP.h5",
+     "COMP6-heavy-B973c-def2mTZVP.h5"
+    ]
+   },
+   "wb97md3bj-def2tzvpp": {
+    "archive": "COMP6-v2-wb97md3bj-def2tzvpp.tar.gz",
+    "files": [
+     "COMP6-heavy-wB97MD3BJ-def2TZVPP.h5",
+     "COMP6-v1_full-wB97MD3BJ-def2TZVPP.h5"
+    ]
+   },
+   "wb97mv-def2tzvpp": {
+    "archive": "COMP6-v2-wb97mv-def2tzvpp.tar.gz",
+    "files": [
+     "COMP6-heavy-wB97MV-def2TZVPP.h5",
+     "COMP6-v1_full-wB97MV-def2TZVPP.h5"
+    ]
+   }
+  },
+  "default-lot": "wb97x-631gd"
+ },
+ "ANI1e": {
+    "article": "ANI-1E: An equilibrium database from the ANI-1 database",
+    "doi": "TODO",
+    "info": "Structures corresponding to all smiles extracted from the ANI-1x dataset, embedded in 3D space and optimized with PM7. This dataset does not have forces, but it has other physical properties: Rotational constants A, B, C (GHz); dipole and polarizability magnitudes (Debye and a_0^3 respectively); energy of HOMO and LUMO, and HOMO-LUMO gap (Ha); average <r^2> (spatial extent, a_0^2); zero point vibrational energies (ZPVE, Ha); zero Kelvin internal energy (Ha); thermal quantities, U, H, G, C_v, at 298.15 K (C_v in cal/K/mol, rest in Ha)",
+  "default-lot": "wb97x-631gd",
+  "lot": {
+   "wb97x-631gd": {
+    "archive": "ANI1e-wb97x-631gd.tar.gz",
+    "files": [
+     "ANI1e-equilibrium_structures-wb97x-631gd.h5"
+    ]
+   }
+  }
+ }
+}
