@@ -1,0 +1,17 @@
+import dspy
+import jsonlines
+from cwe2.database import Database
+
+from redcodegen.constants import LM
+
+dspy.configure(lm=LM)
+
+
+db = Database()
+entry = db.get(502)
+
+print(entry.name)
+print(entry.extended_description)
+
+
+
