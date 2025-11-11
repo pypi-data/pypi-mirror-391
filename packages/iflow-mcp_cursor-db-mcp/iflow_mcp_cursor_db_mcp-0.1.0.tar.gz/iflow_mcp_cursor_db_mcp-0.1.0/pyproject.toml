@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_cursor-db-mcp"
+version = "0.1.0"
+description = "A Model Context Protocol (MCP) server for accessing Cursor IDE's SQLite databases"
+authors = [{name = "jbdamask", email = "jbdamask@gmail.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "mcp>=1.0.0",
+    "pathlib>=1.0.1",
+    "typing>=3.7.4.3"
+]
+
+[project.scripts]
+cursor-db-mcp = "cursor_db_mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cursor-db-mcp*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "img/*"]
