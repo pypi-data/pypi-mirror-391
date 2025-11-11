@@ -1,0 +1,76 @@
+[project]
+name = "gibr"
+dynamic = ["version"]
+authors = [
+  { name="Yair Treister", email="ytreister@gmail.com" },
+]
+description = "A Git CLI tool for intelligently creating branch names"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["git", "cli", "automation", "github", "gitlab", "jira"]
+dependencies = [
+    "GitPython>=3.1.43",
+    "click>=8.3.0",
+    "python-slugify>=8.0.4",
+    "tabulate>=0.9.0",
+    "requests==2.32.5",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Version Control :: Git",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+jira = ["jira>=3.9.2"]
+gitlab = ["python-gitlab>=6.5.0"]
+github = ["PyGithub>=2.8.1"]
+azure = ["azure-devops>=7.1.0b4"]
+dev = [
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+]
+
+[project.scripts]
+gibr = 'gibr.cli:cli'
+
+[project.urls]
+Homepage = "https://github.com/ytreister/gibr"
+Repository = "https://github.com/ytreister/gibr"
+Issues = "https://github.com/ytreister/gibr/issues"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gibr"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build]
+exclude = ["venv"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src"
+]
+addopts = "-v --color=yes --cov-fail-under=90 --cov=. --cov-report xml"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I", "N", "D", "UP", "PLR"]
+ignore = ["D213", "D203", "D104"]
+
+[tool.coverage.run]
+omit = [
+    "tests/*"
+]
+
