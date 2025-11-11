@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "odino"
+version = "0.1.2"
+description = "Local semantic search CLI tool for codebases using embeddings"
+readme = "README.md"
+license = {text = "GPL-3.0-only"}
+authors = [
+    {name = "Carlo Esposito", email = "carlo@aploi.de"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.9.0",
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.2.0",
+    "rich>=13.0.0",
+    "tqdm>=4.64.0",
+    "numpy>=1.24.0",
+    "pathspec>=0.11.0",
+]
+
+[project.scripts]
+odino = "odino.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/cesp99/odino"
+Repository = "https://github.com/cesp99/odino"
+Issues = "https://github.com/cesp99/odino/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["odino*"]
+
+[tool.setuptools.package-data]
+odino = ["py.typed"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
