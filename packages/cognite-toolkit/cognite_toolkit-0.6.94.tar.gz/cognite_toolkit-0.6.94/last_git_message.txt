@@ -1,0 +1,30 @@
+[prep CDF-25332] ✅ Move read chunks into Uploadable interface (#2184)
+
+# Description
+
+This PR moves the `read_chunks` into the `UploadableStorageIO`
+interface. By doing this we no longer need to have the exception for
+AssetIO and can instead handle it directly in the IO class. I do this as
+the upcoming `DataPointsIO` will need a similar exception, thus I think
+it should be built into the interface and treated as part of the upload
+pattern, rather than two exceptions.
+
+Note that this solution gives the `IO` class control over the chunking,
+which is very useful for assets, as then each level in the hierarchy can
+be in different chunks. Today, they will be mixed.
+
+## Changelog
+
+- [x] Patch
+- [ ] Skip
+
+## cdf
+
+### Improved
+
+- [alpha] The `cdf data upload` command has improved the asset hierarchy
+upload. It now separates each level in the hierarchy by request.
+
+## templates
+
+No changes.
