@@ -1,0 +1,6 @@
+Name: bullet_robotics
+Description: Bullet extras that include several utilities for robotics including a urdf parser
+Requires: bullet
+Version: 2.89
+Libs: -L/project/_skbuild/linux-x86_64-3.9/cmake-install/giskardpy_bullet_bindings/lib -lBulletRobotics
+Cflags: -DBT_USE_DOUBLE_PRECISION -I/project/_skbuild/linux-x86_64-3.9/cmake-install/giskardpy_bullet_bindings/include/bullet -I/project/_skbuild/linux-x86_64-3.9/cmake-install/giskardpy_bullet_bindings/include/bullet_robotics
