@@ -1,0 +1,271 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Regional Data Mart Upload Service REST API Documentation",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "API для загрузки данных из ЭЖД"
+    }
+  ],
+  "paths": {
+    "/{version}/datamarts/{datamart_name}/tables/{table_name}/{operation}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "version",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "datamart_name",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": [
+          "API для загрузки данных из ЭЖД"
+        ],
+        "summary": "Загрузить сведения одним файлом.",
+        "operationId": "upload",
+        "parameters": [
+          {
+            "name": "table_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operation",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "text/csv": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Запрос выполнен успешно.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "3b051a83-fc5c-4b85-9ac6-e1c50333d066"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка входных данных."
+          },
+          "401": {
+            "description": "Идентификатор Системы-источника не допустимый или подпись ошибочная."
+          },
+          "500": {
+            "description": "Внутренняя ошибка."
+          }
+        }
+      }
+    },
+    "/{version}/requests/{request_id}/status": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "version",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "request_id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": [
+          "API для загрузки данных из ЭЖД"
+        ],
+        "summary": "Получить статус загрузки данных в РВД.",
+        "operationId": "status",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Запрос выполнен успешно.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "in_progress":{
+                        "code": 0,
+                        "description": "запрос буферизирован"
+                      },
+                    "success": {
+                        "code": 3,
+                        "description": "успешно обработан"
+                    },
+                    "failed": {
+                      "code": 5,
+                      "description": "идентификатор запроса не найден"
+                    }
+
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка входных данных."
+          },
+          "401": {
+            "description": "Идентификатор Системы-источника не допустимый или подпись ошибочная."
+          },
+          "500": {
+            "description": "Внутренняя ошибка."
+          }
+        }
+      }
+    },
+    "/api/v1/auth_system": {
+      "servers": [
+        {
+          "url": "http://localhost:8088",
+          "description": "Datamart Studio"
+        }
+      ],
+      "post": {
+        "description": "Настройка Proxy API (получение токена)",
+        "parameters": [ ],
+        "tags": [
+          "API для получение токена Proxy API"
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное получение токена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI5NGRuNzhOeVF2TjBhRG3NMcUdkc0tTOTNlTWxjNkRwRjZ5V1NXSUo4In0.eyJleHAiOjE2OTMzMTg0NzIsImlhdCI6MTY5MzMxNDg3MiwianRpIjoiYTJkNTQ5NDktZWYwZC00MzA1LWI5OTAtMDIxMTAyZDkzODU2IiwiaXNzIjoiaHR0cHM6Ly9rYy5kYXRhbWFydC5ydS9yZWFsbXMvc3R1ZGlvLWRldiIsInN1YiI6IjE1NjdkYWI3LTc1OTAtNGM0Zi1iNWNhLWYzMmFkOTU1NThjYyIsInR5cCI6IkJlYXJlciIsImF6cCI6InN0dWRpbyIsInNlc3Npb25fc3RhdGUiOiJlMGE0MjJlZC1hNDQxLTQzY2MtYTAxMS01MzNiY2RiNTc5OGQiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInN1cGVyYWRtaW4iLCJhZG1pbiJdfSwic2NvcGUiOiJvcGVuaWQgZW1haWwiLCJzaWQiOiJlMGE0MjJlZC1hNDQxLTQzY2MtYTAxMS01MzNiY2RiNTc5OGQiLCJ1cG4iOiJhZG1pbiIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhZGRyZXNzIjp7fSwibmFtZSI6ImFkbWluIGFkbWluIiwiZ3JvdXBzIjpbInN1cGVyYWRtaW4iLCJhZG1pbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJhZG1pbiIsIm9yZ2FuaXphdGlvbl9vZ3JuIjpbIjExMTIyMjMzMzQ0NCIsIjExMTEiXSwiZmFtaWx5X25hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uYWRtaW4ifQ.BC3sREXC3nf2LNvBX8SiHKouVGqJVfUBokVJa-B-9YW0zLhnNTs7mGZVOnC-kM-5mWE6bz8du0lvxQqiGpi3HRlAv1eedcGMTf_2TmjhohAaz--zSCdLC5NSmI79r54XYTLORiWKXj5T_AY8efFwWnWgUJ1LEkd5BTQyGSTvaoJkMv7xextA_isx_WoReHC5_-3GznNtcf_hOd2J1CfMHUFjhqMRSxMkIQDPHnspgU6WUz9IeVA1VWKh1GcggqYDtrruigQcl4_f7XeJQKJ49NNVdhjHtywUVbTpEDKYh4FsgAbf3vIPYUVwGWFW0Qm7LgUCpB8UvMQfb4UYZMF4UA",
+                    "expires_in": 3600,
+                    "refresh_expires_in": 3600,
+                    "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmYmMzOWNmNi1kZTRkLTQ2YWEtYTAwZi1iZGU3ZmFkNTJmNTgifQ.eyJleHAiOjE2OTMzMTg0NzIsImlhdCI6MTY5MzMxNDg3MiwianRpIjoiYWIxN2M0MzQtZGI4Yi00N2QwLTkyM2YtMTFiYmM3NzBiNmE4IiwiaXNzIjoiaHR0cHM6Ly9rYy5kYXRhbWFydC5ydS9yZWFsbXMvc3R1ZGlvLWRldiIsImF1ZCI6Imh0dHBzOi8va2MuZGF0YW1hcnQucnUvcmVhbG1zL3N0dWRpby1kZXYiLCJzdWIiOiIxNTY3ZGFiNy03NTkwLTRjNGYtYjVjYS1mMzJhZDk1NTU4Y2MiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoic3R1ZGlvIiwic2Vzc2lvbl9zdGF0ZSI6ImUwYTQyMmVkLWE0NDEtNDNjYy1hMDExLTUzM2JjZGI1Nzk4ZCIsInNjb3BlIjoib3BlbmlkIGVtYWlsIiwic2lkIjoiZTBhNDIyZWQtYTQ0MS00M2NjLWEwMTEtNTMzYmNkYjU3OThkIn0.SI6Tb6CJ5HIHwzETOyJZ-2nTLibGNq7JEQwW07fY-2M",
+                    "token_type": "Bearer",
+                    "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI5NGRuNzhOeVF2TjBhRGtvX3NMcUdkc0tTOTNlTWxjNkRwRjZ5V1NXSUo4In0.eyJleHAiOjE2OTMzMTg0NzIsImlhdCI6MTY5MzMxNDg3MiwiYXV0aF90aW1lIjowLCJqdGkiOiI5NDM1ZDE3NS00MzE2LTQyN2QtODlkYi1lYTJkOWJlZjJmNWIiLCJpc3MiOiJodHRwczovL2tjLmRhdGFtYXJ0LnJ1L3JlYWxtcy9zdHVkaW8tZGV2IiwiYXVkIjoic3R1ZGlvIiwic3ViIjoiMTU2N2RhYjctNzU5MC00YzRmLWI1Y2EtZjMyYWQ5NTU1OGNjIiwidHlwIjoiSUQiLCJhenAiOiJzdHVkaW8iLCJzZXNzaW9uX3N0YXRlIjoiZTBhNDIyZWQtYTQ0MS00M2NjLWEwMTEtNTMzYmNkYjU3OThkIiwiYXRfaGFzaCI6Ik9UZzZoUFQtWjhhWHR1Yjl1VV91LWciLCJhY3IiOiIxIiwic2lkIjoiZTBhNDIyZWQtYTQ0MS00M2NjLWEwMTEtNTMzYmNkYjU3OThkIiwidXBuIjoiYWRtaW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYWRkcmVzcyI6e30sIm5hbWUiOiJhZG1pbiBhZG1pbiIsImdyb3VwcyI6WyJzdXBlcmFkbWluIiwiYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4iLCJnaXZlbl9uYW1lIjoiYWRtaW4iLCJvcmdhbml6YXRpb25fb2dybiI6WyIxMTEyMjIzMzM0NDQiLCIxMTExIl0sImZhbWlseV9uYW1lIjoiYWRtaW4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmFkbWluIn0.K372NBffA3xtsxyM3hixr5GF1ouHNdr8DFMBYnGQ-t-REbYcwOymvs-D-HYEsmaUhkCWjKSeLM9taLmAPloSt2hb8xN_VG4s-gc_yvGs_aHkUehTqddjGMislPyAlydzCaDVxQ5Px-TplsDzIAwm5P0V23LDU3qwnVxVR7P3Dbxi5YB84_38zjClNrDWt9YOxnPMCzDT4fnBjGXkDcQZoHo5jsbFP_K5ymugsYEumKIZyekbY_l_A-XkRcTM6SMTRhKLAvQ3lq2YguLm2LFF3e-PrGsaEymeS-Peuff5qJw5Vf9r3_nD3APCivVc0Kunl8miRpr3lsZgSAp-xi3Jow",
+                    "not-before-policy": 0,
+                    "session_state": "e0a422ed-a441-43cc-a011-533bcdb5798d",
+                    "scope": "openidemail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/secure/{organization_ogrn}/{datamart_name}/{installation_name}/{installation_id}/{request_path}": {
+      "post": {
+        "description": "Запрос с использованием токена для подключения к API инсталляции Витрины",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_ogrn",
+            "description": "ОГРН организации, в рамках которой развёрнута Витрина",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "datamart_name",
+            "description": "Мнемоника Витрины",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "installation_name",
+            "description": "Имя инсталляции в целевой Витрине",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "installation_id",
+            "description": "Идентификатор инсталляции",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "request_path",
+            "description": "URI оригинального API инсталляции",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Токен proxy API",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "API для загрузки данных из ЭЖД через Proxy API"
+        ],
+        "responses": {
+          "200": {
+            "description": "Запрос выполнен успешно"
+          }
+        }
+      }
+    }
+  },
+  "components": {}
+}

@@ -1,0 +1,135 @@
+Metadata-Version: 2.4
+Name: uploader-client
+Version: 0.4.0
+Summary: Клиент для взаимодействия с Загрузчиком данных в витрину
+Author: BARS Group
+Author-email: education_dev@bars-open.ru
+License: MIT
+Classifier: Intended Audience :: Developers
+Classifier: Environment :: Web Environment
+Classifier: Natural Language :: Russian
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Framework :: Django :: 2.2
+Classifier: Framework :: Django :: 3.0
+Classifier: Framework :: Django :: 3.1
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Framework :: Django :: 4.1
+Description-Content-Type: text/markdown
+Requires-Dist: httpx<=0.38.1
+Requires-Dist: pydantic<=1.11
+Requires-Dist: requests<=2.32
+Requires-Dist: django<=5,>=2.2.28
+Requires-Dist: openapi-core<=0.19,>=0.14.5
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: summary
+
+# Клиент для взаимодействия с РВД посредством Адаптера
+## Подключение
+settings:
+
+    INSTALLED_APPS = [
+        'uploader_client',
+    ]
+
+
+apps:
+
+    from django.apps import AppConfig as AppConfigBase
+
+    class AppConfig(AppConfigBase):
+    
+        name = __package__
+    
+        def __setup_uploader_client(self):
+            import uploader_client
+    
+            uploader_client.set_config(
+                uploader_client.configuration.Config(
+                    agent_url='http://localhost:8090',
+                    system_mnemonics='MNSV03',
+                    timeout=1,
+                    request_retries=1,
+                )
+            )
+    
+        def ready(self):
+            super().ready()
+            self.__setup_uploader_client()
+
+## Использование Proxy API для отправки запросов в РВД
+Заменить используемый интерфейс на ProxyAPIInterface и добавить необходимые параметры в конфигурации:
+
+    uploader_client.set_config(
+        ...,
+        RegionalDataMartUploaderConfig(
+            interface='uploader_client.contrib.rdm.interfaces.rest.ProxyAPIInterface',
+            cache=<cache>,
+            url=<url>,
+            datamart_name=<datamart_name>,
+            organization_ogrn=<organization_ogrn>,
+            installation_name=<installation_name>,
+            installation_id=<installation_id>,
+            username=<username>,
+            password=<username>,
+        )
+    )
+где
+- cache - кеш django для хранения токена доступа (например, `caches[DEFAULT_CACHE_ALIAS]`);
+- url - URL до хоста Datamart Studio;
+- datamart_name - мнемоника Витрины;
+- organization_ogrn - ОГРН организации, в рамках которой развёрнута Витрина;
+- installation_name - имя инсталляции в целевой Витрине;
+- installation_id - идентификатор инсталляции;
+- username - имя пользователя IAM;
+- password - пароль пользователя IAM.
+ 
+
+## Эмуляция
+Заменить используемый интерфейс на эмулирующий запросы:
+
+    uploader_client.set_config(
+        ...,
+        uploader_client.configuration.Config(
+            interface=(
+                'uploader_client.contrib.rdm.interfaces.rest'
+                '.OpenAPIInterfaceEmulation'
+            )
+        )
+    )
+
+## Запуск тестов
+    $ tox
+
+## API
+
+### Передача сообщения
+
+    from uploader_client.adapters import adapter
+    from uploader_client.interfaces import OpenAPIRequest
+
+    class Request(OpenAPIRequest):
+
+        def get_url(self):
+            return 'http://localhost:8090/MNSV03/myedu/api/edu-upload/v1/multipart/csv'
+    
+        def get_method(self):
+            return 'post'
+    
+        def get_files(self) -> List[str]:
+            return [
+                Path('files/myedu_schools.csv').as_posix()
+            ]
+
+    result = adapter.send(Request())
