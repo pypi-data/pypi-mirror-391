@@ -1,0 +1,131 @@
+site_name: Eunomia
+
+repo_name: whataboutyou-ai/eunomia
+repo_url: https://github.com/whataboutyou-ai/eunomia
+
+copyright: Copyright &copy; 2025 - Eunomia authors
+
+theme:
+  name: material
+  logo: assets/logo-owl.png
+  favicon: assets/logo-owl.png
+  palette:
+    primary: white
+  font:
+    text: Inter
+    code: Source Code Pro
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+    - navigation.expand
+    - navigation.sections
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+    - announce.dismiss
+  custom_dir: docs/overrides
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      noclasses: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/whataboutyou-ai/eunomia
+      name: eunomia on GitHub
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/TyhGZtzg3G
+      name: community on Discord
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/eunomia-ai/
+      name: eunomia on PyPi
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_root_heading: true
+            heading_level: 3
+
+nav:
+  - Home: index.md
+  - Eunomia Server:
+      - Welcome to Eunomia: server/index.md
+      - Installation: server/installation.md
+      - Quickstart: server/quickstart.md
+      - Policy Decision Point:
+          - How Eunomia works: server/pdp/index.md
+          - Run the Eunomia Server: server/pdp/run_server.md
+          - Create a Policy: server/pdp/create_policies.md
+          - Check Permissions at Runtime: server/pdp/check_permissions.md
+      - Dynamic Fetchers:
+          - What are Dynamic Fetchers: server/fetchers/index.md
+          - Registry:
+              - Entity Registry: server/fetchers/registry/index.md
+              - Register an Entity: server/fetchers/registry/register_entities.md
+              - Update and Delete an Entity: server/fetchers/registry/update_delete_entities.md
+          - Passport:
+              - Agent Passport: server/fetchers/passport/index.md
+              - Issue a Passport: server/fetchers/passport/issue_passport.md
+  - MCP Middleware:
+      - Eunomia MCP Middleware: mcp_middleware/index.md
+      - Quickstart: mcp_middleware/quickstart.md
+      - Configure Policies: mcp_middleware/policies.md
+      - Agent Authentication: mcp_middleware/authentication.md
+      - Advanced Features:
+          - Centralized Policy Enforcement: mcp_middleware/advanced/centralized-pdp.md
+          - Use as Proxy Server: mcp_middleware/advanced/as-proxy.md
+          - Logging & Monitoring: mcp_middleware/advanced/logging.md
+  - API Reference:
+      - API Reference: api/index.md
+      - Eunomia:
+          - Eunomia Server: api/main/index.md
+          - Server API: api/main/api.md
+      - Eunomia Core:
+          - Eunomia Core: api/core/index.md
+          - Schemas: api/core/schemas.md
+      - SDKs:
+          - Eunomia SDKs: api/sdks/index.md
+          - Python SDK: api/sdks/python.md
+          - TypeScript SDK: api/sdks/typescript.md
+      - Extensions:
+          - Eunomia Extensions: api/extensions/index.md
+          - MCP: api/extensions/mcp.md
+          - LangChain: api/extensions/langchain.md
+  - Community:
+      - Join the Community: community/index.md
+      - How to Contribute: community/contribute.md
+      - License: community/license.md
