@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: ibm-watsonx-data-intelligence-mcp-server
+Version: 0.3.0
+Summary: MCP Server implementation for IBM Data Intelligence
+Author-email: Ramakanta Samal <rsamal@us.ibm.com>, Mithun Mithun <vbmithun@in.ibm.com>, Neeru Gupta <guptaneeru@us.ibm.com>, Tomasz Hanusiak <t.hanusiak@pl.ibm.com>, Bartłomiej Chwast <Bartlomiej.Chwast@ibm.com>, Robin Jose <robincjose@in.ibm.com>, Austin Joyal <austin.joyal@ibm.com>
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/ibm/data-intelligence-mcp-server
+Project-URL: Bug Reports, https://github.com/ibm/data-intelligence-mcp-server/issues
+Project-URL: Source, https://github.com/ibm/data-intelligence-mcp-server
+Project-URL: Documentation, https://github.com/ibm/data-intelligence-mcp-server
+Keywords: mcp,model-context-protocol,server,ai,fastmcp,watsonx-data-intelligence,ibm,watsonx,data-intelligence
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastmcp>=2.13.0
+Requires-Dist: pydantic>=2
+Requires-Dist: pyyaml>=6
+Requires-Dist: PyJWT>=2.8.0
+Requires-Dist: aiocache>=0.12.3
+Requires-Dist: tenacity>=9.0.0
+Provides-Extra: dev
+Requires-Dist: ruff>=0.12.10; extra == "dev"
+Requires-Dist: mcp>=1.0.0; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "test"
+Requires-Dist: pytest-cov>=7.0.0; extra == "test"
+Requires-Dist: httpx>=0.24.0; extra == "test"
+Requires-Dist: pytest-xdist>=3.5.0; extra == "test"
+Dynamic: license-file
+
+# Data Intelligence MCP Server
+
+The IBM Data Intelligence MCP Server provides a modular and scalable implementation of the Model Context Protocol (MCP), purpose-built to integrate with IBM Data Intelligence services. It enables secure and extensible interaction between MCP clients and IBM's data intelligence capabilities.
+
+For the list of tools supported in this version and sample prompts, refer to [Tools](https://github.com/IBM/data-intelligence-mcp-server/blob/main/TOOLS_PROMPTS.md).
+
+Resources:
+- [Integrating Claude + Data Intelligence](https://community.ibm.com/community/user/blogs/ramakanta-samal/2025/10/01/integrating-claude-with-watsonx-data-intelligence) A step-by-step guide showing how Claude Desktop connects to the Data Intelligence MCP Server.
+- [IBM Bob + Data Intelligence](https://community.ibm.com/community/user/blogs/xixiang-chen/2025/10/15/integrating-bob-with-watsonx-data-intelligence) Blog post demonstrates how IBM Bob integrates with the MCP Server for automation.
+- [Watsonx Orchestrate + Data Intelligence](https://community.ibm.com/community/user/blogs/ramakanta-samal/2025/09/25/data) Demonstrates how Watsonx Orchestrate integrates with the MCP Server for automation.
+---
+## Quick Install
+
+### Prerequisites
+- Python 3.11 or higher
+- Data Intelligence SaaS or CPD 5.2.1
+
+### Installation
+
+```bash
+pip install ibm-watsonx-data-intelligence-mcp-server
+```
+
+Or with uv:
+
+```bash
+uvx ibm-watsonx-data-intelligence-mcp-server
+```
+
+## Documentation
+
+For complete documentation, including:
+- Detailed setup instructions
+- Client configuration guides
+- Server modes (HTTP, HTTPS, stdio)
+- Environment configuration
+- SSL/TLS setup
+- Available tools and sample prompts
+
+Please visit the [GitHub repository](https://github.com/IBM/data-intelligence-mcp-server).
+
+## Basic Usage
+
+### Run in stdio mode (recommended for local setup)
+```bash
+uvx ibm-watsonx-data-intelligence-mcp-server --transport stdio
+```
+
+### Run in HTTPS mode
+```bash
+ibm-watsonx-data-intelligence-mcp-server --transport http --ssl-cert ./server.crt --ssl-key ./server.key
+```
+
+Check [SERVER_HTTPS.md](https://github.com/IBM/data-intelligence-mcp-server/blob/main/readme_guides/SERVER_HTTPS.md) for more information on setting up HTTPS.
+
+### Run in HTTP mode
+```bash
+ibm-watsonx-data-intelligence-mcp-server --transport http --host 0.0.0.0 --port 3000
+```
+
+For more configuration options and detailed instructions, please refer to the [GitHub repository README](https://github.com/IBM/data-intelligence-mcp-server).
+
+### CHANGELOG
+Refer to [CHANGELOG.md](https://github.com/IBM/data-intelligence-mcp-server/blob/main/CHANGELOG.md)
