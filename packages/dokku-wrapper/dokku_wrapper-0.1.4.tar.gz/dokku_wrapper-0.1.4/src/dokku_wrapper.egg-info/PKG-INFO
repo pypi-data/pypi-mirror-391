@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: dokku-wrapper
+Version: 0.1.4
+Summary: Um wrapper em Python para gerenciar aplicações Dokku
+Author-email: Jonatan Rodrigues da Silva <jonatanjrss@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/Jonatanjrss/dokku-wrapper
+Project-URL: Issues, https://github.com/Jonatanjrss/dokku-wrapper/issues
+Keywords: dokku,deploy,automation,wrapper
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pytest
+Requires-Dist: pytest-mock
+Dynamic: license-file
+
+# dokku-wrapper
+
+Wrapper em Python para gerenciar aplicações Dokku.
+
+## Instalação
+
+```bash
+
+pip install dokku-wrapper
+```
+
+## Uso
+
+```python
+from dokku_wrapper.dokku import Dokku
+
+dokku = Dokku() 
+dokku.apps.create("meu-app")  # cria uma nova aplicação
+dokku.apps.list()  # lista as aplicações existentes
+dokku.apps.destroy("meu-app")  # destrói uma aplicação
+```
