@@ -1,0 +1,40 @@
+[project]
+name = "poffertjes"
+dynamic = ["version"]
+description = "Friendly, pythonic interface for probabilistic queries on dataframes"
+keywords = ["probability", "statistics", "dataframes", "pandas", "polars"]
+readme = "README.md"
+authors = [{ name = "Silvio Lugaro", email = "silvio.lugaro@gmail.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "loguru>=0.7.3",
+    "marimo>=0.13.10",
+    "narwhals>=1.0.0",
+    "pandas>=2.2.3",
+    "pyarrow>=20.0.0",
+    "ruff>=0.11.10",
+    "plotly==6.4.0"
+]
+
+[project.scripts]
+poffertjes = "poffertjes:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "hypothesis>=6.0.0",
+    "polars>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[dependency-groups]
+dev = [
+    "polars>=1.35.1",
+    "pytest-cov>=7.0.0",
+]
