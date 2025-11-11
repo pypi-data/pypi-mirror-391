@@ -1,0 +1,1050 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./generated/client"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Enums
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum ProjectStatus {
+  IN_PROGRESS
+  COMPLETED
+  ON_HOLD
+}
+
+enum OrganizationRole {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+enum ProjectRole {
+  OWNER
+  MEMBER
+}
+
+enum DocumentSource {
+  UPLOAD
+  EMAIL
+}
+
+enum DocumentImportance {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum ClassificationStatus {
+  PENDING // AI 제안만 있음, 사용자 결정 대기
+  CLASSIFIED // 사용자가 분류함
+  UNCLASSIFIED // 사용자가 미분류 처리 (분류 안함)
+}
+
+enum ClassificationType {
+  EXISTING
+  NEW_TASK
+  NEW_PROJECT
+  SKIP // 광고/스팸 등으로 필터링된 이메일
+}
+
+enum ContactSource {
+  GMAIL
+  MANUAL
+}
+
+enum ProjectTagType {
+  COMPANY
+  CUSTOM
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+enum UserRuleCategory {
+  EMAIL_WRITING
+  RESPONSE_STYLE
+  CLASSIFICATION_PREFERENCE
+  GENERAL
+}
+
+enum EmailType {
+  RECEIVED // 받은 메일
+  SENT // 보낸 메일
+  DRAFT // 초안
+}
+
+enum EmailIndexingJobType {
+  ONBOARDING_SENT
+  ONBOARDING_INBOX
+  MANUAL_RESYNC
+  PUSH_NOTIFICATION
+}
+
+enum EmailIndexingJobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+  STALE
+}
+
+model User {
+  id              String  @id @default(cuid())
+  clerkId         String  @unique // Clerk에서 제공하는 사용자 ID
+  email           String  @unique
+  firstName       String?
+  lastName        String?
+  profileImageUrl String?
+  phoneNumber     String? // Page 3: 전화번호
+  isActive        Boolean @default(true)
+  version         Int     @default(1) // 낙관적 잠금 또는 스냅샷 버전 관리용
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Gmail 관련 관계
+  gmailTokens      UserGmailToken[]
+  emailPreferences UserEmailPreferences?
+  emailThreads     EmailThread[]
+  emails           Email[]
+
+  // Organization 관계 (Page 1: auth-onboarding)
+  organizationMemberships OrganizationMember[]
+
+  // Project 관계 (Page 6: project-detail)
+  projectMemberships ProjectMember[]
+
+  // Audit Log 관계
+  auditLogs  AuditLog[]
+  // Agent 업로드 파일 관계
+  agentFiles AgentFile[]
+  // User Rules 관계
+  userRules  UserRule[]
+
+  @@map("users") // 테이블명 명시
+}
+
+// Gmail OAuth 토큰 정보
+model UserGmailToken {
+  id           String    @id @default(cuid())
+  userId       String    @map("user_id")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email        String // Google 계정 이메일
+  accessToken  String    @map("access_token") // 암호화된 액세스 토큰
+  refreshToken String?   @map("refresh_token") // 암호화된 리프레시 토큰
+  tokenType    String    @default("Bearer") @map("token_type")
+  scope        String // 승인된 스코프
+  expiresAt    DateTime  @map("expires_at") // 토큰 만료 시간
+  isActive     Boolean   @default(true) @map("is_active")
+  lastSyncAt   DateTime? @map("last_sync_at") // Page 3: 마지막 이메일 동기화 시간
+  historyId    BigInt?   @map("history_id") // Gmail history ID for sync
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, email]) // Page 3: 사용자당 동일 Gmail 계정 중복 방지
+  @@index([userId])
+  @@index([email])
+  @@map("user_gmail_tokens")
+}
+
+// 회사 정보 (글로벌, 독립적)
+model Company {
+  id String @id @default(cuid())
+
+  name        String  @unique // 회사명 (예: "삼성전자", "LG전자")
+  domain      String? @unique // 도메인 (예: "samsung.com")
+  industry    String? // 업종 (예: "전자", "IT")
+  address     String? // 주소
+  website     String? // 웹사이트
+  description String? // 회사 설명
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organizations OrganizationCompany[] // 이 회사를 사용하는 조직들
+  contacts      Contact[] // 이 회사 소속 연락처들
+  projectLinks  ProjectCompany[]      @relation("ProjectCompanyLinks") // 이 회사와 관련된 프로젝트들
+  tags          ProjectTag[]          @relation("CompanyTags") // 이 회사 기반 프로젝트 태그들
+
+  @@index([name])
+  @@index([domain])
+  @@map("companies")
+}
+
+// 조직-회사 관계 (Organization이 관리하는 회사 목록)
+model OrganizationCompany {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  companyId      String
+  company        Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // 조직별 커스텀 메모 (선택)
+  note String? // 이 조직에서 이 회사에 대한 특별 메모
+
+  createdAt DateTime @default(now())
+
+  @@unique([organizationId, companyId])
+  @@index([organizationId])
+  @@index([companyId])
+  @@map("organization_companies")
+}
+
+// 외부 연락처 정보 (Organization이 관리)
+model Contact {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  companyId      String? // 소속 회사 (선택, 글로벌 Company 참조)
+  company        Company?     @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  name        String
+  email       String
+  phone       String? // Page 6: 전화번호
+  role        String? // Page 6: 직책/역할 (예: "CTO", "마케팅 팀장")
+  description String? // Page 6: 직무 및 역할 상세 설명
+  source      ContactSource @default(MANUAL)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  projects ProjectContact[] // Page 6: 프로젝트 관계
+
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@index([companyId])
+  @@index([organizationId, name])
+  @@map("contacts")
+}
+
+// 사용자 이메일 에이전트 설정
+model UserEmailPreferences {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  autoSyncEnabled      Boolean @default(true)
+  syncFrequencyMinutes Int     @default(30)
+  maxEmailsPerSync     Int     @default(100)
+  enableSmartSearch    Boolean @default(true)
+  lastHistoryId        String? // Phase 2.8: 점진적 동기화를 위한 마지막 historyId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_email_preferences")
+}
+
+// 이메일 스레드 정보
+model EmailThread {
+  id             String       @id @default(cuid())
+  userId         String       @map("user_id")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  gmailThreadId String   @map("gmail_thread_id") // Gmail에서 제공하는 스레드 ID
+  subject       String
+  participants  String[] // 참여자 이메일 주소 배열
+  lastMessageAt DateTime @map("last_message_at")
+  messageCount  Int      @default(1) @map("message_count")
+
+  isRead      Boolean  @default(false) @map("is_read")
+  isImportant Boolean  @default(false) @map("is_important")
+  labels      String[] // Gmail 라벨들
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 관계
+  emails Email[]
+
+  @@unique([userId, gmailThreadId])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([userId, lastMessageAt])
+  @@index([organizationId, lastMessageAt])
+  @@map("email_threads")
+}
+
+// 개별 이메일 정보
+model Email {
+  id             String       @id @default(cuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String // Page 5: Organization 참조
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  threadId       String
+  thread         EmailThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  gmailMessageId String // Gmail에서 제공하는 메시지 ID
+  messageId      String? // RFC 5322 Message-ID 헤더 (전역 고유, 조직 내 중복 체크용)
+  inReplyTo      String? // RFC 5322 In-Reply-To 헤더 (답장 대상 Message-ID)
+  references     String[] // RFC 5322 References 헤더 (스레드 내 모든 Message-ID 배열)
+  sender         String // 발신자 이메일
+  senderName     String? // 발신자 이름 (쌍따옴표 제거)
+  recipients     String[] // 수신자 이메일 배열 (To)
+  ccRecipients   String[] // 참조 수신자 배열 (Cc)
+  bccRecipients  String[] // 숨은 참조 수신자 배열 (Bcc)
+
+  subject    String
+  snippet    String? // Gmail에서 제공하는 스니펫
+  sentAt     DateTime // 발신 시간
+  receivedAt DateTime // 수신 시간
+
+  emailType   EmailType @default(RECEIVED) @map("email_type") // 이메일 타입 (받은 메일, 보낸 메일, 초안)
+  isRead      Boolean   @default(false)
+  isImportant Boolean   @default(false)
+  isDraft     Boolean   @default(false) // @deprecated emailType 사용 권장
+  labels      String[] // Gmail 라벨들
+
+  // AI 분석 제외 여부
+  excludeFromAnalysis Boolean @default(false) @map("exclude_from_analysis") // AI 분석 대상에서 제외 여부
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // -- Full-text search vectors (managed by db triggers) --
+  subject_tsvector Unsupported("tsvector")?
+  body_tsvector    Unsupported("tsvector")?
+
+  // 관계
+  content         EmailContent?
+  attachments     EmailAttachment[]
+  classifications EmailClassification[] // AI 제안 히스토리 (1:N 관계)
+
+  // 최종 분류 (M:N 관계, 멀티 프로젝트 지원)
+  emailTasks    EmailTask[] // 이 이메일이 연결된 태스크들
+  emailProjects EmailProject[] // 이 이메일이 연결된 프로젝트들
+
+  // 사용자 분류 승인 상태
+  emailApproval EmailApproval?
+
+  @@unique([userId, gmailMessageId])
+  @@index([userId, sentAt])
+  @@index([userId, sender])
+  @@index([userId, emailType]) // 이메일 타입별 조회
+  @@index([userId, emailType, sentAt]) // 이메일 타입별 시간순 조회
+  @@index([threadId])
+  @@index([organizationId])
+  @@index([organizationId, sentAt])
+  @@index([organizationId, emailType]) // 조직별 이메일 타입 조회
+  @@index([messageId]) // 전역 Message-ID 조회
+  @@index([organizationId, messageId]) // 조직 내 중복 체크
+  @@index([organizationId, inReplyTo]) // 조직 내 스레드 추적 (답장 대상)
+  @@index([organizationId, references]) // 조직 내 스레드 추적 (복합 조건)
+  @@index([references], type: Gin, map: "idx_emails_references_gin") // 배열 검색용 GIN 인덱스 (Step 2 필수!)
+  @@index([subject_tsvector], type: Gin, name: "idx_emails_subject_tsvector")
+  @@index([body_tsvector], type: Gin, name: "idx_emails_body_tsvector")
+  @@index([userId, excludeFromAnalysis]) // 사용자별 분석 대상 이메일 필터링
+  @@index([organizationId, excludeFromAnalysis]) // 조직별 분석 대상 이메일 필터링
+  @@map("emails")
+}
+
+// 이메일 본문 내용
+model EmailContent {
+  id      String @id @default(cuid())
+  emailId String @unique
+  email   Email  @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  textBody String? // 텍스트 본문
+  htmlBody String? // HTML 본문
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("email_contents")
+}
+
+// 이메일 첨부파일 메타데이터
+model EmailAttachment {
+  id      String @id @default(cuid())
+  emailId String
+  email   Email  @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  gmailAttachmentId String // Gmail에서 제공하는 첨부파일 ID
+  filename          String
+  mimeType          String
+  size              Int // 바이트 단위 크기
+
+  // OpenAI 파일 관련 필드
+  openaiFileId        String? // OpenAI에 업로드된 파일 ID
+  openaiFileExpiresAt DateTime? // OpenAI 파일 만료 시각
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  document  Document? // 프로젝트/태스크에 연결된 경우
+  updatedAt DateTime  @updatedAt
+
+  @@unique([emailId, gmailAttachmentId]) // Prevent duplicate attachments for same email
+  @@index([emailId])
+  @@index([filename])
+  @@index([mimeType])
+  @@index([openaiFileId])
+  @@map("email_attachments")
+}
+
+// ============================================
+// 이메일-태스크/프로젝트 최종 분류 (M:N 관계)
+// ============================================
+
+// 이메일-태스크 M:N 관계 (최종 분류)
+model EmailTask {
+  id      String @id @default(cuid())
+  emailId String
+  email   Email  @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  taskId  String
+  task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+  assignedBy String // User ID (승인한 사용자)
+
+  createdAt DateTime @default(now())
+
+  @@unique([emailId, taskId])
+  @@index([emailId])
+  @@index([taskId])
+  @@index([assignedBy])
+  @@map("email_tasks")
+}
+
+// 이메일-프로젝트 M:N 관계 (최종 분류)
+model EmailProject {
+  id        String  @id @default(cuid())
+  emailId   String
+  email     Email   @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+  assignedBy String // User ID (승인한 사용자)
+
+  createdAt DateTime @default(now())
+
+  @@unique([emailId, projectId])
+  @@index([emailId])
+  @@index([projectId])
+  @@index([assignedBy])
+  @@map("email_projects")
+}
+
+// 이메일 분류 승인 상태 (사용자 결정 추적)
+model EmailApproval {
+  id      String @id @default(cuid())
+  emailId String @unique
+  email   Email  @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  status ClassificationStatus @default(PENDING)
+
+  classifiedBy String? // User ID (분류/미분류 결정한 사용자)
+  classifiedAt DateTime?
+
+  // 사용자 코멘트 (분류/미분류 이유 등)
+  comment String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([classifiedBy])
+  @@index([emailId, status])
+  @@map("email_approvals")
+}
+
+// ============================================
+// AI 이메일 분류 제안 (히스토리 전용, Read-only)
+// ============================================
+//
+// 이 모델은 AI의 제안만 저장하며, 승인 상태는 관리하지 않습니다.
+// 실제 이메일이 어떤 프로젝트/태스크로 분류되었는지는 EmailTask, EmailProject를 확인하세요.
+//
+// suggestedData 구조 (프론트엔드 스펙에 맞춤):
+// - EXISTING: { 
+//     extractedCompanies: [{ id, name, domain, industry }],
+//     extractedContacts: [{ id, name, email, phone, role, company_id }]
+//   }
+// - NEW_TASK: { 
+//     suggestedTaskName: string,
+//     suggestedAssignee: { userId, name, organizationMemberId } | null,
+//     suggestedDueDate: string | null,
+//     extractedCompanies: [{ id, name, domain, industry }],
+//     extractedContacts: [{ id, name, email, phone, role, company_id }]
+//   }
+// - NEW_PROJECT: { 
+//     suggestedProjectName: string,
+//     suggestedTasks: [{
+//       name: string,
+//       description: string,
+//       assignee: { userId, name, organizationMemberId } | null,
+//       dueDate: "YYYY-MM-DD" | null
+//     }],
+//     selectedTaskForEmail: string,
+//     extractedCompanies: [{ id, name, domain, industry }],
+//     extractedContacts: [{ id, name, email, phone, role, company_id }]
+//   }
+//
+// 📝 Note: 백엔드 내부에서는 다른 구조를 사용하지만,
+//           save_classification.py에서 이 스펙으로 자동 변환됩니다.
+
+// 프로젝트 제안 (신규) - 워커가 제안한 프로젝트
+model ProjectProposal {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation("ProjectProposals", fields: [organizationId], references: [id], onDelete: Cascade)
+
+  proposedName        String // 제안된 프로젝트명
+  proposedDescription String? // 제안된 프로젝트 설명
+  proposedTasks       Json? // 제안된 태스크 배열 (suggestedTasks)
+
+  createdProjectId String? // 실제 생성된 프로젝트 ID (API 서버에서 업데이트)
+  createdTaskIds   String[] @default([]) // 실제 생성된 태스크 ID 배열 (API 서버에서 업데이트)
+  resolvedAs       String? // 해결 방식 (approved, rejected, merged 등)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 관계
+  classifications EmailClassification[]
+
+  @@unique([organizationId, proposedName])
+  @@index([organizationId])
+  @@index([createdProjectId])
+  @@map("project_proposals")
+}
+
+// 태스크 제안 (신규) - 워커가 제안한 태스크
+model TaskProposal {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation("TaskProposals", fields: [organizationId], references: [id], onDelete: Cascade)
+  projectId      String? // 제안될 프로젝트 ID (선택)
+  project        Project?     @relation("TaskProposals", fields: [projectId], references: [id], onDelete: SetNull)
+
+  proposedTaskName    String // 제안된 태스크명
+  proposedDescription String? // 제안된 태스크 설명
+  proposedAssignee    Json? // 제안된 담당자 정보 (userId, name, organizationMemberId)
+  proposedDueDate     String? // 제안된 마감일 (YYYY-MM-DD)
+
+  createdTaskId String? // 실제 생성된 태스크 ID (API 서버에서 업데이트)
+  resolvedAs    String? // 해결 방식 (approved, rejected 등)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 관계
+  classifications EmailClassification[]
+
+  @@unique([organizationId, projectId, proposedTaskName])
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([createdTaskId])
+  @@map("task_proposals")
+}
+
+model EmailClassification {
+  id      String @id @default(cuid())
+  emailId String
+  email   Email  @relation(fields: [emailId], references: [id], onDelete: Cascade)
+
+  classificationType ClassificationType
+
+  // AI 제안 (절대 변경되지 않음!)
+  suggestedProjectId String? // AI가 제안한 프로젝트 ID
+  suggestedTaskId    String? // AI가 제안한 태스크 ID
+  suggestedData      Json? // AI 제안 상세 정보
+
+  tags       String[] @default([]) // AI가 추출한 태그
+  confidence Float // 0.0 ~ 1.0
+  reason     String? // AI 분석 이유
+  metadata   Json? // 워커의 추론 과정 및 디버깅 정보 (decisionPath, step1~4 정보, entities 등)
+
+  // 워커 제안 관계 (워커가 생성한 proposal로 변환됨)
+  projectProposalId String?
+  projectProposal   ProjectProposal? @relation(fields: [projectProposalId], references: [id], onDelete: SetNull)
+  taskProposalId    String?
+  taskProposal      TaskProposal?    @relation(fields: [taskProposalId], references: [id], onDelete: SetNull)
+
+  // 변환 이력 추적 (API 서버에서 업데이트)
+  originalType ClassificationType? // 워커가 변환하기 전 원본 분류 타입
+  originalData Json? // 워커가 변환하기 전 원본 제안 데이터
+  convertedAt  DateTime?           @map("converted_at") // proposal로 변환된 시각
+
+  createdAt DateTime @default(now())
+
+  @@index([emailId])
+  @@index([classificationType])
+  @@index([suggestedProjectId])
+  @@index([suggestedTaskId])
+  @@index([projectProposalId])
+  @@index([taskProposalId])
+  @@map("email_classifications")
+}
+
+// 검색 결과 캐시
+model SearchCache {
+  id        String   @id @default(cuid())
+  userId    String
+  queryHash String // 검색 쿼리의 해시값
+  results   Json // 검색 결과 (JSON)
+  expiresAt DateTime // 캐시 만료 시간
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, queryHash])
+  @@index([expiresAt])
+  @@map("search_cache")
+}
+
+// 채팅 히스토리 저장소 (채팅 히스토리 기반 접근법)
+model ConversationHistory {
+  id        String   @id @default(cuid())
+  threadId  String   @unique
+  messages  String // JSON 형태로 저장된 BaseMessage 배열
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("conversation_histories")
+}
+
+// Debezium 소스 커넥터와 연동하기 위한 아웃박스 테이블
+model OutboxEvent {
+  id         BigInt   @id @default(autoincrement())
+  topic      String // 예: 'gmail.history.sync', 'ingest.email', ...
+  key        String // 파티션/멱등 키 (예: userId, messageId)
+  eventType  String   @map("event_type") // optional: create/update/delete 등
+  payload    Json // 메시지 본문
+  headers    Json? // optional: tracing, dedup, schema ver
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamp(3)
+  status     String   @default("pending") // 앱 내부 확인용
+
+  @@index([topic, occurredAt])
+  @@map("outbox_event")
+}
+
+// ============================================
+// Page 1: 인증 및 온보딩 (auth-onboarding.md)
+// ============================================
+
+// 조직 (Organization)
+model Organization {
+  id                  String   @id @default(cuid())
+  clerkOrganizationId String   @unique // Clerk Organization ID
+  name                String
+  description         String? // Page 2: 조직 설명
+  imageUrl            String? // Page 2: 조직 로고 URL
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  members          OrganizationMember[]
+  invitations      OrganizationInvitation[] // Page 2: 조직 초대 관계 추가
+  emailThreads     EmailThread[] // 이메일 스레드 관계 추가
+  emails           Email[] // Page 5: Email 관계 추가
+  projects         Project[] // Page 6: Project 관계 추가
+  companies        OrganizationCompany[] // Page 6: 조직이 관리하는 회사 목록
+  contacts         Contact[] // Page 6: 외부 연락처 관계 추가
+  projectProposals ProjectProposal[]        @relation("ProjectProposals") // 워커가 제안한 프로젝트
+  taskProposals    TaskProposal[]           @relation("TaskProposals") // 워커가 제안한 태스크
+  agentFiles       AgentFile[]
+
+  @@map("organizations")
+}
+
+// 조직 멤버십 (OrganizationMember)
+model OrganizationMember {
+  id                String           @id @default(cuid())
+  clerkMembershipId String           @unique // Clerk Membership ID
+  organizationId    String
+  userId            String
+  role              OrganizationRole
+
+  // AI 담당자 자동 배정을 위한 자연어 규칙 배열 (Page 2: Organization Settings)
+  assignmentRules String[] @default([]) // 예: ["마케팅 관련 태스크", "SNS 캠페인 기획"]
+
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId]) // 1 User per Organization
+  @@index([organizationId])
+  @@index([userId])
+  @@index([role])
+  @@map("organization_members")
+}
+
+// 조직 초대 (OrganizationInvitation)
+model OrganizationInvitation {
+  id                String       @id @default(cuid())
+  clerkInvitationId String       @unique // Clerk Invitation ID
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  email     String
+  role      OrganizationRole
+  status    InvitationStatus @default(PENDING)
+  invitedBy String // User ID (초대한 사용자)
+
+  // Audit Trail (감사 추적)
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime? // 초대 만료 시간
+  acceptedAt DateTime? // 수락 시간
+  revokedAt  DateTime? // 취소 시간
+  revokedBy  String? // 초대를 취소한 사용자 ID
+  updatedAt  DateTime  @updatedAt
+
+  // 재전송 추적
+  resendCount  Int       @default(0) // 재전송 횟수
+  lastResendBy String? // 마지막 재전송한 사용자 ID
+  lastResendAt DateTime? // 마지막 재전송 시각
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([organizationId, status]) // 조직별 상태 필터링
+  @@index([email])
+  @@map("organization_invitations")
+}
+
+// ============================================
+// Page 6: 프로젝트 상세 (project-detail.md)
+// ============================================
+
+// 프로젝트 (Project)
+model Project {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  status      ProjectStatus @default(IN_PROGRESS)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  members   ProjectMember[]
+  tasks     Task[] // 프로젝트의 태스크들
+  companies ProjectCompany[] // 프로젝트 관련 회사들
+  contacts  ProjectContact[] // 프로젝트 관련 연락처들
+  documents ProjectDocument[] // 프로젝트-문서 M:N 관계
+  tags      ProjectTag[] // 프로젝트 태그들 (자동 + 수동)
+
+  // 이 프로젝트에 분류된 이메일들
+  emailProjects EmailProject[]
+  taskProposals TaskProposal[] @relation("TaskProposals") // 워커가 제안한 태스크들
+
+  @@unique([organizationId, name]) // 한 조직 내 동일 이름 프로젝트 방지
+  @@index([organizationId])
+  @@index([status])
+  @@index([organizationId, status])
+  @@map("projects")
+}
+
+// 프로젝트 태그 (ProjectTag)
+model ProjectTag {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  name     String // 태그명
+  type     ProjectTagType
+  sourceId String? // type='company'일 때 Company ID
+  company  Company?       @relation("CompanyTags", fields: [sourceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, name]) // 프로젝트 내 태그명 중복 방지
+  @@index([projectId])
+  @@index([type])
+  @@index([sourceId])
+  @@index([projectId, type]) // 타입별 필터링
+  @@map("project_tags")
+}
+
+// 프로젝트 멤버십 (ProjectMember) - M:N 관계
+model ProjectMember {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role      ProjectRole @default(MEMBER)
+  joinedAt  DateTime    @default(now())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  assignedTasks Task[] @relation("TaskAssignee")
+
+  @@unique([projectId, userId]) // 1 User per Project
+  @@index([projectId])
+  @@index([userId])
+  @@map("project_members")
+}
+
+// 태스크 (Task)
+model Task {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  status      TaskStatus     @default(TODO)
+  assigneeId  String? // 담당자 ProjectMember ID
+  assignee    ProjectMember? @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  dueDate     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  // 이 태스크에 분류된 이메일들
+  emailTasks EmailTask[]
+
+  @@unique([projectId, title]) // 한 프로젝트 내 동일 이름 태스크 방지
+  @@index([projectId])
+  @@index([assigneeId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([projectId, status]) // 프로젝트 내 상태별 조회
+  @@map("tasks")
+}
+
+// 프로젝트-회사 관계 (ProjectCompany) - M:N 관계
+model ProjectCompany {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation("ProjectCompanyLinks", fields: [companyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, companyId])
+  @@index([projectId])
+  @@index([companyId])
+  @@map("project_companies")
+}
+
+// 프로젝트-연락처 관계 (ProjectContact) - M:N 관계
+model ProjectContact {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  contactId String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, contactId])
+  @@index([projectId])
+  @@index([contactId])
+  @@map("project_contacts")
+}
+
+// 문서 (Document)
+model Document {
+  id     String         @id @default(cuid())
+  name   String // 파일명
+  type   String // 'pdf', 'docx', 'xlsx', 'pptx', 'png', 'jpg', 'zip', 'etc'
+  size   Int // 파일 크기 (bytes)
+  url    String? // 파일 URL (S3 등, Gmail 첨부파일은 null)
+  source DocumentSource
+
+  // 직접 업로드인 경우
+  uploadedBy String? // User ID (source='UPLOAD'일 때만)
+
+  // 이메일 첨부파일인 경우
+  emailAttachmentId String?          @unique // EmailAttachment ID (source='EMAIL'일 때만)
+  emailAttachment   EmailAttachment? @relation(fields: [emailAttachmentId], references: [id], onDelete: Cascade)
+
+  aiImportance DocumentImportance?
+  aiReason     String? // AI 판단 이유
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // M:N 관계
+  projectLinks ProjectDocument[]
+
+  @@index([source])
+  @@index([uploadedBy])
+  @@index([aiImportance])
+  @@map("documents")
+}
+
+// 프로젝트-문서 매핑 테이블 (M:N)
+model ProjectDocument {
+  id         String   @id @default(cuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  linkedAt  DateTime @default(now())
+  linkedBy  String // User ID
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, documentId])
+  @@index([projectId])
+  @@index([documentId])
+  @@index([linkedBy])
+  @@map("project_documents")
+}
+
+// ============================================
+// Audit Log (감사 로그)
+// ============================================
+
+// 사용자 행위 추적 및 보안 감사를 위한 Audit Log
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String // 행위자 ID (내부 User ID)
+  clerkId    String? // Clerk User ID (참고용)
+  action     String // 행위 (예: "주문 생성", "프로젝트 삭제")
+  context    String // API 정보 (예: "POST /v1/orders")
+  targetData Json? // 결과값의 일부 (JSON 형태)
+  metadata   Json? // 추가 메타데이터 (선택)
+  createdAt  DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model AgentFile {
+  id                  String        @id @default(cuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId      String?
+  organization        Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  filename            String
+  mimeType            String
+  size                Int
+  url                 String
+  blobKey             String
+  openaiFileId        String?
+  openaiFileExpiresAt DateTime?
+  vectorStoreId       String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  deletedAt           DateTime?
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([openaiFileId])
+  @@map("agent_files")
+}
+
+model AgentUserVectorStore {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  vectorStoreId String
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("agent_user_vector_stores")
+}
+
+// ============================================
+// User Rules (사용자 맞춤 규칙)
+// ============================================
+
+// 사용자별 AI 에이전트 규칙 저장
+// 예: 이메일 작성 스타일, 응답 톤, 분류 선호사항 등
+model UserRule {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category  UserRuleCategory
+  content   String           @db.Text // 규칙 내용
+  isActive  Boolean          @default(true) // 활성화 여부
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([userId, category])
+  @@index([userId, isActive])
+  @@map("user_rules")
+}
+
+// ============================================
+// Email Indexing Job (이메일 수집 진행 상황 추적)
+// ============================================
+
+// 이메일 수집 작업 추적 테이블
+// 온보딩 시 SENT/INBOX 2개 작업 생성, 외부 워커가 진행 상황 업데이트
+model EmailIndexingJob {
+  id             String @id @default(cuid())
+  jobId          String @unique // UUID (correlationId와 동일)
+  userId         String
+  organizationId String
+
+  jobType EmailIndexingJobType
+  status  EmailIndexingJobStatus
+
+  totalEmails     Int @default(0)
+  processedEmails Int @default(0)
+  failedEmails    Int @default(0)
+
+  sinceDate DateTime? // 수집 시작 날짜
+  untilDate DateTime? // 수집 종료 날짜
+  emailType String? // 'SENT' | 'INBOX'
+
+  startedAt      DateTime? // 작업 시작 시간
+  completedAt    DateTime? // 작업 완료 시간
+  lastProgressAt DateTime? // 마지막 진행 상황 업데이트 시간
+  errorMessage   String?   @db.Text // 에러 메시지
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status]) // 사용자별 진행 중인 작업 조회
+  @@index([organizationId, status]) // 조직별 필터링
+  @@index([jobId]) // 개별 작업 조회 (SSE)
+  @@index([status, lastProgressAt]) // Stale 작업 감지용
+  @@map("email_indexing_jobs")
+}
+
+// Python client generator (used only in CI via --schema ./prisma)
+// Requires python package `prisma` installed in the environment running `prisma generate`.
+generator client_pkg_py {
+  provider = "prisma-client-py"
+  output   = "../packages/db-clients/py/src/sprintsolo_sally_db_client"
+}

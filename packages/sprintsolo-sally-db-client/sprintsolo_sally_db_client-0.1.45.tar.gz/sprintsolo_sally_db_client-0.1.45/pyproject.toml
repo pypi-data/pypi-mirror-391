@@ -1,0 +1,18 @@
+[project]
+name = "sprintsolo-sally-db-client"
+version = "0.1.45"
+description = "Prisma Python client for organization services (generated in central repo)"
+readme = "README.md"
+license = {text = "UNLICENSED"}
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"sprintsolo_sally_db_client" = "src/sprintsolo_sally_db_client"}
+packages = ["sprintsolo_sally_db_client"]
+
+[tool.setuptools.package-data]
+sprintsolo_sally_db_client = ["**/*"] 
