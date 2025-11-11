@@ -1,0 +1,74 @@
+
+#  Glide MCP
+
+> Note: **we're currently recording a demo video and features for this mcp. Stay tuned and thank you for your patience :)**
+
+
+
+### Configure MCP Client of your chosse to use Glide
+
+1. **Add to Cursor (Preferred):**
+
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=glide-mcp&config=eyJlbnYiOnsiVk9ZQUdFQUlfQVBJX0tFWSI6IiIsIkhFTElYX0FQSV9FTkRQT0lOVCI6IiIsIkNFUkVCUkFTX0FQSV9LRVkiOiIiLCJDRVJFQlJBU19NT0RFTF9JRCI6InF3ZW4tMy0zMmIiLCJIRUxJWF9MT0NBTCI6IiJ9LCJjb21tYW5kIjoidXZ4IC0tZnJvbSBnbGlkZS1tY3AgZ2xpZGUifQ%3D%3D)
+
+
+
+2. **Add to Claude Code:**
+make sure to fill in the api keys correctly, no quotes needed
+```zsh
+claude mcp add --transport stdio glide-mcp --env VOYAGEAI_API_KEY= --env HELIX_API_ENDPOINT= --env CEREBRAS_API_KEY= --env CEREBRAS_MODEL_ID=qwen-3-32b --env HELIX_LOCAL= --env MORPHLLM_API_KEY= -- uvx --from glide-mcp glide
+```
+
+
+3. **Add to VSCode**: 
+
+[![Install MCP Server](https://img.shields.io/badge/add_to_VSCode-blue)](vscode:mcp/install?{\"name\":\"glide-mcp\",\"command\":\"uvx\",\"args\":[\"--from\",\"glide-mcp\",\"glide\"],\"env\":{\"VOYAGEAI_API_KEY\":\"\",\"HELIX_API_ENDPOINT\":\"\",\"CEREBRAS_API_KEY\":\"\",\"CEREBRAS_MODEL_ID\":\"qwen-3-32b\",\"HELIX_LOCAL\":\"\"}})
+
+
+You can add the API keys needed by opening the command palette (Cmd+Shift+P) and searching for `"MCP: List MCP Servers"`. Make sure to fill in the API keys correctly.
+
+
+**Manual Installation:**
+
+Add the following to your `mcp.json` configuration in your preferred editor / IDE:
+
+```json
+{
+  "mcpServers": {
+    "glide-mcp": {
+      "command": "uvx",
+      "args": ["--from", "glide-mcp", "glide"],
+      "env": {
+        "VOYAGEAI_API_KEY": "",
+        "HELIX_API_ENDPOINT": "",
+        "CEREBRAS_API_KEY": "",
+        "CEREBRAS_MODEL_ID": "qwen-3-32b",
+        "HELIX_LOCAL": "",
+        "MORPHLLM_API_KEY": ""
+      }
+    }
+  }
+}
+```
+
+
+
+## Working with the source: 
+
+### 1. You can also clone the source
+```bash
+git clone https://github.com/SoarAILabs/glide.git
+```
+
+### 2. Navigate to the project directory
+
+```bash
+cd glide
+```
+
+### 3. Start the server
+
+```bash
+uv run python -m src.mcp.app
+```
+
