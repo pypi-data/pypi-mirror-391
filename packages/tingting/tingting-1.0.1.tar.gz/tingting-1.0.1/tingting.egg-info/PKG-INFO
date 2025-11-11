@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: tingting
+Version: 1.0.1
+Summary: Python client for TingTing
+Author-email: Prixa <anjelika@prixa.org>
+Keywords: tingting,api,client,sdk
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2
+Dynamic: license-file
+
+# TingTing Python Client
+
+A lightweight Python client for interacting with the [TingTing API](https://app.tingting.io).  
+Easily create and manage SMS/voice campaigns, contacts, and more — all from Python.
+
+---
+
+## 📦 Installation
+
+```bash
+pip install tingting
+```
+
+---
+
+## 🚀 Quickstart Example
+
+```python
+import os
+from dotenv import load_dotenv
+from tingting import Campaign, Category, Contact, Services, TingTingClient
+
+# Load environment variables (BASE_URL, TOKEN)
+load_dotenv()
+
+BASE_URL = os.environ.get("BASE_URL", "https://app.tingting.io")
+TOKEN = os.environ.get("TOKEN", "your_api_token_here")
+
+# Initialize client
+client = TingTingClient(BASE_URL, TOKEN)
+
+# Fetch available dialers & voices
+dialers = client.get_dialers()
+voices = client.get_voices()
+
+# Create a campaign
+campaign = Campaign(
+    client=client,
+    name="Phone Campaign Name",
+    services=Services.PHONE,
+    category=Category.TEXT,
+    message="This is the phone message to be said",
+    dialers=dialers,
+    voice=voices[0],
+    lengthFactor=1,  # Only works for premium voice
+).create()
+
+# Add contacts to the campaign
+for i in range(4):
+    contact = Contact(
+        client=client,
+        phoneNumber=str(9990000000 + i),
+        attributes={"name": "John", "age": 100 + i},
+    )
+    campaign.add_contact(contact)
+
+# Run the campaign
+campaign.run()
+```

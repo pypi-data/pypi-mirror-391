@@ -1,0 +1,32 @@
+[project]
+name = "tingting"
+version = "1.0.1"
+description = "Python client for TingTing"
+
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name="Prixa", email="anjelika@prixa.org" }
+]
+
+requires-python = ">=3.7"
+keywords = ["tingting", "api", "client", "sdk"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "requests>=2"
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 88
+target-version = "py37"
+select = ["E", "F", "I", "UP"]
+ignore = ["E501","E731"]
