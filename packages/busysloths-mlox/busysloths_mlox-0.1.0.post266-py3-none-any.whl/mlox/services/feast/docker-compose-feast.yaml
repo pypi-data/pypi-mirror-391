@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  feast-init:
+    build:
+      context: .
+    container_name: "feast_init"
+    environment:
+      FEAST_PROJECT_NAME: ${FEAST_PROJECT_NAME:-my_project}
+    volumes:
+      - ./feature_store.yaml:/app/${FEAST_PROJECT_NAME:-my_project}/feature_repo/feature_store_mlox.yaml
+      - ./${FEAST_PROJECT_NAME:-my_project}:/app/${FEAST_PROJECT_NAME:-my_project}
+    command: >
+      bash -c "
+      feast init ${FEAST_PROJECT_NAME:-my_project};
+      cd /app/${FEAST_PROJECT_NAME:-my_project}/feature_repo/;
+      rm -f feature_store.yaml;
+      cp feature_store_mlox.yaml feature_store.yaml"
+    networks:
+      # feast -c /app/${FEAST_PROJECT_NAME:-my_project}/feature_repo apply"
+      - feast_network
+
+  feast-registry:
+    build:
+      context: .
+    container_name: "feast_registry"
+    ports:
+      - ${FEAST_REGISTRY_PORT:-6564}:6564
+    environment:
+      FEAST_PROJECT_NAME: ${FEAST_PROJECT_NAME:-my_project}
+    volumes:
+      - ./${FEAST_PROJECT_NAME:-my_project}:/app/${FEAST_PROJECT_NAME:-my_project}
+      - ./feature_store.yaml:/app/${FEAST_PROJECT_NAME:-my_project}/feature_repo/feature_store.yaml
+      - ./cert.pem:/etc/ssl/certs/feast.crt:ro
+      - ./key.pem:/etc/ssl/private/feast.key:ro
+      - ./redis_ca.pem:/certs/redis_ca.pem:ro
+      - ./postgres_ca.pem:/certs/postgres_ca.pem:ro
+    depends_on:
+      - feast-init
+    command: >
+      bash -c "
+      cd /app/${FEAST_PROJECT_NAME:-my_project}/;
+      feast -c feature_repo serve_registry -p 6564 -c /etc/ssl/certs/feast.crt -k /etc/ssl/private/feast.key"
+    networks:
+      - feast_network
+
+networks:
+  feast_network:
+    name: feast-network

@@ -1,0 +1,274 @@
+LoginScreen {
+  background: #021c1dff;
+  color: #e6edf7;
+  margin: 4 4;
+}
+
+.app-header {
+  background: #0e9455ff;
+  color: #e6edf7;
+  text-style: bold;
+}
+
+#login-form {
+  width: auto;
+  height: auto;
+  margin: 10;
+  padding: 1 2;
+  background: #291488ff;
+  border: round #c420bbff;
+  color: #ffffff;
+  layer: 1;
+}
+
+#login-title {
+  content-align: center middle;
+  text-style: bold;
+  height: 3;
+  color: #e6edf7;
+}
+
+Input {
+  background: #042c07ff;
+  color: #e6edf7;
+  border: round #e65516ff;  
+}
+
+#project {
+  width: 32;
+  min-height: 3;
+  height: 3;
+  padding: 0 0;
+  margin: 0 0 0 0;
+  color: #e6edf7;
+}
+
+#password {
+  width: 32;
+  min-height: 3;
+  height: 3;
+  padding: 0 1;
+  margin: 0 0 1 0;
+  color: #e6edf7;
+}
+
+Button {
+  background: #cc19aeff;
+  color: #e6edf7;
+  border: round #f4e223ff;
+  text-style: bold;
+}
+
+#login-btn {
+  width: 16;
+  min-height: 3;
+  height: 3;
+  margin: 1 0 0 0;
+  content-align: center middle;
+}
+
+#message {
+  height: auto;
+  color: #ff6b6b;
+  margin-top: 1;
+}
+
+#main-area {
+  layout: horizontal;
+}
+
+#sidebar {
+  width: 32;
+  border: round #eccf2eff;
+  padding: 0;
+  margin-right: 1;
+}
+
+#detail-panel {
+  layout: vertical;
+  width: 1fr;
+  height: 1fr;
+  border: round #1bd6f3ff;
+  padding: 0;
+  min-height: 5;
+  background: #062c19ff;
+}
+
+#upper-pane {
+  layout: vertical;
+  height: 1fr;
+  min-height: 50%;
+  padding: 1;
+}
+
+#summary-pane {
+  layout: horizontal;
+  height: 1fr;
+}
+
+#main-tabs {
+  height: 1fr;
+}
+
+#overview-tab,
+#template-tab {
+  height: 1fr;
+}
+
+#overview-scroll,
+#template-scroll-wrapper {
+  height: 1fr;
+  width: 1fr;
+  overflow-y: auto;
+}
+
+#template-panel {
+  height: 1fr;
+  width: 1fr;
+  layout: vertical;
+}
+
+#template-content {
+  width: 1fr;
+}
+
+#selection-overview {
+  margin-right: 1;
+}
+
+#selection-overview,
+#selection-stats,
+#selection-logs,
+#selection-history {
+  margin: 0;
+}
+
+#selection-overview,
+#selection-stats {
+  width: 1fr;
+  min-width: 0;
+}
+
+#selection-stats {
+  margin-top: 0;
+}
+
+#activity-tabs {
+  height: 1fr;
+  min-height: 50%;
+}
+
+#activity-container {
+  border: round #2fa527ff;
+  background: #13270fff;
+  padding: 1;
+  margin-top: 1;
+}
+
+#logs-tab,
+#history-tab {
+  padding: 1;
+}
+
+#selection-logs,
+#selection-history {
+  layout: vertical;
+  height: 1fr;
+}
+
+#history-table {
+  margin-top: 1;
+}
+
+#history-status {
+  margin-top: 1;
+}
+
+.section-title {
+  text-style: bold;
+  color: #e6edf7;
+  margin-bottom: 1;
+}
+
+#log-controls {
+  layout: horizontal;
+  margin-bottom: 1;
+  align-horizontal: left;
+  align-vertical: middle;
+  height: auto;
+}
+
+#log-label {
+  width: 1fr;
+  min-width: 20;
+}
+
+#log-tail,
+#log-fetch {
+  margin-left: 1;
+}
+
+#log-tail {
+  width: 12;
+}
+
+#log-fetch {
+  width: auto;
+  min-width: 8;
+}
+
+#log-output,
+#log-status {
+  margin-top: 1;
+}
+
+#log-output {
+  height: 1fr;
+  min-height: 10;
+  border: round #1bd6f3ff;
+  background: #031410ff;
+}
+
+#history-table {
+  height: 1fr;
+  min-height: 10;
+  border: round #1bd6f3ff;
+}
+
+#log-status,
+#history-status {
+  color: #94a3b8;
+  margin-top: 1;
+}
+
+Tree {
+  height: 100%;
+  background: #052628ff;
+  scrollbar_color: #c21cbfff;              /* thumb color */
+  scrollbar_color_hover: #2fa527ff;        /* thumb on hover */
+  scrollbar_color_active: #f0e55cff; 
+  scrollbar_background: #052628ff;         /* track background */ 
+  scrollbar_background_hover: #05241bff;   /* track on hover */
+  scrollbar_background_active: #0c2116ff;  /* track while dragging */
+  scrollbar_size_horizontal: 1; 
+}
+
+#main-panel {
+  border: round #c21cbfff;
+  padding: 0;
+  height: 1fr;
+  background: #1f2503ff;
+}
+
+#home-content {
+  margin-top: 0;
+}
+
+#selection-title {
+  text-style: bold;
+  color: #e6edf7;
+}
+
+#selection-state {
+  color: #e6edf7;
+}
