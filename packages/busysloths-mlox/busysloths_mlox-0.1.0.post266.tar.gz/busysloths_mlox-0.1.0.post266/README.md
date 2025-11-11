@@ -1,0 +1,148 @@
+## BusySloths presents
+
+[![Logo](https://github.com/BusySloths/mlox/blob/main/mlox/resources/mlox_logo_wide.png?raw=true)](Logo)
+
+<p align="center">
+<strong>
+Accelerate your ML journey—deploy production-ready MLOps in minutes, not months.
+</strong>
+</p>
+
+Tired of tangled configs, YAML jungles, and broken ML pipelines? So were we.
+MLOX gives you a calm, streamlined way to deploy, monitor, and maintain production-grade MLOps infrastructure—without rushing.
+It’s for engineers who prefer thoughtful systems over chaos. Powered by sloths. Backed by open source.
+
+<p align="center">
+<a href="https://qlty.sh/gh/BusySloths/projects/mlox" target="_blank"><img src="https://qlty.sh/gh/BusySloths/projects/mlox/maintainability.svg" alt="Maintainability" /></a>
+<a href="https://qlty.sh/gh/BusySloths/projects/mlox" target="_blank"><img src="https://qlty.sh/gh/BusySloths/projects/mlox/coverage.svg" alt="Code Coverage" /></a>
+<a href="https://github.com/BusySloths/mlox/issues" target="_blank">
+<img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/busysloths/mlox"></a>
+<a href="https://github.com/BusySloths/mlox/discussions" target="_blank">
+<img alt="GitHub Discussions" src="https://img.shields.io/github/discussions/busysloths/mlox"></a>
+<a href="https://drive.google.com/file/d/1Y368yXcaQt1dJ6riOCzI7-pSQBnJjyEP/view?usp=sharing">
+  <img src="https://img.shields.io/badge/Slides-State_of_the_Union-9cf" alt="Slides: State of the Union" />
+</a>
+</p>
+
+## ATTENTION
+
+MLOX is still in a very early development phase. If you like to contribute in any capacity, we would love to hear from you `contact[at]mlox.org`.
+
+## What can you do with MLOX?
+
+### 📑 Want the big picture?  
+
+Check out our **[MLOX – State of the Union (Sept 2025)](https://drive.google.com/file/d/1Y368yXcaQt1dJ6riOCzI7-pSQBnJjyEP/view?usp=sharing)** —  
+a short slide overview of what MLOX is, what problem it solves, and where it’s heading.
+
+### Infrastructure
+
+- Manage servers: add, remove, tag, and name.
+- Choose your runtime: Native, Docker, or Kubernetes.
+- Spin up Kubernetes: single node or multi‑node clusters.
+
+### Services
+
+- Install, update, and remove services without fuss.
+- Centralized secrets and configuration, ready to use.
+- Secure Docker services: MLflow, Airflow, LiteLLM, Ollama, InfluxDB, Redis, and more.
+- Kubernetes add‑ons: Dashboard, Helm, Headlamp.
+- Import GitHub repositories — public or private — with ease.
+- Use GCP integrations in your code:
+  - BigQuery
+  - Secret Manager
+  - Cloud Storage
+  - Sheets
+
+## Unnecessary Long Introduction
+
+Machine Learning (ML) and Artificial Intelligence (AI) are revolutionizing businesses and industries. Despite its importance, many companies struggle to go from ML/AI prototype to production.
+
+ML/AI systems consist of eight non-trivial sub-problems: data collection, data processing, feature engineering, data labeling, model design, model training and optimization, endpoint deployment, and endpoint monitoring. Each of these step require specialized expert knowledge and specialized software.
+
+MLOps, short for **Machine Learning Operations,** is a paradigm that aims to tackle those problems and deploy and maintain machine learning models in production reliably and efficiently. The word is a compound of "machine learning" and the continuous delivery practice of DevOps in the software field.
+
+Cloud provider such as Google Cloud Platform or Amazon AWS offer a wide range of solutions for each of the MLOps steps. However, solutions are complex and costs are notorious hard to control on these platforms and are prohibitive high for individuals and small businesses such as startups and SMBs. E.g. a common platform for data ingestion is Google Cloud Composer who’s monthly base rate is no less than 450 Euro for a meager 2GB RAM VPS. Solutions for model endpoint hosting are often worse and often cost thousands of euros p. month (cf. Databricks).
+
+Interestingly, the basis of many cloud provider MLOps solutions is widely available open source software (e.g. Google Cloud Composer is based on Apache Airflow). However, these are  complex software packages were setup, deploy and maintaining is a non-trivial task.
+
+This is were the MLOX project comes in. The goal of MLOX is four-fold:
+
+MLOX is for everyone — individuals, startups, and small teams.
+
+1. [Infrastructure] MLOX provides an easy-to-use Web UI, TUI, and CLI to securely deploy, maintain, and monitor complete on‑premise MLOps infrastructures built from open‑source components and without vendor lock‑in.
+2. [Code] Use the MLOX PyPI package to connect your code to the infrastructure — ready-made integration helpers, SDK clients, and example snippets for common tasks.
+3. [Processes] MLOX provides fully-functional templates for dealing with data from ingestion, transformation, storing, model building, up until serving.
+4. [Lifecycle Management] Provide initial tooling to manage the lifecycle of services — migrate, upgrade, export, and decommission parts of your MLOps infrastructure*.
+
+*: planned for future releases
+
+More Links:
+
+1. [Wikipedia](https://en.wikipedia.org/wiki/MLOps)
+2. [Databricks](https://www.databricks.com/glossary/mlops)
+3. [Continuous Delivery for Machine Learning](https://martinfowler.com/articles/cd4ml.html)
+
+## Contributing
+
+### Sloth-Friendly Setup
+
+Easing into MLOX should feel like a lazy stretch on a sunny branch:
+
+1. Install [Task](https://taskfile.dev/installation/) – our go-powered task runner.
+2. Clone this repository.
+3. Mosey into the project and run:
+
+   ```bash
+   task first:steps
+   ```
+
+   This unhurried command crafts a conda environment and gathers every dependency for you.
+
+Once you're comfortably set up, there are many ways to contribute, and they are not limited to writing code. We welcome all contributions such as:
+
+- [Bug reports](https://github.com/BusySloths/mlox/issues/new/choose)
+- [Documentation improvements](https://github.com/BusySloths/mlox/issues/new/choose)
+- [Enhancement suggestions](https://github.com/BusySloths/mlox/issues/new/choose)
+- [Feature requests](https://github.com/BusySloths/mlox/issues/new/choose)
+- [Expanding the tutorials and use case examples](https://github.com/BusySloths/mlox/issues/new/choose)
+
+Please see our [Contributing Guide](https://github.com/BusySloths/mlox/blob/main/CONTRIBUTING.md) for details.
+
+### Project Organization
+
+We use GitHub Projects, Milestones, and Issues to organize our development workflow:
+
+- **[GitHub Projects](https://github.com/BusySloths/mlox/projects)**: High-level functional areas and strategic initiatives
+- **[Milestones](https://github.com/BusySloths/mlox/milestones)**: Release planning and goal tracking
+- **[Issues](https://github.com/BusySloths/mlox/issues)**: Specific features, bugs, and tasks
+
+📚 **Documentation:**
+
+- [GitHub Project Guide](docs/GITHUB_PROJECT.md) - Understanding our project organization
+- [Project Planning Guide](docs/PROJECT_PLANNING.md) - How to create and manage projects
+- [Labels Guide](docs/LABELS.md) - Our issue categorization system
+
+## Big Thanks to our Sponsors
+
+MLOX is proudly funded by the following organizations:
+
+<img src="https://github.com/BusySloths/mlox/blob/main/mlox/resources/BMFTR_logo.jpg?raw=true" alt="BMFTR" width="420px"/>
+
+## Supporters
+
+We would not be here without the generous support of the following people and organizations:
+
+<p align="center">
+<img src="https://github.com/BusySloths/mlox/blob/main/mlox/resources/PrototypeFund_logo_light.png?raw=true" alt="PrototypeFund" width="380px"/>
+<img src="https://github.com/BusySloths/mlox/blob/main/mlox/resources/PrototypeFund_logo_dark.png?raw=true" alt="PrototypeFund" width="380px"/>
+</p>
+
+## License  
+
+MLOX is open-source and intended to be a community effort, and it wouldn't be possible without your support and enthusiasm.
+It is distributed under the terms of the MIT license. Any contribution made to this project will be subject to the same provisions.
+
+## Join Us
+
+We are looking for nice people who are invested in the problem we are trying to solve.
