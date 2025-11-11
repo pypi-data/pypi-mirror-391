@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: miniqt
+Version: 0.1.0
+Summary: 一站式量化交易策略开发库，简化从策略搭建到实盘交易的全流程
+Author-email: owen <407841129@qq.com>
+License: MIT
+Project-URL: Homepage, https://github.com/MiniBtMaster/miniqt
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Office/Business :: Financial :: Investment
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click
+Requires-Dist: minibt
+Dynamic: license-file
+
+# MiniQT (MiniQuantTrader) - 量化交易可视化界面
+
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/MiniQtMaster/miniqt)
+
+MiniQT (MiniQuantTrader) 是基于 PyQt5 与 Fluent Widgets 构建的量化交易可视化界面，为 minibt 量化交易库提供现代化的图形操作界面，简化策略开发、回测分析和实盘监控的全流程。
+
+## ✨ 核心特性
+
+- 🖥️ **现代化界面** - 基于 Fluent Widgets 的优雅 UI 设计
+- 📊 **可视化分析** - 集成 Lightweight Charts 进行专业图表展示
+- 💻 **策略开发** - 支持语法高亮和自动补全的代码编辑器
+- 📈 **回测分析** - 多维度展示性能指标和回测结果
+- 🔄 **实时监控** - 动态更新市场数据和交易状态
+- ⚙️ **参数优化** - 图形化界面进行策略参数调优
+- 🚀 **一键启动** - 简洁的命令行接口快速启动应用
+
+## 🛠️ 技术栈
+
+- **界面框架**: PyQt5 / PySide6
+- **UI组件**: Fluent Widgets (现代化设计)
+- **图表可视化**: Lightweight Charts
+- **量化核心**: minibt 回测引擎
+- **命令行工具**: Click
+
+## 📦 安装
+
+### 从源码安装
+
+```bash
+# 克隆仓库
+git clone https://github.com/MiniQtMaster/miniqt.git
+cd miniqt
+
+# 安装依赖
+pip install -e .
+```
+
+### 从 PyPI 安装（计划中）
+
+```bash
+pip install miniqt
+```
+
+## 🚀 快速开始
+
+### 命令行启动
+
+```bash
+# 启动图形界面
+miniqt run
+
+# 或使用别名
+miniqt launch
+
+# 调试模式
+miniqt run --debug
+
+# 查看版本信息
+miniqt version
+```
+
+### Python 代码启动
+
+```python
+import miniqt
+
+# 启动图形界面
+miniqt.launch()
+
+# 或直接导入组件
+from miniqt import MainWindow, cfg
+```
+
+## 📁 项目结构
+
+```
+miniqt/
+├── app/                    # 应用核心代码
+│   ├── common/            # 通用组件和配置
+│   │   └── config.py      # 配置文件管理
+│   └── view/              # 界面视图
+│       └── main_window.py # 主窗口界面
+├── cli.py                 # 命令行接口
+├── __init__.py           # 包初始化和导出
+└── pyproject.toml        # 项目配置和依赖
+```
+
+## 🎯 功能模块
+
+### 策略开发
+- 可视化策略代码编辑器
+- 策略模板和示例
+- 代码调试和测试工具
+
+### 回测分析
+- 回测结果可视化
+- 性能指标多维分析
+- 参数优化和对比
+
+### 实时监控
+- 市场行情实时展示
+- 交易信号监控
+- 持仓和资金管理
+
+### 数据管理
+- 本地数据源管理
+- 实时数据接入
+- 历史数据回放
+
+## 🔧 配置说明
+
+MiniQT 支持丰富的配置选项，包括：
+
+- **界面主题**: 浅色/深色主题切换
+- **语言支持**: 多语言国际化
+- **DPI缩放**: 高分辨率显示器适配
+- **数据源配置**: 本地和远程数据源设置
+
+## 🤝 贡献指南
+
+我们欢迎社区贡献！请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 了解如何参与项目开发。
+
+1. Fork 本项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## 📞 联系我们
+
+- **项目仓库**: [https://github.com/MiniQtMaster/miniqt](https://github.com/MiniQtMaster/miniqt)
+- **联系邮箱**: 407841129@qq.com
+- **作者**: owen
+
+## 🙏 致谢
+
+感谢以下开源项目的支持：
+
+- [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) - Qt Python 绑定
+- [Fluent Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) - 现代化 UI 组件库
+- [minibt](https://github.com/MiniBtMaster/minibt) - 量化交易核心引擎
+- [Click](https://click.palletsprojects.com/) - Python 命令行工具库
+
+---
+
+**注意**: MiniQT 目前处于开发阶段 (v0.1.0)，部分功能可能仍在完善中。欢迎试用并提供反馈！
