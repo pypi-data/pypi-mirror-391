@@ -1,0 +1,66 @@
+"""
+因果推断模块
+"""
+
+# 从因果识别策略模块导入
+from .causal_identification_strategy import (
+    instrumental_variables_2sls,
+    difference_in_differences,
+    regression_discontinuity,
+    fixed_effects_model,
+    random_effects_model,
+    control_function_approach,
+    first_difference_model,
+    triple_difference,
+    event_study,
+    synthetic_control_method,
+    propensity_score_matching,
+    mediation_analysis,
+    moderation_analysis,
+    hausman_test,
+    IVResult,
+    DIDResult,
+    RDDResult,
+    FixedEffectsResult,
+    RandomEffectsResult,
+    ControlFunctionResult,
+    FirstDifferenceResult,
+    TripeDifferenceResult,
+    EventStudyResult,
+    SyntheticControlResult,
+    PSMMatchResult,
+    MediationResult,
+    ModerationResult,
+    HausmanResult
+)
+
+__all__ = [
+    "instrumental_variables_2sls",
+    "difference_in_differences",
+    "regression_discontinuity",
+    "fixed_effects_model",
+    "random_effects_model",
+    "control_function_approach",
+    "first_difference_model",
+    "triple_difference",
+    "event_study",
+    "synthetic_control_method",
+    "propensity_score_matching",
+    "mediation_analysis",
+    "moderation_analysis",
+    "hausman_test",
+    "IVResult",
+    "DIDResult",
+    "RDDResult",
+    "FixedEffectsResult",
+    "RandomEffectsResult",
+    "ControlFunctionResult",
+    "FirstDifferenceResult",
+    "TripeDifferenceResult",
+    "EventStudyResult",
+    "SyntheticControlResult",
+    "PSMMatchResult",
+    "MediationResult",
+    "ModerationResult",
+    "HausmanResult"
+]
