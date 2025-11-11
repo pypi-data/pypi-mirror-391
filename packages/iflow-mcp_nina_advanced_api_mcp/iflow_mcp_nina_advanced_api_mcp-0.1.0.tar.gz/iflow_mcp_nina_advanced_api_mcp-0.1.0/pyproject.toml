@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_nina_advanced_api_mcp"
+version = "0.1.0"
+description = "Model Context Provider for N.I.N.A. astrophotography software using Advanced API"
+authors = [
+    {name = "IFLOW", email = "iflow@example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "fastmcp>=0.1.0",
+    "fastapi>=0.95.0",
+    "uvicorn>=0.22.0",
+    "pydantic>=2.0.0",
+    "aiohttp>=3.8.0",
+    "python-dotenv>=1.0.0",
+    "python-dateutil>=2.8.2",
+    "pytz>=2023.3",
+    "structlog>=23.1.0",
+    "typing-extensions>=4.5.0",
+]
+
+[project.scripts]
+nina-advanced-mcp = "nina_advanced_mcp:main"
+
+[project.urls]
+Homepage = "https://github.com/PaDev1/Nina_advanced_api_mcp"
+Repository = "https://github.com/iflow-mcp/nina_advanced_api_mcp"
+Issues = "https://github.com/PaDev1/Nina_advanced_api_mcp/issues"
+
+[tool.setuptools]
+py-modules = ["nina_advanced_mcp"]

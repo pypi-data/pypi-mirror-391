@@ -1,0 +1,201 @@
+Metadata-Version: 2.4
+Name: iflow-mcp_nina_advanced_api_mcp
+Version: 0.1.0
+Summary: Model Context Provider for N.I.N.A. astrophotography software using Advanced API
+Author-email: IFLOW <iflow@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/PaDev1/Nina_advanced_api_mcp
+Project-URL: Repository, https://github.com/iflow-mcp/nina_advanced_api_mcp
+Project-URL: Issues, https://github.com/PaDev1/Nina_advanced_api_mcp/issues
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: fastmcp>=0.1.0
+Requires-Dist: fastapi>=0.95.0
+Requires-Dist: uvicorn>=0.22.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: python-dateutil>=2.8.2
+Requires-Dist: pytz>=2023.3
+Requires-Dist: structlog>=23.1.0
+Requires-Dist: typing-extensions>=4.5.0
+
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/padev1-nina-advanced-api-mcp-badge.png)](https://mseep.ai/app/padev1-nina-advanced-api-mcp)
+
+# Nina_advanced_api_mcp
+Interface for AI agents to use your astrophotography setup using N.I.N.A (Beta)
+# N.I.N.A Model Context Protocol Server for Advanced API Plugin v2 (MCP)
+
+A powerful interface for controlling N.I.N.A. (Nighttime Imaging 'N' Astronomy) software through its Advanced API [NINA Advanced API](https://github.com/christian-photo/ninaAPI) . This Model Context Protocol Server (MCP) enables AI agents to interact with NINA using tools, providing new way to interact with your setup. Usage with your own responsibility.
+
+<div align="center">
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![NINA](https://img.shields.io/badge/NINA-3.0+-green.svg)](https://nighttime-imaging.eu/)
+
+</div>
+
+## 🌟 Features
+
+- **Complete Equipment Control for AI agents**
+  - Cameras (capture, cooling, settings, connecting ....)
+  - Mounts (slewing, parking, tracking...)
+  - Focusers (movement, temperature compensation ... )
+  - Filter Wheels (filter selection, info ...)
+  - Domes (rotation, shutter control ...)
+  - Rotators (movement, sync...)
+  - ...
+
+- **AI Integration**
+  - Natural language command processing
+  - Contextual help system
+  - Intelligent error responses
+  - Automated decision making
+    
+- **Most of the NINA advanced API v2 api interface endpoints supported
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.8 or higher
+- NINA software with Advanced API plugin
+- `uv` package manager
+- AI agent with MCP support (e.g., Claude)
+
+### Installation
+
+1. **Install NINA Advanced API Plugin**
+   ```bash
+   # Install the plugins in NINA
+   # Enable and configure in NINA settings
+   ```
+
+2. **Clone Repository**
+   ```bash
+   git clone https://github.com/PaDev1/Nina_advanced_api_mcp.git
+   cd nina-mcp
+   ```
+
+3. **Set Environment Variables**
+   ```bash
+   # Create .env file
+   NINA_HOST=your_nina_host
+   NINA_PORT=1888
+   LOG_LEVEL=INFO
+   IMAGE_SAVE_DIR=~/Desktop/NINA_Images
+   ```
+
+### Configuration
+
+#### MCP Server Setup
+Add to your AI agent's MCP configuration:
+```json
+{
+  "mcpServers": {
+    "nina_advanced_mcp_api": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "fastmcp,fastapi,uvicorn,pydantic,aiohttp,requests,python-dotenv",
+        "fastmcp",
+        "run",
+        "path/nina_advanced_mcp.py"
+      ],
+      "env": {
+        "NINA_HOST": "NINA_IP",
+        "NINA_PORT": "1888",
+        "LOG_LEVEL": "INFO",
+        "IMAGE_SAVE_DIR": "~/Desktop/NINA_Images"
+      }
+    }
+  }
+}
+```
+
+## 📚 Usage
+
+### Basic AI Examples with Claude Destop
+- Connect to nina
+- read the setup
+- connect my camera, mount, filter wheel and guider
+- read the sequesces and let me select the sequence to start
+
+### AI Agent Commands
+
+```plaintext
+- "Take a 30-second exposure of M31"
+- "Connect all equipment and start cooling the camera to -10°C"
+- "Start a sequence targeting NGC 7000"
+- "Get the current equipment status"
+```
+
+
+
+## 📖 API Documentation
+
+### Core Modules
+
+#### Equipment Control
+- Camera operations
+- Mount control
+- Focuser management
+- Filter wheel control
+- Dome automation
+- Rotator functions
+
+#### Imaging
+- Capture configuration
+- Image processing
+- File management
+- Statistics gathering
+
+#### System
+- Connection handling
+- Status monitoring
+- Error management
+- Configuration
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) first.
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## 🐛 Bug Reports
+
+Found a bug? Please open an issue with:
+- Detailed description
+- Steps to reproduce
+- Expected vs actual behavior
+- System information
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [NINA](https://nighttime-imaging.eu/) - The core astronomy software
+- [NINA Advanced API](https://bump.sh/christian-photo/doc/advanced-api) - API documentation
+
+## 🔗 Related Projects
+
+- [Touch'N'Stars](https://github.com/Touch-N-Stars/Touch-N-Stars) - WebApp for Mobile Control of NINA
+- [NINA Plugins](https://nighttime-imaging.eu/plugins/) - Official NINA plugin repository
+
