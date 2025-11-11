@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "serverless-devs"
+version = "1.0.4"
+description = "Serverless Devs 开发者工具 - Python 安装包（自动安装最新版本）"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+keywords = ["serverless", "devs", "aliyun", "faas"]
+authors = [
+    {name = "Serverless Devs", email = "service@serverless-devs.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://www.serverless-devs.com/"
+Documentation = "https://www.serverless-devs.com/"
+Repository = "https://github.com/Serverless-Devs/Serverless-Devs"
