@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylunix_icon_kit"
+version = "1.0.0"
+description = "A PyLunix tool to generate Python QIcon modules from SVG themes"
+authors = [
+    { name="Magicsoldier19", email="magicsoldier19@gmail.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+    "pyqt5",
+]
+
+[project.optional-dependencies]
+dev = [
+    "twine>=6.1.0",
+    "build", # 推薦用於建構
+]
+
+[project.urls]
+Homepage = "https://github.com/JIA-WEI-LI/pylunix_icon_kit"
+
+[tool.setuptools]
+packages = ["pylunix_icon_kit"]
+package-dir = {"" = "."}
+
+[project.scripts]
+pylunix_icon_kit = "pylunix_icon_kit.cli:main"
+
+[tool.uv]
+required-environments = [
+    "sys_platform == 'linux'",
+    "sys_platform == 'win32'",
+]
