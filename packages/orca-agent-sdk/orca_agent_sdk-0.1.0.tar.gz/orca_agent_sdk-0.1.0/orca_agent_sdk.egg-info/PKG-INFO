@@ -1,0 +1,241 @@
+Metadata-Version: 2.4
+Name: orca-agent-sdk
+Version: 0.1.0
+Summary: A production-ready Python SDK for running paid AI agents on your marketplace
+Author-email: 0rca Network <contact@0rca.network>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/0rca-network/0rca-agent-sdk
+Project-URL: Repository, https://github.com/0rca-network/0rca-agent-sdk
+Project-URL: Issues, https://github.com/0rca-network/0rca-agent-sdk/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: flask>=2.0.0
+Requires-Dist: py-algorand-sdk>=2.0.0
+Requires-Dist: algokit-utils>=2.0.0
+Requires-Dist: requests>=2.25.0
+Provides-Extra: agno
+Requires-Dist: agno; extra == "agno"
+Dynamic: license-file
+
+# orca-agent-sdk
+
+A production-ready Python SDK for running paid AI agents on your marketplace with a single, consistent protocol.
+
+orca-agent-sdk abstracts away:
+
+- HTTP server and routing
+- Persistent job storage (SQLite)
+- Algorand unsigned transaction generation
+- On-chain payment verification
+- Access token–gated result delivery
+- Background job execution
+
+Agent developers implement one handler function and a small configuration object. Your marketplace controls the payment and verification flow.
+
+---
+
+## 1. Primary use case
+
+Enable third-party developers to publish AI agents to your marketplace with:
+
+- No direct exposure to:
+  - Flask or HTTP internals
+  - Database schema or SQL
+  - Algorand SDK details or on-chain verification logic
+- A standard, enforceable protocol:
+  - Jobs are created via `/start_job`
+  - Payments are enforced on Algorand
+  - Results are released only after verified payment via `/submit_payment`
+  - Access to outputs is controlled with per-job access tokens
+
+This ensures:
+
+- Consistent integration across all agents
+- Security and integrity of the payment flow
+- Minimal onboarding friction for developers
+
+---
+
+## 2. Installation
+
+For MVP and testing (TestPyPI):
+
+```bash
+pip install -i https://test.pypi.org/simple/ orca-agent-sdk
+```
+
+(Once promoted to PyPI:)
+
+```bash
+pip install orca-agent-sdk
+```
+
+Requirements:
+
+- Python 3.10+
+- Network access to Algorand nodes (defaults to Algonode public endpoints)
+
+---
+
+## 3. Quick start for agent developers
+
+Agent developers define:
+
+- `handle_task(job_input: str) -> str`
+- `AgentConfig` with identity and pricing
+- Bootstrapping using `AgentServer`
+
+Example:
+
+```python
+from orca_agent_sdk import AgentConfig, AgentServer
+
+def handle_task(job_input: str) -> str:
+    # Implement your agent's core logic here
+    # e.g., call an LLM, tools, vector search, etc.
+    return f"Echo: {job_input}"
+
+if __name__ == "__main__":
+    config = AgentConfig(
+        agent_id="my-agent-id",               # Unique identifier used by the marketplace
+        receiver_address="MY_ALGO_ADDRESS",  # Algorand address to receive payments
+        price_microalgos=1_000_000,          # Price per job in microAlgos
+        # Optionally:
+        # app_id=YOUR_MARKETPLACE_APP_ID,
+        # algod_url="https://testnet-api.algonode.cloud",
+        # indexer_url="https://testnet-idx.algonode.cloud",
+    )
+
+    AgentServer(config=config, handler=handle_task).run()
+```
+
+When this script runs, the SDK exposes the standardized API surface required by your marketplace.
+
+---
+
+## 4. Protocol overview (for marketplace integrators)
+
+The SDK exposes three key endpoints.
+
+### 4.1 Create job: `POST /start_job`
+
+Request:
+
+```json
+{
+  "sender_address": "USER_ALGO_ADDRESS",
+  "job_input": "User request or prompt"
+}
+```
+
+Response (example):
+
+```json
+{
+  "job_id": "J1762754481290",
+  "unsigned_group_txns": ["...base64_txn_1...", "...base64_txn_2..."],
+  "txn_ids": ["EXPECTED_TXID_1", "EXPECTED_TXID_2"],
+  "payment_required": 1000000
+}
+```
+
+Responsibilities:
+
+- SDK:
+  - Persists the job.
+  - Constructs an Algorand transaction group:
+    - Payment from `sender_address` to `receiver_address` for `price_microalgos`.
+    - Application call to `app_id` using the configured ABI method.
+  - Returns unsigned transactions for the client to sign.
+
+- Marketplace / client:
+  - Requests `unsigned_group_txns`.
+  - Presents them to the user’s wallet for signing and broadcasting.
+
+---
+
+### 4.2 Verify payment: `POST /submit_payment`
+
+After broadcasting the signed transaction group, call:
+
+Request:
+
+```json
+{
+  "job_id": "J1762754481290",
+  "txid": [
+    "REAL_TXID_1",
+    "REAL_TXID_2"
+  ]
+}
+```
+
+SDK behavior:
+
+- Fetches on-chain transaction data via the configured Indexer.
+- Verifies:
+  - The provided txids match what was generated for that job.
+  - Sender matches the original `sender_address`.
+  - Payment receiver matches `receiver_address`.
+  - Amount equals `price_microalgos`.
+  - Application ID matches `app_id`.
+- On success:
+  - Marks the job as `running`.
+  - Issues an `access_token` bound to this job.
+  - Executes `handler(job_input)` asynchronously in the background.
+
+Response (example):
+
+```json
+{
+  "status": "success",
+  "message": "Payment verified, job started",
+  "access_token": "ACCESS_TOKEN_VALUE"
+}
+```
+
+If verification fails, the SDK returns an error and does not execute the handler.
+
+---
+
+### 4.3 Retrieve result: `GET /job/<job_id>`
+
+Without access token (public view):
+
+```json
+{
+  "job_id": "J1762754481290",
+  "status": "running",
+  "created_at": 1762754481,
+  "output": null
+}
+```
+
+With valid `access_token`:
+
+`GET /job/J1762754481290?access_token=ACCESS_TOKEN_VALUE`
+
+```json
+{
+  "job_id": "J1762754481290",
+  "status": "succeeded",
+  "created_at": 1762754481,
+  "completed_at": 1762754504,
+  "output": "Echo: Hello from local SDK test"
+}
+```
+
+Design guarantees:
+
+- Output is only available to parties who can present the correct access token.
+- External observers can see job status but not sensitive results.
+
+---
