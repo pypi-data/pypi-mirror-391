@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "cwb-utils"
+version = "0.1.2"
+authors = ["mathewgeola <mathewgeola@gmail.com>"]
+readme = "README.md"
+
+packages = [
+    { include = "utils", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+requests = "^2.32.5"
+httpx = "^0.28.1"
+furl = "^2.1.4"
+tldextract = "^5.3.0"
+scrapy = "^2.13.3"
+fake-useragent = "^2.2.0"
+htmlmin = "^0.1.12"
+pillow = "^12.0.0"
+pillow-avif-plugin = "^1.5.2"
+pandas = "^2.3.3"
+openpyxl = "^3.1.5"
+arrow = "^1.4.0"
+pyexecjs = "^1.5.1"
+mini-racer = "^0.12.4"
+orjson = "^3.11.4"
+colorlog = "^6.10.1"
+sqlparse = "^0.5.3"
+tqdm = "^4.67.1"
+py7zr = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
