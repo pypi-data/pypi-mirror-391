@@ -1,0 +1,25 @@
+# Include important files for distribution
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONFIGURATION.md
+include QUICKSTART.md
+include UVX_STARTUP.md
+include .env.example
+include pyproject.toml
+include *.md
+
+# Include documentation files
+recursive-include docs *.md *.rst *.txt
+
+# Include configuration examples
+include *.example.json
+include *.json
+
+# Include shell scripts
+include *.sh
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude .git *
+recursive-exclude .vscode *
+recursive-exclude .DS_Store *
