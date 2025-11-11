@@ -1,0 +1,12 @@
+"""Game colors."""
+
+BLACK = (0, 0, 0)
+BLUE = (75, 200, 255)
+BRIGHT_GREEN = (100, 255, 100)
+BROWN = (120, 68, 33)
+DARK_GREY_1 = (190, 190, 190)
+DARK_GREY_2 = (150, 150, 150)
+GREY = (200, 200, 200)
+LIGHT_CREAM = (255, 250, 225)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
