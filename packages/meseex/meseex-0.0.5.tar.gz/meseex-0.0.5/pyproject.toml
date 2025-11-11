@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meseex"
+version = "00.00.05"
+requires-python = ">=3.8"
+authors = [
+    { name = "SocAIty" }
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = [
+    "rich>=14.0.0",
+    "pydantic>=2.10.4"
+]
+
+[project.urls]
+Repository = "https://github.com/SocAIty/meseex"
+Homepage = "https://www.socaity.ai"
