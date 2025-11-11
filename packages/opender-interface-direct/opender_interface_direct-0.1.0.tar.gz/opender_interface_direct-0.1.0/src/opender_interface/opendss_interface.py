@@ -1,0 +1,817 @@
+# Copyright © 2023 Electric Power Research Institute, Inc. All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+# · Redistributions of source code must retain the above copyright notice,
+#   this list of conditions and the following disclaimer.
+# · Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+# · Neither the name of the EPRI nor the names of its contributors may be used
+#   to endorse or promote products derived from this software without specific
+#   prior written permission.
+
+
+# import py_dss_interface
+import opendssdirect as dss  # Substituído
+import numpy as np
+import pandas as pd
+import cmath
+from typing import Union, List
+from opender_interface.dx_tool_interface import DxToolInterfacesABC
+
+
+class OpenDSSInterface(DxToolInterfacesABC):
+    """
+    This is the OpenDSS interface, which is an inheritance class of DxToolInterfacesABC
+    """
+
+    @property
+    def DERs(self):
+        """
+        Used for record DER information
+        """
+        return self._DERs
+
+    @property
+    def VRs(self):
+        """
+        Used for record voltage regulator (VR) information
+        """
+        return self._VRs
+
+    def __init__(self, dss_file: str = None) -> None:
+        """
+        To create an "OpenDSSInterface" object
+
+        :param dss_file: the specific dss file to be compiled
+        """
+
+        self.dss_file = dss_file
+        # self.dss = py_dss_interface.DSS()
+        self.dss = dss  # opendssdirect é um módulo, não uma classe
+        self.der_bus_list = []
+
+        if dss_file is not None:
+            # self.dss.text(f"Compile [{self.dss_file}]")
+            self.dss.Text.Command(f"Compile [{self.dss_file}]")  # Alterado
+
+        self._DERs = None
+        self._VRs = {}
+        self.DER_sim_type = None
+
+    def cmd(self, cmd_line: Union[str, List[str]]) -> Union[str, List[str]]:
+        """
+        Compile dss command from user. 
+        Este método é agora usado principalmente para comandos de CONSULTA (ex: '? ...')
+        que retornam um valor de string.
+
+        :param cmd_line: OpenDSS COM command in string or list of strings
+        """
+
+        if type(cmd_line) is list:
+            results = []
+            for cmd in cmd_line:
+                self.dss.Text.Command(cmd)
+                results.append(self.dss.Text.Result())
+            return results
+        elif type(cmd_line) is str:
+            self.dss.Text.Command(cmd_line)
+            return self.dss.Text.Result()
+        else:
+            raise ValueError("OpenDSS Initializing cmd_list is not valid")
+
+    def initialize(self, DER_sim_type='pvsystem', **kwargs):
+        """
+        Initialize and obtain circuit information. please use the variable of DER_sim_type
+        to provide the type of PC element which represents DERs (generator, PVSystem, isource, or vsource)
+
+        :param DER_sim_type: Circuit element which represents DERs. The default type is "PVSystem".
+        """
+
+        self.DER_sim_type = DER_sim_type.lower()
+        if self.DER_sim_type not in ['pvsystem', 'generator', 'isource', 'vsource']:
+            raise ValueError(
+                f"DER_sim_type should be 'pvsystem', 'generator', 'isource', 'vsource'. Now it is {DER_sim_type}")
+
+        # self.dss.text('calcv')
+        self.dss.Text.Command('calcv')  # Alterado
+
+        self.__init_buses()
+        self.__init_lines()
+        self.__init_loads()
+        self.__init_generators()
+        self.__init_vr()
+
+        if self.DER_sim_type == 'pvsystem':
+            self.__init_PVsystems()
+        if self.DER_sim_type == 'isource':
+            self.__init_isources()
+        if self.DER_sim_type == 'vsource':
+            self.__init_vsources()
+        if self.DER_sim_type == 'generator':
+            self._DERs = self.generators
+            self.der_bus_list = self.gen_bus_list
+
+    def __init_buses(self):
+        """
+        Read the information of all the buses into this class, stored in self.buses
+        """
+
+        # nodenames = list(self.dss.circuit.nodes_names)
+        nodenames = list(self.dss.Circuit.AllNodeNames())  # Alterado
+        buses = []
+        # for busname in self.dss.circuit.buses_names:
+        for busname in self.dss.Circuit.AllBusNames():  # Alterado
+            # self.dss.circuit.set_active_bus(busname)
+            self.dss.Circuit.SetActiveBus(busname)  # Alterado
+            try:
+                idx_A = nodenames.index('{}.{}'.format(busname, 1))
+            except ValueError:
+                idx_A = -1
+            try:
+                idx_B = nodenames.index('{}.{}'.format(busname, 2))
+            except ValueError:
+                idx_B = -1
+            try:
+                idx_C = nodenames.index('{}.{}'.format(busname, 3))
+            except ValueError:
+                idx_C = -1
+            buses.append({
+                'name': busname,
+                # 'kVBaseLL': self.dss.bus.kv_base * np.sqrt(3),
+                'kVBaseLL': self.dss.Bus.kVBase() * np.sqrt(3),  # Alterado
+                # 'nPhases': self.dss.bus.num_nodes,
+                'nPhases': self.dss.Bus.NumNodes(),  # Alterado
+                # 'distance': self.dss.bus.distance * 0.621371,  # km to miles
+                'distance': self.dss.Bus.Distance() * 0.621371,  # Alterado
+                # 'x': self.dss.bus.x,
+                'x': self.dss.Bus.X(),  # Alterado
+                # 'y': self.dss.bus.y,
+                'y': self.dss.Bus.Y(),  # Alterado
+                'nodeIndex_A': idx_A,
+                'nodeIndex_B': idx_B,
+                'nodeIndex_C': idx_C,
+                'Vpu_A': 1.0,
+                'Vpu_B': 1.0,
+                'Vpu_C': 1.0,
+                'Theta_A': 0,
+                'Theta_B': -2.0943951,
+                'Theta_C': 2.0943951
+            })
+        self.buses = pd.DataFrame(buses)
+        self.buses.set_index('name', inplace=True)
+        self.buses = self.buses.astype(dtype={
+            'nPhases': 'int64',
+            'nodeIndex_A': 'int64',
+            'nodeIndex_B': 'int64',
+            'nodeIndex_C': 'int64',
+        })
+
+
+    def __init_lines(self):
+        """
+        Read the information of all the lines into this class, stored in self.lines
+        """
+        # linenames = list(self.dss.lines.names)
+        linenames = list(self.dss.Lines.AllNames())  # Alterado
+        lines = []
+        for linename in linenames:
+            # self.dss.lines.name = linename
+            self.dss.Lines.Name(linename)  # Alterado (setter)
+            # bus1 = self.dss.lines.bus1
+            bus1 = self.dss.Lines.Bus1()  # Alterado
+            # bus2 = self.dss.lines.bus2
+            bus2 = self.dss.Lines.Bus2()  # Alterado
+            # self.dss.circuit.set_active_bus(bus1)
+            self.dss.Circuit.SetActiveBus(bus1)  # Alterado
+            lines.append({
+                'name': linename,
+                'bus1': bus1,
+                'bus2': bus2,
+                # 'kVBaseLN': self.dss.bus.kv_base,
+                'kVBaseLN': self.dss.Bus.kVBase(),  # Alterado
+                # 'nPhases': self.dss.lines.phases,
+                'nPhases': self.dss.Lines.Phases(),  # Alterado
+                # 'length': self.dss.lines.length,
+                'length': self.dss.Lines.Length(),  # Alterado
+                # 'normamps': self.dss.lines.norm_amps,
+                'normamps': self.dss.Lines.NormAmps(),  # Alterado
+                # 'emergamps': self.dss.lines.emerg_amps,
+                'emergamps': self.dss.Lines.EmergAmps(),  # Alterado
+                'flowI_A': 0 + 1j * 0,
+                'flowI_B': 0 + 1j * 0,
+                'flowI_C': 0 + 1j * 0,
+                'flowS_A': 0 + 1j * 0,
+                'flowS_B': 0 + 1j * 0,
+                'flowS_C': 0 + 1j * 0,
+            })
+        self.lines = pd.DataFrame(lines)
+        self.lines.set_index('name', inplace=True)
+        self.lines = self.lines.astype(dtype={
+            'nPhases': 'int64',
+        })
+
+
+    def __init_loads(self):
+        """
+        Read the information of all the loads into this class, stored in self.loads
+        """
+
+        # loadnames = self.dss.loads.names
+        loadnames = self.dss.Loads.AllNames()  # Alterado
+        if not loadnames: # opendssdirect retorna lista vazia
+            loadnames = []
+        elif loadnames[0].upper() == 'NONE':
+            loadnames = []
+        loads = []
+        for loadname in loadnames:
+            # self.dss.loads.name = loadname
+            self.dss.Loads.Name(loadname)  # Alterado
+            # kw = self.dss.loads.kw
+            kw = self.dss.Loads.kW()  # Alterado
+            # bus = self.dss.text(f'? load.{loadname}.bus1') # Bug original, deveria ser self.cmd
+            bus = self.cmd(f'? load.{loadname}.bus1') # Corrigido
+            # phases = int(self.dss.text(f'? load.{loadname}.phases')) # Bug original
+            phases = int(self.cmd(f'? load.{loadname}.phases')) # Corrigido
+
+            this_type = 'load'
+            loads.append({
+                'name': loadname,
+                'type': this_type,
+                'bus': bus, #.split('.')[0].replace(' ', ''),
+                'nodes': bus,
+                'phases': phases,
+                'kw': kw,
+            })
+        self.loads = pd.DataFrame(loads)
+        if not self.loads.empty:
+            self.loads.set_index('name', inplace=True)
+
+
+    def __init_generators(self):
+        """
+        Read the information of all the generators into this class, stored in self.generators
+        """
+        # gennames = list(self.dss.generators.names)
+        gennames = list(self.dss.Generators.AllNames())  # Alterado
+        if not gennames: # opendssdirect retorna lista vazia
+            gennames = []
+        elif gennames[0].upper() == 'NONE':
+            gennames = []
+        self.gen_bus_list = []
+        gens = []
+        for genname in gennames:
+            # self.dss.generators.name = genname
+            self.dss.Generators.Name(genname)  # Alterado
+            # kw = self.dss.generators.kw
+            kw = self.dss.Generators.kW()  # Alterado
+            # kvar = self.dss.generators.kvar
+            kvar = self.dss.Generators.kvar()  # Alterado
+            # kVA = self.dss.generators.kva
+            kVA = self.dss.Generators.kva()  # Alterado
+            # bus = self.dss.text(f'? generator.{genname}.bus1') # Bug original
+            bus = self.cmd(f'? generator.{genname}.bus1') # Corrigido
+            # kV = float(self.dss.text(f'? generator.{genname}.kv')) # Bug original
+            kV = float(self.cmd(f'? generator.{genname}.kv')) # Corrigido
+            this_type = 'generator'
+            gens.append({
+                'name': genname,
+                'type': this_type,
+                'bus': bus, #bus.split('.')[0].replace(' ', ''),
+                'kw': kw,
+                'kvar': kvar,
+                'kVA': kVA,
+                'kV': kV,
+            })
+            self.gen_bus_list.append(bus)
+
+        self.generators = pd.DataFrame(gens)
+
+    def __init_PVsystems(self):
+        """
+        Read the information of all the PVsystems into this class, stored in self.DERs
+        """
+        # PVnames = list(self.dss.pvsystems.names)
+        PVnames = list(self.dss.PVsystems.AllNames())  # Alterado
+        if not PVnames: # opendssdirect retorna lista vazia
+            PVnames = []
+        elif PVnames[0].upper() == 'NONE':
+            PVnames = []
+        PVs = []
+        for PVname in PVnames:
+            # self.dss.pvsystems.name = PVname
+            self.dss.PVsystems.Name(PVname)  # Alterado
+            # kw = self.dss.pvsystems.pmpp
+            kw = self.dss.PVsystems.Pmpp()  # Alterado
+            # kvar = self.dss.pvsystems.kvar
+            kvar = self.dss.PVsystems.kvar()  # Alterado
+            # kVA = self.dss.pvsystems.kva
+            kVA = self.dss.PVsystems.kVARated()  # Alterado
+            # bus = self.dss.text(f'? PVSystem.{PVname}.bus1') # Bug original
+            bus = self.cmd(f'? PVSystem.{PVname}.bus1') # Corrigido
+            # kvarabs = float(self.dss.text(f'? PVSystem.{PVname}.kvarmaxabs')) # Bug original
+            kvarabs = float(self.cmd(f'? PVSystem.{PVname}.kvarmaxabs')) # Corrigido
+            # kV = float(self.dss.text(f'? PVSystem.{PVname}.kv')) # Bug original
+            kV = float(self.cmd(f'? PVSystem.{PVname}.kv')) # Corrigido
+            this_type = 'pvsystem'
+            PVs.append({
+                'name': PVname,
+                'type': this_type,
+                'bus': bus, #.split('.')[0].replace(' ', ''),
+                'kw': kw,
+                'kvar': kvar,
+                'kvarabs': kvarabs,
+                'kVA': kVA,
+                'kV': kV
+            })
+            self.der_bus_list.append(bus)
+
+        self._DERs = pd.DataFrame(PVs)
+
+    def __init_isources(self):
+        """
+        Read the information of all the isources into this class, stored in self.DERs
+        """
+        # PVnames = list(self.dss.isources.names)
+        PVnames = list(self.dss.ISources.AllNames())  # Alterado
+        PVs = []
+        # PVnames = [PVname.split('_')[0].replace(' ', '') for PVname in PVnames]
+        PVnames = self.__combine_elements(PVnames)
+
+        for PVname in PVnames:
+            if '_a' in PVname or '_b' in PVname or '_c' in PVname:
+                # self.dss.isources.name = f'{PVname}'
+                self.dss.ISources.Name(f'{PVname}')  # Alterado
+                # bus = self.dss.text(f'? isource.{PVname}.bus1') # Bug original
+                bus = self.cmd(f'? isource.{PVname}.bus1') # Corrigido
+                # self.dss.circuit.set_active_bus(bus)
+                self.dss.Circuit.SetActiveBus(bus)  # Alterado
+                # kV = self.dss.bus.kv_base * 1.7320508075688
+                kV = self.dss.Bus.kVBase() * 1.7320508075688  # Alterado
+            else:
+                # self.dss.isources.name = f'{PVname}_a'
+                self.dss.ISources.Name(f'{PVname}_a')  # Alterado
+                # bus = self.dss.text(f'? isource.{PVname}_a.bus1') # Bug original
+                bus = self.cmd(f'? isource.{PVname}_a.bus1') # Corrigido
+                # self.dss.circuit.set_active_bus(bus)
+                self.dss.Circuit.SetActiveBus(bus)  # Alterado
+                # kV = self.dss.bus.kv_base * 1.7320508075688
+                kV = self.dss.Bus.kVBase() * 1.7320508075688  # Alterado
+                bus = bus.split('.')[0].replace(' ', '')+'.1.2.3'
+
+            this_type = 'isource'
+            PVs.append({
+                'name': PVname,
+                'type': this_type,
+                'bus': bus,
+                'kw': None,
+                'kvar': None,
+                'kvarabs': None,
+                'kVA': None,
+                'kV': kV
+            })
+            self.der_bus_list.append(bus)
+
+
+        self._DERs = pd.DataFrame(PVs)
+
+    def __init_vsources(self):
+        """
+        Read the information of all the vsources into this class, stored in self.DERs
+        """
+        # PVnames = list(self.dss.vsources.names)[1:]  # First one is substation
+        PVnames = list(self.dss.Vsources.AllNames())[1:]  # Alterado
+        PVs = []
+        # PVnames = [PVname.split('_')[0].replace(' ', '') for PVname in PVnames]
+        PVnames = self.__combine_elements(PVnames)
+
+        for PVname in PVnames:
+            if '_a' in PVname or '_b' in PVname or '_c' in PVname:
+                # self.dss.vsources.name = f'{PVname}'
+                self.dss.Vsources.Name(f'{PVname}')  # Alterado
+                # bus = self.dss.text(f'? vsource.{PVname}.bus1') # Bug original
+                bus = self.cmd(f'? vsource.{PVname}.bus1') # Corrigido
+                # self.dss.circuit.set_active_bus(bus)
+                self.dss.Circuit.SetActiveBus(bus)  # Alterado
+                # kV = self.dss.bus.kv_base * 1.7320508075688
+                kV = self.dss.Bus.kVBase() * 1.7320508075688  # Alterado
+                # kw = float(self.dss.text(f'? vsource.{PVname}.baseMVA')) * 1000 # Bug original
+                kw = float(self.cmd(f'? vsource.{PVname}.baseMVA')) * 1000 # Corrigido
+                # kVA = float(self.dss.text(f'? vsource.{PVname}.baseMVA')) * 1000 # Bug original
+                kVA = float(self.cmd(f'? vsource.{PVname}.baseMVA')) * 1000 # Corrigido
+            else:
+                # self.dss.vsources.name = f'{PVname}_a'
+                self.dss.Vsources.Name(f'{PVname}_a')  # Alterado
+                # bus = self.dss.text(f'? vsource.{PVname}_a.bus1') # Bug original
+                bus = self.cmd(f'? vsource.{PVname}_a.bus1') # Corrigido
+                # self.dss.circuit.set_active_bus(bus)
+                self.dss.Circuit.SetActiveBus(bus)  # Alterado
+                # kV = self.dss.bus.kv_base * 1.7320508075688
+                kV = self.dss.Bus.kVBase() * 1.7320508075688  # Alterado
+                # kw = float(self.dss.text(f'? vsource.{PVname}_a.baseMVA')) * 1000 # Bug original
+                kw = float(self.cmd(f'? vsource.{PVname}_a.baseMVA')) * 1000 # Corrigido
+                # kVA = float(self.dss.text(f'? vsource.{PVname}_a.baseMVA')) * 1000 # Bug original
+                kVA = float(self.cmd(f'? vsource.{PVname}_a.baseMVA')) * 1000 # Corrigido
+                bus = bus.split('.')[0].replace(' ', '')+'.1.2.3'
+
+
+            this_type = 'vsource'
+            PVs.append({
+                'name': PVname,
+                'type': this_type,
+                'bus': bus,
+                'kw': kw,
+                'kvar': kw,
+                'kvarabs': kw,
+                'kVA': kVA,
+                'kV': kV
+            })
+            self.der_bus_list.append(bus)
+
+        self._DERs = pd.DataFrame(PVs)
+
+    def update_der_info(self, name, der_obj):
+        """
+        Update DER nameplate information into dss circuit.
+
+        :param name: name of the specific DER to be updated
+        :param der_obj: DER object, an instance of the "OpenDER" class, containing DER nameplate information
+        """
+
+        if self.DER_sim_type == 'pvsystem':
+            # self.dss.text(f'PVSystem.{name}.kVA = {der_obj.der_file.NP_VA_MAX / 1000}') # Bug original
+            self.dss.Text.Command(f'PVSystem.{name}.kVA = {der_obj.der_file.NP_VA_MAX / 1000}') # Corrigido
+            self.dss.Text.Command(f'PVSystem.{name}.Pmpp = {der_obj.der_file.NP_P_MAX / 1000}')
+            self.dss.Text.Command(f'PVSystem.{name}.kvarmax = {der_obj.der_file.NP_Q_MAX_ABS / 1000}')
+            self.dss.Text.Command(f'PVSystem.{name}.kvarmaxabs = {der_obj.der_file.NP_Q_MAX_INJ / 1000}')
+
+        if self.DER_sim_type == 'isource':
+            pass
+
+        if self.DER_sim_type == 'vsource':
+            # self.dss.vsources.name = f'{name}_a'
+            self.dss.Vsources.Name(f'{name}_a')  # Alterado
+            kVA = der_obj.der_file.NP_VA_MAX / 1000
+            # bus = self.dss.text(f'? vsource.{name}_a.bus1') # Bug original
+            bus = self.cmd(f'? vsource.{name}_a.bus1') # Corrigido
+            # self.dss.circuit.set_active_bus(bus)
+            self.dss.Circuit.SetActiveBus(bus)  # Alterado
+
+            # kV = self.dss.bus.kv_base * 1.7320508075688
+            kV = self.dss.Bus.kVBase() * 1.7320508075688  # Alterado
+            R = der_obj.der_file.NP_RESISTANCE * kV * kV / kVA * 1000
+            X = der_obj.der_file.NP_REACTANCE * kV * kV / kVA * 1000
+            # self.dss.text(f'vsource.{name}_a.R0 = {R}') # Bug original
+            self.dss.Text.Command(f'vsource.{name}_a.R0 = {R}') # Corrigido
+            self.dss.Text.Command(f'vsource.{name}_a.R1 = {R}')
+            self.dss.Text.Command(f'vsource.{name}_a.X0 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_a.X1 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_b.R0 = {R}')
+            self.dss.Text.Command(f'vsource.{name}_b.R1 = {R}')
+            self.dss.Text.Command(f'vsource.{name}_b.X0 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_b.X1 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_c.R0 = {R}')
+            self.dss.Text.Command(f'vsource.{name}_c.R1 = {R}')
+            self.dss.Text.Command(f'vsource.{name}_c.X0 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_c.X1 = {X}')
+            self.dss.Text.Command(f'vsource.{name}_c.baseMVA = {kVA / 1000}')
+
+        if self.DER_sim_type == 'generator':
+            # self.dss.text(f'generator.{name}.kVA = {der_obj.der_file.NP_VA_MAX / 1000}') # Bug original
+            self.dss.Text.Command(f'generator.{name}.kVA = {der_obj.der_file.NP_VA_MAX / 1000}') # Corrigido
+            self.dss.Text.Command(f'generator.{name}.kW = {der_obj.der_file.NP_P_MAX / 1000}')
+            self.dss.Text.Command(f'generator.{name}.maxkvar = {der_obj.der_file.NP_Q_MAX_ABS / 1000}')
+            self.dss.Text.Command(f'generator.{name}.minkvar = {-der_obj.der_file.NP_Q_MAX_INJ / 1000}')
+
+    def load_scaling(self, mult=1.0):
+        """
+        Scaling all loads in the circuit simulation tool
+
+        :param mult: Multiplication factor
+        """
+        # scale load
+        for name in self.loads.index:
+            if self.loads.loc[name, 'type'] == 'load':
+                new_kw = self.loads.loc[name, 'kw'] * mult
+                # self.dss.loads.name = name
+                self.dss.Loads.Name(name)  # Alterado
+                # self.dss.loads.kw = float(new_kw)
+                self.dss.Loads.kW(float(new_kw))  # Alterado
+
+    def update_der_output_powers(self, der_list=None, p_list=None, q_list=None):
+        """
+        Update DER output information in terms of active and reactive power into the circuit simulation solver.
+        p_list and q_list are used to specify P and Q values other than what are calculated in the OpenDER objects.
+        Currently, this does not support DER as current source or voltage source behind impedance.
+
+        :param der_list: Default is to update all DERs. If specified, only update part of the OpenDER objects.
+        :param p_list: List of DER active power output in kW
+        :param q_list: List of DER active power output in kvar
+        """
+        if p_list is not None and (self.DER_sim_type == 'isource' or self.DER_sim_type == 'vsource'):
+            for der_obj, p, q in zip(der_list, p_list, q_list):
+                p_pu = p * 1000 / der_obj.der_file.NP_VA_MAX
+                q_pu = q * 1000 / der_obj.der_file.NP_VA_MAX
+                der_obj.i_pos_pu, der_obj.i_neg_pu = der_obj.ridethroughperf.calculate_i_output(p_pu, q_pu)
+
+        if p_list is None:
+            p_list = [der_obj.p_out_kw for der_obj in der_list]
+
+        if q_list is None:
+            q_list = [der_obj.q_out_kvar for der_obj in der_list]
+
+        for der_obj, P_gen, Q_gen in zip(der_list, p_list, q_list):
+
+            name = der_obj.name
+            if self.DER_sim_type == 'pvsystem':
+                # self.cmd(f'{self.DER_sim_type}.{name}.Pmpp={P_gen}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}.Pmpp={P_gen}') # Alterado
+                # self.cmd(f'{self.DER_sim_type}.{name}.kvar={Q_gen}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}.kvar={Q_gen}') # Alterado
+
+            if self.DER_sim_type == 'generator':
+                # self.cmd(f'{self.DER_sim_type}.{name}.kW={P_gen}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}.kW={P_gen}') # Alterado
+                # self.cmd(f'{self.DER_sim_type}.{name}.kvar={Q_gen}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}.kvar={Q_gen}') # Alterado
+
+            if self.DER_sim_type == 'isource':
+                # self.dss.circuit.set_active_element(f'isource.{name}_a')
+                self.dss.Circuit.SetActiveElement(f'isource.{name}_a') # Alterado
+                # i_a = self.dss.cktelement.currents
+                i_a = self.dss.CktElement.Currents() # Alterado
+                # self.dss.circuit.set_active_element(f'isource.{name}_b')
+                self.dss.Circuit.SetActiveElement(f'isource.{name}_b') # Alterado
+                # i_b = self.dss.cktelement.currents
+                i_b = self.dss.CktElement.Currents() # Alterado
+                # self.dss.circuit.set_active_element(f'isource.{name}_c')
+                self.dss.Circuit.SetActiveElement(f'isource.{name}_c') # Alterado
+                # i_c = self.dss.cktelement.currents
+                i_c = self.dss.CktElement.Currents() # Alterado
+                i = [i_a[2] + 1j * i_a[3],
+                     i_b[2] + 1j * i_b[3],
+                     i_c[2] + 1j * i_c[3]]
+                # i_der = der_obj.get_der_output('I_A')
+                # print([i_der[0][0]*np.exp(1j*(i_der[1][0]))])
+                # print(i)
+
+                (ia, ib, ic), (theta_a, theta_b, theta_c) = der_obj.get_der_output(output='I_A')
+
+                # self.cmd(f'{self.DER_sim_type}.{name}_a.amps={ia}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_a.amps={ia}') # Alterado
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_b.amps={ib}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_c.amps={ic}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_a.angle={theta_a * 57.29577951308232}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_b.angle={theta_b * 57.29577951308232}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_c.angle={theta_c * 57.29577951308232}')
+
+            if self.DER_sim_type == 'vsource':
+                # self.dss.circuit.set_active_element(f'vsource.{name}_a')
+                self.dss.Circuit.SetActiveElement(f'vsource.{name}_a') # Alterado
+                # i_a = self.dss.cktelement.currents
+                i_a = self.dss.CktElement.Currents() # Alterado
+                # self.dss.circuit.set_active_element(f'vsource.{name}_b')
+                self.dss.Circuit.SetActiveElement(f'vsource.{name}_b') # Alterado
+                # i_b = self.dss.cktelement.currents
+                i_b = self.dss.CktElement.Currents() # Alterado
+                # self.dss.circuit.set_active_element(f'vsource.{name}_c')
+                self.dss.Circuit.SetActiveElement(f'vsource.{name}_c') # Alterado
+                # i_c = self.dss.cktelement.currents
+                i_c = self.dss.CktElement.Currents() # Alterado
+                i = [i_a[2] + 1j * i_a[3],
+                     i_b[2] + 1j * i_b[3],
+                     i_c[2] + 1j * i_c[3]]
+                i_der = der_obj.get_der_output('I_A')
+                print([i_der[0][0]*np.exp(1j*(i_der[1][0]))])
+                print(i)
+
+                (va, vb, vc), (theta_a, theta_b, theta_c) = der_obj.get_der_output(output='V_pu')
+
+                # self.cmd(f'{self.DER_sim_type}.{name}_a.pu={va * 0.577350}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_a.pu={va * 0.577350}') # Alterado
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_b.pu={vb * 0.577350}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_c.pu={vc * 0.577350}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_a.angle={theta_a * 57.29577951308232}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_b.angle={theta_b * 57.29577951308232}')
+                self.dss.Text.Command(f'{self.DER_sim_type}.{name}_c.angle={theta_c * 57.29577951308232}')
+
+    def solve_power_flow(self) -> None:
+        """
+        Solve circuit power flow using dss engine
+        """
+        # self.dss.text("solve")
+        self.dss.Text.Command("solve")  # Alterado
+
+    def read_sys_voltage(self) -> pd.DataFrame:
+        """
+        Read and return bus voltages derived from circuit simulators
+
+        :return: bus voltages in DataFrame, indexed by bus names. Also accessed by .buses
+        """
+
+        # nodenames = self.dss.circuit.nodes_names
+        nodenames = self.dss.Circuit.AllNodeNames()  # Alterado
+        # temp = self.dss.circuit.buses_volts
+        temp = self.dss.Circuit.AllBusVolts()  # Alterado
+        nodevolts = [temp[2 * ii] + 1j * temp[2 * ii + 1] for ii in range(len(nodenames))]
+        self.nodevolts = pd.DataFrame(nodevolts, index=nodenames, columns=['volts'])
+
+        nodeangles = [cmath.phase(temp[2 * ii] + 1j * temp[2 * ii + 1]) for ii in range(len((nodenames)))]
+        busnames = self.buses.index
+        for phase in ['A', 'B', 'C']:
+            # self.buses['Vpu_{}'.format(phase)] = np.array(self.dss.circuit.buses_vmag_pu)[
+            self.buses['Vpu_{}'.format(phase)] = np.array(self.dss.Circuit.AllBusMagPu())[  # Alterado
+                self.buses['nodeIndex_{}'.format(phase)][busnames]]
+            self.buses['Theta_{}'.format(phase)] = np.array(nodeangles)[
+                self.buses['nodeIndex_{}'.format(phase)][busnames]]
+
+        for phase in ['A', 'B', 'C']:
+            self.buses.loc[self.buses[f'nodeIndex_{phase}'] == -1, 'Vpu_{}'.format(phase)] = float('nan')
+
+        return self.buses
+
+    def read_der_voltage(self, der_bus_list=None) -> list:
+        """
+        Return bus voltages for DERs, from circuit simulators
+
+        :param der_bus_list: Default is all DER. If specified, only selected DERs
+        :return: bus voltage magnitude information for a DER, in pu
+        """
+        if der_bus_list is None:
+            der_bus_list = self.der_bus_list
+
+        return [self.buses.loc[der_bus.split('.')[0],
+                               ['Vpu_'+chr(int(phase) + 64) for phase in der_bus.split('.')[1:]]]
+                for der_bus in der_bus_list]
+
+    def read_der_voltage_angle(self, der_bus_list=None) -> list:
+        """
+        Return bus voltage angles for DERs, from circuit simulators
+
+        :param der_bus_list: Default is all DER. If specified, only selected DERs
+        :return: bus voltage angle information for a DER, in radian
+        """
+        if der_bus_list is None:
+            der_bus_list = self.der_bus_list
+        return [self.buses.loc[der_bus.split('.')[0],
+                               ['Theta_' + chr(int(phase) + 64) for phase in der_bus_list[0].split('.')[1:]]]
+                for der_bus in der_bus_list]
+
+    def read_line_flow(self) -> pd.DataFrame:
+        """
+        Read and return power flow on all lines, obtained from circuit simulators
+
+        :return: power flow information in DataFrame, indexed by line names. Also accessed by .lines
+        """
+
+        linenames = self.lines.index
+        for linename in linenames:
+            # self.dss.circuit.set_active_element('line.{}'.format(linename))
+            self.dss.Circuit.SetActiveElement('line.{}'.format(linename))  # Alterado
+            if self.cmd(f'? line.{linename}.enabled').upper() == 'TRUE':
+                ii = 0
+                # phases_num = self.dss.cktelement.bus_names[0].split('.')[1:]
+                phases_num = self.dss.CktElement.BusNames()[0].split('.')[1:]  # Alterado
+                phases = [chr(int(i) + 64) for i in phases_num]
+                if phases == []:
+                    phases = ['A', 'B', 'C']
+
+                for phase in phases:
+                    if ('_' + phase.lower() in linename) or ('_' + phase in linename) or (
+                            not (('_a' in linename) or ('_b' in linename) or ('_c' in linename))):
+                        # v = self.dss.cktelement.voltages[2 * ii] + 1j * self.dss.cktelement.voltages[2 * ii + 1]
+                        v = self.dss.CktElement.Voltages()[2 * ii] + 1j * self.dss.CktElement.Voltages()[2 * ii + 1]  # Alterado
+                        # s = self.dss.cktelement.powers[2 * ii] + 1j * self.dss.cktelement.powers[2 * ii + 1]
+                        s = self.dss.CktElement.Powers()[2 * ii] + 1j * self.dss.CktElement.Powers()[2 * ii + 1]  # Alterado
+
+                        # complex current in amps (bus1 --> bus2)
+                        if abs(v) < 0.00001:
+                            v = 0.00001
+                        self.lines.loc[linename, 'flowI_{}'.format(phase)] = np.conjugate(s / v) * 1.e3
+                        # complex power in kVA (bus1 --> bus2)
+                        self.lines.loc[linename, 'flowS_{}'.format(phase)] = s
+                        ii = ii + 1
+        return self.lines
+
+    def set_source_voltage(self, v_pu: float) -> None:
+        """
+        Set dss circuit substation bus voltage
+        """
+        # self.dss.vsources.pu = v_pu
+        self.dss.Vsources.PU(v_pu)  # Alterado
+
+    def __init_vr(self):
+        """
+        Read the information of all the voltage regulators into this class, stored in self._VRs
+        """
+        # self.vrStates = []
+        # VR_names = list(self.dss.regcontrols.names)
+        VR_names = list(self.dss.RegControls.AllNames())  # Alterado
+        if not VR_names: # opendssdirect retorna lista vazia
+            VR_names = []
+        elif VR_names[0].upper() == 'NONE':
+            VR_names = []
+        # RegulatorByPhase type
+        for vr_name in VR_names:
+            vr = dict()
+            vr['Ts'] = 100000
+            # retrieve vr information from DSS circuit
+            vr['Xfmr'] = self.cmd('? regcontrol.{}.transformer'.format(vr_name))
+            vr['winding'] = int(self.cmd('? regcontrol.{}.winding'.format(vr_name)))
+            vr['Vref'] = float(self.cmd('? regcontrol.{}.vreg'.format(vr_name)))
+            vr['db'] = float(self.cmd('? regcontrol.{}.band'.format(vr_name)))
+            vr['PT_Ratio'] = float(self.cmd('? regcontrol.{}.ptratio'.format(vr_name)))
+            vr['CT_Primary'] = float(self.cmd('? regcontrol.{}.ctprim'.format(vr_name)))
+            vr['LDC_R'] = float(self.cmd('? regcontrol.{}.R'.format(vr_name)))
+            vr['LDC_X'] = float(self.cmd('? regcontrol.{}.X'.format(vr_name)))
+            vr['delay'] = float(self.cmd('? regcontrol.{}.delay'.format(vr_name)))
+            vr['tapdelay'] = float(self.cmd('? regcontrol.{}.tapdelay'.format(vr_name)))
+            # get transformer information
+            vr['phases'] = int(self.cmd('? transformer.{}.phases'.format(vr['Xfmr'])))
+            buses = self.cmd('? transformer.{}.buses'.format(vr['Xfmr']))
+            bus = buses.replace('[', '').replace(']', '').split(',')[:-1][vr['winding'] - 1]
+            bus = bus.replace(' ', '')
+            vr['regBus'] = []
+            if vr['phases'] == 1:
+                vr['regBus'].append(bus)
+            else:
+                for ph in [1, 2, 3]:
+                    bus = bus.split('.')[0]
+                    vr['regBus'].append('{}.{}'.format(bus, ph))
+
+            self._VRs[vr_name] = vr
+
+    def enable_control(self):
+        """
+        Enable voltage regulator controls in OpenDSS. This is usually for steady-state analysis
+        or establish the initial condition for a dynamic analysis.
+        """
+        # self.cmd('set controlmode=STATIC')
+        self.dss.Text.Command('set controlmode=STATIC')  # Alterado
+
+    def disable_control(self):
+        """
+        Disable voltage regulator controls in circuit simulation tool solver. This is usually for dynamic simulation
+        """
+        # self.cmd('set controlmode=OFF')
+        self.dss.Text.Command('set controlmode=OFF')  # Alterado
+
+    def read_vr(self):
+        """
+        Read voltage regulator tap information from OpenDSS circuit into self._VR
+        """
+        for vrname in self._VRs.keys():
+            self._VRs[vrname]['tapPos'] = int(self.cmd('? regcontrol.{}.tapNum'.format(vrname)))
+            # print(self._VRs[vrname]['tapPos'])
+
+    def write_vr(self):
+        """
+        Write voltage regulator tap information from self._VR into OpenDSS circuit simulation.
+        """
+        for vrname in self._VRs.keys():
+            # self.cmd('edit regcontrol.{} tapNum={}'.format(vrname, self._VRs[vrname]['tapPos']))
+            self.dss.Text.Command('edit regcontrol.{} tapNum={}'.format(vrname, self._VRs[vrname]['tapPos'])) # Alterado
+
+    def read_vr_v_i(self, vrname):
+        """
+        Return VR voltage and current information from OpenDSS circuit
+
+        :param vrname: name of voltage regulator
+        :return: Voltage and current
+        """
+        # voltage
+        Vpri = [self.nodevolts.loc[node, 'volts'] for node in self._VRs[vrname]['regBus']]
+        # current
+        iwdg = self.cmd('? transformer.{}.wdgcurrents'.format(self._VRs[vrname]['Xfmr'])).split(',')[:-1]
+        imag = [float(iwdg[2 * ii]) for ii in range(int(len(iwdg) / 2))]
+        iang = [float(iwdg[2 * ii + 1].replace('(', '').replace(')', '')) for ii in range(int(len(iwdg) / 2))]
+        icplx = [imag[ii] * np.exp(1j * np.pi * iang[ii] / 180) for ii in range(len(imag))]
+        if self._VRs[vrname]['winding'] == 1:
+            Ipri = [icplx[2 * ii] for ii in range(int(len(icplx) / 2))]
+        else:
+            Ipri = [-icplx[2 * ii + 1] for ii in range(int(len(icplx) / 2))]
+        return Vpri, Ipri
+
+    def __combine_elements(self, lst):
+        combined_list = []
+        prefixes = set()
+
+        # Extract unique prefixes
+        for item in lst:
+            prefix = item.split('_')[0]
+            prefixes.add(prefix)
+
+        # Iterate over unique prefixes
+        for prefix in prefixes:
+            sub_elements = [elem for elem in lst if elem.startswith(prefix)]
+
+            # Check if all sub-elements exist
+            all_exist = all(elem in sub_elements for elem in [prefix + suffix for suffix in ['_a', '_b', '_c']])
+            if all_exist:
+                combined_item = prefix
+                combined_list.append(combined_item)
+            else:
+                combined_list.extend(sub_elements)
+
+        return combined_list

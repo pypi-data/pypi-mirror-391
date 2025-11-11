@@ -1,0 +1,10 @@
+[project]
+name = "opender-interface-direct"
+version = "0.1.0"
+description = "An modif. version of opender_interface to use opendssdirect.py as a opendss calc engine."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["opender==2.2.0", "opendssdirect-py==0.9.4"]
+
+[dependency-groups]
+dev = ["jupyterlab==4.4.10"]
