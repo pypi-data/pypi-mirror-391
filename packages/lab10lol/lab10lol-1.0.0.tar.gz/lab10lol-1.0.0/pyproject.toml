@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# IMPORTANT: This name MUST be unique on PyPI.
+# Replace 'your-unique-name' with something like your initials or username.
+name = "lab10lol"
+version = "1.0.0"
+authors = [
+  { name="silverarrow17", email="tptpt69420@gmail.com" },
+]
+description = "A simple package to export my university lab code to a file."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# IMPORTANT: List ALL libraries your labs.py file uses.
+# If you miss one, the package will fail for other users.
+dependencies = [
+    "pandas",
+    "nltk",
+    "matplotlib",
+    "scikit-learn",
+    "seaborn",
+    "numpy",
+    "tensorflow",
+    "torch",
+    "xgboost",
+    "librosa",
+    "soundfile",
+    "datasets",
+    "transformers",
+    "evaluate",
+    "gammatone"
+]
