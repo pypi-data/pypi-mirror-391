@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iflow-mcp_mcp-twitter"
+version = "0.1.0"
+description = "Twitter MCP Server - Manage Twitter account programmatically with MCP tools"
+authors = [
+    {name = "IFLOW", email = "iflow@example.com"}
+]
+dependencies = [
+    "mcp",
+    "twikit",
+    "python-dotenv"
+]
+requires-python = ">=3.8"
+
+[project.scripts]
+mcp-twitter = "src.tweet_service:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

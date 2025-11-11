@@ -1,0 +1,29 @@
+configSchema:
+  type: object
+  required:
+    - twitterUsername
+    - twitterEmail
+    - twitterPassword
+  properties:
+    twitterUsername:
+      type: string
+      description: Your Twitter username.
+    twitterEmail:
+      type: string
+      description: Your Twitter email.
+    twitterPassword:
+      type: string
+      description: Your Twitter password.
+
+startCommand:
+  type: stdio
+  commandFunction: |
+    (config) => ({
+      "command": "python",
+      "args": ["/app/src/tweet_service.py"],
+      "env": {
+        "TWITTER_USERNAME": config.twitterUsername,
+        "TWITTER_EMAIL": config.twitterEmail,
+        "TWITTER_PASSWORD": config.twitterPassword
+      }
+    })
