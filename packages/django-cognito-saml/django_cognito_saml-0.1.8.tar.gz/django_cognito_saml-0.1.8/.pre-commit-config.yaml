@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.37.0
+    hooks:
+      - id: commitizen
+        stages:
+          - commit-msg
+  # Ruff fix (certain things)
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.254
+    hooks:
+      - id: ruff
+        name: ruff-fix
+        # F401 Remove unused imports
+        args: ["--select",  "F401", "--fix"]
+
+  # Ruff lint afterwards
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.254
+    hooks:
+      - id: ruff
+        name: ruff-check
+
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.8.0.4
+    hooks:
+      - id: shellcheck
+  - repo: local
+    hooks:
+      - id: mypy
+        args:
+          - --show-error-codes
+        name: mypy
+        types: [python]
+        entry: poetry run mypy
+        verbose: true
+        require_serial: true
+        language: system

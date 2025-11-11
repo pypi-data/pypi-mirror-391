@@ -1,0 +1,21 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish_to_pypi:
+    name: Publishes tag to pypi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install build tools
+        run: python3 -m pip install --user --upgrade poetry
+      - name: Pypi authentication
+        run: python3 -m poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+      - name: Upload package
+        run: python3 -m poetry publish --build

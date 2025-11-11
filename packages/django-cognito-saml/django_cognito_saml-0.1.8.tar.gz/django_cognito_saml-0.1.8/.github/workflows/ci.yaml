@@ -1,0 +1,29 @@
+name: Python
+on:
+  push:
+    branches:
+      - release/*
+      - develop
+      - master
+      - main
+  pull_request: {}
+
+permissions:
+  id-token: write # Required for federated aws oidc
+  contents: read
+  actions: read
+  pull-requests: write
+
+jobs:
+  ci:
+    uses: uptick/actions/.github/workflows/ci.yaml@main
+    secrets: inherit
+    with:
+      aws: false
+      python: true
+      poetry: true
+      # Disable these for now :(
+      slack-on-error: false
+      praise-on-fix: false
+      slack-channel: "developers"
+      command: make ci --output-sync=recurse -j5 --keep-going
