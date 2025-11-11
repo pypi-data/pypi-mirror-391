@@ -1,0 +1,77 @@
+CHANGELOG
+=========
+
+2.1.6 - 2025-11-11
+------------------
+
+This is a maintenance release. For clarity's sake, the wording in the `README.md` documentation file has been improved.
+
+2.1.5 - 2025-01-20
+------------------
+
+This is a maintenance release. No user-visible changes have been made. This release tests the new system to keep alignment with plugin template via Cruft.
+
+2.1.4 - 2024-04-14
+------------------
+
+Ensure plugin is included in sdist build
+
+2.1.3 - 2024-04-07
+------------------
+
+Maintainance release (no user visible changes)
+
+* Add Python 3.12 to CI test matrix
+* Switch build system from Hatchling to PDM
+* Fix linters errors
+
+2.1.2 - 2023-10-31
+------------------
+
+Fix project name
+
+2.1.1 - 2023-10-31
+------------------
+
+Maintenance release:
+
+- Migrate to the new tooling standards
+- Improve code quality
+
+2.1.0 - 2023-04-13
+------------------
+
+The tuples in the LINKCLASS configuration variable have only two elements now. This makes the code consistent with the plugin documentation (README.md file) and resolves issue #34.
+
+2.0.4 - 2022-10-01
+------------------
+
+Update list of years in Copyright notices
+
+2.0.3 - 2022-07-15
+------------------
+
+In `test_linkclass.py`, use `io` instead of `six` to import `StringIO`.
+
+2.0.2 - 2021-12-17
+------------------
+
+Upgrade code to Python 3.6+ (thanks to Justin Mayer)
+
+2.0.1 - 2021-11-04
+------------------
+
+Maintenance release: Use .format() instead of % operator to format strings
+
+2.0.0 - 2021-02-17
+------------------
+
+Convert to namespace plugin for use with Pelican 4.5 and above
+
+[Justin Mayer](https://github.com/justinmayer) [PR #11](https://github.com/pelican-plugins/linkclass/pull/11/)
+
+
+1.0.0 - 2019-09-29
+------------------
+
+Initial release to PyPI
