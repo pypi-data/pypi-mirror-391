@@ -1,0 +1,53 @@
+{
+  "mcpServers": {
+    "aicoding-backend": {
+      "command": "python",
+      "args": [
+        "-m",
+        "src.mcp_server"
+      ],
+      "cwd": "/Users/chenshuren.5/proj/AICoding-backend",
+      "env": {
+        "PYTHONPATH": "/Users/chenshuren.5/proj/AICoding-backend"
+      },
+      "disabled": true,
+      "autoApprove": []
+    },
+    "backend-coding": {
+      "autoApprove": [
+        "init_project_rules",
+        "process_thought",
+        "generate_prp",
+        "execute_prp"
+      ],
+      "timeout": 180,
+      "command": "uv",
+      "type": "stdio",
+      "transportType": "stdio",
+      "args": [
+        "--directory",
+        "/Users/chenshuren.5/proj/AICoding-backend/src",
+        "run",
+        "main.py"
+      ],
+      "disabled": false
+    },
+    "backend-coding-src": {
+      "autoApprove": [
+        "init_project_rules",
+        "process_thought",
+        "generate_prp",
+        "execute_prp",
+        "init_requirements_doc"
+      ],
+      "disabled": false,
+      "timeout": 180,
+      "command": "uvx",
+      "type": "stdio",
+      "transportType": "stdio",
+      "args": [
+        "aicoding-backend"
+      ]
+    }
+  }
+}
