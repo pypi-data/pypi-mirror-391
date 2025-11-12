@@ -1,0 +1,41 @@
+{
+  "name": "GitHub Commit Status",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "args": ["-l"]
+          }
+        }
+      }
+    }
+  },
+  "postCreateCommand": "pip install \"pip<25.3\" && pip install -e \".[dev]\"",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteUser": "user",
+  "forwardPorts": [],
+  // This project doesn't actually need auto-forwarded ports. It's command line
+  // only. Suppress auto-forwarded port notifications from development
+  // tools (mkdocs serve, pytest servers, etc.) in the typical dev port range:
+  "portsAttributes": {
+    "3000-9999": {
+      "onAutoForward": "silent"
+    }
+  }
+}
+

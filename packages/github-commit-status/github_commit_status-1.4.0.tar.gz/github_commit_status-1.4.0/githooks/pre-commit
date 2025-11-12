@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+
+"""
+Pre-Commit Git Hook to enforce coding and style standards
+"""
+
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import sys
+import subprocess
+
+
+def lint_code(filename):
+    """Lint filecontents with PyLint return appropriate error code
+
+    If lint result is less than lower_threshold, return 1
+    Otherwise, return 0
+    """
+
+    return_code = subprocess.call(["flake8", filename])
+    if return_code != 0:
+        print("File '{}' did not pass flake8 check.\n\n".format(filename))
+    return return_code
+
+
+def check_codestyle(filename):
+    """Check file given by filename against pycodestyle process
+
+    If pycodestyle returns anything other than 0, then print an error
+    and command so that this can be checked before committed.
+    """
+
+    return_code = subprocess.call(["pycodestyle", filename])
+    if return_code != 0:
+        print("File '{}' did not pass pycodestyle check.\n\n".format(filename))
+        print("Run: 'pycodestyle {}".format(filename))
+
+    return return_code
+
+
+def check(line):
+    """If line contains a valid python filename that isn't deleted, check it"""
+
+    return_code = 0
+    if len(line) > 0:
+        # There may be more than two items in the list
+        line_list = line.split("\t")
+        action = line_list[0]
+        filename = line_list[1]
+        if filename.endswith(".py") and not action == "D":
+            print("Checking file: %s" % filename)
+            return_code = lint_code(filename) + check_codestyle(filename)
+    return return_code
+
+
+def main():
+    """Main entry point"""
+
+    filelist = subprocess.check_output(["git", "diff",
+                                        "--cached", "--name-status"])
+    return_code = 0
+    for line in filelist.decode("utf-8").strip().split('\n'):
+        return_code += check(line)
+    return return_code
+
+
+if __name__ == '__main__':
+    sys.exit(main())
