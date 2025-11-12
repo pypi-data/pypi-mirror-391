@@ -1,0 +1,267 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/darkclaw921-fast-bitrix24-mcp-badge.png)](https://mseep.ai/app/darkclaw921-fast-bitrix24-mcp)
+
+
+[![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/ed1c0f4e-cc57-4120-9a5e-5e3fc65414f4)
+![PyPI - Format](https://img.shields.io/pypi/format/fast-bitrix24-mcp)
+![PyPI - Status](https://img.shields.io/pypi/status/fast-bitrix24-mcp)
+<!-- ![PyPI - Downloads](https://img.shields.io/pypi/dm/fast-bitrix24-mcp) -->
+[![PyPI Downloads](https://static.pepy.tech/badge/fast-bitrix24-mcp/week)](https://pepy.tech/projects/fast-bitrix24-mcp)
+
+# Поддержка и развитие
+Проект активно развивается. Вопросы и предложения по улучшению приветствуются через Issues.
+
+# MCP сервер для взаимодействия с Bitrix24 rest api на основе fast-bitrix24
+
+
+На данный момент сервер поддерживает следsующие сущности:
+- сделки
+    - `list_deal` - Список сделок по фильтрам
+    - `get_stages` - Получение стадий сделок в человекочитаемом виде, сгруппированных по воронкам
+    - `get_category_stages` - Получение стадий для конкретной воронки в человекочитаемом виде
+- пользовательские поля
+    - `get_all_info_fields` - Получение всех ID, названий и значений полей сделки, контакта, компании, задач, лида
+- контакты
+    - `list_contact` - Список контактов по фильтрам
+- компании
+    - `list_company` - Список компаний по фильтрам
+- пользователи
+    - `list_user` - Список пользователей по фильтрам
+    - `get_user_activity` - Получение активности пользователя по id
+    - `get_all_managers_activity_report` - Получение активности всех менеджеров за указанный период с определением неактивных пользователей
+- лиды
+    - `list_lead` - Список лидов по фильтрам
+- задачи
+    - `list_task` - Список задач по фильтрам
+    - `get_task_time_tracking` - Получение времени выполнения задачи по id
+    - `get_task` - Получение задачи по id
+    - `get_task_comments_list` - Получение списка комментариев к задаче по id
+    - `get_task_checklist_items` - Получение списка пунктов чеклиста задачи по id
+
+- хелпер
+    - `export_entities_to_json` - Экспорт элементов сущности в JSON (сделки, контакты, компании, лиды)
+    - `analyze_export_file` - Анализ экспортированных данных (сумма, количество, среднее значение, минимальное значение, максимальное значение)
+    - `analyze_tasks_export` - Анализ экспортированных данных для задач (сумма, количество, среднее значение, минимальное значение, максимальное значение)
+    - `export_task_fields_to_json` - Экспорт описания полей задач   
+    - `datetime_now` - Получение текущей даты и времени в московской зоне
+
+
+
+поддержка человеческого названия полей даже для полей типа список
+например:
+- какая сумма сделок где поле 'этаж доставки' равно 'в подвал'?
+- какая сумма сделок которые нужно доставить в подвал
+- как называется поле у сделки с id UF_CRM_1749724770090?
+- у каких пользователях есть просроченные задачи?
+
+# Установка и запуск сервера
+установите переменные окружения из файла .env.example
+```bash
+cp .env.example .env
+```
+
+установите зависимости 
+```bash
+uv sync
+```
+или установите пакет
+```bash
+uv add fast-bitrix24-mcp
+```
+
+создайте файл для запуска сервера
+```python
+from fast_bitrix24_mcp.main import mcp
+
+if __name__ == "__main__":  
+    mcp.run(transport="http", host="0.0.0.0", port=8000)
+    # mcp.run(transport="streamable-http", host="127.0.0.1", port=9000)
+```
+
+запустите сервер
+```bash
+uv run main.py
+```
+
+
+## Авторизация запросов
+Сервер принимает только авторизованные запросы. Токен берётся из переменной окружения `AUTH_TOKEN` (файл `.env`).
+
+1) Установите токен в `.env`:
+```bash
+AUTH_TOKEN=ваш_секретный_токен
+```
+
+2) Пример авторизованного запроса к HTTP MCP эндпоинту (по умолчанию путь `/mcp`):
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $AUTH_TOKEN" \
+  http://localhost:8000/mcp \
+  
+```
+
+
+# inspector
+ui для тестирования сервера
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+# Пример использования в langchain
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
+from dotenv import load_dotenv
+from pprint import pprint
+load_dotenv()
+
+client = MultiServerMCPClient(
+    {
+        
+        "bitrix24-main": {
+            "url": "http://localhost:8000/mcp",
+            "transport": "http",
+            "headers": {
+                "Authorization": f"Bearer {os.getenv('AUTH_TOKEN')}"
+            }
+        },
+
+    }
+)
+async def main():
+    tools = await client.get_tools()
+  
+    promts = await client.get_prompt('bitrix24-main', 'main_prompt')
+    promts=promts[0].content    
+    # agent = create_react_agent("openai:gpt-4.1-nano-2025-04-14", tools, prompt=promt)
+    agent = create_react_agent("openai:gpt-4.1-nano-2025-04-14", tools, prompt=promts, debug=True)
+    # math_response = await agent.ainvoke({"messages": "сколько сделок с названием Обновленная тестовая сделка ?"})
+    # math_response = await agent.ainvoke({"messages": "как называется поле у сделки с id UF_CRM_1749724770090?"})
+    # math_response = await agent.ainvoke({"messages": "какая сумма сделок где поле 'этаж доставки' равно 'в подвал'"})
+    # math_response = await agent.ainvoke({"messages": "какая сумма сделок у которых этаж доставки 'в подвал'?"})
+    math_response = await agent.ainvoke({"messages": "покажи статистику по сделкам за сегодня и позавчера"})
+
+
+    token=0
+    for message in math_response["messages"]:
+        print(message.content + "\n\n")
+        
+    # pprint(math_response)
+    token=math_response["messages"][-1].usage_metadata['total_tokens']
+    print(f'token: {token}')
+    
+        
+
+    while True:
+        message = input("Введите сообщение: ")
+        math_response["messages"].append({"role": "user", "content": message})
+        math_response = await agent.ainvoke(math_response)
+        for message in math_response["messages"]:
+            print(message.content + "\n\n")
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+``` 
+
+)
+# пример главного промта для взаимодействия с сервером
+сначала нужно получить все поля сущности чтобы узнать какие поля иммел в виду пользователь используй get_all_info_fields entity: 'deal' | 'contact' | 'company' | 'user' | 'task' | 'lead' | 'all'
+сначала нужно получить все поля сущности используй fields_get_all_info_fields. 
+
+после нужно получить список  сущностей используй export_entities_to_json entity: 'deal' | 'contact' | 'company' | 'user' | 'task' | 'lead' этот метод создаст файл в котором будет список элементов сущности.    
+
+далее можно анализировать эти данные используй analyze_export_file
+если нужно узнать текущую дату и время в московской зоне используй datetime_now
+если выводишь какие то поля то выводи их в человеко-читаемом виде эта информация есть в get_all_info_fields
+
+при работе с задачами нужно сначала получить описания полей задач используй export_task_fields_to_json
+потом все как и с остальными сущностями
+
+никогда не используй методы по типу deal_list_dea или task_list_tasks или другие так как эти методы устаревшие используй только то что выше
+
+Пояснения:
+Менеджер считается снизившим активность, если за последние 7 дней у него:
+• количество задач упало на 30%+ по сравнению с предыдущей неделей;
+• количество звонков снизилось на 25%+
+
+Сводка должна включать:
+• Кол-во новых лидов и сделок;
+• Сколько задач создано и выполнено;
+• Кол-во звонков (входящих/исходящих);
+
+Сделка считается «в риске», если выполняется одно или несколько условий:
+• статус сделки не менялся более 5 рабочих дней;
+• отсутствует активность (звонки, комментарии, задачи) более 3 дней;
+
+Менеджер нуждаеться в помощи если у него:
+• много просроченных задач;
+• мало активности;
+• плохое качество звонков;
+• нет сделок переданных в производство(стадия)
+
+
+доступные инструменты:
+- helper_analyze_export_file: Анализ экспортированных данных из файла JSON
+- helper_export_entities_to_json: Экспорт элементов сущности в JSON
+- helper_export_task_fields_to_json: Экспорт описания полей задач
+- helper_datetime_now: Получение текущей даты и времени в московской зоне
+
+
+описание инструментов:
+helper_analyze_export_file:
+Анализ экспортированных данных из файла JSON
+    - file_path: путь к файлу JSON
+    - operation: операция анализа ('count', 'sum', 'avg', 'min', 'max')
+    - fields: список полей для анализа (например ['UF_CRM_1749724770090', 'TITLE'])
+    - condition: условие фильтрации. Может быть:
+      - строкой с операторами: 'DATE_CREATE >= "2025-11-03 00:00:00" and DATE_CREATE <= "2025-11-09 23:59:59"'
+      - словарем: {'DATE_CREATE': {'>=': '2025-11-03T00:00:00', '<=': '2025-11-09T23:59:59'}}
+      - словарем с операторами в строках: {'DATE_CREATE': '>= 2025-11-03T00:00:00'} (будет автоматически преобразован)
+      - JSON строкой: '{"DATE_CREATE": ">= 2025-11-03T00:00:00"}' (будет автоматически распарсена)
+    - group_by: группировка по полям (например ['UF_CRM_1749724770090'])
+
+helper_export_entities_to_json:
+Экспорт элементов сущности в JSON
+    - entity: 'deal' | 'contact' | 'company' | 'user' | 'task'
+    - filter_fields: фильтр Bitrix24 (например {"CLOSED": "N", ">=DATE_CREATE": "2025-06-01"})
+    - select_fields: список полей; ['*', 'UF_*'] означает все поля
+    - filename: имя файла (опционально). Если не указано, сформируется автоматически в папке exports
+    Возвращает: {"entity": str, "count": int, "file": str}
+
+user_get_all_managers_activity_report
+Получение активности всех менеджеров за указанный период с определением неактивных пользователей
+    
+    Возвращает детальную статистику активности всех менеджеров:
+    - Общая статистика по всем менеджерам (звонки, встречи, email, задачи, сделки, лиды, комментарии)
+    - Список активных менеджеров с детальной статистикой
+    - Список неактивных менеджеров (без активности за период)
+    
+    Args:
+        days: Количество дней для анализа (по умолчанию 30)
+        include_inactive: Включать ли информацию о неактивных менеджерах (по умолчанию True)
+        only_inactive: Если True, возвращает только список неактивных менеджеров без детальной статистики активных (по умолчанию False)
+    
+    Returns:
+        dict: Словарь с общей статистикой, списком активных и неактивных менеджеров (или только неактивных, если only_inactive=True)
+
+user_get_user_activity
+Получение полной активности пользователя за указанный период
+    
+    Возвращает детальную статистику активности менеджера:
+    - Звонки (входящие, исходящие, пропущенные)
+    - Встречи
+    - Email-сообщения
+    - Задачи (всего, завершено, в работе)
+    - Сделки (создано, выиграно)
+    - Лиды (создано, конвертировано)
+    - События календаря
+    - Комментарии во всех сущностях CRM
+    
+    Args:
+        manager_id: ID пользователя/менеджера в Bitrix24
+        days: Количество дней для анализа (по умолчанию 30)
+    
+    Returns:
+        dict: Словарь с полной статистикой активности пользователя
+
