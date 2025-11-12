@@ -1,0 +1,125 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "imgctl"
+version = "3.0.15"
+description = "Консольная утилита для управления контейнерной платформой Imagenarium"
+readme = "README.md"
+authors = [
+    {name = "@koden8"}
+]
+maintainers = [
+    {name = "@koden8"}
+]
+keywords = ["docker", "containers", "orchestration", "cli", "imagenarium"]
+license = {text = "MIT License (non-commercial) / Commercial License"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "requests>=2.25.0",
+    "pyyaml>=6.0",
+    "tabulate>=0.9.0",
+    "colorama>=0.4.4",
+    "rich>=12.0.0",
+    "textual>=0.41.0",
+    "keyring>=23.0.0",
+    "keyrings.alt>=5.0.0",
+    "prompt-toolkit>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.800",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/koden8/imgctl"
+Documentation = "https://gitlab.com/koden8/imgctl#readme"
+Repository = "https://gitlab.com/koden8/imgctl"
+Issues = "https://gitlab.com/koden8/imgctl/-/issues"
+Changelog = "https://gitlab.com/koden8/imgctl/-/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["cli*", "core*", "commands*", "utils*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.bash", "LICENSE", "LICENSE-COMMERCIAL"]
+
+[tool.setuptools]
+include-package-data = true
+
+[project.scripts]
+imgctl = "cli.main:main"
+
+[project.gui-scripts]
+
+[project.entry-points."console_scripts"]
+imgctl = "cli.main:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.9"
+explicit_package_bases = true
+exclude = ["__main__.py", "build/", "venv/"]
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+disallow_untyped_decorators = false
+no_implicit_optional = false
+warn_redundant_casts = false
+warn_unused_ignores = false
+warn_no_return = false
+ignore_missing_imports = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+
+
