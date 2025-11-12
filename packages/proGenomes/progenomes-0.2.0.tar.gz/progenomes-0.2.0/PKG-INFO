@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: proGenomes
+Version: 0.2.0
+Summary: A proGenomes command-line tool for interacting with bacterial and archeal genomes.
+Author-email: proGenomes Development Team <luispedro@big-data-biology.org>
+Maintainer-email: Alexandre Areias Castro <alexandre@big-data-biology.org>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/BigDataBiology/progenomes
+Project-URL: Bug Reports, https://github.com/BigDataBiology/progenomes/issues
+Project-URL: Source, https://github.com/BigDataBiology/progenomes
+Keywords: bioinformatics,microbiology,metagenomics
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Healthcare Industry
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: polars
+Requires-Dist: pandas
+Requires-Dist: tqdm
+Requires-Dist: pyarrow
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Dynamic: license-file
+
+# proGenomes-cli
+
+proGenomes-cli is a command-line tool for exploring the [proGenomes](https://progenomes.embl.de) dataset of bacterial and archaeal genomes.
+
+If you use this software in a publication please cite:
+
+> Fullam, Anthony; Letunic, Ivica,; Maistrenko, Oleksandr; Castro, Alexandre A; Coelho, Luis Pedro; Grekova, Anastasia ; Schudoma, Christian; Khedkar, Supriya; Robbani, Shahriyar Mahdi; Kuhn, Michael; Schmidt, Thomas S. B; Bork, Peer; Mende, Daniel R. **proGenomes4: providing two million accurately and consistently annotated high-quality prokaryotic genomes.** in *Nucleic Acids Research*. (accepted)
+
+## Installation
+
+Clone this repository and install using `pip`:
+
+```bash
+pip install .
+```
+
+## Usage
+
+After installation, the `progenomes` command provides access to several subcommands:
+
+```bash
+progenomes download <options>   # Download genome data
+progenomes view <options>       # Inspect downloaded data
+```
+
+Refer to the built-in help for full details on available commands.
+
+```bash
+progenomes --help
+```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+

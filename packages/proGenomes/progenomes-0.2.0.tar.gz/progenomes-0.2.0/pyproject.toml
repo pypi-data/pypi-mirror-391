@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "proGenomes" 
+dynamic = ["version"]
+description = "A proGenomes command-line tool for interacting with bacterial and archeal genomes."
+readme = "README.md"
+requires-python = ">=3.9"
+license =  "MIT"
+keywords = ["bioinformatics", "microbiology", "metagenomics"]
+authors = [{ name = "proGenomes Development Team", email = "luispedro@big-data-biology.org" }]
+maintainers = [
+{ name = "Alexandre Areias Castro", email = "alexandre@big-data-biology.org" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Build Tools",
+
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Education",
+  "Intended Audience :: Healthcare Industry",
+
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+
+  "Operating System :: OS Independent",
+  "Natural Language :: English",
+]
+dependencies = [
+  "polars",
+  "pandas",
+  "tqdm",
+  "pyarrow"
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.urls]
+"Homepage" = "https://github.com/BigDataBiology/progenomes"
+"Bug Reports" = "https://github.com/BigDataBiology/progenomes/issues"
+"Source" = "https://github.com/BigDataBiology/progenomes"
+
+[project.scripts]
+progenomes = "progenomes.cli:main"
+
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.setuptools.dynamic]
+version = {attr = "progenomes.__version__"}
