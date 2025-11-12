@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: geoparser
+Version: 0.3.0
+Summary: A customizable geoparsing library for unstructured text
+License: MIT
+License-File: LICENSE
+Author: Diego Gomes
+Author-email: diego.gomes@uzh.ch
+Requires-Python: >=3.10,<3.14
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: accelerate (>=1.11.0,<2.0.0)
+Requires-Dist: appdirs (>=1.4.4,<2.0.0)
+Requires-Dist: datasets (>=4.3.0,<5.0.0)
+Requires-Dist: fastapi (>=0.121.0,<0.122.0)
+Requires-Dist: geopandas (>=1.1.1,<2.0.0)
+Requires-Dist: markupsafe (>=3.0.3,<4.0.0)
+Requires-Dist: pandas (>=2.3.3,<3.0.0)
+Requires-Dist: pydantic (>=2.12.3,<3.0.0)
+Requires-Dist: pyogrio (>=0.11.1,<0.12.0)
+Requires-Dist: pyproj (>=3.7.1,<4.0.0)
+Requires-Dist: python-multipart (>=0.0.20,<0.0.21)
+Requires-Dist: pyyaml (>=6.0.3,<7.0.0)
+Requires-Dist: requests (>=2.32.5,<3.0.0)
+Requires-Dist: sentence-transformers (>=5.1.2,<6.0.0)
+Requires-Dist: shapely (>=2.1.2,<3.0.0)
+Requires-Dist: spacy (>=3.8.7,<4.0.0)
+Requires-Dist: sqlalchemy (>=2.0.44,<3.0.0)
+Requires-Dist: sqlmodel (>=0.0.27,<0.0.28)
+Requires-Dist: torch (>=2.9.0,<3.0.0)
+Requires-Dist: tqdm (>=4.67.1,<5.0.0)
+Requires-Dist: transformers (>=4.57.1,<5.0.0)
+Requires-Dist: typer (>=0.20.0,<0.21.0)
+Requires-Dist: uvicorn (>=0.38.0,<0.39.0)
+Requires-Dist: werkzeug (>=3.1.3,<4.0.0)
+Project-URL: Homepage, https://geoparser.app
+Project-URL: Repository, https://github.com/dguzh/geoparser
+Description-Content-Type: text/markdown
+
+# Irchel Geoparser
+
+[![CI](https://img.shields.io/github/actions/workflow/status/dguzh/geoparser/ci.yml?branch=main&logo=github&label=CI)](https://github.com/dguzh/geoparser/actions?query=event%3Apush+branch%3Amain+workflow%3ACI)
+[![Tests](https://img.shields.io/github/actions/workflow/status/dguzh/geoparser/test.yml?branch=main&logo=github&label=tests)](https://github.com/dguzh/geoparser/actions/workflows/test.yml?query=branch%3Amain+)
+[![Coverage](https://coverage-badge.samuelcolvin.workers.dev/dguzh/geoparser.svg)](https://coverage-badge.samuelcolvin.workers.dev/redirect/dguzh/geoparser)
+[![PyPI](https://img.shields.io/pypi/v/geoparser?&label=pypi%20package)](https://pypi.org/project/geoparser)
+[![Python](https://img.shields.io/pypi/pyversions/geoparser)](https://pypi.org/project/geoparser)
+[![License](https://img.shields.io/github/license/dguzh/geoparser)](https://github.com/dguzh/geoparser/blob/main/LICENSE)
+
+A Python library for extracting place names from text and linking them to geographic locations.
+
+## Features
+
+- **Project-Based Workflows**: Store documents and results in a persistent database for long-term research
+- **Modular Architecture**: Mix and match different recognizers and resolvers, or build your own
+- **Trainable Models**: Fine-tune recognizers and resolvers on your own annotated data
+- **Custom Gazetteers**: Integrate any geographic database through simple YAML configuration
+
+## Installation
+
+```bash
+pip install geoparser
+```
+
+> **Note for macOS users**: The library requires SQLite extension support. Please see the [macOS setup guide](https://docs.geoparser.app/en/latest/macos.html) for installation instructions using Homebrew Python.
+
+## Quick Start
+
+```python
+from geoparser import Geoparser
+
+# Initialize with default settings
+gp = Geoparser()
+
+# Parse text
+text = "Paris is the capital of France."
+docs = gp.parse(text)
+
+# Access results
+for toponym in docs[0].toponyms:
+    print(f"{toponym.text} -> {toponym.location.data}")
+```
+
+## Documentation
+
+Full documentation is available at **[docs.geoparser.app](https://docs.geoparser.app)**
+
+- [Installation Guide](https://docs.geoparser.app/en/latest/installation.html)
+- [Quick Start Tutorial](https://docs.geoparser.app/en/latest/quickstart.html)
+- [User Guides](https://docs.geoparser.app/en/latest/guides/projects.html)
+- [API Reference](https://docs.geoparser.app/en/latest/api/geoparser.html)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## Acknowledgments
+
+The Irchel Geoparser originated as part of my Master's thesis and was further developed with support from the [Department of Geography](https://www.geo.uzh.ch/) at the University of Zurich and the [Public Data Lab](https://publicdatalab.ch/) of the Digitalization Initiative of the Zurich Higher Education Institutions. I thank Prof. Dr. Ross Purves for the opportunity to continue this work as part of a research project.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Third-party licenses are listed in [THIRD_PARTY_LICENSES](THIRD_PARTY_LICENSES).
+
