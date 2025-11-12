@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: proxio
+Version: 0.0.2
+Summary: A wrapper for the proxmox api
+Project-URL: Homepage, https://github.com/rogerbrinkmann/proxio
+Project-URL: Source, https://github.com/rogerbrinkmann/proxio
+Author-email: Roger Brinkmann <rogerbrinkmann@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Keywords: cli,example,utility
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: hatch>=1.14.2
+Requires-Dist: pytest-cov>=5.0.0
+Requires-Dist: pytest>=8.3.5
+Requires-Dist: ruff>=0.14.4
+Description-Content-Type: text/markdown
+
+# proxio
+Proxmox api wrapper
+
+## test
+`pytest --cov=proxio --cov-report=term`
+
+## build
+`hatch build`
+
+## publish
+`hatch publish`
