@@ -1,0 +1,150 @@
+Metadata-Version: 2.4
+Name: pyrcmip
+Version: 2.0.0
+Summary: Tools for accessing RCMIP data
+Home-page: https://gitlab.com/rcmip/pyrcmip
+Author: Zeb Nicholls, Jared Lewis, Alejandro Romero Prieto
+Author-email: zebedee.nicholls@climate-energy-college.org, jared.lewis@climate-energy-college.org, eearp@leeds.ac.uk
+License: 3-Clause BSD License
+Project-URL: Bug Reports, https://github.com/rcmip/pyrcmip/issues
+Project-URL: Source, https://gitlab.com/rcmip/pyrcmip
+Keywords: data,simple climate model,climate,scm
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: click
+Requires-Dist: matplotlib
+Requires-Dist: openpyxl
+Requires-Dist: pyjwt>=2
+Requires-Dist: seaborn
+Requires-Dist: scipy
+Requires-Dist: scmdata>=0.7.3
+Requires-Dist: seaborn>=0.11.0
+Requires-Dist: semver
+Requires-Dist: tqdm
+Provides-Extra: docs
+Requires-Dist: sphinx>=3; extra == "docs"
+Requires-Dist: sphinxcontrib-bibtex>=2; extra == "docs"
+Requires-Dist: sphinx_click; extra == "docs"
+Requires-Dist: sphinx_rtd_theme; extra == "docs"
+Requires-Dist: docutils; extra == "docs"
+Provides-Extra: notebooks
+Requires-Dist: ipywidgets; extra == "notebooks"
+Requires-Dist: netcdf4; extra == "notebooks"
+Requires-Dist: notebook<7; extra == "notebooks"
+Requires-Dist: widgetsnbextension; extra == "notebooks"
+Requires-Dist: openscm-twolayermodel; extra == "notebooks"
+Provides-Extra: tests
+Requires-Dist: codecov; extra == "tests"
+Requires-Dist: nbval; extra == "tests"
+Requires-Dist: netcdf4; extra == "tests"
+Requires-Dist: pytest-cov; extra == "tests"
+Requires-Dist: pytest-mock; extra == "tests"
+Requires-Dist: pytest>=5.0.0; extra == "tests"
+Requires-Dist: moto>=4.2.0; extra == "tests"
+Provides-Extra: deploy
+Requires-Dist: twine>=1.11.0; extra == "deploy"
+Requires-Dist: setuptools>=38.6.0; extra == "deploy"
+Requires-Dist: wheel>=0.31.0; extra == "deploy"
+Provides-Extra: dev
+Requires-Dist: awscli; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: isort>=5; extra == "dev"
+Requires-Dist: black==22.3.0; extra == "dev"
+Requires-Dist: pydocstyle; extra == "dev"
+Requires-Dist: nbdime; extra == "dev"
+Requires-Dist: ipywidgets; extra == "dev"
+Requires-Dist: netcdf4; extra == "dev"
+Requires-Dist: notebook<7; extra == "dev"
+Requires-Dist: widgetsnbextension; extra == "dev"
+Requires-Dist: openscm-twolayermodel; extra == "dev"
+Requires-Dist: codecov; extra == "dev"
+Requires-Dist: nbval; extra == "dev"
+Requires-Dist: netcdf4; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: pytest>=5.0.0; extra == "dev"
+Requires-Dist: moto>=4.2.0; extra == "dev"
+Requires-Dist: sphinx>=3; extra == "dev"
+Requires-Dist: sphinxcontrib-bibtex>=2; extra == "dev"
+Requires-Dist: sphinx_click; extra == "dev"
+Requires-Dist: sphinx_rtd_theme; extra == "dev"
+Requires-Dist: docutils; extra == "dev"
+Requires-Dist: twine>=1.11.0; extra == "dev"
+Requires-Dist: setuptools>=38.6.0; extra == "dev"
+Requires-Dist: wheel>=0.31.0; extra == "dev"
+Requires-Dist: openscm-zenodo; extra == "dev"
+Provides-Extra: zenodo
+Requires-Dist: openscm-zenodo; extra == "zenodo"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
+
+pyrcmip
+=======
+
+.. sec-begin-index
+
+pyrcmip is a tool for validating and uploading results to `RCMIP <http://rcmip.org>`_.
+The Reduced Complexity Model Intercomparison Project (RCMIP) is a project to evaluate reduced-complexity (also known as simple) climate models and compare them against CMIP coupled models.
+
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gl/rcmip%2Fpyrcmip/master?filepath=notebooks%2Fexample-model-pipeline
+.. sec-end-index
+
+.. sec-begin-installation
+
+Installation
+------------
+
+The easiest way to install pyrcmip is with `pip <https://pypi.org/project/pip/>`_.
+At this stage pyrcmip only supports Python 3.6+.
+
+::
+
+  # if you're using a virtual environment, make sure you're in it
+  pip install pyrcmip
+
+.. sec-end-installation
+
+Documentation
+-------------
+
+Documentation can be found at our `documentation pages <https://pyrcmip.readthedocs.io/en/latest/>`_
+(we are thankful to `Read the Docs <https://readthedocs.org/>`_ for hosting us).
+
+
+Contributing
+------------
+
+If you'd like to contribute, please make a pull request!
+The pull request templates should ensure that you provide all the necessary information.
+
+.. sec-begin-license
+
+License
+-------
+
+pyrcmip is free software under a BSD 3-Clause License, see `LICENSE <https://gitlab.com/rcmip/pyrcmip/blob/master/LICENSE>`_.
+
+.. sec-end-license
+
+If you make use of pyrcmip or any of the RCMIP project, please cite the articles provided in ``citations.bib``.
