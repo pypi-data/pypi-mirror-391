@@ -1,0 +1,63 @@
+site_name: plly
+site_description: Python LOggling Linter
+site_url: https://janinishant.github.io/plly/
+repo_url: https://github.com/janinishant/plly
+repo_name: janinishant/plly
+
+theme:
+  name: material
+  palette:
+    scheme: default
+    primary: custom
+    accent: custom
+
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+  logo: assets/logo-icon-only.svg
+  favicon: assets/logo-icon-only.svg
+
+  icon:
+    logo: custom/logo
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Policies:
+      - Overview: policies/index.md
+      - LY001 - Exception exc_info: policies/ly001-exception-exc-info.md
+      - LY002 - Log Loop: policies/ly002-log-loop.md
+      - LY003 - Orphan Variables: policies/ly003-orphan-variables.md
+  - Contributing: contributing.md
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/janinishant/plly
