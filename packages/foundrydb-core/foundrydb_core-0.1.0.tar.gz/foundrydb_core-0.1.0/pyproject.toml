@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "foundrydb-core"
+version = "0.1.0"
+description = "A tiny educational SQL engine written in pure Python."
+readme = "README.md"
+authors = [
+  { name = "Alinani Simukanga" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Database :: Database Engines/Servers",
+  "Intended Audience :: Education",
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov",
+  "ruff",
+  "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/a1inani/foundrydb"
+Repository = "https://github.com/a1inani/foundrydb"
+Issues = "https://github.com/a1inani/foundrydb/issues"
+
+[project.scripts]
+foundrydb-cli = "foundrydb.cli:main"
+
+[tool.setuptools.packages.find]
+exclude = ["tests*", "docs*", "examples*"]
