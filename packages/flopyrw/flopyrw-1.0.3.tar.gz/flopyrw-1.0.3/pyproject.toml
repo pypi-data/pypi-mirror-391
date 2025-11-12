@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools >=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flopyrw"
+description = "Python interface based on FloPy to configure input files for MODPATH-RW"
+keywords = ["MODPATH-RW", "hydrogeology", "rwpt"]
+classifiers = []
+requires-python = ">=3.8"
+dependencies = [
+    "flopy >=3.5",
+]
+dynamic = ["readme","version"]
+
+[tool.setuptools.dynamic]
+readme  = {file = ["README.md", "LICENSE.md"], content-type = "text/markdown"}
+version =  {attr = "flopyrw.version.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flopyrw", "flopyrw.*"]
+namespaces = false
+
+[project.optional-dependencies]
+test = [
+    "shapely >=1.8",
+    "pyshp",
+    "modflow-devtools",
+    "pytest",
+]
