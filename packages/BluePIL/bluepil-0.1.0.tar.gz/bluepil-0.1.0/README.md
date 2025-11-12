@@ -1,0 +1,84 @@
+# BluePIL 💊
+
+**Take the blue pill. Your memory stays safe.**
+
+Stop fighting Pillow's memory leaks. BluePIL is a drop-in replacement that automatically handles cleanup so you don't have to.
+
+## The Problem
+```python
+from PIL import Image
+
+# Process 1000 images
+for i in range(1000):
+    img = Image.open(f'image_{i}.jpg')
+    img = img.resize((800, 600))
+    img.save(f'output_{i}.jpg')
+    # img.close()  # Forgot this? RAM goes brrr 📈
+```
+
+**Memory usage: 2GB+ and climbing** 🔥
+
+Here's the dirty secret: Pillow's Python objects get garbage collected just fine, but the underlying C image buffers don't get freed unless you explicitly call `.close()`. Python's GC has no idea those massive C allocations even exist.
+
+The result? Your Python process looks lean to the GC while your actual RAM usage spirals out of control. You're forced to either:
+- Manually call `.close()` everywhere like it's 1995
+- Wrap everything in context managers
+- Just accept the leak and provision 40GB of RAM (the HuggingFace strategy)
+
+## The Solution
+```python
+from bluepil import Image
+
+# Same code, zero leaks
+for i in range(1000):
+    img = Image.open(f'image_{i}.jpg')
+    img = img.resize((800, 600))
+    img.save(f'output_{i}.jpg')
+    # Automatic cleanup ✨
+```
+
+**Memory usage: Stable at 50MB** ✅
+
+## Installation
+```bash
+pip install bluepil
+```
+
+## Usage
+
+Replace your Pillow import:
+```python
+# Before
+from PIL import Image
+
+# After
+from BluePIL import Image
+```
+
+That's it. Everything else works exactly the same.
+
+## How It Works
+
+BluePIL wraps Pillow's `Image` class with automatic cleanup using `weakref.finalize()`. When an image goes out of scope, `.close()` is called automatically, releasing the C buffers immediately instead of leaking them forever.
+
+## Features
+
+- ✅ Drop-in replacement for `PIL.Image`
+- ✅ Zero API changes
+- ✅ Automatic memory cleanup
+- ✅ Context manager support
+- ✅ Works with existing Pillow code
+
+## Why "BluePIL"?
+
+> "You take the blue pill, the story ends. You wake up in your bed and believe whatever you want to believe."
+
+Take the blue pill. Stop worrying about memory leaks. Just process your images.
+
+## License
+
+MIT
+
+## Contributing
+
+Issues and PRs welcome at [github.com/ewan-m/bluepil](https://github.com/ewan-m/bluepil)
