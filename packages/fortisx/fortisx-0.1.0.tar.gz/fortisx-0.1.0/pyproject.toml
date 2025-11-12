@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fortisx"
+version = "0.1.0"
+description = "FortisX Python SDK"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{name="Fortisx Developers", email="dev@fortisx.fi"}]
+license = {text = "MIT"}
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/fortisx/python-sdk"
+Documentation = "https://fortisx.gitbook.io/docs/introduction/python-sdk"
+Issues = "https://github.com/fortisx/python-sdk/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [""]
+include = ["fortisx*"]
+
+[tool.setuptools.package-data]
+fortisx = ["py.typed"]
