@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2023 Sunip K. Mukherjee
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[build-system]
+requires = [
+    "meson-python",
+    "numpy >= 1.14.5" # in order to get include dirs for meson without --no-build-isolation on pip install. isolation = false does not work.
+]
+build-backend = "mesonpy"
+
+[project]
+name = "iri20py"
+version = "0.0.2"
+requires-python = ">=3.9"
+authors = [
+    {name = "Sunip K. Mukherjee", email = "sunipkmukherjee@gmail.com"},
+]
+description = "Python bindings for IRI-2020 model"
+keywords = [
+  "thermosphere",
+  "ionosphere"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Fortran",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = ['meson', 'ninja', 'numpy >= 1.14.5', 'xarray']
+
+[project.urls]
+homepage = "https://github.com/sunipkm/iri20py"
+
+[project.scripts]
+Iri20Test = "iri20py.base:test"
