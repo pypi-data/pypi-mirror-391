@@ -1,0 +1,244 @@
+```{=org}
+#+CREATED: [2025-06-06 Fri 14:01]
+```
+# django-auth0-auth
+
+[![](https://img.shields.io/pypi/v/django-auth0-authbackend.svg)](https://pypi.org/project/django-auth0-authbackend/)
+[![](https://github.com/andyreagan/django-auth0-auth/actions/workflows/python-test-publish.yml/badge.svg)](https://github.com/andyreagan/django-auth0-auth/actions/workflows/python-test-publish.yml)
+
+Authentication backend for Django with Auth0. As of June 2025, all of
+the libraries that I saw for Django Auth0 target old versions of Django,
+we\'ll start this by supporting version 5+ and python 3.11+ (3.10 only
+has 1 year of life). Also, some of these don\'t actually subclass
+Django\'s `AuthBackend`{.verbatim} and implement a login system that is
+more \"beside\" Django than integrated with it. Because this is fully
+integrated, we can use Django\'s built-in `@login_required`{.verbatim}
+decorator and it\'s auth Mixins.
+
+This project is not affiliated with Auth0.
+
+**Features:**
+
+-   Fully automated end-to-end testing with Playwright to ensure Auth0
+    integration works correctly
+-   Complete Django authentication backend integration using Django\'s
+    built-in auth system
+-   Support for modern Django (5+) and Python (3.11+) versions
+
+The names are slightly confusing because there are a lot of one-off
+projects (like this one) on PyPI that attempt the same thing. The repo
+name here is `django-auth0-auth`{.verbatim}, the pypi name is
+`django-auth0-authbackend`{.verbatim}, and the importable package is
+`auth0`{.verbatim}. The installation instructions below reflect these
+names.
+
+## Installation
+
+Install the package from PyPI:
+
+    pip install django-auth0-authbackend
+
+## Usage
+
+Take a look at the sample app provided in `sample/`{.verbatim} to see
+how it\'s used in a MWE. There are only a few steps. First, include the
+app in your apps in your Django settings:
+
+    INSTALLED_APPS = [
+        ...,
+        "auth0",
+    ]
+
+Next, include the auth settings and auth backend (also in your Django
+settings):
+
+    AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
+    AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")
+    AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
+    AUTH0_AUDIENCE = os.environ.get("AUTH0_AUDIENCE")
+
+    # Optional: Configure callback URI (defaults to 'auth0_callback')
+    # AUTH0_CALLBACK_URI = 'auth0'  # Use home URL instead of callback URL
+    # AUTH0_CALLBACK_URI = '/custom/path'  # Use custom path
+    # AUTH0_CALLBACK_URI = 'https://example.com/callback'  # Use full URL
+
+    # Optional: Map Auth0 user_info fields to Django User model fields
+    # These fields will be synced from Auth0 on every login
+    # AUTH0_USER_FIELD_MAPPING = {
+    #     'first_name': 'given_name',  # User.first_name = user_info['given_name']
+    #     'last_name': 'family_name',  # User.last_name = user_info['family_name']
+    # }
+
+    # Optional: Configure staff and superuser permissions based on Auth0 groups/roles
+    # AUTH0_GROUPS_FIELD = 'groups'  # Field in user_info containing groups (default: 'groups')
+    # AUTH0_SUPERUSER_GROUP = 'admins'  # Group that grants superuser access
+    # AUTH0_STAFF_GROUP = 'staff'  # Group that grants staff access
+
+    AUTHENTICATION_BACKENDS = [
+        "auth0.backend.Auth0Backend",
+    ]
+
+Finally, include the urls in your project `urls.py`{.verbatim}:
+
+    from django.urls import path, include
+
+    urlpatterns = [
+        ...,
+        path("auth0/", include("auth0.urls")),
+    ]
+
+## Running the sample app
+
+First, create an auth0 application.
+
+Set up python however you prefer, I\'ll use a virtual env:
+
+    ~/.pyenv/versions/3.11.10/bin/python -m venv .venv
+    source .venv/bin/activate
+    pip install .
+
+Running the sample app, we can do:
+
+    export AUTH0_CLIENT_ID=...
+    export AUTH0_CLIENT_SECRET=...
+    export AUTH0_DOMAIN=...
+    export AUTH0_AUDIENCE=...
+    python manage.py migrate
+    python manage.py runserver
+
+Go to <http://localhost:8000/auth0> and log in!
+
+## Configuration Options
+
+### Callback URI Configuration
+
+By default, this library uses the `auth0_callback`{.verbatim} URL as the
+callback URI sent to Auth0. You can customize this behavior using the
+`AUTH0_CALLBACK_URI`{.verbatim} setting:
+
+    # Use the home URL instead of callback URL (recommended for cleaner UX)
+    AUTH0_CALLBACK_URI = 'auth0'
+
+    # Use a custom path
+    AUTH0_CALLBACK_URI = '/custom/callback/path'
+
+    # Use a full URL (useful for different domains)
+    AUTH0_CALLBACK_URI = 'https://yourdomain.com/auth/callback'
+
+The setting accepts:
+
+-   URL name (e.g., `'auth0'`{.verbatim} or
+    `'auth0_callback'`{.verbatim})
+-   Relative path (e.g., `'/custom/path'`{.verbatim})
+-   Full URL (e.g., `'https://example.com/callback'`{.verbatim})
+
+**Note:** Make sure to update your Auth0 application\'s \"Allowed
+Callback URLs\" to match your configured callback URI.
+
+### User Field Mapping Configuration
+
+You can automatically sync fields from Auth0\'s user~info~ to your
+Django User model on every login using the
+`AUTH0_USER_FIELD_MAPPING`{.verbatim} setting. This is useful for
+keeping user profile information up-to-date.
+
+    # Map Auth0 user_info fields to Django User model fields
+    AUTH0_USER_FIELD_MAPPING = {
+        'first_name': 'given_name',    # User.first_name = user_info['given_name']
+        'last_name': 'family_name',     # User.last_name = user_info['family_name']
+        'field_foo': 'field_bar',       # User.field_foo = user_info['field_bar']
+    }
+
+The setting accepts a dictionary where:
+
+-   **Keys** are Django User model field names
+-   **Values** are Auth0 user~info~ field names
+
+**Important:**
+
+-   Fields are synced on **every login**, not just on user creation
+-   The email field is always synced automatically if present in
+    user~info~
+-   Make sure the Django User model has the fields you\'re trying to map
+-   Only fields present in user~info~ will be updated
+
+**Common Auth0 user~info~ fields:**
+
+-   `given_name`{.verbatim} - User\'s first name
+-   `family_name`{.verbatim} - User\'s last name
+-   `nickname`{.verbatim} - User\'s nickname
+-   `name`{.verbatim} - User\'s full name
+-   `picture`{.verbatim} - URL to user\'s profile picture
+-   `email`{.verbatim} - User\'s email (synced automatically)
+-   `email_verified`{.verbatim} - Email verification status
+
+### Staff and Superuser Permissions Configuration
+
+You can automatically manage Django staff and superuser permissions
+based on Auth0 group or role membership. This is useful for integrating
+Auth0\'s authorization with Django\'s admin interface.
+
+    # Configure which Auth0 groups grant Django permissions
+    AUTH0_SUPERUSER_GROUP = 'admins'    # Users in this group become superusers
+    AUTH0_STAFF_GROUP = 'staff'         # Users in this group become staff
+
+    # Optional: Specify the field containing groups (default: 'groups')
+    AUTH0_GROUPS_FIELD = 'groups'       # Or 'roles', or a custom claim
+
+**Configuration Options:**
+
+-   `AUTH0_SUPERUSER_GROUP`{.verbatim} - Group/role name that grants
+    superuser (admin) access
+-   `AUTH0_STAFF_GROUP`{.verbatim} - Group/role name that grants staff
+    access to Django admin
+-   `AUTH0_GROUPS_FIELD`{.verbatim} - Field in user~info~ containing
+    groups/roles (default: `'groups'`{.verbatim})
+
+**Important:**
+
+-   Permissions are synced on **every login**
+-   Users are granted permissions when they\'re in the specified group
+-   Users lose permissions when removed from the group
+-   Both settings are optional - configure only what you need
+-   Make sure to configure Auth0 to include groups/roles in the
+    user~info~ token
+
+**Setting up Auth0 Groups:**
+
+To use this feature, you need to configure Auth0 to include groups in
+the user token:
+
+1.  In Auth0 Dashboard, go to **Actions \> Flows \> Login**
+2.  Create a custom action to add groups to the token:
+
+``` javascript
+exports.onExecutePostLogin = async (event, api) => {
+  const namespace = 'groups';
+  if (event.authorization) {
+    api.idToken.setCustomClaim(namespace, event.authorization.roles);
+    api.accessToken.setCustomClaim(namespace, event.authorization.roles);
+  }
+};
+```
+
+1.  For custom group management, you can also use Auth0\'s Authorization
+    Extension or implement custom logic
+
+**Example Use Cases:**
+
+-   Grant Django admin access to users in Auth0\'s \"staff\" role
+-   Give full superuser permissions to users in \"admins\" group
+-   Use custom namespace like `https://yourapp.com/roles`{.verbatim} via
+    `AUTH0_GROUPS_FIELD`{.verbatim}
+
+## Next steps
+
+-   [x] Test that it works with the sample app (create an auth0 account
+    to test)
+-   [ ] Run through genAI to look for general improvements: is all the
+    logic we have in the views/index the right place for this?
+-   [x] Add pre-commit code checks
+-   [x] Add automated release via github action
+-   [x] Flesh out user documentation here in README
+-   [x] Add automated tests (including full e2e testing with Playwright)
+-   [ ] Profit
