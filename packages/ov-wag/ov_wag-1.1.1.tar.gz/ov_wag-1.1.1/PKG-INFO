@@ -1,0 +1,37 @@
+Metadata-Version: 2.3
+Name: ov-wag
+Version: 1.1.1
+Summary: WGBH Open Vault Wagtail backend
+Author: WGBH-MLA
+Author-email: WGBH-MLA <ryan_harbert@wgbh.org>
+License: MIT
+Requires-Dist: django~=5.2.1
+Requires-Dist: wagtail>=7.0.1,<7.2.0
+Requires-Dist: wagtail-factories~=4.2.1
+Requires-Dist: pydantic>=2.11.5,<2.13.0
+Requires-Dist: psycopg2-binary>=2.9.10
+Requires-Dist: python-dotenv~=1.1.0
+Requires-Dist: wagtail-headless-preview~=0.8.0
+Requires-Dist: django-cors-headers~=4.7.0
+Requires-Dist: django-allauth>=65.9,<65.11
+Requires-Dist: elasticsearch~=8.18.1
+Requires-Dist: wagtail-footnotes>=0.13,<0.15
+Requires-Dist: typer>=0.16,<0.20 ; extra == 'cli'
+Requires-Dist: loguru~=0.7.3 ; extra == 'cli'
+Requires-Dist: trogon~=0.6.0 ; extra == 'cli'
+Requires-Dist: gunicorn~=23.0.0 ; extra == 'production'
+Requires-Dist: django-storages[s3]~=1.14.6 ; extra == 'production'
+Requires-Dist: pytest~=8.4.0 ; extra == 'test'
+Requires-Dist: pytest-django~=4.11.1 ; extra == 'test'
+Requires-Dist: pytest-cov>=6.1.1,<6.3.0 ; extra == 'test'
+Requires-Dist: pytest-sugar>=1.0,<1.2 ; extra == 'test'
+Requires-Dist: pytest-xdist>=3.7,<3.9 ; extra == 'test'
+Requires-Dist: nbmake~=1.5.5 ; extra == 'test'
+Requires-Dist: coverage>=7.8.2,<7.11.0 ; extra == 'test'
+Requires-Python: >=3.10, <4
+Project-URL: documentation, https://wgbh-mla.github.io/ov-wag/
+Project-URL: homepage, https://github.com/WGBH-MLA/ov-wag
+Project-URL: repository, https://github.com/WGBH-MLA/ov-wag
+Provides-Extra: cli
+Provides-Extra: production
+Provides-Extra: test
