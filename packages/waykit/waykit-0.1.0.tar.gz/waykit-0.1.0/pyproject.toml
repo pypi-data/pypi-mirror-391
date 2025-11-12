@@ -1,0 +1,26 @@
+[project]
+name = "waykit"
+version = "0.1.0"
+description = "generate location metatata like peaks, huts for a given gpx file"
+readme = "README.md"
+authors = [
+    { name = "Peter Hoffmann", email = "ph@peter-hoffmann.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "gpxpy>=1.6.2",
+    "pydantic>=2.12.4",
+    "requests>=2.32.5",
+]
+
+[project.scripts]
+waykit = "waykit:main"
+
+[build-system]
+requires = ["uv_build>=0.9.2,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+]
