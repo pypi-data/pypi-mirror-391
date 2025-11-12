@@ -1,0 +1,59 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "anonymask"
+version = "0.1.5"
+description = "Secure anonymization/de-anonymization library for PII data"
+license = { text = "MIT" }
+authors = [
+    { name = "Gokul Viswanathan", email = "gokulviswanathan25@gmail.com" },
+]
+maintainers = [
+    { name = "Gokul Viswanathan", email = "gokulviswanathan25@gmail.com" },
+]
+keywords = ["anonymization", "PII", "privacy", "LLM", "RAG", "security"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8"
+dependencies = []
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/gokul-viswanathan/anonymask"
+Documentation = "https://github.com/gokul-viswanathan/anonymask#readme"
+Repository = "https://github.com/gokul-viswanathan/anonymask.git"
+Issues = "https://github.com/gokul-viswanathan/anonymask/issues"
+Changelog = "https://github.com/gokul-viswanathan/anonymask/blob/main/CHANGELOG.md"
+
+[tool.maturin]
+python-source = "python"
+module-name = "anonymask._anonymask"
+sdist = true
+# Only include what you need
+include = [
+    "LICENSE",
+    "README.md",
+    "python/anonymask/**/*.py",
+    "src/**/*.rs",
+    "Cargo.toml",
+    "Cargo.lock",
+    "pyproject.toml",
+]
+manifest-path = "anonymask-py/Cargo.toml"
+
