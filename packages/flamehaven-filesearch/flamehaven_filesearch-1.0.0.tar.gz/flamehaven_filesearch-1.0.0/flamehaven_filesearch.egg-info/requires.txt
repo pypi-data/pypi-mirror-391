@@ -1,0 +1,26 @@
+pydantic>=2.0.0
+
+[all]
+flamehaven-filesearch[api,dev,google]
+
+[api]
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+[dev]
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
+isort>=5.12.0
+
+[google]
+
+[google:python_version < "3.10"]
+google-generativeai>=0.1.0rc1
+
+[google:python_version >= "3.10"]
+google-generativeai>=0.8.0
