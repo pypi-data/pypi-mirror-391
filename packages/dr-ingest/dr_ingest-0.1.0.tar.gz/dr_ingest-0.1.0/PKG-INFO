@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: dr-ingest
+Version: 0.1.0
+Summary: Helpers for ingesting data.
+Author-email: Danielle Rothermel <danielle.rothermel@gmail.com>
+Requires-Python: >=3.12
+Requires-Dist: argparse>=1.4.0
+Requires-Dist: attrs>=25.4.0
+Requires-Dist: dotenv>=0.9.9
+Requires-Dist: dr-wandb==0.1.2
+Requires-Dist: duckdb==1.4.1
+Requires-Dist: fastparquet>=2024.11.0
+Requires-Dist: huggingface-hub>=1.1.2
+Requires-Dist: marimo[sql]==0.17.7
+Requires-Dist: more-itertools>=10.8.0
+Requires-Dist: pandas>=2.3.3
+Requires-Dist: polars>=1.35.2
+Requires-Dist: pydantic>=2.12.4
+Requires-Dist: srsly>=2.5.1
+Requires-Dist: typer>=0.20.0
+Description-Content-Type: text/markdown
+
+# dr_ingest
+
+Shared ingestion utilities:
+- Huggingface Downloads, Parsing and Parsed Uploads (demo'd by allenai/DataDecide-eval-results)
+- [coming soon] LLM eval dumps with a central `metrics-all.jsonl` and then task artifact files
+- [coming soon] wandb ingestion via `dr_wandb`
+
+### Setup:
+```
+uv tool install dr_ingest
+# -or-
+uv add dr_ingest
+uv sync
+```
+
+### Current entrypoints:
+```
+» ingest-parse-train --help
+
+ Usage: ingest-parse-train [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                                                                          │
+│ --show-completion             Show completion for the current shell, to copy it or customize the installation.                                                   │
+│ --help                        Show this message and exit.                                                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ download        Download raw Data Decide Results from HF to Local                                                                                                │
+│ parse           Parse already downloaded Data Decide Results                                                                                                     │
+│ upload          Upload parsed Data Decide Results from local to HF                                                                                               │
+│ full-pipeline   Download, parse, parse and upload Data Decide results                                                                                            │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+```
+» ingest-parse-scaling --help
+
+ Usage: ingest-parse-scaling [OPTIONS] COMMAND [ARGS]...
+
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                                                                          │
+│ --show-completion             Show completion for the current shell, to copy it or customize the installation.                                                   │
+│ --help                        Show this message and exit.                                                                                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ download                                                                                                                                                         │
+│ parse                                                                                                                                                            │
+│ upload                                                                                                                                                           │
+│ full-pipeline                                                                                                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+
+
