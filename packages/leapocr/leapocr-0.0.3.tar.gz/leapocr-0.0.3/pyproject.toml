@@ -1,0 +1,155 @@
+[project]
+name = "leapocr"
+version = "0.0.3"
+description = "Official Python SDK for LeapOCR - Transform documents into structured data using AI-powered OCR"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{ name = "LeapOCR", email = "support@leapocr.com" }]
+maintainers = [{ name = "LeapOCR", email = "support@leapocr.com" }]
+license = { text = "Apache-2.0" }
+keywords = [
+    "ocr",
+    "optical-character-recognition",
+    "document-processing",
+    "document-extraction",
+    "ai",
+    "artificial-intelligence",
+    "pdf",
+    "text-extraction",
+    "data-extraction",
+    "structured-data",
+    "asyncio",
+    "async",
+    "api-client",
+    "sdk",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Topic :: Office/Business",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "httpx>=0.28.0",
+    "pydantic>=1.10.24,<2.0",
+    "typing-extensions>=4.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.0,<9.0.0",
+    "pytest-asyncio>=1.2.0,<1.3.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.0",
+    "mypy>=1.18.0",
+    "pre-commit>=4.3.0,<4.4.0",
+]
+
+[project.urls]
+Homepage = "https://leapocr.com"
+Documentation = "https://docs.leapocr.com"
+Repository = "https://github.com/leapocr/leapocr-python"
+Issues = "https://github.com/leapocr/leapocr-python/issues"
+Logo = "https://raw.githubusercontent.com/LeapOCR/leapocr-python/refs/heads/main/logo/web-app-manifest-512x512.png"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+exclude = ["leapocr/generated"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "I",  # isort
+    "N",  # pep8-naming
+    "W",  # pycodestyle warnings
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["leapocr"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+module = "leapocr.generated.*"
+ignore_errors = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--showlocals",
+    "--tb=short",
+    "-v",
+]
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (require API key and running server)",
+    "slow: Tests that take a long time to run",
+]
+
+[tool.coverage.run]
+source = ["leapocr"]
+omit = ["leapocr/generated/*", "tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[dependency-groups]
+dev = ["pre-commit>=4.3.0,<4.4.0"]

@@ -1,0 +1,186 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+  id-token: write # Required for trusted publishing to PyPI
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Verify version matches tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "Error: Tag version ($TAG) does not match package version ($VERSION)"
+            exit 1
+          fi
+          echo "Version check passed: $VERSION"
+
+      - name: Build package
+        run: uv build
+
+      - name: Verify build artifacts
+        run: |
+          ls -lh dist/
+          echo "Build artifacts:"
+          echo "$(ls dist/)"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/leapocr/
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
+
+  create-release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for changelog generation
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Extract version
+        id: extract-notes
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          VERSION=${{ steps.extract-notes.outputs.version }}
+
+          # Get previous tag
+          PREV_TAG=$(git tag --sort=-version:refname | grep -A1 "v${VERSION}" | tail -n1)
+
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, using initial commit"
+            PREV_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+
+          echo "Generating changelog from ${PREV_TAG} to v${VERSION}"
+
+          # Generate changelog from git log
+          CHANGELOG=$(git log ${PREV_TAG}..v${VERSION} --pretty=format:"- %s (%h)" --reverse | grep -v "^- Merge")
+
+          # Save to multiline output
+          {
+            echo 'changelog<<EOF'
+            echo "$CHANGELOG"
+            echo EOF
+          } >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG.md
+        run: |
+          VERSION=${{ steps.extract-notes.outputs.version }}
+          DATE=$(date +%Y-%m-%d)
+
+          # Create new changelog entry
+          cat > /tmp/new_entry.md << 'EOF'
+          ## [${{ steps.extract-notes.outputs.version }}] - ${DATE}
+
+          ${{ steps.changelog.outputs.changelog }}
+
+          EOF
+
+          # Prepend to CHANGELOG.md (create if doesn't exist)
+          if [ -f CHANGELOG.md ]; then
+            cat /tmp/new_entry.md CHANGELOG.md > /tmp/changelog_new.md
+            mv /tmp/changelog_new.md CHANGELOG.md
+          else
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            cat /tmp/new_entry.md >> CHANGELOG.md
+          fi
+
+      - name: Commit changelog
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git diff --staged --quiet || git commit -m "chore: update CHANGELOG.md for v${{ steps.extract-notes.outputs.version }}"
+          git push origin HEAD:main
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release v${{ steps.extract-notes.outputs.version }}
+          body: |
+            ## Installation
+
+            ```bash
+            pip install leapocr==${{ steps.extract-notes.outputs.version }}
+            ```
+
+            Or using uv:
+
+            ```bash
+            uv add leapocr==${{ steps.extract-notes.outputs.version }}
+            ```
+
+            ## What's Changed
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ## Documentation
+
+            - [Documentation](https://docs.leapocr.com)
+            - [Examples](https://github.com/leapocr/leapocr-python/tree/main/examples)
+
+            ---
+
+            **Full Changelog**: https://github.com/leapocr/leapocr-python/compare/v${{ steps.extract-notes.outputs.version }}...HEAD
+          draft: false
+          prerelease: false
+          generate_release_notes: false
