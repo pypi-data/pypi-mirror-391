@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "td0update-darshan"
+version = "0.1.0"
+description = "Tiny RL helper: a single TD(0) value update function with docs and tests."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+  {name="YOUR NAME", email="your.email@example.com"}
+]
+keywords = ["reinforcement-learning", "rl", "td(0)", "temporal-difference", "value-function"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-username/td0update-darshan"
+Repository = "https://github.com/your-username/td0update-darshan"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/td0update"]
