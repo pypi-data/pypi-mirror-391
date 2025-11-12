@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools", "wheel", "poetry-core>=1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "paos"
+version = "1.2.11"
+description = "PAOS, the Physical Optics Simulator, is a fast, modern, and reliable Python package for Physical Optics studies. It implements Physical Optics Propagation in Fresnel approximation and paraxial ray tracing to analyze complex waveform propagation through both generic and off-axes optical systems."
+license = "BSD-3-Clause"
+authors = [
+    "Andrea Bocchieri <andrea.bocchieri@uniroma1.it>",
+    "Lorenzo V. Mugnai",
+    "Enzo Pascale",
+]
+readme = "README.md"
+homepage = "https://github.com/arielmission-space/PAOS"
+repository = "https://github.com/arielmission-space/PAOS.git"
+documentation = "https://paos.readthedocs.io/en/latest/"
+keywords = [
+    "python",
+    "open-source",
+    "psf",
+    "gui",
+    "optics",
+    "wavefront",
+    "ray-tracing",
+    "fresnel",
+    "optics-simulation",
+    "paos",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "*"
+photutils = "*"
+scipy = "*"
+matplotlib = "*"
+h5py = "*"
+joblib = "*"
+decorator = "*"
+tqdm = "*"
+ipykernel = "*"
+sympy = "*"
+scikit-image = "*"
+loguru = "*"
+shiny = "*"
+shinywidgets = "*"
+faicons = "*"
+orjson = "*"
+marimo = "*"
+jinja2 = "*"
+rich-click = "*"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "*"
+sphinxcontrib-napoleon = "*"
+sphinxcontrib-jsmath = "*"
+sphinx-markdown-tables = "*"
+jupyter-sphinx = "*"
+sphinx-rtd-theme = "*"
+
+[tool.poetry.scripts]
+paos = "paos.paos:main"
+paos_gui = "paos.gui.gui:main"
