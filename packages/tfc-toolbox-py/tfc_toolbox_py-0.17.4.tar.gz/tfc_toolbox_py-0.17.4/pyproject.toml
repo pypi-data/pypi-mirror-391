@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tfc_toolbox_py"
+version = "0.17.4"
+authors = [
+  { name="TFC", email="1429316040@qq.com" },
+]
+description = "A tool box by TFC."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Operating System :: POSIX :: Linux"
+]
+license = "MIT"
+dependencies = [
+  'pandas',           # 数据处理和分析
+  'webdavclient3',   # WebDAV 客户端
+  'mysql-connector-python',  # MySQL 连接器
+  'beautifulsoup4'  # 从HTML或XML文件中提取数据
+]
+
+[project.urls]
+Homepage = "https://gitee.com/iqdxa/tfc_toolbox_py"
+Issues = "https://gitee.com/iqdxa/tfc_toolbox_py/issues"
