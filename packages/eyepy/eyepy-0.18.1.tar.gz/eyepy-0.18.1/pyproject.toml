@@ -1,0 +1,131 @@
+[project]
+name = "eyepy"
+version = "0.18.1"
+description = "A python package to read, analyse and visualize OCT and fundus data form various sources."
+authors = [{ name = "Olivier Morelle", email = "oli4morelle@gmail.com" }]
+requires-python = ">=3.9,<4.0"
+readme = "README.md"
+license = "MIT"
+keywords = [
+    "ophthalmology",
+    "oct",
+    "visualization",
+    "spectralis",
+]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy>=1.22.0",
+    "scikit-image>=0.22.0",
+    "matplotlib>=3.5.1,<4",
+    "construct>=2.10.68",
+    "imageio>=2.25.1,<3",
+]
+
+[project.optional-dependencies]
+itk = ["itk>=5.3.0,<6"]
+pandas = ["pandas>1.5.3"]
+fda = ["oct-converter>=0.6.1,<0.7"]
+e2e = ["construct-typing>=0.7.0"]
+build = ["uv ~= 0.9.5"]
+all = [
+    "itk>=5.3.0,<6",
+    "pandas>1.5.3",
+    "oct-converter>=0.6.1,<0.7",
+    "construct-typing>=0.7.0",
+]
+
+[project.urls]
+Repository = "https://github.com/MedVisBonn/eyepy"
+
+[dependency-groups]
+test = [
+    "pytest>=8.0.0,<9",
+    "pytest-cov>=6.0.0,<7",
+]
+doc = [
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-material>=9.6.14,<10",
+    "mkdocstrings>=0.29.1,<0.30",
+    "mkdocs-gen-files>=0.5.0,<0.6",
+    "mkdocs-literate-nav>=0.6.2,<0.7",
+    "mkdocs-section-index>=0.3.5,<0.4",
+    "pymdown-extensions>=10.2,<11.0",
+    "mkdocs-macros-plugin>=1.3.7,<2",
+    "mkdocstrings-python>=1.16.12,<2",
+    "tabulate>=0.9.0,<0.10",
+    "pygifsicle>=1.0.7,<2",
+]
+format = [
+    "yapf>=0.40.0,<0.41",
+    "pre-commit>=4.0.0,<5",
+    "commitizen>=3.0.0,<4",
+]
+notebook = [
+    "jupyter>=1.0.0,<2",
+]
+dev = [
+    {include-group = "test"},
+    {include-group = "doc"},
+    {include-group = "format"},
+    {include-group = "notebook"},
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/eyepy"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/eyepy"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/eyepy" = "eyepy"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.semantic_release]
+allow_zero_version = true
+major_on_zero = false
+version_variables = [
+    "src/eyepy/__init__.py:__version__",
+    "CITATION.cff:version",
+]
+version_toml = ["pyproject.toml:project.version"]
+upload_to_pypi = true
+upload_to_vsc_release = true
+# Use uv to build distributions (includes hatchling backend)
+build_command = """
+    python -m pip install -e '.[build]'
+    uv lock --upgrade-package "$PACKAGE_NAME"
+    git add uv.lock
+    uv build
+"""
+
+[tool.docformatter]
+check = false
+recursive = true
+in-place = true
+syntax = "google"
+wrap-summaries = 82
+blank = false
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
