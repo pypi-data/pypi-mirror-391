@@ -1,0 +1,323 @@
+Memoria: Local-First Digital Memory Management Library
+Tagline: Capture, Recall, Replay: A Privacy-First AI for Your Digital Life
+Overview
+Memoria is a Python library designed to manage your digital memories—text, files, emails, chats, browser history, and more—in a secure, local-first manner. It combines semantic search, timeline playback, and advanced AI features to help you instantly recall information (e.g., "Find the PDF about EV flywheels from last month") and retrace your digital activities (e.g., "What did I do last Tuesday 3–5 PM?"). Built for integration into other applications (e.g., note-takers, AI agents, productivity tools), Memoria offers a modular, extensible API with optional cloud enhancements for cutting-edge AI capabilities.
+What Memoria Does
+Memoria acts as a "digital brain," capturing and organizing your interactions across various sources:
+
+Capture: Automatically ingests data from files, browser history, emails (Gmail), chats (Slack, WhatsApp), and custom sources.
+Recall: Enables natural language search (e.g., "What did Ramesh send about land costs?") using local semantic embeddings or cloud AI.
+Replay: Provides a chronological timeline of activities with playback and AI-generated insights (e.g., summaries, recommendations).
+Export: Outputs memories to JSON or Notion for integration with other tools.
+Privacy-First: Stores data locally with AES encryption; optional cloud APIs include clear privacy warnings.
+
+Unlike tools like Evernote or Notion, Memoria auto-collects data across apps without manual input, prioritizing local processing for privacy. It stands out from alternatives (e.g., Windows Recall, ActivityWatch) with cross-source semantic search, advanced AI features, and developer-friendly integration.
+Features
+Core Features
+
+Encrypted Memory Vault: Stores memories (text, timestamps, sources) in a local SQLite database with AES encryption.
+Semantic Search: Query memories using natural language (e.g., "EV flywheels PDF") with local embeddings (sentence-transformers) or cloud APIs (Gemini, OpenAI, Anthropic, Perplexity, Grok).
+Timeline Playback: View and replay activities in a chronological timeline, with options to filter by time range or source.
+Auto-Ingestion: Monitors files (watchdog), fetches browser history (browserhistory), and ingests emails (Gmail) and chats (Slack, WhatsApp).
+Privacy Controls: Exclude sensitive sources/folders; audit access logs for transparency.
+Export Capabilities: Export memories to JSON or Notion for external use.
+
+Advanced Features
+
+AI-Enhanced Insights: Generate summaries of activities using local models (transformers) or cloud APIs.
+Question Answering: Answer specific questions about memories (e.g., "When was the meeting?") using local DistilBERT or cloud models.
+Topic Modeling: Cluster memories into topics (e.g., "EV Project") using local KMeans or cloud APIs.
+Sentiment Analysis: Analyze emotional tone of memories (local with NLTK or cloud).
+Context-Aware Recommendations: Suggest next actions based on recent activities (e.g., "Review this document").
+Cutting-Edge Integrations:
+Multimodal support (e.g., image OCR via Gemini/OpenAI).
+Function calling for structured outputs (Gemini, OpenAI).
+Long context handling (up to 1M tokens with Gemini 2.5).
+Streaming responses for real-time insights.
+
+
+
+Extensibility
+
+Custom Ingestors: Subclass Ingestor to add new data sources (e.g., WhatsApp, Telegram).
+Custom AI Providers: Extend AIEnhancer or TimelineManager for additional cloud or local models.
+Plugin System: Modular design allows apps to integrate Memoria as a backend.
+
+How It Works
+Workflow
+
+Data Ingestion:
+
+Memoria runs locally, connecting to user-specified sources (files, browser, Gmail, Slack, etc.).
+It snapshots activities (e.g., file changes, emails, chats) in real-time or on-demand.
+Data is encrypted and stored in a local SQLite database with semantic embeddings (via sentence-transformers).
+
+
+Indexing and Storage:
+
+Builds an encrypted local index with metadata (timestamps, sources) and vector embeddings (FAISS for similarity search).
+Supports local processing only; cloud APIs are optional for advanced features.
+
+
+Query and Search:
+
+Users query in natural language (e.g., "Show me the PDF about EV flywheels").
+Local semantic search (FAISS) or cloud APIs (e.g., Gemini) return relevant memories with context.
+
+
+Timeline Playback:
+
+Presents activities as a chronological timeline, filterable by time or source.
+Playback mode replays events at variable speeds (data for apps to render).
+AI insights summarize activities or answer questions.
+
+
+Management and Export:
+
+Auto-organizes memories into topical "stacks" (via clustering).
+Users can tag, delete, or export memories (JSON, Notion).
+Continuous updates ensure new data is indexed in real-time.
+
+
+
+Example Workflow
+
+Ingestion: Memoria captures a PDF download, a Slack message from Ramesh about land costs, and a browser visit.
+Query: User asks, "What did Ramesh send about land costs last month?"
+Search: AI retrieves the Slack message, linked PDF, and related browser history.
+Playback: Timeline shows sequence: "Opened PDF → Sent Slack message → Visited site."
+Insight: AI summarizes: "Key points: Land cost $X/sqft; see PDF."
+Export: User exports to Notion for project notes.
+
+Installation
+Prerequisites
+
+Python 3.10 or higher.
+Virtual environment (recommended): python -m venv venv; source venv/bin/activate (Windows: venv\Scripts\activate).
+Git (optional for cloning).
+
+Steps
+
+Clone or download the repository:git clone <repo_url>
+cd memoria-tool
+
+
+Install core dependencies:pip install .
+
+
+For cloud features (Gemini, OpenAI, Anthropic, Perplexity, Grok, Gmail, Slack, Notion):pip install .[cloud]
+
+
+
+Dependencies
+
+Core: faiss-cpu, sentence-transformers, cryptography, sqlalchemy, watchdog, pandas, numpy, browserhistory, transformers.
+Cloud/Advanced: google-generativeai, openai, anthropic, slack-sdk, google-api-python-client, google-auth-oauthlib, google-auth, notion-client, whatsapp-python, nltk, requests.
+
+API Setup
+For cloud features, generate API keys from official consoles and set as environment variables (recommended) or pass explicitly.
+
+Gemini (Google AI Studio):
+Visit ai.google.dev, create a project, and generate an API key.
+Set: export GEMINI_API_KEY=your_key
+
+
+OpenAI (ChatGPT):
+Visit platform.openai.com, create an API key.
+Set: export OPENAI_API_KEY=your_key
+
+
+Anthropic (Claude):
+Visit console.anthropic.com, generate an API key.
+Set: export ANTHROPIC_API_KEY=your_key
+
+
+Perplexity:
+Visit api.perplexity.ai, generate an API key.
+Set: export PERPLEXITY_API_KEY=your_key
+
+
+Grok (xAI):
+Visit x.ai/api, request an API key.
+Set: export XAI_API_KEY=your_key
+
+
+Gmail:
+Create a Google Cloud project, enable Gmail API, download OAuth credentials (JSON).
+See: Google Gmail API Quickstart
+
+
+Slack:
+Create a bot at api.slack.com, get bot token and channel ID.
+
+
+Notion:
+Create an integration at developers.notion.com, get token and parent page ID.
+
+
+
+Privacy and Security
+
+Local-First: All data is stored and processed locally with AES encryption (cryptography). No data leaves your device unless cloud APIs are enabled.
+Cloud Warnings: Methods using cloud APIs (e.g., generate_insight, question_answering) issue warnings:UserWarning: Using cloud provider sends data externally. Ensure compliance with privacy policies.
+
+
+Privacy Controls: Exclude sensitive sources/folders via PrivacyManager.set_privacy_rules.
+Audit Logging: Tracks memory accesses/additions in an encrypted log file (audit.log).
+GDPR-Inspired: Supports data export (Exporter.export_to_json) and deletion.
+
+Usage Example
+from datetime import datetime, timedelta
+from cryptography.fernet import Fernet
+from memoria import MemoryVault, SemanticSearcher, TimelineManager, Ingestor, Exporter, AIEnhancer
+
+# Initialize with encryption key
+key = Fernet.generate_key()
+vault = MemoryVault(key=key)
+
+# Add a manual memory
+vault.add_memory("Meeting at 3 PM about EV flywheels", datetime.now(), "manual")
+
+# Search memories
+searcher = SemanticSearcher(vault)
+results = searcher.query("EV flywheels")
+print("Search Results:", results)
+
+# Ingest files and browser history
+ingestor = Ingestor(vault)
+ingestor.start_monitoring(paths=["~/Documents"], sources=["files", "browser"])
+
+# Ingest Gmail and Slack
+ingestor.ingest_gmail("credentials.json")
+ingestor.ingest_slack("your_slack_token", "channel_id")
+
+# Timeline playback
+timeline = TimelineManager(vault)
+playback = timeline.get_playback(datetime.now() - timedelta(days=1), datetime.now())
+print("Playback:", playback)
+
+# Advanced AI features
+enhancer = AIEnhancer(vault)
+insight = timeline.generate_insight(playback, provider='gemini', api_key='your_gemini_key', model='gemini-1.5-pro')
+print("Insight:", insight)
+answer = enhancer.question_answering("When is the meeting?", playback[0]['content'], provider='local')
+print("Answer:", answer)
+clusters = enhancer.topic_modeling([e['content'] for e in playback], provider='openai', api_key='your_openai_key')
+print("Clusters:", clusters)
+recommendation = enhancer.context_aware_recommendation(playback, provider='local')
+print("Recommendation:", recommendation)
+
+# Export to Notion
+exporter = Exporter(vault)
+exporter.export_to_notion("your_notion_token", "parent_page_id")
+
+# Stop monitoring
+ingestor.stop_monitoring()
+
+API Reference
+MemoryVault
+
+__init__(db_path: str = 'memoria.db', key: bytes): Initialize encrypted database.
+add_memory(content: str, timestamp: datetime, source: str): Add an encrypted memory.
+get_memories(ids: list[int]) -> list[dict]: Retrieve decrypted memories by ID.
+
+SemanticSearcher
+
+__init__(vault: MemoryVault): Link to vault.
+query(natural_query: str, top_k: int = 10) -> list[dict]: Search memories with natural language.
+
+TimelineManager
+
+__init__(vault: MemoryVault): Link to vault.
+get_playback(start_time: datetime, end_time: datetime) -> list[dict]: Get chronological events.
+generate_insight(events: list[dict], provider: str = 'local', api_key: str = None, model: str = None) -> str: Summarize events (local or cloud).
+
+Ingestor
+
+__init__(vault: MemoryVault): Link to vault.
+start_monitoring(paths: list[str], sources: list[str]): Monitor files/browser.
+ingest_from_source(source_type: str, data): Ingest custom data.
+ingest_gmail(credentials_file: str, labels: list[str], max_results: int): Ingest Gmail emails.
+ingest_slack(token: str, channel_id: str, limit: int): Ingest Slack messages.
+ingest_browser_history(): Ingest browser history.
+stop_monitoring(): Stop file monitoring.
+
+AIEnhancer
+
+__init__(vault: MemoryVault): Link to vault.
+sentiment_analysis(text: str, provider: str, api_key: str, model: str) -> dict: Analyze sentiment.
+entity_extraction(text: str, provider: str, api_key: str, model: str) -> list[str]: Extract entities.
+question_answering(question: str, context: str, provider: str, api_key: str, model: str) -> str: Answer questions.
+topic_modeling(texts: list[str], provider: str, api_key: str, model: str) -> dict: Cluster texts into topics.
+context_aware_recommendation(memories: list[dict], provider: str, api_key: str, model: str) -> str: Suggest actions.
+
+PrivacyManager
+
+__init__(vault: MemoryVault, log_file: str): Initialize with audit log file.
+set_privacy_rules(rules: dict): Set exclusion rules.
+audit_access_log() -> list[str]: Retrieve audit logs.
+log_action(action: str, details: str): Log an action.
+
+Exporter
+
+__init__(vault: MemoryVault): Link to vault.
+export_to_json(filepath: str): Export memories to JSON.
+export_to_notion(token: str, parent_page_id: str): Export to Notion.
+
+Extensibility
+Custom Ingestors
+Create a subclass of Ingestor for new sources. Example for WhatsApp:
+from memoria.ingestor import Ingestor
+from whatsapp import WhatsApp
+
+class WhatsAppIngestor(Ingestor):
+    def ingest_whatsapp(self, token: str, phone_id: str, limit: int = 10):
+        whatsapp = WhatsApp(token, phone_id)
+        messages = whatsapp.get_messages(limit=limit)
+        for msg in messages:
+            self.vault.add_memory(msg['body'], datetime.fromisoformat(msg['timestamp']), f"whatsapp:{msg['id']}")
+
+Custom AI Providers
+Extend AIEnhancer or TimelineManager.generate_insight to add new providers (e.g., Mistral). Example:
+def custom_insight(self, events, provider='mistral', api_key=None, model=None):
+    prompt = f"Summarize: {events}"
+    response = requests.post('https://api.mixtral.ai/v1/completions', json={'prompt': prompt}, headers={'Authorization': f'Bearer {api_key}'})
+    return response.json()['text']
+
+Testing
+
+Install pytest: pip install pytest
+Run tests: pytest tests/
+Tests cover core functionality, cloud APIs (mocked), rate limit handling, and advanced features (e.g., question answering, topic modeling).
+Rate limits are handled with exponential backoff (3 retries).
+
+Limitations and Future Enhancements
+
+Current Limitations:
+Local models (e.g., T5, DistilBERT) are less powerful than cloud APIs.
+Gmail/Slack ingestion requires manual OAuth/token setup.
+Audit logging is basic; lacks advanced encryption.
+Multimodal support (images) is cloud-only (extend with local OCR).
+
+
+Future Enhancements:
+Add local multimodal support (e.g., Hugging Face vision models).
+Implement streaming for large datasets.
+Enhance audit logging with encryption and DB integration.
+Support more cloud providers (e.g., Mistral, Cohere).
+
+
+
+Contributing
+
+Fork the repo on GitHub.
+Follow PEP 8 for code style.
+Add tests in tests/ for new features.
+Submit pull requests with clear descriptions.
+
+License
+MIT License. See LICENSE file.
+Notes
+
+
+

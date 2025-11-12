@@ -1,0 +1,36 @@
+Metadata-Version: 2.4
+Name: memoria-tool
+Version: 0.1.0
+Summary: Local-first digital memory management library
+Home-page: https://github.com/ImGJUser1/memoria-tool
+Author: IM_GJ
+License: MIT
+Requires-Python: >=3.9
+Requires-Dist: faiss-cpu
+Requires-Dist: sentence-transformers
+Requires-Dist: cryptography
+Requires-Dist: sqlalchemy
+Requires-Dist: watchdog
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: browserhistory
+Requires-Dist: transformers
+Requires-Dist: scikit-learn
+Requires-Dist: nltk
+Provides-Extra: cloud
+Requires-Dist: google-generativeai; extra == "cloud"
+Requires-Dist: openai; extra == "cloud"
+Requires-Dist: anthropic; extra == "cloud"
+Requires-Dist: slack-sdk; extra == "cloud"
+Requires-Dist: google-api-python-client; extra == "cloud"
+Requires-Dist: google-auth-oauthlib; extra == "cloud"
+Requires-Dist: google-auth; extra == "cloud"
+Requires-Dist: notion-client; extra == "cloud"
+Requires-Dist: whatsapp-python; extra == "cloud"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
