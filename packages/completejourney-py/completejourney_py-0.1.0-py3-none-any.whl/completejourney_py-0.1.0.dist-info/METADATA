@@ -1,0 +1,291 @@
+Metadata-Version: 2.4
+Name: completejourney_py
+Version: 0.1.0
+Summary: Data from R package completejourney
+Author-email: James Cunningham <james@notbadafterall.com>, Brad Boehmke <bradleyboehmke@gmail.com>
+Maintainer-email: James Cunningham <james@notbadafterall.com>, Brad Boehmke <bradleyboehmke@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/cunningjames/completejourney_py
+Project-URL: Repository, https://github.com/cunningjames/completejourney_py
+Project-URL: Issues, https://github.com/cunningjames/completejourney_py/issues
+Project-URL: Documentation, https://github.com/cunningjames/completejourney_py
+Keywords: data,retail,grocery,transactions,complete journey
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=1.0.0
+Requires-Dist: pyarrow>=1.0.0
+Requires-Dist: importlib_resources>=1.3.0; python_version < "3.9"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: pre-commit>=2.15; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=6.0; extra == "test"
+Requires-Dist: pytest-cov>=3.0; extra == "test"
+Requires-Dist: pytest-xdist>=2.0; extra == "test"
+Provides-Extra: docs
+Requires-Dist: mkdocs-material>=8.0; extra == "docs"
+Requires-Dist: mkdocs-jupyter>=0.21; extra == "docs"
+Requires-Dist: mkdocstrings[python]>=0.19; extra == "docs"
+Requires-Dist: mkdocs-mermaid2-plugin>=0.6.0; extra == "docs"
+Requires-Dist: matplotlib>=3.5; extra == "docs"
+Requires-Dist: seaborn>=0.11; extra == "docs"
+
+# The Complete Journey (Python)
+
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://python.org)
+[![Package Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/cunningjames/completejourney_py)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com/cunningjames/completejourney_py/actions/workflows/test.yml)
+[![Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://cunningjames.github.io/completejourney_py/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
+
+A Python data package providing access to grocery store shopping transaction data from [84.51°](http://www.8451.com/area51/). This is a Python equivalent of the R package [completejourney](https://github.com/bradleyboehmke/completejourney), using the more portable Parquet format for cross-platform compatibility.
+
+> **Important**: This package contains simulated data based on real grocery shopping patterns. It is intended for **educational and exploratory data analysis purposes only**. This data should not be used for academic research, commercial decision-making, or any purpose requiring authentic consumer behavior data.
+
+## Overview
+
+The Complete Journey dataset represents grocery store shopping transactions over one year from a group of **801 households**. The data includes detailed purchase information, household demographics, marketing campaigns, and coupon usage - providing a comprehensive view of retail shopping behavior.
+
+**Key Statistics:**
+- **1,469,307** transaction records
+- **801** households
+- **8** comprehensive datasets
+- **1 year** of shopping data
+
+## Installation
+
+```bash
+pip install completejourney_py
+```
+
+### Development Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/cunningjames/completejourney_py.git
+cd completejourney_py
+
+# Install in development mode
+pip install -e .
+
+# Install with development dependencies
+pip install -e ".[dev]"
+```
+
+## Quick Start
+
+```python
+from completejourney_py import get_data
+
+# Load all datasets
+data = get_data()
+
+# Access individual datasets
+transactions = data["transactions"]
+demographics = data["demographics"]
+products = data["products"]
+
+print(f"Loaded {len(transactions):,} transaction records")
+print(f"Covering {len(demographics):,} households")
+```
+
+## 📚 Documentation
+
+Comprehensive documentation including analysis notebooks is available at: **[completejourney-py.readthedocs.io](https://cunningjames.github.io/completejourney_py/)**
+
+### Cookbook Examples
+
+The documentation includes detailed analysis notebooks:
+- **Dataset Summary Analysis** - Overview of all 8 datasets
+- **Top Selling Products** - Product performance analysis  
+- **Shopping Frequency Analysis** - Customer behavior patterns
+- **Coupon Analysis** - Promotional effectiveness
+- **Traffic Patterns** - Store visit timing and trends
+- **Demographic Product Analysis** - Purchase behavior by customer segments
+- **Market Basket Analysis** - Product associations and cross-selling
+
+## Datasets
+
+### Core Transaction Data
+- **`transactions`** - Complete purchase records (1.47M records)
+- **`products`** - Product metadata and categories
+- **`demographics`** - Household demographic information
+
+### Marketing & Promotions
+- **`campaigns`** - Marketing campaigns received by households
+- **`campaign_descriptions`** - Campaign metadata and details
+- **`promotions`** - Product placement in mailers and stores
+- **`coupons`** - Coupon metadata (UPC codes, campaigns)
+- **`coupon_redemptions`** - Detailed coupon usage records
+
+## Usage Examples
+
+### Load Specific Datasets
+
+```python
+from completejourney_py import get_data
+
+# Load single dataset
+transactions = get_data("transactions")["transactions"]
+
+# Load multiple datasets
+sales_data = get_data(["transactions", "products", "demographics"])
+```
+
+### Basic Analysis
+
+```python
+import pandas as pd
+from completejourney_py import get_data
+
+# Load data
+data = get_data(["transactions", "demographics", "products"])
+transactions = data["transactions"]
+demographics = data["demographics"]
+products = data["products"]
+
+# Basic transaction analysis
+print("Transaction Summary:")
+print(f"Total transactions: {len(transactions):,}")
+print(f"Total households: {transactions['household_id'].nunique():,}")
+print(f"Date range: {transactions['transaction_timestamp'].dt.date.min()} to {transactions['transaction_timestamp'].dt.date.max()}")
+
+# Household spending analysis
+household_spending = transactions.groupby('household_id')['sales_value'].sum()
+print(f"\nAverage household spending: ${household_spending.mean():.2f}")
+print(f"Median household spending: ${household_spending.median():.2f}")
+```
+
+### Marketing Analysis
+
+```python
+# Analyze campaign effectiveness
+campaign_data = get_data(["campaigns", "campaign_descriptions", "transactions"])
+campaigns = campaign_data["campaigns"]
+descriptions = campaign_data["campaign_descriptions"]
+transactions = campaign_data["transactions"]
+
+# Join campaign data
+campaign_analysis = campaigns.merge(descriptions, on='campaign')
+print("Campaign Types:")
+print(campaign_analysis['campaign_type'].value_counts())
+```
+
+## Data Dictionary
+
+### Key Variables
+
+| Dataset | Key Variables | Description |
+|---------|---------------|-------------|
+| `transactions` | `household_id`, `product_id`, `sales_value`, `quantity` | Purchase records |
+| `demographics` | `household_id`, `age`, `income`, `household_size` | Household characteristics |
+| `products` | `product_id`, `department`, `product_category`, `brand` | Product information |
+| `campaigns` | `household_id`, `campaign_id` | Marketing campaigns |
+| `coupons` | `coupon_upc`, `product_id`, `campaign_id` | Coupon details |
+
+### Data Relationships
+
+```
+households (demographics) 
+    ↓
+transactions ← products
+    ↓
+campaigns → campaign_descriptions
+    ↓
+coupons → coupon_redemptions
+```
+
+## Data Source & Important Notice
+
+**⚠️ Simulated Data Notice**: This dataset contains simulated grocery shopping data created for educational purposes. While based on realistic shopping patterns, it is not real consumer data.
+
+**Appropriate Uses:**
+- ✅ Learning data analysis techniques
+- ✅ Teaching retail analytics concepts  
+- ✅ Prototyping data science workflows
+- ✅ Educational coursework and tutorials
+
+**Not Appropriate For:**
+- ❌ Academic research requiring real consumer data
+- ❌ Commercial business decisions
+- ❌ Market research or consumer insights
+- ❌ Publication in academic journals
+
+The original concept and data structure are from [84.51°](http://www.8451.com/area51/), with additional insights available at the [Complete Journey project page](https://bradleyboehmke.github.io/completejourney/).
+
+**Citation for Educational Use:**
+
+> 84.51°. (2015). *The Complete Journey: A comprehensive view of household shopping behavior* [Dataset concept]. 84.51°. http://www.8451.com/area51/  
+> [Note: This implementation contains simulated data for educational purposes]
+
+## Requirements
+
+- Python 3.8-3.14
+- pandas >= 1.0.0
+- pyarrow >= 1.0.0
+
+## Development
+
+### Running Tests
+
+```bash
+# Install test dependencies
+pip install -e ".[test]"
+
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=completejourney_py
+```
+
+### Code Quality
+
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Format code
+black completejourney_py/ tests/
+isort completejourney_py/ tests/
+
+# Lint code
+flake8 completejourney_py/ tests/
+
+# Type checking
+mypy completejourney_py/
+```
+
+## License
+
+This package is released under the MIT License. The underlying data is provided by 84.51° for research and educational purposes.
+
+## Related Projects
+
+- [completejourney (R)](https://github.com/bradleyboehmke/completejourney) - Original R package
+- [Complete Journey Analysis](https://bradleyboehmke.github.io/completejourney/) - Detailed data exploration
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
