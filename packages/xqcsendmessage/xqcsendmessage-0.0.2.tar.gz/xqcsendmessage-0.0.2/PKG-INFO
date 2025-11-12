@@ -1,0 +1,803 @@
+Metadata-Version: 2.3
+Name: xqcsendmessage
+Version: 0.0.2
+Summary: 一个 XiaoqiangClub 自用的消息发送模块
+License: MIT
+Keywords: message,sender,dingtalk,wecom,email,webhook
+Author: Xiaoqiang
+Author-email: xiaoqiangclub@hotmail.com
+Requires-Python: >=3.10
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Communications
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: aiosmtplib (>=5.0.0,<6.0.0)
+Requires-Dist: httpx (>=0.20.0)
+Project-URL: Documentation, https://github.com/xiaoqiangclub/XQCSendMessage
+Project-URL: Homepage, https://github.com/xiaoqiangclub/XQCSendMessage
+Project-URL: Repository, https://github.com/xiaoqiangclub/XQCSendMessage
+Description-Content-Type: text/markdown
+
+
+
+# 🚀 XQCSendMessage
+
+![XQCSendMessage Logo](https://s2.loli.net/2025/11/12/Ey4Vkr7jgYobidS.jpg)
+
+[![PyPI version](https://img.shields.io/badge/PyPI-0.0.2-blue)](https://github.com/xiaoqiangclub/XQCSendMessage) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Python Versions](https://img.shields.io/badge/Python-3.10%2B-blue)](https://github.com/xiaoqiangclub/XQCSendMessage)
+
+`XQCSendMessage` 是一个自用的 Python 消息发送模块，旨在提供一个相对便捷的途径来通过多种渠道（如邮件、钉钉、企业微信等）发送通知或消息。无论您需要同步还是异步发送，`XQCSendMessage` 都尝试提供简洁、统一的 API。
+
+## 📖 目录
+
+- [✨ 主要特性](#-主要特性)
+- [📤 安装](#-安装)
+- [🚀 快速上手](#-快速上手)
+  - [⚙️ 客户端模式 (SyncClient / AsyncClient)](#️-客户端模式-syncclient--asyncclient)
+    - [⚙️ SyncClient / AsyncClient 初始化参数说明](#️-syncclient--asyncclient-初始化参数说明)
+    - [⚙️ client.send() 方法参数说明](#️-clientsend-方法参数说明)
+    - [📧 示例 1.1: 发送一封邮件 (同步)](#-示例-11-发送一封邮件-同步)
+    - [🤖 示例 1.2: 发送钉钉消息 (同步)](#-示例-12-发送钉钉消息-同步)
+    - [🏢 示例 1.3: 发送企业微信 Webhook 消息 (同步)](#-示例-13-发送企业微信-webhook-消息-同步)
+    - [🏢 示例 1.4: 发送企业微信应用消息 (同步)](#-示例-14-发送企业微信应用消息-同步)
+    - [📧 示例 1.5: 发送邮件 (异步)](#-示例-15-发送邮件-异步)
+    - [🤖 示例 1.6: 发送钉钉消息 (异步)](#-示例-16-发送钉钉消息-异步)
+    - [🏢 示例 1.7: 发送企业微信 Webhook 消息 (异步)](#-示例-17-发送企业微信-webhook-消息-异步)
+    - [🏢 示例 1.8: 发送企业微信应用消息 (异步)](#-示例-18-发送企业微信应用消息-异步)
+- [➡️ 直接函数调用模式](#-直接函数调用模式)
+  - [⚙️ 顶层发送函数参数说明](#️-顶层发送函数参数说明)
+  - [📧 示例 2.1: 直接发送一封邮件 (同步)](#-示例-21-直接发送一封邮件-同步)
+  - [🤖 示例 2.2: 直接发送钉钉消息 (异步)](#-示例-22-直接发送钉钉消息-异步)
+  - [🏢 示例 2.3: 直接发送企业微信 Webhook 消息 (同步)](#-示例-23-直接发送企业微信-webhook-消息-同步)
+  - [🏢 示例 2.4: 直接发送企业微信应用消息 (异步)](#-示例-24-直接发送企业微信应用消息-异步)
+- [📄 许可证](#-许可证)
+- [🙏 支持我](#-支持我)
+
+
+## ✨ 主要特性
+
+- **多渠道支持**:
+  - 📧 **邮件**: 支持 SMTP，方便集成邮件服务。
+  - 🤖 **钉钉**: 支持 Webhook 机器人，包含签名验证。
+  - 🏢 **企业微信**:
+    - `Webhook` 机器人模式。
+    - `应用消息` 模式，支持更多消息类型。
+- **同步与异步**: 提供了同步和异步两种发送模式，以适应不同场景的需求。
+- **统一的 API 尝试**: 客户端设计力求简洁，方便在不同发送渠道间切换。
+- **错误处理**: 内置了一些异常类，希望能帮助定位发送过程中的问题。
+- **扩展性**: 基于抽象基类的设计，方便根据需要添加自定义发送器。
+
+## 📤 安装
+
+通过 pip 或 poetry 安装 `xqcsendmessage`:
+
+```bash
+# 使用 pip
+pip install xqcsendmessage
+
+# 使用 poetry
+poetry add xqcsendmessage
+```
+
+## 🚀 快速上手
+
+`XQCSendMessage` 提供了两种调用模式：
+
+1.  **实例化客户端模式**：通过 `SyncClient` 或 `AsyncClient` 实例化一个客户端，在初始化时配置发送器，然后通过客户端的 `send` 方法发送消息。这种模式适合需要复用发送器配置，或者在发送过程中动态调整参数的场景。
+2.  **直接函数调用模式**：通过顶层函数直接发送消息，无需显式实例化客户端或发送器。这种模式适合快速发送单条消息，或者在脚本中进行一次性调用的场景。
+
+### ⚙️ 客户端模式 (`SyncClient` / `AsyncClient`)
+
+`XQCSendMessage` 的客户端设计力求直观。您只需要选择一个发送器类型，并在客户端初始化时传入配置。
+
+#### ⚙️ `SyncClient` / `AsyncClient` 初始化参数说明
+
+- `sender_type` (`Literal["email", "dingtalk", "wecom_webhook", "wecom_app"]`): 必须参数，指定要使用的发送器类型。
+- `**config`: 关键字参数，用于配置特定发送器。这些参数会传递给底层发送器的 `__init__` 方法。同时，您也可以在此处设置消息的默认参数，这些默认参数可以在调用 `.send()` 方法时被覆盖。
+
+  - **邮件 (`sender_type="email"`)**:
+    - `smtp_server` (str): SMTP 服务器地址。
+    - `smtp_port` (int): SMTP 服务器端口。
+    - `sender_email` (str): 发件人邮箱。
+    - `sender_password` (str): 发件人邮箱密码或授权码。
+    - `use_tls` (bool, default `True`): 是否使用 TLS 加密。
+    - `recipients` (List[str], optional): 默认收件人列表。
+    - `subject` (str, optional): 默认邮件主题。
+    - `subtype` (str, default `"plain"`): 默认邮件内容类型 (`"plain"` 或 `"html"`)。
+  - **钉钉 (`sender_type="dingtalk"`)**:
+    - `webhook` (str): 钉钉机器人的 Webhook 地址。
+    - `secret` (str, optional): 钉钉机器人的密钥，用于签名。
+    - `message` (Union[str, Dict[str, Any]], optional): 默认消息内容或消息体。
+    - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+    - `at_mobiles` (List[str], optional): 被 @ 的用户的手机号列表。
+    - `is_at_all` (bool, default `True`): 是否 @ 所有人，默认为 True。
+  - **企业微信 Webhook (`sender_type="wecom_webhook"`)**:
+    - `webhook` (str): 企业微信机器人的 Webhook 地址。
+    - `message` (Union[str, Dict[str, Any]], optional): 默认消息内容或消息体。
+    - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+  - **企业微信应用 (`sender_type="wecom_app"`)**:
+    - `corpid` (str): 企业 ID。
+    - `corpsecret` (str): 应用的 Secret。
+    - `agentid` (int): 应用的 AgentId。
+    - `message` (Union[str, Dict[str, Any]], optional): 默认消息内容或消息体。
+    - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+    - `touser` (Union[str, List[str]], optional, default `"@all"`): 指定接收消息的成员，成员 ID 列表（最多支持 1000 个）。默认为 "@all"。
+    - `toparty` (Union[str, List[str]], optional): 指定接收消息的部门 ID 列表（最多支持 100 个）。
+    - `totag` (Union[str, List[str]], optional): 指定接收消息的标签 ID 列表（最多支持 100 个）。
+    - `safe` (int, optional): 表示是否是保密消息，0 表示否，1 表示是，默认 0。
+    - `enable_duplicate_check` (int, optional): 表示是否开启重复消息检查，0 表示否，1 表示是，默认 0。
+    - `duplicate_check_interval` (int, optional): 表示重复消息检查的时间间隔，单位秒，最大不超过 120。
+
+#### ⚙️ `client.send()` 方法参数说明
+
+- `message` (Optional[Union[str, Dict[str, Any]]], default `None`): 要发送的消息内容。
+  - **邮件**: 如果是字符串，则作为邮件正文 `content`；如果是字典，则会引发 `SendMessageError`。
+  - **钉钉/企业微信**: 如果是字符串，则自动封装为文本消息 `{"msgtype": "text", "text": {"content": message}}`；如果是字典，则作为完整的消息体发送。
+    - `msgtype` 支持的类型包括：
+      - **text**: 文本消息
+      - **markdown**: Markdown 格式消息
+      - **image**: 图片消息
+      - **news**: 图文消息 (企业微信)
+      - **file**: 文件消息
+      - **voice**: 语音消息
+      - **video**: 视频消息
+      - **card**: 文本卡片消息 (企业微信)
+      - **interactive_task_card**: 互动任务卡片消息 (企业微信)
+      - **template_card**: 模板卡片消息 (企业微信)
+      - **oa**: OA 消息 (钉钉)
+      - **link**: 链接消息 (钉钉)
+- `**kwargs`: 关键字参数，用于覆盖客户端初始化时设置的默认消息参数，或者传递给底层发送器的额外参数。
+  - **邮件**: 可以覆盖 `subject`, `content`, `recipients`, `subtype`。
+  - **钉钉**: 可以覆盖 `msg_type` (str), `at_mobiles` (List[str]), `is_at_all` (bool)。
+  - **企业微信 Webhook**: 可以覆盖 `msg_type` (str)。
+  - **企业微信应用**: 可以覆盖 `msg_type` (str), `touser` (Union[str, List[str]]), `toparty` (Union[str, List[str]]), `totag` (Union[str, List[str]]), `safe` (int), `enable_duplicate_check` (int), `duplicate_check_interval` (int)。
+
+#### 📧 示例 1.1: 发送一封邮件 (同步)
+
+```python
+from xqcsendmessage import SyncClient
+
+# --- 配置 ---
+SMTP_SERVER = "YOUR_SMTP_SERVER"  # ⚠️ 请替换为你的 SMTP 服务器
+SMTP_PORT = 587                   # ⚠️ 请替换为你的 SMTP 端口
+SENDER_EMAIL = "YOUR_SENDER_EMAIL"  # ⚠️ 请替换为你的邮箱
+SENDER_PASSWORD = "YOUR_SENDER_PASSWORD"    # ⚠️ 请替换为你的邮箱密码或授权码
+RECIPIENTS = ["YOUR_RECIPIENT_EMAIL"] # ⚠️ 请替换为收件人邮箱列表
+
+def main_email_sync():
+    """主函数"""
+    # 1. 创建同步客户端，并在初始化时配置邮件发送器
+    client = SyncClient(
+        sender_type="email",
+        smtp_server=SMTP_SERVER,
+        smtp_port=SMTP_PORT,
+        sender_email=SENDER_EMAIL,
+        sender_password=SENDER_PASSWORD,
+        use_tls=True, # 端口 465 通常直接使用 SSL，而不是通过 starttls 升级
+        recipients=RECIPIENTS, # 可以在初始化时设置默认接收人
+        subtype="plain" # 可以在初始化时设置默认邮件类型
+    )
+
+    # 2. 发送邮件
+    try:
+        result = client.send(
+            content="这是一封通过 xqcsendmessage 发送的同步测试邮件。", # 邮件内容
+            subject="Hello from xqcsendmessage!", # 邮件主题
+            # recipients 和 subtype 可以不传，会使用初始化时的默认值
+            # recipients=["override@example.com"], # 也可以在发送时覆盖
+            # subtype="html"
+        )
+        print(f"✅ 邮件发送成功: {result}")
+    except Exception as e:
+        print(f"🔥 邮件发送失败: {e}")
+
+if __name__ == "__main__":
+    main_email_sync()
+```
+
+#### 🤖 示例 1.2: 发送钉钉消息 (同步)
+
+```python
+from xqcsendmessage import SyncClient
+
+# --- 配置 ---
+# 你的钉钉机器人的 Webhook 和密钥
+WEBHOOK_URL = "YOUR_DINGTALK_WEBHOOK_URL"
+SECRET = "YOUR_DINGTALK_SECRET"  # 如果没有设置密钥，则为 None
+
+def main_dingtalk_sync():
+    """主函数"""
+    # 1. 创建同步客户端，并在初始化时配置钉钉发送器
+    client = SyncClient(
+        sender_type="dingtalk",
+        webhook=WEBHOOK_URL,
+        secret=SECRET,
+        # 可以在初始化时设置默认消息内容、消息类型和 @ 人参数，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条来自 XQCSendMessage 的同步测试消息。",
+        msg_type="text", # 默认消息类型为文本
+        is_at_all=True # 默认发送给所有人
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认消息类型和 @ 人参数（发送给所有人）
+        result_default_at = client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步测试消息 (使用默认消息类型和 @ 人)。"
+        )
+        print(f"✅ 钉钉消息发送成功 (默认 @ 人): {result_default_at}")
+
+        # 发送字符串消息，并覆盖 @ 人参数和消息类型
+        result_override_at = client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步测试消息 (覆盖 @ 人，指定手机号，markdown 类型)。",
+            msg_type="markdown",
+            at_mobiles=["13900139000"],
+            is_at_all=False
+        )
+        print(f"✅ 钉钉消息发送成功 (覆盖 @ 人): {result_override_at}")
+
+        # 发送字典消息，并覆盖 @ 人参数和消息类型
+        result_dict_override_at = client.send(
+            {
+                "title": "测试标题",
+                "text": "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步测试消息 (字典，覆盖 @ 人，指定手机号，markdown 类型)。"
+            },
+            msg_type="markdown",
+            at_mobiles=["13700137000"],
+            is_at_all=False
+        )
+        print(f"✅ 钉钉消息发送成功 (字典，覆盖 @ 人): {result_dict_override_at}")
+
+    except Exception as e:
+        print(f"🔥 钉钉消息发送失败: {e}")
+
+if __name__ == "__main__":
+    main_dingtalk_sync()
+```
+
+#### 🏢 示例 1.3: 发送企业微信 Webhook 消息 (同步)
+
+```python
+from xqcsendmessage import SyncClient
+
+# --- 配置 ---
+# 你的企业微信机器人的 Webhook
+WEBHOOK_URL = "YOUR_WECOM_WEBHOOK_URL"
+
+def main_wecom_webhook_sync():
+    """主函数"""
+    # 1. 创建同步客户端，并在初始化时配置企业微信 Webhook 发送器
+    client = SyncClient(
+        sender_type="wecom_webhook",
+        webhook=WEBHOOK_URL,
+        # 可以在初始化时设置默认消息内容和消息类型，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条来自 XQCSendMessage 的同步 Webhook 测试消息。",
+        msg_type="text" # 默认消息类型为文本
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认参数
+        result_default = client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步 Webhook 测试消息 (使用默认参数)。"
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (默认参数): {result_default}")
+
+        # 发送字符串消息，并覆盖默认参数（例如，指定不同的内容）
+        result_override_str = client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步 Webhook 测试消息 (覆盖字符串内容，markdown 类型)。",
+            msg_type="markdown" # 覆盖为 markdown 类型
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (覆盖字符串): {result_override_str}")
+
+        # 发送字典消息，并覆盖默认参数
+        result_override_dict = client.send(
+            {
+                "msgtype": "markdown",
+                "markdown": {"content": "【XQCSendMessage】这是一条来自 XQCSendMessage 的同步 Webhook 测试消息 (覆盖字典内容，markdown 类型)。"}
+            },
+            msg_type="markdown" # 覆盖为 markdown 类型
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (覆盖字典): {result_override_dict}")
+
+    except Exception as e:
+        print(f"🔥 企业微信 Webhook 消息发送失败: {e}")
+
+if __name__ == "__main__":
+    main_wecom_webhook_sync()
+```
+
+#### 🏢 示例 1.4: 发送企业微信应用消息 (同步)
+
+```python
+from xqcsendmessage import SyncClient
+
+# --- 配置 ---
+# 你的企业微信应用配置
+CORP_ID = "YOUR_CORP_ID"
+CORP_SECRET = "YOUR_CORP_SECRET"
+AGENT_ID = 1000002  # 你的应用 AgentId
+
+def main_wecom_app_sync():
+    """主函数"""
+    # 1. 创建同步客户端，并在初始化时配置企业微信应用发送器
+    client = SyncClient(
+        sender_type="wecom_app",
+        corpid=CORP_ID,
+        corpsecret=CORP_SECRET,
+        agentid=AGENT_ID,
+        # 可以在初始化时设置默认消息内容、消息类型和发送对象参数，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条通过企业微信应用发送的同步测试消息。",
+        msg_type="text", # 默认消息类型为文本
+        touser="@all" # 默认发送给所有人
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认消息类型和发送对象参数
+        result_default = client.send(
+            "【XQCSendMessage】这是一条通过企业微信应用发送的同步测试消息 (使用默认参数)。"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (默认参数): {result_default}")
+
+        # 发送字符串消息，并覆盖默认参数（例如，指定不同的内容和发送对象）
+        result_override_str = client.send(
+            "【XQCSendMessage】这是一条通过企业微信应用发送的同步测试消息 (覆盖字符串内容，指定用户)。",
+            touser="USERID", # 覆盖为指定用户
+            msg_type="text"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (覆盖字符串): {result_override_str}")
+
+        # 发送字典消息，并覆盖默认参数
+        result_override_dict = client.send(
+            {
+                "msgtype": "markdown",
+                "markdown": {"content": "【XQCSendMessage】这是一条通过企业微信应用发送的同步测试消息 (覆盖字典内容，指定用户)。"}
+            },
+            touser="USERID", # 覆盖为指定用户
+            msg_type="markdown"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (覆盖字典): {result_override_dict}")
+
+    except Exception as e:
+        print(f"🔥 企业微信应用消息发送失败: {e}")
+
+if __name__ == "__main__":
+    main_wecom_app_sync()
+```
+
+#### 📧 示例 1.5: 发送邮件 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import AsyncClient
+
+# --- 配置 ---
+SMTP_SERVER = "YOUR_SMTP_SERVER"  # ⚠️ 请替换为你的 SMTP 服务器
+SMTP_PORT = 587                   # ⚠️ 请替换为你的 SMTP 端口
+SENDER_EMAIL = "YOUR_SENDER_EMAIL"  # ⚠️ 请替换为你的邮箱
+SENDER_PASSWORD = "YOUR_SENDER_PASSWORD"    # ⚠️ 请替换为你的邮箱密码或授权码
+RECIPIENTS = ["YOUR_RECIPIENT_EMAIL"] # ⚠️ 请替换为收件人邮箱列表
+
+async def main_email_async():
+    """主函数"""
+    # 1. 创建异步客户端，并在初始化时配置邮件发送器
+    client = AsyncClient(
+        sender_type="email",
+        smtp_server=SMTP_SERVER,
+        smtp_port=SMTP_PORT,
+        sender_email=SENDER_EMAIL,
+        sender_password=SENDER_PASSWORD,
+        use_tls=True, # 端口 465 通常直接使用 SSL，而不是通过 starttls 升级
+        recipients=RECIPIENTS, # 可以在初始化时设置默认接收人
+        subtype="plain" # 可以在初始化时设置默认邮件类型
+    )
+
+    # 2. 发送邮件
+    try:
+        result = await client.send(
+            content="这是一封通过 xqcsendmessage 发送的异步测试邮件。", # 邮件内容
+            subject="Hello from xqcsendmessage!", # 邮件主题
+            # recipients 和 subtype 可以不传，会使用初始化时的默认值
+            # recipients=["override@example.com"], # 也可以在发送时覆盖
+            # subtype="html"
+        )
+        print(f"✅ 邮件发送成功: {result}")
+    except Exception as e:
+        print(f"🔥 邮件发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_email_async())
+```
+
+#### 🤖 示例 1.6: 发送钉钉消息 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import AsyncClient
+
+# --- 配置 ---
+# 你的钉钉机器人的 Webhook 和密钥
+WEBHOOK_URL = "YOUR_DINGTALK_WEBHOOK_URL"
+SECRET = "YOUR_DINGTALK_SECRET"  # 如果没有设置密钥，则为 None
+
+async def main_dingtalk_async():
+    """主函数"""
+    # 1. 创建异步客户端，并在初始化时配置钉钉发送器
+    client = AsyncClient(
+        sender_type="dingtalk",
+        webhook=WEBHOOK_URL,
+        secret=SECRET,
+        # 可以在初始化时设置默认消息内容、消息类型和 @ 人参数，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条来自 XQCSendMessage 的异步测试消息。",
+        msg_type="text", # 默认消息类型为文本
+        is_at_all=True # 默认发送给所有人
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认消息类型和 @ 人参数（发送给所有人）
+        result_default_at = await client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步测试消息 (使用默认消息类型和 @ 人)。"
+        )
+        print(f"✅ 钉钉消息发送成功 (默认 @ 人): {result_default_at}")
+
+        # 发送字符串消息，并覆盖 @ 人参数和消息类型
+        result_override_at = await client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步测试消息 (覆盖 @ 人，指定手机号，markdown 类型)。",
+            msg_type="markdown",
+            at_mobiles=["13900139000"],
+            is_at_all=False
+        )
+        print(f"✅ 钉钉消息发送成功 (覆盖 @ 人): {result_override_at}")
+
+        # 发送字典消息，并覆盖 @ 人参数和消息类型
+        result_dict_override_at = await client.send(
+            {
+                "title": "测试标题",
+                "text": "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步测试消息 (字典，覆盖 @ 人，指定手机号，markdown 类型)。"
+            },
+            msg_type="markdown",
+            at_mobiles=["13700137000"],
+            is_at_all=False
+        )
+        print(f"✅ 钉钉消息发送成功 (字典，覆盖 @ 人): {result_dict_override_at}")
+
+    except Exception as e:
+        print(f"🔥 钉钉消息发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_dingtalk_async())
+```
+
+#### 🏢 示例 1.7: 发送企业微信 Webhook 消息 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import AsyncClient
+
+# --- 配置 ---
+# 你的企业微信机器人的 Webhook
+WEBHOOK_URL = "YOUR_WECOM_WEBHOOK_URL"
+
+async def main_wecom_webhook_async():
+    """主函数"""
+    # 1. 创建异步客户端，并在初始化时配置企业微信 Webhook 发送器
+    client = AsyncClient(
+        sender_type="wecom_webhook",
+        webhook=WEBHOOK_URL,
+        # 可以在初始化时设置默认消息内容和消息类型，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条来自 XQCSendMessage 的异步 Webhook 测试消息。",
+        msg_type="text" # 默认消息类型为文本
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认参数
+        result_default = await client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步 Webhook 测试消息 (使用默认参数)。"
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (默认参数): {result_default}")
+
+        # 发送字符串消息，并覆盖默认参数（例如，指定不同的内容）
+        result_override_str = await client.send(
+            "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步 Webhook 测试消息 (覆盖字符串内容，markdown 类型)。",
+            msg_type="markdown" # 覆盖为 markdown 类型
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (覆盖字符串): {result_override_str}")
+
+        # 发送字典消息，并覆盖默认参数
+        result_override_dict = await client.send(
+            {
+                "msgtype": "markdown",
+                "markdown": {"content": "【XQCSendMessage】这是一条来自 XQCSendMessage 的异步 Webhook 测试消息 (覆盖字典内容，markdown 类型)。"}
+            },
+            msg_type="markdown" # 覆盖为 markdown 类型
+        )
+        print(f"✅ 企业微信 Webhook 消息发送成功 (覆盖字典): {result_override_dict}")
+
+    except Exception as e:
+        print(f"🔥 企业微信 Webhook 消息发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_wecom_webhook_async())
+```
+
+#### 🏢 示例 1.8: 发送企业微信应用消息 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import AsyncClient
+
+# --- 配置 ---
+# 你的企业微信应用配置
+CORP_ID = "YOUR_CORP_ID"
+CORP_SECRET = "YOUR_CORP_SECRET"
+AGENT_ID = 1000002  # 你的应用 AgentId
+
+async def main_wecom_app_async():
+    """主函数"""
+    # 1. 创建异步客户端，并在初始化时配置企业微信应用发送器
+    client = AsyncClient(
+        sender_type="wecom_app",
+        corpid=CORP_ID,
+        corpsecret=CORP_SECRET,
+        agentid=AGENT_ID,
+        # 可以在初始化时设置默认消息内容、消息类型和发送对象参数，这些参数会在 send 方法中作为默认值，但可以被 send 方法中的 kwargs 覆盖
+        message="【XQCSendMessage】这是一条通过企业微信应用发送的异步测试消息。",
+        msg_type="text", # 默认消息类型为文本
+        touser="@all" # 默认发送给所有人
+    )
+
+    # 2. 发送消息
+    try:
+        # 发送字符串消息，此时会使用初始化时设置的默认消息类型和发送对象参数
+        result_default = await client.send(
+            "【XQCSendMessage】这是一条通过企业微信应用发送的异步测试消息 (使用默认参数)。"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (默认参数): {result_default}")
+
+        # 发送字符串消息，并覆盖默认参数（例如，指定不同的内容和发送对象）
+        result_override_str = await client.send(
+            "【XQCSendMessage】这是一条通过企业微信应用发送的异步测试消息 (覆盖字符串内容，指定用户)。",
+            touser="USERID", # 覆盖为指定用户
+            msg_type="text"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (覆盖字符串): {result_override_str}")
+
+        # 发送字典消息，并覆盖默认参数
+        result_override_dict = await client.send(
+            {
+                "msgtype": "markdown",
+                "markdown": {"content": "【XQCSendMessage】这是一条通过企业微信应用发送的异步测试消息 (覆盖字典内容，指定用户)。"}
+            },
+            touser="USERID", # 覆盖为指定用户
+            msg_type="markdown"
+        )
+        print(f"✅ 企业微信应用消息发送成功 (覆盖字典): {result_override_dict}")
+
+    except Exception as e:
+        print(f"🔥 企业微信应用消息发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_wecom_app_async())
+```
+
+### ➡️ 直接函数调用模式
+
+`xqcsendmessage` 提供了便捷的顶层函数，可以直接调用以发送消息，无需显式实例化客户端或发送器。
+
+#### ⚙️ 顶层发送函数参数说明
+
+这些函数将消息内容作为第一个参数，其余参数直接作为关键字参数传入。
+
+- `send_email` / `send_email_async`:
+  - `message` (Union[str, Dict[str, Any]]): 邮件内容。如果为字符串，则作为 `content`；如果为字典，则可以包含 `subject`, `content`, `recipients`, `subtype`。
+  - `smtp_server` (str): SMTP 服务器地址。
+  - `smtp_port` (int): SMTP 服务器端口。
+  - `sender_email` (str): 发件人邮箱。
+  - `sender_password` (str): 发件人邮箱密码或授权码。
+  - `recipients` (List[str]): 收件人列表。
+  - `subject` (str, optional): 邮件主题，如果 `message` 为字符串，则必须提供。
+  - `content` (str, optional): 邮件内容，如果 `message` 为字典且未包含 `content`，则必须提供。
+  - `subtype` (str, default `"plain"`): 邮件内容类型，`"plain"` 或 `"html"`。
+  - `use_tls` (bool, default `True`): 是否使用 TLS 加密。
+  - `**kwargs`: 其他可选参数，将传递给底层的 `EmailSender` 或 `AsyncEmailSender`。
+- `send_dingtalk` / `send_dingtalk_async`:
+  - `message` (Union[str, Dict[str, Any]]): 消息内容，可以是字符串（将作为文本消息发送）或符合钉钉机器人格式的字典。
+  - `webhook` (str): 钉钉机器人的 Webhook 地址。
+  - `secret` (str, optional): 钉钉机器人的密钥，用于签名。
+  - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+  - `at_mobiles` (List[str], optional): 被 @ 的用户的手机号列表。
+  - `is_at_all` (bool, default `True`): 是否 @ 所有人，默认为 True。
+  - `**kwargs`: 其他可选参数，会合并到消息字典中。
+- `send_wecom_webhook` / `send_wecom_webhook_async`:
+  - `message` (Union[str, Dict[str, Any]]): 消息内容，可以是字符串（将作为文本消息发送）或符合企业微信机器人支持的格式。
+  - `webhook` (str): 企业微信机器人的 Webhook 地址。
+  - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+  - `**kwargs`: 其他可选参数，会合并到消息字典中。
+- `send_wecom_app` / `send_wecom_app_async`:
+  - `message` (Union[str, Dict[str, Any]]): 消息内容，可以是字符串（将作为文本消息发送）或符合企业微信应用消息支持的格式。
+  - `corpid` (str): 企业 ID。
+  - `corpsecret` (str): 应用的 Secret。
+  - `agentid` (int): 应用的 AgentId。
+  - `msg_type` (str, default `"text"`): 消息类型，默认为 "text"。
+  - `touser` (Union[str, List[str]], optional, default `"@all"`): 指定接收消息的成员，成员 ID 列表（最多支持 1000 个）。默认为 "@all"。
+  - `toparty` (Union[str, List[str]], optional): 指定接收消息的部门 ID 列表（最多支持 100 个）。
+  - `totag` (Union[str, List[str]], optional): 指定接收消息的标签 ID 列表（最多支持 100 个）。
+  - `safe` (int, optional): 表示是否是保密消息，0 表示否，1 表示是，默认 0。
+  - `enable_duplicate_check` (int, optional): 表示是否开启重复消息检查，0 表示否，1 表示是，默认 0。
+  - `duplicate_check_interval` (int, optional): 表示重复消息检查的时间间隔，单位秒，最大不超过 120。
+  - `**kwargs`: 其他可选参数，会合并到消息字典中。
+
+#### 📧 示例 2.1: 直接发送一封邮件 (同步)
+
+```python
+from xqcsendmessage import send_email
+
+# --- 配置 ---
+SMTP_SERVER = "YOUR_SMTP_SERVER"  # ⚠️ 请替换为你的 SMTP 服务器
+SMTP_PORT = 587                   # ⚠️ 请替换为你的 SMTP 端口
+SENDER_EMAIL = "YOUR_SENDER_EMAIL"  # ⚠️ 请替换为你的邮箱
+SENDER_PASSWORD = "YOUR_SENDER_PASSWORD"    # ⚠️ 请替换为你的邮箱密码或授权码
+RECIPIENTS = ["YOUR_RECIPIENT_EMAIL"] # ⚠️ 请替换为收件人邮箱列表
+
+# 直接发送邮件
+try:
+    result = send_email(
+        content="这是一封通过 xqcsendmessage 直接发送的同步测试邮件。",
+        smtp_server=SMTP_SERVER,
+        smtp_port=SMTP_PORT,
+        sender_email=SENDER_EMAIL,
+        sender_password=SENDER_PASSWORD,
+        recipients=RECIPIENTS,
+        subject="Hello from xqcsendmessage! (Direct Call)",
+        subtype="plain"
+    )
+    print(f"✅ 直接调用邮件发送成功: {result}")
+except Exception as e:
+    print(f"🔥 直接调用邮件发送失败: {e}")
+```
+
+#### 🤖 示例 2.2: 直接发送钉钉消息 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import send_dingtalk_async
+
+# --- 配置 ---
+# 你的钉钉机器人的 Webhook 和密钥
+WEBHOOK_URL = "YOUR_DINGTALK_WEBHOOK_URL"
+SECRET = "YOUR_DINGTALK_SECRET"
+
+async def main_direct_dingtalk():
+    # 直接发送钉钉消息
+    try:
+        # 发送字符串消息，消息类型和 @ 人相关的参数通过 kwargs 传递
+        result = await send_dingtalk_async(
+            "【XQCSendMessage】这是一条通过 XQCSendMessage 直接发送的异步钉钉测试消息 (发送给所有人)。",
+            webhook=WEBHOOK_URL,
+            secret=SECRET,
+            msg_type="text", # 消息类型为文本
+            is_at_all=True # 发送给所有人
+        )
+        print(f"✅ 钉钉消息发送成功 (发送给所有人): {result}")
+
+        # 发送字典消息，消息类型和 @ 人相关的参数通过 kwargs 传递
+        result_dict_override_at = await send_dingtalk_async(
+            {
+                "title": "测试标题",
+                "text": "【XQCSendMessage】这是一条通过 XQCSendMessage 直接发送的异步钉钉测试消息 (字典，指定手机号，markdown 类型)。"
+            },
+            webhook=WEBHOOK_URL,
+            secret=SECRET,
+            msg_type="markdown",
+            at_mobiles=["13700137000"],
+            is_at_all=False
+        )
+        print(f"✅ 钉钉消息发送成功 (字典，指定手机号): {result_dict_override_at}")
+
+    except Exception as e:
+        print(f"🔥 直接调用钉钉发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_direct_dingtalk())
+```
+
+#### 🏢 示例 2.3: 直接发送企业微信 Webhook 消息 (同步)
+
+```python
+from xqcsendmessage import send_wecom_webhook
+
+# --- 配置 ---
+# 企业微信机器人的 Webhook
+WEBHOOK_URL = "YOUR_WECOM_WEBHOOK_URL"
+
+# 直接发送企业微信 Webhook 消息
+try:
+    # 发送字符串消息
+    result_direct_str = send_wecom_webhook(
+        "【XQCSendMessage】这是一条通过 XQCSendMessage 直接发送的同步 Webhook 测试消息 (字符串)。",
+        webhook=WEBHOOK_URL,
+        msg_type="text" # 消息类型为文本
+    )
+    print(f"✅ 直接调用企业微信 Webhook 消息发送成功 (字符串): {result_direct_str}")
+
+    # 发送字典消息，并覆盖消息类型
+    result_direct_dict_override = send_wecom_webhook(
+        {
+            "msgtype": "markdown",
+            "markdown": {"content": "【XQCSendMessage】这是一条通过 XQCSendMessage 直接发送的同步 Webhook 测试消息 (字典，markdown 类型)。"}
+        },
+        webhook=WEBHOOK_URL,
+        msg_type="markdown" # 消息类型为 markdown
+    )
+    print(f"✅ 直接调用企业微信 Webhook 消息发送成功 (字典，markdown 类型): {result_direct_dict_override}")
+
+except Exception as e:
+    print(f"🔥 企业微信 Webhook 消息发送失败: {e}")
+```
+
+#### 🏢 示例 2.4: 直接发送企业微信应用消息 (异步)
+
+```python
+import asyncio
+from xqcsendmessage import send_wecom_app_async
+
+# --- 配置 ---
+# 企业微信应用配置
+CORP_ID = "YOUR_CORP_ID"
+CORP_SECRET = "YOUR_CORP_SECRET"
+AGENT_ID = 1000002  # 你的应用 AgentId
+
+async def main_direct_wecom_app_async():
+    # 直接发送企业微信应用消息
+    try:
+        # 发送字符串消息
+        result_direct_str = await send_wecom_app_async(
+            "【XQCSendMessage】这是一条通过企业微信应用直接发送的异步测试消息 (字符串)。",
+            corpid=CORP_ID,
+            corpsecret=CORP_SECRET,
+            agentid=AGENT_ID,
+            msg_type="text", # 消息类型为文本
+            touser="@all" # 默认 @所有人
+        )
+        print(f"✅ 直接调用企业微信应用消息发送成功 (字符串): {result_direct_str}")
+
+        # 发送字典消息，并覆盖 touser 参数
+        result_direct_dict_override = await send_wecom_app_async(
+            {
+                "msgtype": "markdown",
+                "markdown": {"content": "【XQCSendMessage】这是一条通过企业微信应用直接发送的异步测试消息 (字典，指定用户)。"},
+            },
+            corpid=CORP_ID,
+            corpsecret=CORP_SECRET,
+            agentid=AGENT_ID,
+            msg_type="markdown", # 消息类型为 markdown
+            touser="USERID" # 可以在这里覆盖 touser
+        )
+        print(f"✅ 直接调用企业微信应用消息发送成功 (字典): {result_direct_dict_override}")
+
+    except Exception as e:
+        print(f"🔥 直接调用企业微信应用消息发送失败: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main_direct_wecom_app_async())
+```
+
+
+## 📄 许可证
+
+本项目基于 [MIT License](LICENSE) 开源。
+
+## 🙏 支持我
+
+如果您觉得 `XQCSendMessage` 对您有帮助，可以通过以下方式支持我：
+
+[![打赏作者](https://s2.loli.net/2025/11/10/lQRcAvN3Lgxukqb.png)](https://s2.loli.net/2025/11/10/lQRcAvN3Lgxukqb.png)

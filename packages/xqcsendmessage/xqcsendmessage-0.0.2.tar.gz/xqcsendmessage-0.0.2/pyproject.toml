@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "xqcsendmessage"
+version = "0.0.2"
+description = "一个 XiaoqiangClub 自用的消息发送模块"
+authors = ["Xiaoqiang <xiaoqiangclub@hotmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "xqcsendmessage"}]
+keywords = ["message", "sender", "dingtalk", "wecom", "email", "webhook"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Communications",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+httpx = ">=0.20.0"
+aiosmtplib = "^5.0.0"
+
+[tool.poetry.urls]
+"Homepage" = "https://github.com/xiaoqiangclub/XQCSendMessage"
+"Documentation" = "https://github.com/xiaoqiangclub/XQCSendMessage"
+"Repository" = "https://github.com/xiaoqiangclub/XQCSendMessage"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
