@@ -1,0 +1,508 @@
+# MCP Tool Contracts: Jira MCP Server
+# Feature: 001-jira-mcp-server
+# Date: 2025-11-09
+#
+# This file defines all MCP tools exposed by the jira-mcp-server.
+# Each tool maps to a functional requirement from the spec.
+
+---
+# ISSUE MANAGEMENT TOOLS
+# Requirements: FR-004, FR-005, FR-019
+
+- name: jira_issue_create
+  description: |
+    Create a new Jira issue with required and custom fields.
+    The system automatically discovers and validates custom fields based on the project schema.
+  parameters:
+    - name: project
+      type: string
+      required: true
+      description: Project key (e.g., "PROJ", "DEV")
+    - name: summary
+      type: string
+      required: true
+      description: Issue title/summary (1-255 characters)
+    - name: issue_type
+      type: string
+      required: false
+      default: "Task"
+      description: Type of issue (Task, Bug, Story, etc.)
+    - name: description
+      type: string
+      required: false
+      description: Detailed issue description (supports Jira markup)
+    - name: priority
+      type: string
+      required: false
+      description: Issue priority (if not set, uses project default)
+    - name: assignee
+      type: string
+      required: false
+      description: Username or user ID to assign the issue to
+    - name: labels
+      type: array
+      items: string
+      required: false
+      description: List of labels to apply to the issue
+    - name: due_date
+      type: string
+      format: date
+      required: false
+      description: Due date in ISO format (YYYY-MM-DD)
+    - name: custom_fields
+      type: object
+      required: false
+      description: Additional custom fields as key-value pairs (system validates against project schema)
+  returns:
+    type: object
+    description: Created issue with key, ID, and all field values
+    example:
+      key: "PROJ-123"
+      id: "10001"
+      summary: "Implement user authentication"
+      status: "To Do"
+
+- name: jira_issue_update
+  description: |
+    Update an existing Jira issue. Only provided fields are updated.
+    Custom fields are validated against the project schema.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key (e.g., "PROJ-123")
+    - name: summary
+      type: string
+      required: false
+      description: New issue summary
+    - name: description
+      type: string
+      required: false
+      description: New issue description
+    - name: priority
+      type: string
+      required: false
+      description: New priority
+    - name: assignee
+      type: string
+      required: false
+      description: New assignee (username or ID)
+    - name: labels
+      type: array
+      items: string
+      required: false
+      description: Replace existing labels
+    - name: due_date
+      type: string
+      format: date
+      required: false
+      description: New due date
+    - name: custom_fields
+      type: object
+      required: false
+      description: Custom fields to update
+  returns:
+    type: object
+    description: Updated issue with all current field values
+
+- name: jira_issue_get
+  description: |
+    Retrieve full details of a single issue including all custom fields.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key (e.g., "PROJ-123")
+  returns:
+    type: object
+    description: Complete issue details including standard and custom fields
+
+---
+# SEARCH TOOLS
+# Requirements: FR-009 through FR-019
+
+- name: jira_search_issues
+  description: |
+    Search for issues using multiple criteria. Parameters can be combined.
+    Returns list of matching issues with pagination support.
+  parameters:
+    - name: project
+      type: string
+      required: false
+      description: Filter by project key
+    - name: assignee
+      type: string
+      required: false
+      description: Filter by assignee username or ID
+    - name: status
+      type: string
+      required: false
+      description: Filter by status (e.g., "Open", "In Progress", "Done")
+    - name: priority
+      type: string
+      required: false
+      description: Filter by priority
+    - name: labels
+      type: array
+      items: string
+      required: false
+      description: Filter by labels (issues with ANY of these labels)
+    - name: issue_type
+      type: string
+      required: false
+      description: Filter by issue type
+    - name: created_after
+      type: string
+      format: date
+      required: false
+      description: Filter issues created after this date (ISO format)
+    - name: created_before
+      type: string
+      format: date
+      required: false
+      description: Filter issues created before this date
+    - name: updated_after
+      type: string
+      format: date
+      required: false
+      description: Filter issues updated after this date
+    - name: updated_before
+      type: string
+      format: date
+      required: false
+      description: Filter issues updated before this date
+    - name: custom_fields
+      type: object
+      required: false
+      description: Filter by custom field values (key-value pairs)
+    - name: max_results
+      type: integer
+      required: false
+      default: 100
+      description: Maximum number of results to return (pagination)
+    - name: start_at
+      type: integer
+      required: false
+      default: 0
+      description: Starting offset for results (pagination)
+  returns:
+    type: object
+    description: Search results with total count and issue list
+    properties:
+      total:
+        type: integer
+        description: Total matching issues
+      issues:
+        type: array
+        description: List of matching issues
+
+- name: jira_search_jql
+  description: |
+    Execute a JQL (Jira Query Language) query directly.
+    Use this for complex queries not covered by jira_search_issues.
+  parameters:
+    - name: jql
+      type: string
+      required: true
+      description: JQL query string (e.g., "project = PROJ AND status = Open")
+    - name: max_results
+      type: integer
+      required: false
+      default: 100
+      description: Maximum number of results
+    - name: start_at
+      type: integer
+      required: false
+      default: 0
+      description: Starting offset for pagination
+  returns:
+    type: object
+    description: Search results with total count and issue list
+
+---
+# FILTER MANAGEMENT TOOLS
+# Requirements: FR-020 through FR-027
+
+- name: jira_filter_create
+  description: |
+    Create and save a custom filter with JQL query.
+    The filter can be reused to quickly retrieve the same set of issues.
+  parameters:
+    - name: name
+      type: string
+      required: true
+      description: Unique filter name
+    - name: jql
+      type: string
+      required: true
+      description: JQL query for this filter
+    - name: description
+      type: string
+      required: false
+      description: Filter description
+    - name: favourite
+      type: boolean
+      required: false
+      default: false
+      description: Mark filter as favorite
+  returns:
+    type: object
+    description: Created filter with ID, name, and JQL
+
+- name: jira_filter_list
+  description: |
+    Retrieve a list of all accessible filters (owned and shared).
+    Returns filter metadata including ID, name, owner, and favorite status.
+  parameters: []
+  returns:
+    type: array
+    description: List of accessible filters
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        owner:
+          type: string
+        favourite:
+          type: boolean
+
+- name: jira_filter_get
+  description: |
+    Retrieve complete details of a specific filter including JQL query.
+  parameters:
+    - name: filter_id
+      type: string
+      required: true
+      description: Filter ID or name
+  returns:
+    type: object
+    description: Complete filter details including JQL, description, and permissions
+
+- name: jira_filter_execute
+  description: |
+    Execute a saved filter and return matching issues.
+  parameters:
+    - name: filter_id
+      type: string
+      required: true
+      description: Filter ID or name to execute
+    - name: max_results
+      type: integer
+      required: false
+      default: 100
+      description: Maximum number of results
+    - name: start_at
+      type: integer
+      required: false
+      default: 0
+      description: Starting offset for pagination
+  returns:
+    type: object
+    description: Search results from filter execution
+
+- name: jira_filter_update
+  description: |
+    Update an existing filter's criteria or metadata.
+  parameters:
+    - name: filter_id
+      type: string
+      required: true
+      description: Filter ID to update
+    - name: name
+      type: string
+      required: false
+      description: New filter name
+    - name: jql
+      type: string
+      required: false
+      description: New JQL query
+    - name: description
+      type: string
+      required: false
+      description: New description
+    - name: favourite
+      type: boolean
+      required: false
+      description: Update favorite status
+  returns:
+    type: object
+    description: Updated filter details
+
+- name: jira_filter_delete
+  description: |
+    Delete a custom filter. Only the owner can delete a filter.
+  parameters:
+    - name: filter_id
+      type: string
+      required: true
+      description: Filter ID to delete
+  returns:
+    type: object
+    description: Confirmation message
+    properties:
+      success:
+        type: boolean
+      message:
+        type: string
+
+---
+# WORKFLOW TOOLS
+# Requirements: FR-030, FR-031, FR-032
+
+- name: jira_workflow_get_transitions
+  description: |
+    Get available workflow transitions for an issue from its current status.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key (e.g., "PROJ-123")
+  returns:
+    type: array
+    description: List of available transitions
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        to_status:
+          type: string
+
+- name: jira_workflow_transition
+  description: |
+    Transition an issue to a new status using a workflow transition.
+    Some transitions may require additional fields.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key to transition
+    - name: transition_id
+      type: string
+      required: true
+      description: Transition ID (from jira_workflow_get_transitions)
+    - name: comment
+      type: string
+      required: false
+      description: Optional comment to add during transition
+    - name: fields
+      type: object
+      required: false
+      description: Additional fields required by the transition
+  returns:
+    type: object
+    description: Updated issue with new status
+
+---
+# COMMENT TOOLS
+# Requirements: FR-033, FR-034
+
+- name: jira_comment_add
+  description: |
+    Add a comment to an issue. Supports Jira text formatting.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key to comment on
+    - name: body
+      type: string
+      required: true
+      description: Comment text (supports Jira markup)
+    - name: visibility
+      type: string
+      required: false
+      description: Visibility restriction (role or group name)
+  returns:
+    type: object
+    description: Created comment with ID and metadata
+
+- name: jira_comment_list
+  description: |
+    Retrieve all comments for an issue.
+  parameters:
+    - name: issue_key
+      type: string
+      required: true
+      pattern: "^[A-Z]+-\\d+$"
+      description: Issue key
+  returns:
+    type: array
+    description: List of comments with author, body, and timestamps
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        author:
+          type: string
+        body:
+          type: string
+        created:
+          type: string
+          format: datetime
+
+---
+# SCHEMA/METADATA TOOLS
+# Requirements: FR-006
+
+- name: jira_project_get_schema
+  description: |
+    Get the field schema for a project and issue type.
+    Returns all standard and custom fields with validation rules.
+    This is primarily for debugging; most users don't need to call this directly.
+  parameters:
+    - name: project
+      type: string
+      required: true
+      description: Project key
+    - name: issue_type
+      type: string
+      required: false
+      default: "Task"
+      description: Issue type to get schema for
+  returns:
+    type: object
+    description: Field schema including required fields, types, and allowed values
+    properties:
+      fields:
+        type: array
+        items:
+          type: object
+
+---
+# Tool Count: 17 tools
+# Coverage:
+# - Issue CRUD: 3 tools (create, update, get)
+# - Search: 2 tools (criteria-based, JQL)
+# - Filters: 6 tools (create, list, get, execute, update, delete)
+# - Workflow: 2 tools (get transitions, transition)
+# - Comments: 2 tools (add, list)
+# - Schema: 1 tool (get schema)
+# - Configuration: 1 tool (health check)
+
+- name: jira_health_check
+  description: |
+    Verify connectivity to the Jira instance and validate authentication.
+    Returns server info and connection status.
+  parameters: []
+  returns:
+    type: object
+    description: Connection status and server info
+    properties:
+      connected:
+        type: boolean
+      server_version:
+        type: string
+      base_url:
+        type: string

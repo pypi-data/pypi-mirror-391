@@ -1,0 +1,590 @@
+# Jira MCP Server
+
+[![CI](https://github.com/troylar/jira-mcp-server/workflows/CI/badge.svg)](https://github.com/troylar/jira-mcp-server/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/fastmcp-jira-server.svg)](https://badge.fury.io/py/fastmcp-jira-server)
+[![codecov](https://codecov.io/gh/troylar/jira-mcp-server/branch/main/graph/badge.svg)](https://codecov.io/gh/troylar/jira-mcp-server)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A FastMCP server that enables AI assistants to interact with self-hosted Jira instances through token authentication.
+
+## Features
+
+### MVP (v0.1.0)
+- ✅ **Issue Management**: Create, read, and update Jira issues with automatic custom field validation
+- ✅ **Smart Custom Field Handling**: Automatically discovers and validates project-specific custom fields
+- ✅ **Schema Caching**: Intelligent caching reduces API calls by 80%+
+- ✅ **Health Check**: Verify connectivity and authentication
+- ✅ **Schema Introspection**: Debug tool to explore available fields
+
+### v0.2.0
+- ✅ **Robust Search**: Search issues by project, assignee, status, priority, labels, and date ranges
+- ✅ **JQL Support**: Execute raw JQL queries directly with full Jira Query Language support
+
+### v0.3.0
+- ✅ **Custom Filters**: Save and reuse complex search queries with full CRUD operations
+- ✅ **Filter Execution**: Run saved filters with pagination support
+
+### v0.4.0
+- ✅ **Workflow Transitions**: Move issues through workflow states
+- ✅ **Transition Discovery**: Get available transitions for any issue
+
+### v0.5.0 - Latest
+- ✅ **Comment Management**: Full CRUD operations for issue comments (add, list, update, delete)
+- ✅ **Comment Permissions**: Author and admin permission controls for update/delete
+- ✅ **Jira Markup Support**: Full support for Jira text formatting in comments
+
+## Requirements
+
+- Python 3.8 or higher
+- Self-hosted Jira instance (version 7.0+)
+- Jira API token with appropriate permissions
+
+## Installation
+
+```bash
+pip install fastmcp-jira-server
+```
+
+## Quick Start
+
+1. **Get your Jira API token**:
+   - Log into your Jira instance
+   - Go to Profile → Personal Access Tokens
+   - Create a new token and copy the value
+
+2. **Configure environment variables**:
+
+   ```bash
+   export JIRA_MCP_URL="https://jira.yourcompany.com"
+   export JIRA_MCP_TOKEN="your-api-token-here"
+   ```
+
+   Or create a `.env` file (see `.env.example`):
+
+   ```env
+   JIRA_MCP_URL=https://jira.yourcompany.com
+   JIRA_MCP_TOKEN=your-api-token-here
+   ```
+
+3. **Run the server**:
+
+   ```bash
+   fastmcp-jira-server
+   ```
+
+4. **Verify connection**:
+
+   Use the `jira_health_check` tool through your MCP client to verify the connection.
+
+## Using with AI Assistants
+
+The FastMCP Jira Server can be used with any MCP-compatible AI assistant. Below are configuration instructions for popular tools.
+
+### Claude Desktop
+
+Add to your Claude Desktop configuration file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "jira": {
+      "command": "fastmcp-jira-server",
+      "env": {
+        "JIRA_MCP_URL": "https://jira.yourcompany.com",
+        "JIRA_MCP_TOKEN": "your-api-token-here"
+      }
+    }
+  }
+}
+```
+
+After updating the config, restart Claude Desktop. The Jira tools will appear in the MCP tools menu.
+
+### Cline (VS Code Extension)
+
+Add to your Cline MCP settings (`~/.cline/mcp_settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "jira": {
+      "command": "fastmcp-jira-server",
+      "env": {
+        "JIRA_MCP_URL": "https://jira.yourcompany.com",
+        "JIRA_MCP_TOKEN": "your-api-token-here"
+      }
+    }
+  }
+}
+```
+
+Restart VS Code after updating the configuration.
+
+### Windsurf
+
+Add to your Windsurf configuration:
+
+**macOS/Linux**: `~/.windsurf/mcp_config.json`
+**Windows**: `%USERPROFILE%\.windsurf\mcp_config.json`
+
+```json
+{
+  "mcpServers": {
+    "jira": {
+      "command": "fastmcp-jira-server",
+      "env": {
+        "JIRA_MCP_URL": "https://jira.yourcompany.com",
+        "JIRA_MCP_TOKEN": "your-api-token-here"
+      }
+    }
+  }
+}
+```
+
+Restart Windsurf to load the new configuration.
+
+### Cursor
+
+Add to your Cursor MCP settings:
+
+**macOS**: `~/Library/Application Support/Cursor/User/globalStorage/mcp.json`
+**Windows**: `%APPDATA%\Cursor\User\globalStorage\mcp.json`
+**Linux**: `~/.config/Cursor/User/globalStorage/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "jira": {
+      "command": "fastmcp-jira-server",
+      "env": {
+        "JIRA_MCP_URL": "https://jira.yourcompany.com",
+        "JIRA_MCP_TOKEN": "your-api-token-here"
+      }
+    }
+  }
+}
+```
+
+Restart Cursor after updating the configuration.
+
+### GitHub Copilot (VS Code)
+
+**Requirements**: VS Code 1.99+ and GitHub Copilot with MCP policy enabled
+
+Create `.vscode/mcp.json` in your project root:
+
+```json
+{
+  "inputs": [
+    {
+      "type": "promptString"
+    }
+  ],
+  "servers": {
+    "jira": {
+      "command": "fastmcp-jira-server"
+    }
+  }
+}
+```
+
+**Environment Variables**: Set these in your shell before starting VS Code:
+
+```bash
+export JIRA_MCP_URL="https://jira.yourcompany.com"
+export JIRA_MCP_TOKEN="your-api-token-here"
+code .
+```
+
+Or add to your VS Code `settings.json`:
+
+```json
+{
+  "terminal.integrated.env.osx": {
+    "JIRA_MCP_URL": "https://jira.yourcompany.com",
+    "JIRA_MCP_TOKEN": "your-api-token-here"
+  },
+  "terminal.integrated.env.linux": {
+    "JIRA_MCP_URL": "https://jira.yourcompany.com",
+    "JIRA_MCP_TOKEN": "your-api-token-here"
+  },
+  "terminal.integrated.env.windows": {
+    "JIRA_MCP_URL": "https://jira.yourcompany.com",
+    "JIRA_MCP_TOKEN": "your-api-token-here"
+  }
+}
+```
+
+After saving `.vscode/mcp.json`, click the "Start" button that appears at the top of the file. Access the Jira tools through Copilot Chat in **Agent** mode by clicking the tools icon.
+
+### Verification
+
+After configuration, test the connection by asking your AI assistant:
+
+> "Use the jira_health_check tool to verify the Jira connection"
+
+You should see a response confirming the connection status and server version.
+
+## Usage Examples
+
+### Check Health
+
+```python
+# Verify connectivity and authentication
+jira_health_check()
+# Returns: {"connected": true, "server_version": "8.20.0", "base_url": "https://jira.yourcompany.com"}
+```
+
+### Create an Issue
+
+```python
+# Basic issue creation
+jira_issue_create(
+    project="PROJ",
+    summary="Login page shows 404 error",
+    issue_type="Bug",
+    priority="High",
+    description="Users are seeing 404 errors when accessing /login"
+)
+
+# With custom fields (automatically validated against project schema)
+jira_issue_create(
+    project="PROJ",
+    summary="Add user authentication",
+    issue_type="Story",
+    custom_fields={
+        "customfield_10001": 8,  # Story Points
+        "customfield_10002": "Backend",  # Component
+    }
+)
+```
+
+### Update an Issue
+
+```python
+# Update specific fields
+jira_issue_update(
+    issue_key="PROJ-123",
+    summary="Updated: Login page shows 404 error",
+    priority="Critical",
+    assignee="john.doe"
+)
+
+# Update custom fields
+jira_issue_update(
+    issue_key="PROJ-123",
+    custom_fields={
+        "customfield_10001": 13  # Update story points
+    }
+)
+```
+
+### Get Issue Details
+
+```python
+# Retrieve full issue details including all custom fields
+jira_issue_get(issue_key="PROJ-123")
+```
+
+### Discover Project Schema
+
+```python
+# Useful for finding custom field IDs and allowed values
+jira_project_get_schema(
+    project="PROJ",
+    issue_type="Bug"
+)
+# Returns all available fields, their types, and validation rules
+```
+
+### Search Issues
+
+```python
+# Search by project
+jira_search_issues(project="PROJ")
+
+# Search with multiple criteria
+jira_search_issues(
+    project="PROJ",
+    status="Open",
+    assignee="currentUser()",
+    priority="High",
+    max_results=10
+)
+
+# Search by date range
+jira_search_issues(
+    project="PROJ",
+    created_after="2025-01-01",
+    created_before="2025-12-31"
+)
+
+# Search by labels
+jira_search_issues(
+    project="PROJ",
+    labels=["backend", "urgent"]
+)
+```
+
+### Execute JQL Queries
+
+```python
+# Simple JQL query
+jira_search_jql(jql="project = PROJ AND status = Open")
+
+# Complex JQL with date functions and ordering
+jira_search_jql(
+    jql='project = PROJ AND created >= -7d AND assignee = currentUser() ORDER BY created DESC',
+    max_results=20
+)
+
+# JQL with multiple conditions
+jira_search_jql(
+    jql='project = PROJ AND status IN ("Open", "In Progress") AND priority = High',
+    max_results=50,
+    start_at=0
+)
+```
+
+### Manage Saved Filters
+
+```python
+# Create a filter
+filter_result = jira_filter_create(
+    name="My Open Issues",
+    jql="assignee = currentUser() AND status = Open",
+    description="All my open issues"
+)
+filter_id = filter_result["id"]
+
+# List all accessible filters
+filters = jira_filter_list()
+
+# Get filter details
+filter_details = jira_filter_get(filter_id="10000")
+
+# Execute a saved filter
+results = jira_filter_execute(filter_id="10000", max_results=20)
+
+# Update filter
+jira_filter_update(
+    filter_id="10000",
+    jql="assignee = currentUser() AND status IN (Open, 'In Progress')"
+)
+
+# Delete filter
+jira_filter_delete(filter_id="10000")
+```
+
+### Manage Workflow Transitions
+
+```python
+# Get available transitions for an issue
+transitions = jira_workflow_get_transitions(issue_key="PROJ-123")
+# Returns: {
+#   "issue_key": "PROJ-123",
+#   "transitions": [
+#     {"id": "21", "name": "In Progress", "to_status": "In Progress", "has_screen": False, "fields": []},
+#     {"id": "31", "name": "Done", "to_status": "Done", "has_screen": True, "fields": ["resolution"]}
+#   ]
+# }
+
+# Simple transition (no fields required)
+jira_workflow_transition(issue_key="PROJ-123", transition_id="21")
+
+# Transition with required fields (e.g., resolution when closing)
+jira_workflow_transition(
+    issue_key="PROJ-123",
+    transition_id="31",
+    fields={"resolution": {"name": "Done"}}
+)
+
+# Transition with comment
+jira_workflow_transition(
+    issue_key="PROJ-123",
+    transition_id="21",
+    fields={"comment": [{"add": {"body": "Moving to in progress"}}]}
+)
+```
+
+### Manage Comments
+
+```python
+# Add a comment to an issue
+comment = jira_comment_add(
+    issue_key="PROJ-123",
+    body="This issue is ready for review"
+)
+# Returns: {
+#   "id": "10001",
+#   "body": "This issue is ready for review",
+#   "author": {"displayName": "John Doe", "emailAddress": "john@example.com"},
+#   "created": "2025-01-15T10:00:00.000+0000"
+# }
+
+# Add comment with Jira markup
+jira_comment_add(
+    issue_key="PROJ-123",
+    body="Status update:\n* Task 1: *Done*\n* Task 2: _In progress_\n* Task 3: {{Not started}}"
+)
+
+# List all comments on an issue
+comments = jira_comment_list(issue_key="PROJ-123")
+# Returns: {
+#   "comments": [
+#     {
+#       "id": "10001",
+#       "body": "First comment",
+#       "author": {"displayName": "John Doe"},
+#       "created": "2025-01-15T10:00:00.000+0000"
+#     },
+#     {
+#       "id": "10002",
+#       "body": "Second comment",
+#       "author": {"displayName": "Jane Smith"},
+#       "created": "2025-01-15T11:00:00.000+0000"
+#     }
+#   ],
+#   "total": 2
+# }
+
+# Update an existing comment
+updated = jira_comment_update(
+    issue_key="PROJ-123",
+    comment_id="10001",
+    body="Updated comment text"
+)
+# Returns: {
+#   "id": "10001",
+#   "body": "Updated comment text",
+#   "author": {"displayName": "John Doe"},
+#   "updated": "2025-01-15T12:00:00.000+0000"
+# }
+
+# Delete a comment
+result = jira_comment_delete(issue_key="PROJ-123", comment_id="10001")
+# Returns: {
+#   "success": true,
+#   "message": "Comment 10001 deleted successfully",
+#   "issue_key": "PROJ-123",
+#   "comment_id": "10001"
+# }
+```
+
+## Configuration
+
+Environment variables:
+
+- `JIRA_MCP_URL` (required): Your Jira instance URL
+- `JIRA_MCP_TOKEN` (required): API authentication token
+- `JIRA_MCP_CACHE_TTL` (optional, default: 3600): Schema cache TTL in seconds
+- `JIRA_MCP_TIMEOUT` (optional, default: 30): HTTP request timeout in seconds
+
+## Development
+
+### Setup
+
+```bash
+git clone https://github.com/yourusername/jira-mcp-server.git
+cd jira-mcp-server
+pip install -e ".[dev]"
+```
+
+### Run Tests
+
+```bash
+pytest
+```
+
+With coverage report:
+
+```bash
+pytest --cov=src/jira_mcp_server --cov-report=html
+```
+
+### Type Checking
+
+```bash
+mypy src/
+```
+
+### Code Formatting and Linting
+
+```bash
+# Check and auto-fix
+ruff check src/ tests/ --fix
+
+# Format code
+ruff format src/ tests/
+```
+
+## Architecture
+
+- **FastMCP**: MCP server framework
+- **httpx**: HTTP client for Jira REST API
+- **Pydantic**: Data validation and settings management
+- **In-memory caching**: TTL-based schema caching (1-hour default)
+
+## MCP Tools
+
+### MVP (v0.1.0)
+
+#### Issue Management
+- `jira_issue_create` - Create new issues with automatic custom field validation
+- `jira_issue_update` - Update existing issues (only provided fields are updated)
+- `jira_issue_get` - Get full issue details including all custom fields
+
+#### Utilities
+- `jira_health_check` - Verify connection and authentication status
+- `jira_project_get_schema` - Get project schema for debugging (shows all available fields, types, and validation rules)
+
+### v0.2.0
+
+#### Search
+- `jira_search_issues` - Search with multiple criteria (project, assignee, status, priority, labels, date ranges)
+- `jira_search_jql` - Execute JQL queries directly with full Jira Query Language support
+
+### v0.3.0
+
+#### Filters
+- `jira_filter_create` - Create custom filter with name and JQL query
+- `jira_filter_list` - List all accessible filters
+- `jira_filter_get` - Get filter details by ID
+- `jira_filter_execute` - Run a saved filter with pagination support
+- `jira_filter_update` - Update filter criteria (name, JQL, description)
+- `jira_filter_delete` - Delete a filter (owner only)
+
+### v0.4.0
+
+#### Workflows
+- `jira_workflow_get_transitions` - Get available transitions for an issue
+- `jira_workflow_transition` - Transition issue through workflow
+
+### v0.5.0 - Latest
+
+#### Comments (Full CRUD)
+- `jira_comment_add` - Add comment to an issue (supports Jira markup)
+- `jira_comment_list` - List all comments on an issue with author and timestamp info
+- `jira_comment_update` - Update an existing comment (author or admin only)
+- `jira_comment_delete` - Delete a comment (author or admin only)
+
+## Troubleshooting
+
+See the [troubleshooting section in quickstart.md](specs/001-jira-mcp-server/quickstart.md#troubleshooting) for common issues and solutions.
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/jira-mcp-server/issues)
+- **Documentation**: [Full Documentation](https://github.com/yourusername/jira-mcp-server#readme)
