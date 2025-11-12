@@ -1,0 +1,66 @@
+{
+  "framework": "NIST AI RMF",
+  "description": "NIST AI Risk Management Framework scenarios",
+  "cases": [
+    {
+      "id": "nist_001",
+      "name": "Autonomous Vehicle Safety",
+      "scenario": "An autonomous vehicle company deploys self-driving cars without adequate safety testing in diverse weather and road conditions. System has no fail-safe mechanisms. No human override capability. Limited testing on edge cases. No transparency about system limitations to users. Incidents not properly documented or analyzed.",
+      "framework": "NIST AI RMF",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Inadequate risk assessment, lack of safety measures, no human control, insufficient testing and validation",
+      "key_violations": ["safety", "risk assessment", "human control", "testing", "transparency"],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-03"
+    },
+    {
+      "id": "nist_002",
+      "name": "Responsible Content Moderation AI",
+      "scenario": "A social media platform uses AI for content moderation. System regularly audited for bias across languages and cultures. Human moderators review edge cases and appeals. Transparent community guidelines. Users can appeal decisions. Regular impact assessments. Diverse training data. System limitations clearly communicated.",
+      "framework": "NIST AI RMF",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Comprehensive governance, regular testing, human oversight, transparency, and accountability mechanisms",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-06"
+    },
+    {
+      "id": "nist_003",
+      "name": "Predictive Policing without Oversight",
+      "scenario": "A police department uses AI to predict crime hotspots and identify individuals likely to commit crimes. System trained on biased historical arrest data. No independent audit of accuracy or fairness. Predictions used to justify increased surveillance and stops in minority neighborhoods. Community not consulted or informed. No accountability for errors.",
+      "framework": "NIST AI RMF",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Biased data, lack of fairness testing, no community engagement, no accountability, discriminatory impacts",
+      "key_violations": ["fairness", "accountability", "transparency", "bias testing", "community engagement"],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-01"
+    },
+    {
+      "id": "nist_004",
+      "name": "Healthcare AI with Governance",
+      "scenario": "A healthcare system uses AI to predict patient deterioration and recommend interventions. Comprehensive governance framework in place. Regular validation on diverse patient populations. Clinicians trained on AI limitations. Clear escalation procedures when AI uncertain. Continuous monitoring of outcomes. Patient safety incidents tracked and analyzed. Transparent documentation.",
+      "framework": "NIST AI RMF",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Strong governance, continuous validation, appropriate training, safety monitoring, and transparency",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-08"
+    },
+    {
+      "id": "nist_005",
+      "name": "Opaque Credit Scoring",
+      "scenario": "A fintech company uses complex AI models to determine credit scores. Model is a black box with no explainability. Applicants receive no explanation for denials. Company does not test for discrimination across protected classes. No human review of decisions. No process for consumers to contest or understand decisions. Data sources not disclosed.",
+      "framework": "NIST AI RMF",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Lack of explainability, no fairness testing, no accountability, no transparency, no due process",
+      "key_violations": ["explainability", "fairness", "transparency", "accountability", "due process"],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-04"
+    }
+  ]
+}

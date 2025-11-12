@@ -1,0 +1,66 @@
+{
+  "framework": "HIPAA",
+  "description": "HIPAA compliance and violation cases",
+  "cases": [
+    {
+      "id": "hipaa_001",
+      "name": "Anthem Data Breach",
+      "scenario": "Anthem Inc. experienced a cyberattack that exposed personal health information of 79 million individuals. The breach was due to inadequate security measures including lack of encryption, weak authentication, and failure to conduct risk assessments. PHI included names, birthdates, social security numbers, and medical IDs.",
+      "framework": "HIPAA",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Failure to implement adequate security measures, lack of encryption, insufficient risk assessment",
+      "key_violations": ["security", "risk assessment", "encryption"],
+      "fine": "$16 million",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/agreements/anthem/index.html",
+      "date": "2018-10"
+    },
+    {
+      "id": "hipaa_002",
+      "name": "Approved De-identified Research",
+      "scenario": "A hospital shares de-identified patient records with researchers studying diabetes treatments. All 18 HIPAA identifiers removed (names, addresses, dates, phone numbers, etc.). Research protocol approved by IRB. Data stored on secure servers with access logging. No way to re-identify individuals.",
+      "framework": "HIPAA",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Proper de-identification per Safe Harbor method, IRB approval, appropriate safeguards",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-02"
+    },
+    {
+      "id": "hipaa_003",
+      "name": "CVS Employee Snooping",
+      "scenario": "CVS pharmacy employees accessed patient prescription records without authorization for personal reasons (curiosity about neighbors, celebrities). No legitimate treatment or payment purpose. Patients were not aware of unauthorized access. CVS failed to implement adequate access controls and monitoring.",
+      "framework": "HIPAA",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Unauthorized access to PHI, lack of access controls, insufficient monitoring",
+      "key_violations": ["unauthorized access", "minimum necessary", "access controls"],
+      "fine": "$2.25 million",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/compliance-enforcement/examples/cvs-pharmacy-case/index.html",
+      "date": "2009-02"
+    },
+    {
+      "id": "hipaa_004",
+      "name": "Telemedicine with Consent",
+      "scenario": "A telemedicine platform allows video consultations between doctors and patients. Platform uses end-to-end encryption for video and chat. Patients sign consent forms explaining data collection, storage, and sharing. Only treating physicians can access records. Platform logs all access. Complies with state telemedicine laws.",
+      "framework": "HIPAA",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Appropriate encryption, informed consent, access controls, audit logging",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-04"
+    },
+    {
+      "id": "hipaa_005",
+      "name": "Premera Blue Cross Breach",
+      "scenario": "Premera Blue Cross suffered a cyberattack exposing data of 10.4 million individuals. Breach lasted 8 months undetected. Company lacked adequate intrusion detection, encryption, and security monitoring. PHI and financial data exposed. Company failed to conduct risk analysis.",
+      "framework": "HIPAA",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Lack of risk analysis, inadequate security monitoring, no intrusion detection, unencrypted data",
+      "key_violations": ["risk analysis", "security monitoring", "encryption", "intrusion detection"],
+      "fine": "$6.85 million",
+      "source_url": "https://www.hhs.gov/about/news/2020/07/06/premera-blue-cross-pays-hipaa-settlement.html",
+      "date": "2020-07"
+    }
+  ]
+}

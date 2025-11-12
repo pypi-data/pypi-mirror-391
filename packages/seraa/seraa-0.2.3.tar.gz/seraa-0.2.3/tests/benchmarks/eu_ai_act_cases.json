@@ -1,0 +1,66 @@
+{
+  "framework": "EU AI Act",
+  "description": "EU AI Act compliance scenarios (simulated)",
+  "cases": [
+    {
+      "id": "ai_act_001",
+      "name": "Biased Hiring Algorithm",
+      "scenario": "A tech company uses an AI system to screen job applications for technical roles. The system was trained on 10 years of historical hiring data and shows systematic bias against women and minority candidates. The company does not audit the system for bias, does not inform candidates that AI is used, and has no human oversight of decisions. Rejected candidates receive no explanation.",
+      "framework": "EU AI Act",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "High-risk AI without transparency, bias testing, human oversight, or explainability. Violates non-discrimination requirements.",
+      "key_violations": ["transparency", "fairness", "human oversight", "explainability", "bias testing"],
+      "fine": "Up to 6% of annual revenue",
+      "source_url": null,
+      "date": "2024-08"
+    },
+    {
+      "id": "ai_act_002",
+      "name": "Compliant Loan Decision System",
+      "scenario": "A bank uses AI to assist with loan application decisions. System is classified as high-risk. Bank conducts regular bias audits across protected characteristics. All applicants informed AI is used. Human loan officers review all decisions and can override. System provides explanations for decisions. Data governance procedures in place. Regular third-party audits conducted.",
+      "framework": "EU AI Act",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Proper risk assessment, transparency, human oversight, explainability, bias monitoring, and governance",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-09"
+    },
+    {
+      "id": "ai_act_003",
+      "name": "Facial Recognition Surveillance",
+      "scenario": "A city government deploys real-time facial recognition cameras in public spaces to identify individuals for law enforcement purposes. System operates continuously without individual consent. No independent oversight or accountability mechanisms. Citizens not informed about the system. No impact assessment conducted.",
+      "framework": "EU AI Act",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Prohibited use of real-time biometric identification in public spaces. Lack of transparency, consent, and safeguards.",
+      "key_violations": ["prohibited use", "transparency", "consent", "impact assessment", "oversight"],
+      "fine": "Up to €30 million or 6% of revenue",
+      "source_url": null,
+      "date": "2024-07"
+    },
+    {
+      "id": "ai_act_004",
+      "name": "Medical Diagnosis AI with Oversight",
+      "scenario": "A hospital uses AI to assist radiologists in detecting cancer from medical images. System classified as high-risk. Radiologists review all AI suggestions before diagnosis. Patients informed AI assists diagnosis. System regularly validated on diverse patient populations. Clear documentation of AI limitations. Human doctor makes final decision and is accountable.",
+      "framework": "EU AI Act",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Human oversight maintained, proper transparency, regular validation, clear accountability",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-10"
+    },
+    {
+      "id": "ai_act_005",
+      "name": "Social Scoring System",
+      "scenario": "A company develops an AI system that assigns social trustworthiness scores to individuals based on their online behavior, purchases, and social connections. Scores used to determine access to services, credit, and housing. Individuals cannot contest or understand their scores. System has no transparency or appeal process.",
+      "framework": "EU AI Act",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Prohibited social scoring that harms individuals. Lack of transparency, no right to contest, discriminatory potential.",
+      "key_violations": ["prohibited use", "transparency", "fairness", "due process", "human dignity"],
+      "fine": "Up to €30 million or 6% of revenue",
+      "source_url": null,
+      "date": "2024-05"
+    }
+  ]
+}

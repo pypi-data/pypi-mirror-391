@@ -1,0 +1,405 @@
+# SERAA: Stochastic Emergent Reasoning Alignment Architecture
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![build](https://github.com/tpark216/seraa/actions/workflows/pytest.yml/badge.svg)](https://github.com/tpark216/seraa/actions)
+[![PyPI version](https://badge.fury.io/py/seraa.svg)](https://badge.fury.io/py/seraa)
+
+A Python framework for evaluating and preserving **human agency** and ethical boundaries in AI, policy, and organizational decision-making.  
+_Rooted in philosophy, built for Responsible AI, validated on real-world scenarios._
+
+---
+
+## 🚀 Quick Install
+
+### **Core Installation**
+pip install seraa
+
+
+### **Installation Options**
+
+| Use Case                      | Command                            | Adds                                    |
+|-------------------------------|------------------------------------|-----------------------------------------|
+| **Visualization & Graphs**    | `pip install seraa[viz]`           | `matplotlib`, `seaborn`                 |
+| **Benchmarks & Testing**      | `pip install seraa[benchmarks]`    | Benchmark tools and dependencies        |
+| **All LLM Backends**          | `pip install seraa[llm-full]`      | `openai`, `anthropic` APIs              |
+| **Development Tools**         | `pip install seraa[dev]`           | `pytest`, `black`, `mypy`, etc.         |
+| **Everything**                | `pip install seraa[all]`           | All optional features                   |
+
+---
+
+## 📖 Quick Start
+
+### **1. Install a Local LLM (Recommended)**
+ollama pull qwen2.5:1.5b
+
+
+
+### **2. Interactive Chat Interface**
+seraa-chat --framework buddhist --model qwen2.5:1.5b
+
+As a module:
+
+python -m seraa.cli.chat --framework virtue_ethics --model qwen2.5:1.5b
+
+You can replace the framework name with any of the frameworks listed or utilize the code to create a custom ethical agent based on your own values. Save as a separate file
+
+
+### **3. Python API Usage**
+
+#### **Basic Evaluation**
+from seraa.llm import SeraaChat
+
+Initialize with Buddhist ethics
+chat = SeraaChat(
+llm_backend="ollama",
+model="qwen2.5:1.5b",
+ethical_framework="buddhist"
+)
+
+Evaluate a scenario
+result = chat.chat("Is it ethical to use user data without consent?")
+print(result['chat_response'])
+
+
+
+#### **Custom Ethical Agent**
+from seraa.core import SeraaAgent, EthicalConstraint
+
+Create an ethical AI agent
+agent = SeraaAgent(
+name="my_agent",
+moral_weights={'fairness': 0.4, 'autonomy': 0.3, 'care': 0.3},
+core_values={'human_dignity': 1.0}
+)
+
+Add constraints
+agent.add_constraint(
+EthicalConstraint("pac_check", lambda a: a.get('pac_score', 0) >= 0.7)
+)
+
+Evaluate an action
+result = agent.evaluate_action({'pac_score': 0.9})
+print(result.approved) # True or False
+
+
+
+---
+
+## 📚 What is SERAA?
+
+SERAA is a research-grade ethical reasoning framework that goes beyond simple compliance checking to evaluate whether decisions **preserve human agency and moral capacity**.
+
+### **Core Components**
+
+- **9 Ethical Axioms** derived from meta-ethics, philosophy of agency, and digital ethics
+- **Ternary Logic** moves beyond binary right/wrong: positive, neutral, negative
+- **PAC (Preservation of Agentic Capacity):** Measures how much choice and autonomy decisions preserve
+- **Three-Level Verdicts:**
+  - ✅ **ACCEPTABLE**: Meets all ethical thresholds
+  - ⚠️ **CONDITIONAL**: Requires human oversight and monitoring
+  - ❌ **PROBLEMATIC**: Fails basic ethical criteria
+- **Configurable:** Adjust weights, constraints, and thresholds for any domain or philosophy
+
+### **Built-in Ethical Frameworks**
+
+- **Secular Humanism** (default)
+- **Buddhist Ethics**
+- **Christian Ethics**
+- **Ubuntu Philosophy**
+- **Confucian Ethics**
+- **Indigenous Ethics**
+- **Care Ethics**
+- **Utilitarian Ethics**
+- **Deontological Ethics**
+- **Islamic Ethics**
+- **Stoic Ethics**
+- **Aristotelian Virtue Ethics**
+- **Custom Frameworks** (define your own!)
+
+### **Applications**
+
+- AI/algorithmic decision audits
+- Policy and governance review (executive orders, corporate policies)
+- Autonomous agent frameworks (vehicles, robots, chatbots)
+- Academic research in digital ethics and AI alignment
+- Healthcare decision support
+- Legal and judicial systems analysis
+
+---
+
+## ✨ Features
+
+### **Ethical Reasoning**
+- **9 Ethical Axioms**: Comprehensive philosophical foundation
+- **PAC Preservation**: Maintains human agentic capacity
+- **Ternary Logic**: Beyond binary ethical judgments
+- **Transparent Thresholds**: Every decision is explainable
+
+### **Validation & Benchmarks**
+- **100% Accuracy** on regulatory compliance tests (GDPR, HIPAA, EU AI Act, NIST)
+- **Generalization Benchmark**: 12 novel ethical dilemmas testing reasoning beyond legal patterns
+- **Real-World Tested**: Evaluated on 35+ major decisions
+
+### **LLM Integration**
+- **Local Models**: Ollama support (privacy-preserving)
+- **Cloud APIs**: OpenAI, Anthropic (optional)
+- **Explainable**: Every verdict includes detailed reasoning
+
+### **Developer Friendly**
+- **Pure Python**: Minimal dependencies
+- **Type Hints**: Full mypy support
+- **Well Tested**: Comprehensive test suite
+- **Documented**: Clear API and examples
+
+---
+
+## 🧪 Benchmarks
+
+SERAA includes comprehensive benchmark suites for validation and research:
+
+### **Regulatory Validation**
+Tests SERAA against real regulatory outcomes from GDPR, HIPAA, EU AI Act, and NIST AI RMF:
+
+cd tests
+python run_regulatory_tests.py
+
+
+
+**Results:** 100% accuracy across 20 test cases, with proper escalation for edge cases.
+
+### **Generalization Benchmark**
+Tests ethical reasoning in novel contexts beyond known legal patterns:
+
+cd tests
+python run_benchmark.py
+
+
+
+12 cases covering:
+- **Novel Context Conflicts** (autonomous drones, genetic data, AI art)
+- **Normative Conflicts** (fairness vs. utility, autonomy vs. care)
+- **Ambiguity & Incompleteness** (lost records, opaque archives)
+- **Meta-Ethical Divergence** (legal surveillance, algorithmic justice)
+
+**Scoring:**
+python score_benchmark.py # Interactive human scoring
+python analyze_benchmark.py # Generate reports and visualizations
+
+
+
+Benchmark data is included in `tests/benchmarks/`.
+
+---
+
+## 📊 Visualizations
+
+Generate publication-ready analysis graphs:
+
+pip install seraa[viz]
+python -m tests.visualize_results
+
+
+
+**Outputs:**
+- Accuracy metrics by framework
+- Verdict distributions
+- PAC score analysis
+- Confusion matrices
+- Summary dashboards
+
+_Graphs saved to `figures/` directory_
+
+---
+
+## 🛡️ Design Philosophy
+
+SERAA is designed for:
+
+- **Transparency**: Every output is explainable, every threshold documented
+- **Research-Grade Rigor**: All tests pass, high coverage, edge cases considered
+- **Ethical Nuance**: Not just "is it legal," but "does it preserve real moral agency?"
+- **Practical Deployment**: Ready for real-world audits, boards, and compliance reviews
+- **Academic Grounding**: Built on peer-reviewed philosophy and ethics research
+
+---
+
+## 🧪 Running the Tests
+
+Install development dependencies
+pip install seraa[dev]
+
+Run all tests
+pytest
+
+Run with coverage
+pytest --cov=seraa --cov-report=html
+
+Run specific test suite
+pytest tests/test_core_ternary.py
+pytest tests/test_agent.py
+
+
+
+---
+
+## 📖 Examples
+
+### **Example 1: Evaluate a Healthcare Decision**
+from seraa.llm import EthicalLLMAgent
+
+agent = EthicalLLMAgent(
+llm_backend="ollama",
+model="qwen2.5:1.5b",
+pac_minimum=0.4,
+harm_threshold=2,
+transparency_min=0.5
+)
+
+result = agent.evaluate_question(
+"A hospital shares de-identified patient data with researchers "
+"who obtained informed consent and IRB approval."
+)
+
+print(f"Verdict: {result['verdict']}")
+print(f"PAC Score: {result['pac_score']:.2f}")
+print(f"Explanation: {result['explanation']}")
+
+
+
+### **Example 2: Create Custom Framework**
+from seraa.llm import SeraaChat
+
+Define your own ethical weights
+my_framework = SeraaChat.create_custom_framework(
+name="Effective Altruism",
+weights={
+'long_term_wellbeing': 0.4,
+'evidence_based': 0.3,
+'impartiality': 0.2,
+'cost_effectiveness': 0.1
+},
+core_values={
+'maximize_impact': 1.0,
+'longtermism': 0.9,
+'scope_sensitivity': 0.8
+},
+description="Evidence-based approach to doing the most good",
+save_path="my_framework.json"
+)
+
+Use your custom framework
+chat = SeraaChat(custom_framework_path="my_framework.json")
+
+
+
+### **Example 3: Compare Frameworks**
+from seraa.llm import SeraaChat
+
+frameworks = ['secular', 'buddhist', 'ubuntu', 'care_ethics']
+scenario = "Should an AI system make final hiring decisions?"
+
+for framework in frameworks:
+chat = SeraaChat(ethical_framework=framework)
+result = chat.chat(scenario)
+print(f"\n{framework.upper()}:")
+print(result['chat_response'])
+
+
+
+---
+
+## 📚 Documentation
+
+- **Full Documentation**: _(coming soon)_
+- **API Reference**: See docstrings in source code
+- **Examples**: Check `examples/` directory
+- **Benchmarks**: See `tests/benchmarks/` for test cases
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
+- How to report bugs and suggest features
+- Development setup and guidelines
+- How to submit benchmark cases
+- Code style and testing requirements
+
+**Ways to Contribute:**
+- Add new benchmark cases
+- Implement additional ethical frameworks
+- Improve documentation
+- Report bugs or edge cases
+- Share use cases and results
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Web-based evaluation interface
+- [ ] Additional LLM backend support (Claude, Gemini)
+- [ ] Domain-specific configurations (healthcare, finance, education)
+- [ ] Integration with MLOps pipelines
+- [ ] Automated red-teaming tools
+- [ ] Real-time monitoring dashboards
+- [ ] Multi-language support
+
+---
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file
+
+---
+
+## 📚 Citation
+
+If you use SERAA in your research, please cite:
+
+@phdthesis{seraa2025,
+author = {Theodore Park},
+title = {SERAA: Stochastic Emergent Reasoning Alignment Architecture},
+school = 
+year = {2025}
+}
+
+
+---
+
+## 📬 Questions, Feedback & Community
+
+- **GitHub Discussions**: [https://github.com/tpark216/seraa/discussions](https://github.com/tpark216/seraa/discussions)
+- **Bluesky**: [@byeolpark.bsky.social](https://bsky.app/profile/byeolpark.bsky.social)
+- **Email**: [theodore.jb.park@gmail.com](mailto:theodore.jb.park@gmail.com)
+- **Issues**: [GitHub Issues](https://github.com/tpark216/seraa/issues)
+
+---
+
+## 🙏 Acknowledgments
+
+Built on research in:
+- Philosophy of agency and digital ethics
+- AI alignment and responsible AI
+- Meta-ethics and moral philosophy
+- Regulatory frameworks (GDPR, HIPAA, EU AI Act, NIST)
+
+Special thanks to the open-source community and all contributors.
+
+---
+
+## 📊 Project Stats
+
+- **Language**: Python 3.8+
+- **License**: MIT
+- **Status**: Active Development
+- **Test Coverage**: >85%
+- **Benchmarks**: 32 validated test cases
+- **Frameworks**: 12+ built-in ethical traditions
+
+---
+
+**Ready to build more ethical AI? Install SERAA today!**
+
+pip install seraa[all]

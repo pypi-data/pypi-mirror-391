@@ -1,0 +1,66 @@
+{
+  "framework": "GDPR",
+  "description": "Real GDPR enforcement cases",
+  "cases": [
+    {
+      "id": "gdpr_001",
+      "name": "Facebook Cambridge Analytica",
+      "scenario": "Facebook allowed Cambridge Analytica to harvest personal data of 87 million users without explicit consent. The data was used for political profiling and targeted advertising. Users were not informed their data would be shared or used for these purposes. Facebook failed to implement adequate safeguards.",
+      "framework": "GDPR",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Lack of informed consent, inadequate data protection measures, failure to notify users of data sharing",
+      "key_violations": ["consent", "transparency", "purpose limitation", "data protection"],
+      "fine": "€1.2 billion",
+      "source_url": "https://www.enforcementtracker.com",
+      "date": "2023-05"
+    },
+    {
+      "id": "gdpr_002",
+      "name": "Google Location Tracking",
+      "scenario": "Google continued to collect and process user location data even after users disabled location services. The company did not clearly inform users that location tracking would continue through other means like WiFi and cell tower data. Settings were confusing and buried in menus.",
+      "framework": "GDPR",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Lack of transparency, misleading information, continued processing without valid consent",
+      "key_violations": ["transparency", "consent", "fair processing"],
+      "fine": "€90 million",
+      "source_url": "https://www.enforcementtracker.com",
+      "date": "2022-01"
+    },
+    {
+      "id": "gdpr_003",
+      "name": "Hospital Research Data Sharing",
+      "scenario": "A hospital shares de-identified patient health records with university researchers studying cancer treatment outcomes. Data includes age ranges, diagnosis codes, and treatment types but no names, addresses, or specific dates. Patients provided informed consent for research use. Research approved by ethics board. Data encrypted and access controlled.",
+      "framework": "GDPR",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Proper de-identification, informed consent obtained, legitimate research purpose, appropriate safeguards",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-03"
+    },
+    {
+      "id": "gdpr_004",
+      "name": "Amazon Alexa Voice Data",
+      "scenario": "Amazon stored voice recordings from Alexa devices indefinitely and used them to improve AI models. Users were not clearly informed recordings would be retained or used for this purpose. Amazon employees could access recordings. No easy way for users to delete their data.",
+      "framework": "GDPR",
+      "regulatory_verdict": "violation",
+      "regulatory_reasoning": "Lack of transparency about data retention and use, inadequate access controls, difficult data deletion",
+      "key_violations": ["transparency", "purpose limitation", "data minimization", "user rights"],
+      "fine": "€746 million",
+      "source_url": "https://www.enforcementtracker.com",
+      "date": "2021-07"
+    },
+    {
+      "id": "gdpr_005",
+      "name": "Healthcare App with Consent",
+      "scenario": "A healthcare app collects patient symptom data, medication adherence, and vitals. App clearly explains what data is collected, how it's used (treatment planning and research), and who has access (care team only). Users must actively consent with clear checkboxes. Data encrypted. Users can delete account and all data anytime.",
+      "framework": "GDPR",
+      "regulatory_verdict": "compliant",
+      "regulatory_reasoning": "Clear transparency, explicit informed consent, appropriate safeguards, user control",
+      "key_violations": [],
+      "fine": null,
+      "source_url": null,
+      "date": "2024-06"
+    }
+  ]
+}

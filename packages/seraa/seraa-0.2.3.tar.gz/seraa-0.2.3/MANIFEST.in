@@ -1,0 +1,37 @@
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+
+# Include configuration files
+recursive-include seraa/config *.json
+recursive-include seraa/config *.yaml
+
+# Include benchmark data files
+recursive-include tests/benchmarks *.json
+recursive-include tests/benchmarks *.md
+
+# Include example scripts
+recursive-include examples *.py
+recursive-include examples *.md
+
+# Exclude compiled Python files
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude __pycache__
+global-exclude .DS_Store
+global-exclude *.so
+
+# Exclude caches and temporary files
+prune tests/__pycache__
+prune examples/__pycache__
+prune .pytest_cache
+prune .mypy_cache
+prune .git
+prune .github
+prune dist
+prune build
+prune *.egg-info
+
+# Include type stubs if present
+recursive-include seraa *.pyi
