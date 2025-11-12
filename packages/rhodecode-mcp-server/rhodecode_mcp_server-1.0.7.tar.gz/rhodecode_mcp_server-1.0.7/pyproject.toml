@@ -1,0 +1,150 @@
+[project]
+name = "rhodecode-mcp-server"
+version = "1.0.7"
+description = "MCP Server para interactuar con RhodeCode API - Gestión de repositorios y Pull Requests"
+authors = [
+    {name = "Bruno Izaguirre", email = "bruno.izaguirre@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["mcp", "rhodecode", "api", "git", "mercurial", "repositories", "pull-requests"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Version Control",
+]
+
+dependencies = [
+    "fastmcp>=2.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "python-dotenv>=1.0.0",
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+rhodecode-mcp-server = "MCPserver:main"
+
+[project.urls]
+Homepage = "https://github.com/BrunoIzaguMart/MCPRhodecoder"
+Documentation = "https://github.com/BrunoIzaguMart/MCPRhodecode/blob/main/README.md"
+Repository = "https://github.com/BrunoIzaguMart/MCPRhodecode"
+Issues = "https://github.com/BrunoIzaguMart/MCPRhodecode/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["MCPserver"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+]
+
+# Configuración para el servidor MCP
+[tool.mcp]
+server_name = "RhodeCode MCP Server"
+server_version = "1.0.0"
+
+[tool.mcp.environment]
+# Variables de entorno requeridas
+RC_API_URL = {required = true, description = "URL de la API de RhodeCode (ej: https://rhodecode.example.com/_admin/api)"}
+RC_API_TOKEN = {required = true, description = "Token de autenticación de RhodeCode"}
+RC_TIMEOUT_MS = {required = false, default = "8000", description = "Timeout en milisegundos para las peticiones"}
+RC_READONLY = {required = false, default = "false", description = "Modo solo lectura (true/false)"}
+
+[tool.mcp.tools]
+# Herramientas de repositorios
+get_repos = {category = "repositories", readonly_safe = true}
+get_repo = {category = "repositories", readonly_safe = true}
+create_repo = {category = "repositories", readonly_safe = false}
+update_repo = {category = "repositories", readonly_safe = false}
+delete_repo = {category = "repositories", readonly_safe = false}
+fork_repo = {category = "repositories", readonly_safe = false}
+
+# Herramientas de contenido
+get_repo_refs = {category = "repository_content", readonly_safe = true}
+get_repo_nodes = {category = "repository_content", readonly_safe = true}
+get_repo_file = {category = "repository_content", readonly_safe = true}
+get_repo_changeset = {category = "repository_content", readonly_safe = true}
+get_repo_changesets = {category = "repository_content", readonly_safe = true}
+
+# Herramientas de operaciones
+invalidate_cache = {category = "repository_operations", readonly_safe = true}
+lock_repo = {category = "repository_operations", readonly_safe = false}
+pull_repo = {category = "repository_operations", readonly_safe = false}
+maintenance = {category = "repository_operations", readonly_safe = false}
+
+# Herramientas de Pull Requests
+get_pull_requests = {category = "pull_requests", readonly_safe = true}
+get_pull_request = {category = "pull_requests", readonly_safe = true}
+get_pull_request_comments = {category = "pull_requests", readonly_safe = true}
+create_pr = {category = "pull_requests", readonly_safe = false}
+comment_pull_request = {category = "pull_requests", readonly_safe = false}
+update_pull_request = {category = "pull_requests", readonly_safe = false}
+close_pull_request = {category = "pull_requests", readonly_safe = false}
+merge_pull_request = {category = "pull_requests", readonly_safe = false}
+
+# Herramientas meta
+list_available_tools = {category = "meta", readonly_safe = true}
+
+[tool.mcp.resources]
+repos_list = {uri = "rhodecode://repos/list", description = "Lista de todos los repositorios"}
