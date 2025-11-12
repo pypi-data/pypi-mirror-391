@@ -1,0 +1,30 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plonegovbr.socialmedia"
+    >
+
+  <include
+      package="plone.behavior"
+      file="meta.zcml"
+      />
+
+  <plone:behavior
+      name="plonegovbr.socialmedia.settings"
+      title="Social Media: Settings"
+      description="Configure social media settings for a content."
+      factory=".social_media.SocialMediaSettings"
+      provides=".social_media.ISocialMediaSettings"
+      marker=".social_media.ISocialMedia"
+      />
+
+  <plone:behavior
+      name="plonegovbr.socialmedia.links"
+      title="Social Media: Links"
+      description="Add social media links to a content."
+      provides=".social_links.ISocialLinks"
+      />
+
+</configure>
