@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "aceti"
+version = "1.0.2"
+authors = [
+  { name="Alejandro Casado", email="acasado4@us.es" },
+]
+description = "A simple package to store and create maps for an experiment"
+readme = "README_LEG.md"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Education",
+  "Programming Language :: Python :: 3",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+]
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+  "numpy",
+  "matplotlib",
+  "pillow",
+  "tqdm",
+  "pyproj",
+  "customtkinter",
+  "screeninfo",
+  "tkcalendar",
+]
+
+[project.scripts]
+aceti-gui = "aceti.gui:main"
+
+[project.urls]
+Homepage = "https://github.com/aceti-pub/common_maps"
+Issues = "https://github.com/aceti-pub/common_maps/issues"
+
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["aceti*"]
+
+[tool.setuptools.package-data]
+"aceti" = [
+  "gui/assets/*",
+  "gui/assets/*/*",
+  "gui/assets/*/*/*",
+  "gui/assets/measures/*",
+  "gui/assets/tiles/*",
+  "gui/widgets/Rendering3d/*",
+]

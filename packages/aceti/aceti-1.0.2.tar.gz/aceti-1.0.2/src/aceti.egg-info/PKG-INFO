@@ -1,0 +1,47 @@
+Metadata-Version: 2.4
+Name: aceti
+Version: 1.0.2
+Summary: A simple package to store and create maps for an experiment
+Author-email: Alejandro Casado <acasado4@us.es>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/aceti-pub/common_maps
+Project-URL: Issues, https://github.com/aceti-pub/common_maps/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Education
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pillow
+Requires-Dist: tqdm
+Requires-Dist: pyproj
+Requires-Dist: customtkinter
+Requires-Dist: screeninfo
+Requires-Dist: tkcalendar
+Dynamic: license-file
+
+aceti_maps
+===========
+
+* Python library to make an efficient use of data
+* License: MIT
+* Compatible With: python 3.0+
+
+Develop API Usage
+-----------------
+
+available maps
+- Alamillo
+- Alamillo11x15
+- Alamillo30x49
+
+<pre>
+<code>
+>>>from aceti_maps import import_map
+>>>base_matrix, lat_lon_map  = import_map("alamillo11x15")
+
+</code>
+</pre>
