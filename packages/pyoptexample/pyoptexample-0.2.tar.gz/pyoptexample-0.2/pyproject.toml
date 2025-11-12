@@ -1,0 +1,23 @@
+[project]
+name = "pyoptexample"
+version = "0.2"
+description = "Practicing optimizing Python with C/C++"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Eric J. Drewitz" },
+]
+keywords = ["optimization"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["setuptools>=64.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+pyoptexample = ["*.dll", "*.so"] # Include all .dll and .so files within my_package [pyoptexample]
