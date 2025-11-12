@@ -1,0 +1,83 @@
+Metadata-Version: 2.4
+Name: tmo-api
+Version: 0.1.1
+Summary: Wrapper for The Mortgage Office API
+Project-URL: Documentation, https://inntran.github.io/tmo-api-python/
+Project-URL: Repository, https://github.com/inntran/tmo-api-python
+Project-URL: Issues, https://github.com/inntran/tmo-api-python/issues
+Author-email: Yinchuan Song <songyinchuan@gmail.com>
+License: Apache-2.0
+License-File: LICENSE
+Keywords: Mortgage Pool Shares,Mortgage Pools,TMO,The Mortgage Office
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Office/Business :: Financial
+Classifier: Topic :: Office/Business :: Financial :: Investment
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: requests<3.0.0,>=2.25.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: bump-my-version>=0.28.1; extra == 'dev'
+Requires-Dist: flake8>=6.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: types-docutils>=0.20.0; extra == 'dev'
+Requires-Dist: types-openpyxl>=3.1.0; extra == 'dev'
+Requires-Dist: types-pygments>=2.17.0; extra == 'dev'
+Requires-Dist: types-pysocks>=1.7.0; extra == 'dev'
+Requires-Dist: types-requests>=2.31.0; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mike>=2.1.0; extra == 'docs'
+Requires-Dist: mkdocs-material>=9.6.0; extra == 'docs'
+Requires-Dist: mkdocs>=1.6.0; extra == 'docs'
+Provides-Extra: xlsx
+Requires-Dist: openpyxl>=3.0.0; extra == 'xlsx'
+Description-Content-Type: text/markdown
+
+## About This Project
+
+**TMO API Python SDK** is an independent, community-maintained wrapper for  
+[The Mortgage Office API](https://www.themortgageoffice.com/).  
+It provides a clean, Pythonic interface for accessing TMO’s JSON-based web services.
+
+This SDK is **not affiliated with or endorsed by Applied Business Software, Inc. (The Mortgage Office)**.
+
+---
+
+## License
+
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](./LICENSE) file for details.
+
+---
+
+## Sponsorship & Commercial Inquiries
+
+This project is independently developed and maintained by **Yinchuan Song**.  
+If your organization uses The Mortgage Office API and would like to:
+
+- Sponsor continued development and maintenance,
+- Obtain dedicated support or integration services, or
+- Discuss transferring project stewardship or ownership,
+
+please contact:
+
+📧 **Yinchuan Song** — [songyinchuan@gmail.com]  
+💼 GitHub: [https://github.com/inntran](https://github.com/inntran)
+
+---
+
+*The goal of this project is to accelerate adoption of The Mortgage Office API within the Python community while providing a reliable, officially maintainable SDK option for organizations and partners.*
