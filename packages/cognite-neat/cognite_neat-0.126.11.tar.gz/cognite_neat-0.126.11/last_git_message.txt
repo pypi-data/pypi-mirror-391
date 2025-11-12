@@ -1,0 +1,39 @@
+Leverage read context to properly adjust loc of ModelSyntaxError (#1412)
+
+# Description
+
+Please describe the change you have made.
+
+The location of values in spreadsheet which failed validation
+(ModelSyntaxError) was incorrect because humanize_error was not
+leveraging read context. In the example shows wrong row numbers:
+
+<img width="1577" height="976" alt="Screenshot 2025-11-11 at 20 23 20"
+src="https://github.com/user-attachments/assets/4f20069f-ab34-4f1f-b1af-feba1b1af0a9"
+/>
+
+which after fixing was correctly offseted by header, skipped and empty
+rows:
+
+<img width="1141" height="955" alt="Screenshot 2025-11-11 at 20 23 06"
+src="https://github.com/user-attachments/assets/2b272d75-91ba-434e-bfe1-be459df67194"
+/>
+
+Adjust row number method was updated to correctly produce the above
+mentione offset for row.
+
+
+This a few of several PRs which deal with backward compatibility of soon
+to be legacy physical data model spreadsheet templates.
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+
+## Changelog
+### Improved
+
+- Correct offset of row number where validation failed
