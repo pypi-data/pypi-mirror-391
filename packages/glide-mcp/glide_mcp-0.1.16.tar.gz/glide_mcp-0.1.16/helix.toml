@@ -1,0 +1,18 @@
+[project]
+name = "glide"
+queries = "./db/"
+
+[local.dev]
+port = 6969
+build_mode = "dev"
+
+[local.glide]
+build_mode = "dev"
+
+[cloud.production.fly]
+build_mode = "debug"
+vm_size = "shared-cpu-4x"
+volume = "helix_glide_production_data:/data"
+volume_initial_size = 20
+private = false
+auth_type = "Cli"
