@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memoria-tool"
+version = "0.1.9"
+description = "Local-first digital memory management library with semantic AI and privacy controls."
+readme = "README.md"
+authors = [
+    { name = "IM_GJ", email = "imgj.3195@gmail.com" }
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["memory", "ai", "privacy", "semantic-search", "faiss", "transformers"]
+dependencies = [
+    "faiss-cpu",
+    "sentence-transformers",
+    "cryptography",
+    "sqlalchemy",
+    "watchdog",
+    "pandas",
+    "numpy",
+    "browserhistory",
+    "transformers",
+    "scikit-learn",
+    "nltk"
+]
+
+[project.optional-dependencies]
+cloud = [
+    "google-generativeai",
+    "openai",
+    "anthropic",
+    "slack-sdk",
+    "google-api-python-client",
+    "google-auth-oauthlib",
+    "google-auth",
+    "notion-client",
+    "whatsapp-python"
+]
+
+[project.urls]
+Repository = "https://github.com/imGJUser1/memoria-tool"
+Documentation = "https://pypi.org/project/memoria-tool/"
