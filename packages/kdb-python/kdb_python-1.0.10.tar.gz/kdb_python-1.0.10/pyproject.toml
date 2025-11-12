@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68.2.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+    # directory containing all the packages (e.g.  src/mypkg1, src/mypkg2)
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["unit_test", "unit_test.*"]
+
+[project]
+name = "kdb-python"
+version = "1.0.10"
+authors = [
+  { name="Trucnt", email="trucnt88@gmail.com" },
+]
+description = "Automation testing"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT AND (Apache-2.0 OR BSD-2-Clause)"
+license-files = ["LICEN[CS]E*", "vendored/licenses/*.txt", "AUTHORS.md"]
+
+[project.urls]
+Homepage = "https://github.com/Trucnt/kdb-python-examples"
