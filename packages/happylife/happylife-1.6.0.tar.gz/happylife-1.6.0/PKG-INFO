@@ -1,0 +1,236 @@
+Metadata-Version: 2.1
+Name: happylife
+Version: 1.6.0
+Summary: 圖色識別，自動操作滑鼠/鍵盤(可後臺運行)，將一切重複的事，抽象為函數，自動運行。
+Author: 宇宙中的塵埃
+Author-email: yqnacfmh9@gmail.com
+Description-Content-Type: text/markdown
+
+# HappyLife
+
+HappyLife 將重複的事情抽象為函數，自動運行。  
+不做無聊的事，體驗有趣的事，讓人生更輕鬆。
+
+安裝方法：
+```shell
+pip install HappyLife
+```
+## 依賴關係
+
+安裝HappyLife會自動安裝依賴套件
+
+
+## 使用教學
+
+### 後臺操作（綁定窗口後，可以後臺運行，但窗口不能最小化，使用者可做別的事情）
+
+>       from auto import Bd  # 引入類別
+
+>       # 綁定夜神模擬器方法  
+>       bd = Bd("夜神模擬器")
+
+>       # 綁定雷電模擬器方法(需額外綁定子窗口)  
+>       bd = Bd('雷電模擬器');  
+>       bd.bind_child_window(0)
+
+>       bd.img_click(bd,'0.png')  # 點擊圖片  
+>       bd.img_drag(bd,'1.png','2.png')  # 拖拽圖片，滑鼠從圖片1座標拖拽到圖片2座標的位置  
+>       bd.lclick(55,64)   # 左鍵單擊  
+>       bd.lclick2(55,64)  # 左鍵雙擊  
+>       bd.rclick(55,64)   # 右鍵單擊  
+
+
+### 前臺操作（必須在當前窗口，才能運行，使用者無法做別的事情，通常後臺操作無效時才會使用此方法）
+
+>       from auto import Fd   # 引入類別
+
+>       Fd.img_click('1.png')   # 點擊圖片  
+>       Fd.img_drag('1.png','2.png')   # 拖拽圖片，滑鼠從圖片1座標拖拽到圖片2座標的位置  
+>       Fd.lclick(55,64)  # 左鍵單擊  
+>       Fd.lclick2(55,64) # 左鍵雙擊  
+>       Fd.rclick(55,64)  # 右鍵單擊  
+>       Fd.keypress(65)   # keypress(按鍵代碼,按下X秒後自動鬆開)  
+>       Fd.key_down(65)   # 按鍵按下，key_down(按鍵代碼)  
+>       Fd.key_up(65)     # 按鍵鬆開，key_up(按鍵代碼)  
+
+>       # 打開檔案/資料夾/網址  
+>       Fd.open_file("D:\\code\\123.py")  
+>       Fd.open_file("C:\\Program Files (x86)\\Windows Defender")  
+>       Fd.open_file("http://www.j4.com.tw/big-gb/")  
+
+* 如果使用前臺操作，無法自動操作滑鼠鍵盤，請用系統管理員身份啓動腳本
+
+## 依序執行任務的方法
+
+>       # 要執行的任務列表
+>       tasks = [
+>           (bd.img_click, bd,"81.png"), #(函數, 參數：可以填寫多個參數)
+>           (bd.img_click, bd,"82.png"),
+>           (bd.img_click, bd,"83.png"),
+>           (bd.img_click, bd,"84.png")
+>       ]
+>       # 按照順序執行任務，完成全部任務跳出迴圈
+>       execute_tasks_in_sequence(tasks)
+
+
+
+
+
+
+
+
+
+# 變更日誌
+
+## [1.6.0] - 2025-11-12
+### 添加
+- img_click新增執行前等待、execute_tasks_in_sequence新增重試次數、上調所有套件依賴版本
+
+
+## [1.5.4] - 2024-10-19
+### 修復
+- 修復前臺滑鼠操作ctypes.windll.user32.SetCursorPos語法錯誤
+
+
+## [1.5.3] - 2024-10-19
+### 添加
+- 前臺操作keypress、key_down、key_up支援硬件級鍵盤模擬
+- 前臺操作img_click、img_drag、lclick、mouse_drag、lclick2、mouse_down、moveto支援硬件級滑鼠模擬
+
+
+## [1.5.2] - 2024-06-14
+### 修復
+- 修復execute_tasks_in_sequence，將每個任務元組拆解為 task_function 和其餘的參數，然後傳遞給 perform_task 函數。這樣就不會出現 tuple 不能被調用的錯誤
+
+
+## [1.5.1] - 2024-06-14
+### 修復
+- 修復後臺操作mouse_drag
+
+
+## [1.5.0] - 2024-06-14
+### 添加
+- 添加後臺操作mouse_drag支援依序執行任務的功能
+
+
+## [1.4.0] - 2024-06-14
+### 添加
+- 添加前臺操作mouse_drag支援依序執行任務的功能
+
+
+## [1.3.18] - 2024-06-09
+### 修正
+- 修復前臺操作mouse_drag沒有生效的問題
+
+
+## [1.3.17] - 2024-06-09
+### 修正
+- 修復前臺操作mouse_drag，誤增self參數的問題
+
+
+## [1.3.16] - 2024-06-09
+### 修正
+- 優化mouse_drag
+
+
+## [1.3.15] - 2024-06-09
+### 修正
+- 加快mouse_drag的拖動速度
+
+
+## [1.3.14] - 2024-06-09
+### 修正
+- 改進mouse_drag
+
+
+## [1.3.13] - 2024-06-09
+### 修正
+- 測試mouse_drag
+
+
+## [1.3.12] - 2024-06-09
+### 修正
+- 測試mouse_drag，改回pywin32寫法
+
+
+## [1.3.11] - 2024-06-09
+### 修正
+- 用ctypes取代pywin32，改寫mouse_drag
+
+
+## [1.3.10] - 2024-06-09
+### 修正
+- 測試mouse_drag
+
+
+## [1.3.9] - 2024-06-09
+### 修正
+- 測試mouse_drag
+
+
+## [1.3.8] - 2024-06-09
+### 修正
+- mouse_drag增加時間等待
+
+
+## [1.3.7] - 2024-06-09
+### 修正
+- 修復mouse_drag函數不生效的問題
+
+
+## [1.3.6] - 2024-06-09
+### 修正
+- 修復mouse_drag函數，滑鼠點擊和移動之間沒有時間等待的問題
+
+
+## [1.3.5] - 2024-06-09
+### 修正
+- 修復誤動前臺操作mouse_drag函數
+
+
+## [1.3.4] - 2024-06-09
+### 修正
+- 修復mouse_drag函數，鼠標移動到x2,y2，再鬆開鼠標
+
+## [1.3.3] - 2024-06-09
+### 修正
+- 移除mouse_down和mouse_up支援依序執行任務的功能
+
+
+## [1.3.2] - 2024-06-09
+### 添加後臺操作
+- mouse_down函數
+- mouse_up函數
+
+### 修正
+- 刪除mouse_drag函數支援依序執行任務的功能（執行多個函數會出錯）
+
+
+## [1.3.1] - 2024-06-09
+### 修正
+- 修復mouse_drag函數，依序執行任務時，執行多個img_drag函數出錯的問題
+
+
+## [1.3.0] - 2024-06-09
+### 添加
+- mouse_drag函數，支援依序執行任務
+
+
+## [1.2.2] - 2024-06-05
+### 修正
+- 修復img_click函數，img_center_point2的Offset_x和Offset_y參數造成出錯的問題
+
+
+## [1.2.1] - 2024-06-05
+### 修正
+- 修復img_click函數，滑鼠點擊參數錯誤的問題
+
+
+## [1.2.0] - 2024-06-05
+### 添加
+- img_click函數新增x/y座標偏移量
+
+
+## [1.1.3] - 2024-06-03
+### 修正
+- 修復前臺操作沒有自適應螢幕縮放比例的問題
