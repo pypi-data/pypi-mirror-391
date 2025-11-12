@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pltparams"  # must be unique on PyPI
+version = "1.0.0"
+license = {file = "LICENSE"}
+description = "Sets matplotlib parameters for scientific publishing."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    {name="Gaute Holen", email="gaute.ah@gmail.com"}
+]
+dependencies = [
+    "numpy",
+    "matplotlib",
+]
+
+[project.urls]
+Homepage = "https://github.com/GauteHolen/pltparams"
+Issues = "https://github.com/GauteHolen/pltparams/issues"
