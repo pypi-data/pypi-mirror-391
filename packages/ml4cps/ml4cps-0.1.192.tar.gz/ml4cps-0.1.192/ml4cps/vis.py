@@ -1,0 +1,1427 @@
+"""
+    The module provides methods to visualize various kinds of data, such as time series or automata graphs.
+
+    Authors:
+    - Nemanja Hranisavljevic, hranisan@hsu-hh.de, nemanja@ai4cps.com
+    - Tom Westermann, tom.westermann@hsu-hh.de, tom@ai4cps.com
+"""
+
+from ml4cps.cps import CPS
+from plotly import graph_objects as go
+import pandas as pd
+import datetime
+from plotly import colors
+import numpy as np
+import pydotplus as pdp
+from plotly import subplots
+from plotly.colors import DEFAULT_PLOTLY_COLORS
+from itertools import chain
+import networkx as nx
+import dash_cytoscape as cyto
+from dash import html, Dash, dcc, Output, Input
+import dash_bootstrap_components as dbc
+from plotly.subplots import make_subplots
+import time, webbrowser, threading
+
+
+def plot_timeseries(data, timestamp=None, mode_data=None, discrete=False, title=None, use_columns=None, height=None,
+                    limit_num_points=None, names=None, xaxis_title=None, customdata=None, iterate_colors=True,
+                    y_title_font_size=14, opacity=1, vertical_spacing=0.005, sharey=False, bounds=None,
+                    plot_only_changes=False, yAxisLabelOffset=False, marker_size=4, showlegend=False,
+                    mode='lines+markers', mode_height=0.2, x_title=None, **kwargs):
+    """
+    Using plotly library, plots each variable (column) in a collection of dataframe as subplots, one after another.
+
+    Arguments:
+    yAxisLabelOffset (bool): if True, adds an offset to the plots y-axis labels. Improves readability on long subplot names.
+
+    Returns:
+        fig (plotly.Figure):
+    """
+
+    if limit_num_points is None or limit_num_points < 0:
+        limit_num_points = np.inf
+    if customdata is not None:
+        customdata = customdata.fillna('')
+    if type(data) is not list:
+        data = [data]
+
+    if len(data) == 0:
+        return go.Figure()
+
+    # if not panda data frame
+    for i in range(len(data)):
+        if not isinstance(data[i], pd.DataFrame):
+            data[i] = pd.DataFrame(data[i])
+
+    # if no timestamp is in the data
+    if timestamp is not None:
+        if type(timestamp) is str or type(timestamp) is int:
+            for i in range(len(data)):
+                data[i] = data[i].set_index(timestamp)
+
+    if height is None:
+        height = max(800, len(data[0].columns) * 60)
+
+    if use_columns is None:
+        columns = data[0].columns
+    else:
+        columns = use_columns
+
+    num_rows = len(columns)
+    categories = []
+    if mode_data is not None:
+        num_rows += 1
+        fig = make_subplots(rows=num_rows, cols=1,
+                            row_heights=[mode_height] + [(1 - mode_height)/(num_rows - 1)]*(num_rows - 1),
+                            shared_xaxes=True, vertical_spacing=vertical_spacing,
+                        shared_yaxes=sharey)
+    else:
+        fig = make_subplots(rows=num_rows, cols=1, shared_xaxes=True, vertical_spacing=vertical_spacing,
+                            shared_yaxes=sharey)
+
+
+
+    if mode_data is not None:
+        if not isinstance(mode_data, list):
+            mode_data = [mode_data]
+        k = -1
+        for md in mode_data:
+            k += 1
+            if iterate_colors:
+                color = DEFAULT_PLOTLY_COLORS[k % len(DEFAULT_PLOTLY_COLORS)]
+            else:
+                color = DEFAULT_PLOTLY_COLORS[0]
+
+            if names:
+                trace_name = names[k]
+            else:
+                trace_name = str(k)
+
+            if isinstance(md, np.ndarray):
+                md = pd.DataFrame({timestamp: md, 'Mode': np.arange(md.shape[0])})
+            elif isinstance(md, pd.Series):
+                md = pd.DataFrame(md)
+            categories.append(md['Mode'].drop_duplicates())
+            time_temp = md['Time'] if 'Time' in md else md.index
+            fig.add_trace(go.Scatter(x=time_temp, y=md['Mode'], mode='markers+lines',
+                                       name=trace_name, legendgroup=trace_name, line_shape='hv',
+                                       marker=dict(line_color=color, color=color, line_width=2, size=marker_size),
+                                       customdata=customdata, showlegend=showlegend, **kwargs), row=1, col=1)
+        i = 1
+    else:
+        i = 0
+    for col_ind in range(len(columns)):
+        i += 1
+        k = -1
+        for trace_ind, d in enumerate(data):
+            col_name = columns[col_ind]
+
+            if names:
+                trace_name = names[trace_ind]
+            else:
+                trace_name = str(trace_ind)
+
+            hovertemplate = f"<b>Time:</b> %{{x}}<br><b>Event:</b> %{{y}}"
+            if customdata is not None:
+                hovertemplate += "<br><b>Context:</b>"
+                for ind, c in enumerate(customdata.columns):
+                    hovertemplate += f"<br>&nbsp;&nbsp;&nbsp;&nbsp;<em>{c}:</em> %{{customdata[{ind}]}}"
+
+            k += 1
+            if iterate_colors:
+                color = DEFAULT_PLOTLY_COLORS[k % len(DEFAULT_PLOTLY_COLORS)]
+            else:
+                color = DEFAULT_PLOTLY_COLORS[0]
+
+            color = f'rgba{color[3:-1]}, {str(opacity)})'
+            if len(d.index.names) > 1:
+                t = d.index.get_level_values(d.index.names[-1]).to_numpy()
+            else:
+                t = d.index.values
+            if d[col_name].dtype == tuple:
+                sig = d[col_name].astype(str).to_numpy()
+            else:
+                sig = d[col_name].to_numpy()
+            if discrete:
+                ind = min(limit_num_points, d.shape[0])
+                if plot_only_changes:
+                    ind = np.nonzero(np.not_equal(sig[0:ind - 1], sig[1:ind]))[0] + 1
+                    # sig = __d[col][0:min(limit_num_points, __d.shape[0])]
+                    ind = np.insert(ind, 0, 0)
+                    t = t[ind]
+                    sig = sig[ind]
+                    if customdata is not None:
+                        customdata = customdata[ind]
+                else:
+                    t = t[0:ind]
+                    sig = sig[0:ind]
+                    if customdata is not None:
+                        customdata = customdata[0:ind]
+
+                fig.add_trace(go.Scatter(x=t, y=sig, mode='markers', name=trace_name, legendgroup=trace_name,
+                                           marker=dict(line_color=color, color=color, line_width=2, size=marker_size),
+                                           customdata=customdata, hovertemplate=hovertemplate,
+                                           showlegend=(showlegend and col_ind == 0 and mode_data is None), **kwargs),
+                              row=i, col=1)
+            else:
+                ind = min(limit_num_points, d.shape[0])
+                fig.add_trace(go.Scatter(x=t[0:ind], y=sig[0:ind], mode=mode, name=trace_name, legendgroup=trace_name,
+                                           customdata=customdata,
+                                           line=dict(color=color, shape='linear'),
+                                           showlegend=(showlegend and col_ind == 0 and mode_data is None), **kwargs), row=i, col=1)
+            fig.update_yaxes(title_text=str(col_name), row=i, col=1, title_font=dict(size=y_title_font_size),
+                             categoryorder='category ascending')
+        if i % 2 == 0:
+            fig.update_yaxes(side="right", row=i, col=1)
+        if yAxisLabelOffset == True:
+            fig.update_yaxes(title_standoff=10 * i, row=i, col=1)
+        if xaxis_title is not None:
+            fig.update_xaxes(title=xaxis_title)
+        if bounds is not None:
+            upper_col = bounds[0].iloc[:, col_ind]
+            lower_vol = bounds[1].iloc[:, col_ind]
+            upper_bound = go.Scatter(
+                name='Upper Bound',
+                x=bounds[0].index.get_level_values(-1),
+                y=upper_col,
+                mode='lines',
+                marker=dict(color="#444"),
+                line=dict(width=0),
+                showlegend=False)
+            lower_bound = go.Scatter(
+                name='Lower Bound',
+                x=bounds[1].index.get_level_values(-1),
+                y=lower_vol,
+                marker=dict(color="#444"),
+                line=dict(width=0),
+                mode='lines',
+                fillcolor='rgba(68, 68, 68, 0.3)',
+                fill='tonexty',
+                showlegend=False)
+            fig.add_trace(upper_bound, row=i, col=1)
+            fig.add_trace(lower_bound, row=i, col=1)
+
+    if title is not None:
+        fig.update_layout(title={'text': title, 'x': 0.5}, autosize=True, height=height + 180, showlegend=showlegend)
+
+    if mode_data is not None:
+        categories = pd.concat(categories).drop_duplicates().to_list()
+        fig.update_yaxes(
+            categoryorder='array',
+            categoryarray=categories,
+            row=1, col=1
+        )
+
+    if x_title:
+        for i in reversed(range(1, 100)):
+            key = f"xaxis{i if i > 1 else ''}"
+            if key in fig.layout:
+                fig.layout[key].title = "Time [s]"
+                break
+    return fig
+
+
+def plot_stateflow(stateflow, color_mapping=None, state_col='State', bar_height=12,
+                   start_column='Start', finish_column='Finish', return_figure=False, description_col='Description',
+                   idle_states=None):
+    """
+    Visualizes state transitions over time for one or more tasks/stations as a Gantt-like interactive timeline.
+
+    Parameters:
+    - stateflow (DataFrame or dict): DataFrame with state transitions, or a dictionary of DataFrames per station.
+    - color_mapping (dict, optional): Mapping of state names to colors. If None, default colors are used.
+    - state_col (str): Column name indicating the state (default: 'State').
+    - bar_height (int): Height of the timeline bars (default: 12).
+    - start_column (str): Column name with start timestamps (default: 'Start').
+    - finish_column (str): Column name with end timestamps (default: 'Finish').
+    - return_figure (bool): If True, returns a Plotly Figure. Otherwise, returns a list of Plotly traces.
+    - description_col (str or list): Column(s) to include in the hover tooltip (default: 'Description').
+    - idle_states (str or list): State(s) to exclude from the plot (e.g., 'IDLE').
+
+    Returns:
+    - Plotly Figure or list of traces, depending on `return_figure`.
+
+    Example:
+        fig = plot_stateflow(df, state_col='Mode', start_column='StartTime', finish_column='EndTime', return_figure=True)
+        fig.show()
+
+    This function is ideal for visualizing process flows, machine states, or event-based logs with time intervals.
+    """
+
+    if idle_states is None:
+        idle_states = []
+    if type(idle_states) is str:
+        idle_states = [idle_states]
+
+    if isinstance(stateflow, dict):
+        stateflow_df_list = []
+        for station, s in stateflow.items():
+            if s.size:
+                sf = s[(~s[state_col].isin(idle_states))]
+                        # ((start_plot <= s.Time) &
+                        #  (s.Time <= finish_plot)) |
+                        # ((start_plot <= s.Finish) & (s.Finish <= finish_plot)))
+                sf['Task'] = station
+                # if sf.size > 0 and pd.isnull(sf['Finish'].iloc[-1]):
+                #     sf['Finish'].iloc[-1] = pd.to_datetime(finish_plot)
+                # s['Finish'] = pd.to_datetime(s['Finish'])
+                stateflow_df_list.append(sf)
+            else:
+                stateflow_df_list.append(pd.DataFrame([]))
+        stateflow_df = pd.concat(stateflow_df_list)
+    else:
+        stateflow_df = stateflow
+
+    if stateflow_df.shape[0] == 0:
+        if return_figure:
+            return go.Figure()
+        else:
+            return []
+
+    if description_col is not None and type(description_col) is str:
+        description_col = [description_col]
+    if color_mapping is None:
+        color_mapping = {}
+        items = list(stateflow_df[state_col].unique())
+        for k, i in enumerate(items):
+            color_mapping[i] = colors.qualitative.Dark24[k % 24]
+
+    stateflow_df['Duration'] = stateflow_df[finish_column] - stateflow_df[start_column]
+    if state_col not in stateflow_df:
+        stateflow_df[state_col] = None
+    stateflow_df[state_col] = stateflow_df[state_col].replace([None], [''])
+
+    traces = []
+    for name, g in stateflow_df.groupby(state_col):
+        if name is None or name == '':
+            continue
+        x = []
+        y = []
+        hovertext = []
+        custom_data = []
+        text = []
+        for k, row in g.iterrows():  # , g[item_col], g.Source, g.Destination):
+            x1, x2, tsk = row[start_column], row[finish_column], row['Task']
+            x.append(x1)
+            x.append(x2)
+            x.append(None)
+            y.append(tsk)
+            y.append(tsk)
+            y.append(None)
+            dauer = x2 - x1
+            if type(x1) in [datetime.datetime, pd.Timestamp]:
+                x1_str = x1.strftime("%d.%m %H:%M:%S")
+            else:
+                x1_str = x1
+            if type(x2) in [datetime.datetime, pd.Timestamp]:
+                x2_str = x2.strftime("%d.%m %H:%M:%S")
+            else:
+                x2_str = x2
+
+            ht = 'Start: {}<br>Finish: {}<br>Duration: {}'.format(x1_str, x2_str, dauer)
+            if description_col is not None:
+                for dc in description_col:
+                    if dc in row:
+                        ht += '<br>{}: {}'.format(dc, row[dc])
+            for k, val in row.items():
+                if not pd.isnull(val) and k not in [state_col, finish_column, start_column, 'Task', 'Duration']:
+                    ht += f'<br>{k}: {val}'
+            hovertext.append(ht)
+
+            custom_data.append(dict(Start=x1, Finish=x2, State=name, Task=tsk, Source=row.get('Quelle', None)))
+
+        color = color_mapping.get(name, "black")
+        traces.append(go.Scatter(x=x, y=y, line=dict(width=bar_height), name=name, line_color=color,
+                                   hoverinfo='skip', mode='lines', legendgroup=name, showlegend=True, opacity=0.8))
+        traces.append(go.Scatter(x=np.asarray(g[start_column] + g.Duration / 2), y=g.Task, mode='text+markers',
+                                   marker=dict(size=5, color=color), name=name,
+                                   showlegend=False, opacity=0.8, customdata=custom_data,
+                                   hovertext=hovertext, text=text, textfont=dict(size=10, color='olive'),
+                                   hovertemplate=f'<extra></extra><b>{name}</b><br>%{{hovertext}}'))
+
+    if return_figure:
+        fig = go.Figure(data=traces)
+        return fig
+    else:
+        return traces
+
+
+def plot_cps_component(cps, id=None, node_labels=False, center_node_labels=False, event_label=True,
+                       show_transition_freq=False, show_transition_timing=False, font_size=6, edge_font_size=6,
+                       edge_text_max_width=None, init_label=False, limit_interval_precision=None,
+                       show_transition_data=False, transition_data_keys=True, node_size=20, output="cyto",
+                       dash_port=8050, min_zoom=0.5, split_edges_diff_event=False,
+                       max_zoom=1, min_edge_thickness=0.1, max_edge_thickness=4, freq_as_edge_thickness=False,
+                       color="black", title_text=None, layout_name='cose'):
+    """    
+    Visualizes a component of a Cyber-Physical System (CPS) as a graph using Dash Cytoscape.
+    This function generates a graphical representation of the discrete states and transitions of a CPS,
+    with various customization options for node and edge appearance, labels, and output format.
+    The visualization can be rendered as Dash Cytoscape elements, in a Dash app, or as a notebook widget.
+    Parameters:
+        cps: object
+            The CPS object containing discrete states, transitions, and related data.
+        id: str, optional
+            The unique identifier for the Cytoscape component (default: "graph").
+        node_labels: bool, optional
+            Whether to display labels on nodes (default: False).
+        center_node_labels: bool, optional
+            Whether to center node labels (default: False).
+        edge_labels: bool, optional
+            Whether to display labels on edges (default: True).
+        show_transition_freq: bool, optional
+            Whether to show transition frequency on edge labels (default: False).
+        edge_font_size: int, optional
+            Font size for edge labels (default: 6).
+        edge_text_max_width: int or None, optional
+            Maximum width for edge label text wrapping (default: None).
+        init_label: bool, optional
+            Whether to label initial state transitions as 'init' (default: False).
+        show_transition_data: bool or list, optional
+            Whether to display additional transition data on edge labels. If a list, only specified keys are shown (default: False).
+        node_size: int, optional
+            Size of the nodes (default: 20).
+        output: str, optional
+            Output format: "cyto" (Dash Cytoscape Div), "elements" (raw elements), "notebook" (inline Dash app), or "dash" (Dash app in browser) (default: "cyto").
+        dash_port: int, optional
+            Port for running the Dash app (default: 8050).
+        min_zoom: float, optional
+            Minimum zoom level for the Cytoscape component (default: 0.5).
+        max_zoom: float, optional
+            Maximum zoom level for the Cytoscape component (default: 1).
+        min_edge_thickness: float, optional
+            Minimum edge thickness for frequency-based scaling (default: 0.1).
+        max_edge_thickness: float, optional
+            Maximum edge thickness for frequency-based scaling (default: 4).
+        freq_as_edge_thickness: bool, optional
+            Whether to scale edge thickness based on transition frequency (default: False).
+        color: str, optional
+            Color for nodes and edges (default: "black"). If "hsu", uses a preset color.
+        title_text: str or Dash component, optional
+            Title text or component to display above the graph (default: None).
+    Returns:
+        Dash component, dict, or Dash app:
+            - If output == "cyto": returns a Dash html.Div containing the Cytoscape graph.
+            - If output == "elements": returns a dict with 'nodes' and 'edges'.
+            - If output == "notebook": runs and displays a Dash app inline (for Jupyter).
+            - If output == "dash": runs a Dash app in the browser and returns the app instance.
+    Notes:
+        - Requires Dash, dash_cytoscape, dash_bootstrap_components, and pandas.
+        - The function supports interactive modals for displaying timing data on states and transitions.
+        - Threading is used to launch the Dash app in browser mode without blocking the main program.
+    # 1. 'grid'            → Places nodes in a simple rectangular grid.
+# 2. 'random'          → Randomly positions nodes; useful for testing.
+# 3. 'circle'          → Arranges nodes evenly around a circle.
+# 4. 'concentric'      → Places nodes in concentric circles, often by degree or weight.
+# 5. 'breadthfirst'    → Hierarchical layout (tree-like), good for state machines or DAGs.
+#                        Optional params: directed=True, padding=<int>
+# 6. 'cose'            → Force-directed layout (spring simulation). Great for organic graphs.
+#                        Optional params: idealEdgeLength, nodeRepulsion, gravity, numIter
+# 7. 'cose-bilkent'    → Improved force-directed layout with better stability and aesthetics.
+#                        (Requires: cyto.load_extra_layouts())
+# 8. 'cola'            → Constraint-based force-directed layout; handles larger graphs well.
+#                        (Requires: cyto.load_extra_layouts())
+# 9. 'euler'           → Physically simulated layout; looks natural and dynamic.
+#                        (Requires: cyto.load_extra_layouts())
+# 10. 'avsdf'          → Circular layout optimized to reduce edge crossings.
+#                        (Requires: cyto.load_extra_layouts())
+# 11. 'spread'         → Distributes disconnected components evenly across space.
+#                        (Requires: cyto.load_extra_layouts())
+# 12. 'klay'           → Layered (hierarchical) layout, excellent for flowcharts or process models.
+#                        (Requires: cyto.load_extra_layouts())
+# 13. 'dagre'          → Directed acyclic graph layout, ideal for workflows and automata.
+#                        (Requires: cyto.load_extra_layouts())
+#                        Optional params: rankDir='TB' (top-bottom), 'LR' (left-right), etc.
+    """
+
+    
+    if id is None:
+        id = "graph"
+
+    if color == "hsu":
+       color = "#B8234F"
+    nodes = []
+    edges = []
+    for n in cps.discrete_states:
+        if n in cps.final_q:
+            nodes.append(dict(data={'id': n, 'label': n.replace(' ','')}, classes='final'))
+        else:
+            nodes.append(dict(data={'id': n, 'label': n.replace(' ','')}))
+        if n in cps.q0:
+            nodes.append(dict(data={'id': f"q0{n}", 'label': f"q0{n}"}, classes='q0'))
+            if init_label:
+                edges.append(dict(data=dict(label='init', source=f"q0{n}", target=n)))
+            elif event_label:
+                edges.append(dict(data=dict(label=cps.initial_r, source=f"q0{n}", target=n)))
+            else:
+                edges.append(dict(data=dict(source=f"q0{n}", target=n)))
+
+    for e in cps.get_transitions():
+        if 'timing' in e[3]:
+            freq = len(e[3]['timing'])
+            import numbers
+
+
+            timings = [float(x) if isinstance(x, numbers.Number) else pd.Timedelta(x).total_seconds() for x in e[3]['timing']]
+        else:
+            freq = 0
+            timings = []
+
+        edge = dict(data={'source': e[0],
+                          'target': e[1],
+                          'label': f'{e[3]["event"]}' if event_label else '',
+                          'timing': timings,
+                          'freq': freq})
+
+        existing_edge = next((x for x in edges if x['data']['source'] == edge['data']['source'] and
+                             x['data']['target'] == edge['data']['target']), None)
+        if existing_edge is None or split_edges_diff_event:
+            if show_transition_freq:
+                edge['data']['label'] += f' #{freq}'
+            if show_transition_timing:
+                if limit_interval_precision is None:
+                    edge['data']['label'] += f' [{min(timings)},{max(timings)}]'
+                else:
+                    edge['data']['label'] += f' [{min(timings):.{limit_interval_precision}f},{max(timings):.{limit_interval_precision}f}]'
+
+            if show_transition_data:
+                edge_data = e[3]
+                ev = edge_data.pop('event', None)
+                if isinstance(show_transition_data, list):
+                    edge_data = {k: v for k, v in edge_data.items() if k in show_transition_data}
+                edge['data']['label'] += "\n"
+                if transition_data_keys:
+                    edge['data']['label'] += " ".join(f"{key}: {value}" for key, value in edge_data.items())
+                else:
+                    edge['data']['label'] += " ".join(f"{value}" for key, value in edge_data.items())
+            edges.append(edge)
+        else: # existing_edge
+            if show_transition_freq:
+                existing_edge['data']['label'] += f' #{freq}]'
+            if show_transition_timing:
+                existing_edge['data']['label'] += f' [{min(timings):.{limit_interval_precision}f},{max(timings):.{limit_interval_precision}f}]'
+
+            if show_transition_data or event_label:
+                edge_data = e[3]
+                ev = edge_data.pop('event', None)
+                if isinstance(show_transition_data, list):
+                    edge_data = {k: v for k, v in edge_data.items() if k in show_transition_data}
+                existing_edge['data']['label'] += f" ,{ev} " + "; ".join(f"{key} = {value}" for key, value in edge_data.items())
+
+    # Normalize thickness to the range [1, 10]
+    thickness_values = [edge["data"].get("freq", 1) for edge in edges]
+    min_thickness = min(thickness_values) if thickness_values else 0
+    max_thickness = max(thickness_values) if thickness_values else 0
+
+    if max_thickness == min_thickness:
+        max_thickness += 1
+
+    for edge in edges:
+        raw_thickness = edge["data"].get("freq", 1)
+        edge["data"]["thickness"] = ((raw_thickness - min_thickness) / (max_thickness - min_thickness) *
+                                     (max_edge_thickness - min_edge_thickness) + min_edge_thickness)
+
+    elements = dict(nodes=nodes, edges=edges)
+
+    if output == "elements":
+        return elements
+
+    node_style = {'width': node_size,
+                  'height': node_size,
+                  'border-width': 1,
+                  'border-color': color,
+                  'background-color': 'transparent',
+                  "font-family": "serif",
+                  'background-opacity': 0}
+    if node_labels:
+        node_style['label'] = 'data(label)'
+        node_style['font-size'] = font_size
+        node_style['font-style'] = "italic"
+        node_style['text-wrap'] = 'wrap'
+        node_style['text-max-width'] = 50
+    if center_node_labels:
+        node_style['text-halign'] = 'center'
+        node_style['text-valign'] = 'center'
+
+
+    edge_style = {
+                'curve-style': 'bezier',
+                'background-color': 'white',  # Inner fill
+                'target-arrow-shape': 'triangle',
+                'target-arrow-color': color,
+                'target-arrow-size': 3,
+                'text-background-color': '#ffffff',
+                'text-background-opacity': 1,
+                'text-background-shape': 'roundrectangle',
+                'color': "#B8234F",
+                'width': 1,
+                'font-style': 'italic',
+                'font-family': "serif",
+                'text-wrap': 'wrap',
+                'font-size': edge_font_size,
+                'text-max-width': edge_text_max_width,
+                'line-color': color
+    }
+
+    if freq_as_edge_thickness:
+        edge_style['width'] = 'data(thickness)'
+
+    edge_style['label'] = 'data(label)'
+
+    stylesheet = [
+        {
+            'selector': 'node',
+            'style': node_style
+        },
+        {
+            'selector': '.q0',
+            'style': {
+                    'width': 1,  # Small width to make it look like a point
+                    'height': 1,  # Small height to make it look like a point
+                    'label': '',  # No label to keep it minimal
+                    'border-width': 0  # No border
+                }
+        },
+        {
+            'selector': '.final',
+            'style': {
+                'border-width': 3  # No border
+            }
+        },
+        {
+            'selector': 'edge',
+            'style': edge_style
+        }]
+
+    network = cyto.Cytoscape(
+        id=id,
+        layout={'name': layout_name, "fit": True},
+        maxZoom=max_zoom,
+        minZoom=min_zoom,
+        style={'width': '100%', 'height': '100%'}, stylesheet=stylesheet,
+        elements=elements)
+
+    modal_state_data = dbc.Modal(children=[dbc.ModalHeader("Timings"),
+                                           dbc.ModalBody(html.Div(children=[]))],
+                                 id=f"{id}-modal-state-data")
+    modal_transition_data = dbc.Modal(children=[dbc.ModalHeader("Timings"),
+                                                dbc.ModalBody(html.Div(children=[]))],
+                                 id=f"{id}-modal-transition-data")
+    network = html.Div([title_text, network, modal_state_data, modal_transition_data], style={'width': '100%', 'height': '100%'})
+
+    if output == "notebook":
+        app = Dash(__name__)
+        app.layout = html.Div(children=[network], style={'width': '100%',
+                                                         'height': '100vh',
+                                                         'margin': '0',
+                                                         'padding': '0'})
+        app.run(mode='inline', port=dash_port)
+        return None
+    elif output == "dash":
+        app = Dash(__name__)
+        app.layout = html.Div(children=[network], style={'width': '200%',
+                                                         'height': '200vh',
+                                                         'margin': '0',
+                                                         'padding': '0'})
+
+        # Function to start the Dash server
+        def run_dash():
+            app.run(port=dash_port, debug=False, use_reloader=False)  # Start the Dash server
+
+        # Function to open the browser
+        def open_browser():
+            time.sleep(1)  # Give the server a second to start
+            webbrowser.open(f"http://127.0.0.1:{dash_port}/")  # Open the Dash app in the browser
+
+        # Start the Dash server in a separate thread
+        server_thread = threading.Thread(target=run_dash)
+        server_thread.daemon = True  # Allows the program to exit even if this thread is running
+        server_thread.start()
+
+        # Open the Dash app in the default browser
+        open_browser()
+        server_thread.join(timeout=10)
+        return app
+    else:
+        return network
+
+
+def plot_cps(cps: CPS, dash_id=None, node_labels=False, edge_labels=True, node_size=40, node_font_size=20,
+             edge_font_size=16, edge_text_max_width=None, output="cyto", dash_port=8050, height='100%',
+             minZoom=0.5, maxZoom=2, **kwargs):
+    """
+    Plots all the components of a CPS in the same figure.
+    :param cps: CPS to plot.
+    :param node_labels: Should node labels be plotted.
+    :param edge_labels: Should edge labels be plotted.
+    :param node_size: What is the size of the nodes in the figure.
+    :param node_font_size: The font size of the node labels.
+    :param edge_font_size: The font size of the edge labels.
+    :param edge_text_max_width: Max width of the edge labels.
+    :param output: Should output be plotted as a dash.Cytoscape component ("cyto"), or should dash server be run
+    ("dash").
+    :param dash_port: If temporary dash server is run, what port to use.
+    :param kwargs: Other paramters are forwarded to the Cytoscape component.
+    :return:
+    """
+    elements = dict(nodes=[], edges=[])
+
+    for comid, com in cps.items():
+        try:
+            els = plot_cps_component(com, output="elements")
+        except:
+            els = dict(edges=[], nodes=[])
+        elements['nodes'].append({'data': {'id': comid, 'label': comid}, 'classes': 'parent'})
+        for x in els['nodes']:
+            x['data']['group'] = comid
+            x['data']['parent'] = comid
+            x['data']['label'] = f"{x['data']['id']}"
+            x['data']['id'] = f"{comid}-{x['data']['id']}"
+        for x in els['edges']:
+            x['data']['source'] = f"{comid}-{x['data']['source']}"
+            x['data']['target'] = f"{comid}-{x['data']['target']}"
+        elements['nodes'] += els['nodes']
+        elements['edges'] += els['edges']
+
+    node_style = {'width': node_size,
+                  'height': node_size}
+    if node_labels:
+        node_style['label'] = 'data(label)'
+        node_style['font-size'] = node_font_size
+        node_style['text-wrap'] = 'wrap'
+        node_style['text-max-width'] = 50
+
+    edge_style = {
+        # The default curve style does not work with certain arrows
+        'curve-style': 'bezier',
+        'target-arrow-shape': 'triangle',
+        'target-arrow-size': 3,
+        'width': 1,
+        'font-color': 'black',
+        'text-wrap': 'wrap',
+        'font-size': edge_font_size,
+        'text-max-width': edge_text_max_width
+    }
+    if edge_labels:
+        edge_style['label'] = 'data(label)'
+
+    stylesheet = [
+        {
+            'selector': 'node',
+            'style': node_style
+        },
+        {
+            'selector': 'edge',
+            'style': edge_style
+        }]
+
+    network = cyto.Cytoscape(
+        id=dash_id if dash_id is not None else cps.id,
+        layout={
+            'name': 'grid',
+            'padding': 10,  # Padding around the graph layout
+            'nodeOverlap': 20,  # Adjust to reduce overlap
+            'nodeRepulsion': 100,  # Increase repulsion for better separation
+            'idealEdgeLength': 50,  # Increase edge length to spread nodes
+            'componentSpacing': 100,  # Spacing between disconnected components
+            'nodeDimensionsIncludeLabels': True,  # Include label sizes in layout
+            'nestingFactor': 0.7  # Factor to apply to compounds when calculating layout
+        },
+        maxZoom=maxZoom,
+        minZoom=minZoom,
+        stylesheet=stylesheet,
+        elements=elements, style={'width': '100%', 'height': height},
+        **kwargs)
+
+    modal_state_data = dbc.Modal(children=[dbc.ModalHeader("Timings"),
+                                           dbc.ModalBody(html.Div(children=[]))],
+                                 id=f"{id}-modal-state-data")
+    modal_transition_data = dbc.Modal(children=[dbc.ModalHeader("Timings"),
+                                                dbc.ModalBody(html.Div(children=[]))],
+                                      id=f"{id}-modal-transition-data")
+    # network = html.Div([network, modal_state_data, modal_transition_data])
+    if output == "notebook":
+        app = Dash(__name__)
+        app.layout = html.Div(children=[network])
+        app.run(mode='inline')
+        return
+    if output == "dash":
+        app = Dash(__name__)
+        app.layout = html.Div(children=[network], style={'width': '100%',
+                                                         'height': '100%',
+                                                         'margin': '0',
+                                                         'padding': '0'})
+
+        # Function to start the Dash server
+        def run_dash():
+            app.run(port=dash_port, debug=False, use_reloader=False)  # Start the Dash server
+
+        # Function to open the browser
+        def open_browser():
+            time.sleep(1)  # Give the server a second to start
+            webbrowser.open(f"http://127.0.0.1:{dash_port}/")  # Open the Dash app in the browser
+
+        # Start the Dash server in a separate thread
+        server_thread = threading.Thread(target=run_dash)
+        server_thread.daemon = True  # Allows the program to exit even if this thread is running
+        server_thread.start()
+
+        # Open the Dash app in the default browser
+        open_browser()
+        server_thread.join(timeout=1)
+
+    return network
+
+
+def plot_cps_plotly(cps, layout="dot", marker_size=20, node_positions=None, show_events=True, show_num_occur=False,
+                show_state_label=True, font_size=10, plot_self_transitions=True, use_previos_node_positions=False,
+                **kwargs):
+    """
+    Visualizes a Cyber-Physical System (CPS) state-transition graph using Plotly.
+    This function generates an interactive Plotly figure representing the states and transitions of a CPS.
+    Nodes represent system states, and edges represent transitions. Various layout algorithms and display options
+    are supported.
+    Args:
+        cps: The CPS object containing the state-transition graph. Must have attributes `_G` (networkx graph),
+            `get_transitions()`, `print_state()`, `num_occur()`, and `previous_node_positions`.
+        layout (str, optional): Layout algorithm for node positioning. Options are "dot" (default), "spectral",
+            "kamada_kawai", or "fruchterman_reingold".
+        marker_size (int, optional): Size of the node markers. Default is 20.
+        node_positions (dict, optional): Precomputed node positions as a dictionary {node: (x, y)}. If None,
+            positions are computed using the selected layout.
+        show_events (bool, optional): Whether to display event labels on transitions. Default is True.
+        show_num_occur (bool, optional): Whether to display the number of occurrences for each transition. Default is False.
+        show_state_label (bool, optional): Whether to display state labels on nodes. Default is True.
+        font_size (int, optional): Font size for transition/event labels. Default is 10.
+        plot_self_transitions (bool, optional): Whether to plot self-loop transitions. Default is True.
+        use_previos_node_positions (bool, optional): If True and node_positions is None, reuse positions from
+            `cps.previous_node_positions`. Default is False.
+        **kwargs: Additional keyword arguments passed to the layout function (e.g., for networkx layouts).
+    Returns:
+        plotly.graph_objs.Figure: A Plotly figure object representing the CPS state-transition graph.
+    Notes:
+        - Requires Plotly, NetworkX, and pydotplus (for "dot" layout).
+        - The CPS object must provide the required methods and attributes as described above.
+        - Edge and node styling can be further customized by modifying the function.
+    """
+    # layout = 'kamada_kawai'  # TODO
+    edge_scatter_lines = None
+    annotations = []
+    if node_positions is None:
+        if use_previos_node_positions:
+            node_positions = cps.previous_node_positions
+        else:
+            g = cps._G
+            if layout == "dot":
+                graph = pdp.graph_from_edges([('"' + tr[0] + '"', '"' + tr[1] + '"')
+                                              for tr in g.edges], directed=True)
+                # graph.set_node_defaults(shape='point')
+                for nnn in g.nodes:
+                    graph.add_node(pdp.Node(nnn, shape='point'))
+                graph.set_prog('dot')
+                graph = graph.create(format="dot")
+                # graph.
+                # graph.write_dot('temp.dot')
+                # graph.write_svg('temp.svg')
+                # graph = pdp.graph_from_dot_file('temp.dot')
+                graph = pdp.graph_from_dot_data(graph)
+                node_positions = {n.get_name().strip('"'): tuple(float(x) for x in n.get_pos()[1:-1].split(','))
+                                  for n in graph.get_nodes() if
+                                  n.get_name().strip('"') not in ['\\r\\n', 'node', 'graph']}
+                edges = {e.obj_dict['points']: e.get_pos()[3:-1].split(' ')
+                         for e in graph.get_edges()}  # [3:].split(",")
+
+                # edge_shapes = []
+                # edge_scatter_lines = []
+                # for points, edg in edges.items():
+                #     edg = [tuple(float(eee.replace('\r', '').replace('\n', '').replace('\\', '').strip())
+                #                  for eee in e.split(",")) for e in edg]
+                #     node_pos_start = node_positions[points[0].replace('"', '')]
+                # edg.insert(0, node_pos_finish)ääääääääääääääääääääääääääääääääääääääääääääääääääääääää
+                # node_pos_finish = node_positions[points[1].replace('"', '')]
+                # control_points = ' '.join(','.join(map(str, e)) for e in edg[1:])
+                # {node_pos_start[0]}, {node_pos_start[1]}
+                # Cubic Bezier Curves
+                # edge_shapes.append(dict(
+                #     type="path",
+                #     path=f"M {node_pos_start[0]},{node_pos_start[1]} C {control_points}", #{node_pos_finish[0]}, {node_pos_finish[1]}",
+                #     line_color="MediumPurple",
+                # ))
+
+                # edg.append(node_pos_start)
+
+                # edg.append((None, None))
+                # annotations.append(dict(ax=node_pos_finish[0], ay=node_pos_finish[1], axref='x', ayref='y',
+                #     x=edg[-2][0], y=edg[-2][1], xref='x', yref='y',
+                #     showarrow=True, arrowhead=1, arrowsize=2, startarrowhead=0))
+                # edge_scatter_lines.append(edg)
+                # parse_path(edges)
+                # points_from_path(edges)
+            elif layout == 'spectral':
+                node_positions = nx.spectral_layout(g, **kwargs)
+            elif layout == 'kamada_kawai':
+                node_positions = nx.kamada_kawai_layout(g, **kwargs)
+            elif layout == 'fruchterman_reingold':
+                node_positions = nx.fruchterman_reingold_layout(g, **kwargs)
+        cps.previous_node_positions = node_positions
+    node_x = []
+    node_y = []
+    for node in cps._G.nodes:
+        x, y = node_positions[node]
+        node_x.append(x)
+        node_y.append(y)
+    texts = []
+    for v in cps._G.nodes:
+        try:
+            texts.append(cps.print_state(v))
+        except:
+            texts.append('Error printing state: ')
+    if show_state_label:
+        mode = 'markers+text'
+    else:
+        mode = 'markers'
+    node_trace = go.Scatter(x=node_x, y=node_y, text=list(cps._G.nodes), mode=mode, textposition="top center",
+                            hovertext=texts, hovertemplate='%{hovertext}<extra></extra>',
+                            marker=dict(size=marker_size, line_width=1), showlegend=False)
+
+    annotations = [dict(ax=node_positions[tr[0]][0], ay=node_positions[tr[0]][1], axref='x', ayref='y',
+                        x=node_positions[tr[1]][0], y=node_positions[tr[1]][1], xref='x', yref='y',
+                        showarrow=True, arrowhead=1, arrowsize=2) for tr in cps._G.edges]
+
+    # annotations = []
+
+    def fun(tr):
+        if show_events and show_num_occur:
+            return '<i>{} ({})</i>'.format(tr[2], cps.num_occur(tr))
+        elif show_events:
+            return '<i>{}</i>'.format(tr[2])
+        elif show_num_occur:
+            return '<i>{}</i>'.format(cps.num_occur(tr))
+
+    if show_num_occur or show_events:
+        annotations_text = [dict(x=(0.4 * node_positions[tr[0]][0] + 0.6 * node_positions[tr[1]][0]),
+                                 y=(0.4 * node_positions[tr[0]][1] + 0.6 * node_positions[tr[1]][1]),
+                                 xref='x', yref='y', text=fun(tr), font=dict(size=font_size, color='darkblue'),
+                                 yshift=0, showarrow=False)  # , bgcolor='white')
+                            for tr in cps.get_transitions() if plot_self_transitions or tr[0] != tr[1]]
+
+        annotations += annotations_text
+
+    traces = [node_trace]
+    if edge_scatter_lines:
+        edge_scatter_lines = list(chain(*edge_scatter_lines))
+        edge_trace = go.Scatter(x=[xx[0] for xx in edge_scatter_lines], y=[xx[1] for xx in edge_scatter_lines],
+                                mode='lines', showlegend=False, line=dict(color='black', width=1), hoverinfo=None,
+                                hovertext=None, name='Transitions')
+        traces.insert(0, edge_trace)
+
+    fig = go.Figure(data=traces, layout=go.Layout(annotations=annotations,
+                                                  paper_bgcolor='rgba(0,0,0,0)',
+                                                  plot_bgcolor='rgba(0,0,0,0)'))
+
+    fig.update_xaxes({'showgrid': False,  # thin lines in the background
+                      'zeroline': False,  # thick line learn x=0
+                      'visible': False})
+    # 'fixedrange': True})  # numbers below)
+    fig.update_yaxes({'showgrid': False,  # thin lines in the background
+                      'zeroline': False,  # thick line learn x=0
+                      'visible': False})
+    # 'fixedrange': True})  # numbers below)
+    fig.update_annotations(standoff=marker_size / 2, startstandoff=marker_size / 2)
+    fig.update_layout(clickmode='event')
+    return fig
+
+
+def view_graphviz(self, layout="dot", marker_size=20, node_positions=None, show_events=True, show_num_occur=False,
+                show_state_label=True, font_size=10, plot_self_transitions=True, use_previos_node_positions=False,
+                **kwargs):
+    """
+    Visualizes the internal graph structure using Graphviz and returns a pydot graph object.
+    Parameters:
+        layout (str): The layout algorithm to use for node positioning (default: "dot").
+        marker_size (int): Size of the node markers in the visualization (default: 20).
+        node_positions (dict or None): Optional dictionary mapping node names to (x, y) positions. If None, positions are computed.
+        show_events (bool): Whether to display event labels on transitions (default: True).
+        show_num_occur (bool): Whether to display the number of occurrences for each transition (default: False).
+        show_state_label (bool): Whether to display state labels on nodes (default: True).
+        font_size (int): Font size for labels and annotations (default: 10).
+        plot_self_transitions (bool): Whether to plot self-loop transitions (default: True).
+        use_previos_node_positions (bool): Whether to reuse previously computed node positions (default: False).
+        **kwargs: Additional keyword arguments for customization.
+    Returns:
+        pdp.Dot: A pydot graph object representing the visualized graph.
+    Notes:
+        - Node positions are either computed using Graphviz or taken from the provided/previous positions.
+        - Annotations for transitions can include event names and/or occurrence counts.
+        - The function prepares the graph for further rendering or export, but does not display it directly.
+    """
+   
+    graph = None
+    if node_positions is None:
+        if use_previos_node_positions:
+            node_positions = self.previous_node_positions
+        else:
+            g = self._G
+            graph = pdp.graph_from_edges([('"' + tr[0] + '"', '"' + tr[1] + '"') for tr in g.edges], directed=True)
+            for nnn in g.nodes:
+                graph.add_node(pdp.Node(nnn, shape='point'))
+            graph.set_prog('dot')
+            graph = graph.create(format="dot")
+            graph = pdp.graph_from_dot_data(graph)
+            node_positions = {n.get_name().strip('"'): tuple(float(x) for x in n.get_pos()[1:-1].split(','))
+                              for n in graph.get_nodes() if
+                              n.get_name().strip('"') not in ['\\r\\n', 'node', 'graph']}
+        self.previous_node_positions = node_positions
+    node_x = []
+    node_y = []
+    for node in self._G.nodes:
+        x, y = node_positions[node]
+        node_x.append(x)
+        node_y.append(y)
+    texts = []
+    for v in self._G.nodes:
+        try:
+            texts.append(self.print_state(v))
+        except:
+            texts.append('Error printing state: ')
+
+    annotations = [dict(ax=node_positions[tr[0]][0], ay=node_positions[tr[0]][1], axref='x', ayref='y',
+                        x=node_positions[tr[1]][0], y=node_positions[tr[1]][1], xref='x', yref='y',
+                        showarrow=True, arrowhead=1, arrowsize=2) for tr in self._G.edges]
+    def fun(tr):
+        if show_events and show_num_occur:
+            return '<i>{} ({})</i>'.format(tr[2], self.num_occur(tr[0], tr[2]))
+        elif show_events:
+            return '<i>{}</i>'.format(tr[2])
+        elif show_num_occur:
+            return '<i>{}</i>'.format(self.num_occur(tr[0], tr[2]))
+
+    if show_num_occur or show_events:
+        annotations_text = [dict(x=(0.4 * node_positions[tr[0]][0] + 0.6 * node_positions[tr[1]][0]),
+                                 y=(0.4 * node_positions[tr[0]][1] + 0.6 * node_positions[tr[1]][1]),
+                                 xref='x', yref='y', text=fun(tr), font=dict(size=font_size, color='darkblue'),
+                                 yshift=0, showarrow=False)
+                            for tr in self.get_transitions() if plot_self_transitions or tr[0] != tr[1]]
+
+        annotations += annotations_text
+
+    graph = pdp.Dot(graph_type='digraph')
+    for tr in self._G.edges:
+        graph.add_edge(pdp.Edge('"' + tr[0] + '"', '"' + tr[1] + '"', label=tr[2]))
+    for nnn in self._G.nodes:
+        graph.add_node(pdp.Node(nnn, shape='box'))
+    return graph
+
+
+def plot_transition(self, s, d):
+    """
+    Plots the transition histogram between two states.
+    Retrieves the transition data between the source state `s` and destination state `d`,
+    and generates a Plotly figure visualizing the timing distribution of the transition.
+    The plot includes a title, an annotation indicating the transition, and a histogram
+    of the transition timings.
+    Args:
+        s: The source state identifier.
+        d: The destination state identifier.
+    Returns:
+        plotly.graph_objs._figure.Figure: A Plotly Figure object containing the histogram
+        of transition timings.
+    """
+
+    trans = self.get_transition(s, d)
+    titles = '{0} -> {1} -> {2}'.format(trans[0], trans[2], trans[1])
+    fig = go.Figure()
+    fig.update_layout(title=trans[2], font=dict(size=6))
+    fig.add_annotation(
+        xref="x domain",
+        yref="y domain",
+        x=0.5,
+        y=0.9,
+        text= '{} -> {}'.format(trans[0], trans[1]))
+    v = trans[3]['timing']
+    fig.add_trace(go.Histogram(x=[o.total_seconds() for o in v],
+                               name='Timings'))
+    return fig
+
+
+def plot_state_transitions(ta, state, obs=None):
+    """
+    Visualizes the outgoing state transitions from a given state in a timed automaton, along with associated observation data.
+    Parameters:
+        ta: An object representing the timed automaton, expected to have an `out_transitions(state)` method that returns transitions from the given state.
+        state: The current state for which outgoing transitions and associated observations are to be visualized.
+        obs (optional): A pandas DataFrame containing observation data. Must include at least the columns 'Mode', 'q_next', 'Duration', 'Time', and optionally 'Vergussgruppe', 'HID', 'ChipID', 'Order', and 'ArtNr'. If None, the function raises NotImplemented.
+    Returns:
+        fig: A Plotly figure object containing subplots for each outgoing transition. For each transition, the function displays:
+            - A scatter plot of observation durations over time, grouped by 'Vergussgruppe'.
+            - A histogram of durations for each 'Vergussgruppe'.
+        The subplots are arranged with shared axes and appropriate titles for each transition.
+    Raises:
+        NotImplemented: If `obs` is None.
+    Notes:
+        - The function expects certain columns to exist in the `obs` DataFrame. If missing, default values are assigned.
+        - Colors for different 'Vergussgruppe' groups are assigned from `DEFAULT_PLOTLY_COLORS`.
+        - The function uses Plotly's `make_subplots`, `go.Scatter`, and `go.Histogram` for visualization.
+    """
+
+    trans = ta.out_transitions(state)
+    titles = []
+    for k in trans:
+        titles.append('State: {0} -> {1} -> {2}'.format(k[0], k[3]['event'], k[1]))
+        titles.append('')
+
+    fig = subplots.make_subplots(len(trans), 2, shared_xaxes=True, shared_yaxes=True,
+                                 subplot_titles=titles, column_widths=[0.8, 0.2],
+                                 horizontal_spacing=0.02, vertical_spacing=0.2)
+    if obs is None:
+        raise NotImplemented()
+        # observations = self.get_transition_observations(state)
+
+    obs = obs[obs['Mode'] == state]
+    ind = 0
+    for k in trans:
+        v = obs[obs.q_next == k[1]]
+        ind += 1
+        ind_color = 0
+        if len(v) == 0:
+            continue
+        # v['VG'] = 'Unknown'
+        if 'Vergussgruppe' in v:
+            v['Vergussgruppe'] = v['Vergussgruppe'].fillna('Unknown')
+        else:
+            v['Vergussgruppe'] = 'Unknown'
+
+        v['Order'] = 'Unknown'
+        v['ChipID'] = 'Unknown'
+        v['Item'] = 'Unknown'
+        v['ArtNr'] = 'Unknown'
+        for vg, vv in v.groupby('Vergussgruppe'):
+            vv = vv.to_dict('records')
+            fig.add_trace(go.Histogram(y=[o['Duration'] for o in vv],
+                                       name=vg,
+                                       marker_color=DEFAULT_PLOTLY_COLORS[ind_color]), row=ind, col=2)
+            ind_color += 1
+
+        # Overlay both histograms
+        fig.update_layout(barmode='overlay')
+        # Reduce opacity to see both histograms
+        fig.update_traces(opacity=0.5, row=ind, col=2)
+
+        ind_color = 0
+        # v = pd.DataFrame(v)
+
+        v['Item'] = v['HID']
+        for vg, vv in v.groupby('Vergussgruppe'):
+            vv = vv.to_dict('records')
+            hovertext = [
+                'Timing: {}s<br>Zähler: {}<br>ChipID: {}<br>Order: {}<br>VG: {}<br>ArtNr: {}'.format(o['Duration'],
+                                                                                                     o['Item'],
+                                                                                                     o['ChipID'],
+                                                                                                     o['Order'],
+                                                                                                     o['Vergussgruppe'],
+                                                                                                     o['ArtNr'])
+                for o in vv]
+            fig.add_trace(go.Scatter(x=[o['Time'] for o in vv], y=[o['Duration'] for o in vv],
+                                     marker=dict(size=6, symbol="circle", color=DEFAULT_PLOTLY_COLORS[ind_color]),
+                                     name=vg,
+                                     mode="markers",
+                                     hovertext=hovertext), row=ind, col=1)
+            ind_color += 1
+        fig.update_xaxes(showticklabels=True, row=ind, col=1)
+    fig.update_layout(showlegend=False, margin=dict(b=0, t=30), width=1200)
+    return fig
+
+
+# def plot_bipartite_graph(network):
+#     """
+#     Plots a bipartite graph of a network graph.
+#     :param network: networkx network or a bi-adjacency matrix.
+#     :return:
+#     """
+#     if type(network) is np.array:
+#         # Iterate through each column (edge) of the bi-adjacency matrix
+#         edges = []
+#         for col_name in network.columns:
+#             col = network[col_name]
+#             inflow = col.index[col == 1]
+#             outflow = col.index[col == -1]
+#             edges += [(col_name, inf, 1) for inf in inflow] + [(col_name, outf, -1) for outf in outflow]
+#
+#         SM = nx.DiGraph()
+#         SM.add_weighted_edges_from(edges)
+#     else:
+#         SM = network
+#
+#     if not nx.bipartite.is_bipartite(SM):
+#         raise Exception("Not bipartite graph")
+#     top = nx.bipartite.sets(SM)[0]
+#     pos = nx.bipartite_layout(SM, top)
+#     nx.draw(SM, pos=pos, with_labels=True, node_color='skyblue', edge_color='black', font_color='red', node_size=800,
+#             font_size=10)
+#     # Draw edge labels (weights)
+#     edge_labels = nx.get_edge_attributes(SM, 'weight')
+#     nx.draw_networkx_edge_labels(SM, pos, edge_labels=edge_labels,  label_pos=0.7, font_color='blue')
+#     plt.show()
+
+
+def plot_dash_frames(graph_frames, dash_port=8050):
+    """
+    Launches an interactive Dash web application to visualize a sequence of graph frames with a slider for manual frame selection.
+    Args:
+        graph_frames (list): A list of Dash components (e.g., Cytoscape graphs) representing different frames to display.
+        dash_port (int, optional): The port number on which to run the Dash server. Defaults to 8050.
+    Returns:
+        dash.Dash: The Dash application instance.
+    Side Effects:
+        - Starts a Dash server in a separate thread.
+        - Opens the default web browser to display the Dash app.
+        - Waits for user input before returning.
+    Notes:
+        - The app displays the first frame by default and allows users to select other frames using a slider.
+        - The function blocks until the user presses Enter in the console.
+    """
+
+    app = Dash(__name__)
+    app.layout = html.Div(children=graph_frames[0], style={'width': '100%',
+                                                           'height': '100vh',
+                                                           'margin': '0',
+                                                           'padding': '0'})
+
+    app.layout = html.Div([
+        html.Div(graph_frames[0], id='cytoscape-graph'),
+
+        # Slider for manual frame selection
+        dcc.Slider(
+            id='graph-slider',
+            min=0,
+            max=len(graph_frames) - 1,
+            step=1,
+            marks={i: str(i) for i in range(len(graph_frames))},  # Label frames
+            value=0,  # Start at first frame
+        ),
+    ])
+
+
+    # Callback to update Cytoscape graph when slider changes
+    @app.callback(
+        Output('cytoscape-graph', 'children'),
+        Input('graph-slider', 'value')
+    )
+    def update_graph(frame_idx):
+        print(frame_idx)
+        return graph_frames[frame_idx]  # Update Cytoscape graph
+
+    # Function to start the Dash server
+    def run_dash():
+        app.run_server(port=dash_port, debug=False, use_reloader=False)  # Start the Dash server
+
+    # Function to open the browser
+    def open_browser():
+        time.sleep(1)  # Give the server a second to start
+        webbrowser.open(f"http://127.0.0.1:{dash_port}/")  # Open the Dash app in the browser
+
+    # Start the Dash server in a separate thread
+    server_thread = threading.Thread(target=run_dash)
+    server_thread.daemon = True  # Allows the program to exit even if this thread is running
+    server_thread.start()
+
+    # Open the Dash app in the default browser
+    open_browser()
+    # server_thread.join(timeout=1)
+
+    input("Press Enter to continue...")
+    return app
+
+def plot_execution_tree(graph, nodes_to_color, color, font_size=30):
+    """
+    Plots a system execution tree as a graph, where the horizontal position of nodes corresponds to their timestamps and the tree branches vertically.
+    Args:
+        graph (networkx.DiGraph): A directed graph where each node represents a system state, and edges represent transitions. 
+            Each node should have a 'label' (str) and 'weight' (int) attribute. Node names must be timestamp strings in the format "%d/%m/%Y, %H:%M:%S".
+        nodes_to_color (list): List of node identifiers (timestamp strings) to be highlighted with a specific color.
+        color (str): The color to use for highlighting nodes in `nodes_to_color`.
+        font_size (int, optional): Font size for node labels in the visualization. Defaults to 30.
+    Returns:
+        cyto.Cytoscape: A Dash Cytoscape object representing the execution tree visualization, with nodes positioned by timestamp and colored as specified.
+    Notes:
+        - The function assumes the first node in `graph.nodes` is the starting node.
+        - Node positions are determined by the time difference from the start node (x-axis) and their 'weight' attribute (y-axis).
+        - Nodes in `nodes_to_color` are colored with the specified `color`; all others are gray.
+        - Requires the `cyto` (Dash Cytoscape) library and `datetime` module.
+    """
+
+    # for ntd in nodes_to_delete:
+    #     if ntd in graph:
+    #         prenodes = list(graph.predecessors(ntd))
+    #         sucnodes = list(graph.successors(ntd))
+    #         preedges = list(graph.in_edges(ntd))
+    #         sucedges = list(graph.out_edges(ntd))
+    #         edgestodelete = preedges + sucedges
+    #         if ((len(preedges) > 0) and (len(sucedges) > 0)):
+    #             for prenode in prenodes:
+    #                 for sucnode in sucnodes:
+    #                     graph.add_edge(prenode, sucnode)
+    #         if (len(edgestodelete) > 0):
+    #             graph.remove_edges_from(edgestodelete)
+
+    startstring = list(graph.nodes)[0]
+    arr_elements = []
+    num_of_nodes = graph.number_of_nodes()
+    # vertical_height = num_of_states
+    visited = set()
+    stack = [startstring]
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            elemid = str(node)
+            elemlabel = graph.nodes[node].get('label')
+            datepos1 = datetime.strptime(startstring, "%d/%m/%Y, %H:%M:%S")
+            datepos2 = datetime.strptime(node, "%d/%m/%Y, %H:%M:%S")
+            nodeweight = graph.nodes[node].get('weight')
+            ypos = 0
+            if nodeweight == 0:
+                ypos = num_of_states * 100
+            else:
+                ypos = (nodeweight - 1) * 200
+            element = {
+                'data': {
+                    'id': elemid,
+                    'label': elemlabel
+                },
+                'position': {
+                    'x': (datepos2 - datepos1).total_seconds() / 7200,
+                    'y': ypos
+                },
+                # 'locked': True
+            }
+            arr_elements.append(element)
+            visited.add(node)
+            stack.extend(neighbor for neighbor in graph.successors(node) if neighbor not in visited)
+    for u, v in list(graph.edges):
+        edge_element = {
+            'data': {
+                'source': u,
+                'target': v
+            }
+        }
+        arr_elements.append(edge_element)
+
+
+    colorcode = ['gray'] * num_of_nodes
+    for n in nodes_to_color:
+        if n in graph:
+            n_ind = list(graph.nodes).index(n)
+            if (n_ind < num_of_nodes):
+                colorcode[n_ind] = color
+    new_stylesheet = []
+    for i in range(0, num_of_nodes):
+        new_stylesheet.append({
+            'selector': f'node[id = "{list(graph.nodes)[i]}"]',
+            'style': {
+                'font-size': f'{font_size}px',
+                'content': 'data(label)',
+                'background-color': colorcode[i],
+                'text-valign': 'top',
+                'text-halign': 'center',
+                # 'animate': True
+            }
+        })
+
+    cytoscapeobj = cyto.Cytoscape(
+        id='org-chart',
+        layout={'name': 'preset'},
+        style={'width': '2400px', 'height': '1200px'},
+        elements=arr_elements,
+        stylesheet=new_stylesheet
+    )
+    return cytoscapeobj
+
+def plot2d(df, x=None, y=None, mode='markers', hovercolumns=None, figure=False, **args):
+    """
+    Creates a 2D scatter or line plot using Plotly based on the provided DataFrame columns.
+    Parameters:
+        df (pd.DataFrame): The input DataFrame containing the data to plot.
+        x (str, optional): The column name to use for the x-axis.
+        y (str, optional): The column name to use for the y-axis.
+        mode (str, optional): The Plotly scatter mode (e.g., 'markers', 'lines'). Defaults to 'markers'.
+        hovercolumns (list of str, optional): List of column names to include in the hover tooltip.
+        figure (bool, optional): If True, returns a Plotly Figure object; otherwise, returns a Scatter trace. Defaults to False.
+        **args: Additional keyword arguments passed to the Plotly Scatter constructor.
+    Returns:
+        plotly.graph_objs._scatter.Scatter or plotly.graph_objs._figure.Figure:
+            The generated Plotly Scatter trace or Figure, depending on the 'figure' parameter.
+    Example:
+        plot2d(df, x='feature1', y='feature2', hovercolumns=['label'], mode='markers', figure=True)
+    """
+
+    hovertemplate = f"{x}: %{{x}}<br>{y}: %{{y}}"
+    customdata = None
+    if hovercolumns:
+        customdata = df[hovercolumns]
+        for ind, c in enumerate(hovercolumns):
+            hovertemplate += f"<br>{c}: %{{customdata[{ind}]}}"
+
+    trace = go.Scatter(x=df[x], y=df[y], mode=mode, customdata=customdata, hovertemplate=hovertemplate, **args)
+    if figure:
+        return go.Figure(data=trace)
+    return trace
+
+
+def plot_2d_contour_from_fun(fun, rangex=None, rangey=None, th=50, **kwargs):
+    """
+    Plots a 2D contour of a function over a specified range.
+    Parameters:
+        fun (callable): A function that takes a 2D array of shape (n_points, 2) and returns a 1D array of function values.
+        rangex (tuple, optional): The range for the x-axis as (min, max). Defaults to (-5, 5) if not provided.
+        rangey (tuple, optional): The range for the y-axis as (min, max). Defaults to (-5, 5) if not provided.
+        th (int, optional): Unused parameter, kept for compatibility. Defaults to 50.
+        **kwargs: Additional keyword arguments passed to the plotly.graph_objs.Contour constructor.
+    Returns:
+        plotly.graph_objs.Contour: A Plotly contour plot object representing the function values over the specified range.
+    """
+
+    if rangex is None:
+        rangex = (-5, 5)
+
+    if rangey is None:
+        rangey = (-5, 5)
+
+    x = np.linspace(rangex[0], rangex[-1], 100)
+    y = np.linspace(rangey[0], rangey[-1], 100)
+    [dx, dy] = np.meshgrid(x, y)
+    d = np.column_stack([dx.flatten(), dy.flatten()])
+    f = fun(d)
+
+    contours = list(f)
+    contours.sort()
+    contours = contours[0:1000:]
+    return go.Contour(x=x, y=y, z=np.reshape(f, dx.shape), contours=dict(coloring='lines'), **kwargs)
+    #dict(start=0,
+                                    # end=100,
+                                    # size=2,
+                                    # coloring='lines'), **kwargs)
+
+
+def plot3d(df, x=None, y=None, z=None, mode='markers', hovercolumns=None, **args):
+    """
+    Creates a 3D scatter plot using Plotly's Scatter3d, with customizable axes, hover information, and additional plot arguments.
+    Parameters:
+        df (pandas.DataFrame): The data source containing columns for x, y, z, and optional hover data.
+        x (str, optional): The column name in `df` to use for the x-axis.
+        y (str, optional): The column name in `df` to use for the y-axis.
+        z (str, optional): The column name in `df` to use for the z-axis.
+        mode (str, optional): Plotly scatter mode (e.g., 'markers', 'lines'). Defaults to 'markers'.
+        hovercolumns (list of str, optional): List of column names in `df` to include in the hover tooltip.
+        **args: Additional keyword arguments passed to `go.Scatter3d`.
+    Returns:
+        plotly.graph_objs._scatter3d.Scatter3d: A Plotly 3D scatter plot object configured with the specified data and options.
+    """
+
+    hovertemplate = f"{x}: %{{x}}<br>{y}: %{{y}}<br>{z}: %{{z}}"
+    customdata = None
+    if hovercolumns:
+        customdata = df[hovercolumns]
+        for ind, c in enumerate(hovercolumns):
+            hovertemplate += f"<br>{c}: %{{customdata[{ind}]}}"
+    return go.Scatter3d(x=df[x], y=df[y], z=df[z], mode=mode, customdata=customdata, hovertemplate=hovertemplate, **args)
