@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "trino": {
+      "command": "uvx",
+      "args": ["trino-mcp"],
+      "env": {
+        "TRINO_HOST": "trino.warehouse.service.github.net",
+        "TRINO_USER": "weijie-tan3",
+        "TRINO_CATALOG": "hive",
+        "TRINO_SCHEMA": "canonical",
+        "AUTH_METHOD": "OAuth2"
+      }
+    }
+  }
+}
