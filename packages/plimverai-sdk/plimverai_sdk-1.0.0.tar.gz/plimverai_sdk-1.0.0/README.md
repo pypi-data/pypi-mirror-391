@@ -1,0 +1,406 @@
+# PlimverAI SDK
+
+[![PyPI version](https://badge.fury.io/py/plimverai-sdk.svg)](https://badge.fury.io/py/plimverai-sdk)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive Python SDK for the PlimverAI API system. Build powerful AI applications with chat completions, RAG, web grounding, code execution, and automatic hybrid memory.
+
+## Features
+
+- 🚀 **Chat Completions** - Multiple AI models (PV-TURBO, PV-STANDARD, PV-ADVANCED, PV-CODEX)
+- 📚 **RAG (Retrieval Augmented Generation)** - Semantic document search with Pinecone + Jina embeddings
+- 🌐 **Web Grounding** - Real-time web search powered by Jina Search
+- 💻 **Code Execution** - Run code in multiple languages (CodeZ)
+- 🌤️ **Weather Queries** - Real-time weather information
+- 🧠 **Automatic Hybrid Memory** - Redis (24hr hot) + Pinecone (cold archive) - 1-5ms retrieval
+- 📊 **Usage Analytics** - Comprehensive usage tracking with tier-based limits
+- ⚡ **Async Support** - High-performance async operations
+- 🔒 **Type Safety** - Full type hints and data validation
+- 🛡️ **Error Handling** - Comprehensive error handling and retries
+- 🎯 **OpenAI-Compatible** - Standard chat/completions format
+
+## Installation
+
+```bash
+pip install plimverai-sdk
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/Elliot-Elikplim/Zenux-Api.git
+cd Zenux-Api/sdk
+pip install .
+```
+
+## Quick Start
+
+### Synchronous Client
+
+```python
+from zenuxai_sdk import PlimverClient
+
+# Initialize client (production URL: https://api.zenuxai.tech)
+client = PlimverClient(api_key="your-api-key-here")
+
+# Simple chat
+response = client.chat("Hello, how are you?")
+print(response.message)
+
+# Chat with weather
+weather = client.get_weather("London", "user123")
+print(f"Temperature: {weather.temperature}°C, Condition: {weather.condition}")
+
+# Execute code
+result = client.execute_code("print('Hello from CodeZ!')", "user123")
+print(result)
+
+# Web search
+results = client.search_web("Python tutorials", "user123")
+for result in results:
+    print(f"{result['title']}: {result['url']}")
+
+# RAG query
+rag_result = client.rag_query("What are the main features?", "user123")
+print(rag_result['response'])
+
+# Check usage
+stats = client.get_usage_stats()
+print(f"Total requests: {stats.total_requests}")
+
+# Memory is automatic - just chat and the system remembers context
+# Uses hybrid architecture: Redis (24hr, 1-5ms) + Pinecone (cold archive)
+response1 = client.chat("My name is Alice", "user123")
+response2 = client.chat("What's my name?", "user123")  # AI will remember "Alice"
+
+# Note: The system uses intelligent context routing - LLM decides when to use:
+# - Memory (always included for personalization)
+# - RAG (uploaded documents - only when needed)
+# - Grounding (real-time web search - only when needed)
+```
+
+### Asynchronous Client
+
+```python
+import asyncio
+from zenuxai_sdk import AsyncPlimverClient
+
+async def main():
+    async with AsyncPlimverClient(api_key="your-api-key-here") as client:
+        # All methods work asynchronously
+        response = await client.chat("Hello, async world!")
+        weather = await client.get_weather("Tokyo", "user123")
+        results = await client.search_web("AI news", "user123")
+
+        print(f"Response: {response.message}")
+        print(f"Weather: {weather.temperature}°C")
+        print(f"Search results: {len(results)}")
+
+asyncio.run(main())
+```
+
+## Advanced Usage
+
+### Chat with Message History
+
+```python
+from zenuxai_sdk import ChatMessage, ModelName
+
+messages = [
+    ChatMessage(role="system", content="You are a helpful assistant."),
+    ChatMessage(role="user", content="What's the capital of France?"),
+    ChatMessage(role="assistant", content="The capital of France is Paris."),
+    ChatMessage(role="user", content="What's the population?")
+]
+
+response = client.chat_with_history(
+    messages=messages,
+    user_id="user123",
+    model=ModelName.PLIMVER_STANDARD,  # Or PLIMVER_TURBO, PLIMVER_ADVANCED, PLIMVER_CODEX
+    use_rag=True,
+    rag_k=5
+)
+```
+
+### Advanced Code Execution
+
+```python
+# Execute Python code
+python_result = client.execute_code("""
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(f"Fibonacci(10) = {fibonacci(10)}")
+""", "user123")
+
+# Execute JavaScript
+js_result = client.execute_code("""
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+console.log(greet('World'));
+""", "user123", language="javascript")
+```
+
+### File Upload and RAG
+
+```python
+# Upload a document
+upload_result = client.upload_file("document.pdf", "user123", "document")
+print(f"Uploaded: {upload_result['filename']}")
+
+# Query the uploaded document
+rag_result = client.rag_query(
+    "Summarize the main points",
+    "user123",
+    k=3
+)
+print(rag_result['response'])
+
+# List uploaded files
+files = client.list_files("user123")
+for file in files:
+    print(f"{file['filename']}: {file['size']} bytes")
+```
+
+### Automatic Hybrid Memory
+
+```python
+# Memory is built-in and automatic - just use the same user_id
+# The system uses Redis (hot, 24hr) + Pinecone (cold archive) automatically
+
+# First conversation
+response1 = client.chat("Remember: I prefer Python and use VS Code", "user123")
+
+# Later conversation - memory is automatically retrieved
+response2 = client.chat("What programming language do I prefer?", "user123")
+# AI will remember "Python" from previous conversation
+
+# Memory features:
+# - Automatic storage (every message)
+# - Smart retrieval (1-5ms from Redis)
+# - Long-term archival (Pinecone summaries)
+# - No manual management needed
+```
+
+## Configuration
+
+### Custom Base URL
+
+```python
+# SDK defaults to production: https://api.zenuxai.tech
+client = PlimverClient(api_key="your-api-key")
+
+# For custom deployments or local testing
+client = PlimverClient(
+    api_key="your-api-key",
+    base_url="http://localhost:5000"
+)
+```
+
+### Advanced Configuration
+
+```python
+client = PlimverClient(
+    api_key="your-api-key",
+    base_url="https://api.zenuxai.tech",  # Production URL (default)
+    timeout=60,           # Request timeout in seconds
+    max_retries=5,        # Maximum retry attempts
+    retry_delay=2.0       # Delay between retries
+)
+```
+
+## Error Handling
+
+The SDK provides comprehensive error handling:
+
+```python
+from zenuxai_sdk import (
+    PlimverAPIError,
+    AuthenticationError,
+    QuotaExceededError,
+    RateLimitError
+)
+
+try:
+    response = client.chat("Hello!", "user123")
+except AuthenticationError:
+    print("Invalid API key")
+except QuotaExceededError:
+    print("Usage quota exceeded")
+except RateLimitError:
+    print("Rate limit exceeded - please wait")
+except PlimverAPIError as e:
+    print(f"API error: {e}")
+```
+
+## Models
+
+Available production models:
+
+- `PLIMVER_TURBO` (PV-TURBO) - Ultra-fast responses (<1s), powered by Groq Llama 3.1 8B
+- `PLIMVER_STANDARD` (PV-STANDARD) - Balanced speed & quality, powered by Gemini Pro
+- `PLIMVER_ADVANCED` (PV-ADVANCED) - Deep reasoning & analysis, powered by Gemini Pro
+- `PLIMVER_CODEX` (PV-CODEX) - Code generation & execution, powered by Gemini Fast
+
+**Legacy Models** (backward compatibility):
+- `PLIMVER_1O_FAST`, `PLIMVER_1O_MID`, `PLIMVER_1O_HEAVY`, `PLIMVER_1O_CODING`
+
+## System Architecture
+
+### Hybrid Memory System
+- **Redis (Hot Storage)**: 24-hour cache, 1-5ms retrieval, stores raw messages
+- **Pinecone (Cold Archive)**: Long-term storage with summaries, semantic search
+- **Rolling Summaries**: Every 10 messages + final summary at 24hr archival
+- **Smart Retrieval**: Automatically fetches relevant context without manual API calls
+
+### Unified Context Router
+The system uses an intelligent LLM-based router that decides which context sources to use:
+- **Memory**: Always included for personalization
+- **RAG**: Only when relevant documents exist
+- **Grounding**: Only when real-time information is needed
+
+No manual configuration needed - the router analyzes your query and fetches the right context automatically!
+
+## Usage Tracking
+
+Monitor your API usage:
+
+```python
+stats = client.get_usage_stats()
+
+print(f"Total Requests: {stats.total_requests}")
+print(f"Chat Requests: {stats.chat_requests}")
+print(f"RAG Requests: {stats.rag_requests}")
+print(f"Grounding Searches: {stats.grounding_searches}")
+print(f"Code Executions: {stats.codez_runs}")
+print(f"Weather Requests: {stats.weather_requests}")
+print(f"Period: {stats.current_period_start} to {stats.current_period_end}")
+```
+
+## Rate Limits and Quotas
+
+The SDK automatically handles rate limits and quota management based on your billing tier:
+
+| Tier | RPM | RPD | TPM | Cost/Request |
+|------|-----|-----|-----|--------------|
+| **Free** | 60 | 1,000 | 50K | ~$0.00005 |
+| **Startup** | 120 | 10K | 100K | ~$0.000014 |
+| **Business** | 300 | 50K | 500K | ~$0.000001 |
+| **Enterprise** | 1,000 | 200K | 2M | ~$0.0000002 |
+
+**Memory Retrieval K Parameter:**
+- Free: K≤5 (recommended for 95% accuracy, <100ms latency)
+- Startup: K≤10
+- Business: K≤20
+- Enterprise: K≤50 (but K=5 is still recommended for best cost/performance)
+
+## Data Types
+
+### ChatResponse
+```python
+@dataclass
+class ChatResponse:
+    message: str                    # AI response text (from choices[0].message.content)
+    model: str                      # Model used (e.g., "PV-TURBO")
+    provider: str                   # AI provider (e.g., "zenuxai")
+    tokens_used: int                # Tokens consumed (from usage.total_tokens)
+    weather_tool_used: bool         # Whether weather tool was used
+    weather_data: Optional[WeatherData]  # Weather information
+    codez_result: Optional[str]     # Code execution result
+    grounding_results: Optional[List]    # Web search results (citations)
+    rag_context: Optional[List]     # RAG context documents
+```
+
+**OpenAI-Compatible Response Format:**
+The API returns standard OpenAI chat/completions format:
+```json
+{
+  "id": "zenux-abc123",
+  "object": "chat.completion",
+  "choices": [{
+    "message": {"role": "assistant", "content": "Response here"},
+    "finish_reason": "stop"
+  }],
+  "usage": {"total_tokens": 150},
+  "citations": [...]  // Grounding/RAG sources
+}
+```
+
+### WeatherData
+```python
+@dataclass
+class WeatherData:
+    location: str           # Location name
+    temperature: float      # Temperature in Celsius
+    condition: str          # Weather condition
+    humidity: int          # Humidity percentage
+    wind_speed: float      # Wind speed
+    timestamp: str         # Data timestamp
+```
+
+### UsageStats
+```python
+@dataclass
+class UsageStats:
+    total_requests: int
+    chat_requests: int
+    rag_requests: int
+    grounding_searches: int
+    codez_runs: int
+    weather_requests: int
+    current_period_start: str
+    current_period_end: str
+```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository: `https://github.com/Elliot-Elikplim/Zenux-Api`
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## Testing
+
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Run production tests
+python sdk/test_production_sdk.py
+
+# Set API key
+export ZENUX_API_KEY="your-key-here"  # Linux/Mac
+$env:ZENUX_API_KEY = "your-key-here"  # Windows PowerShell
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📖 [Documentation](https://github.com/Elliot-Elikplim/Zenux-Api/tree/master/docs)
+- 🐛 [Bug Reports](https://github.com/Elliot-Elikplim/Zenux-Api/issues)
+- 💬 [Discussions](https://github.com/Elliot-Elikplim/Zenux-Api/discussions)
+- 📧 [Email Support](mailto:support@zenuxai.tech)
+
+## Changelog
+
+### Version 1.0.0 (November 2025)
+- ✅ Production-ready release
+- ✅ OpenAI-compatible response format
+- ✅ Fixed response parsing (choices[0].message.content)
+- ✅ Hybrid memory system (Redis + Pinecone)
+- ✅ Unified context router (intelligent RAG/grounding)
+- ✅ Production URL: https://api.zenuxai.tech
+- ✅ Comprehensive error handling
+- ✅ Type hints and data validation
+- ✅ Async support
+- ✅ Usage tracking
