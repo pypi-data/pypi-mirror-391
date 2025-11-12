@@ -1,0 +1,10 @@
+[fabric_analytics.context_provider]
+python_notebook = fabric.analytics.environment.notebook_plugin.python_notebook_plugin.context:PythonContextProviderPlugin
+spark_notebook = fabric.analytics.environment.notebook_plugin.spark_notebook_plugin.context:SparkContextProviderPlugin
+
+[fabric_analytics.logging_handler_provider]
+notebook = fabric.analytics.environment.notebook_plugin.log_handlers:NotebookLogHandlerProviderPlugin
+
+[fabric_analytics.token_credential_provider]
+python_notebook = fabric.analytics.environment.notebook_plugin.python_notebook_plugin.credentials:PythonNotebookCredentialProviderPlugin
+spark_notebook = fabric.analytics.environment.notebook_plugin.spark_notebook_plugin.credentials:SparkNotebookCredentialProviderPlugin
