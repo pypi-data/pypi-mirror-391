@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "celery-sqlalchemy-kit"
+version = "0.2.0"
+authors = [
+  { name="Amelie Luecke", email="amelie.luecke@cap-on.de" }, { name="Philipp Ratz", email="philipp.ratz@cap-on.de" }
+]
+description = "Schedule tasks in an SQL Database and define Async Celery Tasks."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Framework :: Celery",
+]
+dependencies = [
+    'celery >= 5.2.7, < 6',
+    #'psycopg2 >= 2.9.3, < 3',
+    'SQLAlchemy >= 1.4.46, < 3'
+]
+
+[project.optional-dependencies]
+broker = ['redis >= 4.5.1, < 8']
+tests = [
+    'tenacity >= 8.1.0, < 10',
+    'pytest > 7.2.1, < 9'
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[project.urls]
+"Homepage" = "https://github.com/cap-on/celery-sqlalchemy-kit"
+"Bug Tracker" = "https://github.com/cap-on/celery-sqlalchemy-kit/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["./celery_sqlalchemy_kit"]

@@ -1,0 +1,60 @@
+#######
+# This Docker Compose File is mainly for testing and showcasing purposes.
+#######
+
+services:
+
+  db:
+    container_name: db
+    image: postgres:14.7
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - postgres_backup:/backup
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+
+  celery:
+    container_name: celery_worker
+    image: celery-sqlalchemy-kit:latest
+    build:
+      context: .
+      dockerfile: ./tests/build/dockerfile
+    volumes:
+      - ./celery_sqlalchemy_kit/:/celery_sqlalchemy_kit
+    env_file:
+      - .env
+    command: bash -c "sleep 8 && sh /start_celery.sh"
+
+  celery_beat:
+    container_name: celery_beat
+    image: celery-sqlalchemy-kit:latest
+    volumes:
+      - ./celery_sqlalchemy_kit/:/celery_sqlalchemy_kit
+    env_file:
+      - .env
+    command: bash -c "sleep 10 && sh /start_celery_beat.sh"
+
+  run_tests:
+    # use this container as python interpreter to run and debug tests
+    container_name: run_tests
+    image: celery-sqlalchemy-kit:latest
+    volumes:
+      - ./celery_sqlalchemy_kit/:/celery_sqlalchemy_kit
+    env_file:
+      - .env
+    command: sh /start_tests.sh
+
+volumes:
+    postgres_data:
+    postgres_backup:
