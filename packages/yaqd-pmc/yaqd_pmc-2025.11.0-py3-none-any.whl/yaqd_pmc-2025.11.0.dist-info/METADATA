@@ -1,0 +1,46 @@
+Metadata-Version: 2.4
+Name: yaqd-pmc
+Version: 2025.11.0
+Summary: yaq daemons for Precision MicroControl Corp. hardware
+Home-page: https://yaq.fyi
+Author: yaq developers
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering
+License-File: LICENSE
+Requires-Dist: yaqd-core>=2023.6.0
+Requires-Dist: black ; extra == "dev"
+Requires-Dist: pre-commit ; extra == "dev"
+Project-URL: Issues, https://github.com/yaq-project/yaqd-pmc/issues
+Project-URL: Source, https://github.com/yaq-project/yaqd-pmc
+Provides-Extra: dev
+
+# yaqd-pmc
+
+[![PyPI](https://img.shields.io/pypi/v/yaqd-pmc)](https://pypi.org/project/yaqd-pmc)
+[![Conda](https://img.shields.io/conda/vn/conda-forge/yaqd-pmc)](https://anaconda.org/conda-forge/yaqd-pmc)
+[![yaq](https://img.shields.io/badge/framework-yaq-orange)](https://yaq.fyi/)
+[![black](https://img.shields.io/badge/code--style-black-black)](https://black.readthedocs.io/)
+[![ver](https://img.shields.io/badge/calver-YYYY.0M.MICRO-blue)](https://calver.org/)
+[![log](https://img.shields.io/badge/change-log-informational)](https://github.com/yaq-project/yaqd-pmc/blob/main/CHANGELOG.md)
+
+yaq daemons for Precision MicroControl Corp. hardware
+
+This package contains the following daemon(s):
+
+- https://yaq.fyi/daemons/pmc
+
+## maintainers
+
+- [Kent Meyer](https://github.com/kameyer226)
+
