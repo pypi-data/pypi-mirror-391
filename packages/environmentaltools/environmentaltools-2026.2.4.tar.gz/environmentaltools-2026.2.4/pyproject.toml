@@ -1,0 +1,149 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "environmentaltools"
+version = "2026.2.4"
+authors = [
+  { name = "Manuel Cobos", email = "mcobosb@ugr.es" },
+]
+maintainers = [
+   { name = "Manuel Cobos", email = "mcobosb@ugr.es" }
+]
+description = "environmentaltools is an open-source Python package for modular environmental management, integrating timeseries analysis, raster-based processing, decision matrices, sensor workflows, and legal-administrative support for coastal and terrestrial systems."
+readme = { file = "README.md", content-type = "text/markdown"} 
+requires-python = ">=3.13"
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 4 - Beta",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.13",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "affine",
+    "cartopy",
+    "cmocean",
+    "geopandas",
+    "loguru",
+    "lxml",
+    "matplotlib",
+    "numpy",
+    "openpyxl",
+    "pandas",
+    "pillow",
+    "pypdf2",
+    "pyproj",
+    "pyshp",
+    "python-dotenv",
+    "rasterio",
+    "requests",
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "statsmodels",
+    "tabula-py",
+    "windrose",
+    "xarray",
+]
+
+[project.optional-dependencies]
+download = [
+    "cdo",
+    "cdsapi", 
+    "configobj",
+    "earthengine-api",
+    "esgf-pyclient",  # Required for CORDEX data (PyESGF)
+    "intake-esgf",    # Modern ESGF client (for other projects)
+    "geedim",
+    "geemap",
+    "tqdm",
+    "werkzeug",
+]
+examples = ["ipykernel"]
+spatial = ["folium"]
+spatiotemporal = ["glob2", "pymcdm", "scikit-image"]
+spectral = ["pytmd", "utide"]
+docs = [
+    "glob2",
+    "sphinx",
+    "sphinx-rtd-theme",
+    "tqdm",
+    # Note: Heavy dependencies are mocked in docs/conf.py
+    # to avoid installation issues on ReadTheDocs
+]
+all = [
+    "cdo", # download
+    "cdsapi",
+    "configobj",
+    "earthengine-api", 
+    "esgf-pyclient", # download - CORDEX support
+    "intake-esgf",   # download - modern ESGF
+    "folium", # spatial
+    "geedim",
+    "geemap",
+    "glob2", # spatiotemporal
+    "ipykernel", # examples
+    "pymcdm", # spatiotemporal
+    "pydap",
+    "pytmd", # spectral
+    "scikit-image", # spatiotemporal
+    "tqdm",
+    "utide", # spectral
+    "werkzeug",
+]
+
+[project.urls]
+Homepage = "https://barrier.dinamicambiental.es"
+Documentation = "https://environmentaltools.readthedocs.io/"
+Tracker = "https://github.com/mcobosb/environmentaltools/issues"
+Repository = "https://github.com/mcobosb/environmentaltools"
+Changelog = "https://github.com/mcobosb/environmentaltools/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/environmentaltools"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "src/environmentaltools/data",
+  "src/environmentaltools/examples",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+# Only include these specific patterns if needed
+# Exclude data and examples from wheel
+[tool.hatch.build]
+exclude = [
+  "src/environmentaltools/data",
+  "src/environmentaltools/examples",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4"
+
+# For updating installed packages
+# pip install -e . 
+# For creating the Documentation
+# sphinx-build -b html docs docs/_build
+# Build the package
+# python -m build
+# Local upload to testpypi
+# pip install twine
+# twine upload --repository testpypi dist/* --verbose
+# For publishing in PyPI
+# git tag v2026.X.X
+# git push origin v2026.X.X
