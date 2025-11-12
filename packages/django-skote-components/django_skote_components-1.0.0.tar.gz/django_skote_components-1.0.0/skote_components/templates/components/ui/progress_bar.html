@@ -1,0 +1,5 @@
+<div class="progress{% if height %} " style="height: {{ height }}{% endif %}">
+    <div class="progress-bar{% if striped %} progress-bar-striped{% endif %}{% if animated %} progress-bar-animated{% endif %} bg-{{ type }}" role="progressbar" style="width: {{ percentage }}%" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="{{ max_value }}">
+        {% if label %}{{ label }}{% else %}{{ percentage|floatformat:0 }}%{% endif %}
+    </div>
+</div>

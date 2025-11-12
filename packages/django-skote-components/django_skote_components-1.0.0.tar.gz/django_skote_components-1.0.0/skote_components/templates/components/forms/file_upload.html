@@ -1,0 +1,37 @@
+<div class="mb-3">
+    {% if label %}
+    <label for="{{ name }}" class="form-label">
+        {{ label }}
+        {% if required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    {% if field %}
+    <input class="form-control{% if field.errors %} is-invalid{% endif %}"
+           type="file"
+           id="{{ field.id_for_label }}"
+           name="{{ name }}"
+           {% if accept %}accept="{{ accept }}"{% endif %}
+           {% if multiple %}multiple{% endif %}
+           {% if required %}required{% endif %}>
+    {% if field.errors %}
+    <div class="invalid-feedback">
+        {% for error in field.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+    {% if field.help_text %}
+    <div class="form-text">{{ field.help_text }}</div>
+    {% endif %}
+    {% else %}
+    <input class="form-control"
+           type="file"
+           id="{{ name }}"
+           name="{{ name }}"
+           {% if accept %}accept="{{ accept }}"{% endif %}
+           {% if multiple %}multiple{% endif %}
+           {% if required %}required{% endif %}>
+    {% if help_text %}
+    <div class="form-text">{{ help_text }}</div>
+    {% endif %}
+    {% endif %}
+</div>

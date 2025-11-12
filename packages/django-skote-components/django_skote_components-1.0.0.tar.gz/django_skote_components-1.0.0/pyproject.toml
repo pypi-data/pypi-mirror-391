@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-skote-components"
+version = "1.0.0"
+description = "A comprehensive Django component library based on the Skote Bootstrap 5 Admin Template"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Ralph Vincent", email = "your.email@example.com"}
+]
+maintainers = [
+    {name = "Ralph Vincent", email = "your.email@example.com"}
+]
+keywords = [
+    "django",
+    "bootstrap",
+    "bootstrap5",
+    "admin",
+    "dashboard",
+    "template",
+    "components",
+    "ui",
+    "skote",
+    "theme"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "Django>=3.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=0.10.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/django-skote-components"
+Documentation = "https://github.com/yourusername/django-skote-components#readme"
+Repository = "https://github.com/yourusername/django-skote-components"
+Issues = "https://github.com/yourusername/django-skote-components/issues"
+
+[tool.setuptools]
+packages = ["skote_components", "skote_components.templatetags"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+skote_components = [
+    "templates/**/*.html",
+    "static/**/*",
+]

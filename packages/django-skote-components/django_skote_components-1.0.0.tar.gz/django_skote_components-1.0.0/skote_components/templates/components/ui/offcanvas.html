@@ -1,0 +1,9 @@
+<div class="offcanvas offcanvas-{{ placement }}" tabindex="-1" id="{{ offcanvas_id }}" aria-labelledby="{{ offcanvas_id }}Label"{% if not backdrop %} data-bs-backdrop="false"{% endif %}{% if scroll %} data-bs-scroll="true"{% endif %}>
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="{{ offcanvas_id }}Label">{{ title }}</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        {{ body }}
+    </div>
+</div>

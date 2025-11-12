@@ -1,0 +1,23 @@
+# Include documentation files
+include README.md
+include LICENSE
+include QUICKSTART.md
+include COMPONENTS.md
+include COMPONENT_LIST.md
+include EXAMPLES.md
+include TABLES_AND_FORMS.md
+include AUTH_AND_UTILITY.md
+include FUTURE_PROJECTS.md
+
+# Include all templates
+recursive-include skote_components/templates *.html
+
+# Include all static files
+recursive-include skote_components/static *
+
+# Exclude Python cache and compiled files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude .gitignore

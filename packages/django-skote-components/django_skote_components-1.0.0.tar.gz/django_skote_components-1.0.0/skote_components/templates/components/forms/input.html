@@ -1,0 +1,41 @@
+<div class="mb-3">
+    {% if label %}
+    <label for="{{ name }}" class="form-label">
+        {{ label }}
+        {% if required %}<span class="text-danger">*</span>{% endif %}
+    </label>
+    {% endif %}
+
+    {% if field %}
+    <input type="{{ field.field.widget.input_type }}"
+           class="form-control {{ input_class }}{% if field.errors %} is-invalid{% endif %}"
+           id="{{ field.id_for_label }}"
+           name="{{ name }}"
+           value="{{ value|default:'' }}"
+           {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+           {% if required %}required{% endif %}
+           {% if field.field.widget.attrs.readonly %}readonly{% endif %}
+           {% if field.field.widget.attrs.disabled %}disabled{% endif %}>
+    {% if field.errors %}
+    <div class="invalid-feedback">
+        {% for error in field.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+    {% if field.help_text %}
+    <div class="form-text">{{ field.help_text }}</div>
+    {% endif %}
+    {% else %}
+    <input type="{{ input_type }}"
+           class="form-control {{ input_class }}"
+           id="{{ name }}"
+           name="{{ name }}"
+           value="{{ value|default:'' }}"
+           {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
+           {% if required %}required{% endif %}
+           {% if readonly %}readonly{% endif %}
+           {% if disabled %}disabled{% endif %}>
+    {% if help_text %}
+    <div class="form-text">{{ help_text }}</div>
+    {% endif %}
+    {% endif %}
+</div>

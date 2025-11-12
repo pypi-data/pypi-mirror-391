@@ -1,0 +1,26 @@
+<div{% if vertical %} class="row"{% endif %}>
+    {% if vertical %}<div class="col-md-3">{% endif %}
+
+    <ul class="nav{% if pills %} nav-pills{% else %} nav-tabs{% endif %}{% if justified %} nav-justified{% endif %}{% if vertical %} flex-column{% endif %} nav-tabs-custom" role="tablist">
+        {% for tab in tabs %}
+        <li class="nav-item">
+            <a class="nav-link{% if tab.active %} active{% endif %}" data-bs-toggle="tab" href="#{{ tab_id }}_{{ forloop.counter }}" role="tab">
+                {% if tab.icon %}<i class="{{ tab.icon }} me-1"></i>{% endif %}
+                {{ tab.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if vertical %}</div><div class="col-md-9">{% endif %}
+
+    <div class="tab-content{% if vertical %} text-muted mt-4 mt-md-0{% else %} p-3{% endif %}">
+        {% for tab in tabs %}
+        <div class="tab-pane{% if tab.active %} active{% endif %}" id="{{ tab_id }}_{{ forloop.counter }}" role="tabpanel">
+            {{ tab.content|safe }}
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if vertical %}</div>{% endif %}
+</div>

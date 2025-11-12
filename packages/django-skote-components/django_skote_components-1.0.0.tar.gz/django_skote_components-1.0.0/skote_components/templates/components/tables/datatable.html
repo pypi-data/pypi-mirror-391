@@ -1,0 +1,42 @@
+<div class="table-responsive">
+    <table id="{{ table_id }}" class="table table-bordered dt-responsive nowrap w-100">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data loaded via JavaScript/AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+$(document).ready(function() {
+    {% if data_url %}
+    $('#{{ table_id }}').DataTable({
+        "ajax": "{{ data_url }}",
+        {% if columns %}
+        "columns": {{ columns|safe }},
+        {% endif %}
+        "ordering": {{ ordering|lower }},
+        "searching": {{ searching|lower }},
+        "paging": {{ paging|lower }},
+        "pageLength": {{ page_length }},
+        "dom": "{{ dom }}",
+        "responsive": true
+    });
+    {% else %}
+    $('#{{ table_id }}').DataTable({
+        "ordering": {{ ordering|lower }},
+        "searching": {{ searching|lower }},
+        "paging": {{ paging|lower }},
+        "pageLength": {{ page_length }},
+        "dom": "{{ dom }}",
+        "responsive": true
+    });
+    {% endif %}
+});
+</script>

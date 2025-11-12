@@ -1,0 +1,161 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}FAQs{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">FAQs</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Utility</a></li>
+                    <li class="breadcrumb-item active">FAQs</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div class="checkout-tabs">
+    <div class="row">
+        <div class="col-lg-2">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-gen-ques-tab" data-bs-toggle="pill" href="#v-pills-gen-ques" role="tab">
+                    <i class="bx bx-help-circle d-block check-nav-icon mt-4 mb-2"></i>
+                    <p class="fw-bold mb-4">General Questions</p>
+                </a>
+                <a class="nav-link" id="v-pills-privacy-policy-tab" data-bs-toggle="pill" href="#v-pills-privacy-policy" role="tab">
+                    <i class="bx bx-lock d-block check-nav-icon mt-4 mb-2"></i>
+                    <p class="fw-bold mb-4">Privacy Policy</p>
+                </a>
+                <a class="nav-link" id="v-pills-support-tab" data-bs-toggle="pill" href="#v-pills-support" role="tab">
+                    <i class="bx bx-support d-block check-nav-icon mt-4 mb-2"></i>
+                    <p class="fw-bold mb-4">Support</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content" id="v-pills-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-gen-ques" role="tabpanel">
+                            <h4 class="card-title mb-4">General Questions</h4>
+
+                            <div>
+                                <div class="accordion accordion-flush" id="gen-ques-accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="gen-ques-headingOne">
+                                            <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#gen-ques-collapseOne" aria-expanded="true">
+                                                What is Lorem Ipsum?
+                                            </button>
+                                        </h2>
+                                        <div id="gen-ques-collapseOne" class="accordion-collapse collapse show" aria-labelledby="gen-ques-headingOne" data-bs-parent="#gen-ques-accordion">
+                                            <div class="accordion-body">
+                                                If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="gen-ques-headingTwo">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gen-ques-collapseTwo" aria-expanded="false">
+                                                Why do we use it?
+                                            </button>
+                                        </h2>
+                                        <div id="gen-ques-collapseTwo" class="accordion-collapse collapse" aria-labelledby="gen-ques-headingTwo" data-bs-parent="#gen-ques-accordion">
+                                            <div class="accordion-body">
+                                                It will be as simple as Occidental; in fact, it will be Occidental. To an English person, it will seem like simplified English, as a skeptical Cambridge friend of mine told me what Occidental.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="gen-ques-headingThree">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gen-ques-collapseThree" aria-expanded="false">
+                                                Where does it come from?
+                                            </button>
+                                        </h2>
+                                        <div id="gen-ques-collapseThree" class="accordion-collapse collapse" aria-labelledby="gen-ques-headingThree" data-bs-parent="#gen-ques-accordion">
+                                            <div class="accordion-body">
+                                                Everyone realizes why a new common language would be desirable: one could refuse to pay expensive translators. To achieve this, it would be necessary to have uniform grammar.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-privacy-policy" role="tabpanel">
+                            <h4 class="card-title mb-4">Privacy Policy</h4>
+
+                            <div>
+                                <div class="accordion accordion-flush" id="privacy-accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="privacy-headingOne">
+                                            <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#privacy-collapseOne" aria-expanded="true">
+                                                How we use your information?
+                                            </button>
+                                        </h2>
+                                        <div id="privacy-collapseOne" class="accordion-collapse collapse show" aria-labelledby="privacy-headingOne" data-bs-parent="#privacy-accordion">
+                                            <div class="accordion-body">
+                                                If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="privacy-headingTwo">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#privacy-collapseTwo" aria-expanded="false">
+                                                How do we protect your information?
+                                            </button>
+                                        </h2>
+                                        <div id="privacy-collapseTwo" class="accordion-collapse collapse" aria-labelledby="privacy-headingTwo" data-bs-parent="#privacy-accordion">
+                                            <div class="accordion-body">
+                                                It will be as simple as Occidental; in fact, it will be Occidental. To an English person, it will seem like simplified English, as a skeptical Cambridge friend of mine told me what Occidental.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-support" role="tabpanel">
+                            <h4 class="card-title mb-4">Support</h4>
+
+                            <div>
+                                <div class="accordion accordion-flush" id="support-accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="support-headingOne">
+                                            <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse" data-bs-target="#support-collapseOne" aria-expanded="true">
+                                                How to contact support?
+                                            </button>
+                                        </h2>
+                                        <div id="support-collapseOne" class="accordion-collapse collapse show" aria-labelledby="support-headingOne" data-bs-parent="#support-accordion">
+                                            <div class="accordion-body">
+                                                If several languages coalesce, the grammar of the resulting language is more simple and regular than that of the individual languages. The new common language will be more simple and regular than the existing European languages.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="support-headingTwo">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#support-collapseTwo" aria-expanded="false">
+                                                What are support hours?
+                                            </button>
+                                        </h2>
+                                        <div id="support-collapseTwo" class="accordion-collapse collapse" aria-labelledby="support-headingTwo" data-bs-parent="#support-accordion">
+                                            <div class="accordion-body">
+                                                It will be as simple as Occidental; in fact, it will be Occidental. To an English person, it will seem like simplified English, as a skeptical Cambridge friend of mine told me what Occidental.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+</div>
+{% endblock %}
