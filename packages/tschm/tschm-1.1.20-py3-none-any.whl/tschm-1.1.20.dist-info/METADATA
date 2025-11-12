@@ -1,0 +1,57 @@
+Metadata-Version: 2.3
+Name: tschm
+Version: 1.1.20
+Summary: windows定时任务管理器 即使电脑休眠也能运行的定时任务管理器
+Author: lipanpan
+Author-email: lipanpan <lipanpanmail@163.com>
+Requires-Dist: fire>=0.7.1
+Requires-Dist: pywin32>=311
+Requires-Dist: toml>=0.10.2
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+# TSCHM - Windows Task Scheduler Manager
+
+A powerful Windows task scheduler management tool that enables scheduled tasks to execute even when your computer is in sleep mode.
+
+## Features
+
+- ✅ Execute scheduled tasks during system sleep mode
+- ✅ Simple command-line interface via `tsm` command
+- ✅ Manage hidden tasks with ease
+- ✅ Kill running scheduled tasks on demand
+
+## Why TSCHM?
+
+Most Windows task management tools fail to execute tasks when the system is in sleep mode. TSCHM was specifically designed to solve this critical limitation, ensuring your scheduled tasks run reliably regardless of system power state.
+
+## Installation
+
+Install via pip:
+
+```bash
+pip install tschm -U
+# 确保 scripts 文件夹已经加入path 
+```
+
+Or using uv:
+
+```bash
+uv tool install tschm -U
+```
+
+After installation, the `tsm` command will be available in your terminal.
+
+## Requirements
+
+- Windows operating system
+- Python 3.13+
+
+## Usage
+
+Once installed, you can use the `tsm` command to manage your scheduled tasks:
+
+```bash
+tsm
+```
+
