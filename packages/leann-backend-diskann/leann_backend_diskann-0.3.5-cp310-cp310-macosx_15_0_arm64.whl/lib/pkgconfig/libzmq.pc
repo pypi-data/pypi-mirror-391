@@ -1,0 +1,12 @@
+prefix=/var/folders/6c/pzd640_546q6_yfn24r65c_40000gn/T/tmpzxs6t2t3/wheel/platlib
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libzmq
+Description: 0MQ c++ library
+Version: 4.3.6
+Libs: -L${libdir} -lzmq
+Libs.private: -lstdc++ 
+Requires.private: 
+Cflags: -I${includedir} 
