@@ -1,0 +1,131 @@
+[project]
+name = "pycep-parser"
+version = "0.6.1.dev6"
+description = "A Python based Bicep parser"
+authors = [
+    { name = "Anton Grübel", email = "anton.gruebel@gmail.com" }
+]
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+keywords = ["bicep", "parser", "lark"]
+classifiers = [
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed"
+]
+readme = "README.md"
+
+requires-python = ">=3.9"
+
+dependencies = [
+    "lark>=1.1.2,<2.0.0",
+    "regex>=2022.1.18,<2026.0.0",
+    "typing-extensions>=3.10.0,<5.0.0",
+]
+
+[project.urls]
+homepage = "https://github.com/gruebel/pycep"
+repository = "https://github.com/gruebel/pycep"
+changelog = "https://github.com/gruebel/pycep/blob/master/CHANGELOG.md"
+releases = "https://github.com/gruebel/pycep/releases"
+
+[dependency-groups]
+dev = [
+    "assertpy>=1.1,<2.0",
+    "prek>=0.2.12,<0.3.0",
+    "pytest>=8.4.2,<9.0.0",
+]
+
+[build-system]
+requires = ["uv_build~=0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pycep"
+module-root = ""
+source-include = ["tests/**"]
+
+[tool.uv]
+required-version = "~=0.9.0"
+
+[tool.mypy]
+files = "pycep"
+
+python_version = "3.9"
+local_partial_types = true # will become the new default from version 2
+allow_redefinition_new = true # will become the new default from version 2
+fixed_format_cache = true # new caching mechanism
+pretty = true
+strict = true
+implicit_reexport = true
+
+[[tool.mypy.overrides]]
+module = [
+    "assertpy"
+]
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+preview = true
+select = [
+    "ANN",
+    "A",
+    "ARG",
+    "B",
+    "BLE001",
+    "C4",
+    "DTZ",
+    "E",
+    "EM103",
+    "F",
+    "FA",
+    "FBT003",
+    "FLY",
+    "FURB",
+    "G004",
+    "I",
+    "ISC",
+    "LOG",
+    "N",
+    "PERF",
+    "PIE",
+    "PGH",
+    "PLC",
+    "PLW",
+    "PLE",
+    "PT",
+    "PTH",
+    "PYI",
+    "RET",
+    "RSE",
+    "RUF",
+    "S",
+    "SIM",
+    "T10",
+    "T20",
+    "TC",
+    "UP",
+    "W",
+    "YTT",
+]
+ignore = [
+    "E501", # the formatter will handle any too long line
+    "RET505",
+    "SIM108",
+    "TC008", # re-enable when depreacting Python 3.9
+]
+
+fixable = ["I001"]
