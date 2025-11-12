@@ -1,0 +1,36 @@
+name: Mypy
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Checkout fmu-datamodels repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Create project environment from uv.lock
+        run: |
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            uv sync --all-extras --upgrade
+          else
+            uv sync --all-extras --frozen
+          fi
+
+      - name: Mypy
+        run: |
+
+          uv run mypy .

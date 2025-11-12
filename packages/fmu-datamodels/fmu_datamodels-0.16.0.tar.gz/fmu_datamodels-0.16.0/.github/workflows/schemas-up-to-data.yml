@@ -1,0 +1,42 @@
+name: Schemas up to date
+
+on:
+  pull_request:
+    branches: [main, staging]
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check_schema:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Checkout fmu-datamodels repo
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        run: uv python install "3.11"
+
+      - name: Create project environment from uv.lock
+        run: |
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            uv sync --all-extras --upgrade
+          else
+            uv sync --all-extras --frozen
+          fi
+
+      - name: Check schema
+        run: |
+          uv run ./tools/update-schemas.py --diff
+
+      - name: Ensure schema validates with AJV
+        run: |
+          npm install ajv ajv-formats
+          ./tools/schema-validate-ajv.mjs ./schemas/
