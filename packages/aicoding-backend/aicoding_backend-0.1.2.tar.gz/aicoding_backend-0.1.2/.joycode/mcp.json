@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "backend-coding": {
+      "autoApprove": [
+        "init_project_rules",
+        "process_thought",
+        "generate_prp",
+        "execute_prp",
+        "init_requirements_doc"
+      ],
+      "timeout": 180,
+      "command": "uvx",
+      "type": "stdio",
+      "transportType": "stdio",
+      "args": [
+        "--refresh",
+        "aicoding-backend"
+      ],
+      "disabled": false
+    }
+  }
+}
