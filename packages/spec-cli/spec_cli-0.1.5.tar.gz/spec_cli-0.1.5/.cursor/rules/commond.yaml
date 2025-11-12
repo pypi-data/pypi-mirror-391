@@ -1,0 +1,43 @@
+---
+alwaysApply: true
+
+# command signature: [command] [mode] 需求描述
+# 单命令场景，mode=manual，执行完工作流的一个阶段之后暂停，经人工确认后继续执行该工作流的下一个阶段
+# 组合命令场景，mode=manual，执行完一个工作流之后暂停，经人工确认后继续执行下一个工作流
+
+commands:
+  req:
+    workflow: requirement-review-workflow
+    contextEntrance: workflows/requirement-review/context-map.yaml
+    description: "需求评审工作流"
+
+  tech:
+    workflow: tech-design-workflow
+    contextEntrance: workflows/tech-design/context-map.yaml
+    description: "技术方案设计工作流"
+
+  coding:
+    workflow: coding-workflow
+    contextEntrance: workflows/coding/context-map.yaml
+    description: "代码生成工作流"
+
+  riper:
+    workflow: RIPER-5
+    contextEntrance: workflows/common/context-map.yaml
+    description: "RIPER-5万能通用工作流"
+
+composite:
+  dev:
+    commands:
+      - req
+      - tech
+      - coding
+  full:
+    commands:
+      - req
+      - tech
+      - coding
+
+modes:
+  auto: "自动模式"
+  manual: "手动模式, 是默认模式"

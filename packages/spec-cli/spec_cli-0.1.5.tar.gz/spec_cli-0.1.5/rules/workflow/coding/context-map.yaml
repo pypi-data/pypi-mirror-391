@@ -1,0 +1,21 @@
+# context-map.yaml for coding-workflow
+# 代码生成工作流结构化上下文定义
+
+version: 1.0
+workflow: coding-workflow
+
+includes:
+  # 公司内部通用规范
+  - ../../common/general.md
+
+  # 开发语言规范（可选，仅在需检查字段/术语时参考）
+  - ../../languages/java.md
+
+  # 公司内部框架规范
+  - ../../frameworks/ctrip-frameworks.md
+  - ../../frameworks/dal.md
+  - ../../frameworks/soa.md
+
+excludes:
+  # 排除技术实现细节、数据库索引、Job 任务等与业务问题无关内容
+  - ../../languages/python.md
