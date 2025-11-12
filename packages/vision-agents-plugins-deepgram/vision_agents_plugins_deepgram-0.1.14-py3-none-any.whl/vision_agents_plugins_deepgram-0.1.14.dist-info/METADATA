@@ -1,0 +1,30 @@
+Metadata-Version: 2.4
+Name: vision-agents-plugins-deepgram
+Version: 0.1.14
+Summary: Deepgram STT integration for Vision Agents
+Project-URL: Documentation, https://visionagents.ai/
+Project-URL: Website, https://visionagents.ai/
+Project-URL: Source, https://github.com/GetStream/Vision-Agents
+License-Expression: MIT
+Keywords: AI,STT,agents,deepgram,speech-to-text,transcription,voice agents
+Requires-Python: >=3.10
+Requires-Dist: deepgram-sdk==5.2.0
+Requires-Dist: numpy<2.3,>=2.2.6
+Requires-Dist: vision-agents
+Description-Content-Type: text/markdown
+
+# Deepgram Speech-to-Text Plugin
+
+A high-quality Speech-to-Text (STT) plugin for Vision agents that uses the Deepgram API.
+
+## Installation
+
+```bash
+uv add vision-agents-plugins-deepgram
+```
+
+## Docs
+
+- https://developers.deepgram.com/docs/flux/quickstart
+- https://github.com/deepgram/deepgram-python-sdk/blob/main/examples/listen/v2/connect/async.py
+- https://github.com/deepgram/deepgram-python-sdk/tree/main
