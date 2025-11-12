@@ -1,0 +1,8 @@
+# Kafka
+KAFKA_MODERATOR_EVENTS_TOPIC = "channel-1"
+
+# Redis
+REDIS_EMAIL_VERIFICATION_KEY_PREFIX = "email_verification:"
+REDIS_STRIPE_INVOICE_METADATA_KEY_PREFIX = "stripe_invoice_metadata:"
+REDIS_USER_MODERATOR_MESSAGES_PREFIX = "moderator_messages:"
+REDIS_EXPIRY = 900
