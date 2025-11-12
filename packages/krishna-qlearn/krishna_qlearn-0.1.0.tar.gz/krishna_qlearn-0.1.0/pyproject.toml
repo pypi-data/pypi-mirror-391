@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "krishna-qlearn"  # change if already taken on PyPI
+version = "0.1.0"
+description = "Tiny tabular Q-learning utilities for discrete environments"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  { name = "Krishna Bolia", email = "krishnajain508@gmail.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = ["numpy"]
+
+[tool.setuptools.packages.find]
+where = ["."]
