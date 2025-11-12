@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: asciipal
+Version: 0.0.2
+Summary: A fun command-line tool that prints random ASCII art.
+Author: Neel Jaiswal
+Author-email: neelpjaiswal@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Console
+Classifier: Topic :: Games/Entertainment
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: license-file
+Dynamic: summary
+
+🎨 ASCII Pal
+
+A simple, fun command-line tool that prints random ASCII art figures to your terminal.
+
+This package is a demonstration project for learning how to publish to PyPI (the Python Package Index).
+
+Installation
+
+You can install asciipal directly from PyPI using pip:
+
+pip install asciipal
+
+
+How to Use
+
+asciipal has two primary uses: as a quick command-line tool or as a simple function in your own Python scripts.
+
+1. As a Command-Line Tool (Primary Use)
+
+This is the main way to use the package. After installing, simply type asciipal into your terminal and press Enter.
+
+$ asciipal
+
+
+A random ASCII figure will be printed to your console:
+
+  /\_/\
+ ( o.o )
+  > ^ <
+
+
+Run it again to get a different one!
+
+$ asciipal
+
+   __
+--(oo)
+  (__)
+
+
+2. As a Python Module (Optional)
+
+You can also import and use the run function within your own Python code if you wish.
+
+# Import the run function from the asciipal package
+from asciipal.main import run
+
+# Call the function to print a random ASCII figure
+print("Here is your first pal:")
+run()
+
+print("\nAnd here is another:")
+run()
+
+
+License
+
+This project is licensed under the MIT License. See the LICENSE.txt file for details.
