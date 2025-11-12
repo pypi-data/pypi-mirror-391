@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: fastdotrs
+Version: 0.1.2
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Rust
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Summary: Fast SIMD-optimized dot products (f32·f32, f16·f32)
+Author: Coda Research Group
+License: MIT OR Apache-2.0
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+
+fast_dot
+
+Fast SIMD-optimized dot products exposed to Python via PyO3 + maturin.
+
+Features
+
+-   dot_f32(a: np.ndarray[float32], b: np.ndarray[float32]) -> float
+-   dot_f16_f32(a: np.ndarray[float16], b: np.ndarray[float32]) -> float (uses F16C when available)
+
+Both functions accept any Python object that implements the buffer protocol (NumPy arrays, PyTorch tensors via .numpy() if on CPU and contiguous) through the NumPy bridge. For non-NumPy objects, convert to NumPy first.
+
+Build and install
+
+-   Build wheel: maturin build --release
+-   Develop install: maturin develop --release
+
+Usage
+
+import numpy as np
+import fast_dot as fd
+
+x = np.random.rand(1024).astype(np.float32)
+y = np.random.rand(1024).astype(np.float32)
+print(fd.dot_f32(x, y))
+
+x16 = x.astype(np.float16)
+print(fd.dot_f16_f32(x16, y))
+
+Notes
+
+-   Requires x86_64. F16C and AVX2 paths are used when available; otherwise falls back to scalar.
+-   Arrays must be 1-D and contiguous with matching shapes.
+
