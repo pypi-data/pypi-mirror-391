@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: pywreck
+Version: 0.6.0
+Summary: Simple async HTTP/1.1 client
+Home-page: https://a-feld.github.io/pywreck
+Author: Allan Feldman
+License: Apache-2.0
+Project-URL: Source, https://github.com/a-feld/pywreck
+Project-URL: Changelog, https://github.com/a-feld/pywreck/releases
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Operating System :: OS Independent
+Classifier: License :: OSI Approved :: Apache Software License
+Requires-Python: >=3.10
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Dynamic: license-file
+
+
+pywreck
+=======
+
+|ci| |coverage| |docs| |black|
+
+.. |ci| image:: https://img.shields.io/github/actions/workflow/status/a-feld/pywreck/ci.yml?branch=main
+   :target: https://github.com/a-feld/pywreck/actions/workflows/ci.yml
+
+.. |coverage| image:: https://img.shields.io/codecov/c/github/a-feld/pywreck/main
+    :target: https://codecov.io/gh/a-feld/pywreck
+
+.. |docs| image:: https://img.shields.io/badge/docs-available-brightgreen.svg
+    :target: https://a-feld.github.io/pywreck
+
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black
+
+A small, not so great async Python HTTP client.
+
+`API documentation is available here! <https://a-feld.github.io/pywreck>`_
+
+This HTTP client does not implement any error / exception handling. If the server the client is talking to deviates from the HTTP spec, this code will behave in unexpected ways. Network errors? Those are unhandled too!
+
+Install
+-------
+
+.. code-block:: sh
+
+   pip install pywreck
+
+Usage
+-----
+
+.. code-block:: python
+
+    response = await pywreck.get("www.example.com", "/")
+    print(response.status, response.headers, response.data)
+
+Why?
+----
+
+Eh, why not? Sometimes you just need a small async HTTP client with no dependencies -- no batteries included.
