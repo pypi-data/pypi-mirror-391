@@ -1,0 +1,11 @@
+# lncn
+
+Lncn is a simple python CLI that counts the SLOC (source lines of code) in a file or directory.
+
+To install, simply run `pip install lncn`. Make sure the `Scripts/` directory in your python installation is on the PATH.
+
+If you want to count the lines within a project, just specify the directory as an absolute path. If you located within the directory, use '.'.
+
+Common non-source files (documentation, metadata, configurations, build artifacts, assets, data, etc.) are ignored by default, but specific paths to ignore beyond this can be specified with the `-i` / `--ignore` flag. To disable this, and include everything by default, use the `-k` / `--keep-all` flag.
+
+When specifying paths to ignore, '*' can be used to signify some arbitrary text, similar to the syntax of a gitignore file. For example, to ignore all python and all shell files in a directory, you could put `--ignore *.py *.sh`. Note that this does not work with more complex gitignore syntax. 
