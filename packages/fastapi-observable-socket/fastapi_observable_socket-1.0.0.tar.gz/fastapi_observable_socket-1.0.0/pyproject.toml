@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastapi-observable-socket"
+version = "1.0.0"
+description = "A lightweight WebSocket router for FastAPI, fully compatible with the ObservableSocket (JS/TS) client."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+authors = [
+  { name = "Alireza Tabatabaeian", email = "contact@fixance.me" }
+]
+
+keywords = [
+  "fastapi", "websocket", "router", "observable", "asyncio",
+  "realtime", "socket", "starlette"
+]
+
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: FastAPI",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed"
+]
+
+dependencies = [
+  "fastapi>=0.115",
+  "pydantic>=2.7",
+  "starlette>=0.38",
+]
+
+[project.urls]
+Homepage = "https://gihttps://github.com/Alireza-Tabatabaeian/fastapi-observable-socket"
+Documentation = "https://github.com/Alireza-Tabatabaeian/fastapi-observable-socket"
+Repository = "https://github.com/Alireza-Tabatabaeian/fastapi-observable-socket"
+Issues = "https://github.com/Alireza-Tabatabaeian/fastapi-observable-socket/issues"
+Related = "https://www.npmjs.com/package/@djanext/observable-socket"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fastapi_observable_socket*"]
+exclude = ["tests*", "examples*"]
+
+[tool.setuptools.package-data]
+fastapi_observable_socket = ["py.typed"]
+
+[tool.ruff]
+select = ["E", "F", "I", "B"]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = 3.11
+strict = true
+warn_unused_ignores = true
+warn_return_any = true
