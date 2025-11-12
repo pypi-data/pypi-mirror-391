@@ -1,0 +1,38 @@
+site_name: pulumi-extra
+repo_url: https://github.com/lasuillard-s/pulumi-extra
+repo_name: lasuillard-s/pulumi-extra
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_submodules: false
+            filters:
+              - "!^_[^_]"
+  - search
+  - mike
+nav:
+  - Introduction: index.md
+  - API References:
+      - Core: api-references/index.md
+      - Contrib:
+          - AWS: api-references/contrib/aws.md
+          - GCP: api-references/contrib/gcp.md
+markdown_extensions:
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+extra:
+  version:
+    provider: mike
