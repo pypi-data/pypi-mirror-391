@@ -1,0 +1,82 @@
+Metadata-Version: 2.4
+Name: lcaplatform-config
+Version: 0.4.2
+Summary: Configurations for LCA platform FastAPI apps
+License: Apache-2.0
+License-File: LICENSE
+Author: Egidijus Lukosevicius
+Author-email: egls@cowi.com
+Requires-Python: >=3.12,<4.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Provides-Extra: database
+Requires-Dist: SQLAlchemy[asyncio] ; extra == "database"
+Requires-Dist: aiocache
+Requires-Dist: asyncpg ; extra == "database"
+Requires-Dist: azure-identity
+Requires-Dist: fastapi-azure-auth (>=4.0.0)
+Requires-Dist: fastapi[all]
+Requires-Dist: msgraph-core
+Requires-Dist: msgraph-sdk
+Requires-Dist: mypy
+Requires-Dist: opentelemetry-api
+Requires-Dist: opentelemetry-exporter-otlp
+Requires-Dist: opentelemetry-instrumentation-fastapi
+Requires-Dist: opentelemetry-instrumentation-logging
+Requires-Dist: opentelemetry-sdk
+Requires-Dist: prometheus-client
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Requires-Dist: requests
+Requires-Dist: ruff
+Requires-Dist: sendgrid
+Requires-Dist: sqlmodel ; extra == "database"
+Requires-Dist: strawberry-graphql[fastapi]
+Project-URL: Repository, https://github.com/Arkitema/backend-config
+Description-Content-Type: text/markdown
+
+# LCA platfrom FastAPI Configuration
+
+Configurations for LCA platform FastAPI apps
+
+# Getting Started
+
+Install the following in your virtual environment:
+
+- Python 3.11
+- [Poetry](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions)
+- [pre-commit](https://pre-commit.com/#installation)
+
+## Setup local Python environment
+
+```shell
+poetry install
+pre-commit install
+```
+
+## Run tests
+
+```shell
+pytest tests/
+```
+
+# Publishing
+
+When a new version is ready to be published, remember to update the version by running the following command:
+```shell
+poetry version minor
+```
+otherwise the pipeline will fail to publish the package.
+Publishing happens automatically on merges to `main` in an GitHub Action.
+
+
+# License
+
+Unless otherwise described, the code in this repository is licensed under the Apache-2.0 License. Please note that some
+modules, extensions or code herein might be otherwise licensed. This is indicated either in the root of the containing
+folder under a different license file, or in the respective file's header.
+
+If you have any questions, don't hesitate to get in touch with us via email.
