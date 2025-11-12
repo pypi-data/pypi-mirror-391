@@ -1,0 +1,100 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dhruv13x"
+dynamic = ["version"]
+description = "Dhruv's complete meta tooling suite — installs all utilities in one package."
+readme = "README.md"
+requires-python = ">=3.11"
+
+author = "dhruv"
+author_email = "dhruv13x@gmail.com"
+
+authors = [
+  { name = "dhruv", email = "dhruv13x@gmail.com" }
+]
+
+license = { text = "MIT © dhruv13x" }
+
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Build Tools",
+]
+
+# ✅ All your published packages — direct dependencies
+dependencies = [
+  "duplifinder",
+  "create-dump",
+  "autoheader",
+  "enterprise-docs",
+  "pyinitgen",
+  "pypurge",
+  "import-surgeon",
+  "projectrestore",
+  "projectclone",
+  "importdoc",
+  "routine-workflow"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/dhruv13x/"
+Source   = "https://github.com/dhruv13x/dhruv13x"
+Issues   = "https://github.com/dhruv13x/dhruv13x/issues"
+
+[project.scripts]
+dhruv13x = "dhruv13x.cli:run"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.6.0",
+  "black>=24.3.0",
+  "mypy>=1.11.0",
+  "coverage>=7.5.0",
+  "pytest-cov",
+  "hypothesis>=6.100.0",
+  "pytest-asyncio>=0.21.0",
+  "pytest-mock>=3.10.0",
+  "pytest-timeout>=2.3.0"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dhruv13x"]
+
+[tool.hatch.version]
+path = "src/dhruv13x/version.py"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+timeout = 10
+testpaths = ["tests"]
+addopts = [
+  "-ra",
+  "--strict-config",
+  "--strict-markers"
+]
