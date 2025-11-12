@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastmcp-app-launcher-test"
+version = "0.1.5"
+description = "基于 fastmcp 的跨平台应用启动 MCP 服务"
+readme = "README.md"
+authors = [{ name = "Codex MCP", email = "codex@example.com" }]
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords = ["mcp", "fastmcp", "automation", "launcher", "productivity"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Topic :: Desktop Environment",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "fastmcp>=2.12.0",
+    "pydantic>=2.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/fjc/fastmcp-app-launcher"
+Repository = "https://github.com/fjc/fastmcp-app-launcher"
+"Bug Tracker" = "https://github.com/fjc/fastmcp-app-launcher/issues"
+
+[project.optional-dependencies]
+windows = [
+    "pywin32>=305",
+    "pywinauto>=0.6.8",
+    "psutil>=5.9.0",
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.scripts]
+fastmcp-app-launcher-test = "app_launcher_mcp.server:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = [
+    "build>=1.3.0",
+    "twine>=5.0.0",
+]
