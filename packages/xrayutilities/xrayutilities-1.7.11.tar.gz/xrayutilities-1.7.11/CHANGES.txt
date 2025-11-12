@@ -1,0 +1,485 @@
+v1.7.11, 2025-11-11
+
+* fix powder simulation with lmfit 1.3.4
+* PowderModel: add some hints on higher memory consumption with more threads
+* correct use of OPENMP in c-code and performance optimization
+* fix a memory leak in the c-code (not freed memory of function pointers)
+* improved error checking and clean up in c-code
+* convert to meson-python bases build system
+
+v1.7.10, 2025-01-17
+
+* add Python 3.13 wheel generation, otherwise equivalent to v1.7.9
+
+v1.7.9, 2025-01-16
+
+* avoid use of scipy.misc package. make xrayutilities work with scipy>=1.15 (#202)
+* fix typo in GetStress method of Material/Crystal.
+* improve wording in Experiment class docstrings (#192)
+* fix typo in cache key of atomic structure factor (#189)
+* Use numpy>=2 as build dependency only for python>=3.9 (#188 by @t20100)
+
+v1.7.8, 2024-06-05
+
+* Numpy-2.0 support for wheels on PyPI
+* fix an Exception in the PowderDiffraction calculation occuring for some
+  specific parameters (#179, thanks to @mendenmh).
+* allow different Miller indices for the various layers in a dynamic diffraction calculation
+
+v1.7.7, 2024-04-19
+
+* enable creation of Python 3.12 packages
+* enable correct parsing of Sardana MCA data in spec files (by @dschick)
+* fix for using lmfit-1.3.0
+
+v1.7.6, 2023-11-16
+
+* fix parsing error due to missing header entry in Rigaku ras file
+* allow naming of simulation materials (Powder, Layer)
+* example script for fitting diffraction data of an epitaxial multilayer (by @VeryBitter)
+* update AlAs lattice parameters from APL 66, 682 (1995) (by @VeryBitter)
+* enable building Python 3.11 wheels
+
+v1.7.5, 2023-06-14
+
+* Added AlSb to predefined_materials.py (#164) (by @andrews-tuwien)
+* allow parsing of SPEC files/scans with missing data entry
+* implement the calculation of the anisotropic Poission ratio of materials
+  (#139). Related to that a method in the DarwinModel was renamed and declared
+  internal.
+* extend continuous integration tests by adding doctests
+* directly depend on the lmfit package for implementation of our fitting
+  models.
+* more possibilities to specify filename lists in getras_scan, getSeifert_map,
+  and getxrdml_scan
+* allow bytes-stream instead of filename in XRDML
+* enable setting free lattice parameters from the Crystal instance
+* minor code improvements, forcing flake8 to pass upon merging a PR #149
+* fix typo in Poisson ratio of GaInAs Darwin model (introduced in 1.7.4)
+* make C-code respect the VERBOSITY. C-Code should now be silent with
+  VERBOSITY<INFO_ALL. Otherwise lots of info is printed. #145
+* remove set_bit/clear_bit functions in favor of using enum.IntFlag
+* use plain pytest in the CI integration (no code change in the package)
+* remove build_doc target for setup.py, use sphinx (see builddocs pipeline)
+
+v1.7.4, 2022-10-31
+
+* fix data type casting of cch1,2 in QConversion.init_area -> these can now be floating point values (#141 by @trdd)
+* fix docstring for March-Dollase texture model in xu.simpack.Powder. The
+  parameter preferred_orientation_factor was described wrong. Platy crystals
+  need a factor < 1! see W. A. Dollase, J. Appl. Cryst. (1986). 19, 267-272
+* fix Poisson ratio of GaInAs Darwin model (thanks to Danny Chrastina for
+  reporting)
+* Additional convenience functions for elasticity tensor symmetries for
+  Monoclinic and Trigonal symmetry (#138 by @f-iniv)
+* GetStrain and GetStress functions for xu.material.Material (#138 by @f-iniv)
+* enable correct parsing of Seifert RSM map measurements
+* matplotlib format bugfix in psd_chdeg
+* improvements for kappa goniometers
+* remove use of deprecated scipy namespace
+
+v1.7.3, 2021-11-26
+
+* enable building Python 3.10 wheels
+* fix missing files in source package on PyPI
+* make builddocs pipeline more robust
+
+v1.7.2, 2021-11-22
+
+* fix returned fitting error in area_detector_calib* (issue #126)
+* remove dependency on soon deprecated distutils
+* fix regression bug with matplotlib 3.5
+* update copyright notices from git commit history
+* fix code error found by linting (flake8)
+* CIF atom type normalization of oxidation state (issue #122)
+* improve documentation of PowerModel multiprocessing code (issue #121)
+* fix numpy-1.20 deprecation warnings
+* bugfix in kinematical diffraction model.
+* add visualization of individual layer densities (issue #107)
+* new coplanar_alphaf helper function
+
+v1.7.1, 2021-01-02
+
+* harmonize dependency versions between README and setup.py
+* remove PDF documentation and other generatable content from the GIT
+  repository
+* new azure pipeline for documentation generation
+* new azure pipeline for wheel generation (issue #111)
+
+v1.7.0, 2020-12-08
+
+* allow string decoding to fail in tif headers
+* ignore nan values in maplog
+* add Azure pipeline for continuous testing and automatic builds
+* performance optimizations in Crystal.environment
+* Continous integration tests running on MacOS, Windows and Linux
+* new flavor of material/Crystal definition from fractional atomic coordinates
+* bugfix in derivative functions (xu.math.functions)
+* effectiveDensity slicing for XRR simulations, thanks to MM
+* new possibility to transform unit cells and find symmetries
+* bugfix of numpy.set_printoptions use
+* require Python 3.6 due to use of f-strings
+* new PowderModel.plot method to quickly visualize a Powder pattern
+* remove deprecated fit_xrr function
+* SGLattice.get_allowed_hkl function
+* make SGLattice.convert_to_P1 a normal method
+* SGLattice improvements: add symmetry operations, equivalent_hkls,
+  reflection_conditions, and allowed_hkl functionality
+* fix SGLattice.isequivalent function to work for non-centrosymmetric
+  materials
+* implementation of the March-Dollase model for preferred orientation in
+  PowderDiffraction
+* Mayavi based visualization of unit cells: Crystal.show_unitcell
+  -> new optional dependency on Mayavi
+* fix new Pilatus TIFF files which seem to have \xff padding
+* implement Gaussian beam shape for XRR modelling
+* update documentation to recommend the use of pip for installation
+* remove multGaussFit/Plot and set multPeakFit/Plot deprecated
+  -> use the much more powerful lmfit-package instead!
+* rename dummy element to "Dummy" and set sensible default parameters
+
+v1.6.0, 2020-01-08
+
+* use of tox to run unittests consistently in a virtual environment
+* build element database during installation from sources
+* new source layout which offers many advantages
+  (https://blog.ionelmc.ro/2014/05/25/python-packaging/#the-structure)
+* remove Python2 code path, improve code readability
+* fix use of the agg matplotlib backend with FitModel
+* from this point on Github master will be broken on Python 2
+
+v1.5.4, 2020-01-07 final python2 compatible release
+
+* fix issue #84: edge case problemes in XRDML parser
+* matplotlib compatibility improvements
+
+v1.5.3, 2019-10-09
+
+* issue #87: fix matplotlib inline backend in FitModel.fit
+* enable parsing of Panalytical XRDML version >2.0
+* issue 79: fix parsing of Sardana generated spec files; thanks to DS
+* issue 81: fix parsing materials with space group 47
+* packaging cleanup: remove gitignore and other dev-files
+* issue 77: complete multiprocessing cleanup upon PowderModel.close()
+* issue 76: cif parser: fix bug introduced in version 1.5.2
+
+v1.5.2, 2019-06-28
+
+* fix bug in PowderDiffraction where the last Bragg peak before tt_cutoff was
+  omitted, thanks to NG for reporting the issue
+* new model for calculating signal of mosaic small crystals
+* add arbitrary line cut function
+* fix parsing of empty scans in spec files
+* remove geth5_map function -> use geth5_scan instead
+* support inf/nan values in spec files
+* setup.py fixes for Debian packaging
+* CIF export: make _atom_site_label unique
+* change of SMaterial.density to a unit of kg/m3
+* deprecate the fit_xrr function, which will be remove in the next major
+  version -> use the new FitModel
+* new FitModel class for fitting of instances of LayerModel
+* fix bug in PowderDiffraction used with enable_simulation=False
+
+v1.5.1, 2019-01-07
+
+* simple unit cell visualization function: Crystal.show_unitcell()
+* add new 'radius' and 'color' properties to Elements
+* improve testing of various unit cell settings in CIFFile
+* fix bug in handling negative data in kill_spike, thanks to reihel for
+  reporting
+* Panalytical XRDML: parse hkl from file if present
+* CIF exporter and possibility to parse CIF files from string representations
+* new reflectivity code based on transfer matrices (contributed by Numan
+  Laanait, nlaanait@gmail.com)
+* unittest and code quality updates
+* show_reciprocal_space_plane function to plot a cut in reciprocal space
+  together with the peak positionn of a given material
+* new FourC experiment class, equivalent to HXRD, but using a four circle
+  goniometer for consistent Q2Ang and Ang2Q functions
+* add spline coefficients to PowderModel fits
+* allow single Layer object as argument in LayerModel
+* rewrite of line cut functions, shorter code, faster execution, more
+  versatile
+* avoid loops in Experiment.Q2Ang functions
+* clean README and add new CONTRIBUTIONS instructions
+
+v1.5.0, 2018-07-04
+
+* improved docstring formating
+* simulation code for diffuse X-ray reflectivity
+* more flexibility in defining materials Wyckoff positions
+* convenience function to calculate diffracted intensities of thin films to
+  compare various Bragg peaks (coplanar diffraction geoemetry)
+* simplify WyckoffBase of Alloy, by avoiding double entries
+* CIF parser now is able to fully parse files without symmetry operations
+* CIF parser now distinguishes multiple "_data" entries
+* improvement of the scanning XRD dataset parsers for ID01 (FastScan)
+* PEP8 improvements
+* speed optimization in EDF parser
+* add getheader_element to SPECScan
+* try to parse oxidation state of elements from a CIF file, and ignore '.' and
+  '?' values for Debye-Waller factors and occupation
+* numpy 1.14 related fixes (mostly in file parsers)
+* fix bugs in spacegroups whos Wyckoff position contains a multiplication
+* make U/UB matrix compatible with the definition in SPEC
+* remove deprecated Lattice/LatticeBase code
+* update XRR example
+
+v1.4.2, 2017-11-28 "The Praha edition"
+
+* introduce convenience function HKL to convert q-vectors to HKL of materials
+* update outdated information and fix typos in README
+* introduce abstract classes where useful
+* code cleanup (import statements)
+* vastly improved CIF file support with recognition of correct space group and
+  Wyckoff position
+* use AppVeyor.com for Windows testing and binary creation
+* make wavelength handling in PowderDiffraction more flexible
+* fix bug in SiGe alloy class
+* python2 fix for EDFFile which could have failed as described in issue #41
+* fix clear_bit utility function
+* fix float/int conversion in line cut functions for newer numpy
+
+v1.4.1, 2017-04-03
+
+* new materials (Cr, tetragonal BaTiO3)
+* fix bug in DarwinModel
+* fix multiprocessing on MS Windows platforms
+* fix BUG in tetragonal crystals (wrong symmetry was used!)
+
+v1.4.0, 2017-02-09
+
+* fix of negative HKL directions in RelaxationTriangle
+* new SGLattice class which replaces Lattice and allows for easier material
+  definitions
+* old Lattice class is still included but now deprecated and will be removed
+  in >1.5.0
+* new PowderExperiment, PowderDiffraction and PowderModel classes for proper
+  simulation of powder patterns. Thanks to Marcus Mendenhall for his
+  contribution of a Fundamentals parameter approach powder profile
+  calculation.
+* cache database results -> huge speedups in repeated calls with same
+  parameters
+* new file parser for ILL numor files (station D23, maybe more general)
+* add possibility to fix the pixel size when calibrating 2D detectors
+* new normalized Lorentzian function (NormLorentz1d)
+* add fully asymmetric Pseudovoigt (different width and eta)
+* remove unphysical variation of structure factor in kinematical 2-beam model
+* new dynamical multibeam simulations based on the Darwin theory of dynamical
+  diffraction
+* include pip install guide into readme
+* fix default wavelength selection in line cut functions.
+
+v1.3.3, 2016-08-24
+
+* fix packaging of the README.md file
+
+v1.3.2, 2016-08-24
+
+* call PowderIntensity from xu.Powder init routine
+* fix problems in Crystal class when no lattice base is defined
+* add parsing for simply chemical formulas in Amorphous definitions
+* fix setup.py issue related to test installation
+* fix bug in fuzzy gridders (first data point was not always treated correct!)
+* added absorption_length method in all material classes
+
+v1.3.1, 2016-05-19
+
+* fix windows build due to lack of support of C99 in MSVC
+
+v1.3.0, 2016-05-19
+
+* change to setuptools for installation/package building
+* major code cleanup (remove of duplicated code using Clone Digger)
+  http://clonedigger.sourceforge.net
+* bug fixes in Alloy initialization
+* documentation building now requires numpydoc
+* central version number in VERSION file (also available in the package after
+  importing: import xrayutilities as xu; xu.__version__
+* new examples using the new XRR and XRD simulation-code
+* improve handling of SiGe and AlGaAs alloy: alloying on atomic level
+* add relaxation parameter to PseudomoprhicMaterial to model partially relaxed
+  material
+* fix fwhm_exp for very narrow peaks
+* fitting of x-ray reflectivity using the lmfit package.
+  If you want to use this new feature you have to install lmfit
+  see https://pypi.python.org/pypi/lmfit/
+* new subpackage simpack for diffraction and reflectivity simulations from
+  thin film samples. So far implemented are
+  - a basic kinematical diffraction model
+  - two dynamical diffraction models (simplified and general 2-beam theory)
+  - a model for specular reflectivity calculations using a Parrat-like
+    formalism
+* fwhm_exp function was moved to math's subpackage! This was necessary in
+  order to avoid circular dependencies, but anyhow the function also
+  fits better there!
+* improvements of peak_fit function
+  - better ability to handle linear background
+  - more stable fitting due to use of deriavitives (PseudoVoigt)
+* minor improvement in peak_fit's plotting
+
+v1.2.1, 2016-01-08
+
+* Uiso parsing from CIF files for better structure factors
+* support for parsing Rigaku RAS files (Smartlab Guidance)
+* new getDetectorPos/Distance routines in QConversion
+  This can be used for all types of detectors to determine their position and
+  distance for data normalization purposes
+* add FuzzyGridder3D class
+* add FuzzyGridder2D class (see mailing-list for details)
+* add possibility of Pseudo-Angle (basically arbitrary contraints) to Q2AngFit
+* add Carbon(diamond), HOPG materials
+* enhancement in FIO file parser
+* much improved TIFF file parser
+* IntensityNormalizer gained possibility to normalize CCD data
+
+v1.2.0, 2015-08-03
+
+* Radicon file support was removed (no test scripts available!)
+* replace pytables by faster and more convenient h5py
+* bug fixes/improvements in the file parsers (discovered by the unit tests!)
+* new unittests for file parsers (spec, edf, xrdml, esg, nja, fio, cbf, tif)
+* added different oxidation states of the chemical elements to the database
+* huge speed improvements for the database access, especially when querying
+  multiple values at the same time
+* add PseudoVoigtAsym option in xu.math.peakfit
+* memory usage optimization in FastScanCCD
+
+v1.1.2, 2015-04-22
+
+* new webpage theme to allow for easier reading (esp. mobile devices)
+* huge set of improvements for working with FastScans (ESRF ID01)
+* keep_open option in EDFFile to speed up reading of multiple images
+* new convenience function for parsing data from spec-files
+* improve peak position finding in area-detector calibration
+* added new material AlAs
+
+v1.1.1, 2015-01-22
+
+* new PseudoVoigt1dasym function implementing an asymmetric PseudoVoigt peak
+* FuzzyGridder1D: improved 1D gridder using a range of value for each data
+  point
+* fix memory leak in XRDMLFile by abandoning minidom
+* edf-parser improvements: support for multiple images per file
+* spec-parser improvements, keep file closed when not parsing it
+* peak_fit: linear background feature
+* peak_fit function: enhancement of automatic initial parameter determination
+* improvements in the Material.environment function (occupancy awareness)
+* reciprocal space conversion for goniometers with translation-axis in the
+  detector arms (point, linear, area detectors)
+* reciprocal space conversion of energy scans for point, linear, area
+  detectors
+* addition of serval test routines to improve the code quality
+
+v1.1.0, 2014-10-09
+
+* fix bug in Q2Ang with refrac = True (omega angle could have been reported
+  incorrect and added some geometry checks/warnings)
+* more flexibility in sample position/orientation definition
+* documentation updates
+* small bug fixes in matplotlib import code
+* c-header-code cleanup
+* reformat c-code to conform to PEP7
+* reformat python code to conform to PEP8
+
+v1.1.0-beta, 2014-09-16
+
+* new 1D Gridder working consistent with 2D and 3D
+* add easy Powder Diffraction cif file parser
+* addition of several test routines to improve the code quality
+* new mathematical functions in math subpackage
+* fixes for possible segfault in the Gridder classes
+* considerable reduce size of elements.db file
+* FastScan parser for spec-mesh scans and FastScan/kmap data from ESRF 
+  (thanks to RG for help with testing and implementation ideas)
+* code-cleanup
+* minimal bug-fixes in io (xrdml)
+* documentation updates
+* add environment function to Materials: function calculates the atomic
+  neighbors around a given position in the unit cell
+* documentation update regarding the Q2Ang and Q2AngFit functions
+* fixed inconsistency bug in NonCOP and HXRD's Q2Ang function (thanks to FZ)
+* SPEC-file parser improvements 
+* python3.X compatibilty in single code-base
+
+v1.0.6, 2014-04-15
+
+* new way of accessing spec-scans when parsing the spec file
+  new: spec scans can be directly accessed with there spec-scan-number
+* sequential gridding: usage improvements
+* sample displacement error consideration in qconversion (experimental)
+* new Q2AngFit function able to fit the goniometer angles or a q-vector
+* minor fixes in the CIF file parser
+* add workaround for internal coordinate system definition in the experiment 
+  class
+* new getxrdml_scan function to read (multiple) XRDML-files 
+* fixes for the getxrdml_map function
+* add packaging instructions for WIN64
+
+v1.0.5, 2014-02-09
+
+* Documentation updates
+* minor compiler warning fixes and small bug fixes (line cut routines, 
+  EDF file reading)
+* more flexible shape of data arrays for Ang2Q function
+* minor improvements of the spec-file parser
+* added KeepData option to Gridders in 1,2,3 dimensions (sequential gridding)
+* implement possibility to read gzipped, bzipped data files 
+  (available for most data file readers)
+
+v1.0.4, 2013-12-22 "the final Linz edition"
+
+* bugfix in GID experimental class: qconv argument so far not used correctly!
+* enhanced fitting routines
+* spec files can now be parsed while gzipped
+* CBF file parser for detector images 
+* compile fixes for Microsoft compilers
+* compile fixes on Mac
+* new predefined materials (NaCl, FeO, Fe3O4, Co3O4,...)
+* some minor bug fixes
+
+v1.0.3, 2013-10-25
+
+* build_doc target for setup.py to help build docs (thanks to F. Picca)
+* fix python setup.py --help
+* add PseudoVoigt function in 1D
+* add Lorentzian peak shape in addition to Gaussian in new function
+  multPeakFit
+* some minor bug fixes
+
+v1.0.2, 2013-09-17
+
+* add documentation source to tarball
+* generate info file from documentation
+* make c extension work with python3, and in general make XU more python3
+  friendly
+* fix bug in SiGe materials lattice_const_AB function
+
+v1.0.1, 2013-09-14
+
+* new way of parsing motor positions and counter values from EDF files
+* some fixes and updates in the ID01 example
+* added new predefined materials
+* new Material method "distances" to calculate atomic distances in the unit
+  cell
+* some minor bug-fixes 
+
+v1.0, 2013-07-22
+
+* add new example with hotpixelkill variant
+* fix unicode string errors on Windows
+
+v0.99.2, 2013-07-18
+
+* fix issue in python-c-extension on windows
+* add new example
+* add functions to fit multiple Gaussian to a spectrum
+* add tests to released files
+
+v0.99.1, 2013-07-03
+
+* documentation updates
+* function analysis.area_detector_calib2 renamed to area_detector_calib_hkl
+* added function to remove spikes from 1d data arrays 
+
+v0.99, 2013-07-01 -- planned to be the initial release on PyPI
