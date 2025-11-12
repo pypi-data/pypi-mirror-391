@@ -1,0 +1,49 @@
+[project]
+name = "hwp-metadata-mcp"
+version = "1.0.0"
+description = "MCP server for extracting metadata from Korean HWP/HWPX files"
+authors = [
+    {name = "Heonseung Lee", email = "hs2254123@gmail.com"}
+]
+readme = "README.md"
+license = {text = "BSD-3-Clause"}
+requires-python = ">=3.10"
+keywords = ["mcp", "hwp", "hwpx", "hancom", "metadata", "korean", "document"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: General",
+]
+
+dependencies = [
+    "mcp>=1.0.0",
+    "pydantic>=2.0.0",
+    "olefile>=0.46",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.scripts]
+hwp-metadata-mcp = "hwp_metadata_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/heonseung4-del/hwp-metadata-mcp"
+Repository = "https://github.com/heonseung4-del/hwp-metadata-mcp"
+Issues = "https://github.com/heonseung4-del/hwp-metadata-mcp/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hwp_metadata_mcp"]
