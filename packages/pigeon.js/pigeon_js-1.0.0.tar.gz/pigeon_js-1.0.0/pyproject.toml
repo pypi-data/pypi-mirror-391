@@ -1,0 +1,16 @@
+[project]
+name = "pigeon.js"
+version = "1.0.0"
+requires-python = ">=3.10"
+authors = [
+    {name="Cameron Devine", email="cameron.devine@alleninstitute.org"}
+]
+description = "A JavaScript Pigeon message converter."
+readme = "README.md"
+dependencies = [
+    "pigeon-client",
+]
+[project.scripts]
+"pigeon.js" = "pigeon_js.__main__:main"
+[tool.setuptools.packages.find]
+exclude = ["node_modules"]
