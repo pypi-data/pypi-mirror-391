@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sheep-herding-rl"
+version = "1.0.1"
+description = "A reinforcement learning environment for sheep herding simulation with PPO, SAC, and TD3 algorithms"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "ferip"}
+]
+keywords = ["reinforcement-learning", "simulation", "ppo", "sac", "td3", "sheep-herding"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "pygame",
+    "numpy",
+    "pillow",
+    "scipy",
+    "pyyaml",
+    "matplotlib",
+    "torch>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+    "mypy",
+]
+
+[project.urls]
+Homepage = "https://github.com/dzijo/ferit-hackathon"
+Documentation = "https://github.com/dzijo/ferit-hackathon"
+Repository = "https://github.com/dzijo/ferit-hackathon"
+"Bug Tracker" = "https://github.com/dzijo/ferit-hackathon/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sheep_herding_rl*"]
+exclude = ["tests*"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+sheep_herding_rl = ["images/*.png", "images/*.jpg", "images/*.jpeg", "*.yaml", "*.yml", "*.json"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
