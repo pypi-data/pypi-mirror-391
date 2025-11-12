@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ob-events"
+version = "0.1.0"
+description = "A minimal Python client to publish events to the Outerbounds platform."
+authors = [{ name = "Outerbounds, Inc." }]
+requires-python = "~=3.7"
+readme = "README.md"
+license = "LicenseRef-Proprietary"
+keywords = [
+    "data science",
+    "machine learning",
+    "MLOps",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = ["requests"]
+
+[project.optional-dependencies]
+aws = ["boto3"]
+
+[project.urls]
+Documentation = "https://docs.metaflow.org"
