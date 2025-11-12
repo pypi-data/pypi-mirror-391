@@ -1,0 +1,194 @@
+Metadata-Version: 2.4
+Name: jtool
+Version: 0.2.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Rust
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Summary: Fast Jupyter notebook management tool (Rust rewrite)
+Keywords: jupyter,notebook,cli,rust
+Home-Page: https://github.com/paradigmxyz/jtool
+Author: jtool contributors
+License: MIT OR Apache-2.0
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+Project-URL: Repository, https://github.com/paradigmxyz/jtool
+Project-URL: Documentation, https://github.com/paradigmxyz/jtool
+
+# jtool 🧃
+
+`jtool` is a tool for humans and LLM agents to interact with Juypyter notebooks and servers.
+
+Features:
+- `jtool` enables any operation in the Jupyter GUI to be performed using a `jtool` cli command
+- `jtool` enables LLM agents to read, write, and analyze jupyter notebooks (see [usage by LLM agents](#usage-by-llm-agents))
+- `jtool` enables notebook-specific grep to search through notebooks' code, outputs, and markdown
+- `jtool` enables easy memory usage tracking of each Jupyter server, notebook, and variable
+
+## Installation
+
+`jtool` is built in Rust but can be installed via `cargo`, `uv`, or `pip`
+
+```bash
+cargo install jtool
+```
+
+```bash
+uv tool install jtool
+```
+
+```bash
+pip install jtool
+```
+
+Alternatively, can just use `uvx run jtool` to run `jtool` without worrying about whether it has been installed.
+
+## Example Usage
+
+```bash
+# List Jupyter servers
+jtool servers
+
+# Execute notebook cells
+jtool execute-cells notebook.ipynb
+
+# Read cells
+jtool read-cells notebook.ipynb 0:5
+
+# Edit cells
+jtool edit-cell notebook.ipynb 3 --content "print('hello')"
+
+# Show help
+jtool --help
+```
+
+## Usage by LLM Agents
+
+`jtool` is designed with LLM usage in mind
+
+Compared to MCP-based solutions, CLI tools like `jtool` are more token-efficient, more composable, and have lower operational complexity. `jtool` is also fast and robust thanks to being written in rust.
+
+### Token Efficiency
+- `--max-output-lines N` - prevents output explosion from large cell outputs
+- `--fields` - selective field extraction (only get what you need)
+- `--inputs-only` / `--outputs-only` - filter noise
+- `--compact` modes for summaries
+
+### Composability
+- CLI tools are much more composable than MCP servers
+- calls to `jtool` can be chained together in scripts or complex bash calls
+
+### Code Search and Understanding
+- `jtool grep <regex>`: finds code patterns across notebooks
+- `jtool errors`: print failures without re-execution
+- `jtool imports`: discover dependencies
+- summary - get quick notebook overview
+
+### Safe Execution Controls
+- `--timeout SECONDS` - prevent infinite loops
+- `--max-output-lines` - limit output size
+- Cell-level granularity (execute specific cells, not whole notebook)
+- `--stream` for real-time feedback
+
+### Documentation for LLM's
+- See `agents/AGENTS.md` for a general prompt for teaching LLM agents to use `jtool`.
+- See `agents/claude_skills` for usage of `jtool` documented as Claude skills.
+- See `agents/prompts` for example prompts for using `jtool`.
+
+
+## Syntax
+
+`jtool` can use special syntax to reference servers, notebooks, and cells.
+
+### Server References
+Reference servers by full URL or port:
+```bash
+http://localhost:8888    # Full URL
+8888                     # Port only (implies localhost)
+```
+
+### Notebook References
+Multiple ways to reference notebooks:
+```bash
+path/to/notebook.ipynb   # Full path with .ipynb
+path/to/notebook         # Path without .ipynb extension
+notebook                 # Notebook name only (searches current directory)
+8888:notebook            # Server:notebook (by port)
+8888:path/to/notebook    # Server:path (by port)
+@                        # Most recently used/modified notebook
+```
+
+### Cell References
+Reference cells by index (0-based) or execution count:
+```bash
+# Single cell
+3                        # Cell at index 3
+_5                       # Cell with execution count 5
+
+# Cell ranges (inclusive)
+:                        # All cells
+:5                       # From start to index 5
+10:                      # From index 10 to end
+3:8                      # From index 3 to 8
+-3:                      # Last 3 cells to end
+:-5                      # From start to 5th from end
+-10:-5                   # From 10th from end to 5th from end
+
+# Execution count ranges
+_1:_10                   # From execution count 1 to 10
+_5:                      # From execution count 5 onwards
+:_20                     # Up to execution count 20
+```
+
+### Common Options
+Many commands support these options for output control:
+```bash
+--json                    # Output as JSON
+--csv                     # Output as CSV
+--fields field1,field2    # Select specific fields
+--head N                  # Limit to first N items
+--max-output-lines N      # Limit cell output lines
+--inputs-only             # Show only cell inputs
+--outputs-only            # Show only cell outputs
+--compact                 # Compact summary format
+```
+
+## Command Reference
+
+### Server Management
+- `servers` - List all running Jupyter servers
+- `add-server` - Add manual server configuration
+- `kernels` - List running kernels
+- `sessions` - List active sessions
+- `read-config` - Read server configuration
+- `edit-config` - Edit server configuration
+
+### Execution
+- `execute-cells` - Execute notebook cells
+- `execute-code` - Execute code in a kernel
+- `kill` - Kill a Jupyter server
+- `restart` - Restart a kernel
+- `interrupt` - Interrupt a running kernel
+
+### Inspection
+- `read-cells` - Read cells from notebook
+- `info` - Show notebook info
+- `summary` - Show comprehensive summary
+- `errors` - Display error tracebacks
+
+### Editing
+- `edit-cell` - Edit cell content
+- `insert-cell` - Insert new cell
+- `delete-cells` - Delete cells
+- `reorder-cells` - Move cells
+- `transfer-cells` - Copy/move between notebooks
+- `clear-output` - Clear cell outputs
+
