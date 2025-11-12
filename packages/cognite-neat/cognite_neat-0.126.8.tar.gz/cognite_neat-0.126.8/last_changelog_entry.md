@@ -1,0 +1,4 @@
+
+### Added
+
+- REPR HTML methods
