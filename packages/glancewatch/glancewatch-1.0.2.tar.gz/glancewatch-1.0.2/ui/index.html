@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlanceWatch - System Monitoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #fff;
+            border-bottom: 2px solid #ddd;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header .version {
+            color: #666;
+            font-size: 0.875rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            background: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            background: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+            padding: 0.75rem 1.25rem;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .section-body {
+            padding: 1.25rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        table th {
+            background: #f8f8f8;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.875rem;
+        }
+
+        table td {
+            font-size: 0.875rem;
+            color: #555;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-critical {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.875rem;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #007bff;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            min-width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.875rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: 1px solid #0056b3;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #28a745;
+            border-color: #1e7e34;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            border-color: #545b62;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            color: #999;
+            font-size: 0.75rem;
+            border-top: 1px solid #ddd;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>GlanceWatch System Monitor</h1>
+        <span class="version">v1.0.1</span>
+    </div>
+
+    <div class="container">
+        <!-- System Status Section -->
+        <div class="section">
+            <div class="section-header">System Status</div>
+            <div class="section-body">
+                <div id="statusLoading" class="loading">Loading system metrics...</div>
+                <div id="statusContent" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Current Value</th>
+                                <th>Threshold</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>RAM Usage</td>
+                                <td id="ramValue">--</td>
+                                <td id="ramThreshold">--</td>
+                                <td id="ramStatus">--</td>
+                            </tr>
+                            <tr>
+                                <td>CPU Usage</td>
+                                <td id="cpuValue">--</td>
+                                <td id="cpuThreshold">--</td>
+                                <td id="cpuStatus">--</td>
+                            </tr>
+                            <tr>
+                                <td>Disk Usage</td>
+                                <td id="diskValue">--</td>
+                                <td id="diskThreshold">--</td>
+                                <td id="diskStatus">--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 1rem; color: #666; font-size: 0.75rem;">
+                        Last updated: <span id="lastUpdate">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="section">
+            <div class="section-header">Threshold Configuration</div>
+            <div class="section-body">
+                <div id="configLoading" class="loading">Loading configuration...</div>
+                <div id="configContent" style="display: none;">
+                    <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                    <div id="errorMessage" class="alert alert-error" style="display: none;"></div>
+
+                    <div class="form-group">
+                        <label for="ramSlider">RAM Threshold (%)</label>
+                        <div class="slider-container">
+                            <input type="range" id="ramSlider" min="10" max="100" value="80" step="1">
+                            <span class="slider-value" id="ramSliderValue">80%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cpuSlider">CPU Threshold (%)</label>
+                        <div class="slider-container">
+                            <input type="range" id="cpuSlider" min="10" max="100" value="80" step="1">
+                            <span class="slider-value" id="cpuSliderValue">80%</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diskSlider">Disk Threshold (%)</label>
+                        <div class="slider-container">
+                            <input type="range" id="diskSlider" min="10" max="100" value="85" step="1">
+                            <span class="slider-value" id="diskSliderValue">85%</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="saveButton" class="btn-success">Apply Changes</button>
+                        <button id="resetButton" class="btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            GlanceWatch v1.0.1 &copy; 2025 | System Monitoring Tool
+        </div>
+    </div>
+
+
+    <script>
+        // State
+        let originalConfig = {};
+        let currentConfig = {};
+        let hasChanges = false;
+
+        // Load configuration
+        async function loadConfig() {
+            try {
+                const response = await fetch('/config');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                originalConfig = { ...data.thresholds };
+                currentConfig = { ...data.thresholds };
+                
+                // Update sliders
+                document.getElementById('ramSlider').value = currentConfig.ram_percent;
+                document.getElementById('cpuSlider').value = currentConfig.cpu_percent;
+                document.getElementById('diskSlider').value = currentConfig.disk_percent;
+                
+                updateSliderValues();
+                
+                document.getElementById('configLoading').style.display = 'none';
+                document.getElementById('configContent').style.display = 'block';
+                
+                hasChanges = false;
+                updateButtons();
+            } catch (error) {
+                console.error('Config load error:', error);
+                document.getElementById('configLoading').innerHTML = 
+                    '<p style="color: #dc3545;">Failed to load configuration: ' + error.message + '</p>';
+            }
+        }
+
+        // Load dashboard metrics
+        async function loadMetrics() {
+            try {
+                const response = await fetch('/status');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const data = await response.json();
+                
+                // Update RAM
+                document.getElementById('ramValue').textContent = data.ram.value.toFixed(1) + '%';
+                document.getElementById('ramThreshold').textContent = data.ram.threshold + '%';
+                document.getElementById('ramStatus').textContent = data.ram.ok ? 'OK' : 'CRITICAL';
+                document.getElementById('ramStatus').className = data.ram.ok ? 'status-ok' : 'status-critical';
+                
+                // Update CPU
+                document.getElementById('cpuValue').textContent = data.cpu.value.toFixed(1) + '%';
+                document.getElementById('cpuThreshold').textContent = data.cpu.threshold + '%';
+                document.getElementById('cpuStatus').textContent = data.cpu.ok ? 'OK' : 'CRITICAL';
+                document.getElementById('cpuStatus').className = data.cpu.ok ? 'status-ok' : 'status-critical';
+                
+                // Update Disk
+                const diskValue = data.disk.disks.length > 0 ? data.disk.disks[0].percent_used.toFixed(1) + '%' : 'N/A';
+                document.getElementById('diskValue').textContent = diskValue;
+                document.getElementById('diskThreshold').textContent = data.disk.threshold + '%';
+                document.getElementById('diskStatus').textContent = data.disk.ok ? 'OK' : 'CRITICAL';
+                document.getElementById('diskStatus').className = data.disk.ok ? 'status-ok' : 'status-critical';
+                
+                // Update timestamp
+                document.getElementById('lastUpdate').textContent = new Date(data.last_check).toLocaleString();
+                
+                document.getElementById('statusLoading').style.display = 'none';
+                document.getElementById('statusContent').style.display = 'block';
+            } catch (error) {
+                console.error('Metrics load error:', error);
+                document.getElementById('statusLoading').innerHTML = 
+                    '<p style="color: #dc3545;">Failed to load metrics: ' + error.message + '</p>';
+            }
+        }
+
+        // Update slider display values
+        function updateSliderValues() {
+            document.getElementById('ramSliderValue').textContent = 
+                document.getElementById('ramSlider').value + '%';
+            document.getElementById('cpuSliderValue').textContent = 
+                document.getElementById('cpuSlider').value + '%';
+            document.getElementById('diskSliderValue').textContent = 
+                document.getElementById('diskSlider').value + '%';
+                
+            // Update current config
+            currentConfig.ram_percent = parseFloat(document.getElementById('ramSlider').value);
+            currentConfig.cpu_percent = parseFloat(document.getElementById('cpuSlider').value);
+            currentConfig.disk_percent = parseFloat(document.getElementById('diskSlider').value);
+            
+            // Check if changed
+            hasChanges = 
+                currentConfig.ram_percent !== originalConfig.ram_percent ||
+                currentConfig.cpu_percent !== originalConfig.cpu_percent ||
+                currentConfig.disk_percent !== originalConfig.disk_percent;
+                
+            updateButtons();
+        }
+
+        // Update button states
+        function updateButtons() {
+            document.getElementById('saveButton').disabled = !hasChanges;
+            document.getElementById('resetButton').disabled = !hasChanges;
+        }
+
+        // Save configuration
+        async function saveConfig() {
+            try {
+                document.getElementById('saveButton').textContent = 'Applying...';
+                document.getElementById('saveButton').disabled = true;
+                
+                const response = await fetch('/config', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        thresholds: currentConfig
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to save configuration');
+                }
+                
+                const data = await response.json();
+                originalConfig = { ...currentConfig };
+                hasChanges = false;
+                updateButtons();
+                
+                showSuccess('Configuration applied successfully');
+                document.getElementById('saveButton').textContent = 'Apply Changes';
+                
+                // Reload metrics to show new thresholds
+                loadMetrics();
+            } catch (error) {
+                showError('Failed to save configuration: ' + error.message);
+                document.getElementById('saveButton').textContent = 'Apply Changes';
+                document.getElementById('saveButton').disabled = false;
+            }
+        }
+
+        // Reset configuration
+        function resetConfig() {
+            currentConfig = { ...originalConfig };
+            document.getElementById('ramSlider').value = currentConfig.ram_percent;
+            document.getElementById('cpuSlider').value = currentConfig.cpu_percent;
+            document.getElementById('diskSlider').value = currentConfig.disk_percent;
+            updateSliderValues();
+            hideMessages();
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const el = document.getElementById('successMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = message;
+            el.style.display = 'block';
+        }
+
+        // Hide messages
+        function hideMessages() {
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('ramSlider').addEventListener('input', updateSliderValues);
+        document.getElementById('cpuSlider').addEventListener('input', updateSliderValues);
+        document.getElementById('diskSlider').addEventListener('input', updateSliderValues);
+        document.getElementById('saveButton').addEventListener('click', saveConfig);
+        document.getElementById('resetButton').addEventListener('click', resetConfig);
+
+        // Initialize
+        loadConfig();
+        loadMetrics();
+        
+        // Auto-refresh metrics every 5 seconds
+        setInterval(loadMetrics, 5000);
+    </script>
+</body>
+</html>
