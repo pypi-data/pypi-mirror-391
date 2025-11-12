@@ -1,0 +1,153 @@
+[project]
+name = "quantbox-cn"
+version = "0.2.0"
+description = "A quantitative trading toolbox with multiple data source support"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    { name = "HuChen", email = "curiousbull@outlook.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
+dependencies = [
+    "pandas>=2.0,<3.0",
+    "pymongo>=4.0,<5.0",
+    "tushare>=1.4.0",
+    "toml>=0.10.0",
+    "numpy>=1.24.0",
+    "click>=8.0.0",
+    "tqdm>=4.65.0",
+    # Async support
+    "motor>=3.3.0",        # Async MongoDB driver
+    "aiohttp>=3.9.0",      # Async HTTP client
+    "aiometer>=0.4.0",     # Rate limiting for async operations
+    "aiofiles>=23.0.0",    # Async file I/O
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.23.0",  # Async testing support
+    "black>=24.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+]
+gui = [
+    "PyQt6>=6.0.0",
+]
+build = [
+    "pyinstaller>=6.0.0",
+]
+goldminer = [
+    "gm>=3.0.0",  # 掘金量化 SDK (Windows/Linux only, not supported on macOS)
+]
+all = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.23.0",
+    "black>=24.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.8.0",
+    "PyQt6>=6.0.0",
+    "gm>=3.0.0",
+]
+
+[project.scripts]
+quantbox = "quantbox.shell:main"
+quantbox-async = "quantbox.shell_async:main"
+quantbox-save = "quantbox.cli:main"
+quantbox-save-async = "quantbox.cli_async:main"
+quantbox-config = "quantbox.user_config:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["quantbox"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/quantbox",
+    "/README.md",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/docs/QUICK_START.md",
+    "/docs/ARCHITECTURE.md",
+    "/docs/API_REFERENCE.md",
+    "/docs/MIGRATION_GUIDE.md",
+    "/docs/ASYNC_GUIDE.md",
+    "/examples/cache_warmup_example.py",
+    "/examples/async_example.py",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=quantbox --cov-report=html --cov-report=term"
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+module = [
+    "tushare.*",
+    "pymongo.*",
+    "toml.*",
+    "gm.*",
+    "motor.*",
+    "aiohttp.*",
+    "aiometer.*",
+    "aiofiles.*",
+]
+ignore_missing_imports = true
