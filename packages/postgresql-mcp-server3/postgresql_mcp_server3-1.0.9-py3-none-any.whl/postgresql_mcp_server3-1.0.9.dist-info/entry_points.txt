@@ -1,0 +1,5 @@
+[console_scripts]
+postgresql-mcp-server3 = postgresql_mcp_server3.server:main
+
+[mcp.servers]
+postgresql = postgresql_mcp_server3.server:postgresql_mcp_server3
