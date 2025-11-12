@@ -1,0 +1,173 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: [self-hosted, ubuntu-latest]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e ".[dev]"
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=debrepomanager --cov-report=xml --cov-report=term-missing -v
+
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.11'
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+      # Coverage badge and HTML report removed - use Codecov for viewing
+      # Artifacts not stored to minimize storage usage on self-hosted runners
+
+  lint:
+    name: Code Quality
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e ".[dev]"
+
+      - name: Check formatting with Black
+        run: black --check debrepomanager/ tests/
+
+      - name: Lint with flake8
+        run: flake8 debrepomanager/ tests/
+
+      - name: Type check with mypy
+        run: mypy debrepomanager/
+
+      - name: Check imports with isort
+        run: |
+          pip install isort
+          isort --check-only debrepomanager/ tests/
+
+  security:
+    name: Security Scan
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit[toml] safety
+
+      - name: Run Bandit
+        run: bandit -r debrepomanager/ -f json -o bandit-report.json
+        continue-on-error: true
+
+      - name: Run Safety check
+        run: safety check --json
+        continue-on-error: true
+
+      # Security reports not uploaded as artifacts - check logs for results
+      # Minimizes storage usage on self-hosted runners
+
+  integration:
+    name: Integration Tests (Docker)
+    runs-on: [self-hosted, ubuntu-latest]
+    # Run on all pushes and PRs to ensure real APT functionality
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run integration tests in Docker
+        run: |
+          cd tests/integration
+          docker compose up --build --abort-on-container-exit --exit-code-from debrepomanager-test
+
+      - name: Cleanup
+        if: always()
+        run: |
+          cd tests/integration
+          docker compose down -v
+
+  build:
+    name: Build Package
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        run: python -m build
+
+      - name: Check package
+        run: twine check dist/*
+
+      # Build artifacts not uploaded - package can be rebuilt from tag
+      # Minimizes storage usage on self-hosted runners
+      # For releases, use 'gh release create' with dist/ files
+
+
+

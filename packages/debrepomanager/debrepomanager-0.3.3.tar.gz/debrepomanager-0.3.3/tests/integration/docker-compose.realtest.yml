@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  realtest:
+    build:
+      context: ../..
+      dockerfile: tests/integration/Dockerfile.realtest
+    container_name: debrepomanager-realtest
+    command: /app/test_real_apt.sh
+    environment:
+      - GPG_TTY=/dev/pts/0
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge

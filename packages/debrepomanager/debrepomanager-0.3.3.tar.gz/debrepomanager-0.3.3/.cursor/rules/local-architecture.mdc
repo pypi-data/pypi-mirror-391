@@ -1,0 +1,249 @@
+---
+tags: ["architecture", "python", "modules"]
+globs: ["debrepomanager/**/*.py"]
+---
+
+# Architecture Guidelines
+
+## Module Structure (v0.2.0)
+
+### Core Modules
+- **config.py**: Configuration with auto-detection and ENV support (100% coverage)
+- **utils.py**: Utility functions - logging, parsing, versions (97% coverage)
+- **aptly.py**: Aptly CLI wrapper, all repository operations (88% coverage)
+- **gpg.py**: GPG operations and signing (100% coverage)
+- **metadata.py**: Repository metadata tracking (100% coverage)
+- **cli.py**: Click-based CLI interface (87% coverage)
+
+### Module Dependencies
+
+```
+config.py (base, no project dependencies)
+    ↓
+    ├─→ utils.py (independent utilities)
+    │
+    ├─→ metadata.py (depends on config)
+    │       ↓
+    │   used by aptly.py for tracking
+    │
+    ├─→ gpg.py (depends on config)
+    │       ↓
+    │   used by aptly.py for signing
+    │
+    └─→ aptly.py (depends on config, gpg, metadata)
+            ↓
+        cli.py (uses all modules, entry point)
+```
+
+### Dependency Rules
+
+1. **config.py** - NO project imports
+2. **utils.py** - NO project imports  
+3. **metadata.py** - can import config only
+4. **gpg.py** - can import config only
+5. **aptly.py** - can import config, gpg, metadata, utils
+6. **cli.py** - can import all (entry point)
+
+## Key Design Principles
+
+### 1. Separation of Concerns
+Each module has focused responsibility:
+
+**config.py** (v0.2):
+- Config auto-detection (priority chain)
+- ENV variable support
+- YAML loading and merging
+- Configuration validation
+- Property accessors
+
+**metadata.py** (NEW in v0.2):
+- Repository tracking in JSON file
+- Fast listing without scanning
+- Sync with actual aptly state
+- Add/remove operations
+
+**aptly.py**:
+- Aptly CLI wrapper
+- Multi-root management
+- Snapshot-based atomic updates
+- GPG integration
+- Dual format symlinks
+- Metadata integration
+
+**cli.py**:
+- Click-based interface
+- Command routing
+- User-facing messages
+- Dry-run support
+- Verbose mode
+
+### 2. Dependency Injection
+
+Pass Config to constructors:
+
+```python
+# Good
+class AptlyManager:
+    def __init__(self, config: Config):
+        self.config = config
+        self.gpg = GPGManager(config)
+        self.metadata = MetadataManager(config.aptly_root_base)
+
+# Usage
+config = Config()  # Auto-detects
+manager = AptlyManager(config)
+```
+
+### 3. Immutability
+
+Use dataclasses for data objects:
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class PackageInfo:
+    """Package metadata."""
+    name: str
+    version: str
+    architecture: str
+    file_path: str
+```
+
+### 4. Error Handling Hierarchy
+
+```python
+class ConfigError(Exception):
+    """Configuration errors."""
+
+class AptlyError(Exception):
+    """Aptly operation errors."""
+
+class GPGError(Exception):
+    """GPG operation errors."""
+
+class MetadataError(Exception):
+    """Metadata operation errors."""
+```
+
+### 5. Logging
+
+Use logging, not print():
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+logger.info("Processing packages")
+logger.error(f"Failed: {error}")
+logger.debug(f"Details: {details}")
+```
+
+## Module Responsibilities
+
+### config.py (v0.2)
+
+**Responsibilities**:
+- Find and load configs from standard locations
+- Merge configs in priority order
+- Apply ENV variable overrides
+- Validate configuration
+- Provide property accessors
+
+**Does NOT**:
+- Execute aptly commands
+- Perform GPG operations
+- Track repositories (uses metadata.py)
+
+### metadata.py (NEW in v0.2)
+
+**Responsibilities**:
+- Track repositories in metadata.json
+- Fast listing without aptly scans
+- Sync with actual aptly state
+- Add/remove repository entries
+
+**File**: `{aptly_root_base}/.repomanager/metadata.json`
+
+**Does NOT**:
+- Execute aptly commands
+- Create/delete actual repositories
+
+### aptly.py
+
+**Responsibilities**:
+- All aptly operations
+- Multi-root management
+- Snapshot creation and management
+- Publishing with GPG
+- Dual format symlinks
+- Metadata updates on create/delete
+
+**Does NOT**:
+- Parse CLI arguments
+- Implement retention logic
+- Directly handle GPG (uses gpg.py)
+
+### cli.py
+
+**Responsibilities**:
+- CLI interface (click)
+- Argument parsing
+- Command routing
+- User-facing messages
+- Error display
+
+**Does NOT**:
+- Implement business logic (delegates to modules)
+- Execute subprocess directly (uses modules)
+
+## Performance Considerations
+
+### Minimize aptly calls
+
+```python
+# Good: bulk operation
+aptly.add_packages(packages)  # 1 call
+
+# Bad: N calls
+for package in packages:
+    aptly.add_package(package)
+```
+
+### Use metadata cache
+
+```python
+# Fast - uses metadata.json
+repos = manager.list_repos()  # No aptly calls
+
+# Slower - queries aptly
+repos = manager.list_repos("bookworm")  # 1 aptly call
+```
+
+## Testing Strategy
+
+### Unit Tests
+- Mock subprocess and file I/O
+- Test each module independently
+- Cover all code paths
+- Target: 90%+ coverage per module
+
+### Fuzzing Tests (Hypothesis)
+- Property-based testing
+- Random inputs validation
+- Edge case discovery
+- 30s timeout per test
+
+### Integration Tests (Docker)
+- Real aptly operations
+- Multi-codename isolation
+- GPG signing validation
+- Dual format verification
+
+## See Also
+
+- [local-aptly.md](local-aptly.md) - Aptly patterns
+- [local-quick-reference.md](local-quick-reference.md) - Quick reference
+- [docs/ARCHITECTURE.md](../../docs/ARCHITECTURE.md) - Full architecture
+- [PROJECT_STATUS_v02.md](../../PROJECT_STATUS_v02.md) - Detailed status

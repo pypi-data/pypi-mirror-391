@@ -1,0 +1,439 @@
+---
+tags: ["aptly", "integration", "snapshots"]
+globs: ["debrepomanager/aptly.py", "tests/test_aptly.py"]
+---
+
+# Aptly Integration Guidelines
+
+## Multi-Root Structure
+
+### Problem
+aptly использует симлинки для оптимизации хранения и НЕ поддерживает пакеты с одинаковым названием и версией, но разным содержимым в одном pool.
+
+### Solution
+Используем отдельные aptly root директории для каждого codename (bookworm, noble, trixie и т.д.).
+
+```
+/srv/aptly/
+├── bookworm/
+│   ├── .aptly/        # aptly database
+│   ├── aptly.conf     # config для bookworm
+│   └── public/        # published repos
+├── noble/
+│   ├── .aptly/
+│   ├── aptly.conf
+│   └── public/
+└── trixie/
+    ├── .aptly/
+    ├── aptly.conf
+    └── public/
+```
+
+## Atomic Updates via Snapshots
+
+### Workflow
+1. Добавить пакеты в local repo (mutable)
+2. Создать snapshot с timestamp (immutable)
+3. Publish switch (атомарное переключение)
+4. Cleanup старых snapshots
+
+### Example
+```python
+def add_packages_atomic(
+    self,
+    codename: str,
+    component: str,
+    packages: List[str]
+) -> bool:
+    """Add packages atomically using snapshots."""
+    repo_name = f"{component}-{codename}"
+
+    # Step 1: Add to local repo
+    self._run_aptly([
+        "repo", "add", repo_name
+    ] + packages, codename)
+
+    # Step 2: Create snapshot
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    snapshot_name = f"{repo_name}-{timestamp}"
+    self._run_aptly([
+        "snapshot", "create", snapshot_name,
+        "from", "repo", repo_name
+    ], codename)
+
+    # Step 3: Publish switch (atomic!)
+    prefix = f"{codename}/{component}"
+    self._run_aptly([
+        "publish", "switch",
+        component,  # distribution
+        prefix,
+        snapshot_name
+    ], codename)
+
+    # Step 4: Cleanup old snapshots
+    self.cleanup_snapshots(codename, component, keep=10)
+
+    return True
+```
+
+## Config per Codename
+
+### aptly.conf structure
+```json
+{
+  "rootDir": "/srv/aptly/bookworm",
+  "architectures": ["amd64", "arm64", "riscv64"],
+  "gpgProvider": "gpg",
+  "gpgDisableSign": false,
+  "gpgDisableVerify": false
+}
+```
+
+### Always use -config flag
+```python
+def _run_aptly(
+    self,
+    args: List[str],
+    codename: str
+) -> subprocess.CompletedProcess:
+    """Run aptly command with proper config."""
+    aptly_root = self.config.get_aptly_root(codename)
+    config_path = f"{aptly_root}/aptly.conf"
+
+    # ALWAYS use -config flag!
+    cmd = ["aptly", "-config", config_path] + args
+
+    logger.debug(f"Running: {' '.join(cmd)}")
+
+    return subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        check=True
+    )
+```
+
+## Repository Naming Convention
+
+### Internal naming
+```python
+def _get_repo_name(self, codename: str, component: str) -> str:
+    """Get internal repository name."""
+    return f"{component}-{codename}"
+
+# Examples:
+# - jethome-tools-bookworm
+# - jethome-armbian-noble
+```
+
+### Snapshot naming
+```python
+def _get_snapshot_name(self, codename: str, component: str) -> str:
+    """Get snapshot name with timestamp."""
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    return f"{component}-{codename}-{timestamp}"
+
+# Examples:
+# - jethome-tools-bookworm-20251029-143022
+# - jethome-armbian-noble-20251029-143022
+```
+
+## Publishing Structure
+
+### URL scheme
+```
+http://repo.site.com/{codename}/{component}
+```
+
+### Client Configuration (APT)
+
+**For Debian 12 (Bookworm)**:
+```bash
+# /etc/apt/sources.list.d/jethome.list
+deb http://repo.site.com/bookworm jethome-tools main
+deb http://repo.site.com/bookworm jethome-armbian main
+deb http://repo.site.com/bookworm jethome-bookworm main
+```
+
+**For Ubuntu 24.04 (Noble)**:
+```bash
+# /etc/apt/sources.list.d/jethome.list
+deb http://repo.site.com/noble jethome-tools main
+deb http://repo.site.com/noble jethome-armbian main
+deb http://repo.site.com/noble jethome-noble main
+```
+
+**См. [docs/APT_CONFIGURATION.md](../docs/APT_CONFIGURATION.md) для полных примеров всех систем**
+
+### Legacy Format Support
+
+Для обратной совместимости со старыми конфигами:
+
+**Старый формат:**
+```bash
+deb http://repo.site.com bookworm jethome-bookworm
+```
+
+**Новый формат:**
+```bash
+deb http://repo.site.com/bookworm jethome-bookworm main
+```
+
+**Реализация через symlinks:**
+```bash
+# На сервере создать symlinks
+cd /srv/repo/public
+mkdir -p dists/bookworm/jethome-bookworm
+ln -s ../../bookworm/jethome-bookworm/dists/jethome-bookworm \
+      dists/bookworm/jethome-bookworm/
+```
+
+**См. [docs/DUAL_FORMAT.md](../docs/DUAL_FORMAT.md) для полной технической документации**
+
+### Aptly publish command
+```bash
+# Initial publish
+aptly publish snapshot \
+    -config=/srv/aptly/bookworm/aptly.conf \
+    -distribution=jethome-tools \
+    -gpg-key=KEY_ID \
+    jethome-tools-bookworm-20251029 \
+    bookworm/jethome-tools
+
+# Switch to new snapshot
+aptly publish switch \
+    -config=/srv/aptly/bookworm/aptly.conf \
+    jethome-tools \
+    bookworm/jethome-tools \
+    jethome-tools-bookworm-20251030
+```
+
+### Python wrapper
+```python
+def publish_snapshot(
+    self,
+    codename: str,
+    component: str,
+    snapshot_name: str,
+    is_initial: bool = False
+) -> bool:
+    """Publish or switch to snapshot."""
+    prefix = f"{codename}/{component}"
+
+    if is_initial:
+        # Initial publish
+        args = [
+            "publish", "snapshot",
+            "-distribution", component,
+            "-gpg-key", self.config.gpg_key_id,
+            snapshot_name,
+            prefix
+        ]
+    else:
+        # Switch existing
+        args = [
+            "publish", "switch",
+            component,      # distribution
+            prefix,         # prefix
+            snapshot_name   # snapshot
+        ]
+
+    self._run_aptly(args, codename)
+    return True
+```
+
+## Error Handling
+
+### Always handle aptly errors
+```python
+try:
+    result = self._run_aptly(args, codename)
+    return result.stdout
+except subprocess.CalledProcessError as e:
+    logger.error(f"Aptly command failed: {' '.join(args)}")
+    logger.error(f"Exit code: {e.returncode}")
+    logger.error(f"Stderr: {e.stderr}")
+
+    # Parse aptly error messages
+    if "already exists" in e.stderr:
+        raise AptlyError(f"Repository {repo_name} already exists")
+    elif "not found" in e.stderr:
+        raise AptlyError(f"Repository {repo_name} not found")
+    else:
+        raise AptlyError(f"Aptly operation failed: {e.stderr}")
+```
+
+## Common Operations
+
+### Check if repo exists
+```python
+def repo_exists(self, codename: str, component: str) -> bool:
+    """Check if repository exists."""
+    repo_name = self._get_repo_name(codename, component)
+
+    try:
+        result = self._run_aptly(["repo", "show", repo_name], codename)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+```
+
+### List packages in repo
+```python
+def list_packages(self, codename: str, component: str) -> List[str]:
+    """List packages in repository."""
+    repo_name = self._get_repo_name(codename, component)
+
+    result = self._run_aptly([
+        "repo", "show",
+        "-with-packages",
+        repo_name
+    ], codename)
+
+    # Parse output
+    packages = []
+    in_packages = False
+    for line in result.stdout.splitlines():
+        if line.startswith("Packages:"):
+            in_packages = True
+            continue
+        if in_packages and line.strip():
+            packages.append(line.strip())
+
+    return packages
+```
+
+### Remove packages
+```python
+def remove_packages(
+    self,
+    codename: str,
+    component: str,
+    packages: List[str]
+) -> bool:
+    """Remove packages from repository."""
+    repo_name = self._get_repo_name(codename, component)
+
+    # aptly repo remove <repo> <package-query>
+    for package in packages:
+        self._run_aptly([
+            "repo", "remove",
+            repo_name,
+            package
+        ], codename)
+
+    return True
+```
+
+### Cleanup old snapshots
+```python
+def cleanup_snapshots(
+    self,
+    codename: str,
+    component: str,
+    keep: int = 10
+) -> int:
+    """Remove old snapshots, keeping last N."""
+    prefix = f"{component}-{codename}-"
+
+    # List all snapshots
+    result = self._run_aptly(["snapshot", "list", "-raw"], codename)
+    all_snapshots = result.stdout.strip().split("\n")
+
+    # Filter snapshots for this repo
+    repo_snapshots = [
+        s for s in all_snapshots
+        if s.startswith(prefix)
+    ]
+
+    # Sort by name (timestamp is in name)
+    repo_snapshots.sort()
+
+    # Keep last N, remove others
+    to_remove = repo_snapshots[:-keep] if len(repo_snapshots) > keep else []
+
+    for snapshot in to_remove:
+        try:
+            self._run_aptly(["snapshot", "drop", snapshot], codename)
+        except subprocess.CalledProcessError as e:
+            logger.warning(f"Failed to remove snapshot {snapshot}: {e}")
+
+    return len(to_remove)
+```
+
+## Best Practices
+
+### 1. Always use snapshots for publishing
+❌ **Don't**:
+```python
+# Direct repo publish (not atomic!)
+aptly publish repo repo-name
+```
+
+✅ **Do**:
+```python
+# Create snapshot first, then publish
+aptly snapshot create snap-name from repo repo-name
+aptly publish snapshot snap-name
+```
+
+### 2. Use meaningful snapshot names
+❌ **Don't**:
+```python
+snapshot_name = "snap1"
+```
+
+✅ **Do**:
+```python
+timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+snapshot_name = f"{component}-{codename}-{timestamp}"
+```
+
+### 3. Always specify config file
+❌ **Don't**:
+```python
+subprocess.run(["aptly", "repo", "create", "myrepo"])
+```
+
+✅ **Do**:
+```python
+subprocess.run(["aptly", "-config", config_path, "repo", "create", "myrepo"])
+```
+
+### 4. Handle errors gracefully
+❌ **Don't**:
+```python
+subprocess.run(cmd)  # May crash
+```
+
+✅ **Do**:
+```python
+try:
+    subprocess.run(cmd, check=True, capture_output=True)
+except subprocess.CalledProcessError as e:
+    logger.error(f"Command failed: {e.stderr}")
+    raise AptlyError(...)
+```
+
+### 5. Log aptly commands for debugging
+```python
+def _run_aptly(self, args, codename):
+    cmd = ["aptly", "-config", config_path] + args
+    logger.debug(f"Running aptly: {' '.join(cmd)}")
+    # Execute...
+```
+
+## Performance Tips
+
+1. **Bulk operations**: Add multiple packages at once
+2. **Minimize snapshots**: Don't create snapshot for every package
+3. **Cleanup regularly**: Remove old snapshots to save space
+4. **Use filters**: When querying large repos, use aptly filters
+
+## See Also
+
+- [architecture.md](architecture.md) - Architecture guidelines
+- [error-handling.md](error-handling.md) - Error handling
+- [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) - Full architecture doc
+- [aptly documentation](https://www.aptly.info/doc/overview/)
+
