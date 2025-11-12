@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyTFBS"
+version = "1.0.2"
+license = "MIT"  # SPDX expression
+description = "PyTFBS: A Python Package for Transcription Factor Binding Site Prediction"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    {name = "Tinghua Huang", email = "thua45@126.com"}
+]
+keywords = ["PyTFBS", "Transcription Factor", "Binding Site"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "torch",
+    "numpy==1.26; sys_platform == 'darwin'",
+    "numpy>=2.0; sys_platform == 'win32'",
+    "numpy>=2.0; sys_platform == 'linux'",
+]
+
+[project.urls]
+Homepage = "https://github.com/thua45/pytfbs"
+Documentation = "https://github.com/thua45/pytfbs#readme"
+Repository = "https://github.com/thua45/pytfbs"
+Issues = "https://github.com/thua45/pytfbs/issues"
+
+[project.optional-dependencies]
+dev = [
+    "matplotlib",
+]
+test = [
+    "matplotlib",
+]
+
+[project.scripts]
+PyTFBS = "PyTFBS.cli:main"
+PyTFBS-cleanup = "PyTFBS.uninstall:cleanup"
+
+[tool.setuptools]
+packages = ["PyTFBS"]
+package-data = {"*" = ["*.txt", "*.md", "*.rst", "data/*"]}
+

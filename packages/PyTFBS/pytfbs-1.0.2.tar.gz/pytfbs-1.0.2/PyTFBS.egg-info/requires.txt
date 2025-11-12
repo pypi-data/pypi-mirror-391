@@ -1,0 +1,16 @@
+torch
+
+[:sys_platform == "darwin"]
+numpy==1.26
+
+[:sys_platform == "linux"]
+numpy>=2.0
+
+[:sys_platform == "win32"]
+numpy>=2.0
+
+[dev]
+matplotlib
+
+[test]
+matplotlib
