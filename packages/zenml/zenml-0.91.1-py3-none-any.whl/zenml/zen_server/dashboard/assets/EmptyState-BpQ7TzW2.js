@@ -1,0 +1,1 @@
+import{j as s}from"./@radix-DAoBbclx.js";import{c as l}from"./index-DnCFURX3.js";function c({children:t,icon:e,className:r}){return s.jsxs("section",{className:l("layout-container flex h-full w-full flex-1 flex-col items-center justify-center gap-5",r),children:[e,t]})}export{c as E};
