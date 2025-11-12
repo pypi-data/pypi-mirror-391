@@ -1,0 +1,57 @@
+metadata:
+  version: 1.0
+
+# ============================================================================
+# STANDARDIZED METRIC NAMING CONVENTION (Based on SAS - Most Generic)
+# ============================================================================
+# Each metric scores 1-4, sum is 10-40, normalized to 100-point scale (25-100)
+# Weights are kept for consistency but don't affect scoring (all equal at 10)
+#
+# Standard 10 Dimensions (Language-Agnostic):
+# 1. script_size_structure           - Lines, procedures, functions, nesting depth
+# 2. dependency_footprint            - Databases, tables, libraries, external references
+# 3. analytics_depth                 - Aggregations, statistical operations, analytics
+# 4. sql_reporting_logic             - Queries, joins, reporting complexity
+# 5. transformation_logic            - Data manipulation, conversions, transformations
+# 6. utility_complexity              - Functions, procedures, macros, utilities
+# 7. execution_control               - Transactions, flow control, orchestration
+# 8. file_io_external_integration    - File I/O, remote systems, external data
+# 9. ods_output_delivery             - Output formats, result delivery, reporting
+# 10. error_handling_optimization    - Error handling, performance, optimization
+# ============================================================================
+
+# Default weights (applies to all languages unless overridden)
+weights:
+  script_size_structure: 10
+  dependency_footprint: 10
+  analytics_depth: 10
+  sql_reporting_logic: 10
+  transformation_logic: 10
+  utility_complexity: 10
+  execution_control: 10
+  file_io_external_integration: 10
+  ods_output_delivery: 10
+  error_handling_optimization: 10
+
+include_cyclomatic: false
+
+# Classification thresholds (100-point scale)
+# Base score range: 25-100 (10 metrics × 1-4 scale, normalized)
+# With cyclomatic enabled: adds up to +10 bonus (total max 100, capped)
+#
+# Thresholds based on empirical testing and industry standards:
+# Simple: ≤32 (basic operations, minimal features, mostly 1s)
+# Medium: 33-50 (moderate complexity, mix of 1s and 2s)  
+# Complex: 51-70 (extensive processing, advanced features, mix of 2s and 3s)
+# Very Complex: 71-100 (enterprise-grade, comprehensive features, 3s and 4s)
+classification_thresholds:
+  simple: 30
+  medium: 60
+  complex: 80
+  very_complex: 100
+
+# Note: Language-specific sections (sas, sybase, oracle, etc.) are optional.
+# All languages use the standardized metric naming above by default.
+# Add language-specific overrides only if custom weights/thresholds are needed.
+
+

@@ -1,0 +1,329 @@
+CREATE PROCEDURE etl_job_example()
+AS
+BEGIN
+    -- Step 1: Declare Variables
+    DECLARE @start_time DATETIME
+    DECLARE @end_time DATETIME
+    DECLARE @source_row_count INT
+    DECLARE @target_row_count INT
+    DECLARE @error_message VARCHAR(255)
+    DECLARE @process_id INT
+    DECLARE @status_message VARCHAR(255)
+    
+    -- Step 2: Log Start Time
+    SET @start_time = GETDATE()
+    PRINT 'ETL Job Started at ' + CONVERT(VARCHAR, @start_time, 121)
+
+    -- Step 3: Initialize Process Logging
+    INSERT INTO etl_process_log (process_name, start_time, status)
+    VALUES ('etl_job_example', @start_time, 'Started')
+    SELECT @process_id = SCOPE_IDENTITY()
+
+    -- Step 4: Extract Data from Source
+    PRINT 'Extracting data from source...'
+    
+    CREATE TABLE #source_data (
+        id INT,
+        name VARCHAR(100),
+        age INT,
+        salary DECIMAL(10, 2),
+        department_id INT
+    )
+
+    INSERT INTO #source_data (id, name, age, salary, department_id)
+    SELECT id, name, age, salary, department_id
+    FROM source_database.dbo.source_table
+
+    -- Step 5: Validate Extracted Data
+    PRINT 'Validating extracted data...'
+    
+    SELECT @source_row_count = COUNT(*)
+    FROM #source_data
+    
+    IF @source_row_count = 0
+    BEGIN
+        SET @error_message = 'No data extracted from source.'
+        RAISERROR @error_message
+        UPDATE etl_process_log
+        SET end_time = GETDATE(), status = 'Failed', error_message = @error_message
+        WHERE process_id = @process_id
+        RETURN
+    END
+
+    -- Step 6: Data Transformation: Step 1
+    PRINT 'Transforming data - Step 1...'
+    
+    CREATE TABLE #transformed_data_step1 (
+        id INT,
+        full_name VARCHAR(150),
+        age INT,
+        annual_salary DECIMAL(15, 2),
+        load_date DATETIME,
+        department VARCHAR(100)
+    )
+
+    INSERT INTO #transformed_data_step1 (id, full_name, age, annual_salary, load_date, department)
+    SELECT
+        id,
+        RTRIM(name) + ', Age: ' + CONVERT(VARCHAR, age) AS full_name,
+        age,
+        salary * 12 AS annual_salary,
+        GETDATE() AS load_date,
+        NULL AS department
+    FROM #source_data
+
+    -- Step 7: Data Transformation: Step 2 - Lookup and join operations
+    PRINT 'Transforming data - Step 2...'
+    
+    UPDATE #transformed_data_step1
+    SET department = d.department_name
+    FROM #transformed_data_step1 t
+    JOIN departments d ON t.department_id = d.department_id
+
+    -- Step 8: Validate Transformed Data
+    PRINT 'Validating transformed data...'
+    
+    IF EXISTS (SELECT 1 FROM #transformed_data_step1 WHERE department IS NULL)
+    BEGIN
+        SET @error_message = 'Transformation error: Department not found.'
+        RAISERROR @error_message
+        UPDATE etl_process_log
+        SET end_time = GETDATE(), status = 'Failed', error_message = @error_message
+        WHERE process_id = @process_id
+        RETURN
+    END
+
+    -- Step 9: Load Data into Target
+    PRINT 'Loading data into target...'
+    
+    INSERT INTO target_database.dbo.target_table (id, full_name, age, annual_salary, load_date, department)
+    SELECT id, full_name, age, annual_salary, load_date, department
+    FROM #transformed_data_step1
+
+    -- Step 10: Validate Loaded Data
+    PRINT 'Validating loaded data...'
+    
+    SELECT @target_row_count = COUNT(*)
+    FROM target_database.dbo.target_table
+
+    IF @target_row_count <> @source_row_count
+    BEGIN
+        SET @error_message = 'Row count mismatch between source and target.'
+        RAISERROR @error_message
+        UPDATE etl_process_log
+        SET end_time = GETDATE(), status = 'Failed', error_message = @error_message
+        WHERE process_id = @process_id
+        RETURN
+    END
+
+    -- Step 11: Clean Up Temporary Tables
+    PRINT 'Cleaning up temporary tables...'
+    
+    DROP TABLE #source_data
+    DROP TABLE #transformed_data_step1
+
+    -- Step 12: Log End Time
+    SET @end_time = GETDATE()
+    PRINT 'ETL Job Completed at ' + CONVERT(VARCHAR, @end_time, 121)
+    PRINT 'Total Duration: ' + CONVERT(VARCHAR, DATEDIFF(MINUTE, @start_time, @end_time)) + ' minutes.'
+
+    -- Step 13: Update Process Logging
+    UPDATE etl_process_log
+    SET end_time = @end_time, status = 'Completed'
+    WHERE process_id = @process_id
+
+    RETURN
+-- Step 14: Additional Error Handling and Logging
+
+CREATE PROCEDURE handle_error (@process_id INT, @error_message VARCHAR(255))
+AS
+BEGIN
+    DECLARE @end_time DATETIME
+    SET @end_time = GETDATE()
+    
+    UPDATE etl_process_log
+    SET end_time = @end_time, status = 'Failed', error_message = @error_message
+    WHERE process_id = @process_id
+    
+    PRINT 'ETL Job Failed at ' + CONVERT(VARCHAR, @end_time, 121)
+    PRINT 'Error: ' + @error_message
+    RETURN
+END
+GO
+
+-- Step 15: Creating Log Table
+
+CREATE TABLE etl_process_log (
+    process_id INT IDENTITY(1,1) PRIMARY KEY,
+    process_name VARCHAR(100),
+    start_time DATETIME,
+    end_time DATETIME,
+    status VARCHAR(50),
+    error_message VARCHAR(255)
+)
+GO
+
+-- Step 16: Sample Data Setup (for Departments)
+
+CREATE TABLE departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(100)
+)
+
+INSERT INTO departments (department_id, department_name) VALUES (1, 'HR')
+INSERT INTO departments (department_id, department_name) VALUES (2, 'Finance')
+INSERT INTO departments (department_id, department_name) VALUES (3, 'IT')
+GO
+
+-- Step 17: Sample Source Table Setup
+
+CREATE TABLE source_database.dbo.source_table (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    salary DECIMAL(10, 2),
+    department_id INT
+)
+
+INSERT INTO source_database.dbo.source_table (id, name, age, salary, department_id)
+VALUES (1, 'John Doe', 30, 4000, 1),
+       (2, 'Jane Smith', 40, 5000, 2),
+       (3, 'Jim Brown', 50, 6000, 3)
+GO
+
+-- Step 18: Sample Target Table Setup
+
+CREATE TABLE target_database.dbo.target_table (
+    id INT PRIMARY KEY,
+    full_name VARCHAR(150),
+    age INT,
+    annual_salary DECIMAL(15, 2),
+    load_date DATETIME,
+    department VARCHAR(100)
+)
+GO
+
+-- Additional complex transformations, validations, and clean-up steps to expand the code further
+-- This includes handling different data types, ensuring data consistency, and more.
+
+-- Step 19: Handling Complex Data Types
+-- Assuming we have a column in the source data that contains JSON data
+CREATE PROCEDURE etl_job_with_json_handling()
+AS
+BEGIN
+    -- Similar steps as above, with additional handling for JSON data
+    -- Step 1: Declare Variables
+    DECLARE @start_time DATETIME
+    DECLARE @end_time DATETIME
+    DECLARE @source_row_count INT
+    DECLARE @target_row_count INT
+    DECLARE @error_message VARCHAR(255)
+    DECLARE @process_id INT
+    DECLARE @status_message VARCHAR(255)
+    
+    -- Step 2: Log Start Time
+    SET @start_time = GETDATE()
+    PRINT 'ETL Job Started at ' + CONVERT(VARCHAR, @start_time, 121)
+
+    -- Step 3: Initialize Process Logging
+    INSERT INTO etl_process_log (process_name, start_time, status)
+    VALUES ('etl_job_with_json_handling', @start_time, 'Started')
+    SELECT @process_id = SCOPE_IDENTITY()
+
+    -- Step 4: Extract Data from Source
+    PRINT 'Extracting data from source...'
+    
+    CREATE TABLE #source_data (
+        id INT,
+        name VARCHAR(100),
+        age INT,
+        salary DECIMAL(10, 2),
+        department_id INT,
+        additional_info TEXT -- Assuming JSON data is stored in this column
+    )
+
+    INSERT INTO #source_data (id, name, age, salary, department_id, additional_info)
+    SELECT id, name, age, salary, department_id, additional_info
+    FROM source_database.dbo.source_table_with_json
+
+    -- Step 5: Validate Extracted Data
+    PRINT 'Validating extracted data...'
+    
+    SELECT @source_row_count = COUNT(*)
+    FROM #source_data
+    
+    IF @source_row_count = 0
+    BEGIN
+        SET @error_message = 'No data extracted from source.'
+        EXEC handle_error @process_id, @error_message
+        RETURN
+    END
+
+    -- Step 6: Data Transformation: Step 1
+    PRINT 'Transforming data - Step 1...'
+    
+    CREATE TABLE #transformed_data_step1 (
+        id INT,
+        full_name VARCHAR(150),
+        age INT,
+        annual_salary DECIMAL(15, 2),
+        load_date DATETIME,
+        department VARCHAR(100),
+        json_data VARCHAR(255)
+    )
+
+    INSERT INTO #transformed_data_step1 (id, full_name, age, annual_salary, load_date, department, json_data)
+    SELECT
+        id,
+        RTRIM(name) + ', Age: ' + CONVERT(VARCHAR, age) AS full_name,
+        age,
+        salary * 12 AS annual_salary,
+        GETDATE() AS load_date,
+        NULL AS department,
+        -- Assuming JSON data needs to be transformed to a string
+        LEFT(CONVERT(VARCHAR(MAX), additional_info), 255) AS json_data
+    FROM #source_data
+
+    -- Additional steps and transformations can be added here
+    -- Further complex transformations and validations
+
+    -- Step 7: Load Data into Target
+    PRINT 'Loading data into target...'
+    
+    INSERT INTO target_database.dbo.target_table_with_json (id, full_name, age, annual_salary, load_date, department, json_data)
+    SELECT id, full_name, age, annual_salary, load_date, department, json_data
+    FROM #transformed_data_step1
+
+    -- Step 8: Validate Loaded Data
+    PRINT 'Validating loaded data...'
+    
+    SELECT @target_row_count = COUNT(*)
+    FROM target_database.dbo.target_table_with_json
+
+    IF @target_row_count <> @source_row_count
+    BEGIN
+        SET @error_message = 'Row count mismatch between source and target.'
+        EXEC handle_error @process_id, @error_message
+        RETURN
+    END
+
+    -- Step 9: Clean Up Temporary Tables
+    PRINT 'Cleaning up temporary tables...'
+    
+    DROP TABLE #source_data
+    DROP TABLE #transformed_data_step1
+
+    -- Step 10: Log End Time
+    SET @end_time = GETDATE()
+    PRINT 'ETL Job Completed at ' + CONVERT(VARCHAR, @end_time, 121)
+    PRINT 'Total Duration: ' + CONVERT(VARCHAR, DATEDIFF(MINUTE, @start_time, @end_time)) + ' minutes.'
+
+    -- Step 11: Update Process Logging
+    UPDATE etl_process_log
+    SET end_time = @end_time, status = 'Completed'
+    WHERE process_id = @process_id
+
+    RETURN
+END
+GO
+
