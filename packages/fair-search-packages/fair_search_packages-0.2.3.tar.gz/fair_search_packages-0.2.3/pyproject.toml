@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=80.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fair-search-packages"
+version = "0.2.3"
+description = "RAG 기반 공평 검색 알고리즘을 위한 전역 Util 함수 모음"
+readme = "README.md"
+authors = [
+  { name = "Kim Seung Min", email = "ak47001@naver.com" },
+]
+
+# Python 3.10.18 환경 기준 (patch 까지 고정은 어려우니 3.10 대역으로 제한)
+requires-python = ">=3.10,<3.11"
+
+# 필수 의존 패키지
+dependencies = [
+  # --- API & 런타임 ---
+  "fastapi==0.116.1",
+  "uvicorn[standard]==0.35.0",
+  "python-dotenv==1.0.1",
+  "pydantic==2.9.2",
+  "pydantic-settings==2.2.1",
+  "PyYAML==6.0.2",
+  "requests==2.32.3",
+  "httpx==0.27.2",
+  "anyio==4.9.0",
+  "tenacity==8.5.0",
+
+  "openai==1.102.0",
+
+  # --- LangChain / LangGraph / LangSmith (RAG 파이프라인 코어) ---
+  "langchain==0.3.27",
+
+  # --- 벡터 스토어 / 검색기 ---
+  "chromadb==1.0.15",
+  "rank-bm25==0.2.2",
+
+  # --- 임베딩 & 허깅페이스 스택 ---
+  "huggingface-hub==0.34.3",
+  "transformers==4.53.3",
+  "safetensors==0.5.3",
+  "tokenizers==0.21.2",
+
+  # --- 데이터/ML 유틸 ---
+  "numpy==1.26.4",
+  "scipy==1.13.1",
+  "scikit-learn==1.5.2",
+  "pandas==2.3.1",
+  "datasets==4.3.0",
+  "pyarrow==21.0.0",
+  "tqdm==4.67.1",
+  "regex==2024.11.6",
+
+  # --- DB 연동 (검색 코퍼스 / 로그 저장) ---
+  "PyMySQL==1.1.1",
+  "SQLAlchemy==2.0.41",
+]
+
+# --- src 디렉토리만 패키징 ---
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["*"]
