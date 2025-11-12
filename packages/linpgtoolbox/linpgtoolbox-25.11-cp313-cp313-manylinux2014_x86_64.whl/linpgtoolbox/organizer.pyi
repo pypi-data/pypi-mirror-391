@@ -1,0 +1,3 @@
+class Organizer:
+    @staticmethod
+    def organize_gitignore(_dir: str = '.', filename: str = '.gitignore') -> None: ...
