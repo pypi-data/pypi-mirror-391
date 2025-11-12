@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rl-discounted-return"
+version = "0.1.0"
+description = "A simple discounted return calculator for Reinforcement Learning."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Jinal Chhajer" }]
+keywords = ["reinforcement-learning", "discounted-return", "machine-learning", "rl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
