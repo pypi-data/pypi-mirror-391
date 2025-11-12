@@ -1,0 +1,137 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0", "wheel"]
+
+[project]
+authors = [
+  {name = "rwydaegh", email = "robin.wydaeghe@ugent.be"},
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+]
+dependencies = [
+  "numpy<2",
+  "pandas",
+  "gdown",
+  "seaborn",
+  "matplotlib",
+  "line-profiler",
+  "pytest",
+  "scienceplots",
+  "PySide6",
+  "osparc",
+  "colorama",
+  "python-dotenv",
+  "psutil",
+  "h5py",
+  "requests",
+]
+description = "A Python framework for dosimetric assessments using Sim4Life."
+keywords = [
+  "emf",
+  "dosimetry",
+  "sar",
+  "sim4life",
+  "electromagnetic",
+  "simulation",
+  "near-field",
+  "far-field",
+  "phantom",
+  "antenna",
+]
+license = {text = "Apache-2.0"}
+name = "goliat"
+readme = "README.md"
+requires-python = ">=3.8"
+version = "1.2.3"
+
+[project.optional-dependencies]
+docs = [
+  "mkdocs",
+  "mkdocs-material==9.5.3",
+  "pymdown-extensions==10.7",
+  "mkdocstrings[python]",
+  "mkdocs-mermaid2-plugin",
+  "mkdocs-git-revision-date-localized-plugin",
+  "mkdocs-minify-plugin",
+  "mkdocs-kroki-plugin",
+  "mknotebooks>=0.8.0",
+  "ansi2html>=1.8.0",
+]
+
+[project.scripts]
+goliat = "cli.__main__:main"
+
+[project.urls]
+Documentation = "https://rwydaegh.github.io/goliat/"
+Homepage = "https://rwydaegh.github.io/goliat/"
+Issues = "https://github.com/rwydaegh/goliat/issues"
+Repository = "https://github.com/rwydaegh/goliat"
+
+[tool.codespell]
+ignore-words-list = "Studi"
+skip = "docs/img/waves.svg"
+
+[tool.pyright]
+exclude = [
+  "analysis",
+  "tests",
+  "scripts",
+  "cli",
+]
+pythonVersion = "3.11"
+reportMissingImports = false
+reportMissingModuleSource = false
+
+[tool.pytest.ini_options]
+markers = [
+  "skip_on_ci: mark a test to be skipped in CI environments (e.g., GitHub Actions)",
+]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 140
+target-version = "py38"
+
+[tool.ruff.format]
+exclude = [
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".tox",
+  ".venv",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+]
+
+[tool.semantic_release]
+branch = "main"
+changelog_file = "CHANGELOG.md"
+commit_author = "rwydaegh <robin.wydaeghe@ugent.be>"
+commit_message = "chore(release): {version}"
+upload_to_pypi = false
+upload_to_release = true
+version_variables = []
+
+[tool.setuptools]
+packages = {find = {exclude = ["analysis*", "scripts*", "tests*", "cloud_setup*"]}}
+
+[tool.setuptools.package-data]
+goliat = [
+  "config/defaults/*.json",
+  "config/defaults/material_name_mapping.json",
+]
