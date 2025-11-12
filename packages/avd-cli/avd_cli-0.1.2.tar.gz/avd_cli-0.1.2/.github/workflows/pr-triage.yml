@@ -1,0 +1,129 @@
+name: "Pull Request Triage"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  assign_author:
+    name: "Assign Author to PR"
+    # https://github.com/marketplace/actions/auto-author-assign
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: toshimaru/auto-author-assign@v2.1.1
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+
+  label_kind_scope:
+    name: "Label PR with kind and scope"
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Parse PR title for type and scope
+        id: parse
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # Extract type (feat, fix, etc.)
+          TYPE=$(echo "$PR_TITLE" | grep -oE '^(feat|fix|cut|doc|ci|bump|test|refactor|revert|make|chore)' || echo "")
+          # Extract scope (content within parentheses)
+          SCOPE=$(echo "$PR_TITLE" | grep -oE '\(([^)]+)\)' | tr -d '()' || echo "")
+          # Check for breaking change marker (!)
+          if echo "$PR_TITLE" | grep -qE '!:'; then
+            BREAKING="true"
+          else
+            BREAKING="false"
+          fi
+
+          echo "Parsed TYPE: $TYPE"
+          echo "Parsed SCOPE: $SCOPE"
+          echo "Parsed BREAKING: $BREAKING"
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          echo "scope=$SCOPE" >> $GITHUB_OUTPUT
+          echo "breaking=$BREAKING" >> $GITHUB_OUTPUT
+
+      - name: Create and add kind label
+        if: steps.parse.outputs.type != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          KIND_TYPE: ${{ steps.parse.outputs.type }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # Create label if it doesn't exist
+          gh label create "kind:$KIND_TYPE" \
+            --description "PR type: $KIND_TYPE" \
+            --color "0E8A16" \
+            --force || true
+
+          # Add label to PR
+          gh pr edit "$PR_NUMBER" \
+            --add-label "kind:$KIND_TYPE"
+
+      - name: Create and add scope label
+        if: steps.parse.outputs.scope != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          SCOPE_NAME: ${{ steps.parse.outputs.scope }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # Create label if it doesn't exist
+          gh label create "scope:$SCOPE_NAME" \
+            --description "Scope: $SCOPE_NAME" \
+            --color "1D76DB" \
+            --force || true
+
+          # Add label to PR
+          gh pr edit "$PR_NUMBER" \
+            --add-label "scope:$SCOPE_NAME"
+
+      - name: Create and add breaking change label
+        if: steps.parse.outputs.breaking == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # Create label if it doesn't exist
+          gh label create "compat:breaking" \
+            --description "Breaking change - impacts compatibility" \
+            --color "D93F0B" \
+            --force || true
+
+          # Add label to PR
+          gh pr edit "$PR_NUMBER" \
+            --add-label "compat:breaking"
+
+      - name: Summary
+        env:
+          KIND_TYPE: ${{ steps.parse.outputs.type }}
+          SCOPE_NAME: ${{ steps.parse.outputs.scope }}
+          IS_BREAKING: ${{ steps.parse.outputs.breaking }}
+        run: |
+          echo "### 🏷️ PR Labeling Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -n "$KIND_TYPE" ]; then
+            echo "- ✅ Added **kind:$KIND_TYPE** label" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ⚠️ No type found in PR title" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -n "$SCOPE_NAME" ]; then
+            echo "- ✅ Added **scope:$SCOPE_NAME** label" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ℹ️ No scope found in PR title" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "$IS_BREAKING" = "true" ]; then
+            echo "- 🚨 Added **compat:breaking** label (breaking change detected)" >> $GITHUB_STEP_SUMMARY
+          fi
