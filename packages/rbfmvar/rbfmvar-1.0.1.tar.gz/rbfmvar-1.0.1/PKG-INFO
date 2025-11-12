@@ -1,0 +1,425 @@
+Metadata-Version: 2.4
+Name: rbfmvar
+Version: 1.0.1
+Summary: Residual-Based Fully Modified Vector Autoregression for mixtures of I(0), I(1), and I(2) processes
+Home-page: https://github.com/merwanroudane/RBFMVAR
+Author: Dr. Merwan Roudane
+Author-email: "Dr. Merwan Roudane" <merwanroudane920@gmail.com>
+Maintainer-email: "Dr. Merwan Roudane" <merwanroudane920@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/merwanroudane/RBFMVAR
+Project-URL: Documentation, https://github.com/merwanroudane/RBFMVAR#readme
+Project-URL: Repository, https://github.com/merwanroudane/RBFMVAR
+Project-URL: Bug Reports, https://github.com/merwanroudane/RBFMVAR/issues
+Project-URL: Changelog, https://github.com/merwanroudane/RBFMVAR/blob/main/CHANGELOG.md
+Keywords: econometrics,VAR,vector-autoregression,cointegration,I(2),time-series,nonstationary,unit-root,RBFM-VAR,Granger-causality
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Office/Business :: Financial
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: scipy>=1.7.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: matplotlib>=3.3.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=4.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=0.5; extra == "docs"
+Requires-Dist: numpydoc>=1.1; extra == "docs"
+Provides-Extra: all
+Requires-Dist: rbfmvar[dev,docs]; extra == "all"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# RBFM-VAR: Residual-Based Fully Modified Vector Autoregression
+
+A Python package for estimating and testing Vector Autoregression (VAR) models with **unknown mixtures of I(0), I(1), and I(2) components**.
+
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
+
+This package implements the Residual-Based Fully Modified Vector Autoregression (RBFM-VAR) estimator proposed by:
+
+> **Chang, Y. (2000)**. "Vector Autoregressions with Unknown Mixtures of I(0), I(1), and I(2) Components." *Econometric Theory*, 16(6), 905-926.
+
+### Key Features
+
+- ✅ **No Pretesting Required**: No need to determine the exact order of integration or cointegration relationships beforehand
+- ✅ **Mixed Integration Orders**: Handles I(0), I(1), and I(2) processes simultaneously
+- ✅ **Flexible Cointegration**: Allows for various cointegration forms including multicointegration
+- ✅ **Optimal Inference**: Provides optimal inference in the sense of Phillips (1991)
+- ✅ **Modified Wald Tests**: Implements modified Wald tests with better finite-sample properties
+- ✅ **Granger Causality**: Direct testing of Granger causality in nonstationary systems
+
+### Why RBFM-VAR?
+
+Traditional VAR estimation methods require:
+1. Pretesting for unit roots
+2. Determining cointegration ranks
+3. Specifying error correction models
+
+**RBFM-VAR eliminates these steps** while maintaining optimal asymptotic properties!
+
+## Installation
+
+### From Source
+
+```bash
+git clone https://github.com/merwanroudane/RBFMVAR.git
+cd RBFMVAR
+pip install -e .
+```
+
+### Requirements
+
+- Python >= 3.7
+- NumPy >= 1.20.0
+- SciPy >= 1.7.0
+- Pandas >= 1.3.0
+- Matplotlib >= 3.3.0 (optional, for plotting)
+
+## Quick Start
+
+```python
+import numpy as np
+from rbfmvar import RBFMVAREstimator, RBFMWaldTest, format_summary_table, format_test_results
+
+# Load your data (T x n matrix)
+data = np.loadtxt('your_data.csv', delimiter=',')
+
+# Fit RBFM-VAR model with lag order p=2
+model = RBFMVAREstimator(data, p=2, kernel='bartlett')
+model.fit()
+
+# View model summary
+summary = model.summary()
+print(format_summary_table(summary))
+
+# Test Granger causality: Does variable 0 cause variables 1 and 2?
+test = RBFMWaldTest(model)
+result = test.test_granger_causality(
+    causing_vars=[0],
+    caused_vars=[1, 2],
+    alpha=0.05
+)
+print(format_test_results(result))
+
+# Generate forecasts
+forecasts = model.predict(steps=10)
+print(f"10-step ahead forecasts:\n{forecasts}")
+```
+
+## Detailed Examples
+
+### Example 1: Basic VAR Estimation
+
+```python
+import numpy as np
+from rbfmvar import RBFMVAREstimator
+
+# Simulate I(1) VAR data
+np.random.seed(42)
+T = 200
+n = 3
+errors = np.random.normal(0, 1, (T, n))
+data = np.cumsum(errors, axis=0)  # I(1) process
+
+# Estimate RBFM-VAR
+model = RBFMVAREstimator(data, p=2)
+model.fit()
+
+# Check coefficients
+print("Phi (stationary component):")
+print(model.Phi_plus)
+print("\nA (nonstationary component):")
+print(model.A_plus)
+```
+
+### Example 2: Granger Causality Testing
+
+```python
+from rbfmvar import RBFMVAREstimator, RBFMWaldTest
+
+# Fit model
+model = RBFMVAREstimator(data, p=2)
+model.fit()
+
+# Create test object
+test = RBFMWaldTest(model)
+
+# Test if variable 0 Granger-causes variable 1
+result = test.test_granger_causality(
+    causing_vars=[0],
+    caused_vars=[1]
+)
+
+if result['reject']:
+    print(f"Variable 0 Granger-causes variable 1 (p={result['p_value']:.4f})")
+else:
+    print(f"No Granger causality detected (p={result['p_value']:.4f})")
+```
+
+### Example 3: Model Selection and Diagnostics
+
+```python
+from rbfmvar import select_lag_order, portmanteau_test, arch_test
+
+# Select optimal lag order
+optimal_p = select_lag_order(data, max_lag=10, criterion='bic')
+print(f"Optimal lag order: {optimal_p}")
+
+# Fit model with optimal lag
+model = RBFMVAREstimator(data, p=optimal_p)
+model.fit()
+
+# Check residual autocorrelation
+Q_stat, p_value = portmanteau_test(model.residuals, lags=10)
+print(f"Portmanteau test: Q={Q_stat:.2f}, p-value={p_value:.4f}")
+
+# Check for ARCH effects
+arch_stat, arch_p = arch_test(model.residuals, lags=4)
+print(f"ARCH test: LM={arch_stat:.2f}, p-value={arch_p:.4f}")
+```
+
+### Example 4: Forecasting
+
+```python
+# Fit model
+model = RBFMVAREstimator(data, p=2)
+model.fit()
+
+# Generate multi-step forecasts
+forecast_horizon = 20
+forecasts = model.predict(steps=forecast_horizon)
+
+# Plot forecasts (requires matplotlib)
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(3, 1, figsize=(12, 8))
+for i in range(3):
+    axes[i].plot(data[-50:, i], label='Actual', color='blue')
+    axes[i].plot(range(len(data), len(data) + forecast_horizon), 
+                 forecasts[:, i], label='Forecast', color='red', linestyle='--')
+    axes[i].set_title(f'Variable {i+1}')
+    axes[i].legend()
+    axes[i].grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## Methodology
+
+### The Model
+
+Consider a p-th order VAR:
+
+$$y_t = A_1 y_{t-1} + \cdots + A_p y_{t-p} + \varepsilon_t$$
+
+where $y_t$ is an n-dimensional vector that may contain a mixture of I(0), I(1), and I(2) processes.
+
+### RBFM-VAR Estimation
+
+The RBFM-VAR estimator reformulates the model as:
+
+$$y_t = \Phi z_t + A w_t + \varepsilon_t$$
+
+where:
+- $z_t = (\Delta^2 y_{t-1}, \ldots, \Delta^2 y_{t-p+2})'$ are known stationary regressors
+- $w_t = (\Delta y_{t-1}, y_{t-1})'$ are potentially nonstationary regressors
+
+The estimator applies corrections for:
+1. **Endogeneity** between errors and regressors
+2. **Serial correlation** induced by differencing
+
+### Asymptotic Properties
+
+**Theorem 1 (Chang 2000):**
+- Stationary component: $\sqrt{T}(\hat{\Phi}^+ - \Phi) \rightarrow_d N(0, \Sigma_{\varepsilon\varepsilon} \otimes \Sigma_{x_1 x_1}^{-1})$
+- Nonstationary component: Has mixed normal limit distribution
+
+**Theorem 2 (Modified Wald Test):**
+
+For certain linear restrictions, the modified Wald statistic converges to:
+
+$$W_F^+ \rightarrow_d \chi^2_{q_1(q_\Phi + q_{A_1})} + \sum_{i=1}^{q_1} d_i \chi^2_{q_{A_b}(i)}$$
+
+where $0 \leq d_i \leq 1$ are eigenvalues depending on long-run covariances.
+
+**Key advantage:** The limit distribution is bounded above by $\chi^2$ with known degrees of freedom, enabling conservative tests without nuisance parameter dependence!
+
+## API Reference
+
+### Main Classes
+
+#### `RBFMVAREstimator`
+
+```python
+RBFMVAREstimator(data, p, kernel='bartlett', bandwidth=None)
+```
+
+**Parameters:**
+- `data` (np.ndarray): (T x n) data matrix
+- `p` (int): VAR lag order
+- `kernel` (str): Kernel for long-run covariance estimation. Options: 'bartlett', 'parzen', 'quadratic_spectral', 'tukey_hanning'
+- `bandwidth` (int or None): Bandwidth parameter (None for automatic selection)
+
+**Methods:**
+- `fit()`: Estimate the model
+- `predict(steps)`: Generate forecasts
+- `summary()`: Get model summary statistics
+
+#### `RBFMWaldTest`
+
+```python
+RBFMWaldTest(estimator)
+```
+
+**Methods:**
+- `test_granger_causality(causing_vars, caused_vars, alpha)`: Test Granger causality
+- `test_linear_restriction(R1, R2, r, alpha)`: Test general linear restrictions
+- `test_coefficient_restriction(equation_idx, variable_idx, lag, value, alpha)`: Test individual coefficients
+
+### Utility Functions
+
+- `select_lag_order(data, max_lag, criterion)`: Select optimal VAR lag order
+- `portmanteau_test(residuals, lags)`: Test for residual autocorrelation
+- `arch_test(residuals, lags)`: Test for ARCH effects
+- `stability_check(Phi, A, p)`: Check VAR stability
+- `plot_residual_diagnostics(residuals)`: Create diagnostic plots
+
+## Advanced Topics
+
+### Custom Kernel Functions
+
+The package supports multiple kernel functions for long-run covariance estimation:
+
+- **Bartlett (Newey-West)**: Triangular kernel, good general-purpose choice
+- **Parzen**: Higher-order kernel with better bias properties
+- **Quadratic Spectral**: Optimal rate of convergence (Andrews 1991)
+- **Tukey-Hanning**: Popular in spectral analysis
+
+```python
+# Use Quadratic Spectral kernel with automatic bandwidth
+model = RBFMVAREstimator(data, p=2, kernel='quadratic_spectral')
+model.fit()
+```
+
+### Bandwidth Selection
+
+The package implements Andrews (1991) automatic bandwidth selection:
+
+```python
+from rbfmvar.kernel_estimators import KernelCovarianceEstimator
+
+estimator = KernelCovarianceEstimator(kernel='bartlett')
+bandwidth = estimator.select_bandwidth_andrews(residuals)
+print(f"Selected bandwidth: {bandwidth}")
+```
+
+## Simulation Studies
+
+The `examples/simulations.py` file contains Monte Carlo simulations replicating the results from Chang (2000), Section 5.
+
+Key findings:
+- RBFM-VAR has lower bias and variance than OLS-VAR
+- Modified Wald test has better size properties than standard Wald test
+- Performance improves with sample size as predicted by theory
+
+## Testing
+
+Run the test suite:
+
+```bash
+pytest tests/ -v --cov=rbfmvar
+```
+
+## Citation
+
+If you use this package in your research, please cite:
+
+```bibtex
+@article{chang2000vector,
+  title={Vector Autoregressions with Unknown Mixtures of I(0), I(1), and I(2) Components},
+  author={Chang, Yoosoon},
+  journal={Econometric Theory},
+  volume={16},
+  number={6},
+  pages={905--926},
+  year={2000},
+  publisher={Cambridge University Press},
+  doi={10.1017/S0266466600166046}
+}
+```
+
+For the Python implementation:
+
+```bibtex
+@software{roudane2024rbfmvar,
+  author = {Roudane, Merwan},
+  title = {RBFM-VAR: Python Implementation of Chang (2000)},
+  year = {2024},
+  url = {https://github.com/merwanroudane/RBFMVAR}
+}
+```
+
+## References
+
+1. Chang, Y. (2000). Vector Autoregressions with Unknown Mixtures of I(0), I(1), and I(2) Components. *Econometric Theory*, 16(6), 905-926.
+
+2. Phillips, P.C.B. (1995). Fully Modified Least Squares and Vector Autoregression. *Econometrica*, 63(5), 1023-1078.
+
+3. Phillips, P.C.B. (1991). Optimal Inference in Cointegrated Systems. *Econometrica*, 59(2), 283-306.
+
+4. Johansen, S. (1995). A Statistical Analysis of Cointegration for I(2) Variables. *Econometric Theory*, 11(1), 25-59.
+
+5. Andrews, D.W.K. (1991). Heteroskedasticity and Autocorrelation Consistent Covariance Matrix Estimation. *Econometrica*, 59(3), 817-858.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+**Dr. Merwan Roudane**
+- Email: merwanroudane920@gmail.com
+- GitHub: [@merwanroudane](https://github.com/merwanroudane)
+
+## Acknowledgments
+
+This implementation is based on the groundbreaking work of Professor Yoosoon Chang (Rice University). The author thanks Professor Chang for developing this elegant methodology.
+
+## Disclaimer
+
+This package is provided "as is" without warranty of any kind. Users are responsible for verifying results and ensuring appropriate use for their specific applications.
+
+---
+
+**Note**: This is an independent implementation and is not officially affiliated with or endorsed by the original paper's author.
