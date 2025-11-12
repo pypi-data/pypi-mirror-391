@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://questfoundry.liesdonk.nl/schemas/canon_transfer_package.schema.json",
+  "title": "Canon Transfer Package",
+  "description": "Canon Transfer Package for Layer 6/7 workflows. Exports canon elements for reuse in sequels or shared universe projects, with immutability tracking and source attribution.",
+  "type": "object",
+  "properties": {
+    "package_id": {
+      "type": "string",
+      "description": "Unique identifier for this canon transfer package.",
+      "pattern": "^CANON-[A-Z0-9\\-]+$",
+      "minLength": 7,
+      "maxLength": 80
+    },
+    "source_project": {
+      "type": "string",
+      "description": "Name of the source project exporting this canon.",
+      "minLength": 2,
+      "maxLength": 160
+    },
+    "exported": {
+      "$ref": "#/$defs/date_string",
+      "description": "Date this package was exported."
+    },
+    "version": {
+      "type": "string",
+      "description": "Package version (semantic versioning recommended).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mutability_filter": {
+      "type": "string",
+      "description": "Mutability level of exported canon.",
+      "enum": ["invariant", "mutable", "mixed"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of package contents.",
+      "minLength": 10,
+      "maxLength": 800
+    },
+    "invariant_canon": {
+      "type": "array",
+      "description": "Immutable canon facts that cannot be changed.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "facts": {
+            "type": "array",
+            "description": "List of immutable canon facts.",
+            "items": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 600
+            },
+            "minItems": 1
+          },
+          "theme": {
+            "type": "string",
+            "description": "Theme or category for these facts.",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "source": {
+            "type": "string",
+            "description": "Source attribution (project, author, or genesis).",
+            "minLength": 2,
+            "maxLength": 160
+          }
+        },
+        "required": ["facts", "source"]
+      }
+    },
+    "mutable_canon": {
+      "type": "array",
+      "description": "Extensible canon that can be elaborated upon.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "facts": {
+            "type": "array",
+            "description": "List of mutable canon facts.",
+            "items": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 600
+            },
+            "minItems": 1
+          },
+          "theme": {
+            "type": "string",
+            "description": "Theme or category for these facts.",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "elaboration_guidance": {
+            "type": "string",
+            "description": "Guidance on how this canon can be extended.",
+            "maxLength": 400
+          }
+        },
+        "required": ["facts"]
+      }
+    },
+    "entity_registry": {
+      "type": "object",
+      "description": "Registry of canonical entities (characters, places, factions, items).",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entity"
+          },
+          "minItems": 1
+        },
+        "deduplication_notes": {
+          "type": "string",
+          "description": "Notes on entity deduplication during merge.",
+          "maxLength": 400
+        }
+      },
+      "required": ["entities"]
+    },
+    "timeline": {
+      "type": "object",
+      "description": "Timeline anchors defining chronological structure.",
+      "properties": {
+        "anchors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/timeline_anchor"
+          },
+          "minItems": 1
+        },
+        "chronology_validated": {
+          "type": "boolean",
+          "description": "Whether chronological consistency has been validated."
+        }
+      },
+      "required": ["anchors"]
+    },
+    "codex_baseline": {
+      "type": "object",
+      "description": "Optional codex entries to include in package.",
+      "properties": {
+        "entries": {
+          "type": "array",
+          "description": "List of codex entry IDs or references.",
+          "items": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160
+          }
+        }
+      }
+    },
+    "validation_report": {
+      "type": "object",
+      "description": "Validation report from canon export process.",
+      "properties": {
+        "conflicts_detected": {
+          "type": "integer",
+          "description": "Number of internal conflicts detected.",
+          "minimum": 0
+        },
+        "entities_exported": {
+          "type": "integer",
+          "description": "Number of entities exported.",
+          "minimum": 0
+        },
+        "timeline_anchors_exported": {
+          "type": "integer",
+          "description": "Number of timeline anchors exported.",
+          "minimum": 0
+        },
+        "validation_errors": {
+          "type": "array",
+          "description": "List of validation errors.",
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        }
+      }
+    },
+    "import_guidance": {
+      "type": "string",
+      "description": "Guidance for importing this package into target projects.",
+      "maxLength": 800
+    }
+  },
+  "required": [
+    "package_id",
+    "source_project",
+    "exported",
+    "version",
+    "mutability_filter",
+    "description"
+  ],
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "description": "A canonical entity (character, place, faction, item).",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Entity name.",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "entity_type": {
+          "type": "string",
+          "description": "Type of entity.",
+          "enum": ["character", "place", "faction", "item"]
+        },
+        "role": {
+          "type": "string",
+          "description": "Role or function of the entity.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "description": "Entity description.",
+          "minLength": 10,
+          "maxLength": 800
+        },
+        "source": {
+          "type": "string",
+          "description": "Source attribution (project, author, genesis).",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "immutable": {
+          "type": "boolean",
+          "description": "Whether this entity is immutable canon."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional entity metadata.",
+          "additionalProperties": true
+        }
+      },
+      "required": ["name", "entity_type", "role", "description", "source"]
+    },
+    "timeline_anchor": {
+      "type": "object",
+      "description": "A chronological anchor point in the timeline.",
+      "properties": {
+        "anchor_id": {
+          "type": "string",
+          "description": "Timeline anchor ID (e.g., T0, T1, T2, T3-EVENT).",
+          "pattern": "^T\\d+(-[A-Z0-9\\-]+)?$",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "event": {
+          "type": "string",
+          "description": "Event description.",
+          "minLength": 10,
+          "maxLength": 400
+        },
+        "year": {
+          "type": "integer",
+          "description": "Absolute year (if known)."
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Relative offset from baseline (years)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Additional context or notes.",
+          "maxLength": 800
+        },
+        "source": {
+          "type": "string",
+          "description": "Source attribution.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "immutable": {
+          "type": "boolean",
+          "description": "Whether this anchor is immutable canon."
+        }
+      },
+      "required": ["anchor_id", "event"]
+    },
+    "date_string": {
+      "type": "string",
+      "description": "Date in YYYY-MM-DD format",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}

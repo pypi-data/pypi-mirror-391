@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://questfoundry.liesdonk.nl/schemas/world_genesis_manifest.schema.json",
+  "title": "World Genesis Manifest",
+  "description": "World Genesis Manifest for Layer 6/7 workflows. Documents proactive worldbuilding performed before story development begins via Canon-First workflow.",
+  "type": "object",
+  "properties": {
+    "manifest_id": {
+      "type": "string",
+      "description": "Unique identifier for this world genesis manifest.",
+      "pattern": "^GENESIS-[A-Z0-9\\-]+$",
+      "minLength": 9,
+      "maxLength": 80
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Name of the project for which this worldbuilding was performed.",
+      "minLength": 2,
+      "maxLength": 160
+    },
+    "created": {
+      "$ref": "#/$defs/date_string",
+      "description": "Date this manifest was created."
+    },
+    "version": {
+      "type": "string",
+      "description": "Manifest version (semantic versioning recommended).",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "budget_level": {
+      "type": "string",
+      "description": "Worldbuilding budget level.",
+      "enum": ["minimal", "standard", "epic"]
+    },
+    "budget_spent": {
+      "type": "object",
+      "description": "Actual budget expenditure.",
+      "properties": {
+        "hours": {
+          "type": "number",
+          "description": "Hours spent on worldbuilding.",
+          "minimum": 0
+        },
+        "tokens": {
+          "type": "integer",
+          "description": "Tokens consumed during worldbuilding.",
+          "minimum": 0
+        }
+      }
+    },
+    "themes_explored": {
+      "type": "array",
+      "description": "List of themes systematically explored during worldbuilding.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "Theme name (e.g., History, Geography, Culture, Magic, Politics).",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "coverage": {
+            "type": "string",
+            "description": "Coverage level for this theme.",
+            "enum": ["light", "moderate", "deep", "exhaustive"]
+          },
+          "key_facts": {
+            "type": "array",
+            "description": "Key canon facts established for this theme.",
+            "items": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 600
+            }
+          },
+          "immutable_count": {
+            "type": "integer",
+            "description": "Number of immutable facts for this theme.",
+            "minimum": 0
+          },
+          "mutable_count": {
+            "type": "integer",
+            "description": "Number of mutable facts for this theme.",
+            "minimum": 0
+          }
+        },
+        "required": ["theme", "coverage", "key_facts"]
+      },
+      "minItems": 1
+    },
+    "canon_facts": {
+      "type": "object",
+      "description": "Canon facts organized by mutability level.",
+      "properties": {
+        "invariant": {
+          "type": "array",
+          "description": "Immutable canon facts.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fact": {
+                "type": "string",
+                "description": "Canon fact statement.",
+                "minLength": 10,
+                "maxLength": 600
+              },
+              "theme": {
+                "type": "string",
+                "description": "Associated theme.",
+                "minLength": 2,
+                "maxLength": 80
+              },
+              "rationale": {
+                "type": "string",
+                "description": "Why this fact is immutable.",
+                "maxLength": 400
+              }
+            },
+            "required": ["fact", "theme"]
+          }
+        },
+        "mutable": {
+          "type": "array",
+          "description": "Mutable/extensible canon facts.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fact": {
+                "type": "string",
+                "description": "Canon fact statement.",
+                "minLength": 10,
+                "maxLength": 600
+              },
+              "theme": {
+                "type": "string",
+                "description": "Associated theme.",
+                "minLength": 2,
+                "maxLength": 80
+              },
+              "elaboration_hooks": {
+                "type": "array",
+                "description": "Suggested directions for elaboration.",
+                "items": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              }
+            },
+            "required": ["fact", "theme"]
+          }
+        }
+      }
+    },
+    "entity_registry": {
+      "type": "object",
+      "description": "Entities created during world genesis.",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entity"
+          }
+        },
+        "summary": {
+          "type": "object",
+          "description": "Summary counts by entity type.",
+          "properties": {
+            "characters": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "places": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "factions": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "description": "Timeline structure established during genesis.",
+      "properties": {
+        "baseline_anchors": {
+          "type": "array",
+          "description": "Baseline timeline anchors (T0, T1, T2).",
+          "items": {
+            "$ref": "#/$defs/timeline_anchor"
+          },
+          "minItems": 1
+        },
+        "extension_anchors": {
+          "type": "array",
+          "description": "Extension anchors (T3+) for story-specific events.",
+          "items": {
+            "$ref": "#/$defs/timeline_anchor"
+          }
+        },
+        "chronology_notes": {
+          "type": "string",
+          "description": "Notes on timeline structure and chronology.",
+          "maxLength": 800
+        }
+      }
+    },
+    "constraints_generated": {
+      "type": "object",
+      "description": "Constraint manifest generated from genesis canon.",
+      "properties": {
+        "invariants": {
+          "type": "array",
+          "description": "Immutable constraints ('You CANNOT').",
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "mutables": {
+          "type": "array",
+          "description": "Extensible elements ('You CAN').",
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        },
+        "creative_guidance": {
+          "type": "array",
+          "description": "Positive guidance for Story Spark.",
+          "items": {
+            "type": "string",
+            "maxLength": 400
+          }
+        }
+      }
+    },
+    "lore_weaver_notes": {
+      "type": "string",
+      "description": "Notes from Lore Weaver role during genesis process.",
+      "maxLength": 2000
+    },
+    "completeness_checklist": {
+      "type": "array",
+      "description": "Checklist confirming worldbuilding completeness.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "description": "Checklist item.",
+            "minLength": 5,
+            "maxLength": 200
+          },
+          "completed": {
+            "type": "boolean",
+            "description": "Whether this item is completed."
+          }
+        },
+        "required": ["item", "completed"]
+      },
+      "minItems": 3
+    },
+    "next_steps": {
+      "type": "array",
+      "description": "Recommended next steps for Story Spark and project development.",
+      "items": {
+        "type": "string",
+        "minLength": 10,
+        "maxLength": 400
+      }
+    }
+  },
+  "required": [
+    "manifest_id",
+    "project_name",
+    "created",
+    "version",
+    "budget_level",
+    "themes_explored"
+  ],
+  "$defs": {
+    "entity": {
+      "type": "object",
+      "description": "A canonical entity created during world genesis.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Entity name.",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "entity_type": {
+          "type": "string",
+          "description": "Type of entity.",
+          "enum": ["character", "place", "faction", "item"]
+        },
+        "role": {
+          "type": "string",
+          "description": "Role or function of the entity.",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "description": "Entity description.",
+          "minLength": 10,
+          "maxLength": 800
+        },
+        "source": {
+          "type": "string",
+          "description": "Source (should be 'world-genesis' for genesis entities).",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "immutable": {
+          "type": "boolean",
+          "description": "Whether this entity is immutable canon."
+        },
+        "theme": {
+          "type": "string",
+          "description": "Theme this entity relates to.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional entity metadata.",
+          "additionalProperties": true
+        }
+      },
+      "required": ["name", "entity_type", "role", "description", "source"]
+    },
+    "timeline_anchor": {
+      "type": "object",
+      "description": "A chronological anchor point in the timeline.",
+      "properties": {
+        "anchor_id": {
+          "type": "string",
+          "description": "Timeline anchor ID (e.g., T0, T1, T2, T3-EVENT).",
+          "pattern": "^T\\d+(-[A-Z0-9\\-]+)?$",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "event": {
+          "type": "string",
+          "description": "Event description.",
+          "minLength": 10,
+          "maxLength": 400
+        },
+        "year": {
+          "type": "integer",
+          "description": "Absolute year (if known)."
+        },
+        "offset": {
+          "type": "integer",
+          "description": "Relative offset from baseline (years)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Additional context or notes.",
+          "maxLength": 800
+        },
+        "source": {
+          "type": "string",
+          "description": "Source (should be 'world-genesis' for genesis anchors).",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "immutable": {
+          "type": "boolean",
+          "description": "Whether this anchor is immutable canon."
+        }
+      },
+      "required": ["anchor_id", "event", "source"]
+    },
+    "date_string": {
+      "type": "string",
+      "description": "Date in YYYY-MM-DD format",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  }
+}
