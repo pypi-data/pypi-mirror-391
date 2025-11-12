@@ -1,0 +1,88 @@
+name: Build Wheels (abi3)
+
+on:
+  push:
+    branches: [main]
+    tags: ['*']
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'python/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'pyproject.toml'
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      test-wheel:
+        required: false
+        type: string
+        default: 'true'
+      python-version:
+        required: false
+        type: string
+        default: '3.11'
+
+permissions:
+  contents: read
+  actions: write # Required for uploading artifacts
+
+jobs:
+  # Linux builds
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build and Test Wheel
+        uses: ./.github/actions/build-wheel
+        with:
+          target: ${{ matrix.target }}
+          python-version: ${{ inputs.python-version }}
+          test-wheel: ${{ inputs.test-wheel }}
+          artifact-name: 'wheels-linux-${{ matrix.target }}'
+
+  # Windows builds
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: [x64]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build and Test Wheel
+        uses: ./.github/actions/build-wheel
+        with:
+          target: ${{ matrix.target }}
+          python-version: ${{ inputs.python-version }}
+          test-wheel: ${{ inputs.test-wheel }}
+          artifact-name: 'wheels-windows-${{ matrix.target }}'
+
+  # macOS builds
+  macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        # Only build universal2 on macos-latest (ARM64 runner)
+        # universal2 includes both x86_64 and arm64 architectures
+        # Note: macos-13 (x86_64) was shut down in September 2025
+        target: [universal2-apple-darwin]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build and Test Wheel
+        uses: ./.github/actions/build-wheel
+        with:
+          target: ${{ matrix.target }}
+          python-version: ${{ inputs.python-version }}
+          maturin-args: '--release --out dist --sdist --find-interpreter'
+          test-wheel: ${{ inputs.test-wheel }}
+          artifact-name: 'wheels-macos-${{ matrix.target }}'
+
