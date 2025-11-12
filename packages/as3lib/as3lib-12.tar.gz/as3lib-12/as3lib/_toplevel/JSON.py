@@ -1,0 +1,6 @@
+from as3lib._toplevel.Object import Object
+
+
+class JSON(Object):
+   def parse():...
+   def stringify():...

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version"]
+name = "as3lib"
+authors = [{name = "ajdelguidice", email = "ajdelguidice@gmail.com"}]
+description = "Partial implementation of ActionScript3 in Python"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["actionscript", "air", "flash", "flashplayer"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Utilities"
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "tkhtmlview",
+    "Pillow",
+    "as3lib-miniAMF"
+]
+
+[project.optional-dependencies]
+windows = ["pywin32"]
+
+[project.urls]
+Homepage = "https://github.com/ajdelguidice/python-as3lib"
+
+[tool.setuptools]
+packages = ["as3lib"]
+ext-modules = [
+    {name = "as3lib.cmath", sources = ["sourcecode/cmath.c"]},
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "as3lib.as3state.__version__"}
+
+[tool.tox]
+requires = ["tox"]
+env_list = ["py3"]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-runner"
+deps = ["flake8"]
+commands = [["-","flake8","--exclude","build,dist,configs,.tox,oldfiles","--indent-size","3","--ignore","E501,E226"]]
