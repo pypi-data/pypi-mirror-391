@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onehouse-cli"
+version = "0.1.1"
+description = "A command-line tool for executing SQL commands against the Onehouse API"
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "Proprietary" }
+authors = [
+    {name = "Sagar Lakshmipathy", email = "18vidhyasagar@gmail.com"}
+]
+keywords = ["onehouse", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "requests",
+]
+
+[project.scripts]
+onehouse-cli = "onehouse_cli.cli:main"
+onehouse-cli-configure = "onehouse_cli.configure:main"
