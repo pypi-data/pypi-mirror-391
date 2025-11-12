@@ -1,0 +1,24 @@
+[project]
+name = "tilert"
+version = "0.0.0.dev0"
+description = "Zero version placeholder for TileRT, under development..."
+authors = [{ name="Tile-AI", email = "tile-ai@outlook.com"  }]
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+dependencies = ["torch", "tilelang"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+"Homepage" = "https://github.com/tile-ai/TileRT"
+
+[tool.setuptools]
+packages = ["tilert"]
+
