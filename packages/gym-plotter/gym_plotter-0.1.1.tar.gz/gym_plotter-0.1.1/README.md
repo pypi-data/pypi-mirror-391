@@ -1,0 +1,48 @@
+# gym-plotter
+
+A lightweight **live plotting utility** for RL training (works with Gym, Stable-Baselines or custom loops).  
+Plots raw + smoothed rewards, loss and other metrics in real-time.
+
+## Features
+- Live plotting during training
+- Raw and smoothed (moving average) metrics
+- Best score marker
+- Training stats box (latest reward, avg reward)
+- Auto-save final plot
+
+## Installation
+```bash
+pip install gym-plotter
+
+
+## Usage
+import gymnasium as gym
+from gym_plotter import RLPlotter
+
+# Initialize environment and live plotter
+env = gym.make("CartPole-v1")
+plotter = RLPlotter()
+
+for episode in range(50):
+    state, _ = env.reset()
+    done = False
+    total_reward = 0
+    loss = 0  # Replace with your actual loss calculation
+
+    while not done:
+        action = env.action_space.sample()  # Replace with your policy action
+        state, reward, terminated, truncated, info = env.step(action)
+        done = terminated or truncated
+        total_reward += reward
+
+    # Log metrics after each episode
+    plotter.log(reward=total_reward, loss=loss)
+
+# Save final plot to file
+plotter.save("training_plot.png")
+env.close()
+# Example Output
+
+gym-plotter displays training progress in real time.
+Each metric (reward, loss, etc.) appears as both raw and smoothed curves, with the best reward highlighted and a live stats box summarizing performance.
+
