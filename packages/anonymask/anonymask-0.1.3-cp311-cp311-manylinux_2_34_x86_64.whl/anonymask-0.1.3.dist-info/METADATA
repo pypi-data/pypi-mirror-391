@@ -1,0 +1,80 @@
+Metadata-Version: 2.4
+Name: anonymask
+Version: 0.1.3
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Security
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Summary: Secure anonymization/de-anonymization library for PII data
+Keywords: anonymization,PII,privacy,LLM,RAG,security
+Author-email: Gokul Viswanathan <gokulviswanathan25@gmail.com>
+Maintainer-email: Gokul Viswanathan <gokulviswanathan25@gmail.com>
+License: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+Project-URL: Homepage, https://github.com/gokul-viswanathan/anonymask
+Project-URL: Documentation, https://github.com/gokul-viswanathan/anonymask#readme
+Project-URL: Repository, https://github.com/gokul-viswanathan/anonymask.git
+Project-URL: Issues, https://github.com/gokul-viswanathan/anonymask/issues
+Project-URL: Changelog, https://github.com/gokul-viswanathan/anonymask/blob/main/CHANGELOG.md
+
+# Anonymask Python Package
+
+This package provides Python bindings for the Anonymask core library, enabling secure anonymization and de-anonymization of PII data.
+
+## Installation
+
+```bash
+pip install anonymask
+```
+
+## Building from Source
+
+1. Ensure you have Rust and Python installed.
+2. Clone the repository and navigate to the `anonymask-py` directory.
+3. Install dependencies:
+
+```bash
+pip install maturin
+```
+
+4. Build the package:
+
+```bash
+maturin build --release --sdist
+```
+
+This will compile the Rust code and generate the Python wheel.
+
+## Usage
+
+```python
+from anonymask import Anonymizer
+
+anonymizer = Anonymizer(['email', 'phone'])
+result = anonymizer.anonymize('Contact john@email.com or call 555-123-4567')
+
+print(result[0])  # "Contact EMAIL_xxx or call PHONE_xxx"
+print(result[1])  # {'EMAIL_xxx': 'john@email.com', 'PHONE_xxx': '555-123-4567'}
+```
+
+## Publishing to PyPI
+
+1. Ensure you have a PyPI account and are configured (use `~/.pypirc` or environment variables).
+2. Update the version in `pyproject.toml`.
+3. Build the package: `maturin build --release`.
+4. Publish: `maturin publish`.
+
+Note: Maturin handles the build and upload process. Make sure to have your PyPI credentials set up.
+
+
