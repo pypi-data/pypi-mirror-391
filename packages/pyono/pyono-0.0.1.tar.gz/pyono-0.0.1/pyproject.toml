@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyono"
+version = "0.0.1"
+dependencies = [
+  "requests",
+  "pycryptodome"
+]
+
+requires-python = ">=3.11"
+
+authors = [
+  {name = "ltsistb", email = "ltsistb@proton.me"},
+]
+maintainers = [ 
+  {name = "ltsistb", email = "ltsistb@proton.me"},
+]
+
+description = "Onomondo SoftSIM API managing libraries"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICEN[CS]E.*"]
+keywords = ["onomondo", "softsim"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/ltsistb/onomondo-pyono"
+# Documentation = "https://readthedocs.org"
+Repository = "https://github.com/ltsistb/onomondo-pyono.git"
+# "Bug Tracker" = "https://github.com/me/spam/issues"
+# Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+# [project.scripts]
+# spam-cli = "spam:main_cli"
+
+# [project.gui-scripts]
+# spam-gui = "spam:main_gui"
+
+# [project.entry-points."spam.magical"]
+# tomatoes = "spam:main_tomatoes"
