@@ -1,0 +1,40 @@
+---
+stages:
+  - check
+  - build
+  - release
+
+variables:
+  TWINE_USERNAME: __token__
+  TWINE_PASSWORD: secret
+
+default:
+  image: python:3.10
+
+run-pre-commit:
+  stage: check
+  before_script:
+    - pip install pre-commit
+  script:
+    - pre-commit run --all-files
+
+build-pypi-package:
+  stage: build
+  before_script:
+    - pip install build
+  script:
+    - python -m build
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - dist/
+
+release-pypi-package:
+  stage: release
+  before_script:
+    - pip install twine
+  script:
+    - twine upload dist/*
+  only:
+    - tags
+  when: manual
