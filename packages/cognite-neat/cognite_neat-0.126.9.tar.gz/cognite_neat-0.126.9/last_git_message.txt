@@ -1,0 +1,51 @@
+[🐛] Mixpanel Pyodide try 3 (#1410)
+
+# Description
+
+The issue is that pyodide is changing the behavior of the async event
+loop, and does not allow you to block while doing a look-up of the
+values stored in the local storage.
+
+From the
+[docs](https://pyodide.org/en/stable/usage/api/python-api/webloop.html#pyodide.webloop.WebLoop)
+on the `Webloop` used by `pyodide`.
+
+>
+[run_forever()](https://docs.python.org/3.13/library/asyncio-eventloop.html#asyncio.loop.run_forever)
+and
+[run_until_complete()](https://docs.python.org/3.13/library/asyncio-eventloop.html#asyncio.loop.run_until_complete)
+cannot block like a normal event loop would because we only have one
+thread so blocking would stall the browser event loop and prevent
+anything from ever happening.
+
+This leaves us with the following three options (All my attempts at
+calling javascript directly has not created any viable alternatives)
+
+
+<img width="674" height="516" alt="image"
+src="https://github.com/user-attachments/assets/f036e177-e767-4dec-a6e7-daf641d3e7a1"
+/>
+
+I have implemented `Option1`, but trying to be smart by calling read on
+import. That means that the first cell will be executed when the user
+call `from cognite.neat._session import NeatSession`. This will not work
+if the user imports and initialize the session in the same cell, but I
+don't think that is common. And if they do, all that happens is they
+will get an extra message about the user metrics we track.
+
+`Option2` is the ideal solution, but that is not possible with Pyodide.
+
+I think `Option3` is completely out of the question as we do not want to
+burden the user with having to use `await`. when calling any NeatSession
+method.
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## Changelog
+### Improved
+
+- [Secret release]
