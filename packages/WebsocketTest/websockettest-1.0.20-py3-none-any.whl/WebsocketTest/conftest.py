@@ -1,0 +1,123 @@
+import pytest
+import yaml
+from pathlib import Path
+import json
+from typing import Dict, Any
+from functools import lru_cache
+
+@pytest.fixture(scope="session")
+def setup_env(request) -> Dict[str, Any]:
+    """加载并合并多层配置的环境信息
+    
+    Args:
+        request: pytest请求对象，用于获取命令行参数
+        
+    Returns:
+        合并后的环境配置字典
+        
+    Raises:
+        FileNotFoundError: 当配置文件不存在时
+        yaml.YAMLError: 当YAML解析失败时
+    """
+    # 1. 获取命令行参数
+    params = {
+        'service': request.config.getoption("service"),
+        'project': request.config.getoption("project"),
+        'env': request.config.getoption("env"),
+        'app': request.config.getoption("app"),
+        "audio_enabled": request.config.getoption("audio")
+    }
+    
+    # 2. 定义配置路径
+    config_dir = Path.cwd().resolve() / 'config'
+    config_paths = {
+        'app': config_dir / 'appConfig.yml',
+        'base': config_dir / params['project'] / f"{params['env']}.yml",
+        'service': config_dir / params['project'] / params['service'] / f"{params['env']}.yml"
+    }
+    
+    # 3. 加载并合并配置
+    try:
+        # 使用缓存提高多次调用性能
+        @lru_cache(maxsize=None)
+        def load_config(path: Path) -> dict:
+            with open(path, encoding='utf-8') as f:
+                return yaml.safe_load(f) or {}
+        
+        # 分层加载配置
+        app_config = load_config(config_paths['app']).get(params['app'], {})
+        base_config = load_config(config_paths['base']).get('environments', {})
+        service_config = load_config(config_paths['service']).get('environments', {})
+        
+        # 合并配置（后面的配置覆盖前面的）
+        merged = {
+            **base_config,
+            **service_config,
+            **app_config,
+            **params  # 命令行参数优先级最高
+        }
+        
+        return merged
+        
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Missing config file: {e.filename}") from e
+    except yaml.YAMLError as e:
+        raise yaml.YAMLError(f"YAML parse error in {e.problem_mark}: {e.problem}") from e
+
+# 添加命令行选项
+def pytest_addoption(parser):
+    parser.addoption(
+        "--env",
+        action="store",
+        default="uat",
+        help="Environment to use (default: uat)"
+    )
+    parser.addoption(
+        "--app",
+        action="store",
+        default="gp",
+        help="App name to use (default: gp)"
+    )
+    parser.addoption(
+        "--service",
+        action="store",
+        default="0f0826ab",
+        help="Service to use (default: aqua)"
+    )
+    parser.addoption(
+        "--project",
+        action="store",
+        default="vwa",
+        help="Project name is required"
+    )
+    parser.addoption(
+        "--audio",
+        action="store_true",  # 如果指定  --audio，则值为 True，否则为 False
+        default=False,        # 默认不传时是 False
+        help="Enable audio mode (if set, defaults to False)"
+    )
+
+# conftest.py（在 pytest 运行后生成 executor.json）
+def pytest_sessionfinish(session, exitstatus):
+    allure_results_dir = Path("allure_results")
+    executor_file = allure_results_dir / "executor.json"
+    
+    # 如果目录不存在，则创建
+    allure_results_dir.mkdir(exist_ok=True)
+    
+    # 读取旧的 buildOrder（如果存在）并递增
+    build_order = 1
+    if executor_file.exists():
+        with open(executor_file, "r") as f:
+            old_data = json.load(f)
+            build_order = int(old_data.get("buildOrder", 0)) + 1
+    
+    # 写入新的 executor.json
+    executor_data = {
+        "name": "Local Run",
+        "type": "local",
+        "buildOrder": build_order,  # 确保每次递增
+        "buildName": f"Test Run #{build_order}",
+    }
+    with open(executor_file, "w") as f:
+        json.dump(executor_data, f)
