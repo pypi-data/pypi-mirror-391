@@ -1,0 +1,14 @@
+plugins: [
+    "quark_plugin_mqss", "quark_plugin_ibm"
+    ]
+
+pipeline1: &pipeline1 [
+    "circuit_provider",
+    "circuit_to_sampler": {"channel": "ibm_cloud", "shots": 20},
+]
+pipeline2: &pipeline2 [
+    "circuit_provider",
+    "circuit_to_estimator": {"channel": "ibm_cloud", "shots": 20},
+]
+
+pipelines: [*pipeline1, *pipeline2]
