@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apx-harvest"
+version = "0.1.0"
+description = "APX harvest pipeline utilities"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+authors = [{ name = "APX Project Authors" }]
+keywords = ["apx", "harvest", "automation"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+apx-harvest = "apx_harvest.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["apx_harvest*"]
+
