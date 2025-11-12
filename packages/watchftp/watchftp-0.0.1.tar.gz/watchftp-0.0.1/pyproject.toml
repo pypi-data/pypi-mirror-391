@@ -1,0 +1,43 @@
+[project]
+name = "watchftp"
+dynamic = ["version"]
+description = "Simple, modern and fast FTP watching"
+readme = "README.md"
+authors = [{name = "Tri Songz", email = "ts@sgz.ai"}]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.4",
+    "pydantic-settings>=2.1",
+    "aioftp>=0.27",
+    "asyncssh>=2.14",
+    "redis[hiredis]>=5.0",
+    "wcmatch>=9.0",
+    "prometheus-client>=0.20",
+    "mkdocs-material>=9.7.0",
+    "mkdocs>=1.6.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "pytest-asyncio>=1.2",
+    "pyftpdlib>=2.1",
+]
+
+[urls]
+Homepage = "https://github.com/trisongz/watchftp"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = { attr = "watchftp.version.VERSION" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["watchftp*"]
+exclude = ["tests*"]
