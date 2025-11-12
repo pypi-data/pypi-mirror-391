@@ -1,0 +1,83 @@
+# Python Package Configuration for Runway MCP Server
+# This file tells Python how to build and install your package
+
+[build-system]
+# Tools needed to build your package
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Basic package information
+name = "runway-mcp-server"
+version = "0.1.0"
+description = "MCP server for Runway ML video generation with Gen-4, Veo 3, Aleph video editing, and comprehensive AI video tools"
+readme = "README.md"
+authors = [
+    {name = "Sid", email = "your-email@example.com"}
+]
+license = {text = "MIT"}
+
+# Keywords for discoverability on PyPI
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "runway",
+    "ai-video",
+    "video-generation",
+    "gen-4",
+    "aleph",
+    "video-editing",
+    "veo",
+    "ai"
+]
+
+# Classification tags for PyPI
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# Package dependencies - what your server needs to run
+dependencies = [
+    "mcp>=1.2.0",           # Model Context Protocol SDK
+    "runwayml>=0.3.0",      # Runway ML API client
+    "httpx>=0.24.0",        # HTTP client for API calls
+    "python-dotenv>=1.0.0", # Environment variable management
+]
+
+# Minimum Python version required
+requires-python = ">=3.10"
+
+# Command-line scripts - this creates the 'runway-mcp-server' command
+[project.scripts]
+runway-mcp-server = "runway_mcp_server.server:main"
+
+# URLs that will appear on PyPI
+[project.urls]
+Homepage = "https://github.com/sidart10/runway-mcp-server"
+Documentation = "https://github.com/sidart10/runway-mcp-server#readme"
+Repository = "https://github.com/sidart10/runway-mcp-server"
+Issues = "https://github.com/sidart10/runway-mcp-server/issues"
+"Runway Developer Portal" = "https://dev.runwayml.com"
+
+# Tell setuptools where to find your package code
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+# Automatically discover all packages in src/
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Include these additional files in the package
+[tool.setuptools.package-data]
+runway_mcp_server = ["py.typed"]
+
