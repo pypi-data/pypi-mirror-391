@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = 'atelier'
+dynamic = ["version"]
+description = "A collection of tools for software artists."
+requires-python = ">= 3.8"
+dependencies = [
+    'invoke', 'argh', 'six', 'future', 'Babel', 'python-dateutil', 'Sphinx',
+    'rstgen', 'toml',
+    'requests',
+    'sphinx-design',
+    'pydata-sphinx-theme',
+    'insipid-sphinx-theme',
+    'gitpython'
+]
+# scripts=['synodal.py']
+readme = "README.rst"
+# py_modules = ['synodal']
+
+license = {file = "COPYING"}
+authors = [
+  {name='Rumma & Ko Ltd', email="info@saffre-rumma.net"},
+  {name='Luc Saffre', email="luc@saffre-rumma.net"},
+]
+
+classifiers= [
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Development Status :: 5 - Production/Stable',
+    'Environment :: Web Environment',
+    'Intended Audience :: Developers',
+    'Intended Audience :: System Administrators',
+    'License :: OSI Approved :: GNU Affero General Public License v3',
+    'Natural Language :: English',
+    'Operating System :: OS Independent',
+    'Topic :: Database :: Front-Ends',
+    'Topic :: System :: Installation/Setup',
+    'Topic :: Software Development :: Libraries :: Application Frameworks'
+]
+
+[project.urls]
+
+Homepage = "https://lino-framework.gitlab.io/atelier"
+Repository = "https://gitlab.com/lino-framework/atelier"
+
+[project.optional-dependencies]
+
+testing = [
+  "pytest", "pytest-html", "pytest-forked", "pytest-env"
+]
+
+dev = [
+    "hatch",
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.hatch.version]
+path = "atelier/__init__.py"
+
+
+[project.scripts]
+per_project = "atelier.cli.per_project:main"
