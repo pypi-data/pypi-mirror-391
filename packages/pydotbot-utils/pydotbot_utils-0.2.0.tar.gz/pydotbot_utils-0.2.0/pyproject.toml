@@ -1,0 +1,76 @@
+[build-system]
+requires = [
+    "hatchling>=1.4.1",
+]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "*.py"
+]
+
+[project]
+name = "pydotbot-utils"
+version = "0.2.0"
+authors = [
+    { name="Alexandre Abadie", email="alexandre.abadie@inria.fr" },
+]
+dependencies = [
+    "pyserial >= 3.5",
+]
+description = "Utility modules for the DotBot Python softwares."
+readme = "README.md"
+license = { text="BSD" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DotBots/PyDotBot-utils"
+"Bug Tracker" = "https://github.com/DotBots/PyDotBot-utils/issues"
+
+[tool.hatch.envs.hatch-test]
+dependencies = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-cov",
+]
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["isort", "ruff"]
+
+[tool.hatch.envs.hatch-static-analysis.scripts]
+format-check = [
+  "ruff format --check --diff {args:.}",
+  "isort --check-only --diff {args:.}",
+]
+format-fix = [
+  "isort {args:.}",
+  "ruff format --diff {args:.}",
+]
+lint-check = "ruff check {args:.}"
+lint-fix = "ruff check --fix {args:.}"
+
+[tool.ruff]
+lint.select = ["E", "F"]
+line-length = 88
+lint.ignore = ["E501", "E722"]
+
+[tool.isort]
+multi_line_output = 3  # Use Vertical Hanging Indent
+profile = "black"
+
+[tool.black]
+line-length = 79
+skip-string-normalization = true
+
+[tool.pytest.ini_options]
+addopts = "-vv --doctest-modules --cov-report=term --cov-report=term-missing --cov=dotbot_utils"
+testpaths = [
+    "dotbot_utils",
+]
