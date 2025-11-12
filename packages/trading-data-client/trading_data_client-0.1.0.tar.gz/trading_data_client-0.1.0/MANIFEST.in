@@ -1,0 +1,19 @@
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+
+# Include client library files
+include trading_data_client/README.md
+include trading_data_client/py.typed
+
+# Include examples
+recursive-include examples *.py
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.pyc
+global-exclude .pytest_cache
+global-exclude .mypy_cache
