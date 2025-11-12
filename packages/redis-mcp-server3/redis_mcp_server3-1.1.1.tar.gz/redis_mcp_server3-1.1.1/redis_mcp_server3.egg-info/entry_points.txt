@@ -1,0 +1,5 @@
+[console_scripts]
+redis-mcp-server3 = redis_mcp_server3.server:main
+
+[mcp.servers]
+redis = redis_mcp_server3.server:redis_mcp_server3
