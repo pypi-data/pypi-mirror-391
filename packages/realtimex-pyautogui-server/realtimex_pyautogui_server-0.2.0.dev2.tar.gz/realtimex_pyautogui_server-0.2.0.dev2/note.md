@@ -1,0 +1,5 @@
+Previously, I encountered an issue when typing on macOS devices. When executing `type_text` with an input like `"https://example.com"`, the actual typed value appeared as `"https:??EXAMPLE>COM"` due to the "Shift" key getting stuck. After applying a fix with platform-specific typing, the text now types correctly.  
+
+I have a few questions about the current implementation:  
+1. Should I remove the potentially redundant `_release_modifiers()` calls in the `hotkey`, `press_key`, and `type_text` functions to improve efficiency, or is it better to keep them for safety?  
+2. In the current implementation, I’m using AppleScript. Is there an alternative method that types correctly without relying on AppleScript? Using it requires explicit system permissions, which might make our application appear untrusted to some users when the OS asks for approval while running. You can check the implementation in the `pyautogui` folder (copied from the PyAutoGUI package) to explore potential alternatives. If no better solution exists, we can retain the current approach — I just want to ensure we’ve evaluated all viable options.
