@@ -1,0 +1,80 @@
+[project]
+name = "pyraycore"
+version = "25.10.15"  # Автоматически обновляется из Xray-core при make release
+description = "Python gRPC bindings for Xray-core — control and monitor VLESS, REALITY and other protocols via gRPC API."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { text = "MIT" }
+authors = [
+    { name = "Роман (ex3lite)", email = "sharashka.brk@gmail.com" }
+]
+maintainers = [
+    { name = "Роман (ex3lite)", email = "sharashka.brk@gmail.com" }
+]
+requires-python = ">=3.10"
+
+keywords = [
+    "xray",
+    "vpn",
+    "grpc",
+    "bindings",
+    "vless",
+    "reality",
+    "proxy",
+    "fastapi",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX :: Linux",
+]
+
+dependencies = [
+    "grpcio>=1.65.0",
+    "protobuf>=5.28.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ex3lite/pyraycore"
+Repository = "https://github.com/ex3lite/pyraycore"
+Issues = "https://github.com/ex3lite/pyraycore/issues"
+Documentation = "https://github.com/ex3lite/pyraycore#readme"
+
+[build-system]
+requires = [
+    "setuptools>=68",
+    "wheel",
+    "grpcio-tools>=1.65.0"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "app*",
+    "common*",
+    "core*",
+    "proxy*",
+    "transport*"
+]
+
+[dependency-groups]
+dev = [
+    "grpcio-tools>=1.65.0",
+    "black",
+    "ruff",
+    "twine>=6.2.0",
+]
+
+[project.scripts]
+regen = "pyraycore.__main__:main"

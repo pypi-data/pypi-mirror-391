@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: pyraycore
+Version: 25.10.15
+Summary: Python gRPC bindings for Xray-core — control and monitor VLESS, REALITY and other protocols via gRPC API.
+Author-email: "Роман (ex3lite)" <sharashka.brk@gmail.com>
+Maintainer-email: "Роман (ex3lite)" <sharashka.brk@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/ex3lite/pyraycore
+Project-URL: Repository, https://github.com/ex3lite/pyraycore
+Project-URL: Issues, https://github.com/ex3lite/pyraycore/issues
+Project-URL: Documentation, https://github.com/ex3lite/pyraycore#readme
+Keywords: xray,vpn,grpc,bindings,vless,reality,proxy,fastapi
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Internet
+Classifier: Topic :: Software Development :: Libraries
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: POSIX :: Linux
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: grpcio>=1.65.0
+Requires-Dist: protobuf>=5.28.0
+
+# pyraycore
+
+**pyraycore** — это Python-биндинги для [Xray-core](https://github.com/XTLS/Xray-core) через gRPC.  
+Позволяет вызывать методы Xray прямо из Python-кода, без боли и шаманства с протобафами вручную.
+
+---
+
+## 🚀 Установка
+
+```bash
+pip install pyraycore
