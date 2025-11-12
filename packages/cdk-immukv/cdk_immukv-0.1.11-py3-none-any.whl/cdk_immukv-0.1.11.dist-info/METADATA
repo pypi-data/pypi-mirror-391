@@ -1,0 +1,80 @@
+Metadata-Version: 2.1
+Name: cdk-immukv
+Version: 0.1.11
+Summary: AWS CDK constructs for ImmuKV - Immutable key-value store using S3 versioning
+Home-page: https://github.com/Portfoligno/immukv.git
+Author: ImmuKV Contributors
+License: MIT
+Project-URL: Source, https://github.com/Portfoligno/immukv.git
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: JavaScript
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Typing :: Typed
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved
+Requires-Python: ~=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aws-cdk-lib <3.0.0,>=2.0.0
+Requires-Dist: constructs <11.0.0,>=10.0.0
+Requires-Dist: jsii <2.0.0,>=1.119.0
+Requires-Dist: publication >=0.0.3
+Requires-Dist: typeguard <4.3.0,>=2.13.3
+
+# cdk-immukv
+
+AWS CDK constructs for deploying ImmuKV infrastructure.
+
+## Installation
+
+### TypeScript/JavaScript
+
+```bash
+npm install cdk-immukv
+```
+
+### Python
+
+```bash
+pip install cdk-immukv
+```
+
+## Usage
+
+### TypeScript
+
+```python
+import * as cdk from 'aws-cdk-lib';
+import { ImmuKVStack } from 'cdk-immukv';
+
+const app = new cdk.App();
+new ImmuKVStack(app, 'MyImmuKVStack', {
+  bucketName: 'my-immukv-bucket',
+  s3Prefix: 'myapp/',
+});
+```
+
+### Python
+
+```python
+import aws_cdk as cdk
+from cdk_immukv import ImmuKVStack
+
+app = cdk.App()
+ImmuKVStack(app, "MyImmuKVStack",
+    bucket_name="my-immukv-bucket",
+    s3_prefix="myapp/",
+)
+```
+
+## API
+
+See the [API documentation](https://github.com/Portfoligno/immukv/tree/main/cdk) for detailed information.
+
+## License
+
+MIT
