@@ -1,0 +1,33 @@
+name: Ruff
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  ruff-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          src: "./dfttoolkit"
+          args: "check --no-preview --no-fix --config ./pyproject.toml"
+
+  ruff-format:
+    runs-on: ubuntu-latest
+    needs: ruff-lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v3
+        with:
+          src: "./dfttoolkit"
+          args: "format --no-preview --check --target-version py313 --config ./pyproject.toml"
