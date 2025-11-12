@@ -1,0 +1,1 @@
+"""Documentation package for the Syntropy project."""
