@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "esb1c-app"
+version = "0.1.3"
+description = "Connect-builder for 1C:ESB"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31",
+]
+authors = [
+    { name = "Vladimir Nadulich", email = "g240596448@gmail.com" },
+]
+license = "MIT"
+keywords = ["1c", "onec"]
+
+[project.urls]
+Homepage = "https://gitlab.com/240596448/esb1c_app"
+Documentation = "https://gitlab.com/240596448/esb1c_app/-/blob/master/README.md"
+Repository = "https://gitlab.com/240596448/esb1c_app.git"
+"Bug Tracker" = "https://gitlab.com/240596448/esb1c_app/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
