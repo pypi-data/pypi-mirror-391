@@ -1,0 +1,29 @@
+[project]
+name = "legalmind-ai"
+version = "1.1.1"
+description = "AI-Powered Legal Assistant for Indonesian Law with KUHP Baru 2026 Support"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Creator Source", email = "creatoropensource@gmail.com"}
+]
+keywords = ["legal", "ai", "indonesia", "law", "kuhp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = [
+    "openai>=1.0.0",
+    "requests>=2.25.0",
+    "python-dotenv>=0.19.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/legalmind-ai"
+Documentation = "https://github.com/yourusername/legalmind-ai#readme"
+Repository = "https://github.com/yourusername/legalmind-ai"
+"Bug Reports" = "https://github.com/yourusername/legalmind-ai/issues"

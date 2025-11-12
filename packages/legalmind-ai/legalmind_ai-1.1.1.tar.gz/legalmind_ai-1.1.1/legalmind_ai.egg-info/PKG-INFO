@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: legalmind-ai
+Version: 1.1.1
+Summary: AI-Powered Legal Assistant for Indonesian Law with KUHP Baru 2026 Support
+Author: Your Name
+Author-email: Creator Source <creatoropensource@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/legalmind-ai
+Project-URL: Documentation, https://github.com/yourusername/legalmind-ai#readme
+Project-URL: Repository, https://github.com/yourusername/legalmind-ai
+Project-URL: Bug Reports, https://github.com/yourusername/legalmind-ai/issues
+Keywords: legal,ai,indonesia,law,kuhp
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Legal Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: openai>=1.0.0
+Requires-Dist: requests>=2.25.0
+Requires-Dist: python-dotenv>=0.19.0
+Dynamic: author
+
+# LegalMind AI - Indonesian Legal AI Assistant
+
+🌐 **Multiple AI Providers** - Qodo AI, OpenAI, and fallback options  
+📚 **Indonesian Law Focused** - Specialized for Indonesian legal system  
+🔧 **Easy to Use API** - Simple integration for developers  
+🚀 **Production Ready** - Battle-tested in real environments  
+
+## Installation
+
+```bash
+pip install legalmind-ai
+## What's New in v1.0.1
+- Added 19 real-world legal study cases
+- Included analysis scripts for legal research  
+- Enhanced documentation and examples
+- Improved package structure
+## 🎉 Version 1.0.2 - Study Cases Release
+- Successfully integrated 17 legal study cases
+- Enhanced package with real-world examples  
+- Ready for developer use and research
+## 🆕 What's New in v1.1.0
+
+### KUHP Baru 2026 Integration
+- **17 Study Cases** on UU No. 1 Tahun 2023
+- **4 Categories**: Comparative analysis, implementation guides, special topics, case studies
+- **Ready for 2026** legal transition
+
+### Installation
+```bash
+pip install legalmind-ai==1.1.0
+```
+
+### Access KUHP Baru Content
+```python
+from importlib.resources import files
+kuhp_cases = files('legalmind.study_cases.kuhp_baru_2026')
+```
+
