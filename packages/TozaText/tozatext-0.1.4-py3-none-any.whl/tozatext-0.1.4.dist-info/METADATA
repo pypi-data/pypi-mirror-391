@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: TozaText
+Version: 0.1.4
+Summary: TozaText is a cleaning library for preprocessing raw Uzbek and multilingual text data.
+Author-email: Shohrux Isakov <isakovsh19@gmail.com>
+License: MIT
+Requires-Python: >=3.10
+Requires-Dist: datasets>=4.4.1
+Requires-Dist: fasttext>=0.9.3
+Requires-Dist: ftfy>=6.3.1
+Requires-Dist: loguru>=0.7.0
+Requires-Dist: pandas>=2.0.0
+Requires-Dist: tqdm>=4.65.0
+Description-Content-Type: text/markdown
+
+# 🧹 TozaText
+
+**TozaText** is a lightweight and extensible text-preprocessing pipeline built for cleaning noisy, transcribed, or user-generated text data.  
+It’s designed around a **modifier-based architecture** — each cleaning rule is a `DocumentModifier` that can be combined into a customizable `Pipeline`.
+
+---
+
+## Features
+
+- **Modular design** – add or remove modifiers easily (e.g., repetition removal, transliteration)
+- **Smart repetition cleaner** – removes consecutive repeated words, even with punctuation or ellipses
+---
+## Available Modifiers
+
+TozaText currently includes the following modifiers out of the box:
+
+| Modifier | Description | Example Input | Example Output |
+|-----------|--------------|----------------|----------------|
+| **`WordRepetitionFilter`** | Removes consecutive repeated words, even when separated by punctuation or ellipses. | `bu. bu. bu. shu shu qila qila` | `bu. shu qila` |
+| **`ParagraphRepetitionFilter`** | Removes entire paragraphs if too many repeated paragraphs or characters are detected (useful for STT data with repeated intros). | `"Salom!\n\nSalom!\n\nSalom!"` | `""` |
+| **`TransliteratorModifier`** | Converts Uzbek text between **Cyrillic** and **Latin** alphabets using `UzTransliterator`. | `"Салом дунё"` | `"Salom dunyo"` |
+| **`UrlCleaner`** | Remove or normalize URLs and links from text. | `"Bu sayt: https://example.com"` | `"Bu sayt"` |
+| **`EmojiCleaner`** | Strip or map emojis to descriptive tokens. | `"Zo‘r 😎"` | `"Zo‘r"` |
+
+
+
+All modifiers inherit from:
+```python
+class DocumentModifier:
+    def modify_document(self, text: str, *args, **kwargs) -> str:
+        ...
+```
+
+## Installation
+
+```bash
+git clone https://gitlab.adliya.uz/shohrux1sakov/tozatext.git
+cd TozaText
+pip install -e .
+``` 
+
+## Code Example 
+```
+from datasets import load_dataset
+from TozaText import Pipeline, WordRepetitionFilter, ParagraphRepetitionFilter
+
+data = load_dataset("aktrmai/youtube_transcribe_data", split="train")
+
+pipeline = Pipeline([
+    WordRepetitionFilter(),
+    ParagraphRepetitionFilter(),
+])
+
+cleaned = pipeline.process_hf_dataset(data, column="text")
+```
+
