@@ -1,0 +1,33 @@
+                 +----------------------+
+                 |  ContractSettngs     |  <<abstract dataclass>>
+                 +----------------------+
+                 | - name: str | None   |
+                 | - current_month_gross_sum: Decimal |
+                 | - social_security_base_sum: Decimal |
+                 | - cost_fifty_sum: Decimal |
+                 | - tax_base_sum: Decimal |
+                 | - employee_ppk: Decimal |
+                 | - employer_ppk: Decimal |
+                 | - accident_insurance_rate: Decimal | None |
+                 | - salary_deductions: Decimal |
+                 +----------------------+
+                 | +to_exporter_dict()  |
+                 | +to_dict() <<abstract>> |
+                 | +options_type()      |
+                 +----------------------+
+                          ^
+                          |
+        -------------------------------------------------
+        |                 |               |           |
++----------------+  +----------------+  +----------------+  +----------------+
+| Employment     |  | Mandate        |  | SelfEmployment |  | WorkContract  |
+| ContractSettings|  | ContractSettings|  | Settings       |  | Settings      |
++----------------+  +----------------+  +----------------+  +----------------+
+| - increased_costs: bool                ...               ... etc
+| - cost_fifty_ratio                     ...               ...
+| - fp_fgsp
+| - active_business
+| - under_26
+| - sick_pay
++----------------+ ... etc
+
