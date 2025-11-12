@@ -1,0 +1,612 @@
+{
+  "$defs": {
+    "BaselineMetrics": {
+      "description": "Baseline evaluation metrics.",
+      "properties": {
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        },
+        "passes": {
+          "title": "Passes",
+          "type": "integer"
+        },
+        "pass_rate": {
+          "title": "Pass Rate",
+          "type": "number"
+        },
+        "prop_violations": {
+          "items": {
+            "$ref": "#/$defs/Violation"
+          },
+          "title": "Prop Violations",
+          "type": "array"
+        },
+        "mr_violations": {
+          "items": {
+            "$ref": "#/$defs/Violation"
+          },
+          "title": "Mr Violations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "total",
+        "passes",
+        "pass_rate"
+      ],
+      "title": "BaselineMetrics",
+      "type": "object"
+    },
+    "CandidateMetrics": {
+      "description": "Candidate evaluation metrics.",
+      "properties": {
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        },
+        "passes": {
+          "title": "Passes",
+          "type": "integer"
+        },
+        "pass_rate": {
+          "title": "Pass Rate",
+          "type": "number"
+        },
+        "prop_violations": {
+          "items": {
+            "$ref": "#/$defs/Violation"
+          },
+          "title": "Prop Violations",
+          "type": "array"
+        },
+        "mr_violations": {
+          "items": {
+            "$ref": "#/$defs/Violation"
+          },
+          "title": "Mr Violations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "total",
+        "passes",
+        "pass_rate"
+      ],
+      "title": "CandidateMetrics",
+      "type": "object"
+    },
+    "Decision": {
+      "description": "Adoption decision.",
+      "properties": {
+        "adopt": {
+          "title": "Adopt",
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "adopt"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "JobMetadata": {
+      "description": "Job execution metadata.",
+      "properties": {
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        }
+      },
+      "title": "JobMetadata",
+      "type": "object"
+    },
+    "Provenance": {
+      "description": "Provenance metadata for auditability and reproducibility.",
+      "properties": {
+        "library_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Metamorphic Guard library version",
+          "title": "Library Version"
+        },
+        "git_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Git commit SHA",
+          "title": "Git Sha"
+        },
+        "git_dirty": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Whether working tree has uncommitted changes",
+          "title": "Git Dirty"
+        },
+        "python_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Python version",
+          "title": "Python Version"
+        },
+        "platform": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Platform identifier",
+          "title": "Platform"
+        },
+        "hostname": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hostname where evaluation ran",
+          "title": "Hostname"
+        },
+        "executable": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Python executable path",
+          "title": "Executable"
+        },
+        "mr_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "List of metamorphic relation identifiers",
+          "title": "Mr Ids"
+        },
+        "spec_fingerprint": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Hash-based fingerprint of task specification",
+          "title": "Spec Fingerprint"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Runtime environment metadata",
+          "title": "Environment"
+        },
+        "sandbox": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Sandbox configuration and provenance details",
+          "title": "Sandbox"
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "TrustScores": {
+      "description": "Trust scores for RAG evaluations.",
+      "properties": {
+        "score": {
+          "title": "Score",
+          "type": "number"
+        },
+        "flags": {
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "title": "Flags",
+          "type": "object"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Count"
+        },
+        "individual_scores": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Individual Scores"
+        },
+        "details": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Details"
+        }
+      },
+      "required": [
+        "score"
+      ],
+      "title": "TrustScores",
+      "type": "object"
+    },
+    "Violation": {
+      "description": "A property or metamorphic relation violation.",
+      "properties": {
+        "test_case": {
+          "title": "Test Case",
+          "type": "integer"
+        },
+        "property": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Property"
+        },
+        "relation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Relation"
+        },
+        "input": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input"
+        },
+        "output": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output"
+        },
+        "relation_output": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Relation Output"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "test_case"
+      ],
+      "title": "Violation",
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "description": "JSON schema for Metamorphic Guard evaluation reports",
+  "properties": {
+    "task": {
+      "title": "Task",
+      "type": "string"
+    },
+    "baseline": {
+      "$ref": "#/$defs/BaselineMetrics"
+    },
+    "candidate": {
+      "$ref": "#/$defs/CandidateMetrics"
+    },
+    "decision": {
+      "$ref": "#/$defs/Decision"
+    },
+    "delta_pass_rate": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Delta Pass Rate"
+    },
+    "delta_ci": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Delta Ci"
+    },
+    "relative_risk": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Relative Risk"
+    },
+    "relative_risk_ci": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Relative Risk Ci"
+    },
+    "config": {
+      "title": "Config",
+      "type": "object"
+    },
+    "job_metadata": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/JobMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "monitors": {
+      "title": "Monitors",
+      "type": "object"
+    },
+    "policy_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Policy Version"
+    },
+    "trust_scores": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/TrustScores"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trust Scores"
+    },
+    "llm_metrics": {
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Llm Metrics"
+    },
+    "provenance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "task",
+    "baseline",
+    "candidate",
+    "decision"
+  ],
+  "title": "Metamorphic Guard Report",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
