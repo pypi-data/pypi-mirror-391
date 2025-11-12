@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}ripgrep{% if pattern %}: {{ pattern }}{% endif %}{% endblock %}
+
+{% block extra_head %}
+<style>
+pre {
+    padding-left: {{ widest_line_number + 1.5 }}ch;
+    white-space: pre-wrap;
+}
+pre a.line-number:link {
+    -webkit-user-select: none;
+    display: inline-block;
+    width: {{ widest_line_number + 1.5 }}ch;
+    margin-left: -{{ widest_line_number + 1.5 }}ch;
+    text-decoration: none;
+    color: #666;
+}
+form.ripgrep label {
+    font-weight: normal;
+    display: inline;
+}
+pre.match {
+    background-color: #FFFF99;
+}
+pre.gap {
+    margin-top: 1em;
+}
+.glob-examples {
+    font-size: 0.85em;
+}
+.glob-examples code {
+    background-color: #eee;
+    padding: 0 2px;
+    border: 1px solid #ccc;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>ripgrep</h1>
+
+<form class="ripgrep" action="{{ urls.path("/-/ripgrep") }}" method="get">
+    <p>
+        <input type="search" name="pattern" value="{{ pattern }}">
+        <input type="submit" value="Search">
+    </p>
+    <p><strong>Options:</strong> <label><input type="checkbox" name="literal"{% if literal %} checked={% endif %}> Literal search (not regex)</label> <label><input type="checkbox" name="ignore"{% if ignore %} checked={% endif %}> Ignore case</label></p>
+    <p>
+        <label><strong>File pattern</strong>: &nbsp;<input type="text" style="max-width: 20em" name="glob" value="{{ globs.0 }}"></label>
+    </p>
+    <p class="glob-examples">For example <code>*.py</code> or <code>**/templates/**/*.html</code> or <code>datasette/**</code> or </code><code>!setup.py</code>
+    </p>
+    {% if globs|length > 1 %}
+    <p><strong>Additional patterns</strong></p>
+        {% for glob in globs[1:] %}
+            <p>
+                <input type="text" style="max-width: 20em" name="glob" value="{{ glob }}">
+            </p>
+        {% endfor %}
+    {% endif %}
+</form>
+
+{% if time_limit_hit %}<p>Time limit exceeded.</p>{% endif %}
+
+{% set ns = namespace(ended=true) %}
+
+{% for result in results %}
+    {% if result.type == "begin" %}
+        <h3>{{ fix_path(result.data.path.text) }}</h3>
+        <div style="overflow-x: auto">{% set ns.ended = false %}
+    {% endif %}
+    {% if result.type in ("match", "context") %}
+        <pre class="{% if result.type == "match" %}match{% endif %}{% if ns.prev_line and result.data.line_number - ns.prev_line > 1  %} gap{% endif %}"><a class="line-number" href="{{ urls.path("/-/ripgrep/view/" + url_quote(fix_path(result.data.path.text))) }}#L{{ result.data.line_number }}">{{ "%-4s" | format(result.data.line_number) }}</a><span>{{ result.data.lines.text }}</span></pre>
+    {% set ns.prev_line = result.data.line_number %}{% endif %}
+    {% if result.type == "end" %}{% set ns.ended = true %}    </div>{% endif %}
+{% endfor %}
+{% if not ns.ended %}        </div>{% endif %}
+
+<script>
+// Truncate really long lines
+Array.from(document.querySelectorAll('pre span')).forEach(span => {
+    const content = span.innerText;
+    if (content.length > 400) {
+        span.textContent = content.slice(0, 400);
+        let original = content;
+        const a = document.createElement('a');
+        a.innerText = '[...]';
+        a.style.fontWeight = 'bold';
+        a.href = span.parentNode.querySelector('a').href;
+        span.appendChild(a);
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            span.innerText = original;
+        })
+
+    }
+});
+</script>
+
+{% endblock %}
