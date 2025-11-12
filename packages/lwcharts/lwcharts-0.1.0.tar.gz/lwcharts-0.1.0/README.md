@@ -1,0 +1,246 @@
+# lwcharts - Lightweight Charts for Jupyter
+
+Ultra-simple TradingView Lightweight Charts integration for Jupyter notebooks. No widget infrastructure, no build steps, just works.
+
+![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.7%2B-blue.svg)
+
+## Why lwcharts?
+
+**lwcharts** takes a radically simple approach to displaying charts in Jupyter:
+- ✅ **No JavaScript build required** - Uses inline HTML with CDN-loaded libraries
+- ✅ **No widget infrastructure** - Just pure IPython HTML display
+- ✅ **Works everywhere** - PyCharm, JupyterLab, VS Code, Colab, anywhere Jupyter runs
+- ✅ **Zero configuration** - Install and use immediately
+- ✅ **Tiny package** - Less than 2KB, only depends on IPython
+
+## Installation
+
+```bash
+pip install lwcharts
+```
+
+That's it! No additional setup, no extensions to install, no build steps.
+
+## Quick Start
+
+### Line Chart
+
+```python
+from lwcharts import Chart
+
+chart = Chart(chart_type='line', width=800, height=400)
+chart.data = [
+    {'time': '2025-01-01', 'value': 100},
+    {'time': '2025-01-02', 'value': 110},
+    {'time': '2025-01-03', 'value': 105},
+    {'time': '2025-01-04', 'value': 120},
+]
+chart  # Display the chart
+```
+
+### Candlestick Chart
+
+```python
+from lwcharts import Chart
+
+chart = Chart(chart_type='candlestick', width=800, height=400)
+chart.data = [
+    {'time': '2025-01-01', 'open': 100, 'high': 110, 'low': 95, 'close': 105},
+    {'time': '2025-01-02', 'open': 105, 'high': 115, 'low': 100, 'close': 112},
+    {'time': '2025-01-03', 'open': 112, 'high': 120, 'low': 108, 'close': 115},
+]
+chart
+```
+
+## Supported Chart Types
+
+### 1. Line Chart
+```python
+chart = Chart(chart_type='line')
+chart.data = [{'time': '2025-01-01', 'value': 100}, ...]
+```
+
+### 2. Area Chart
+```python
+chart = Chart(chart_type='area')
+chart.data = [{'time': '2025-01-01', 'value': 100}, ...]
+```
+
+### 3. Candlestick Chart
+```python
+chart = Chart(chart_type='candlestick')
+chart.data = [
+    {'time': '2025-01-01', 'open': 100, 'high': 110, 'low': 95, 'close': 105},
+    ...
+]
+```
+
+### 4. Bar Chart
+```python
+chart = Chart(chart_type='bar')
+chart.data = [
+    {'time': '2025-01-01', 'open': 100, 'high': 110, 'low': 95, 'close': 105},
+    ...
+]
+```
+
+### 5. Histogram Chart
+```python
+chart = Chart(chart_type='histogram')
+chart.data = [
+    {'time': '2025-01-01', 'value': 50000, 'color': '#26a69a'},
+    ...
+]
+```
+
+## Customization
+
+### Chart Dimensions
+
+```python
+chart = Chart(chart_type='line', width=1000, height=600)
+```
+
+### Chart Options
+
+```python
+chart = Chart(chart_type='candlestick')
+
+# Customize appearance
+chart.chart_options = {
+    'layout': {
+        'background': {'color': '#1e1e1e'},
+        'textColor': '#d1d4dc',
+    },
+    'grid': {
+        'vertLines': {'color': '#2a2a2a'},
+        'horzLines': {'color': '#2a2a2a'},
+    },
+}
+```
+
+### Series Options
+
+```python
+# Customize candlestick colors
+chart.series_options = {
+    'upColor': '#26a69a',
+    'downColor': '#ef5350',
+    'wickUpColor': '#26a69a',
+    'wickDownColor': '#ef5350',
+}
+```
+
+## Real-World Example: Stock Data
+
+```python
+import pandas as pd
+import yfinance as yf
+from lwcharts import Chart
+
+# Download stock data
+ticker = yf.Ticker('AAPL')
+df = ticker.history(period='1mo')
+
+# Convert to lwc format
+data = [
+    {
+        'time': index.strftime('%Y-%m-%d'),
+        'open': row['Open'],
+        'high': row['High'],
+        'low': row['Low'],
+        'close': row['Close'],
+    }
+    for index, row in df.iterrows()
+]
+
+# Display chart
+chart = Chart(chart_type='candlestick', width=1000, height=600)
+chart.data = data
+chart
+```
+
+## Supported Environments
+
+Works in **any** Jupyter environment:
+
+| Environment | Status |
+|------------|--------|
+| **PyCharm Professional** | ✅ Works |
+| **JupyterLab** | ✅ Works |
+| **Jupyter Notebook** | ✅ Works |
+| **VS Code** | ✅ Works |
+| **Google Colab** | ✅ Works |
+| **Kaggle Notebooks** | ✅ Works |
+| **Databricks** | ✅ Works |
+
+## API Reference
+
+### Chart Class
+
+```python
+Chart(
+    chart_type='line',    # 'line', 'area', 'candlestick', 'bar', 'histogram'
+    width=800,            # Chart width in pixels
+    height=400            # Chart height in pixels
+)
+```
+
+#### Properties
+
+- `data` (list): Chart data points
+- `chart_type` (str): Type of chart
+- `width` (int): Chart width in pixels
+- `height` (int): Chart height in pixels
+- `chart_options` (dict): Chart configuration
+- `series_options` (dict): Series configuration
+
+#### Methods
+
+- `display()`: Explicitly display the chart
+- `set_data(data)`: Set chart data
+- `add_data_point(point)`: Add a single data point
+
+## How It Works
+
+Unlike traditional Jupyter widgets that require complex JavaScript builds and widget infrastructure, **lwcharts** uses a simple approach:
+
+1. Creates HTML with embedded JavaScript
+2. Loads lightweight-charts library from CDN (unpkg.com)
+3. Generates inline JavaScript to create and populate the chart
+4. Returns HTML via `_repr_html_()` for Jupyter display
+
+This means:
+- ✅ No RequireJS/AMD module loading issues
+- ✅ No widget registration needed
+- ✅ No nbextension installation
+- ✅ Works immediately after `pip install`
+
+## Examples
+
+See the [examples.ipynb](./examples.ipynb) notebook for more usage examples including all chart types and customization options.
+
+## Requirements
+
+- Python 3.7+
+- IPython (automatically installed with Jupyter)
+- Internet access (to load lightweight-charts from CDN)
+
+## Documentation
+
+For chart options and customization, see the [TradingView Lightweight Charts documentation](https://tradingview.github.io/lightweight-charts/).
+
+## License
+
+Apache License 2.0 - See [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+Built on [TradingView Lightweight Charts](https://github.com/tradingview/lightweight-charts)
+
+## Support
+
+- Open an issue on [GitHub](https://github.com/yourusername/lwcharts/issues)
+- Check the [examples.ipynb](./examples.ipynb) notebook
+- Read the [TradingView docs](https://tradingview.github.io/lightweight-charts/)
