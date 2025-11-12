@@ -1,0 +1,44 @@
+Metadata-Version: 2.3
+Name: waykit
+Version: 0.1.0
+Summary: generate location metatata like peaks, huts for a given gpx file
+Author: Peter Hoffmann
+Author-email: Peter Hoffmann <ph@peter-hoffmann.com>
+Requires-Dist: gpxpy>=1.6.2
+Requires-Dist: pydantic>=2.12.4
+Requires-Dist: requests>=2.32.5
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+waykit
+======
+
+waykit is a python tool to generate location metatata like peaks, huts and
+other pois for a given gpx file
+
+## Usage
+
+You can run the tool directly from github with [uvx](https://docs.astral.sh/uv/guides/tools/#requesting-different-sources)
+
+```
+uvx git+https://github.com/hoffmann/waykit -o output.geojson input.gpx
+```
+
+Pypi Package is not yet realeased, but will follow.
+
+You can also clone the repository and run it locally
+
+```
+uv run waykit -o output.geojson input.gpx 
+```
+
+
+## run the tests
+
+If you have just installed you can use the following
+
+```
+just test
+```
+
+otherwise check the command in the `justfile` to run the pytests
