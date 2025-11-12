@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: pymqttusb_tk
+Version: 1.0.0
+Summary: Connexion USB <-> MQTT (SSL ou WSS) avec interface Tkinter
+Home-page: https://github.com/didierorlandi/pymqttusb_tk
+Author: Didier Orlandi
+Author-email: didier.orlandi06@gmail.fr
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Communications
+Classifier: Intended Audience :: Education
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: MacOS X
+Classifier: Environment :: X11 Applications :: GTK
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENCE
+Requires-Dist: paho-mqtt<2.0.0
+Requires-Dist: pyserial>=3.5
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+#pymqttusb-tk
+
+Permet la connexion d'un microprocesseur branché sur un port usb vers un serveur MQTT.<br />
+
+L'affichage graphique permet de configurer le broker <br />
+Contenu du fichier "arduino_mqtt_data.json" :<br />
+
+-----------<br />
+
+Le topic de réception sera : salle/KEY/out<br />
+
+Le topic d'envoi sera : salle/KEY/in<br />
+
+Les protocoles possibles sont "wss" websockets sécurisés avec login et mot de passe ( pas de certificat)
+ou "tcp" pour ssl avec login et mot de passe ( pas de certificats client) <br />
+
+Lancement du programme :<br />
+
+	py -m pymqttusb-tk.main <br />
+
+<br />
+
