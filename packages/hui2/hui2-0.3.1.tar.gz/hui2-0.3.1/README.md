@@ -1,0 +1,371 @@
+# HUI2
+
+HUI2 is an advanced Android automation library that combines the power of uiautomator2 with OCR (Optical Character Recognition) capabilities. It provides developers and testers with an easy-to-use interface for Android app automation, testing, and interaction.
+
+## 🚀 Features
+
+- **OCR-based Text Recognition**: Find and interact with text elements that are not accessible through traditional UI automation
+- **Android Device Control**: Full control over Android devices via ADB
+- **Screenshot Analysis**: Capture and analyze screenshots for text recognition
+- **Easy Text Clicking**: Click on text elements found via OCR
+- **Text Waiting**: Wait for specific text to appear on screen using OCR or UI hierarchy
+- **ADB Text Input**: Input text via ADB shell commands
+- **Debug Mode**: Built-in debugging with visual OCR results
+- **Flexible Text Matching**: Support for partial text matching and case-insensitive search
+
+## 📦 Installation
+
+```bash
+pip install hui2
+```
+
+## 🔧 Prerequisites
+
+- Python 3.8 or higher
+- Android device with USB debugging enabled
+- ADB (Android Debug Bridge) installed and accessible
+
+## 🚀 Quick Start
+
+### 1. Basic Setup
+
+```python
+from hui2 import HDevice
+
+# Connect to device (replace with your device serial)
+device = HDevice("your_device_serial", text_score=0.7, debug=True)
+
+# Or connect via WiFi (replace with your IP:PORT)
+device = HDevice("192.168.1.100:5555", text_score=0.7, debug=True)
+```
+
+### 2. Click Text via OCR
+
+```python
+# Click on text found via OCR
+device.click_text_by_ocr("Login")
+
+# If multiple instances of text exist, use index
+device.click_text_by_ocr("Submit", index=0)  # First instance
+device.click_text_by_ocr("Submit", index=1)  # Second instance
+```
+
+### 3. Wait for Text
+
+```python
+# Wait for text using OCR
+if device.wait_text_by_ocr("Welcome", timeout=10):
+    print("Welcome text found!")
+
+# Wait for text using UI hierarchy (faster, but limited)
+if device.wait_text_by_hierarchy("Welcome", timeout=10):
+    print("Welcome text found in hierarchy!")
+```
+
+### 4. Text Input
+
+```python
+# Input text via ADB
+device.input_text_by_adb("Hello World")
+device.input_text_by_adb("Long text that will be split into chunks")
+```
+
+## 📚 Usage Examples
+
+### Example 1: Social Media Automation (Instagram)
+
+```python
+from hui2 import HDevice
+
+def automate_instagram_login(device, username, password):
+    """Automate Instagram login flow"""
+    
+    # Open Instagram app
+    device.shell("am start -n com.instagram.android/com.instagram.mainactivity.MainActivity")
+    
+    # Wait for the app to load
+    device.wait_text_by_ocr("Log in", timeout=10)
+    
+    # Enter username
+    device.input_text_by_adb(username)
+    
+    # Click on password field (if accessible via OCR)
+    device.click_text_by_ocr("Password")
+    
+    # Enter password
+    device.input_text_by_adb(password)
+    
+    # Click login button
+    device.click_text_by_ocr("Log in")
+    
+    # Wait for login confirmation
+    if device.wait_text_by_ocr("Home", timeout=15) or device.wait_text_by_ocr("Explore", timeout=15):
+        print("Login successful!")
+        return True
+    else:
+        print("Login failed!")
+        return False
+
+# Usage
+device = HDevice("your_device_serial")
+automate_instagram_login(device, "your_username", "your_password")
+```
+
+### Example 2: E-commerce App Testing
+
+```python
+from hui2 import HDevice
+
+def test_shopping_flow(device):
+    """Test shopping flow in an e-commerce app"""
+    
+    # Search for a product
+    device.click_text_by_ocr("Search")
+    device.input_text_by_adb("laptop")
+    
+    # Click search button
+    device.click_text_by_ocr("Search")
+    
+    # Wait for search results
+    device.wait_text_by_ocr("Results", timeout=10)
+    
+    # Click on the first product
+    device.click_text_by_ocr("Add to Cart", index=0)
+    
+    # Wait for confirmation
+    if device.wait_text_by_ocr("Added", timeout=5):
+        print("Product added to cart successfully!")
+    
+    # Go to cart
+    device.click_text_by_ocr("Cart")
+    
+    # Proceed to checkout
+    device.click_text_by_ocr("Checkout")
+    
+    return True
+
+# Usage
+device = HDevice("your_device_serial")
+test_shopping_flow(device)
+```
+
+### Example 3: Form Filling Automation
+
+```python
+from hui2 import HDevice
+
+def fill_contact_form(device, name, email, message):
+    """Automate contact form filling"""
+    
+    # Fill name field
+    device.click_text_by_ocr("Name")
+    device.input_text_by_adb(name)
+    
+    # Fill email field
+    device.click_text_by_ocr("Email")
+    device.input_text_by_adb(email)
+    
+    # Fill message field
+    device.click_text_by_ocr("Message")
+    device.input_text_by_adb(message)
+    
+    # Submit form
+    device.click_text_by_ocr("Submit")
+    
+    # Wait for confirmation
+    if device.wait_text_by_ocr("Thank you", timeout=10):
+        print("Form submitted successfully!")
+        return True
+    else:
+        print("Form submission failed!")
+        return False
+
+# Usage
+device = HDevice("your_device_serial")
+fill_contact_form(device, "John Doe", "john@example.com", "Hello, this is a test message.")
+```
+
+### Example 4: App Testing with Debug Mode
+
+```python
+from hui2 import HDevice
+
+def test_app_with_debug(device_serial):
+    """Test app with debug mode enabled for visual OCR results"""
+    
+    # Initialize with debug mode enabled
+    device = HDevice(device_serial, ocr_debug=True)
+    
+    # Navigate through app
+    device.click_text_by_ocr("Settings")
+    device.click_text_by_ocr("Profile")
+    device.click_text_by_ocr("Edit")
+    
+    # Wait for text to appear
+    if device.wait_text_by_ocr("Edit Profile", timeout=5):
+        print("Edit profile screen loaded!")
+        
+        # Fill form fields
+        device.input_text_by_adb("New Name")
+        device.input_text_by_adb("new@email.com")
+        
+        # Save changes
+        device.click_text_by_ocr("Save")
+        
+        # Check if changes were saved
+        if device.wait_text_by_ocr("Profile updated", timeout=5):
+            print("Profile updated successfully!")
+    
+    # Debug images will be saved to ./vis_cache/ directory
+    print("Check ./vis_cache/ for OCR visualization images")
+
+# Usage
+test_app_with_debug("your_device_serial")
+```
+
+### Example 5: Multi-device Testing
+
+```python
+from hui2 import HDevice
+import threading
+
+def test_on_device(device_serial, test_name):
+    """Run tests on a specific device"""
+    device = HDevice(device_serial)
+    
+    print(f"Running {test_name} on {device_serial}")
+    
+    # Your test logic here
+    device.click_text_by_ocr("Test")
+    device.wait_text_by_ocr("Success", timeout=10)
+    
+    print(f"{test_name} completed on {device_serial}")
+
+# Run tests on multiple devices simultaneously
+def run_parallel_tests():
+    devices = ["device1_serial", "device2_serial", "device3_serial"]
+    test_name = "Basic Functionality Test"
+    
+    threads = []
+    for device_serial in devices:
+        thread = threading.Thread(target=test_on_device, args=(device_serial, test_name))
+        threads.append(thread)
+        thread.start()
+    
+    for thread in threads:
+        thread.join()
+
+# Usage
+run_parallel_tests()
+```
+
+## API Reference
+
+### HDevice
+
+Main class for Android device automation.
+
+#### `__init__(device_serial, text_score=0.7, orc_debug=False)`
+
+Initialize the device connection with OCR support.
+
+- `device_serial`: Device serial number or WiFi address:port
+- `text_score`: OCR recognition confidence threshold (0.0-1.0, default: 0.7)
+- `ocr_debug`: Enable debug mode with visual output (default: False)
+
+#### `click_text_by_ocr(text, index=0)`
+
+Click on text found via OCR.
+
+- `text`: Text to find and click
+- `index`: Index of the text if multiple occurrences exist (default: 0)
+- Returns: True if successful, False otherwise
+
+#### `wait_text_by_ocr(text, timeout=10)`
+
+Wait for text to appear on screen via OCR.
+
+- `text`: Text to wait for
+- `timeout`: Maximum wait time in seconds (default: 10)
+- Returns: True if text found, False if timeout
+
+#### `wait_text_by_hierarchy(text, stop_text=None, timeout=10)`
+
+Wait for text using UI hierarchy (faster than OCR).
+
+- `text`: Text to wait for
+- `stop_text`: Stop condition text (optional)
+- `timeout`: Maximum wait time in seconds (default: 10)
+- Returns: True if text found, False if timeout or stop condition met
+
+#### `input_text_by_adb(text, max_char=2)`
+
+Input text via ADB shell.
+
+- `text`: Text to input
+- `max_char`: Maximum characters per input command (default: 2)
+
+## OCR Configuration
+
+- `text_score`: Higher values require more confidence in OCR results (0.7-0.9 recommended)
+- `debug=True`: Saves OCR visualization images to `./vis_cache/` directory
+
+## Use Cases
+
+### App Testing
+- Automated UI testing for Android apps
+- Form filling and submission testing
+- UI element verification
+
+### Game Automation
+- Clicking on game elements that aren't accessible via UI
+- Automated gameplay sequences
+
+### Data Extraction
+- Extracting text from non-accessible UI elements
+- Screenshot analysis and text extraction
+
+### Accessibility Testing
+- Testing apps for users with accessibility needs
+- Verifying text visibility and readability
+
+## Troubleshooting
+
+### Common Issues
+- **Device Not Found**: Ensure USB debugging is enabled and device is connected
+- **OCR Not Working**: Try adjusting `text_score` value
+- **Permission Errors**: Ensure ADB has proper permissions
+
+### Debug Mode
+
+Enable debug mode to save OCR visualization images:
+
+```python
+device = HDevice("your_serial", ocr_debug=True)
+```
+
+Visual results will be saved in `./vis_cache/` directory.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+MIT License - see the LICENSE file for details.
+
+## Support
+
+If you encounter any issues, please open an issue on the GitHub repository.
+
+## About
+
+HUI2 is built on top of:
+
+- **uiautomator2** - Android UI automation
+- **RapidOCR** - Fast OCR engine
+- **OpenCV** - Computer vision library
