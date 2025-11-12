@@ -1,0 +1,84 @@
+Metadata-Version: 2.4
+Name: Emotify
+Version: 0.0
+Author: Saurabh Pandey
+License: MIT
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: re
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+
+emojify-text
+
+A simple Python utility to automatically add emojis to your text based on keywords.
+
+Features
+
+Appends emojis: Finds keywords and appends emojis: "I love my dog" -> "I love ❤️ my dog 🐶"
+
+Replaces emojis: Optionally replaces keywords with emojis: "I love my dog" -> "I ❤️ my 🐶"
+
+Case-insensitive: Matches keywords regardless of case.
+
+Word boundaries: Won't replace "cat" in "caterpillar".
+
+Zero dependency: No other libraries required.
+
+Installation
+
+pip install emojify-text
+
+
+Usage
+
+Here is a basic example of the default behavior (appending emojis).
+
+from emojify_text import emojify
+
+my_text = "I am so happy to drink my coffee and code. I love my cat!"
+
+# Default mode (append emoji)
+emojified_text = emojify(my_text)
+print(emojified_text)
+
+# --- Output ---
+# "I am so happy 😊 to drink my coffee ☕ and code 💻. I love ❤️ my cat 🐱!"
+
+
+Functions
+
+emojify(text, replace=False)
+
+This is the main function to emojify a string.
+
+text (str): The input text you want to convert.
+
+replace (bool, optional): Controls the replacement behavior.
+
+If False (default), appends the emoji after the word.
+
+If True, replaces the word entirely with the emoji.
+
+Returns: (str) The emojified text.
+
+Example of replace=True:
+
+from emojify_text import emojify
+
+my_text = "I am so happy to drink my coffee and code. I love my cat!"
+
+replaced_text = emojify(my_text, replace=True)
+print(replaced_text)
+
+# --- Output ---
+# "I am so 😊 to drink my ☕ and 💻. I ❤️ my 🐱!"
+
+
+License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
