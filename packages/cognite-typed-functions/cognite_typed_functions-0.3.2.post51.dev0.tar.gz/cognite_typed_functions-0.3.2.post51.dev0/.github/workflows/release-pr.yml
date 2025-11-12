@@ -1,0 +1,52 @@
+# This workflow creates a PR when a release is created to merge the release into main
+
+name: Create Release PR
+
+on:
+  release:
+    types: [created]
+
+# Need write permissions to push branches
+permissions:
+  contents: write
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    name: "Create release PR"
+    steps:
+      - name: Check out
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          fetch-depth: 0
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Setup Python Env
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: pipx install uv dunamai
+
+      - name: Create release branch
+        run: |
+          BRANCH_NAME="release/${{ github.event.release.tag_name }}"
+          git checkout -b $BRANCH_NAME
+
+      - name: Update version file
+        run: |
+          VERSION=$(dunamai from any --no-metadata --style pep440)
+          echo "__version__ = \"$VERSION\"" > src/cognite_typed_functions/_version.py
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/cognite_typed_functions/_version.py
+          git commit -m "chore: bump version to $VERSION" || echo "No changes to commit"
+
+      - name: Push branch
+        run: |
+          BRANCH_NAME="release/${{ github.event.release.tag_name }}"
+          git push origin $BRANCH_NAME
+          echo "Release branch $BRANCH_NAME created. Please create a PR manually to merge into main."
+

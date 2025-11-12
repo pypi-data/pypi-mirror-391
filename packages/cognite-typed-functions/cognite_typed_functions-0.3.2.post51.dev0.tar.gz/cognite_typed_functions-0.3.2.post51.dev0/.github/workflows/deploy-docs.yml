@@ -1,0 +1,81 @@
+# This workflow deploys documentation to GitHub Pages
+# - Deploys versioned docs on releases
+# - Deploys dev docs on pushes to main
+
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [created]
+
+# Permissions needed for GitHub Pages deployment
+permissions:
+  contents: write
+
+jobs:
+  deploy-dev:
+    name: Deploy Development Docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: |
+          pipx install uv
+          uv sync --group dev
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy dev documentation
+        run: |
+          uv run mike deploy dev --push --update-aliases
+
+  deploy-release:
+    name: Deploy Release Docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: |
+          pipx install uv
+          uv sync --group dev
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Deploy release documentation
+        run: |
+          uv run mike deploy ${{ steps.version.outputs.version }} latest --push --update-aliases
+          uv run mike set-default latest --push
+
