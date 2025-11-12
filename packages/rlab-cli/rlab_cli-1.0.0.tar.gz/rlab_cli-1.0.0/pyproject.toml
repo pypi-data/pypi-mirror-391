@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rlab-cli"
+version = "1.0.0"
+description = "RLab Platform CLI - Digital Twins for Educational Robotics powered by Nueroid"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "RLab Team", email = "rlab@rosversity.com"},
+]
+keywords = ["digital-twins", "robotics", "education", "nueroid", "rlab"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education", 
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+rlab = "rlab_cli.main:main"
+rlab-cli = "rlab_cli.main:main"
+
+[project.urls]
+Homepage = "https://github.com/Rosversity/rlab-cli"
+Documentation = "https://github.com/Rosversity/rlab-cli#readme"
+Repository = "https://github.com/Rosversity/rlab-cli.git"
+Issues = "https://github.com/Rosversity/rlab-cli/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rlab_cli*"]
