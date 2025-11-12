@@ -1,0 +1,92 @@
+ListView {
+    align: left top;
+    margin: 0;
+    margin-bottom: 1;
+    border: round;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    width: 30%;
+}
+
+ListItem {
+    padding: 1 2;
+}
+
+Button:focus {
+    text-style: bold;
+}
+
+Switch {
+    padding: 0;
+    border: none;
+}
+
+.switch {
+    height: auto;
+    width: auto;
+    padding: 1;
+}
+
+.switch > Label {
+    margin-left: 2;
+}
+
+#info-container {
+    margin: 1;
+    overflow: auto;
+}
+
+.info-label {
+    text-style: bold;
+}
+
+.info-widget {
+    width: 100%;
+    margin: 1;
+    margin-bottom: 2;
+}
+
+#content * {
+    overflow: hidden;
+}
+
+#navi-container {
+    dock: bottom;
+    height: 4;
+    padding: 0 3;
+}
+
+#select {
+    width: 30%;
+}
+
+#exit {
+    width: 20%;
+    dock: right;
+}
+
+#right-container {
+    width: 70%;
+}
+
+#inputs-container {
+    margin: 0;
+    padding: 1;
+    padding-bottom: 0;
+    border: round;
+    height: auto;
+}
+
+.input-label {
+    margin: 0;
+    text-style: bold;
+}
+
+Input {
+    margin-bottom: 1;
+}
+
+Switch > .switch--slider {
+    background: #3f3f3f;
+}

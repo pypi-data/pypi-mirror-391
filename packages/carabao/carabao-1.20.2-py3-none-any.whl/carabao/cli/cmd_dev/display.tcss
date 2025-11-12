@@ -1,0 +1,107 @@
+Horizontal {
+    height: auto;
+    padding: 0;
+    margin: 0;
+}
+
+ListView {
+    align: left top;
+    margin: 0;
+    margin-bottom: 1;
+    border: round;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    width: 30%;
+}
+
+ListItem {
+    padding: 1 2;
+}
+
+Button:focus {
+    text-style: bold;
+}
+
+#info-container {
+    overflow: auto;
+}
+
+.info-label {
+    text-style: bold;
+}
+
+.info-widget {
+    width: 100%;
+    margin-bottom: 1;
+    padding: 1 4;
+}
+
+Tree {
+    padding: 1 2;
+    height: auto;
+}
+
+#navi-container {
+    dock: bottom;
+    height: 4;
+    padding: 0 3;
+}
+
+#run {
+    width: 30%;
+}
+
+#exit {
+    width: 20%;
+    dock: right;
+}
+
+Switch {
+    width: auto;
+    padding: 0;
+    border: none;
+}
+
+.switch {
+    margin: 0 2;
+    width: auto;
+    height: auto;
+    padding: 1;
+}
+
+.switch > Label {
+    height: 100%;
+    margin-left: 2;
+}
+
+TabPane {
+    width: 70%;
+    padding: 1 2;
+}
+
+Input {
+    margin-left: 2;
+    margin-bottom: 1;
+}
+
+.form-switch {
+    margin: 1 3;
+}
+
+Switch > .switch--slider {
+    background: #3f3f3f;
+}
+
+Slider {
+    width: 50%;
+}
+
+.slider-container {
+    margin-left: 2;
+}
+
+.slider-label {
+    margin-top: 1;
+    margin-left: 1;
+}
