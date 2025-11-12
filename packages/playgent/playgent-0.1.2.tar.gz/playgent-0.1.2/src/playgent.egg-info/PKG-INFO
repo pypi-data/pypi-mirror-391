@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: playgent
+Version: 0.1.2
+Summary: SDK for tracking and testing OpenAI API calls
+Author-email: Aniruddh Sriram <aniruddh.sriram@gmail.com>
+Maintainer-email: Aniruddh Sriram <aniruddh.sriram@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/AniruddhS24/playgent-py
+Project-URL: Documentation, https://github.com/AniruddhS24/playgent-py#readme
+Project-URL: Repository, https://github.com/AniruddhS24/playgent-py
+Project-URL: Issues, https://github.com/AniruddhS24/playgent-py/issues
+Project-URL: Changelog, https://github.com/AniruddhS24/playgent-py/releases
+Keywords: openai,api,testing,tracking,replay,evaluation,sdk
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Quality Assurance
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: openai>=1.0.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: langfuse>=0.0.9
+Requires-Dist: opentelemetry-api>=1.20.0
+Requires-Dist: opentelemetry-sdk>=1.20.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: build>=0.10.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: license-file
+
+# Playgent
+
+[![PyPI Version](https://img.shields.io/pypi/v/playgent.svg)](https://pypi.org/project/playgent/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/playgent.svg)](https://pypi.org/project/playgent/)
+
+Record and test your OpenAI agent traces.
+
+## Installation
+
+```bash
+pip install playgent
+```
+
+## Quick Start
+
+### Step 1: Instrument your agent to record traces
+
+```python
+import json
+from typing import List
+import dotenv
+import os
+
+dotenv.load_dotenv()
+
+from playgent.openai import OpenAI  # Drop-in replacement for OpenAI
+from playgent import record, trace
+
+client = OpenAI()  # Automatically tracks all OpenAI calls
+
+# Your agent functions here
+def add_to_todo_list(task: str) -> str:
+    # ... your implementation
+    pass
+
+@record  # This decorator records the entire trace
+def infer(input_text: str, model: str = "gpt-4", tools_list: List = None):
+    messages = [{"role": "user", "content": input_text}]
+
+    # Your agent logic with OpenAI calls
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        tools=tools_list
+    )
+
+    # Process response and handle tool calls...
+    return response
+
+# Use trace context manager to auto-create traces
+with trace() as sess:
+    result = infer("Add 'buy milk' to my todo list")
+```
+
+### Step 2: Run tests via replay
+
+After annotating traces with expected outcomes on the Playgent dashboard:
+
+```python
+from playgent import replay_test, evaluate
+from example_agent import infer
+
+# Test using a recorded trace ID
+test_case_id = "6996b53a-1ebf-403a-8770-10ed001391c3"
+
+with replay_test(test_case_id) as (trace_id, endpoint_events):
+    for event in endpoint_events:
+        infer(**event.arguments)
+    result = evaluate(test_case_id, trace_id)
+```
+
+That's it! Two steps:
+1. **Instrument** - Add `@record` decorator and use `playgent.openai.OpenAI`
+2. **Test** - Replay annotated traces and evaluate results
+
+## Environment Setup
+
+Create a `.env` file:
+
+```bash
+PLAYGENT_API_KEY=your-playgent-api-key
+OPENAI_API_KEY=your-openai-api-key
+```
+
+## Full Examples
+
+See [example_agent.py](example_agent.py) and [example_agent_test.py](example_agent_test.py) for complete working examples.
+
+## License
+
+MIT
