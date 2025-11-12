@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "goldborn"
+version = "0.1.0"
+authors = [{ name = "tolkeinenjoyer", email = "tolkeinenjoyer@gmail.com" }]
+description = "A plotting library with golden ratio aesthetics, inspired by seaborn"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "pandas",
+    "seaborn",
+    "matplotlib"
+]
