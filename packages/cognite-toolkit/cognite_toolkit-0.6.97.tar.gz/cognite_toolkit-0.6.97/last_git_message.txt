@@ -1,0 +1,28 @@
+Mixpanel information json serialization (#2190)
+
+# Description
+
+User reported error message due to failed mixpanel serialization. The
+error was eliminated by setting mode=json on Pydantic method.
+
+<img width="1540" height="1030" alt="Screenshot 2025-11-12 at 10 40 22"
+src="https://github.com/user-attachments/assets/08b9ca03-156d-4350-9239-6b2267240a37"
+/>
+
+
+
+
+## Changelog
+
+- [x] Patch
+- [ ] Skip
+
+## cdf
+
+### Fixed
+
+- Error on tracking info serielization
+
+## templates
+
+No changes.
