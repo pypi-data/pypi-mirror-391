@@ -1,0 +1,49 @@
+[project]
+name = "pun"
+description = "This is a pun"
+license = "MIT"
+readme = "README.md"
+# TODO @hasansezertasan: Update the author name and email
+authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+# TODO @hasansezertasan: Update the maintainer name and email
+maintainers = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
+dynamic = ["version"]
+# TODO @hasansezertasan: Update the keywords
+keywords = ["pun"]
+# TODO @hasansezertasan: Fill in classifiers
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Typing :: Typed",
+]
+requires-python = ">=3.10"
+dependencies = []
+
+
+[project.urls]
+changelog = "https://github.com/hasansezertasan/pun/blob/main/CHANGELOG.md"
+documentation = "https://github.com/hasansezertasan/pun#readme"
+homepage = "https://github.com/hasansezertasan/pun"
+issues = "https://github.com/hasansezertasan/pun/issues"
+releasenotes = "https://github.com/hasansezertasan/pun/releases"
+source = "https://github.com/hasansezertasan/pun.git"
+
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.1.0"
+
+
+[tool.hatch.build]
+hooks.vcs.version-file = "src/pun/_version.py"
+
+
+[tool.hatch.version.raw-options]
+version_scheme = "only-version"
+local_scheme = "no-local-version"
