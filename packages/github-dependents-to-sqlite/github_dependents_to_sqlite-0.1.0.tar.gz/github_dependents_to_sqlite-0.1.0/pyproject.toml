@@ -1,0 +1,107 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "github-dependents-to-sqlite"
+version = "0.1.0"
+description = "Save GitHub package dependents data to a SQLite database by scraping the dependency graph with support for specific package selection"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Mingpei Cao"}
+]
+keywords = ["github", "sqlite", "dependents", "scraping", "dependency-graph"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "sqlite-utils>=2.7.2",
+    "requests>=2.20.0",
+    "beautifulsoup4>=4.8.0",
+    "click>=7.0",
+    "tqdm>=4.50.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "requests-mock>=1.8",
+]
+dev = [
+    "pytest>=6.0",
+    "requests-mock>=1.8",
+    "black>=22.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/caomingpei/github-dependents-to-sqlite"
+Repository = "https://github.com/caomingpei/github-dependents-to-sqlite"
+Issues = "https://github.com/caomingpei/github-dependents-to-sqlite/issues"
+Changelog = "https://github.com/caomingpei/github-dependents-to-sqlite/releases"
+
+[project.scripts]
+github-dependents-to-sqlite = "src.cli:cli"
+
+[tool.setuptools]
+packages = ["src"]
+
+[tool.setuptools.package-data]
+src = ["*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+]
+ignore = [
+    "E501",  # line too long, handled by black
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["B011"]
