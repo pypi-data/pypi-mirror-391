@@ -1,0 +1,53 @@
+diff --git a/README.md b/README.md
+index ea8ee64..bd8866f 100644
+--- a/README.md
++++ b/README.md
+@@ -121,6 +121,7 @@ The DOT output features:
+ - Modules displayed as light blue rounded boxes
+ - Packages grouped with dashed gray borders (clearly distinct from arrows)
+ - Sub-packages nested hierarchically
++- Sub-packages are encouraged to appear earlier (to the left) when the dependency graph allows
+ - Circular dependencies highlighted in **bold red arrows**
+ 
+ ### Check for circular dependencies
+diff --git a/import_deps/__main__.py b/import_deps/__main__.py
+index 3e9827f..8dec0e7 100644
+--- a/import_deps/__main__.py
++++ b/import_deps/__main__.py
+@@ -52,6 +52,7 @@ def format_dot(results, highlight_cycles=True):
+     """Format results as DOT graph for graphviz"""
+     lines = ['digraph imports {']
+     lines.append('    rankdir=LR;')
++    lines.append('    newrank=true;')
+     lines.append('    node [shape=box, style="rounded,filled", fillcolor=lightblue, fontname="Arial"];')
+     lines.append('    edge [fontname="Arial"];')
+ 
+@@ -75,7 +76,7 @@ def format_dot(results, highlight_cycles=True):
+             packages[pkg].append(module)
+ 
+     # Create subgraphs for packages
+-    def create_subgraph(pkg_name, modules, indent=1):
++    def create_subgraph(pkg_name, modules, indent=1, is_subpackage=False):
+         ind = '    ' * indent
+         lines.append(f'{ind}subgraph cluster_{pkg_name.replace(".", "_")} {{')
+         lines.append(f'{ind}    label = "{pkg_name}";')
+@@ -85,6 +86,10 @@ def format_dot(results, highlight_cycles=True):
+         lines.append(f'{ind}    fontcolor = gray20;')
+         lines.append(f'{ind}    penwidth = 1.5;')
+ 
++        # Encourage sub-packages to appear earlier (to the left)
++        if is_subpackage:
++            lines.append(f'{ind}    rank = min;')
++
+         # Find direct children of this package
+         for mod in sorted(modules):
+             if mod.rsplit('.', 1)[0] == pkg_name:
+@@ -97,7 +102,7 @@ def format_dot(results, highlight_cycles=True):
+                 sub_pkgs[other_pkg] = other_modules
+ 
+         for sub_pkg in sorted(sub_pkgs.keys()):
+-            create_subgraph(sub_pkg, sub_pkgs[sub_pkg], indent + 1)
++            create_subgraph(sub_pkg, sub_pkgs[sub_pkg], indent + 1, is_subpackage=True)
+ 
+         lines.append(f'{ind}}}')
+ 

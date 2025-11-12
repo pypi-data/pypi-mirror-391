@@ -1,0 +1,79 @@
+digraph imports {
+    rankdir=LR;
+    node [shape=box, style="rounded,filled", fillcolor=lightblue, fontname="Arial"];
+    edge [fontname="Arial"];
+    subgraph cluster_mcpbench {
+        label = "mcpbench";
+        style = "rounded,dashed";
+        color = gray40;
+        fontsize = 11;
+        fontcolor = gray20;
+        penwidth = 1.5;
+        "mcpbench.__init__";
+        "mcpbench.auth";
+        "mcpbench.blog_image";
+        "mcpbench.cli";
+        "mcpbench.enrich";
+        "mcpbench.gen_mcp_class";
+        "mcpbench.llm";
+        "mcpbench.registry";
+        "mcpbench.server";
+        "mcpbench.service";
+        "mcpbench.stats";
+        "mcpbench.store";
+        "mcpbench.tasks";
+        subgraph cluster_mcpbench_app {
+            label = "mcpbench.app";
+            style = "rounded,dashed";
+            color = gray40;
+            fontsize = 11;
+            fontcolor = gray20;
+            penwidth = 1.5;
+            "mcpbench.app.__init__";
+            "mcpbench.app.views_auth";
+            "mcpbench.app.views_data";
+            "mcpbench.app.views_tasks";
+        }
+        subgraph cluster_mcpbench_migrations {
+            label = "mcpbench.migrations";
+            style = "rounded,dashed";
+            color = gray40;
+            fontsize = 11;
+            fontcolor = gray20;
+            penwidth = 1.5;
+            "mcpbench.migrations.__init__";
+            "mcpbench.migrations.migrate_v2_to_v3";
+        }
+    }
+
+    "mcpbench.app.__init__" -> "mcpbench.app.views_auth";
+    "mcpbench.app.__init__" -> "mcpbench.app.views_data";
+    "mcpbench.app.__init__" -> "mcpbench.app.views_tasks";
+    "mcpbench.app.views_auth" -> "mcpbench.auth";
+    "mcpbench.app.views_auth" -> "mcpbench.store";
+    "mcpbench.app.views_data" -> "mcpbench.auth";
+    "mcpbench.app.views_data" -> "mcpbench.store";
+    "mcpbench.app.views_tasks" -> "mcpbench.auth";
+    "mcpbench.app.views_tasks" -> "mcpbench.gen_mcp_class";
+    "mcpbench.app.views_tasks" -> "mcpbench.registry";
+    "mcpbench.app.views_tasks" -> "mcpbench.store";
+    "mcpbench.app.views_tasks" -> "mcpbench.tasks";
+    "mcpbench.auth" -> "mcpbench.store";
+    "mcpbench.cli" -> "mcpbench.auth";
+    "mcpbench.cli" -> "mcpbench.blog_image";
+    "mcpbench.cli" -> "mcpbench.gen_mcp_class";
+    "mcpbench.cli" -> "mcpbench.registry";
+    "mcpbench.cli" -> "mcpbench.stats";
+    "mcpbench.cli" -> "mcpbench.store";
+    "mcpbench.cli" -> "mcpbench.tasks";
+    "mcpbench.gen_mcp_class" -> "mcpbench.llm";
+    "mcpbench.migrations.migrate_v2_to_v3" -> "mcpbench.enrich";
+    "mcpbench.migrations.migrate_v2_to_v3" -> "mcpbench.store";
+    "mcpbench.registry" -> "mcpbench.enrich";
+    "mcpbench.registry" -> "mcpbench.store";
+    "mcpbench.registry" -> "mcpbench.tasks" [color=red, penwidth=2.0];
+    "mcpbench.server" -> "mcpbench.app.__init__";
+    "mcpbench.stats" -> "mcpbench.store";
+    "mcpbench.tasks" -> "mcpbench.registry" [color=red, penwidth=2.0];
+    "mcpbench.tasks" -> "mcpbench.store";
+}

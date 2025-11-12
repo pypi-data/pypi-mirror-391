@@ -1,0 +1,36 @@
+=======
+Changes
+=======
+
+0.4.0 (*2025-11-11*)
+====================
+
+- drop support for Python 3.8 and 3.9
+- add support for Python 3.13 and 3.14
+- add support for analyzing entire package directories
+- add JSON output support with --json flag
+- add DOT output support with --dot flag for graphviz visualization
+- add --check flag to detect circular dependencies and exit with error if found
+- add --sort flag to output modules in topological order (dependencies first)
+
+
+0.3.0 (*2024-05-04*)
+====================
+
+- fix script entry point
+- add support for python 3.11 and 3.12
+
+
+0.2.0 (*2022-01-17*)
+=====================
+
+- drop support python 3.5 and 3.6
+- add support for python 3.8, 3.9 and 3.10
+- do not try to get package above given relative path
+- add mod_imports()
+
+
+0.1.0 (*2018-06-24*)
+=====================
+
+- initial release

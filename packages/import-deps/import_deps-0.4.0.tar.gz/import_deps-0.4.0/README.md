@@ -1,0 +1,288 @@
+# import_deps
+
+[![PyPI version](https://img.shields.io/pypi/v/import-deps.svg)](https://pypi.org/project/import-deps/)
+[![Python versions](https://img.shields.io/pypi/pyversions/import-deps.svg)](https://pypi.org/project/import-deps/)
+[![CI Github actions](https://github.com/schettino72/import-deps/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/schettino72/import-deps/actions/workflows/test.yml?query=branch%3Amaster)
+
+Find python module's import dependencies.
+
+`import_deps` is based on [ast module](https://docs.python.org/3/library/ast.html) from standard library,
+so the modules being analysed are *not* executed.
+
+
+## Install
+
+```
+pip install import_deps
+```
+
+
+## Usage
+
+`import_deps` is designed to track only imports within a known set of package and modules.
+
+Given a package with the modules:
+
+- `foo/__init__.py`
+- `foo/foo_a.py`
+- `foo/foo_b.py`
+- `foo/foo_c.py`
+
+Where `foo_a.py` has the following imports:
+
+```python3
+from . import foo_b
+from .foo_c import obj_c
+```
+
+## Usage (CLI)
+
+### Analyze a single file
+
+```bash
+> import_deps foo/foo_a.py
+foo.foo_b
+foo.foo_c
+```
+
+### Analyze a package directory
+
+```bash
+> import_deps foo/
+foo.__init__:
+foo.foo_a:
+  foo.foo_b
+  foo.foo_c
+foo.foo_b:
+foo.foo_c:
+  foo.__init__
+```
+
+### JSON output
+
+Use the `--json` flag to get results in JSON format:
+
+```bash
+> import_deps foo/foo_a.py --json
+[
+  {
+    "module": "foo.foo_a",
+    "imports": [
+      "foo.foo_b",
+      "foo.foo_c"
+    ]
+  }
+]
+```
+
+For package analysis with JSON:
+
+```bash
+> import_deps foo/ --json
+[
+  {
+    "module": "foo.__init__",
+    "imports": []
+  },
+  {
+    "module": "foo.foo_a",
+    "imports": [
+      "foo.foo_b",
+      "foo.foo_c"
+    ]
+  },
+  ...
+]
+```
+
+### DOT output for visualization
+
+Use the `--dot` flag to generate a dependency graph in DOT format for graphviz:
+
+```bash
+> import_deps foo/ --dot
+digraph imports {
+    "foo.foo_a" -> "foo.foo_b";
+    "foo.foo_a" -> "foo.foo_c";
+    "foo.foo_c" -> "foo.__init__";
+    "foo.foo_d" -> "foo.foo_c";
+    "foo.sub.sub_a" -> "foo.foo_d";
+}
+```
+
+You can visualize the graph using graphviz:
+
+```bash
+> import_deps foo/ --dot | dot -Tpng > dependencies.png
+> import_deps foo/ --dot | dot -Tsvg > dependencies.svg
+```
+
+The DOT output features:
+- Modules displayed as light blue rounded boxes
+- Packages grouped with dashed gray borders (clearly distinct from arrows)
+- Sub-packages nested hierarchically
+- Circular dependencies highlighted in **bold red arrows**
+
+### Check for circular dependencies
+
+Use the `--check` flag to detect circular dependencies and exit with error if any are found:
+
+```bash
+> import_deps foo/ --check
+No circular dependencies found.
+
+# If cycles are detected:
+> import_deps foo/ --check
+Circular dependencies detected:
+  foo.module_a -> foo.module_b
+  foo.module_b -> foo.module_a
+# (exits with code 1)
+```
+
+This is useful for CI/CD pipelines to enforce DAG (Directed Acyclic Graph) structure in your codebase.
+
+### Topological sort
+
+Use the `--sort` flag to output modules in topological order (dependencies before dependents):
+
+```bash
+> import_deps foo/ --sort
+foo.__init__
+foo.foo_c
+foo.foo_b
+foo.foo_d
+foo.foo_a
+foo.sub.sub_a
+foo.sub.__init__
+```
+
+The output guarantees that:
+- Dependencies always appear before modules that import them
+- When multiple modules become available, those with higher rank are prioritized
+- Rank is defined as the longest path from any leaf module (module that imports but isn't imported)
+- When multiple modules have the same rank, FIFO order is maintained
+- Circular dependencies are handled gracefully (see below)
+- Isolated modules (no dependencies, no dependents) appear last
+- Useful for initialization order, build systems, or understanding module hierarchy
+
+For example, if you have `A -> B -> C -> D` and `B -> E` (where `A -> B` means "A imports B"):
+- Ranks: A=1 (leaf), B=2, C=3, E=3, D=4
+- Output: `D, E, C, B, A`
+- D comes first (rank 4, highest)
+- E comes before C (both rank 3, FIFO order)
+- Then B and A in dependency order
+
+#### Handling circular dependencies
+
+When circular dependencies exist, the sort handles them gracefully:
+```bash
+# If you have: A -> C -> B -> A (circular); D -> B; E (isolated)
+# (where A imports C, C imports B, B imports A, D imports B, E imports nothing)
+> import_deps circular_package/ --sort
+A
+B
+C
+D
+E
+```
+
+The ordering is:
+1. A, B, C first (nodes in the cycle, sorted alphabetically)
+2. D next (imports B which is in cycle, so comes after cycle nodes)
+3. E last (isolated node with no connections)
+
+
+## Usage (lib)
+
+```python3
+import pathlib
+from import_deps import ModuleSet
+
+# First initialise a ModuleSet instance with a list str of modules to track
+pkg_paths = pathlib.Path('foo').glob('**/*.py')
+module_set = ModuleSet([str(p) for p in pkg_paths])
+
+# then you can get the set of imports
+for imported in module_set.mod_imports('foo.foo_a'):
+    print(imported)
+
+# foo.foo_c
+# foo.foo_b
+```
+
+### ModuleSet
+
+You can get a list of  all modules in a `ModuleSet` by path or module's full qualified name.
+
+`by_path`
+
+Note that key for `by_path` must be exactly the as provided on ModuleSet initialization.
+
+```python3
+for mod in sorted(module_set.by_path.keys()):
+    print(mod)
+
+# results in:
+# foo/__init__.py
+# foo/foo_a.py
+# foo/foo_b.py
+# foo/foo_c.py
+```
+
+`by_name`
+
+```python3
+for mod in sorted(module_set.by_name.keys()):
+    print(mod)
+
+# results in:
+# foo.__init__
+# foo.foo_a
+# foo.foo_b
+# foo.foo_c
+```
+
+
+
+### ast_imports(file_path)
+
+`ast_imports` is a low level function that returns a list of entries for import statement in the module.
+The parameter `file_path` can be a string or `pathlib.Path` instance.
+
+The return value is a list of 4-tuple items with values:
+ - module name (of the "from" statement, `None` if a plain `import`)
+ - object name
+ - as name
+ - level of relative import (number of parent, `None` if plain `import`)
+
+
+```python3
+from import_deps import ast_imports
+
+ast_imports('foo.py')
+```
+
+
+```python3
+# import datetime
+(None, 'datetime', None, None)
+
+# from datetime import time
+('datetime', 'time', None, 0)
+
+# from datetime import datetime as dt
+('datetime', 'datetime', 'dt', 0)
+
+# from .. import bar
+(None, 'bar', None, 2)
+
+# from .acme import baz
+('acme', 'baz', None, 1)
+
+
+# note that a single statement will contain one entry per imported "name"
+# from datetime import time, timedelta
+('datetime', 'time', None, 0)
+('datetime', 'timedelta', None, 0)
+```
+
