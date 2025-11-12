@@ -1,0 +1,102 @@
+Metadata-Version: 2.1
+Name: wbddh
+Version: 0.1.13
+Summary: Python wrapper for DDH Open API
+Home-page: https://github.com/WB-DECIS/WBDDH
+Author: DECID
+Description-Content-Type: text/markdown
+Requires-Dist: requests
+Provides-Extra: curation
+Requires-Dist: msal ; extra == 'curation'
+Requires-Dist: pyyaml ; extra == 'curation'
+Provides-Extra: internal
+Requires-Dist: msal ; extra == 'internal'
+Requires-Dist: pyyaml ; extra == 'internal'
+
+# WBDDH
+WBDDH is a Python wrapper for World Bank Data Catalog Web APIs. It can be used for both DDH API v1.0 and v2.0.
+* DDH public API (v2.0): https://ddh-openapi.worldbank.org/docs/index.html
+* DDH internal API (v2.0): https://ddh-internal-openapi.worldbank.org/docs/index.html
+* DDH curation API (v2.0): https://ddh-curation-openapi.worldbank.org/docs/index.html
+* DDH curation API (v1.0): https://ddhinboundapi.ase.worldbank.org/swagger/ui/index
+  
+## Setup
+Public users:
+```sh
+pip install -U wbddh
+```
+
+WB internal users:
+```sh
+pip install -U wbddh[internal]
+```
+
+DDH curators:
+```sh
+pip install -U wbddh[curation]
+```
+
+## Usage
+WBDDH handles HTTP requests and manages MSAL sessions.
+
+Users first have to set API_host before using other functions:
+```sh
+import wbddh
+wbddh.set_api_host(url)
+```
+
+Admin users first have to create a session to further run other admin functions:
+```sh
+import wbddh
+session = wbddh.create_session(name='default_ddh_session', params=None, autoCopy=True, verify=None)
+```
+
+Users can send a simple GET/POST request:
+```sh
+wbddh.get(endpoint, params=None, headers=None, session=None)
+wbddh.post(endpoint, params=None, json=None, headers=None, session=None)
+```
+
+Alternatively, users can repeat sending a GET/POST request until it succeeds or it tries {num_try} times:
+```sh
+wbddh.try_get(endpoint, params=None, headers=None, session=None, num_try=3, interval=300)
+wbddh.try_post(endpoint, params=None, json=None, headers=None, session=None, num_try=3, interval=300)
+```
+
+There are two helper functions that fetch all data for endpoints that have paging parameters (ex. search, datasets):
+```sh
+wbddh.get_all_in_generator(endpoint, params=None, top_key="top", skip_key="skip", headers=None, session=None)
+wbddh.get_all_in_list(endpoint, params=None, top_key="top", skip_key="skip", headers=None, session=None)
+```
+
+## Authentication info for curation API
+### PROD
+* authorityHostURL: https://login.microsoftonline.com
+* tenant: '31a2fec0-266b-4c67-b56e-2796d8f59c36'
+* resourceURL: https://ddhinboundapi.ase.worldbank.org
+* clientID: PROD service account
+* API v2.0 host: https://ddh-curation-openapi.worldbank.org
+* API v1.0 host: https://ddhinboundapi.ase.worldbank.org
+
+### QA/UAT
+* authorityHostURL: https://login.microsoftonline.com
+* tenant: '31a2fec0-266b-4c67-b56e-2796d8f59c36'
+* resourceURL: https://ddhinboundapiqa.asestg.worldbank.org
+* clientID: QA/UAT service account
+* API v2.0 host: https://ddhinboundopenapiuat.asestg.worldbank.org
+* API v1.0 host: https://ddhinboundapiqa.asestg.worldbank.org
+
+### DDH SharePoint
+* authorityHostURL: https://login.microsoftonline.com
+* tenant: '31a2fec0-266b-4c67-b56e-2796d8f59c36'
+* resourceURL: https://graph.microsoft.com
+* clientID: GRAPH API-enabled Azure account
+* GRAPH API host: https://graph.microsoft.com
+
+
+## Examples
+Jupyter Notebooks under examples folder show basic use cases utilizing wbddh.
+
+  
+
+
