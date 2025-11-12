@@ -1,0 +1,265 @@
+import requests
+from multiprocessing import shared_memory, Pool
+from . import fsOperations as fso
+from . import mem
+from . import sub
+from . import pub
+
+url = "localhost"
+urlStorage = "localhost"
+chunk_size = 1048576
+workers = 1
+originFile = None
+use_workers = True
+
+def loadRes(path, s = False, load_to_memory = True):
+	mem.remove_shm_from_resource_tracker()
+	metadata = fso.getMetadata(path)
+	# print(json.dumps(metadata))
+	segments = []
+	for index, resource in enumerate(metadata["resources"]): # GENERA LOS ESPACIOS DE MEMEORIA
+		try: # SI YA EXISTEN SE AGREGA UN CAMPO 'local' CON VALOR 'True'
+			shm = shared_memory.SharedMemory(name = resource['hash'], create = False)
+			metadata["resources"][index]['local'] = True
+			shm.close()
+		except FileNotFoundError: # SI NO EXISTEN SE AGREGA UN CAMPO 'local' CON VALOR 'False'
+			if (load_to_memory):
+				mem.createLocalSharedMemorySpace(resource['hash'], resource['size'])
+			metadata["resources"][index]['local'] = False
+		except Exception as e:
+			return
+	for file in metadata["resources"]: # OBTENER LOS SEGMENTOS DE LOS ARCHIVOS QUE NO ESTÁN EN MEMORIA
+		if(file['local'] == False or file['local'] == True):
+			segments+=fso.array_of_segments(file['size'], file["path"], file['hash'], chunk_size)
+
+	if (load_to_memory):
+		with Pool(processes = workers) as p: # CARGARLOS EN MEMORIA A TRAVÉS DE TRABAJADORES
+			p.map(mem.loadToLocalSharedMemory, segments)
+	
+	for index, resource in enumerate(metadata["resources"]):
+		if(resource['local'] == False):
+			metadata["resources"][index]['local'] = True
+	if s:
+		return metadata, segments
+	else:
+		return metadata
+
+def loadAndUploadToCloud(path):
+	res, segments = loadRes(path, True)
+	res = uploadToCloud(res, segments)
+	return res
+
+
+def uploadToCloudFromDisk(path):
+	res, segments = loadRes(path, True, False)
+	res = uploadToCloud(res, segments, "Disk")
+	return res
+
+def uploadToCloudFromMemory(res):
+	# res, segments = loadRes(path, True, False)
+	segments = []
+	segments+=fso.array_of_segments(res['resources'][0]['size'], res['resources'][0]["path"], res['resources'][0]['hash'], chunk_size)
+	res = uploadToCloud(res, segments, "Memory")
+	return res
+
+def uploadToCloud(res = None, segments = False, origin = "Memory"):
+	global originFile
+	originFile = origin
+	mem.remove_shm_from_resource_tracker()
+	for index, resource in enumerate(res["resources"]):
+		# print("Verificando en la nube el recurso: ", resource['hash'])
+		verification = verify(resource['hash'])
+		# print(verification)
+		if verification:
+			# print("Verificación: ", verification) 
+			if (verification['file']['state']=="reserving"):
+				sub.subToTopic(resource['hash'])
+				verification['file']['state']="ready"
+				res['resources'][index] = verification['file']
+			elif (verification['file']['state']=="ready"):
+				res['resources'][index] = verification['file']
+				# print("Archivo listo para consumo")
+				pass
+			else:
+				return False
+		else:
+			if 'local' in resource: resource.pop("local")
+			resource['state'] = "reserving"
+			register = registry(resource)
+			pub.pubTopic(resource['hash'], "loading")
+			if (register["created"]):
+				response_reserve = requests.post(f"{urlStorage}/reserve", json={"name":resource['hash'], "size": resource['size']})
+				segments_res = list(filter(lambda x : f"{x['segment']}" == resource['hash'], segments))
+				if use_workers:
+					with Pool(processes = workers) as p:
+						p.map(sendToCloud, segments_res)
+				else:
+					data = None
+					for segment in segments_res:
+						if (originFile == "Memory"):
+							data = mem.getChunk(segment['segment'], segment['start_position'], segment['end_position'])
+						else:
+							with open(segment['origin'], "rb") as file:
+								file.seek(segment['start_position'])
+								data = file.read(segment['chunk_size'])
+						files = {"files": data}
+						response_fill = requests.post(f"{urlStorage}/fill", files = files, data = segment)
+				resUpdateState = update(resource['hash'], "ready")
+				pub.pubTopic(resource['hash'], "ready")
+	originFile = None
+	return res
+
+def sendToCloud(segment):
+	global originFile
+	# print("worker: ", os.getpid(), "\tSegment: ", segment['segment'])
+	data = None
+	if (originFile == "Memory"):
+		data = mem.getChunk(segment['segment'], segment['start_position'], segment['end_position'])
+	else:
+		with open(segment['origin'], "rb") as file:
+			file.seek(segment['start_position'])
+			data = file.read(segment['chunk_size'])
+	files = {"files": data}
+	response_fill = requests.post(f"{urlStorage}/fill", files = files, data = segment)
+
+def downloadFromCloud(hash):
+	mem.remove_shm_from_resource_tracker()
+	md = verify(hash)
+	md = md['file']
+	original_hash = md['hash']
+	mem.createLocalSharedMemorySpace(md['hash'], md['size'])
+	segments_to_get = fso.array_of_segments_for_server_file(md['size'], original_hash, chunk_size)
+	for segment in segments_to_get:
+		response = requests.post(f"{urlStorage}/chunk", data = segment)
+		mem.loadDowloadedToLocalSharedMemory(md['hash'], segment['start_position'], segment['end_position'], response.content)
+	return {"message": True, "file": md['hash']}
+
+def verify(hash):
+	try:
+		response = requests.post(f"{url}/hash", json = {"hash": hash})
+		if response.json()['registered']:
+			return response.json()
+		else: 
+			return False
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+
+def update(hash, state):
+	try:
+		response = requests.post(f"{url}/update-file-state", json = {"hash": hash, "state": state})
+		if response.json():
+			return response.json()
+		else: 
+			return False
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+
+def registry(rmd):
+	try:
+		response = requests.post(f"{url}/register-file", json=rmd)
+		return response.json()
+	except requests.exceptions.RequestException as err:
+		pass
+
+def makeShm(name, size):
+	return mem.createLocalSharedMemorySpace(name, size)
+
+def putDataToShm(name, data):
+	shm = mem.putDataToLocalSharedMemory(name, data.encode())
+
+def getDataFromShm(name):
+	return mem.getData(name).decode()
+
+def makeShmInCloud(name, size):
+	try:
+		response = requests.post(f"{urlStorage}/reserve", json={"name": name, "size": size})
+		return response.json()
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+
+def putDataToShmInCloud(name, data):
+	try:
+		files = {"files": data.encode()}
+		response = requests.post(f"{urlStorage}/put-to-shm", files = files, data = {"segment": name})
+		return response.json()
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+
+def getDataFromShmInCloud(name):
+	try:
+		response = requests.post(f"{urlStorage}/get-from-shm", data = {"segment": name})
+		return response.content.decode()
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+# def makeShmInCloud(name, size):
+# 	try:
+# 		response = requests.post(f"{urlStorage}/make-shm", json={"name": name, "size": size})
+# 		return response.json()
+# 	except requests.exceptions.RequestException as err:
+# 		return {"message": "Error"}
+
+def removeShm(shm_name):
+	mem.removeShm(shm_name)
+
+def removeShmFromCloud(shm_name):
+	try:
+		# print("Request to remove shm from cloud:", shm_name)
+		response = requests.post(f"{urlStorage}/remove-shm", {"hash": shm_name})
+		if response.json()["removed"]:
+			deletedFromRegistry = requests.post(f"{url}/remove-file", json={"hash": shm_name})
+			# print("Deleted from registry response:", deletedFromRegistry.json())
+			if deletedFromRegistry.json()["removed"]:
+				return {"message": "Removed from cloud and registry"}
+			else:
+				return {"message": "Removed from cloud but not from registry"}
+			return {"message": "Removed from cloud"}
+		else:
+			return response.json()
+	except requests.exceptions.RequestException as err:
+		return {"message": "Error"}
+
+def getRes(file):
+	return mem.getData(file)
+
+def saveFile(path, data, name):
+	fso.saveFile(path, data, name)
+
+def setWorkers(w):
+	global workers 
+	workers = w
+
+def setChunkSize(cs):
+	global chunk_size
+	chunk_size = cs
+
+def setUrl(u):
+	global url
+	url = u
+
+def setStorageUrl(u):
+	global urlStorage
+	urlStorage = u
+
+def getWorkers():
+	return workers
+
+def getChunkSize():
+	return chunk_size
+
+def getUrl():
+	return url
+
+def getStorageUrl():
+	return urlStorage
+
+def setBrokerUrl(url):
+	pub.setBrokerUrl(url)
+	sub.setBrokerUrl(url)
+
+def setBrokerPort(p):
+	pub.setBrokerPort(p)
+	sub.setBrokerPort(p)
+
+def setUseWorkers(value):
+	global use_workers
+	use_workers = value
