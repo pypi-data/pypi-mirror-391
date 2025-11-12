@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: stopwords-plus
+Version: 0.1.0
+Summary: Stopwords for 20+ languages + modern slang + social media tokens.
+Author-email: Your Name <you@example.com>
+License: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# stopwords-plus
+
+Stopwords for **20+ languages**, including:
+- Modern slang (`lol`, `bruh`, `idk`, `imo`, `ngl`, etc.)
+- Social media tokens (`rt`, `@`, `#`, `http`, `https`, etc.)
+
+## Install
+```bash
+pip install stopwords-plus
+
+
+from stopwords_plus import get_stopwords, is_stopword, languages
+print(languages())
+sw = get_stopwords("en", categories=["base","slang","social"])
+print("lol" in sw)
+
+exit()
