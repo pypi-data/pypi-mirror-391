@@ -1,0 +1,307 @@
+# SPDX-FileCopyrightText: 2023-2025 MTS PJSC
+# SPDX-License-Identifier: Apache-2.0
+from __future__ import annotations
+
+from typing import Optional, cast
+
+from etl_entities.hwm import HWM, HWMTypeRegistry
+from etl_entities.hwm_store import BaseHWMStore, register_hwm_store_class
+from horizon.client.auth import LoginPassword
+from horizon.client.sync import HorizonClientSync, RetryConfig, TimeoutConfig
+from horizon.commons.exceptions import EntityAlreadyExistsError
+from horizon.commons.schemas.v1 import (
+    HWMCreateRequestV1,
+    HWMPaginateQueryV1,
+    HWMUpdateRequestV1,
+    NamespaceCreateRequestV1,
+    NamespacePaginateQueryV1,
+    NamespaceResponseV1,
+)
+
+try:
+    from pydantic.v1 import AnyHttpUrl, Field, PrivateAttr, validator
+except ImportError:
+    from pydantic import (  # type: ignore[no-redef, assignment]
+        AnyHttpUrl,
+        Field,
+        PrivateAttr,
+        validator,
+    )
+
+
+@register_hwm_store_class("horizon")
+class HorizonHWMStore(BaseHWMStore):
+    """
+    Fetch/store High Water Mark (HWM) values from the Horizon REST API.
+
+    .. warning::
+
+        It is required to create a namespace BEFORE working with HWMs.
+
+    Parameters
+    ----------
+    api_url : str
+        The base URL of the Horizon REST API.
+
+    auth : :obj:`horizon.client.auth.LoginPassword`
+        Auth credentials.
+
+    namespace : str
+        The namespace under which the HWMs will be stored and managed.
+
+    retry : :obj:`horizon.client.sync.RetryConfig`
+        Configuration for request retries.
+
+    timeout : :obj:`horizon.client.sync.TimeoutConfig`
+        Configuration for request timeouts.
+
+    Examples
+    --------
+
+    Preparation:
+
+    .. code:: python
+
+        from onetl.connection import Hive, Postgres
+        from onetl.core import DBReader
+        from onetl.strategy import IncrementalStrategy
+
+        spark = ...
+
+        postgres = Postgres(
+            host="postgres.domain.com",
+            user="myuser",
+            password="*****",
+            database="target_database",
+            spark=spark,
+        )
+
+        hive = Hive(spark=spark)
+
+        reader = DBReader(
+            connection=postgres,
+            source="public.mydata",
+            columns=["id", "data"],
+            hwm=DBReader.AutoDetectHWM(name="some_unique_hwm_name", expression="id"),
+        )
+
+        writer = DBWriter(connection=hive, target="newtable")
+
+    Use raw ``HorizonHWMStore`` class:
+
+    .. code:: python
+
+        from horizon_hwm_store import HorizonHWMStore
+        from horizon.client.auth import LoginPassword
+        from horizon.client.sync import RetryConfig, TimeoutConfig
+
+        with HorizonHWMStore(
+            api_url="http://horizon-server.domain/api",
+            auth=LoginPassword(login="ldap_login", password="ldap_password"),
+            namespace="namespace",
+            retry=RetryConfig(total=5),
+            timeout=TimeoutConfig(request_timeout=10),
+        ).force_create_namespace():
+            with IncrementalStrategy():
+                df = reader.run()
+                writer.run(df)
+
+        # will store HWM value in Horizon
+
+    Use ``@detect_hwm_store`` decorator:
+
+    .. code-block:: yaml
+        :caption: conf/env/prod.yaml
+
+        hwm_store:
+            horizon:
+                api_url: http://horizon-server.domain/api
+                namespace: namespace
+                auth:
+                    type: login_password
+                    login: ldap_login
+                    password: ldap_password
+                retry:
+                    total: 5
+                timeout:
+                    request_timeout: 10
+
+    .. code-block:: python
+        :caption: pipelines/my_pipeline.py
+
+        import hydra
+
+        from etl_entities.hwm_store import detect_hwm_store
+
+
+        @hydra.main(config_path="../../conf", config_name="config")
+        @detect_hwm_store(config, key="hwm_store")
+        def main(config):
+            reader = DBReader(...)
+            writer = DBWriter(...)
+
+            with IncrementalStrategy():
+                df = reader.run()
+                writer.run(df)
+
+            # will create/update HWM value in Horizon
+
+    """
+
+    api_url: AnyHttpUrl
+    auth: LoginPassword
+    namespace: str
+    retry: RetryConfig = Field(default_factory=RetryConfig)
+    timeout: TimeoutConfig = Field(default_factory=TimeoutConfig)
+    _client: Optional[HorizonClientSync] = PrivateAttr(default=None)
+    _namespace_id: Optional[int] = PrivateAttr(default=None)
+
+    @property
+    def client(self) -> HorizonClientSync:
+        if not self._client:
+            self._client = HorizonClientSync(  # noqa: WPS601
+                base_url=str(self.api_url),  # type: ignore[arg-type]
+                auth=self.auth,
+                retry=self.retry,
+                timeout=self.timeout,
+            )
+        return self._client
+
+    def get_hwm(self, name: str) -> Optional[HWM]:
+        namespace_id = self._get_namespace_id()
+        hwm_id = self._get_hwm_id(namespace_id, name)
+        if hwm_id is None:
+            return None
+
+        hwm = self.client.get_hwm(hwm_id)
+        hwm_data = hwm.dict(exclude={"id", "namespace_id", "changed_by", "changed_at"})
+        hwm_data["modified_time"] = hwm.changed_at
+        return HWMTypeRegistry.parse(hwm_data)
+
+    def set_hwm(self, hwm: HWM) -> str:
+        namespace_id = self._get_namespace_id()
+
+        hwm_dict = hwm.serialize()
+        hwm_dict["namespace_id"] = namespace_id
+
+        hwm_id = self._get_hwm_id(namespace_id, hwm.name)  # type: ignore
+        if hwm_id is None:
+            create_request = HWMCreateRequestV1.parse_obj(hwm_dict)
+            response = self.client.create_hwm(create_request)
+        else:
+            update_request = HWMUpdateRequestV1.parse_obj(hwm_dict)
+            response = self.client.update_hwm(hwm_id, update_request)
+
+        # TODO: update response string after implementing UI
+        return f"{self.client.base_url}/v1/hwm/{response.id}"
+
+    def check(self) -> HorizonHWMStore:
+        """
+        Perform a health check by making a request to the Horizon server.
+
+        This method calls the 'whoami' endpoint of the Horizon client. It's used to verify
+        if the backend is accessible and if the provided credentials are correct. The method
+        will raise an error if the backend is unreachable, if incorrect credentials are provided,
+        or if the user account is blocked.
+
+        Method also checks whether specified namespace exists, and raises exception if not.
+
+        Returns
+        -------
+        HorizonHWMStore
+            Self
+
+        """
+        self.client.whoami()
+        self._get_namespace_id()
+        return self
+
+    def force_create_namespace(self) -> HorizonHWMStore:
+        """
+        Create a namespace with name specified in HorizonHWMStore class.
+
+        Returns
+        -------
+        HorizonHWMStore
+            Self
+        """
+        namespace = self._get_namespace(self.namespace)
+        if namespace is None:
+            try:
+                namespace = self.client.create_namespace(NamespaceCreateRequestV1(name=self.namespace))
+                self._namespace_id = namespace.id  # noqa: WPS601
+            except EntityAlreadyExistsError:
+                namespace = cast("NamespaceResponseV1", self._get_namespace(self.namespace))
+                self._namespace_id = namespace.id  # noqa: WPS601
+        return self
+
+    # LoginPassword, RetryConfig and TimeoutConfig can be inherited from Pydantic v2 BaseModel
+    # which is detected by Pydantic v1 as arbitrary type. So we need to parse them manually.
+    @validator("auth", pre=True)
+    def _check_auth(cls, value: LoginPassword):
+        if not isinstance(value, LoginPassword):
+            return LoginPassword.parse_obj(value)
+        return value
+
+    @validator("retry", pre=True)
+    def _check_retry(cls, value: RetryConfig):
+        if not isinstance(value, RetryConfig):
+            return RetryConfig.parse_obj(value)
+        return value
+
+    @validator("timeout", pre=True)
+    def _check_timeout(cls, value: TimeoutConfig):
+        if not isinstance(value, TimeoutConfig):
+            return TimeoutConfig.parse_obj(value)
+        return value
+
+    def _get_namespace(self, name: str) -> NamespaceResponseV1 | None:
+        namespaces = self.client.paginate_namespaces(query=NamespacePaginateQueryV1(name=name)).items
+        return namespaces[0] if namespaces else None
+
+    def _get_namespace_id(self) -> int:
+        """
+        Fetch the ID of the namespace. Raises an exception if the namespace doesn't exist.
+
+        Returns
+        -------
+        int
+            The ID of the namespace.
+
+        Raises
+        ------
+        RuntimeError
+            If the namespace does not exist.
+        """
+        if self._namespace_id is not None:
+            return self._namespace_id
+
+        namespace = self._get_namespace(self.namespace)
+        if namespace is None:
+            raise RuntimeError(
+                f"Namespace {self.namespace!r} not found. "
+                "Please create it before using by calling .force_create_namespace() method.",
+            )
+
+        self._namespace_id = namespace.id  # noqa: WPS601
+        return self._namespace_id
+
+    def _get_hwm_id(self, namespace_id: int, hwm_name: str) -> Optional[int]:
+        """
+        Fetch the ID of the HWM within the given namespace.
+
+        Parameters
+        ----------
+        namespace_id : int
+            The ID of the namespace.
+        hwm_name : str
+            The name of the HWM.
+
+        Returns
+        -------
+        Optional[int]
+            The ID of the HWM, or None if it does not exist.
+        """
+        hwm_query = HWMPaginateQueryV1(namespace_id=namespace_id, name=hwm_name)
+        hwms = self.client.paginate_hwm(hwm_query).items
+        return hwms[-1].id if hwms else None
