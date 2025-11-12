@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vaxbnana"
+dynamic = ["version"]
+dependencies = [
+    "PyYAML >= 6.0.1",
+]
+requires-python = ">= 3.9"
+authors = [
+    {name = "Ben", email = "ben@duck.com"}
+]
+maintainers = [
+    {name = "Ben", email = "ben@duck.com"}
+]
+description = "generate configurations painlessly for xray/sing-box/clash"
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/benhomlxs/vaxbnana"
+Repository = "https://github.com/benhomlxs/vaxbnana.git"
+Issues = "https://github.com/benhomlxs/vaxbnana/issues"
+
+[tool.black]
+
+[tool.hatch]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "vaxbnana/_version.py"
