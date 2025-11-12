@@ -1,0 +1,57 @@
+Metadata-Version: 2.4
+Name: orange3-regressionwidgets
+Version: 0.1.7
+Summary: Orange add-on with regression summary and backward elimination widgets
+Home-page: https://github.com/laurentpauwels/orange3-regressionwidgets
+Author: Laurent Pauwels
+Author-email: laurent.pauwels@nyu.edu
+License: MIT
+Project-URL: Source, https://github.com/laurentpauwels/orange3-regressionwidgets
+Project-URL: Bug Tracker, https://github.com/laurentpauwels/orange3-regressionwidgets/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: Orange3>=3.30.0
+Requires-Dist: statsmodels>=0.13.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: numpy
+Requires-Dist: PyQt5>=5.15.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Orange3 Regression Widgets
+
+This add-on extends [Orange3](https://orangedatamining.com/) with two powerful regression tools tailored for business analysts, data scientists, and educators:
+
+- **Regression Summary**: Provides detailed regression output using `statsmodels` for OLS and Logit models.
+- **Backward Elimination**: Stepwise feature selection based on p-value or AIC, with support for both model types.
+
+---
+
+## Installation
+
+To install from PyPI:
+
+```bash
+pip install orange3-regression-widgets
+
+---
+
+## Project Link
+**Source**: [GitHub Repository](https://github.com/laurentpauwels/orange3-regressionwidgets)
