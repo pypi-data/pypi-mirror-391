@@ -1,0 +1,48 @@
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+
+[tool.isort]
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.pytest]
+addopts = "--verbose tests --cov=iofree --cov=tests --cov-report=term-missing --cov-report=xml"
+
+
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "iofree"
+authors = [{name = "Yingbo Gu", email = "tensiongyb@gmail.com"},]
+maintainers = [{name = "Yingbo Gu", email = "tensiongyb@gmail.com"},]
+readme = "README.md"
+requires-python=">=3.6"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+keywords = ["binary-parser","Sans-IO", "io-free"]
+dynamic = ["version", "description"]
+
+[project.urls]
+Source = "https://github.com/guyingbo/iofree"
+
+[dependency-groups]
+dev = [
+    "coverage>=6.2",
+    "pytest>=7.0.1",
+    "pytest-cov>=4.0.0",
+]
