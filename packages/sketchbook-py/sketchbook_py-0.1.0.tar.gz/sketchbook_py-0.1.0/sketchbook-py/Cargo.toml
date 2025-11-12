@@ -1,0 +1,18 @@
+[package]
+name    = "sketchbook-py"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name       = "sketchbook"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.27.0"
+
+sketchbook-core = { path = "../sketchbook-core" }
+image           = { workspace = true }
+
+
+[lints]
+workspace = true

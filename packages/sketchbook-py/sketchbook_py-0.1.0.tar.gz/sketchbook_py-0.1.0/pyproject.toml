@@ -1,0 +1,20 @@
+[build-system]
+requires      = ["maturin>=1.10,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "sketchbook-py"
+requires-python = ">=3.8"
+dynamic = ["version"]
+authors = [{ name = "Mythos_404", email = "mythos_404@outlook.com" }]
+description = "A Python wrapper for the Sketchbook API, providing easy access to its features and functionalities."
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+license = "MIT"
+
+[tool]
+
+[tool.maturin]
+manifest-path = 'sketchbook-py\Cargo.toml'
