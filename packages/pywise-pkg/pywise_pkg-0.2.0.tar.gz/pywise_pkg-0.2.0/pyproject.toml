@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pywise_pkg"
+version = "0.2.0"
+description = "Intelligent Python dependency management with conda-pip hybrid support"
+readme = "README.md"
+authors = [
+    {name = "pywise_pkg Contributors", email = "contributors@pywise_pkg.io"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "rich>=12.0.0",
+    "packaging>=21.0",
+    "requests>=2.25.0",
+    "pyyaml>=6.0",
+    "toml>=0.10.0",
+    "networkx>=2.8.0",
+    "importlib-metadata>=4.0.0; python_version<'3.10'",
+]
+
+[project.optional-dependencies]
+docker = ["docker>=6.0.0"]
+conda = ["conda>=4.12.0"]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0", 
+    "black>=22.0.0",
+    "isort>=5.10.0",
+    "flake8>=5.0.0",
+    "mypy>=0.991",
+]
+
+[project.urls]
+Homepage = "https://github.com/pywise_pkg/pywise_pkg"
+Documentation = "https://pywise_pkg.readthedocs.io/"
+Repository = "https://github.com/pywise_pkg/pywise_pkg.git"
+"Bug Tracker" = "https://github.com/pywise_pkg/pywise_pkg/issues"
+
+[project.scripts]
+pywise_pkg = "pywise_pkg.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+include = ["pywise_pkg*"]

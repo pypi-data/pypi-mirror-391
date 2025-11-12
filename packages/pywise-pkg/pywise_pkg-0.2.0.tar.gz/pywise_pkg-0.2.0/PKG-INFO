@@ -1,0 +1,252 @@
+Metadata-Version: 2.1
+Name: pywise_pkg
+Version: 0.2.0
+Summary: Intelligent Python dependency management with conda-pip hybrid support
+Home-page: https://github.com/shreyjain26/pywise_pkg
+Author: pywise_pkg Contributors
+Author-email: shreyjain026@gmail.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Systems Administration
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# pywise_pkg - Intelligent Python Dependency Management
+
+🚀 **The smartest way to manage Python dependencies with conda-pip hybrid support!**
+
+pywise_pkg goes beyond traditional dependency management by intelligently distinguishing between packages YOU installed and auto-installed dependencies, while providing seamless conda-pip integration and advanced environment management.
+
+## 🌟 Key Features
+
+### 🧠 Smart Dependency Detection
+- **Primary Package Detection**: Unlike `pip freeze`, shows only packages YOU installed
+- **Dependency Intelligence**: Understands which packages are auto-dependencies
+- **Cross-Platform**: Works with pip, conda, poetry, and pipenv environments
+
+### 🔄 Conda-Pip Hybrid Support
+- **Intelligent Resolution**: Automatically chooses optimal package source (conda vs pip)
+- **Hybrid Environments**: Creates conda environments with pip packages when needed
+- **Single Command Conversion**: `pywise_pkg venv-to-conda` - converts venv to conda instantly!
+
+### 🐳 Docker Integration
+- **Optimized Dockerfiles**: Generates production-ready Docker configurations
+- **Multi-stage Builds**: Reduces image size automatically
+- **Framework Detection**: Auto-configures for Django, Flask, FastAPI, etc.
+
+### 🔧 Environment Migration
+- **Format Conversion**: Convert between requirements.txt ↔ environment.yml ↔ pyproject.toml
+- **Multi-Environment Setup**: Create dev/staging/prod configs with one command
+- **Configuration Management**: Manage multiple environment configurations
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+pip install pywise_pkg
+```
+
+### Core Commands
+
+```bash
+# 🔍 Show only PRIMARY packages (not dependencies!)
+pywise_pkg detect
+
+# 🔄 Convert your venv to conda environment (SINGLE COMMAND!)
+pywise_pkg venv-to-conda --name my-project
+
+# 🧠 Resolve dependencies with conda-pip hybrid intelligence
+pywise_pkg resolve numpy pandas tensorflow
+
+# 🐳 Generate optimized Docker configuration
+pywise_pkg dockerize --build --tag my-app:latest
+
+# 📦 Migrate between any dependency formats
+pywise_pkg migrate requirements.txt --to conda
+
+# 🏗️ Setup multi-environment configuration
+pywise_pkg multi-env --environments dev staging prod
+```
+
+## 💡 Why pywise_pkg?
+
+### Before pywise_pkg:
+```bash
+$ pip freeze > requirements.txt
+# 😱 Creates 50+ line file with every dependency!
+numpy==1.21.0
+pandas==1.3.0
+python-dateutil==2.8.2  # ← Auto-dependency
+pytz==2021.1            # ← Auto-dependency
+six==1.16.0             # ← Auto-dependency
+# ... 45 more lines of dependencies you never installed!
+```
+
+### With pywise_pkg:
+```bash
+$ pywise_pkg detect --output requirements.txt
+# ✨ Creates clean file with only YOUR packages!
+numpy==1.21.0
+pandas==1.3.0
+# Done! Only packages YOU actually installed
+```
+
+## 🔥 Advanced Features
+
+### Single-Command Environment Conversion
+
+```bash
+# Convert your current venv to conda with hybrid optimization
+pywise_pkg venv-to-conda --name my-project
+# ✅ Analyzes packages for optimal conda vs pip installation
+# ✅ Creates environment.yml with hybrid dependencies
+# ✅ Sets up new conda environment
+# ✅ Provides activation commands
+```
+
+### Intelligent Hybrid Resolution
+
+```bash
+# Let pywise_pkg decide the best package source
+pywise_pkg resolve numpy scipy tensorflow flask
+# 📊 numpy, scipy → conda (better performance)
+# 📦 tensorflow → conda (GPU support)  
+# 🐍 flask → pip (better ecosystem fit)
+```
+
+### Docker Optimization
+
+```bash
+# Generate production-ready Docker setup
+pywise_pkg dockerize --optimize --build --tag my-app:latest
+# 🐳 Analyzes your packages for optimal base image
+# 🔧 Adds required system dependencies
+# 📦 Creates multi-stage build for size optimization
+# 🚀 Builds and tags the image
+```
+
+### Multi-Environment Management
+
+```bash
+# Setup dev/staging/prod configurations
+pywise_pkg multi-env
+# 📁 Creates requirements-dev.txt, requirements-staging.txt, requirements-prod.txt
+# ⚙️ Configures environment-specific variables
+# 🐳 Generates Docker configs for each environment
+```
+
+## 📋 Command Reference
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `detect` | Show primary packages only | `pywise_pkg detect --output clean-requirements.txt` |
+| `venv-to-conda` | Convert venv to conda | `pywise_pkg venv-to-conda --name myproject` |
+| `resolve` | Hybrid dependency resolution | `pywise_pkg resolve numpy pandas --strategy hybrid` |
+| `migrate` | Convert between formats | `pywise_pkg migrate requirements.txt --to conda` |
+| `dockerize` | Generate Docker config | `pywise_pkg dockerize --build --tag app:latest` |
+| `multi-env` | Setup multiple environments | `pywise_pkg multi-env -e dev -e prod` |
+
+## 🔧 Configuration
+
+Create `.pywise_pkg.yml` in your project root:
+
+```yaml
+# Dependency detection
+detect:
+  exclude_packages: [wheel, setuptools, pip]
+  include_dev: false
+
+# Hybrid resolution preferences  
+resolve:
+  strategy: hybrid  # conda for ML/scientific, pip for web
+  prefer_conda: [numpy, scipy, pandas, tensorflow]
+  prefer_pip: [flask, django, fastapi, requests]
+
+# Docker optimization
+docker:
+  base_image: python:3.11-slim
+  multi_stage: true
+  optimize_layers: true
+```
+
+## 🎯 Use Cases
+
+### 🧪 Data Scientists
+```bash
+# Perfect for ML environments with complex dependencies
+pywise_pkg venv-to-conda --name ml-project
+pywise_pkg resolve tensorflow pytorch scikit-learn
+```
+
+### 🌐 Web Developers
+```bash
+# Clean up messy Django/Flask projects
+pywise_pkg detect --output clean-requirements.txt
+pywise_pkg dockerize --framework django
+```
+
+### 🚀 DevOps Engineers
+```bash
+# Standardize environments across team
+pywise_pkg multi-env --environments dev test staging prod
+pywise_pkg dockerize --optimize --build
+```
+
+### 📦 Package Maintainers
+```bash
+# Generate clean dependencies for PyPI
+pywise_pkg detect --format poetry --output pyproject.toml
+```
+
+## 🏗️ Development
+
+```bash
+git clone https://github.com/pywise_pkg/pywise_pkg.git
+cd pywise_pkg
+pip install -e .[dev]
+pytest
+```
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file.
+
+## 🙏 Acknowledgments
+
+- Built on excellent Python packaging ecosystem
+- Inspired by conda, pip, poetry, and pipenv
+- Thanks to the Python community for feedback
+
+## 🚀 Roadmap
+
+- [ ] GUI interface for dependency management
+- [ ] VS Code extension
+- [ ] Automatic security vulnerability scanning
+- [ ] AI-powered dependency optimization
+- [ ] Integration with CI/CD platforms
+- [ ] Support for private package repositories
+
+---
+
+**⭐ Star this repo if pywise_pkg helps you manage dependencies better!**
+
+*Made with ❤️ for the Python community*
+
+
