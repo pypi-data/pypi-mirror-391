@@ -1,0 +1,17 @@
+[project]
+name = "mcp-songzhe-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "songzhe03", email = "songzhe03@baidu.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+mcp-songzhe-server = "mcp_songzhe_server:main"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
