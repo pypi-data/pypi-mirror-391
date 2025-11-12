@@ -1,0 +1,34 @@
+Metadata-Version: 2.4
+Name: timesketch-api-client
+Version: 20251112
+Summary: Timesketch API client
+Home-page: http://www.timesketch.org/
+Maintainer: Timesketch development team
+Maintainer-email: timesketch-dev@googlegroups.com
+License: Apache License, Version 2.0
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Requires-Dist: requests
+Requires-Dist: pandas
+Requires-Dist: google-auth
+Requires-Dist: google_auth_oauthlib
+Requires-Dist: altair
+Requires-Dist: networkx
+Requires-Dist: beautifulsoup4
+Requires-Dist: cryptography
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary
+
+The Timesketch API client provides you with a set of Python libraries to connect to your Timesketch (https://github.com/google/timesketch) instance.
+
+The API is feature complete with the Timesketch UI and allows you to do all operations that can be done in the UI, providing ways to integrate Timesketch into other products such as Jupyter/Colab.
+
+To see how it works in action, try the colab notebook that is accessible from here: https://colab.research.google.com/github/google/timesketch/blob/master/notebooks/colab-timesketch-demo.ipynb
