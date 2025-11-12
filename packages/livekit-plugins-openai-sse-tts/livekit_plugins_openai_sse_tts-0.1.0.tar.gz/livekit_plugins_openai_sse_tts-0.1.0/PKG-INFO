@@ -1,0 +1,48 @@
+Metadata-Version: 2.4
+Name: livekit-plugins-openai-sse-tts
+Version: 0.1.0
+Summary: Agent Framework plugin for OpenAI Server-Sent Events TTS API
+Project-URL: Documentation, https://docs.livekit.io
+Project-URL: Website, https://livekit.io/
+Project-URL: Source, https://github.com/livex-ai/livekit-plugins-openai-sse
+Author-email: Yash Raj Khandelwal - LiveX AI <yash@livex.ai>
+License-Expression: Apache-2.0
+Keywords: audio,livekit,openai,realtime,sse,tts,video,webrtc
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9.0
+Requires-Dist: httpx>=0.24.0
+Requires-Dist: livekit-agents[codecs,images]>=1.2.6
+Requires-Dist: openai>=1.102.0
+Requires-Dist: sseclient-py>=1.7.2
+Provides-Extra: dev
+Requires-Dist: black>=23.0.0; extra == 'dev'
+Requires-Dist: flake8>=6.0.0; extra == 'dev'
+Requires-Dist: isort>=5.12.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# OpenAI Server-Sent Events plugin for LiveKit Agents
+
+Support for OpenAI SSE TTS API.
+
+## Installation
+
+```bash
+pip install git+https://github.com/livex-ai/livekit-plugins-openai-sse.git
+```
+
+## Pre-requisites
+
+You'll need an API key from OpenAI. It can be set as an environment variable: `OPENAI_API_KEY`
