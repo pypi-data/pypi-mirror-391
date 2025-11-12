@@ -1,0 +1,6 @@
+{% if page.meta.fedi_link %}
+<a class="md-content__button md-icon" href="{{page.meta.fedi_link}}" rel="alternate" type="application/activity+json">
+        <img src="{{ config.site_url }}/assets/images/FediverseLogo.svg" width="50px" height="50px"
+                alt="ActivityPub object" />
+</a>
+{% endif %}

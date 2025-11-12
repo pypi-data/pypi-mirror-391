@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: mkdocs-fedi-comments
+Version: 0.1.7
+Summary: Plugin enables adding comments to mkdocs sites from the Fediverse through an external service
+Requires-Python: >=3.11
+Requires-Dist: mkdocs>=1.6.1
+Description-Content-Type: text/markdown
+
+# mkdocs_fedi_comment
+
+> [!NOTE]
+> This plugin requires a [comments-server](https://bovine.codeberg.page/comments/)
+> to work.
+
+This plugin is meant to enable commenting from the Fediverse
+on sites build with [mkdocs](https://www.mkdocs.org/). This plugin
+uses the overrides provided by [mkdocs-material](https://squidfunk.github.io/mkdocs-material/).
+This means that a simplest configuration would look like
+
+```yml
+theme:
+  name: material
+
+plugins:
+  - fedi-comments:
+      base_path: https://comments.bovine.social/
+      actor:
+        name: mkdocs-fedi-comments
+        handle: mkdocs_fedi_comments
+  - search
+```
+
+The `fedi-comments` plugin provided by this package requires
+some configuration. `base_path` is where your comments server is located. This is
+used to determine the location of the ActivityPub objects via
+`{base_path}/pages/{encoded_url}` and for the API endpoint to
+retrieve comments from, i.e. `{base_path}/comments/{encoded_url}`.
+
+Second the values under `actor` are used to create the used ActivityPub
+actor. In addition to `name` and `handle`, which are required,
+one currently can also specify `summary` and `icon`.
+
+## The sample site
+
+The sample site is deployed to [https://bovine.codeberg.page/mkdocs_fedi_comments/](https://bovine.codeberg.page/mkdocs_fedi_comments/) and the corresponding installation
+of comments is configured with
+
+```toml
+[[pages]]
+url = "https://bovine.codeberg.page/mkdocs_fedi_comments"
+name = "mkdocs_fedi_comments"
+```
+
+## Development
+
+There are some python tests that can be run via
+
+```bash
+uv run pytest
+```
+
+Similarly one can check that the sample_site builds via
+
+```bash
+cd sample_site
+uv run mkdocs build
+```
+
+This executes the plugin, which is included in the sample site
+as an editable dependency.
+
+### JavaScript component
+
+The replies are displayed through a JavaScript component. It
+is automatically build with the python package. One can manually run
+this step via
+
+```bash
+uv run hatch build --hooks-only --target wheel
+```
+
+### Development
+
+First enter the `js` directory.
+
+To visually develop the component run, you have to first
+generate the [MSW service worker](https://storybook.js.org/addons/msw-storybook-addon)
+and the [MSW Docs](https://mswjs.io/docs/best-practices/managing-the-worker#generating-the-worker-script).
+
+```bash
+npx msw init public/ --save
+```
+
+then you can run storybook via
+
+```bash
+npm run storybook
+```
