@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.2.2"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ['data', 'docs', 'examples', 'unit_test']
+
+[project]
+name = "kdb-python"
+version = "1.0.7"
+authors = [
+  { name="Trucnt", email="trucnt88@gmail.com" },
+]
+description = "Automation testing"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/Trucnt/kdb-python-examples"
