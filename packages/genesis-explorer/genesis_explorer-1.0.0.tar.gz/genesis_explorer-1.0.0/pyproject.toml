@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "genesis-explorer"
+version = "1.0.0"
+description = "Librería de exploración para migración a GCP."
+authors = ["Juan Pablo Arango <juanpabloarangosa@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "genesis_explorer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+twine = "^6.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
