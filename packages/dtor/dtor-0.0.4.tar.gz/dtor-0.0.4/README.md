@@ -1,0 +1,256 @@
+# dtor - Tor Process Management Library
+
+[![Tests](https://github.com/QudsLab/dtor/actions/workflows/test.yml/badge.svg)](https://github.com/QudsLab/dtor/actions/workflows/test.yml)
+[![PyPI version](https://badge.fury.io/py/dtor.svg)](https://badge.fury.io/py/dtor)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive Python library for managing Tor processes with full lifecycle control. `dtor` handles everything from automatic binary downloads to hidden service management, providing a simple and powerful interface for Tor integration.
+
+## Features
+
+🚀 **Automatic Setup**
+- Automatic Tor binary download for your platform (Linux, Windows, macOS)
+- Smart version detection and caching
+- Zero manual configuration required
+
+🔒 **Hidden Services**
+- Easy hidden service creation and management
+- Runtime hidden service support (ADD_ONION)
+- Automatic hostname and key generation
+- Port mapping and collision resolution
+
+⚙️ **Process Management**
+- Full Tor process lifecycle control (start/stop/restart)
+- Process monitoring and health checks
+- Stale process cleanup
+- Cross-platform support
+
+🌐 **Port Management**
+- SOCKS and Control port configuration
+- Runtime port addition
+- Automatic port conflict detection and resolution
+- Multiple port support
+
+🎛️ **Control Protocol**
+- Full Tor control protocol support
+- Cookie authentication
+- Command execution and response parsing
+- Real-time configuration updates
+
+## Installation
+
+```bash
+pip install dtor
+```
+
+## Quick Start
+
+```python
+from dtor import TorHandler
+
+# Initialize handler
+handler = TorHandler(recover=False)
+
+# Download Tor binaries (automatic platform detection)
+handler.download_and_install_tor_binaries()
+
+# Configure ports
+handler.add_socks_port(9050)
+handler.add_control_port(9051)
+
+# Start Tor
+handler.start_tor_service()
+
+# Create a hidden service
+handler.register_hidden_service(port=80, target_port=8080)
+handler.save_torrc_configuration()
+
+# Stop Tor when done
+handler.stop_tor_service()
+```
+
+## Advanced Usage
+
+### Port Configuration with Collision Resolution
+
+```python
+handler = TorHandler()
+
+# Enable automatic port conflict resolution
+handler.socks_port_collision_resolve = True
+handler.control_port_collision_resolve = True
+
+# Add ports - will auto-resolve if already in use
+handler.add_socks_port(9050)
+handler.add_control_port(9051)
+```
+
+### Runtime Hidden Services
+
+```python
+# Start Tor first
+handler.start_tor_service()
+
+# Add hidden service at runtime (no restart needed)
+result = handler.register_runtime_hidden_service(
+    port=80, 
+    target_port=8080, 
+    temporary=False
+)
+
+if result:
+    print(f"Onion address: {result['onion_address']}")
+    print(f"Service key: {result['service_key']}")
+```
+
+### Control Protocol Commands
+
+```python
+# Send commands to Tor control port
+responses = handler.send_control_commands([
+    "GETINFO version",
+    "GETINFO status/bootstrap-phase",
+    "GETINFO network-status"
+])
+
+for idx, response in responses.items():
+    print(f"{response['command']}: {response['response']}")
+```
+
+### Process Monitoring
+
+```python
+# Get process information
+process = handler.get_tor_process()
+if process:
+    print(f"PID: {process.pid}")
+    print(f"Status: {process.status()}")
+    print(f"Memory: {process.memory_info().rss / 1024 / 1024:.2f} MB")
+    print(f"CPU: {process.cpu_percent()}%")
+```
+
+### Multiple Hidden Services
+
+```python
+handler = TorHandler()
+
+# Register multiple services
+services = [
+    (80, 8080, "HTTP"),
+    (443, 8443, "HTTPS"),
+    (22, 2222, "SSH")
+]
+
+for port, target, name in services:
+    result = handler.register_hidden_service(
+        port=port, 
+        target_port=target
+    )
+    print(f"Registered {name}: {port} -> {target}")
+
+# Save configuration
+handler.save_torrc_configuration()
+```
+
+## Configuration Options
+
+### Initialization Parameters
+
+```python
+handler = TorHandler(
+    recover=True  # Load existing configuration on startup
+)
+```
+
+### Port Limits
+
+```python
+handler.max_socks_ports = 3       # Maximum SOCKS ports
+handler.max_control_ports = 3     # Maximum control ports
+handler.max_hidden_services = 3   # Maximum hidden services
+```
+
+### Debug Mode
+
+```python
+handler.debug = True              # Enable debug logging
+handler.log_level = 0             # 0=INFO, 1=WARNING, 2=ERROR
+```
+
+## Directory Structure
+
+By default, `dtor` creates the following directory structure:
+
+```
+tor_handler_files/
+├── tor_binaries/          # Tor executables
+│   ├── tor/
+│   └── data/
+├── cache/                 # Downloaded archives
+└── config/
+    └── torrc              # Tor configuration
+```
+
+## Platform Support
+
+- ✅ **Linux** (Ubuntu, Debian, RHEL, etc.)
+- ✅ **Windows** (7, 8, 10, 11)
+- ✅ **macOS** (Intel & Apple Silicon)
+
+## Python Version Support
+
+- Python 3.8+
+- Python 3.9
+- Python 3.10
+- Python 3.11
+- Python 3.12
+
+## Requirements
+
+- `psutil>=5.9.0` - Process management
+- `requests>=2.28.0` - HTTP requests for binary downloads
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Testing
+
+Run the comprehensive test suite:
+
+```bash
+python test.py
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Ahmad Yousuf**
+- Email: 0xAhmadYousuf@protonmail.com
+- GitHub: [@QudsLab](https://github.com/QudsLab)
+
+## Acknowledgments
+
+- Tor Project for the amazing anonymity network
+- All contributors and users of this library
+
+## Links
+
+- **PyPI:** https://pypi.org/project/dtor/
+- **GitHub:** https://github.com/QudsLab/dtor
+- **Issues:** https://github.com/QudsLab/dtor/issues
+- **Tor Project:** https://www.torproject.org/
+
+## Disclaimer
+
+This tool is for educational and research purposes. Users are responsible for complying with all applicable laws and regulations. The authors are not responsible for any misuse of this software.
