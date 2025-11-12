@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-app-demo"
+version = "1.7.2"
+description = "示例 Python 项目，通过 logging 输出简单信息。"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "baiyx" }
+]
+dependencies = [
+  "mcp>=1.6.0",
+  "pydantic>=2.0.0",
+  "requests>=2.31.0"
+]
+
+[project.scripts]
+python-app-demo = "app.main:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0"
+]
+
