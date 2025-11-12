@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>RulersGuides.js demo</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+  </head>
+  <body class="demo">
+    <script
+      type="text/javascript"
+      src="https://rawgithub.com/mark-rolich/Event.js/master/Event.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://rawgithub.com/mark-rolich/Dragdrop.js/master/Dragdrop.js"
+    ></script>
+    <script type="text/javascript" src="../RulersGuides.js"></script>
+    <script type="text/javascript">
+      var evt = new Event(),
+        dragdrop = new Dragdrop(evt),
+        rg = new RulersGuides(evt, dragdrop);
+    </script>
+  </body>
+</html>
