@@ -1,0 +1,98 @@
+Metadata-Version: 2.4
+Name: paddle
+Version: 1.1.6
+Summary: Python Atmospheric Dynamics: Discovery and Learning about Exoplanets. An open-source, user-friendly python frontend of canoe
+Project-URL: Homepage, https://github.com/elijah-mullens/paddle
+Project-URL: Repository, https://github.com/elijah-mullens/paddle
+Project-URL: Issues, https://github.com/elijah-mullens/paddle/issues
+Author-email: Elijah Mullens <eem85@cornell.edu>, Cheng Li <chengcli@umich.edu>
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Atmospheric Science
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.9
+Requires-Dist: kintera>=1.1.5
+Requires-Dist: snapy>=0.8.1
+Requires-Dist: torch<=2.7.1,>=2.7.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# paddle
+Python Atmospheric Dynamics: Discovering and Learning about Exoplanets. An open-source, user-friendly python version of canoe.
+
+## Install docker and docker-compose plugin
+
+## Test package
+1. Create a python virtual environment
+```bash
+python -m venv pyenv
+```
+
+2. Install paddle package
+```bash
+pip install paddle
+```
+
+3. Run test
+```bash
+cd tests
+python test_saturn_adiabat.py
+```
+
+## Docker user guide
+
+2. Create a docker container
+```bash
+make up
+```
+
+3. Terminate a docker container
+```bash
+make down
+```
+
+4. Start a docker container
+```bash
+make start
+```
+
+5. Build a new docker image (rarely used)
+```bash
+make build
+```
+
+## For Developer
+
+### Clone repository
+```bash
+https://github.com/elijah-mullens/paddle
+```
+
+### Cache your github credential
+```bash
+git config credential.helper 'cache --timeout=86400'
+```
+
+### Install paddle package
+
+### Install pre-commit hook
+```bash
+pip install pre-commit
+```
+
+### Install pre-commit hook
+```bash
+pre-commit install
+```
