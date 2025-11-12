@@ -1,0 +1,42 @@
+/* Styles for lx directory tree explorer */
+
+Screen {
+    background: $surface;
+}
+
+#main-container {
+    layout: vertical;
+    height: 100%;
+    width: 100%;
+}
+
+#status-bar {
+    height: 1;
+    padding: 0 1;
+    background: $panel;
+    color: $text;
+    text-style: dim;
+}
+
+#tree {
+    height: 1fr;
+    width: 100%;
+    background: $surface;
+}
+
+#search-input {
+    height: 1;
+    padding: 0 1;
+    background: $panel;
+    border: solid $primary;
+}
+
+#search-input.hidden {
+    display: none;
+}
+
+/* Selection highlighting */
+.selected {
+    background: $primary;
+    color: $text;
+}
