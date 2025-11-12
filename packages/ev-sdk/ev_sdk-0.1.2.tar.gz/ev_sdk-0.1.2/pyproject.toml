@@ -1,0 +1,57 @@
+[project]
+name = "ev-sdk"
+version = "0.1.2"
+description = "The Python SDK for the EV Cloud."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"  # This MUST be constrained to what Ray supports & Python EOL schedule. MAKE SURE ev-ray HAS THE SAME !!!
+dependencies = [
+  "click>=8.0.0",
+  "httpx>=0.28.1",
+  "pydantic>=2.11.7",
+  "requests>=2.32.5",
+  "rich>=14.1.0",
+  "websocket-client>=1.8.0",
+  "toml>=0.10.2"
+]
+
+[project.scripts]
+ev = "ev.cli.__main__:main"
+
+[dependency-groups]
+dev = [
+  "ipdb>=0.13.13",
+  "ipython>=8.37.0",
+  "mypy>=1.17.1",
+  "pytest>=8.4.1",
+  "ruff>=0.12.10",
+  "sentence-transformers>=5.1.0",
+  "torch>=2.8.0",
+  "types-requests>=2.32.4.20250809",
+  "types-toml>=0.10.8.20240310"
+]
+
+[tool.uv]
+package = true
+
+[tool.uv.build-backend]
+source-exclude = ["tests/*"]
+
+[tool.mypy]
+files = ["src", "tests"]
+exclude = ["src/example"]
+ignore_missing_imports = true
+python_version = "3.10"  # MAKE SURE THIS MATCHES .python-version !!!
+strict = true
+
+[[tool.mypy.overrides]]
+disable_error_code = ["no-untyped-def"]
+module = "tests.*"
+strict = false
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ev"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+minversion = "6.0"
+testpaths = ["tests"]
