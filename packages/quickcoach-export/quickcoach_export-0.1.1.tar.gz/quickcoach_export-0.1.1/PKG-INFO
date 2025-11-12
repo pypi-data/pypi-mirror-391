@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: quickcoach-export
+Version: 0.1.1
+Summary: Export your workout history from QuickCoach to CSV files
+Author: John Brock
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/JohnHBrock/quickcoach-scraper
+Project-URL: Repository, https://github.com/JohnHBrock/quickcoach-scraper
+Project-URL: Issues, https://github.com/JohnHBrock/quickcoach-scraper/issues
+Keywords: quickcoach
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: selenium>=4.38.0
+Dynamic: license-file
+
+# QuickCoach Data Export
+
+Export your workout history from QuickCoach to CSV files.
+
+## Usage
+
+1. Install `uv` if not already installed by running the following command:
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+2. If you don't have the Chrome browser installed, you'll need to install it ([available here](https://www.google.com/chrome/dr/download/)).
+
+3. Run directly with `uvx`, specifying your personal QuickCoach URL slug. For example, if your QuickCoach URL is https://app.quickcoach.fit/pt/fitcojoseph123, then your slug is everything that appears after `http://app.quickcoach.fit/`:
+   ```bash
+   uvx quickcoach-export --slug pt/fitcojoseph123
+   ```
+
+### What it does
+
+- Opens QuickCoach in an automated browser
+- Extracts all workout history across all your plans
+- Creates two CSV files:
+  - `quickcoach-{slug}.csv` - Long format (one row per exercise/date)
+  - `quickcoach-pivot-{slug}.csv` - Wide format (exercises as rows, dates as columns)
+
+### Options
+
+- `--delay 0.2` - Add delay between scraping exercises (default: 0.15 seconds)
+- `--headful` - Show browser window while running (useful for debugging)
+- `--skip-pivot` - Only create the long-format CSV
+
+### Example
+
+```bash
+# Basic usage
+uvx quickcoach-export --slug pt/fitcojoseph123
+
+# With custom delay and visible browser
+uvx quickcoach-export --slug pt/fitcojoseph123 --delay 0.3 --headful
+
+# From local repo
+uv run quickcoach-export --slug pt/fitcojoseph123
+```
