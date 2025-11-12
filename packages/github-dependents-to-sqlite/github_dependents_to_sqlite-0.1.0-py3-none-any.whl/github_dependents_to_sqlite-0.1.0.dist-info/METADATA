@@ -1,0 +1,198 @@
+Metadata-Version: 2.4
+Name: github-dependents-to-sqlite
+Version: 0.1.0
+Summary: Save GitHub package dependents data to a SQLite database by scraping the dependency graph with support for specific package selection
+Author: Mingpei Cao
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/caomingpei/github-dependents-to-sqlite
+Project-URL: Repository, https://github.com/caomingpei/github-dependents-to-sqlite
+Project-URL: Issues, https://github.com/caomingpei/github-dependents-to-sqlite/issues
+Project-URL: Changelog, https://github.com/caomingpei/github-dependents-to-sqlite/releases
+Keywords: github,sqlite,dependents,scraping,dependency-graph
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: sqlite-utils>=2.7.2
+Requires-Dist: requests>=2.20.0
+Requires-Dist: beautifulsoup4>=4.8.0
+Requires-Dist: click>=7.0
+Requires-Dist: tqdm>=4.50.0
+Provides-Extra: test
+Requires-Dist: pytest>=6.0; extra == "test"
+Requires-Dist: requests-mock>=1.8; extra == "test"
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: requests-mock>=1.8; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: license-file
+
+# github-dependents-to-sqlite
+
+[![PyPI](https://img.shields.io/pypi/v/github-dependents-to-sqlite.svg)](https://pypi.org/project/github-dependents-to-sqlite/)
+[![Changelog](https://img.shields.io/github/v/release/caomingpei/github-dependents-to-sqlite?include_prereleases&label=changelog)](https://github.com/caomingpei/github-dependents-to-sqlite/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/caomingpei/github-dependents-to-sqlite/blob/main/LICENSE)
+
+Save GitHub dependents data to a SQLite database by scraping the GitHub dependency graph.
+
+## Features
+
+This tool scrapes the GitHub dependency graph to find repositories that depend on a specific repository and saves this data to a SQLite database.
+
+## Installation
+
+Requires Python 3.8 or higher.
+
+```bash
+$ pip install github-dependents-to-sqlite
+```
+
+## Authentication
+
+Create a GitHub personal access token: https://github.com/settings/tokens
+
+Run this command to setup authentication:
+
+```bash
+$ github-dependents-to-sqlite auth
+```
+
+Or for local development:
+
+```bash
+$ python -m src.cli auth
+```
+
+This will create a file called `auth.json` in your current directory containing the required value. To save the file at a different path or filename, use the `-a/--auth=myauth.json` option.
+
+As an alternative to using an `auth.json` file you can add your access token to an environment variable called `GITHUB_TOKEN`.
+
+## Basic Usage
+
+The GitHub dependency graph can show other GitHub projects that depend on a specific repo, for example [anchor-lang](https://github.com/coral-xyz/anchor).
+
+This data is not yet available through the GitHub API. This tool scrapes those pages and uses the GitHub API to load full versions of the dependent repositories.
+
+### Commands
+
+```bash
+# Setup authentication (first time)
+$ github-dependents-to-sqlite auth
+
+# Scrape dependents
+$ github-dependents-to-sqlite scrape github.db owner/repo
+
+# Multiple repositories
+$ github-dependents-to-sqlite scrape github.db owner/repo1 owner/repo2
+```
+
+### Local Development (without install)
+
+```bash
+# Setup auth
+$ python -m src.cli auth
+
+# Scrape dependents
+$ python -m src.cli scrape github.db owner/repo -v
+```
+
+### Package Selection
+
+Many repositories have multiple packages. The tool will automatically detect them and offer choices:
+
+**Interactive Mode** (default):
+
+```bash
+$ github-dependents-to-sqlite scrape github.db solana-foundation/anchor
+```
+
+You'll see a menu like:
+
+```
+📦 Processing repository: solana-foundation/anchor
+Found 67 package(s)
+
+Available packages:
+  1. @andresmgsl2/spl-associated-token-account
+  2. @betdex/anchor
+  3. @coral-xyz/anchor
+  ...
+  68. All packages (scrape each one)
+  69. Skip package selection (may find fewer dependents)
+
+Select a package [68]: 3
+Selected: @coral-xyz/anchor
+Total dependents: 23,089
+Scraping dependents: 100%|████████████| 23089/23089 [15:23<00:00, 24.98repo/s]
+✅ Found 23,089 new dependent(s)
+🎉 Done!
+```
+
+**Command-line Mode** (use `-p` to specify package):
+
+```bash
+# By package name
+$ github-dependents-to-sqlite scrape github.db solana-foundation/anchor -p "anchor-lang"
+
+# By package ID
+$ github-dependents-to-sqlite scrape github.db solana-foundation/anchor -p "UGFja2FnZS0zNDg2OTY2MDg4"
+```
+
+### Options
+
+- `-p, --package TEXT`: Specify package name or ID (skips interactive selection)
+- `-v, --verbose`: Verbose output with detailed progress information
+- `-a, --auth PATH`: Path to auth.json file (default: auth.json)
+
+### Database Schema
+
+The tool creates the following tables:
+
+- `repos`: Repository information for both the target repo and its dependents
+- `users`: User/organization information for repository owners
+- `licenses`: License information for repositories
+- `dependents`: Junction table linking repositories to their dependents
+
+The tool also creates:
+
+- Full-text search indices on relevant columns
+- Foreign key relationships between tables
+- A `dependent_repos` view for easy querying
+
+### Example Query
+
+After scraping, you can query the database to find all dependents:
+
+```sql
+SELECT * FROM dependent_repos ORDER BY dependent_stars DESC;
+```
+
+## Development
+
+To contribute to this project:
+
+1. Clone the repository
+2. Install development dependencies: `pip install -e ".[test]"`
+3. Run tests: `pytest`
+
+## Acknowledgments
+
+This project is based on [github-to-sqlite](https://github.com/dogsheep/github-to-sqlite) by Simon Willison. The original project focused on saving GitHub API data to SQLite. This fork extends that concept to specifically handle package dependency graph scraping, allowing you to discover which repositories depend on specific packages.
+
+## License
+
+Apache License 2.0
