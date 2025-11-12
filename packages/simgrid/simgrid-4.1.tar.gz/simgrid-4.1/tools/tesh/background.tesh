@@ -1,0 +1,19 @@
+! output ignore
+$ cmake -E remove bgtesh.sh bgtesh.data
+
+< sleep 1
+< cat bgtesh.data
+< exit 0
+$ mkfile bgtesh.sh
+
+# launch the script even if the data is not there yet. I'll set it up if the script waits in background as expected.
+& sh bgtesh.sh
+> TOTO
+
+< TOTO
+$ mkfile bgtesh.data
+
+$ sleep 2
+
+! output ignore
+$ cmake -E remove bgtesh.sh bgtesh.data

@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: simgrid
+Version: 4.1
+Summary: Toolkit for scalable simulation of distributed applications
+Home-page: https://simgrid.org
+Author: Da SimGrid Team
+Author-email: simgrid-community@inria.fr
+Project-URL: Tracker, https://framagit.org/simgrid/simgrid/issues/
+Project-URL: Source, https://framagit.org/simgrid/simgrid/
+Project-URL: Documentation, https://simgrid.org/doc/latest/
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: C
+Classifier: Programming Language :: Fortran
+Classifier: Programming Language :: Java
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Topic :: System :: Systems Administration
+License-File: LICENSE-LGPL-2.1
+License-File: COPYING
+License-File: AUTHORS
+Requires-Dist: pybind11>=2.4
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: summary
+
+SimGrid is a scientific instrument to study the behavior of large-scale distributed systems such as Grids, Clouds, HPC or P2P systems. It can be used to evaluate heuristics, prototype applications or even assess legacy MPI applications.
+
+This package contains a native library. Please install cmake, boost, pybind11 and a C++ compiler before using pip3. On Debian/Ubuntu, this is as easy as
+sudo apt install cmake libboost-dev pybind11-dev g++ gcc
