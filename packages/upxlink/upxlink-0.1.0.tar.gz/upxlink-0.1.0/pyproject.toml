@@ -1,0 +1,33 @@
+[project]
+name = "upxlink"
+version = "0.1.0"
+authors = [{ name = "Alexander Hahn", email = "hahnworks@posteo.net" }]
+description = "Access the REST interface of VW up! and related cars"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+license = "EUPL-1.2"
+license-files = ["LICENCE"]
+dependencies = ["mibbridge >= 0.1", "requests"]
+
+[project.scripts]
+upxlink = "upxlink.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/hahnworks/upXlink"
+"Issues" = "https://github.com/hahnworks/upXlink/issues"
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project.optional-dependencies]
+test = ["pytest", "requests"]
