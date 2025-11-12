@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calc_pack_sdiaz"
+version = "0.4.0"
+
+[project.scripts]
+calc_pack_sdiaz = "calc_pack_sdiaz.__main__:main"
