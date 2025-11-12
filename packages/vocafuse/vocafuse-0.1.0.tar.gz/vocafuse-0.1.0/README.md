@@ -1,0 +1,290 @@
+# VocaFuse Python SDK ✨
+
+A comprehensive Python SDK for integrating with the VocaFuse voice API.
+
+## Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+## Quick Start
+
+```python
+import os
+from vocafuse import Client, AccessToken  # Everything from main package
+
+# Initialize client (auto-detects environment from API key prefix)
+client = Client(
+    api_key=os.environ["VOCAFUSE_API_KEY"],
+    api_secret=os.environ["VOCAFUSE_API_SECRET"]
+)
+
+# List voicenotes
+voicenotes = client.voicenotes.list(limit=10)
+print(f"Found {len(voicenotes['data'])} voicenotes")
+
+# Get specific voicenote
+voicenote = client.voicenotes.get('voicenote_id')
+print(f"Status: {voicenote['data']['status']}")
+
+# Get transcription (nested access pattern)
+transcription = client.voicenotes('voicenote_id').transcription.get()
+print(f"Text: {transcription['data']['text']}")
+
+# Generate JWT token for frontend authentication (standalone approach)
+token = AccessToken(
+    api_key=os.environ["VOCAFUSE_API_KEY"],
+    api_secret=os.environ["VOCAFUSE_API_SECRET"],
+    identity='user_123'
+)
+jwt_response = token()
+jwt_token = jwt_response['data']['jwt_token']
+
+# Manage webhooks
+webhook = client.webhooks.create(
+    url='https://myapp.com/webhooks',
+    events=['voicenote.completed', 'voicenote.failed']
+)
+
+# Verify webhook signatures (standalone validator from main package)
+from vocafuse import RequestValidator
+
+validator = RequestValidator('your-webhook-secret')
+is_valid = validator.validate(webhook_payload, webhook_signature)
+```
+
+## Features
+
+### 🎯 **Complete API Client**
+- **Auto-environment Detection**: Automatically detects dev/test/live from API key prefix
+- **Comprehensive Error Handling**: Specific exceptions for different error types
+- **Type Hints**: Full type hint support for better development experience
+
+### 📡 **Resource Management**
+- **Voicenotes**: List, get, delete voicenotes with transcription access
+- **Webhooks**: Create, update, delete, list webhook configurations
+- **API Keys**: Create, list, delete API keys for authentication
+- **Account**: Get and update account information and settings
+- **JWT Generation**: Standalone AccessToken class for frontend authentication
+- **Webhook Verification**: Standalone RequestValidator for signature verification
+
+### 🔐 **JWT Token Generation**
+- **Callable Interface**: Simple `token()` method for generation
+- **Custom Scopes & Expiration**: Flexible token configuration
+
+## API Reference
+
+### Main Client
+
+#### Client(api_key, api_secret, base_url=None)
+
+Initialize the VocaFuse client with API credentials.
+
+```python
+from vocafuse import Client
+
+client = Client(
+    api_key="your-api-key",
+    api_secret="your-api-secret"
+)
+```
+
+**Environment Auto-Detection:**
+- `sk_live_*` → Production: `https://api.vocafuse.com/v1`
+- `sk_test_*` → Testing: `https://test-api.vocafuse.com/v1`
+- Other → Development: Current dev URL
+
+### JWT Token Generation
+
+#### AccessToken(api_key, api_secret, identity, base_url=None)
+
+Generate JWT tokens for frontend authentication.
+
+```python
+from vocafuse.jwt.access_token import AccessToken
+
+# Create token generator
+token = AccessToken(
+    api_key='your-api-key',
+    api_secret='your-api-secret',
+    identity='user_123'
+)
+
+# Generate token with default settings
+response = token()
+jwt_token = response['data']['jwt_token']
+
+# Generate token with custom options
+response = token(
+    expires_in=3600,  # 1 hour
+    scopes=['voicenotes:read', 'voicenotes:write']
+)
+```
+
+**Default Scopes:** `['voice-api.upload_voicenote']`
+
+### Voicenotes Resource
+
+```python
+# List voicenotes with filters
+voicenotes = client.voicenotes.list(
+    page=0,
+    limit=50,
+    status='completed',
+    date_from='2024-01-01',
+    date_to='2024-12-31'
+)
+
+# Get specific voicenote
+voicenote = client.voicenotes.get('voicenote_id')
+
+# Delete voicenote
+client.voicenotes.delete('voicenote_id')
+
+# Nested access pattern
+voicenote_instance = client.voicenotes('voicenote_id')
+voicenote_data = voicenote_instance.get()
+transcription = voicenote_instance.transcription.get()
+voicenote_instance.delete()
+```
+
+### Webhooks Resource
+
+```python
+# List webhooks
+webhooks = client.webhooks.list()
+
+# Create webhook
+webhook = client.webhooks.create(
+    url='https://myapp.com/webhooks',
+    events=['voicenote.completed', 'voicenote.failed'],
+    secret='optional-webhook-secret'
+)
+
+# Update webhook
+client.webhooks.update(
+    webhook_id='webhook_id',
+    url='https://myapp.com/new-webhook',
+    events=['voicenote.completed']
+)
+
+# Delete webhook
+client.webhooks.delete('webhook_id')
+
+# Verify webhook signature (standalone)
+from vocafuse import RequestValidator
+validator = RequestValidator('your-webhook-secret')
+is_valid = validator.validate(payload, signature)
+```
+
+### API Keys Resource
+
+```python
+# List API keys
+keys = client.api_keys.list()
+
+# Create new API key
+new_key = client.api_keys.create(name='Production Key')
+print(f"Key: {new_key['data']['key']}")
+print(f"Secret: {new_key['data']['secret']}")
+
+# Delete API key
+client.api_keys.delete('key_id')
+```
+
+### Account Resource
+
+```python
+# Get account info
+account = client.account.get()
+print(f"Account: {account['data']['name']}")
+print(f"Tenant ID: {account['data']['tenant_id']}")
+
+# Update account
+client.account.update(name='New Company Name')
+```
+
+### Webhook Verification
+
+```python
+from flask import Flask, request, jsonify
+from vocafuse import Client, RequestValidator
+
+app = Flask(__name__)
+client = Client(
+    api_key='your-api-key',
+    api_secret='your-api-secret'
+)
+webhook_validator = RequestValidator('your-webhook-secret')
+
+@app.route('/webhooks/vocafuse', methods=['POST'])
+def handle_webhook():
+    payload = request.get_data(as_text=True)
+    signature = request.headers.get('X-VocaFuse-Signature')
+
+    if webhook_validator.validate(payload, signature):
+        # Process webhook
+        data = request.get_json()
+        print(f"Webhook event: {data['event']}")
+        return jsonify({"status": "received"})
+    else:
+        return jsonify({"error": "Invalid signature"}), 401
+```
+
+## Error Handling
+
+The SDK provides specific exceptions for different error scenarios:
+
+```python
+from vocafuse import (
+    Client,
+    VocaFuseError,
+    AuthenticationError,
+    ValidationError,
+    VoicenoteNotFoundError,
+    WebhookNotFoundError
+)
+
+try:
+    voicenote = client.voicenotes.get('invalid-id')
+except VoicenoteNotFoundError as e:
+    print(f"Voicenote not found: {e}")
+    print(f"Status code: {e.status_code}")
+    print(f"Error code: {e.error_code}")
+except AuthenticationError as e:
+    print(f"Authentication failed: {e}")
+except VocaFuseError as e:
+    print(f"General API error: {e}")
+```
+
+## Examples
+
+See `examples/complete_usage.py` for a comprehensive example demonstrating all SDK features.
+
+```bash
+# Set environment variables
+export VOCAFUSE_API_KEY="your-api-key"
+export VOCAFUSE_API_SECRET="your-api-secret"
+
+# Run the complete example
+python examples/complete_usage.py
+```
+
+## Environment Variables
+
+```bash
+VOCAFUSE_API_KEY=your_api_key_here
+VOCAFUSE_API_SECRET=your_api_secret_here
+VOCAFUSE_WEBHOOK_SECRET=your_webhook_secret_here  # For webhook verification
+```
+
+## Requirements
+
+- Python 3.7+
+- requests >= 2.25.0
+
+## Support
+
+- 📧 Email: support@vocafuse.com
+- 📖 Documentation: https://docs.vocafuse.com 

@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vocafuse"
+version = "0.1.0"
+description = "A Python module for communicating with the VocaFuse API and generating voice note applications."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "VocaFuse", email = "support@vocafuse.com"}
+]
+maintainers = [
+    {name = "VocaFuse", email = "support@vocafuse.com"}
+]
+keywords = ["vocafuse", "voice", "api", "sdk", "transcription", "audio", "speech"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+dependencies = [
+    "requests>=2.25.0",
+    "PyJWT>=2.0.0",
+    "cryptography>=3.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/VocaFuse/vocafuse-python"
+Documentation = "https://github.com/VocaFuse/vocafuse-python#readme"
+Repository = "https://github.com/VocaFuse/vocafuse-python"
+"Bug Tracker" = "https://github.com/VocaFuse/vocafuse-python/issues"
+
+[tool.setuptools]
+packages = ["vocafuse", "vocafuse.jwt", "vocafuse.resources", "vocafuse.webhook"]
+
+[tool.setuptools.package-data]
+vocafuse = ["py.typed"]
+
