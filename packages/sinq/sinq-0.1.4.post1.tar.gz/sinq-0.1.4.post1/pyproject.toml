@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=75", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sinq"         
+version = "0.1.4.post1"
+description = "SINQ quantization I/O for Hugging Face Transformers"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Apache-2.0" }     # or your license
+authors = [{ name = "Chiara Boretti", email = "chiara.boretti.95@gmail.com" }]
+keywords = ["transformers", "quantization", "huggingface", "LLM"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "transformers>=4.41",
+  "huggingface_hub>=0.22",
+  "torch>=2.1",
+  "safetensors>=0.4.2",
+  "hf_transfer>=0.1.9",
+  "einops>=0.8.1",
+  "datasets",
+  "numpy",
+  "scipy>=1.13.1",
+  "torchaudio>=2.8.0",
+  "torchvision>=0.23.0",
+  "lm_eval>=0.4.8",
+  "termcolor",
+  "gemlite==0.5.1.post1"
+]
+
+[project.urls]
+Homepage = "https://github.com/huawei-csl/SINQ"
+Issues = "https://github.com/huawei-csl/SINQ/issues"
+
+[tool.setuptools]
+include-package-data = true
+py-modules = ["sitecustomize"]
+
+[tool.setuptools.packages.find]
+include = ["sinq*"]
