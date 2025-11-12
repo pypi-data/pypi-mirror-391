@@ -1,0 +1,225 @@
+Metadata-Version: 2.4
+Name: fayda-python-sdk
+Version: 1.0.1
+Summary: Python SDK for Fayda IDA (Identity Authentication) - OTP, Authentication and eKYC services
+Author-email: Fayda Team <api_support@fayda.et>, Cherinet Hailu <cherinet@id.et>, Amanuel Gulti <amanuelgulti@id.et>
+Maintainer-email: Fayda Team <api_support@fayda.et>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/National-ID-Program-Ethiopia/python-ida-sdk
+Project-URL: Documentation, https://national-id-program-ethiopia.github.io/python-ida-sdk
+Project-URL: Repository, https://github.com/National-ID-Program-Ethiopia/python-ida-sdk
+Project-URL: Issues, https://github.com/National-ID-Program-Ethiopia/python-ida-sdk/issues
+Keywords: fayda,ida,authentication,ekyc,otp,sdk,identity
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Security
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: pyjwt>=2.8.0
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Dynamic: license-file
+
+# Python IDA SDK
+
+[![PyPI version](https://badge.fury.io/py/fayda-python-sdk.svg)](https://badge.fury.io/py/fayda-python-sdk)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Python SDK for Fayda IDA (Identity Authentication) services. Provides a simple and intuitive interface for OTP generation, authentication, and eKYC (electronic Know Your Customer) operations.
+
+## Features
+
+-  **OTP Management**: Request and manage OTPs for Fayda ID verification
+-  **Yes/No Auth**: Yes/No authentication using OTP
+-  **eKYC Services**: Perform electronic KYC to retrieve verified identity information
+-  **Secure Cryptography**: Built-in support for RSA-OAEP, AES-GCM, and JWT signatures
+-  **PKCS12 Key Management**: Support for PKCS12 certificate and key files
+-  **Easy Configuration**: Configure via environment variables or dictionary
+-  **Comprehensive Error Handling**: Robust error handling and logging
+
+## Installation
+
+Install from PyPI:
+
+```bash
+pip install fayda-python-sdk
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/National-ID-Program-Ethiopia/python-ida-sdk.git
+cd python-ida-sdk
+pip install -e .
+```
+
+## Quick Start
+
+## Usage
+
+### Basic Configuration
+
+```python
+from fayda_py_sdk import ConfigBuilder
+from fayda_py_sdk.dto import OtpRequestDTO, AuthRequestDTO
+
+# Configure from environment variables
+config = ConfigBuilder().from_env()
+
+# Or configure from dictionary
+config = ConfigBuilder().from_dict({
+    "partnerId": "fayda-partner-demo",
+    "fayda.base.url": "https://fayda.baseurl.et",
+    "mispLicenseKey": "your-license-key",
+    "partnerApiKey": "your-api-key",
+    "ida.reference.id": "PARTNER",
+    "clientId": "fayda-admin-client",
+    "secretKey": "your-secret-key",
+    "appId": "appId",
+    "p12.path": "keys",
+    "p12.password": "pass@123",
+    "ida.ssl.verify": False
+})
+
+# Build client
+client = config.build()
+```
+
+### Request OTP
+
+```python
+from fayda_py_sdk.dto import OtpRequestDTO
+
+# Fayda ID: UIN for FIN or VID for FAN
+otp_request = OtpRequestDTO(
+    individual_id="1234567890",  # Fayda ID
+    individual_id_type="UIN",     # UIN for FIN or VID for FAN
+    otp_channel=["email"]
+)
+
+response = client.request_otp(otp_request)
+print(response)
+```
+
+### Yes/No Auth
+
+```python
+from fayda_py_sdk.dto import AuthRequestDTO
+
+# Fayda ID: UIN for FIN or VID for FAN
+auth_request = AuthRequestDTO(
+    individual_id="1234567890",  # Fayda ID
+    individual_id_type="UIN",     # UIN for FIN or VID for FAN
+    otp="123456"
+)
+
+response = client.yes_no_auth(auth_request)
+print(response)
+```
+
+### Perform eKYC
+
+```python
+from fayda_py_sdk.dto import AuthRequestDTO
+
+# Fayda ID: UIN for FIN or VID for FAN
+ekyc_request = AuthRequestDTO(
+    individual_id="1234567890",  # Fayda ID
+    individual_id_type="UIN",     # UIN for FIN or VID for FAN
+    otp="123456"
+)
+
+response = client.perform_ekyc(ekyc_request)
+print(response)
+```
+
+## Configuration
+
+The SDK can be configured using:
+
+1. **Environment Variables**:
+   - `PARTNER_ID`: Partner ID
+   - `FAYDA_BASE_URL`: Base URL for Fayda API
+   - `MISP_LICENSE_KEY`: MISP License Key
+   - `PARTNER_API_KEY`: Partner API Key
+   - `IDA_REFERENCE_ID`: IDA Reference ID
+   - `CLIENT_ID`: Client ID for authentication
+   - `SECRET_KEY`: Secret key for authentication
+   - `APP_ID`: Application ID
+   - `P12_PATH`: Path to PKCS12 keys directory
+   - `P12_PASSWORD`: Password for PKCS12 files
+   - `IDA_SSL_VERIFY`: Enable/disable SSL verification (true/false)
+
+2. **Dictionary**: Pass configuration as a dictionary to `ConfigBuilder.from_dict()`
+
+3. **Manual Configuration**: Use `ConfigBuilder().set_config(key, value)` for individual settings
+
+## Key Files
+
+The SDK expects PKCS12 key files in the keys directory (default: `keys/`). The files should be named:
+- `{partnerId}-partner.p12` - Partner private key and certificate
+- `{partnerId}-partner.cer` - Partner certificate 
+
+## Running Examples
+
+```bash
+# Make sure your keys are in the keys/ directory
+# Update configuration in example.py or set environment variables
+
+python example.py
+```
+
+## Requirements
+
+- Python 3.8 or higher
+- PKCS12 key files (`.p12` format) for partner authentication
+- Valid Fayda API credentials
+
+## Error Handling
+
+The SDK includes comprehensive error handling. All exceptions are logged and raised with descriptive messages. Common errors include:
+
+- `RuntimeError`: For authentication failures, certificate errors, or API errors
+- `ValueError`: For invalid configuration or key file issues
+- `Exception`: For network or parsing errors
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Support
+
+For issues, questions, or contributions, please use the [GitHub Issues](https://github.com/National-ID-Program-Ethiopia/python-ida-sdk/issues) page.
+
+For direct support, contact:
+- **Fayda API Support**: api_support@id.et
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
+
