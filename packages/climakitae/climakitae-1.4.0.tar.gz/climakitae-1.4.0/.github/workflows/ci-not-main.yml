@@ -1,0 +1,48 @@
+# Workflow file for continuous integration
+# Based on code from: https://github.com/epassaro/cache-conda-envs/blob/main/.github/workflows/ci.yml
+# Based on code from: https://github.com/marketplace/actions/setup-miniconda
+# Runs on all branches except main (see ci-main.yml)
+# Runs basic tests on push event and advanced tests on label assignment
+
+
+name: ci-not-main
+
+on: 
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v4
+    - name: Setup Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest cftime pytest-xdist
+    - name: Install climakitae
+      run: pip install . --no-deps
+    - name: Test with pytest (Basic)
+      run: pytest -n auto --no-header -vv -m "not advanced"
+    - name: Test with pytest (Advanced)
+      if: github.event.label.name == 'Advanced Testing'
+      run: pytest -n auto --no-header -vv -m "advanced"
