@@ -1,0 +1,146 @@
+
+%import common.WS_INLINE
+%ignore WS_INLINE
+%ignore /\\$\n/m
+%declare _INDENT _DEDENT _EOF
+
+_NL: /((--[^\r\n]*)?\r?\n[\t ]*)+/
+
+NAME : /[_\p{alpha}][_\p{alnum}]*'*/i
+NODE : /![_\p{alpha}][_\p{alnum}]*'*/i
+TAG : /#[_\p{alpha}][_\p{alnum}]*'*/i
+SYMBOL : /:[_\p{alpha}][_\p{alnum}]*'*/i
+NUMBER : /([0-9][_0-9]*(\.[0-9][_0-9]*)?|\.[0-9][_0-9]*)([eE][-+]?[0-9][_0-9]*)?[pnuµmkMGT]?/
+TIMECODE.2 : /([0-9]+:)?[0-5]?[0-9]:[0-5]?[0-9](\.[0-9]+)?/
+STRING : /('''([^'\\]|\\.|'{1,2}(?!'))*'''|'([^'\n\\]|\\.)*'|"""([^"\\]|\\.|"{1,2}(?!"))*"""|"([^"\n\\]|\\.)*")/
+_HASHBANG : /#!.*\r?\n/
+_LPAREN : "("
+_RPAREN : ")"
+
+top : _HASHBANG? _NL? pragmas _NL? sequence
+
+pragmas : pragma* -> tuple
+
+pragma : "%pragma" NAME literal _NL -> binding
+
+sequence : expression* let_expression?
+
+let_expression : "let" multiline_bindings sequence -> let
+               | "let" "stable" multiline_bindings sequence -> let_stable
+               | "let" name_list "=" _NL _INDENT sequence _DEDENT sequence -> sequence_let
+               | "func" NAME _LPAREN parameters _RPAREN _NL _INDENT sequence _DEDENT sequence -> function
+               | "import" name_list "from" composition _NL sequence ->  let_import
+
+parameters : (parameter ("," parameter)*)? -> tuple
+
+parameter : NAME ["=" node] -> binding
+
+?expression : node _NL
+            | node "<<" _NL? expression -> append
+            | node _NL _INDENT sequence _DEDENT -> append
+            | "@" atom [attribute_bindings] _NL [_INDENT sequence _DEDENT] -> template_call
+            | "for" iterators _NL _INDENT sequence _DEDENT -> loop
+            | "if" conditions ["else" _NL _INDENT sequence _DEDENT] -> if_else
+            | "%include" composition _NL -> include
+            | _EOF -> export
+
+iterators : name_list "in" composition ("," name_list "in" composition)* -> tuple
+
+conditions : condition ("elif" condition)* -> tuple
+
+condition : composition _NL _INDENT sequence _DEDENT
+
+?inline_append : node
+               | node "<<" inline_append -> append
+
+?node : composition
+      | node TAG -> tag
+      | node attribute_bindings -> attributes
+
+attribute_bindings : attribute_binding+ -> tuple
+
+attribute_binding : NAME "=" composition -> binding
+
+multiline_bindings : binding+ _NL (_INDENT (binding+ _NL)+ _DEDENT)? -> tuple
+
+bindings : binding+ -> tuple
+
+binding : name_list "=" composition -> poly_binding
+
+?composition : anonymous
+             | anonymous (";" anonymous)+ -> sequence
+
+?anonymous : comprehension
+           | "func" _LPAREN parameters _RPAREN anonymous -> anonymous_function
+
+?comprehension : conditional
+               | comprehension "for" name_list "in" conditional -> inline_loop
+               | comprehension "where" inline_bindings -> inline_let
+
+inline_bindings: inline_binding+ -> tuple
+
+inline_binding: name_list "=" conditional -> poly_binding
+
+name_list : NAME (";" NAME)* -> tuple
+
+?conditional : or
+             | or "if" or ["else" conditional] -> inline_if_else
+
+?or : and
+    | or "or" and -> logical_or
+    | or "xor" and -> logical_xor
+
+?and : not
+     | and "and" not -> logical_and
+
+?not : comparison
+     | "not" not -> logical_not
+
+?comparison : range
+            | range "==" range -> eq
+            | range "!=" range -> ne
+            | range "<" range -> lt
+            | range ">" range -> gt
+            | range "<=" range -> le
+            | range ">=" range -> ge
+            | range "in" range -> contains
+
+?range : sum
+       | [sum] ".." sum ["|" sum] -> range
+
+?sum : product
+     | sum "+" product -> add
+     | sum "-" product -> subtract
+
+?product : unary
+         | product "*" unary -> multiply
+         | product "/" unary -> divide
+         | product "//" unary -> floor_divide
+         | product "%" unary -> modulo
+
+?unary : power
+       | "-" unary -> neg
+       | "+" unary -> pos
+
+?power : call
+       | power "**" call -> power
+
+?call : atom
+      | call _LPAREN args _RPAREN -> call
+      | call "[" inline_append "]" -> slice
+
+args : inline_append ("," inline_append)* ("," named_arg)* -> tuple
+     | (named_arg ("," named_arg)*)? -> tuple
+
+named_arg : NAME "=" inline_append -> binding
+
+?atom : literal
+      | NAME -> name
+      | "$" atom -> lookup
+      | _LPAREN inline_append _RPAREN
+
+literal : NUMBER
+        | TIMECODE
+        | STRING
+        | SYMBOL
+        | NODE
