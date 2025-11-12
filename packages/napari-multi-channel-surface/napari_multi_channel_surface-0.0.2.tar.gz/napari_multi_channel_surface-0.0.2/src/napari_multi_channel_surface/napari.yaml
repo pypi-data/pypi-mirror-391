@@ -1,0 +1,48 @@
+name: napari-multi-channel-surface
+display_name: Multi Channel Surface
+# use 'hidden' to remove plugin from napari hub search results
+visibility: public
+# see https://napari.org/stable/plugins/technical_references/manifest.html#fields for valid categories
+# categories: []
+contributions:
+  commands:
+    - id: napari-multi-channel-surface.get_reader
+      python_name: napari_multi_channel_surface._reader:napari_get_reader
+      title: Open data with Multi Channel Surface
+    - id: napari-multi-channel-surface.write_multiple
+      python_name: napari_multi_channel_surface._writer:write_multiple
+      title: Save multi-layer data with Multi Channel Surface
+    - id: napari-multi-channel-surface.write_single_surface
+      python_name: napari_multi_channel_surface._writer:write_single_surface
+      title: Save image data with Multi Channel Surface
+    - id: napari-multi-channel-surface.stanford_bunny
+      python_name: napari_multi_channel_surface._sample_data:stanford_bunny
+      title: Load sample data from Multi Channel Surface
+    - id: napari-multi-channel-surface.make_container_widget
+      python_name: napari_multi_channel_surface:SurfaceChannelChange
+      title: Make Surface Channel Change widget
+  readers:
+    - command: napari-multi-channel-surface.get_reader
+      accepts_directories: false
+      filename_patterns: [
+        '*.msh', '*.mdpa', '*.ply', '*.stl', '*.vtk', '*.vtu', '*.xdmf', '*.xmf', '*.h5m',
+        '*.inp', '*.avs', '*.xml', '*.e', '*.exo', '*.ex2', '*.hmf', '*.med', '*.bdf', '*.fem',
+        '*.nas', '*.vol', '*.vol.gz', '*.obj', '*.off', '*.post', '*.post.gz', '*.dato',
+        '*.dato.gz', '*.dat', '*.tec', '*.wkt']
+
+  writers:
+    - command: napari-multi-channel-surface.write_multiple
+      layer_types: ['surface*']
+      filename_extensions: []
+    - command: napari-multi-channel-surface.write_single_surface
+      layer_types: ['surface']
+      filename_extensions: [
+        '.ply', '.vtk', '.vtu', '.xdmf', '.xmf', '.h5m', '.avs', '.e', '.exo', '.ex2',
+        '.hmf', '.med', '.dat', '.tec']
+  sample_data:
+    - command: napari-multi-channel-surface.stanford_bunny
+      display_name: Bunny xyz
+      key: napari-multi-channel-surface.data.stanford_bunny
+  widgets:
+    - command: napari-multi-channel-surface.make_container_widget
+      display_name: Channel Select
