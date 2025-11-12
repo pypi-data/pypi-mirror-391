@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: earth_rover_mini_plus_sdk
+Version: 2.2.1
+Summary: API for EarthRover Mini. Allows interfacing and control over device through a simple interface.
+Project-URL: Homepage, https://github.com/SIGRobotics-UIUC/earth_rover_mini_plus_sdk
+Project-URL: Issues, https://github.com/SIGRobotics-UIUC/earth_rover_mini_plus_sdk/issues
+Author-email: Saketh Kantipudi <saketh3@illinois.edu>, Hasan Al Saeedi <halsae2@illinois.edu>, Aarsh Mittal <aarshm2@illinois.edu>, Somrishi Banerjee <sb91@illinois.edu>, Sairaj Shetye <sshetye2@illinois.edu>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+
+# earth_rover_mini_plus_sdk
+
+API for the Earth Rover Mini+. Uploaded to PyPi, installable using pip.
+
+## Installation
+
+Windows:
+```bash
+py -m pip install earth_rover_mini_plus_sdk
+```
+
+Unix/MacOS:
+```bash
+python3 -m pip install earth_rover_mini_plus_sdk
+```
+
+## Example Usage
+
+Below is an example of how to use the code.
+
+```python
+from earth_rover_mini_plus_sdk import EarthRoverMini_API
+
+async def main():
+    rover = EarthRoverMini_API("192.168.11.1", 8888)
+    await rover.connect()
+
+    await rover.safe_ping()
+    # await rover.ctrl_packet(60, 0)
+    await asyncio.sleep(2)
+    # await rover.ctrl_packet(0, 0)
+    await rover.move(3, 60, 360)
+    await asyncio.sleep(1)
+    await rover.imu_mag_read()
+
+    await rover.disconnect()
+```

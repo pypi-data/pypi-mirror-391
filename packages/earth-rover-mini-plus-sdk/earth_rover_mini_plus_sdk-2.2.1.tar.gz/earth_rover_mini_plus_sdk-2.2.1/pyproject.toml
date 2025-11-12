@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "earth_rover_mini_plus_sdk"
+version = "2.2.1"
+authors = [
+  { name="Saketh Kantipudi", email="saketh3@illinois.edu" },
+  { name="Hasan Al Saeedi", email="halsae2@illinois.edu" },
+  { name="Aarsh Mittal", email="aarshm2@illinois.edu" },
+  { name="Somrishi Banerjee", email="sb91@illinois.edu" },
+  { name="Sairaj Shetye", email="sshetye2@illinois.edu" },
+]
+description = "API for EarthRover Mini. Allows interfacing and control over device through a simple interface."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/SIGRobotics-UIUC/earth_rover_mini_plus_sdk"
+Issues = "https://github.com/SIGRobotics-UIUC/earth_rover_mini_plus_sdk/issues"
