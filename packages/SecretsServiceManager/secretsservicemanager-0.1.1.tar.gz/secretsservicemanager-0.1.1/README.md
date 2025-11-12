@@ -1,0 +1,73 @@
+# SecretsManager
+
+A Python package providing helper function to dynamically retrieve secrets & their values from cloud platforms like Azure or AWS.
+
+## Features
+
+- Connects to Azure Key Vault or AWS Secrets Manager client.
+- Retrieves the list of all the secrets & their respective values.
+- Handles authentication using Azure AD `DefaultAzureCredential` for Azure and `boto3` library for connecting to the AWS Session client.
+- Returns a dictionary, with key-value pairs of all the secrets & their valies.
+
+## Installation
+
+Install via PyPI once published:
+
+```bash
+pip install SecretsManager
+```
+
+# Usage
+
+## Retrieving the secrets from Azure/AWS
+
+```python
+from SecretsManager import get_secrets
+
+# Your connection info
+conn_point = "Azure" or "AWS
+azure_vault_url = "https://your-vault-url.vault.azure.net/"
+aws_secret_name = "your-aws-secret-name"
+aws_region = "your-aws-region-name"
+
+# call the function with the paramets
+result = get_secrets(conn_point, azure_vault_url, aws_secret_name, aws_region)
+print(result)
+
+# Example usage :
+key_value = result["key_name"]
+```
+
+# Prerequisites
+
+- For Azure:
+    - Azure environment or VM's Managed Identity configured for Azure authentication.
+    - Azure Key Vault set up in the same subscription in which the VM is created.
+    - Appropriate **IAM Role assignments** to be provided to the Key Vault, wherein VM's Managed Identity is to be given the `key-vault-secrets-user` role, so that it has the read access for the contents of the secrets.
+    - `azure-identity` Python package installed for `DefaultAzureCredential` support.
+    - give it some time (~2-3mins) to propagate these permissions.
+    - [[Follow this link for step-by-step configuration details](https://learn.microsoft.com/en-us/azure/key-vault/secrets/quick-create-python?tabs=azure-cli)]
+
+- For AWS:
+    - AWS environment or EC2 Instance(VM) configured for AWS authentication.
+    - Create an IAM Role having the permission for `SecretsManagerReadWrite`, that would provide proper access.
+    - Assign this **AWS IAM role** to the security of the EC2 Instance(VM), that would give the EC2 Instance the access to retrieve all the secrets.
+    - `boto3` Python package installed for AWS Session client connection support.
+    - [[Follow this link for step-by-step configuration details](https://docs.aws.amazon.com/secretsmanager/)]
+
+
+```bash
+pip install azure-identity azure-keyvault-secrets boto3
+```
+
+# License
+
+This project is licensed under the MIT License - see the [LICENSE] (LICENSE) file for details.
+
+# Contributing
+
+Feel free to open issues or submit pull requests to improve the package.
+
+# Author
+
+Antick Mazumder — antick.majumder@gmail.com
