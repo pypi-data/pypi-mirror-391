@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=72.1.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "SnakeAltPromoter"
+version = "1.0.1"
+description = "A Snakemake pipeline for alternative promoter analysis"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Yidan Sun", email = "syidan@wustl.edu" },
+]
+maintainers = [
+    { name = "Jared Lalmansingh", email = "jared.lalmansingh@wustl.edu" },
+]
+classifiers=[
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: POSIX",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "snakemake>=8.28.0",
+    "streamlit",
+    "pyarrow",
+    "pandas",
+]
+requires-python = ">=3.10"
+
+
+[project.scripts]
+Genomesetup = "snakealtpromoter.workflows.Genomesetup:main"
+Snakealtpromoter = "snakealtpromoter.workflows.Snakealtpromoter:main"
+sap = "snakealtpromoter.cli:main"
+sap-ui = "snakealtpromoter.ui.launch:main"
+
+
+[tool.setuptools]
+include-package-data = true
+packages = [
+    "snakealtpromoter",
+    "snakealtpromoter.rules",
+    "snakealtpromoter.rules.envs",
+    "snakealtpromoter.scripts",
+    "snakealtpromoter.ui",
+    "snakealtpromoter.workflows",
+]
+
+
+[tool.setuptools.package-data]
+snakealtpromoter = [
+    "data/**",
+    "docs/**",
+    "scripts/downstream_plots/**",
+]
+
+[project.urls]
+homepage = "https://github.com/YidanSunResearchLab/SnakeAltPromoter"
+repository = "https://github.com/YidanSunResearchLab/SnakeAltPromoter"
+issues = "https://github.com/YidanSunResearchLab/SnakeAltPromoter/issues"
