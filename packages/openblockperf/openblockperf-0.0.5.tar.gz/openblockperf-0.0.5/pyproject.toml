@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openblockperf"
+version = "0.0.5"
+description = "The OpenBlockperf client"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.1.8",
+    "httpx>=0.28.1",
+    "loguru>=0.7.3",
+    "psutil>=7.1.0",
+    "pydantic>=2.10.6",
+    "pydantic-settings>=2.8.0",
+    "textual>=6.1.0",
+    "typer>=0.15.2",
+]
+keywords = ["cardano", "cardano-foundation", "ops"]
+authors = [
+  {name = "Manuel Schmidt", email = "manuel.schmidt@cardanofoundation.org" },
+  {name = "Markus Gufler", email = "markus.gufler-ext@cardanofoundation.org" },
+]
+maintainers = [
+  {name = "Manuel Schmidt", email = "manuel.schmidt@cardanofoundation.org" },
+  {name = "Markus Gufler", email = "markus.gufler-ext@cardanofoundation.org" },
+]
+
+[project.scripts]
+blockperf = "blockperf.__main__:cli"
+
+[project.urls]
+"Homepage" = "https://github.com/cardano-foundation/openblockperf"
+"Bug Reports" = "https://github.com/cardano-foundation/openblockperf/issues"
+
+[dependency-groups]
+dev = [
+    "ipython>=9.5.0",
+    "mypy>=1.18.2",
+    "pudb>=2025.1",
+    "pytest>=8.4.2",
+    "textual-dev>=1.7.0",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+# Provide test pypi index configuration for use with uv publish --index testpypi
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.ruff]
+# Enable all rules by default, then selectively disable
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "PL"]
+ignore = ["E501"]  # Ignore line length violations
+# Assume Python 3.12
+target-version = "py312"
+
+# Exclude a variety of commonly ignored directories
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+]
+
+# Set the line length to 88 (match black)
+line-length = 80
+
+# Sort imports
+[tool.ruff.isort]
+known-first-party = ["app", "cli"]
+
+#[tool.ruff.lint]
+#extend-select = ["E", "W", "F", "B"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Docstring settings
+[tool.ruff.pydocstyle]
+convention = "google"  # Or "numpy", "pep257"

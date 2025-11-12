@@ -1,0 +1,55 @@
+Metadata-Version: 2.4
+Name: openblockperf
+Version: 0.0.5
+Summary: The OpenBlockperf client
+Author-email: Manuel Schmidt <manuel.schmidt@cardanofoundation.org>, Markus Gufler <markus.gufler-ext@cardanofoundation.org>
+Maintainer-email: Manuel Schmidt <manuel.schmidt@cardanofoundation.org>, Markus Gufler <markus.gufler-ext@cardanofoundation.org>
+Project-URL: Homepage, https://github.com/cardano-foundation/openblockperf
+Project-URL: Bug Reports, https://github.com/cardano-foundation/openblockperf/issues
+Keywords: cardano,cardano-foundation,ops
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENCE
+License-File: LICENSE
+Requires-Dist: click>=8.1.8
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: loguru>=0.7.3
+Requires-Dist: psutil>=7.1.0
+Requires-Dist: pydantic>=2.10.6
+Requires-Dist: pydantic-settings>=2.8.0
+Requires-Dist: textual>=6.1.0
+Requires-Dist: typer>=0.15.2
+Dynamic: license-file
+
+<!--<p align="center"></p> -->
+
+<p align="center"><strong>OpenBlockperf</strong> <em>- A cli tool to monitor and share network metrics from a cardano-node.</em></p>
+
+<p align="center">
+<a href="https://pypi.org/project/openblockperf/">
+    <img src="https://badge.fury.io/py/openblockperf.svg" alt="Package version">
+</a>
+</p>
+
+The OpenBlockperf Client is a cli tool that collects various data points from
+a local cardano node. If you dont know what a cardano-node is or dont run one
+yourself, this tool is probably not very usefull for you.
+
+---
+
+## Installation / Get started
+
+You will need a `cardano-node` and and the `cardano-tracer` up and running.
+Read up on the details here [in the developer portal](https://developers.cardano.org/docs/operate-a-stake-pool/node-operations/new-tracing-system/new-tracing-system).
+
+Install openblockperf client from pypi.
+
+
+```shell
+$ pip install openblockperf
+# Or 'uv pip install" if you prefer
+
+# Once installed you should have a 'blockperf' executable installed.
+$ blockperf version
+```
+
