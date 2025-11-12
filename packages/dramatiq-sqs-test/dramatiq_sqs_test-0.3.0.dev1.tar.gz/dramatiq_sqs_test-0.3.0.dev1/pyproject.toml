@@ -1,0 +1,28 @@
+[project]
+name = "dramatiq-sqs-test"
+version = "0.3.0.dev1"
+description = "An Amazon SQS broker for Dramatiq."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["boto3", "dramatiq"]
+
+[project.urls]
+Repository = "https://github.com/Bogdanp/dramatiq_sqs"
+
+[dependency-groups]
+dev = [
+    "flake8",
+    "flake8-quotes",
+    "isort",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "dramatiq_sqs"
+module-root = ""
