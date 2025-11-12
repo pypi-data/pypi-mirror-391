@@ -1,0 +1,8 @@
+<div style="color: red">{{ flash.alert }}</div>
+<div style="color: green">{{ flash.notice }}</div>
+
+{% call(form) form_with(url=url_for('create_session')) %}
+	{{ form.email_field('email_address', required=True, autofocus=True, autocomplete='username', placeholder='Enter your email address', value=params['email_address']) }}
+	{{ form.password_field('password', required=True, autofocus=True, autocomplete='current-password', placeholder='Enter your pasword', maxlength=72) }}
+	{{ form.submit('Sign in') }}
+{% endcall %}
