@@ -1,0 +1,19 @@
+[run]
+omit =
+    skgstat/tests/*
+    skgstat/plotting/*
+    docs/*
+    setup.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    def __str__
+    if self\.debug
+    if False:
+    if 0:
+    raise AssertionError
+    raise NotImplementedError
+    raise ModuleNotFoundError
+    if __name__ == .__main__.:
