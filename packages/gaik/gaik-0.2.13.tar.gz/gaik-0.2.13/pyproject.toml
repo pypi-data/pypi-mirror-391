@@ -1,0 +1,124 @@
+[project]
+name = "gaik"
+version = "0.2.13"
+description = "General AI Kit - Reusable AI/ML components for Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "GAIK Project" }]
+keywords = [
+    "ai",
+    "ml",
+    "langchain",
+    "openai",
+    "anthropic",
+    "google",
+    "structured-outputs",
+    "pydantic",
+    "schema",
+    "extraction",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    # Core runtime requirement shared across all installs
+    "pydantic>=2.12.4",
+]
+
+[project.optional-dependencies]
+# Data extraction with all LLM providers (OpenAI, Anthropic, Google, Azure)
+extract = [
+    # LangChain core plus every supported chat provider
+    "langchain-core>=1.0.3",
+    "langchain-openai>=1.0.2",
+    "langchain-anthropic>=1.0.1",
+    "langchain-google-genai>=3.0.1",
+]
+
+# Vision/PDF parsing with OpenAI or Azure OpenAI
+vision = [
+    # Required to call OpenAI or Azure OpenAI vision endpoints
+    "openai>=2.7",
+    # Local PDF/image utilities
+    "pdf2image>=1.17.0",
+    "pillow>=10.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+# All features
+all = [
+    "gaik[extract]",
+    "gaik[vision]",
+]
+
+# Development tooling for maintainers only
+dev = [
+    "ruff>=0.14.1",
+    "build>=1.0",
+    "twine>=4.0",
+    "pytest>=8.0",
+    "pytest-cov>=4.1",
+    "pytest-mock>=3.12",
+]
+
+[project.urls]
+Homepage = "https://gaik.ai/"
+Repository = "https://github.com/GAIK-project/toolkit-shared-components"
+Documentation = "https://github.com/GAIK-project/toolkit-shared-components/tree/main/gaik-py"
+Issues = "https://github.com/GAIK-project/toolkit-shared-components/issues"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gaik = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["scripts"]  # Exclude CI/CD scripts from linting
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=gaik",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+]
+
+[tool.coverage.run]
+source = ["src/gaik"]
+omit = ["*/tests/*", "*/scripts/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
