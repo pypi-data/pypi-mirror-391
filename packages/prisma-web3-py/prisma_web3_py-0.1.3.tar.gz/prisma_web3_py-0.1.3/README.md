@@ -1,0 +1,322 @@
+# Prisma Web3 Python Package
+
+Python/SQLAlchemy async implementation of Prisma Web3 database models with Repository pattern.
+
+## Features
+
+- ✨ **Async SQLAlchemy 2.0** - Modern async database operations
+- 🗄️ **Repository Pattern** - Clean, testable data access layer
+- 🔄 **Auto Configuration** - Loads DATABASE_URL from .env automatically
+- 🔗 **Same Schema as JS** - Works with the same PostgreSQL database as TypeScript/Prisma
+- 📦 **Easy Integration** - Can be imported into any Python project
+- 🎯 **Type Hints** - Full type annotation support
+- 🧪 **Testable** - Built for unit and integration testing
+
+## Quick Start
+
+### Installation
+
+```bash
+cd python
+pip install -e .
+```
+
+### Configuration
+
+Create a `.env` file:
+
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/prisma_web3
+```
+
+### Basic Usage
+
+```python
+import asyncio
+from prisma_web3_py import get_db
+from prisma_web3_py.repositories import TokenRepository, SignalRepository
+
+async def main():
+    token_repo = TokenRepository()
+    signal_repo = SignalRepository()
+
+    async with get_db() as session:
+        # Query tokens
+        tokens = await token_repo.get_verified_tokens(
+            session,
+            chain="ethereum",
+            limit=10
+        )
+
+        # Query signals
+        signals = await signal_repo.get_recent_signals(
+            session,
+            signal_type="buy",
+            hours=24
+        )
+
+        print(f"Found {len(tokens)} tokens and {len(signals)} signals")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Architecture
+
+```
+prisma_web3_py/
+├── __init__.py          # Package entry point, exports main functions
+├── config.py            # Configuration management (loads from .env)
+├── database.py          # Async database setup and session management
+├── base.py              # SQLAlchemy declarative base
+├── models/              # Database models (Token, Signal, etc.)
+│   ├── __init__.py
+│   ├── token.py
+│   ├── signal.py
+│   ├── pre_signal.py
+│   └── smart_wallet.py
+└── repositories/        # Repository pattern implementations
+    ├── __init__.py
+    ├── base_repository.py
+    ├── token_repository.py
+    └── signal_repository.py
+```
+
+## Available Models
+
+All **8 models** match the TypeScript/Prisma package:
+
+- **Token** - Cryptocurrency token information and metadata
+- **Signal** - Trading signals with occurrence tracking
+- **PreSignal** - Pre-signals for token analysis
+- **TokenMetrics** - Market metrics and statistics
+- **TokenAnalysisReport** - AI-generated analysis reports
+- **TokenPriceMonitor** - Price monitoring tasks
+- **TokenPriceHistory** - Historical price data points
+- **Groups** - Telegram group management
+
+## Repositories
+
+### TokenRepository
+
+```python
+token_repo = TokenRepository()
+
+# Get token by address
+token = await token_repo.get_by_address(session, "ethereum", "0x...")
+
+# Upsert token
+token_id = await token_repo.upsert_token(session, token_data)
+
+# Get verified tokens
+tokens = await token_repo.get_verified_tokens(session, chain="ethereum")
+
+# Search tokens
+results = await token_repo.search_tokens(session, "ETH")
+
+# Get top scored tokens
+top = await token_repo.get_top_scored_tokens(session, min_score=50)
+
+# Update token score
+success = await token_repo.update_token_score(
+    session, "ethereum", "0x...", score=75.5
+)
+```
+
+### SignalRepository
+
+```python
+signal_repo = SignalRepository()
+
+# Get recent signals
+signals = await signal_repo.get_recent_signals(
+    session, signal_type="buy", hours=24
+)
+
+# Upsert signal
+signal = await signal_repo.upsert_signal(
+    session, "ethereum", "0x...", "dexscreener", "buy"
+)
+
+# Get signals for token
+signals = await signal_repo.get_signal_by_token(
+    session, "ethereum", "0x..."
+)
+
+# Get trending tokens
+trending = await signal_repo.get_trending_tokens_by_signals(
+    session, hours=24, limit=20
+)
+
+# Get signal counts by type
+counts = await signal_repo.get_signal_counts_by_type(session, hours=24)
+```
+
+## Integration Examples
+
+### FastAPI
+
+```python
+from fastapi import FastAPI, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from prisma_web3_py import get_db, init_db
+from prisma_web3_py.repositories import TokenRepository
+
+app = FastAPI()
+
+@app.on_event("startup")
+async def startup():
+    await init_db()
+
+@app.get("/tokens/{chain}")
+async def get_tokens(
+    chain: str,
+    session: AsyncSession = Depends(get_db)
+):
+    token_repo = TokenRepository()
+    tokens = await token_repo.get_verified_tokens(session, chain=chain)
+    return [token.to_dict() for token in tokens]
+```
+
+### Standalone Script
+
+```python
+import asyncio
+from prisma_web3_py import get_db
+from prisma_web3_py.repositories import TokenRepository
+
+async def process_tokens():
+    token_repo = TokenRepository()
+
+    async with get_db() as session:
+        tokens = await token_repo.get_all(session, limit=100)
+
+        for token in tokens:
+            print(f"Processing {token.symbol}...")
+            # Your logic here
+
+asyncio.run(process_tokens())
+```
+
+### Background Tasks (Celery)
+
+```python
+from celery import Celery
+from prisma_web3_py import AsyncSessionLocal
+from prisma_web3_py.repositories import TokenRepository
+import asyncio
+
+celery_app = Celery('tasks', broker='redis://localhost:6379')
+
+@celery_app.task
+def update_scores():
+    asyncio.run(async_update_scores())
+
+async def async_update_scores():
+    token_repo = TokenRepository()
+    async with AsyncSessionLocal() as session:
+        # Your async logic here
+        await session.commit()
+```
+
+## Transaction Management
+
+The package provides automatic transaction management:
+
+```python
+async with get_db() as session:
+    try:
+        # Multiple operations
+        await token_repo.upsert_token(session, data1)
+        await signal_repo.upsert_signal(session, data2)
+        # Auto-commits on success
+    except Exception:
+        # Auto-rollback on error
+        raise
+```
+
+## Comparison with JS/TypeScript
+
+| Feature | TypeScript (Prisma) | Python (SQLAlchemy) |
+|---------|---------------------|---------------------|
+| **Connection** | `new PrismaClient()` | `get_db()` context manager |
+| **Query** | `prisma.token.findMany()` | `token_repo.get_all(session)` |
+| **Upsert** | `prisma.token.upsert()` | `token_repo.upsert_token(session, data)` |
+| **Relations** | `include: { signals: true }` | `selectinload(Token.signals)` |
+| **Transactions** | `prisma.$transaction()` | `async with get_db()` |
+| **Type Safety** | TypeScript types | Python type hints |
+
+## Testing
+
+```python
+import pytest
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker
+from prisma_web3_py.base import Base
+from prisma_web3_py.repositories import TokenRepository
+
+@pytest.fixture
+async def test_db():
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    async_session = sessionmaker(engine, class_=AsyncSession)
+    async with async_session() as session:
+        yield session
+    await engine.dispose()
+
+@pytest.mark.asyncio
+async def test_token_operations(test_db):
+    token_repo = TokenRepository()
+    token = await token_repo.create(
+        test_db,
+        chain="ethereum",
+        token_address="0x123",
+        symbol="TEST"
+    )
+    assert token.symbol == "TEST"
+```
+
+## Documentation
+
+- **[Integration Guide](INTEGRATION_GUIDE.md)** - How to use in your projects
+- **[Migration Guide](MIGRATION_GUIDE.md)** - Migrate from TypeScript/Prisma
+- **[Examples](examples/)** - Code examples and patterns
+
+## Requirements
+
+- Python 3.8+
+- PostgreSQL 12+
+- SQLAlchemy 2.0+
+- asyncpg (PostgreSQL async driver)
+
+## Development
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Install in development mode
+pip install -e .
+
+# Run examples
+python examples/async_usage.py
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection URL | Required |
+
+The package automatically converts `postgresql://` to `postgresql+asyncpg://` for async support.
+
+## License
+
+MIT
+
+## Related Projects
+
+- **TypeScript/Prisma Package**: `@smallcat/prisma-web3` (npm)
+- **Database Schema**: Shared PostgreSQL schema
