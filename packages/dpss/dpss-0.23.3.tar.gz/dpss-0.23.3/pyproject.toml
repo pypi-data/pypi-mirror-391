@@ -1,0 +1,16 @@
+[project]
+name = "dpss"
+description = "Dynamic-programming subset sum solver with Python bindings"
+readme = { file = "readme.md", content-type = "text/markdown" }
+dynamic = ["version"]
+dependencies = [
+    "cffi"
+]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+features = ["python"]
+bindings = "pyo3"
