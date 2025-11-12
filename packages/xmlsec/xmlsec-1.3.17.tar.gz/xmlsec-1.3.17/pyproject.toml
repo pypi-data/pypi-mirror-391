@@ -1,0 +1,131 @@
+[build-system]
+requires = ["setuptools==80.9.0", "wheel", "setuptools_scm[toml]>=3.4", "pkgconfig>=1.5.1", "lxml==6.0.2"]
+
+[tool.mypy]
+files = ['src']
+ignore_missing_imports = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+disallow_any_unimported = true
+strict_optional = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_no_return = true
+no_implicit_reexport = true
+show_error_codes = true
+
+[tool.ruff]
+# Maximum line length, same as your original Black + Flake8 config
+line-length = 130
+
+# Target Python version (used for autofixes and style rules)
+target-version = "py39"
+
+# Directories and files to exclude from linting and formatting
+exclude = [
+  ".venv*",         # virtual environments
+  ".git",           # git directory
+  "build",          # build output
+  "dist",           # distribution packages
+  "libs",           # vendor libraries
+  ".eggs",          # setuptools egg folders
+  ".direnv*",       # direnv environments
+  "*_pb2.pyi"       # protobuf-generated type stubs
+]
+
+[tool.ruff.lint]
+# Enable rule categories:
+# E = pycodestyle (style issues, like indentation, whitespace, etc.)
+# F = pyflakes (unused imports, undefined names)
+# I = isort (import sorting)
+# B = flake8-bugbear (common bugs & anti-patterns)
+# UP = pyupgrade (auto-upgrade syntax for newer Python)
+# SIM = flake8-simplify (simplifiable code patterns)
+# RUF = Ruff-native rules (extra, performance-optimized checks)
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+# TODO: Add more rule categories as needed, e.g.:
+# D = pydocstyle (docstring format/style issues)
+
+[tool.ruff.lint.per-file-ignores]
+"*.pyi" = [
+  # Ignore formatting and import errors in stub files
+  "E301", # expected 1 blank line, found 0
+  "E302", # expected 2 blank lines, found 1
+  "E305", # expected 2 blank lines after class or function
+  "E501", # line too long
+  "E701", # multiple statements on one line
+  "F401", # unused import
+  "F811", # redefinition of unused name
+  "F822"  # undefined name in `__all__`
+]
+"doc/source/conf.py" = [
+  "D1"    # missing docstring in public module/class/function
+]
+"doc/source/examples/*.py" = [
+  "D1",   # allow missing docstrings in examples
+  "E501"  # allow long lines in code examples
+]
+"tests/*.py" = [
+  "D1"    # allow missing docstrings in test files
+]
+
+[tool.ruff.format]
+# Always use single quotes (e.g., 'text' instead of "text")
+quote-style = "single"
+
+# Format code with or without trailing commas
+# true = prefer trailing commas where valid
+skip-magic-trailing-comma = false
+
+# Enforce Unix-style line endings (LF)
+line-ending = "lf"
+
+[tool.cibuildwheel]
+build = [
+    "cp39-*",
+    "cp310-*",
+    "cp311-*",
+    "cp312-*",
+    "cp313-*",
+    "cp314-*"
+]
+build-verbosity = 1
+build-frontend = "build"
+skip = [
+    "pp*",  # Skips PyPy builds (pp38-*, pp39-*, etc.)
+    "*musllinux_riscv64"  # maturin and ruff currently don’t support the musl + riscv64 target
+]
+test-command = "pytest -v --color=yes {package}/tests"
+before-test = "pip install -r requirements-test.txt"
+test-skip = "*-macosx_arm64"
+
+[tool.cibuildwheel.environment]
+PYXMLSEC_STATIC_DEPS = "true"
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64", "aarch64", "riscv64"]
+environment-pass = [
+    "PYXMLSEC_LIBXML2_VERSION",
+    "PYXMLSEC_LIBXSLT_VERSION",
+    "PYXMLSEC_STATIC_DEPS",
+    "GH_TOKEN"
+]
+
+[tool.cibuildwheel.macos]
+archs = ["x86_64", "arm64"]
+before-all = "brew install perl"
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]
+
+[[tool.cibuildwheel.overrides]]
+select = "*-manylinux*"
+before-all = "yum install -y perl-core"

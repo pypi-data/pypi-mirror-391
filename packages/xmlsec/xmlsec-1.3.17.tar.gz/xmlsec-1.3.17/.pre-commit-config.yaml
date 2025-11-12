@@ -1,0 +1,42 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.14.4
+  hooks:
+    - id: ruff
+      args: ["--fix"]
+      types: [python]
+    - id: ruff-format
+      types: [python]
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: no-commit-to-branch
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-yaml
+    - id: check-added-large-files
+    - id: check-ast
+    - id: check-merge-conflict
+    - id: check-json
+    - id: detect-private-key
+      exclude: ^.*/rsakey.pem$
+    - id: mixed-line-ending
+    - id: pretty-format-json
+      args: [--autofix]
+
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.18.2
+  hooks:
+    - id: mypy
+      exclude: (setup.py|tests|build_support/.*.py|doc/.*)
+      types: []
+      files: ^.*.pyi?$
+      additional_dependencies: [lxml-stubs, types-docutils]
+
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.10.0
+  hooks:
+    - id: rst-backticks
