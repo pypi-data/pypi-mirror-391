@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tzip"
+# Version is derived from Git tags or env; see [tool.setuptools_scm]
+dynamic = ["version"]
+description = "Textual interface for archive files"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [ {name = "FakeTruth"} ]
+requires-python = ">=3.8"
+
+dependencies = ["textual", "py7zr", "rarfile"]
+
+keywords = ["zip", "7z", "rar", "tar", "tui", "textual"]
+
+classifiers = [
+	"License :: OSI Approved :: MIT License",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/FakeTruth/tzip"
+Source = "https://github.com/FakeTruth/tzip"
+BugTracker = "https://github.com/FakeTruth/tzip/issues"
+
+[project.scripts]
+tzip = "tzip.tzip:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=6.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"tzip" = ["*.tcss"]
+
+[tool.setuptools_scm]
+# Derive version from Git; on non-tag commits you'll get 1.0.0.devN+g<sha> style versions.
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+# When Git metadata isn't available (zip, shallow clone without tags), use a safe fallback:
+fallback_version = "0.0.0"
+# If you want a version file inside your package, uncomment the next line
+# and ensure the path exists (or will be created during build).
+# write_to = "tzip/_version.py"
