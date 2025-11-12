@@ -1,0 +1,154 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sqlmap-ai"
+version = "2.0.5"
+description = "AI-powered SQL injection testing tool with multiple AI providers"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Atilla", email = "attilla@tuta.io"}
+]
+maintainers = [
+    {name = "Atilla", email = "attilla@tuta.io"}
+]
+keywords = ["sqlmap", "sql-injection", "security", "ai", "penetration-testing", "cybersecurity"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "groq>=0.4.0",
+    "requests>=2.31.0",
+    "openai>=1.3.0",
+    "anthropic>=0.8.0",
+    "pyyaml>=6.0.1",
+    "rich>=13.0.0",
+    "jinja2>=3.1.2",
+    "cryptography>=3.4.0",
+    "colorama>=0.4.6",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+local-llm = [
+    "transformers>=4.35.0",
+    "torch>=2.1.0",
+]
+reporting = [
+    "plotly>=5.0.0",
+    "pandas>=2.0.0",
+]
+all = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+    "transformers>=4.35.0",
+    "torch>=2.1.0",
+    "plotly>=5.0.0",
+    "pandas>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/atiilla/sqlmap-ai"
+Documentation = "https://github.com/atiilla/sqlmap-ai#readme"
+Repository = "https://github.com/atiilla/sqlmap-ai.git"
+Issues = "https://github.com/atiilla/sqlmap-ai/issues"
+
+[project.scripts]
+sqlmap-ai = "sqlmap_ai.cli:main"
+sqlmapai = "sqlmap_ai.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sqlmap_ai*", "utils*"]
+exclude = ["tests*", "venv*", "*.egg-info*"]
+
+[tool.setuptools.package-data]
+"sqlmap_ai" = [
+    "templates/*.html",
+    "templates/*.css",
+    "templates/*.js",
+    "*.yaml",
+    "*.yml",
+    "*.json",
+]
+
+
+
+[tool.setuptools.dynamic]
+version = {attr = "sqlmap_ai.__version__"}
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '/(\.eggs|\.git|\.hg|\.mypy_cache|\.tox|\.venv|build|dist)/'
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--tb=short",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m not slow')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "groq.*",
+    "openai.*",
+    "anthropic.*",
+    "transformers.*",
+    "torch.*",
+    "plotly.*",
+    "pandas.*",
+]
+ignore_missing_imports = true
