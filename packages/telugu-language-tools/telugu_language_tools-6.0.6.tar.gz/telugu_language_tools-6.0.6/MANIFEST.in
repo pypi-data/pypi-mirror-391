@@ -1,0 +1,26 @@
+# Documentation
+include README.md
+include CHANGELOG_v5.0.md
+include LICENSE
+include PYPI_UPLOAD_GUIDE.md
+include CLASSIFIER_FIXED.md
+include FINAL_CLEAN_STATE.md
+include FINAL_PYPI_SUMMARY.md
+include V5_SUMMARY.md
+include CLEANUP_LOG.txt
+
+# Package files
+recursive-include telugu_engine *.py
+
+# Data files (if any exist)
+recursive-include telugu_engine *.json
+recursive-include telugu_engine *.txt
+recursive-include telugu_engine *.dat
+recursive-include telugu_engine *.csv
+
+# Exclude cache and compiled files
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.so
+recursive-exclude * .DS_Store
+
