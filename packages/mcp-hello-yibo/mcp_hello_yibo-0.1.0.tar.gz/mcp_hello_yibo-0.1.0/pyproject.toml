@@ -1,0 +1,18 @@
+[project]
+name = "mcp-hello-yibo"
+version = "0.1.0"
+description = "Hello Yibo MCP Server"
+authors = [
+    {name = "kingn", email = "your@email.com"}
+]
+dependencies = []
+
+[project.scripts]
+mcp-hello-yibo = "mcp_hello_yibo:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_hello_yibo"]
