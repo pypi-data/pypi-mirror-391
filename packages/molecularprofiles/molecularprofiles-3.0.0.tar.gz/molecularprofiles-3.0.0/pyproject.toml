@@ -1,0 +1,162 @@
+[build-system]
+requires = ["setuptools>=65", "setuptools_scm[toml]>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "molecularprofiles"
+authors = [{name = "Pere Munar Adrover", email = "pere.munar@uab.cat"},
+           {name = "Markus Gaug", email = "markus.gaug@uab.cat"},
+           {name = "Scott Griffiths", email = "sgriffiths@ifae.es"},
+           {name = "Georgios Voutsinas", email = "georgios.voutsinas@unige.ch"},
+           {name = "Mykhailo Dalchenko", email = "mykhailo.dalchenko@unige.ch"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+description = "Meteorological data analysis suite"
+dynamic = ["version"]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+]
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "astropy",
+    "pygrib",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pylint >=2.15",
+    "black >=22.5",
+    "coverage-badge",
+]
+
+doc = [
+    "sphinx",
+    "numpydoc",
+    "pydata-sphinx-theme",
+    "myst-parser",
+    "sphinx-paramlinks",
+    "sphinx-argparse",
+    "nbsphinx",
+    "sphinx-design",
+    "linkify-it-py",
+    "ipykernel",
+]
+
+dev = [
+    "pre-commit",
+    "setuptools_scm[toml]"
+]
+
+all = [
+    # self-reference with all extras to simplify
+    "molecularprofiles[test,doc,dev]",
+]
+
+[project.urls]
+Home = "https://gitlab.cta-observatory.org/cta-array-elements/ccf/mdps"
+Doc = "http://cta-array-elements.gitlab-pages.cta-observatory.org/ccf/MDPs/"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]
+exclude = ["molecularprofiles._dev_version"]
+
+[tool.setuptools_scm]
+write_to = "src/molecularprofiles/_version.py"
+
+[tool.setuptools.package-data]
+"molecularprofiles.utils" = ["*.conf"]
+molecularprofiles = ["tests/test_data/**/*.ecsv", "tests/test_data/**/*.grib",
+                     "utils/absorbing_molecules/nitrogen_dioxide_absorption_cross_section_294K.ecsv",
+                     "utils/absorbing_molecules/ozone_cross_section_293K.ecsv"]
+
+[tool.coverage.run]
+relative_files = true
+omit = [
+    "src/molecularprofiles/_version.py",
+    "src/molecularprofiles/_dev_version/*"
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+
+[tool.ruff.lint]
+extend-select = [
+    "I", # isort
+    "N", # pep8 naming
+    "D", # pydocstyle
+    "NPY", # numpy
+    "PT", # pytest
+    "UP", # pyupgrade
+    "COM", # flake8-commas
+    "ISC", # implicit string concat rules
+    "ICN", # import name conventions
+    "G", # logging
+]
+ignore = [
+    "COM812", # incompatible with ruff format
+    "ISC001", # incompatible with ruff format
+]
+
+[tool.ruff.lint.pep8-naming]
+extend-ignore-names = ["i", "j", "k", "x", "_", "P", "T", "RH", "CO2", "R", "H1", "H2"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+# no documentation linting for test files
+"**/tests/**" = ["D"]
+"**/tests_*.py" = ["D"]
+# no documentation linting for sphinx config
+"doc/source/conf.py" = ["D"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+
+[tool.pytest.ini_options]
+minversion = "7"
+testpaths = ["src"]
+log_cli_level = "INFO"
+xfail_strict = true
+# print summary of failed tests, force errors if settings are misspelled
+addopts = ["-ra", "--strict-config", "--strict-markers"]
+filterwarnings = [
+    "error",
+    # this warning should not be turned into an error, will happen e.g. when
+    # using wheels compiled against an older version of numpy then is used at runtime
+    # left as warning as the other direction (compiled vs. newer, using older numpy) is
+    # problematic
+    "default:numpy.ndarray size changed:RuntimeWarning",
+    "default:pkg_resources is deprecated as an API:DeprecationWarning",
+    "default:Deprecated call to `pkg_resources:DeprecationWarning",
+    "default:Units from inserted quantities will be ignored.:UserWarning",
+]
+
+
+[tool.repo-review]
+select = ["PY", "PP", "PC"]
+ignore = [
+    "PY007", # we do not use tox for now
+    "PC140", # mypy is not used
+    "PC170", # pygrep is not used
+    "PC180", # prettier is not used
+    "PC111", # blacken-docs is not used
+    "PC901", # no CI setup currently for updating pre-commit hooks
+]
+
+# fits files are sometimes mistaken for text files as they start with an ASCII header
+# we need to ignore them here
+[tool.codespell]
+skip = "*.fits,*.fits.fz"
