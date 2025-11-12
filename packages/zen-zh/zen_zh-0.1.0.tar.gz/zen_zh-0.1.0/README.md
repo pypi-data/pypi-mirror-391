@@ -1,0 +1,71 @@
+# zen_zh
+
+The Zen of Python 中文版（彩色输出）
+
+本项目提供 Python Zen of Python 的中文翻译，支持在 `import` 时自动打印禅意，同时提供函数接口可重复调用。  
+中文翻译已发布到公共领域（CC0 1.0），可自由使用、修改、分发。
+
+---
+
+## 安装
+
+使用 pip 安装（本地开发或测试版）：
+
+```bash
+pip install -e .
+pip install zen_zh
+```
+## 使用方法
+
+### 1. 自动打印
+
+```
+import zen_zh
+```
+
+导入后会自动打印中文禅意，彩色显示。
+
+### 2. 调用函数再次打印
+
+```
+import zen_zh
+
+# 调用顶层函数再次打印
+zen_zh.print_zen()
+```
+
+### 3. 获取单行禅意
+
+```
+from zen_zh import zen_lines
+
+line = zen_lines(1)  # 获取第一条禅意
+print(line)
+```
+
+
+
+## 目录结构
+
+```
+zen_zh/
+├── src/zen_zh
+│   ├── __init__.py
+│   ├── __main__.py
+│	└── data.py
+├── LICENSE
+├── README.md
+└── pyproject.toml
+
+```
+
+------
+
+## 许可证
+
+The Zen of Python (Original English Text) is in the public domain.
+ Original author: Tim Peters.
+ Translate author: hygroupseries.
+
+中文翻译也发布到公共领域（CC0 1.0 Universal）。
+ 可自由使用、修改、分发，包括商业用途，无需许可。

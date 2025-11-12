@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling>=1.21"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zen_zh"
+version = "0.1.0"
+description = "The Zen of Python 中文版，彩色输出"
+dependencies = ["colorama>=0.4"] 
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text="CC0 1.0 Universal" }
+license-files = ["LICENSE"]
+authors = [
+  { name = "hygroupseries", email = "gsws_2020@qq.com" }
+]
+keywords = ["python", "zen", "aphorisms", "translation", "chinese"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/hygroupseries/zen_zh"
+Repository = "https://github.com/hygroupseries/zen_zh"
+Issues = "https://github.com/hygroupseries/zen_zh/issues"
+
+[project.scripts]
+zen_zh = "zen_zh:print_zen"
+
+
