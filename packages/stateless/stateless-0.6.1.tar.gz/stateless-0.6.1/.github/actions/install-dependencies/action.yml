@@ -1,0 +1,37 @@
+name: "Install stateless dependencies"
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.10"
+    required: false
+    type: string
+  poetry-version:
+    description: "Poetry version to use"
+    required: false
+    default: "1.7.1"
+    type: string
+  just-version:
+    description: "Just version to use"
+    default: "1.16.0"
+    required: false
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "0.9.6"
+        enable-cache: true
+    - name: install the project
+      shell: bash
+      run: uv sync --locked --all-extras --dev
+    - name: install just
+      uses: extractions/setup-just@v1
+      with:
+        just-version: ${{ inputs.just-version }}

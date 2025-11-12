@@ -1,0 +1,28 @@
+name: test
+description: run tests
+inputs:
+  python-version:
+    description: version of python to use
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        python-version: ${{ inputs.python-version}}
+    - name: run tests
+      shell: bash
+      run: uv run just test
+    - name: generate report
+      if: failure()
+      shell: bash
+      run: uv run coverage html
+    - name: upload report
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: py-${{ inputs.python-version }}-${{ github.sha }}-coverage-report
+        path: htmlcov/
