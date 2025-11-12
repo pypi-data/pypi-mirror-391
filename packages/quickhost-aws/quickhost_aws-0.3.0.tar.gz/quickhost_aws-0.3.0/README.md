@@ -1,0 +1,41 @@
+# quickhost-aws
+
+The AWS plugin for [quickhost](https://pypi.org/project/quickhost/)
+
+Test coverage is 79%
+
+## Install
+
+[pipx](https://github.com/pypa/pipx) is the recommended way to install quickhost and its plugins.
+
+```
+pipx install quickhost
+pipx inject quickhost quickhost-aws
+```
+
+### Usage
+
+```
+# set up aws credentials and essential resources in aws
+# all resources will be created in the region specified by your chosen profile
+quickhost -vvv aws init --admin-profile define-admin
+
+# you have nothing running yet
+quickhost -vvv aws list-all
+
+# start a linux host
+# port 22 is open to the public internet by default
+quickhost -vvv aws make my_app
+
+# see that your host is running
+quickhost -vvv aws list-all
+
+# permanently get rid of what you made above
+quickhost -vvv aws destroy my_app
+
+# permanently get rid of aws resources made by quickhost including any apps still running
+# this will also destroy any apps currently running
+quickhost -vvv aws plugin-destroy
+
+```
+
