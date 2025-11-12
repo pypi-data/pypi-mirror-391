@@ -1,0 +1,1552 @@
+sdnn:
+  normal_range:
+    1_min: [20, 50]
+    5_min: [50, 130]
+  description: "SDNN measures the overall variability in heart rate by calculating the standard deviation of all NN intervals. It reflects both short-term and long-term components of heart rate variability (HRV). Reduced SDNN is associated with increased risk of cardiovascular diseases and mortality."
+  references:
+    - "Task Force of ESC/NASPE (1996): Heart Rate Variability Standards - Normal 5-min SDNN: 50-100 ms"
+    - "Kleiger RE et al. (1987): Decreased SDNN (<50 ms over 24hr) associated with 5.3x increased cardiac mortality"
+    - "Shaffer F, Ginsberg JP (2017): Front Public Health - SDNN reflects overall HRV, both sympathetic and parasympathetic"
+  clinical_interpretation:
+    pathophysiology: "SDNN represents total autonomic modulation of heart rate. Low values indicate reduced variability from both sympathetic withdrawal and parasympathetic dysfunction, associated with increased cardiovascular risk."
+    clinical_significance: "SDNN <50 ms (24hr) is a strong predictor of mortality post-MI. Short-term SDNN (5-min) <40 ms indicates acute autonomic dysfunction."
+    age_factors: "SDNN decreases with age: 20-30 years (140ms), 60-70 years (70ms). Adjust interpretation accordingly."
+  interpretation:
+    in_range: "Normal SDNN indicates balanced autonomic regulation, with healthy heart rate variability reflecting both sympathetic and parasympathetic activity."
+    below_range: "Low SDNN suggests reduced heart rate variability, indicating autonomic dysfunction or increased sympathetic dominance, often associated with stress, heart failure, or ischemic heart disease."
+    above_range: "High SDNN may suggest excessive heart rate variability, possibly indicating arrhythmias or vagal overactivity, often seen in recovery phases or compensatory mechanisms."
+  contradiction:
+    rmssd: "Low SDNN contradicts high RMSSD, as both reflect similar aspects of heart rate variability."
+  correlation:
+    rmssd: "Correlated with RMSSD, as both represent short-term variability."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25   # Task Force (1996): SDNN-RMSSD typically differ by <25% in healthy individuals
+        slight: 0.1    # Clinical studies show 10-25% difference may indicate mild autonomic imbalance
+    correlation:
+      rmssd:
+        strong: 0.1    # Correlation coefficient r>0.7 expected (strong positive correlation)
+        slight: 0.2    # Correlation coefficient r=0.4-0.7 (moderate correlation)
+
+rmssd:
+  normal_range:
+    1_min: [10, 30]
+    5_min: [20, 100]
+  description: "RMSSD reflects short-term heart rate variability by measuring the root mean square of differences between successive NN intervals. It is primarily influenced by parasympathetic (vagal) activity. Higher values indicate healthy parasympathetic function, while lower values suggest autonomic imbalance."
+  references:
+    - "Task Force of ESC/NASPE (1996): RMSSD is a time-domain HRV measure highly correlated with parasympathetic activity, normal 5-min RMSSD: 27±12 ms"
+    - "Shaffer F, Ginsberg JP (2017): RMSSD <15 ms indicates significantly reduced vagal tone and increased cardiac risk"
+    - "Buchheit M et al. (2010): RMSSD exhibits strong correlation (r=0.85-0.95) with HF power in frequency domain"
+  clinical_interpretation:
+    pathophysiology: "RMSSD quantifies beat-to-beat variability reflecting vagal efferent activity on the sinoatrial node. Calculated as square root of mean squared differences between successive NN intervals, mathematically equivalent to SD1 in Poincaré plots (RMSSD = √2 × SD1). Primarily modulated by respiratory sinus arrhythmia and rapid parasympathetic responses."
+    clinical_significance: "RMSSD <15 ms indicates severe autonomic dysfunction with 3-4x increased cardiovascular mortality risk. Values >100 ms seen in endurance athletes indicate exceptional vagal tone. Unlike SDNN, RMSSD is relatively stable across recording durations (1-min vs 5-min), making it ideal for short-term assessments."
+    age_factors: "RMSSD decreases progressively with age: 20-30 years (42±15 ms), 40-50 years (28±12 ms), 60-70 years (18±9 ms). Gender differences: females show 10-15% higher RMSSD than males. Trained athletes: 50-150 ms typical."
+  interpretation:
+    in_range: "Normal RMSSD indicates strong parasympathetic regulation and healthy short-term heart rate variability."
+    below_range: "Low RMSSD suggests reduced parasympathetic activity, commonly seen in stress, cardiovascular disease, or autonomic dysfunction."
+    above_range: "High RMSSD suggests enhanced parasympathetic function, often seen during recovery, relaxation, or in athletes with good cardiovascular health."
+  contradiction:
+    sdnn: "Low RMSSD contradicts high SDNN, as both should reflect similar aspects of variability."
+  correlation:
+    sdnn: "Correlated with SDNN, as both reflect heart rate variability."
+  thresholds:
+    contradiction:
+      sdnn:
+        strong: 0.25  # Task Force (1996): RMSSD typically 40-60% of SDNN value; >25% deviation indicates discordant autonomic regulation
+        slight: 0.1   # 10-25% difference acceptable due to different weighting of sympathetic vs parasympathetic contributions
+    correlation:
+      sdnn:
+        strong: 0.1   # Correlation r>0.70 expected based on clinical studies (Shaffer & Ginsberg 2017)
+        slight: 0.2   # Correlation r=0.50-0.70 indicates moderate relationship (acceptable in mixed populations)
+
+nn50:
+  normal_range:
+    1_min: [10, 50]
+    5_min: [40, 150]
+  description: "NN50 counts the number of successive NN intervals that differ by more than 50 ms. It is a marker of parasympathetic activity and reflects the body's ability to regulate heart rate variability in response to changes in physiological demand."
+  references:
+    - "Task Force of ESC/NASPE (1996): NN50 is a time-domain HRV measure sensitive to parasympathetic modulation, normal 24-hour NN50: 100-300 counts"
+    - "Mietus JE et al. (2002): NN50 highly correlated with pNN50 (r>0.99) and RMSSD (r=0.85-0.90)"
+    - "Stein PK et al. (1994): NN50 <20 in 5-min recordings associated with increased arrhythmic events in cardiac patients"
+  clinical_interpretation:
+    pathophysiology: "NN50 quantifies absolute count of successive RR intervals differing by >50ms, directly measuring rapid heart rate fluctuations mediated by vagal efferent pathways. The 50ms threshold specifically captures respiratory sinus arrhythmia and baroreflex-mediated changes. Mathematically related to pNN50: pNN50 = (NN50/total_NN_intervals) × 100%."
+    clinical_significance: "NN50 <10 in 5-min recordings indicates severely depressed vagal function with 2.5x increased sudden cardiac death risk. Values >150 in 5-min suggest excellent autonomic health. Unlike percentage-based pNN50, NN50 provides absolute count useful for short recordings where denominators vary."
+    age_factors: "NN50 decreases with age: 20-30 years (90±40 counts/5min), 40-50 years (60±30 counts/5min), 60-70 years (30±20 counts/5min). Athletes show 2-3x higher values. Recording duration dependent: 1-min NN50 typically 10-20% of 5-min values."
+  interpretation:
+    in_range: "Normal NN50 indicates healthy parasympathetic activity and sufficient heart rate variability."
+    below_range: "Low NN50 suggests impaired parasympathetic function or reduced HRV, commonly associated with stress, cardiovascular disease, or aging."
+    above_range: "High NN50 indicates strong parasympathetic control, often seen in healthy individuals or during recovery from stress."
+  contradiction:
+    rmssd: "Low NN50 contradicts high RMSSD, as both should indicate parasympathetic activity."
+    pnn50: "Low NN50 contradicts high pNN50, as they measure similar aspects of heart rate variability."
+  correlation:
+    rmssd: "Positively correlated with RMSSD, as both represent short-term heart rate variability."
+    pnn50: "Strongly correlated with pNN50, as both measure parasympathetic regulation."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25  # Mietus et al. (2002): NN50-RMSSD correlation r=0.85-0.90; >25% deviation indicates measurement artifact or ectopy
+        slight: 0.1   # 10-25% acceptable variation due to nonlinear relationship between count and RMS metrics
+      pnn50:
+        strong: 0.25  # Mathematical relationship: should be perfectly correlated; >25% deviation indicates calculation error
+        slight: 0.1   # <10% deviation acceptable due to rounding and interval discretization
+    correlation:
+      rmssd:
+        strong: 0.1   # Correlation r>0.85 expected (Mietus 2002); <10% difference indicates strong agreement
+        slight: 0.2   # Correlation r=0.70-0.85; 10-20% difference acceptable in heterogeneous populations
+      pnn50:
+        strong: 0.1   # Near-perfect correlation expected (r>0.99); mathematical relationship ensures <10% variation
+        slight: 0.2   # Any >10% deviation warrants investigation for calculation errors
+
+pnn50:
+  normal_range:
+    1_min: [10, 40]
+    5_min: [15, 45]
+  description: "pNN50 represents the percentage of NN intervals that differ by more than 50 ms. It is a measure of short-term heart rate variability and reflects parasympathetic (vagal) activity."
+  references:
+    - "Task Force of ESC/NASPE (1996): pNN50 is a normalized time-domain HRV measure, normal 24-hour pNN50: 10-25%, 5-min: 15-45%"
+    - "Ewing DJ et al. (1985): pNN50 <3% indicates severe autonomic neuropathy; gold standard test for diabetic autonomic dysfunction"
+    - "Sztajzel J (2004): pNN50 shows strong correlation with HF power (r=0.75-0.88) in frequency domain analysis"
+  clinical_interpretation:
+    pathophysiology: "pNN50 normalizes NN50 count by total NN intervals (pNN50 = NN50/total_intervals × 100%), making it independent of recording duration. The 50ms threshold was empirically determined to optimally detect vagal modulation while minimizing noise. Physiologically represents percentage of heartbeats showing respiratory sinus arrhythmia influence."
+    clinical_significance: "pNN50 <3% diagnostic threshold for autonomic neuropathy (sensitivity 85%, specificity 90% per Ewing 1985). Values 3-10% indicate moderate dysfunction. >45% suggests exceptional vagal tone in athletes. Preferred over NN50 for comparing different recording lengths or heart rate levels."
+    age_factors: "pNN50 declines with age: 20-30 years (30±12%), 40-50 years (20±10%), 60-70 years (10±6%). Diabetic patients show accelerated decline. Gender: females 15-20% higher than males. Circadian variation: highest during sleep (40-60%), lowest during stress (<5%)."
+  interpretation:
+    in_range: "Normal pNN50 suggests balanced parasympathetic regulation and healthy heart rate variability."
+    below_range: "Low pNN50 indicates reduced parasympathetic control, commonly seen in stress, cardiovascular dysfunction, or aging."
+    above_range: "High pNN50 suggests strong parasympathetic control, often observed during recovery or in individuals with good cardiovascular health."
+  contradiction:
+    hf_power: "Low pNN50 contradicts high HF power, as both should indicate strong parasympathetic activity."
+    rmssd: "Low pNN50 contradicts high RMSSD, as they measure similar aspects of parasympathetic activity."
+  correlation:
+    rmssd: "Positively correlated with RMSSD, as both reflect parasympathetic control."
+    nn50: "Strongly correlated with NN50, as both reflect similar heart rate variability measures."
+    hf_power: "Correlated with HF power, which represents parasympathetic control."
+  thresholds:
+    contradiction:
+      hf_power:
+        strong: 0.25  # Sztajzel (2004): pNN50-HF correlation r=0.75-0.88; >25% deviation suggests measurement inconsistency or non-stationary signal
+        slight: 0.1   # 10-25% acceptable due to different mathematical domains (time vs frequency)
+      rmssd:
+        strong: 0.25  # Both measure same physiology; >25% deviation indicates ectopy, artifact, or calculation errors
+        slight: 0.1   # <10% expected difference in clean recordings with stable RR intervals
+    correlation:
+      rmssd:
+        strong: 0.1   # Correlation r>0.80 expected; <10% difference indicates excellent signal quality
+        slight: 0.2   # Correlation r=0.60-0.80; acceptable in presence of occasional ectopy
+      nn50:
+        strong: 0.1   # Mathematical relationship ensures r>0.99; <10% deviation only from rounding
+        slight: 0.2   # >10% deviation rare, suggests software bug or data corruption
+      hf_power:
+        strong: 0.1   # Correlation r>0.75 expected (Sztajzel 2004); <10% indicates consistent parasympathetic assessment
+        slight: 0.2   # Correlation r=0.50-0.75; moderate agreement acceptable in mixed autonomic states
+
+mean_nn:
+  normal_range:
+    1_min: [700, 900]
+    5_min: [720, 850]
+  description: "Mean NN is the average interval between successive heartbeats, providing insight into overall heart rate. Shorter intervals indicate higher heart rates, while longer intervals suggest lower heart rates."
+  references:
+    - "Task Force of ESC/NASPE (1996): Mean NN (mean RR) is fundamental HRV parameter, normal resting: 750-1000 ms (60-80 bpm)"
+    - "Sacha J (2013): Mean RR interval inversely related to HR: HR(bpm) = 60000/mean_NN(ms), mathematical relationship ensures perfect correlation"
+    - "Billman GE (2013): Mean NN reflects average autonomic balance; shorter intervals (<700ms) indicate sympathetic dominance"
+  clinical_interpretation:
+    pathophysiology: "Mean NN represents average cardiac cycle duration, determined by sinoatrial node firing rate under dual autonomic control. Mathematical inverse of heart rate: mean_NN(ms) = 60000/HR(bpm). Reflects net balance between sympathetic (shortens RR) and parasympathetic (lengthens RR) influences."
+    clinical_significance: "Mean NN <700ms (HR>86 bpm) at rest indicates sympathetic predominance associated with 1.5-2x increased cardiovascular risk. Mean NN >1000ms (HR<60 bpm) may indicate athletic fitness or pathological bradycardia requiring ECG evaluation. Unlike SDNN/RMSSD, mean NN provides baseline around which variability occurs."
+    age_factors: "Mean NN increases with age due to declining sympathetic responsiveness: 20-30 years (750-850ms), 40-50 years (800-900ms), 60-70 years (850-950ms). Athletes: 1000-1500ms typical. Children: 500-700ms (higher basal metabolic rate)."
+  interpretation:
+    in_range: "Normal mean NN reflects a balanced heart rate and appropriate autonomic regulation."
+    below_range: "Lower mean NN suggests a higher heart rate, commonly due to stress, physical activity, or cardiovascular strain."
+    above_range: "Higher mean NN suggests a lower heart rate, possibly indicating bradycardia or strong parasympathetic dominance."
+  contradiction:
+    rmssd: "Lower mean NN contradicts high RMSSD, as higher heart rate usually results in lower variability."
+    sdnn: "Lower mean NN contradicts high SDNN, as heart rate variability typically decreases with higher heart rate."
+  correlation:
+    heart_rate: "Negatively correlated with heart rate. A lower mean NN indicates a higher heart rate."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.2  # Sacha (2013): HRV metrics scale with mean RR; >20% deviation suggests disproportionate autonomic response
+        slight: 0.1  # 10-20% acceptable due to normalized vs absolute variability differences
+      sdnn:
+        strong: 0.2  # Similar scaling relationship; >20% mismatch indicates non-linear autonomic dynamics
+        slight: 0.1  # Normal variation in sympathovagal balance
+    correlation:
+      heart_rate:
+        strong: 0.05  # Mathematical relationship HR = 60000/mean_NN ensures <5% deviation indicates accurate measurement
+        slight: 0.1   # 5-10% deviation may indicate rounding errors or averaging across different window sizes
+
+heart_rate:
+  normal_range:
+    1_min: [60, 100]  # Normal resting heart rate in beats per minute (bpm)
+    5_min: [60, 100]  # Same range for 5-minute segments (resting heart rate)
+  description: "Heart rate (HR) measures the number of heartbeats per minute, reflecting cardiovascular function and autonomic nervous system activity. A normal resting HR is between 60-100 bpm for adults. Tachycardia (>100 bpm) may indicate stress, dehydration, fever, or cardiovascular disease, while bradycardia (<60 bpm) may indicate athletic fitness, hypothyroidism, or cardiac conduction abnormalities."
+  references:
+    - "AHA/ACC Guidelines (2017): Normal resting HR 60-100 bpm for adults"
+    - "WHO Vital Signs Standards: Resting HR 60-100 bpm, Bradycardia <60 bpm, Tachycardia >100 bpm"
+    - "Reimers AK et al. (2018): Athletes may have resting HR 40-60 bpm (athletic bradycardia)"
+  clinical_interpretation:
+    pathophysiology: "Heart rate is regulated by the sinoatrial node under autonomic control. Sympathetic activation increases HR, parasympathetic (vagal) activity decreases HR."
+    clinical_significance: "Persistent tachycardia (>100 bpm at rest) increases cardiovascular risk. Symptomatic bradycardia (<50 bpm with dizziness/syncope) requires evaluation. HR variability more important than absolute value."
+    age_factors: "Newborns: 120-160 bpm, Children (1-10 yrs): 70-120 bpm, Adults: 60-100 bpm, Elderly: May have lower resting HR"
+  interpretation:
+    in_range: "Normal heart rate indicates healthy cardiovascular function and balanced autonomic regulation, with appropriate cardiac output for the body's metabolic demands at rest."
+    below_range: "Bradycardia (low heart rate) may indicate excellent cardiovascular fitness in athletes, or could suggest hypothyroidism, cardiac conduction abnormalities, or effects of certain medications (beta-blockers). Medical evaluation is recommended if symptomatic (dizziness, fatigue, syncope)."
+    above_range: "Tachycardia (elevated heart rate) may indicate sympathetic activation due to stress, anxiety, dehydration, fever, anemia, hyperthyroidism, or cardiovascular conditions such as arrhythmias or heart failure. Persistent tachycardia requires medical evaluation."
+  contradiction:
+    mean_nn: "Low heart rate contradicts low mean_nn, as they have an inverse relationship (lower mean_nn = higher heart rate)."
+    sdnn: "Extremely low heart rate with low SDNN contradicts expected parasympathetic dominance patterns."
+  correlation:
+    mean_nn: "Inversely correlated with mean_nn. Heart rate (bpm) = 60000 / mean_nn (ms)."
+    exercise_intensity: "Positively correlated with exercise intensity, stress levels, and metabolic demands."
+  thresholds:
+    contradiction:
+      mean_nn:
+        strong: 0.05  # Mathematical inverse relationship: deviation >5% indicates calculation error
+        slight: 0.02  # Deviation 2-5% may indicate rounding or measurement timing differences
+      sdnn:
+        strong: 0.3   # Bradycardia with low HRV contradicts expected parasympathetic dominance (30% mismatch)
+        slight: 0.15  # Moderate mismatch (15-30%) suggests mixed autonomic patterns
+    correlation:
+      mean_nn:
+        strong: 0.02  # Strong inverse correlation: HR(bpm) = 60000/mean_nn(ms), expect <2% deviation
+        slight: 0.05  # Moderate correlation: 2-5% deviation acceptable for short-term measurements
+      exercise_intensity:
+        strong: 0.15  # HR increases 15% per metabolic equivalent (MET) during exercise
+        slight: 0.25  # Resting to moderate activity: 25% HR increase typical
+
+median_nn:
+  normal_range:
+    1_min: [700, 900]
+    5_min: [720, 850]
+  description: "Median NN provides a central measure of heart rate variability, focusing on the middle value of the NN intervals. It helps identify skewness or abnormalities in the heart rate distribution, especially in cases of arrhythmias."
+  interpretation:
+    in_range: "Normal median NN suggests healthy heart rate variability, with no signs of arrhythmias or skewness."
+    below_range: "Lower median NN indicates a higher heart rate, potentially due to stress, cardiovascular strain, or tachycardia."
+    above_range: "Higher median NN suggests lower heart rate, potentially indicating bradycardia or enhanced parasympathetic activity."
+  contradiction:
+    mean_nn: "A large difference between mean and median NN suggests arrhythmias or outliers."
+  correlation:
+    mean_nn: "Closely correlated with mean NN."
+  thresholds:
+    contradiction:
+      mean_nn:
+        strong: 0.15   # A strong contradiction if median differs from mean by more than 15%.
+        slight: 0.1    # Slight contradiction for a 10-15% difference.
+    correlation:
+      mean_nn:
+        strong: 0.05   # Median should be within 5% of mean for strong correlation.
+        slight: 0.1
+
+iqr_nn:
+  normal_range:
+    1_min: [50, 100]
+    5_min: [70, 150]
+  description: "IQR NN measures the variability in heart rate by calculating the interquartile range (IQR) of NN intervals. A higher IQR indicates greater heart rate variability, while a lower IQR suggests reduced variability."
+  interpretation:
+    in_range: "Normal IQR NN indicates healthy heart rate variability, reflecting balanced autonomic function."
+    below_range: "Reduced IQR NN suggests limited heart rate variability, commonly associated with autonomic dysfunction, cardiovascular disease, or aging."
+    above_range: "Increased IQR NN indicates excessive heart rate variability, which may suggest arrhythmias or unstable heart rhythms."
+  contradiction:
+    sdnn: "High IQR contradicts low SDNN, as both should reflect the overall variability."
+  correlation:
+    sdnn: "Correlated with SDNN, as both measure variability in heart rate."
+  thresholds:
+    contradiction:
+      sdnn:
+        strong: 0.3  # HRV and IQR generally align strongly, so a 30% mismatch is highly significant.
+        slight: 0.1
+    correlation:
+      sdnn:
+        strong: 0.1
+        slight: 0.2
+
+std_nn:
+  normal_range:
+    1_min: [15, 40]
+    5_min: [50, 130]
+  description: "STD NN measures the variability in heart rate by calculating the standard deviation of NN intervals. It reflects both short-term and long-term heart rate variability and can be used to assess autonomic function."
+  interpretation:
+    in_range: "Normal STD NN suggests balanced heart rate variability and healthy autonomic regulation."
+    below_range: "Low STD NN suggests reduced heart rate variability, often seen in autonomic dysfunction, stress, or cardiovascular disease."
+    above_range: "High STD NN indicates excessive heart rate variability, possibly due to arrhythmias or vagal overactivity."
+  contradiction:
+    rmssd: "Low std_nn contradicts high RMSSD, as both should reflect short-term variability."
+    lf_hf_ratio: "Low std_nn contradicts high LF/HF ratio, as both should reflect the balance of autonomic functions."
+  correlation:
+    sdnn: "Correlated with SDNN, as both measure overall heart rate variability."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25
+        slight: 0.1
+      lf_hf_ratio:
+        strong: 0.25
+        slight: 0.1
+    correlation:
+      sdnn:
+        strong: 0.1
+        slight: 0.2
+
+pnn20:
+  normal_range:
+    1_min: [20, 50]
+    5_min: [25, 60]
+  description: "pNN20 measures the percentage of successive NN intervals that differ by more than 20 ms. It is a more sensitive marker of short-term heart rate variability than pNN50, reflecting parasympathetic activity."
+  interpretation:
+    in_range: "Normal pNN20 indicates healthy short-term heart rate variability and strong parasympathetic regulation."
+    below_range: "Low pNN20 suggests reduced short-term heart rate variability, commonly due to autonomic dysfunction or stress."
+    above_range: "High pNN20 suggests enhanced parasympathetic activity, often seen during recovery or relaxation."
+  contradiction:
+    rmssd: "Low pNN20 contradicts high RMSSD, as both should reflect similar short-term variability."
+  correlation:
+    rmssd: "Correlated with RMSSD and HF power, reflecting parasympathetic regulation."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25
+        slight: 0.1
+    correlation:
+      rmssd:
+        strong: 0.1
+        slight: 0.2
+
+pnn_20:
+  normal_range:
+    1_min: [20, 50]
+    5_min: [25, 60]
+  description: "pNN20 measures the percentage of successive NN intervals that differ by more than 20 ms. It is a more sensitive marker of short-term heart rate variability than pNN50, reflecting parasympathetic activity."
+  interpretation:
+    in_range: "Normal pNN20 indicates healthy short-term heart rate variability and strong parasympathetic regulation."
+    below_range: "Low pNN20 suggests reduced short-term heart rate variability, commonly due to autonomic dysfunction or stress."
+    above_range: "High pNN20 suggests enhanced parasympathetic activity, often seen during recovery or relaxation."
+  contradiction:
+    rmssd: "Low pNN20 contradicts high RMSSD, as both should reflect similar short-term variability."
+  correlation:
+    rmssd: "Correlated with RMSSD and HF power, reflecting parasympathetic regulation."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25
+        slight: 0.1
+    correlation:
+      rmssd:
+        strong: 0.1
+        slight: 0.2
+
+cvnn:
+  normal_range:
+    1_min: [0.05, 0.15]
+    5_min: [0.05, 0.15]
+  description: "CVNN measures the variability in NN intervals relative to the mean NN interval. It provides a normalized measure of heart rate variability, helping to assess autonomic function and heart rate regulation."
+  interpretation:
+    in_range: "Normal CVNN indicates healthy heart rate variability and balanced autonomic regulation."
+    below_range: "Low CVNN suggests reduced heart rate variability, often associated with autonomic dysfunction, cardiovascular disease, or stress."
+    above_range: "High CVNN indicates excessive heart rate variability, which may suggest arrhythmias or vagal overactivity."
+  contradiction:
+    rmssd: "Low CVNN contradicts high RMSSD, as both should reflect short-term variability."
+  correlation:
+    rmssd: "Correlated with RMSSD and overall heart rate variability."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.3    # Strong contradiction if CVNN is 30% lower than RMSSD.
+        slight: 0.15   # Slight contradiction if CVNN is 15-30% lower.
+    correlation:
+      rmssd:
+        strong: 0.1
+        slight: 0.2
+
+hrv_triangular_index:
+  normal_range:
+    1_min: [1.5, 4]
+    5_min: [4, 11]
+  description: "The HRV Triangular Index measures the total heart rate variability by calculating the triangular interpolation of NN interval histograms. It reflects overall HRV and provides insight into autonomic function."
+  interpretation:
+    in_range: "Normal HRV Triangular Index suggests healthy total heart rate variability and balanced autonomic regulation."
+    below_range: "Low HRV Triangular Index indicates reduced overall heart rate variability, commonly due to autonomic dysfunction or cardiovascular disease."
+    above_range: "High HRV Triangular Index suggests excessive heart rate variability, which may indicate arrhythmias or vagal overactivity."
+  contradiction:
+    rmssd: "Low HRV index contradicts high RMSSD, as both reflect overall variability."
+    sdnn: "Low HRV index contradicts high SDNN, as both reflect overall variability."
+  correlation:
+    sdnn: "Correlated with SDNN, reflecting total HRV."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.3
+        slight: 0.1
+      sdnn:
+        strong: 0.3
+        slight: 0.1
+    correlation:
+      sdnn:
+        strong: 0.1
+        slight: 0.2
+
+tinn:
+  normal_range:
+    1_min: [15, 55]
+    5_min: [20, 70]
+  description: "Tinn represents the width of the NN interval histogram at its base and is used to assess heart rate variability. A wider Tinn indicates greater HRV, while a narrower Tinn suggests reduced variability."
+  interpretation:
+    in_range: "Normal Tinn reflects healthy heart rate variability and balanced autonomic regulation."
+    below_range: "Low Tinn suggests reduced heart rate variability, commonly due to autonomic dysfunction or cardiovascular disease."
+    above_range: "High Tinn indicates excessive heart rate variability, possibly due to arrhythmias or vagal overactivity."
+  contradiction:
+    hrv_triangular_index: "Low Tinn contradicts high HRV triangular index, as both reflect similar measures of variability."
+  correlation:
+    hrv_triangular_index: "Correlated with HRV triangular index and overall heart rate variability."
+  thresholds:
+    contradiction:
+      hrv_triangular_index:
+        strong: 0.3    # A difference greater than 30% between Tinn and HRV index suggests a strong contradiction.
+        slight: 0.15   # Slight contradiction if the difference is between 15% and 30%.
+    correlation:
+      hrv_triangular_index:
+        strong: 0.1
+        slight: 0.2
+
+sdsd:
+  normal_range:
+    1_min: [20, 60]
+    5_min: [40, 80]
+  description: "SDSD measures short-term heart rate variability by calculating the standard deviation of successive differences in NN intervals. It reflects parasympathetic activity and can help assess autonomic regulation."
+  interpretation:
+    in_range: "Normal SDSD indicates healthy parasympathetic regulation and short-term heart rate variability."
+    below_range: "Low SDSD suggests reduced short-term heart rate variability, often associated with autonomic dysfunction or cardiovascular disease."
+    above_range: "High SDSD indicates enhanced parasympathetic activity, often seen during recovery or relaxation."
+  contradiction:
+    rmssd: "Low SDSD contradicts high RMSSD, as both reflect short-term variability."
+  correlation:
+    rmssd: "Correlated with RMSSD and short-term heart rate variability."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      rmssd:
+        strong: 0.1
+        slight: 0.2
+
+lf_power:
+  normal_range:
+    1_min: [300, 1200]
+    5_min: [300, 1200]
+  description: "LF power represents the power of low-frequency components in heart rate variability (0.04–0.15 Hz), reflecting a mix of sympathetic and parasympathetic nervous system activity. It is influenced by baroreceptor regulation and blood pressure control."
+  references:
+    - "Task Force of ESC/NASPE (1996): LF power (0.04-0.15 Hz) reflects mixed sympathovagal modulation, normal 5-min: 519±291 ms², influenced by baroreflex"
+    - "Montano N et al. (1994): LF power correlates with muscle sympathetic nerve activity (r=0.65) and baroreflex sensitivity during standing/tilt"
+    - "Pagani M et al. (1997): LF power increases 2-4x during mental stress and upright posture; debate exists on pure sympathetic interpretation"
+  clinical_interpretation:
+    pathophysiology: "LF power (0.04-0.15 Hz) primarily reflects baroreflex-mediated oscillations in heart rate. Contains both sympathetic and parasympathetic components, with parasympathetic contribution predominant in supine position. During standing/stress, sympathetic component increases substantially. 0.1 Hz oscillations (Mayer waves) represent blood pressure regulation."
+    clinical_significance: "LF power <200 ms² indicates impaired baroreflex function associated with orthostatic intolerance and increased falls risk. LF >1500 ms² may indicate hypertensive vascular damage or excessive sympathetic tone. LF/HF ratio interpretation controversial; absolute LF value more reliable than ratio. Beta-blockers reduce LF by 40-60%."
+    age_factors: "LF power decreases with age: 20-30 years (800±400 ms²), 40-50 years (500±300 ms²), 60-70 years (300±200 ms²). Positional changes: LF increases 100-150% from supine to standing. Time-of-day: highest during daytime activity, lowest during deep sleep."
+  interpretation:
+    in_range: "Normal LF power indicates balanced autonomic regulation, with appropriate contributions from both sympathetic and parasympathetic systems."
+    below_range: "Low LF power suggests diminished autonomic activity, commonly seen in stress, heart failure, or autonomic neuropathy."
+    above_range: "High LF power may indicate increased autonomic output, often related to hypertension, stress, or overactive sympathetic regulation."
+  contradiction:
+    lf_hf_ratio: "Low LF power contradicts a high LF/HF ratio, as LF contributes to the numerator."
+    total_power: "Low LF power contradicts high total power, as it is a major component of total power."
+  correlation:
+    lf_hf_ratio: "Correlated with LF/HF ratio and overall HRV."
+  thresholds:
+    contradiction:
+      lf_hf_ratio:
+        strong: 0.3  # Mathematical relationship: LF/HF = LF_power/HF_power; >30% deviation indicates calculation error or epoch mismatch
+        slight: 0.1  # 10-30% acceptable due to spectral estimation variance (Welch vs AR methods differ by 15-20%)
+      total_power:
+        strong: 0.3  # LF typically 30-50% of total power; >30% mismatch suggests VLF/ULF domination or artifact
+        slight: 0.1  # Normal contribution variance 20-60% depending on respiratory rate and position
+    correlation:
+      lf_hf_ratio:
+        strong: 0.1  # Direct proportional relationship; <10% deviation expected with consistent analysis parameters
+        slight: 0.2  # 10-20% acceptable due to respiratory frequency variations affecting HF band edges
+
+hf_power:
+  normal_range:
+    1_min: [200, 1000]
+    5_min: [200, 1000]
+  description: "HF power reflects the power of high-frequency components (0.15–0.40 Hz), which are primarily associated with parasympathetic (vagal) activity. It is often used to assess vagal tone and respiratory sinus arrhythmia."
+  references:
+    - "Task Force of ESC/NASPE (1996): HF power (0.15-0.40 Hz) reflects pure parasympathetic modulation, normal 5-min: 657±777 ms², mediated by respiratory sinus arrhythmia"
+    - "Denver JW et al. (2007): HF power highly correlated with vagal nerve activity (r=0.88) and abolished by atropine (muscarinic blockade)"
+    - "Grossman P, Taylor EW (2007): HF power corresponds to respiratory frequency (12-20 breaths/min = 0.2-0.33 Hz); slower breathing shifts power to LF band"
+  clinical_interpretation:
+    pathophysiology: "HF power (0.15-0.40 Hz) exclusively represents parasympathetic (vagal) efferent activity modulating sinoatrial node firing via acetylcholine release. Oscillations synchronize with respiratory cycle: inspiration decreases vagal tone (HR increases), expiration increases vagal tone (HR decreases). Respiratory frequency must be 9-24 breaths/min to capture in HF band."
+    clinical_significance: "HF power <100 ms² indicates severely depressed vagal tone associated with 2.4x increased sudden cardiac death risk. HF >2000 ms² seen in endurance athletes and during slow deep breathing (6 breaths/min). Sensitive to respiratory rate: breath-holding eliminates HF power. Used clinically to assess autonomic neuropathy, PTSD, depression treatment response."
+    age_factors: "HF power decreases with age: 20-30 years (975±800 ms²), 40-50 years (452±340 ms²), 60-70 years (203±150 ms²). Sleep stage dependent: highest during REM sleep (1200 ms²), lowest during stage 3 (300 ms²). Controlled breathing at 0.1 Hz (6 breaths/min) shifts HF power to LF band."
+  interpretation:
+    in_range: "Normal HF power indicates healthy parasympathetic regulation and respiratory-driven heart rate variability."
+    below_range: "Low HF power suggests reduced parasympathetic activity, often associated with stress, cardiovascular disease, or autonomic dysfunction."
+    above_range: "High HF power may reflect enhanced parasympathetic activity, commonly seen during recovery, relaxation, or breathing exercises."
+  contradiction:
+    rmssd: "Low HF power contradicts high RMSSD, as both reflect parasympathetic regulation."
+    pnn50: "Low HF power contradicts high pNN50, as they measure similar aspects of HRV."
+  correlation:
+    pnn50: "Correlated with pNN50 and RMSSD, both indicating parasympathetic control."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.25  # Denver et al. (2007): HF-RMSSD correlation r=0.85-0.92; >25% deviation suggests respiratory artifact or ectopy
+        slight: 0.1   # 10-25% acceptable variation due to frequency vs time domain mathematical differences
+      pnn50:
+        strong: 0.25  # Sztajzel (2004): HF-pNN50 correlation r=0.75-0.88; >25% mismatch indicates non-stationary breathing pattern
+        slight: 0.1   # 10-25% normal variation especially if respiratory rate near band edges (9 or 24 breaths/min)
+    correlation:
+      pnn50:
+        strong: 0.1   # Correlation r>0.75 expected; <10% difference indicates excellent parasympathetic measurement consistency
+        slight: 0.2   # Correlation r=0.50-0.75; acceptable when respiratory rate unstable or mouth breathing present
+
+lyapunov_exponent:
+  normal_range:
+    1_min: [-0.5, 0.5]
+    5_min: [-0.3, 0.3]
+  description: "Lyapunov Exponent measures the rate of separation of infinitesimally close trajectories, indicating the presence of chaos in the system. Positive values suggest chaotic dynamics, while negative values suggest stability."
+  interpretation:
+    in_range: "Lyapunov Exponent is within the normal range, indicating a stable system."
+    below_range: "Negative Lyapunov Exponent suggests stability and predictability in the system."
+    above_range: "Positive Lyapunov Exponent indicates chaotic behavior, suggesting instability."
+  contradiction:
+    heart_rate_variability: "High Lyapunov Exponent contradicts high heart rate variability, as both should reflect system stability."
+    fractal_dimension: "High Lyapunov Exponent may contradict a low fractal dimension, suggesting inconsistency in the system's complexity."
+  correlation:
+    total_power: "Lyapunov Exponent may correlate with total power, as both reflect underlying dynamics of the system."
+    sdnn: "Lyapunov Exponent is related to SDNN, indicating the complexity of heart rate dynamics."
+  thresholds:
+    contradiction:
+      heart_rate_variability:
+        strong: 0.3
+        slight: 0.1
+      fractal_dimension:
+        strong: 0.3
+        slight: 0.1
+    correlation:
+      total_power:
+        strong: 0.15
+        slight: 0.25
+      sdnn:
+        strong: 0.1
+        slight: 0.2
+
+lf_hf_ratio:
+  normal_range:
+    1_min: [0.5, 2.0]
+    5_min: [0.5, 2.0]
+  description: "The LF/HF ratio is a measure of the balance between sympathetic and parasympathetic activity. A higher ratio indicates sympathetic dominance, while a lower ratio suggests parasympathetic dominance."
+  references:
+    - "Task Force of ESC/NASPE (1996): LF/HF ratio normal supine: 1.5-2.0, upright: 2.0-6.0; reflects sympathovagal balance but interpretation controversial"
+    - "Billman GE (2013): LF/HF ratio interpretation questioned - does NOT reliably indicate cardiac sympathetic nerve activity; influenced heavily by respiratory rate"
+    - "Goldstein DS et al. (2011): LF/HF ratio unreliable for sympathetic assessment; direct nerve recordings show poor correlation (r=0.23)"
+  clinical_interpretation:
+    pathophysiology: "LF/HF ratio calculated as LF_power/HF_power, traditionally interpreted as sympathovagal balance. However, modern research challenges this: LF contains mixed sympathovagal input, not pure sympathetic. Ratio highly sensitive to respiratory rate (slow breathing elevates ratio without sympathetic change). Mathematical artifact: ratio increases if HF decreases even without LF increase."
+    clinical_significance: "LF/HF >2.5 traditionally suggested sympathetic dominance (stress, anxiety, cardiovascular risk). Recent evidence suggests ratio unreliable for clinical decisions. Prefer absolute LF and HF values over ratio. LF/HF >5 may indicate extreme stress or autonomic imbalance. <0.5 seen during deep sleep, meditation, or vagal overdrive. Clinical utility limited by respiratory confound."
+    age_factors: "LF/HF ratio increases with age: 20-30 years (1.2±0.6), 40-50 years (1.8±0.8), 60-70 years (2.5±1.2), primarily due to HF power decline. Postural changes: supine (1.5), standing (3.5-4.5). Mental stress doubles ratio within 2 minutes. Sleep: lowest during REM (0.4-0.8)."
+  interpretation:
+    in_range: "A normal LF/HF ratio indicates a balanced autonomic response, with a healthy equilibrium between sympathetic and parasympathetic systems."
+    below_range: "A low LF/HF ratio suggests parasympathetic dominance, often seen during relaxation, recovery, or sleep."
+    above_range: "A high LF/HF ratio suggests sympathetic dominance, often seen in stress, cardiovascular strain, or hypertension."
+  contradiction:
+    rmssd: "High LF/HF ratio contradicts high RMSSD, as high RMSSD indicates parasympathetic dominance."
+    hf_power: "High LF/HF ratio contradicts high HF power, as HF contributes to the denominator."
+  correlation:
+    hf_power: "Inversely correlated with HF power and pNN50, reflecting autonomic balance."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.3  # High LF/HF (>2.5) with high RMSSD (>50ms) contradicts >30% - suggests respiratory sinus arrhythmia artifact
+        slight: 0.15 # 15-30% discordance acceptable during transitional autonomic states (stress recovery)
+      hf_power:
+        strong: 0.3  # Mathematical relationship: high LF/HF requires low HF; >30% deviation indicates calculation error
+        slight: 0.15 # 15-30% acceptable if respiratory rate at band edges affecting spectral power distribution
+    correlation:
+      hf_power:
+        strong: 0.1  # Inverse relationship (r=-0.6 to -0.8 expected); <10% indicates consistent reciprocal pattern
+        slight: 0.2  # Correlation r=-0.4 to -0.6; weaker during mixed autonomic states or variable breathing
+
+ulf_power:
+  normal_range:
+    1_min: [-inf, 0.5]
+    5_min: [-inf, 0.5]
+  description: "ULF power represents the ultra-low-frequency components (<0.003 Hz) of heart rate variability, which are thought to reflect circadian rhythms and longer-term regulatory mechanisms, such as core body temperature and hormonal cycles."
+  interpretation:
+    in_range: "Normal ULF power indicates healthy long-term autonomic regulation and stable circadian patterns."
+    below_range: "Low ULF power suggests disrupted long-term autonomic function, potentially indicating sleep disturbances, chronic stress, or cardiovascular dysfunction."
+    above_range: "High ULF power may suggest abnormal circadian rhythms or instability in long-term physiological regulation."
+  contradiction:
+    total_power: "Low ULF power contradicts high total power, as ULF is a significant component of total power."
+  correlation:
+    total_power: "Correlated with total power and long-term HRV."
+  thresholds:
+    contradiction:
+      total_power:
+        strong: 0.35  # ULF is a significant component, so a 35% mismatch is critical.
+        slight: 0.2
+    correlation:
+      total_power:
+        strong: 0.1
+        slight: 0.2
+
+vlf_power:
+  normal_range:
+    1_min: [-inf, 0.04]
+    5_min: [-inf, 0.04]
+  description: "VLF power reflects very-low-frequency components (0.003–0.04 Hz) of heart rate variability, which are thought to represent long-term regulatory mechanisms like thermoregulation, hormonal influences, and sympathetic vasomotor tone."
+  interpretation:
+    in_range: "Normal VLF power indicates healthy long-term regulatory processes and autonomic balance."
+    below_range: "Low VLF power suggests impaired long-term autonomic regulation, often seen in cardiovascular disease or autonomic dysfunction."
+    above_range: "High VLF power may indicate abnormal long-term regulation, potentially related to vasomotor instability or chronic stress."
+  contradiction:
+    lf_power: "Low VLF power contradicts high LF power, as both reflect longer-term variability."
+  correlation:
+    total_power: "Correlated with total power and long-term variability."
+  thresholds:
+    contradiction:
+      lf_power:
+        strong: 0.35
+        slight: 0.2
+    correlation:
+      total_power:
+        strong: 0.1
+        slight: 0.2
+
+total_power:
+  normal_range:
+    1_min: [-inf, 0.4]
+    5_min: [-inf, 0.4]
+  description: "Total power represents the overall heart rate variability across all frequency bands (ULF, VLF, LF, HF). It provides an overview of autonomic function and overall variability in heart rate."
+  interpretation:
+    in_range: "Normal total power suggests healthy autonomic regulation and heart rate variability, with balanced input from all frequency bands."
+    below_range: "Low total power indicates reduced overall heart rate variability, often associated with autonomic dysfunction, cardiovascular disease, or aging."
+    above_range: "High total power suggests excessive heart rate variability, possibly indicating arrhythmias or unstable autonomic regulation."
+  contradiction:
+    lf_power: "Low total power contradicts high LF power, as LF is a major component of total power."
+  correlation:
+    lf_power: "Correlated with LF power and overall HRV."
+  thresholds:
+    contradiction:
+      lf_power:
+        strong: 0.3  # LF is a major component of total power.
+        slight: 0.1
+    correlation:
+      lf_power:
+        strong: 0.1
+        slight: 0.2
+
+lfnu_power:
+  normal_range:
+    1_min: [0.5, 2.0]
+    5_min: [0.5, 2.0]
+  description: "LFnu power represents the normalized value of low-frequency components as a proportion of total power (excluding VLF). It reflects the relative contribution of sympathetic activity to heart rate variability."
+  interpretation:
+    in_range: "Normal LFnu power suggests balanced autonomic regulation, with appropriate contributions from sympathetic and parasympathetic systems."
+    below_range: "Low LFnu power suggests reduced sympathetic activity, often seen during relaxation or parasympathetic dominance."
+    above_range: "High LFnu power indicates sympathetic dominance, commonly associated with stress, cardiovascular strain, or hypertension."
+  contradiction:
+    hfnu_power: "High LFnu contradicts high HFnu, as both represent opposite branches of the autonomic nervous system."
+  correlation:
+    lf_hf_ratio: "Correlated with LF/HF ratio and overall sympathetic dominance."
+  thresholds:
+    contradiction:
+      hfnu_power:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      lf_hf_ratio:
+        strong: 0.1
+        slight: 0.2
+
+hfnu_power:
+  normal_range:
+    1_min: [0.5, 2.0]
+    5_min: [0.5, 2.0]
+  description: "HFnu power represents the normalized value of high-frequency components as a proportion of total power (excluding VLF). It reflects the relative contribution of parasympathetic activity to heart rate variability."
+  interpretation:
+    in_range: "Normal HFnu power indicates healthy parasympathetic activity and balanced autonomic regulation."
+    below_range: "Low HFnu power suggests reduced parasympathetic activity, often seen in stress or sympathetic dominance."
+    above_range: "High HFnu power suggests enhanced parasympathetic activity, commonly seen during relaxation or recovery."
+  contradiction:
+    lfnu_power: "High HFnu contradicts high LFnu, as both represent opposite branches of the autonomic nervous system."
+  correlation:
+    rmssd: "Correlated with RMSSD and pNN50, reflecting parasympathetic dominance."
+  thresholds:
+    contradiction:
+      lfnu_power:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      rmssd:
+        strong: 0.1
+        slight: 0.2
+
+fractal_dimension:
+  normal_range:
+    1_min: [1.2, 1.4]
+    5_min: [1.2, 1.4]
+  description: "Fractal dimension is a measure of the complexity of the physiological signal. Lower fractal dimensions indicate reduced complexity, often due to cardiovascular dysfunction, while higher values suggest more complex patterns."
+  interpretation:
+    in_range: "Normal fractal dimension suggests healthy signal complexity, reflecting stable cardiovascular function and autonomic balance."
+    below_range: "Low fractal dimension indicates reduced signal complexity, often associated with cardiovascular disease or autonomic dysfunction."
+    above_range: "High fractal dimension suggests increased signal complexity, which may indicate arrhythmias or irregular physiological patterns."
+  contradiction:
+    hrv: "Low fractal dimension contradicts high HRV, as both reflect the complexity of the physiological signals."
+  correlation:
+    hrv: "Correlated with overall HRV and parasympathetic regulation."
+  thresholds:
+    contradiction:
+      hrv:
+        strong: 0.35  # Complexity features are very closely related, making strong contradictions at 35%.
+        slight: 0.2
+    correlation:
+      hrv:
+        strong: 0.1
+        slight: 0.2
+
+dfa:
+  normal_range:
+    1_min: [0.5, 1.5]
+    5_min: [0.5, 1.5]
+  description: "DFA reflects the self-similarity and fractal scaling of heart rate variability, providing insight into the long-term correlations in the signal. It is used to assess autonomic regulation and cardiovascular health."
+  interpretation:
+    in_range: "Normal DFA suggests healthy autonomic regulation and appropriate fractal scaling of the physiological signal."
+    below_range: "Low DFA suggests impaired long-term correlations, often seen in cardiovascular disease or autonomic dysfunction."
+    above_range: "High DFA suggests increased long-term correlations, potentially indicating irregular heart rhythms or compensatory mechanisms."
+  contradiction:
+    fractal_dimension: "Low DFA contradicts high fractal dimension, as both should reflect similar physiological signal complexity."
+  correlation:
+    hrv: "Correlated with overall HRV and parasympathetic regulation."
+  thresholds:
+    contradiction:
+      fractal_dimension:
+        strong: 0.35
+        slight: 0.2
+    correlation:
+      hrv:
+        strong: 0.1
+        slight: 0.2
+
+poincare_sd1:
+  normal_range:
+    1_min: [20, 60]
+    5_min: [20, 60]
+  description: "SD1 represents the short-term variability in heart rate, typically associated with parasympathetic activity. It is derived from the Poincaré plot of successive NN intervals and reflects the width of the plot."
+  references:
+    - "Brennan M et al. (2001): SD1 measures dispersion perpendicular to line of identity in Poincaré plot, mathematically: SD1 = RMSSD/√2 (exact relationship)"
+    - "Tulppo MP et al. (1996): SD1 <10ms indicates severe autonomic dysfunction; normal 24-hr SD1: 25-50ms; direct marker of vagal modulation"
+    - "Guzik P et al. (2007): SD1 highly correlated with HF power (r=0.83) and parasympathetic indices; unaffected by trends unlike SDNN"
+  clinical_interpretation:
+    pathophysiology: "SD1 quantifies short-axis width of Poincaré plot ellipse, representing beat-to-beat variability. Mathematical relationship: SD1 = (1/√2) × RMSSD ensures perfect correlation. Reflects instantaneous parasympathetic modulation via respiratory sinus arrhythmia. Immune to non-stationarity and trends, making it superior to SDNN for short-term recordings."
+    clinical_significance: "SD1 <10ms indicates severe vagal withdrawal with 4x increased mortality post-MI. Normal resting: 20-60ms. Athletes: 40-100ms. SD1 >80ms exceptional vagal tone. SD1/SD2 ratio <0.3 suggests sympathetic dominance, >0.7 parasympathetic dominance. Preferred over RMSSD in nonlinear HRV analysis; geometric interpretation aids clinical understanding."
+    age_factors: "SD1 decreases with age: 20-30 years (45±18ms), 40-50 years (30±12ms), 60-70 years (18±8ms). Gender: females 15-20% higher. Sleep increases SD1 by 30-50%. Position: supine SD1 40% higher than standing. Diabetes accelerates SD1 decline by 10 years."
+  interpretation:
+    in_range: "Normal SD1 indicates healthy short-term variability and strong parasympathetic regulation."
+    below_range: "Low SD1 suggests reduced short-term variability, often associated with autonomic dysfunction or cardiovascular disease."
+    above_range: "High SD1 suggests enhanced short-term variability, commonly seen during relaxation or in athletes with good cardiovascular health."
+  contradiction:
+    rmssd: "Low SD1 contradicts high RMSSD, as both should reflect similar parasympathetic activity."
+  correlation:
+    rmssd: "Correlated with RMSSD and HF power."
+  thresholds:
+    contradiction:
+      rmssd:
+        strong: 0.3  # Mathematical relationship SD1 = RMSSD/√2; >30% deviation impossible without calculation error
+        slight: 0.15 # 15-30% deviation indicates severe software bug or data corruption
+    correlation:
+      rmssd:
+        strong: 0.1  # Perfect correlation (r=1.0) expected due to mathematical identity; <10% difference = rounding only
+        slight: 0.2  # Any >10% deviation warrants immediate investigation for algorithm errors
+
+poincare_sd2:
+  normal_range:
+    1_min: [50, 150]
+    5_min: [50, 150]
+  description: "SD2 represents long-term variability in heart rate, associated with both sympathetic and parasympathetic activity. It reflects the length of the Poincaré plot and is indicative of overall heart rate variability."
+  references:
+    - "Brennan M et al. (2001): SD2 measures dispersion along line of identity in Poincaré plot; approximates SDNN for stationary signals; reflects total variability"
+    - "Voss A et al. (2009): SD2 normal 24-hr: 50-150ms; SD2 <30ms post-MI predicts 5.3x mortality; captures both sympathetic and vagal components"
+    - "Karmakar CK et al. (2009): SD2/SD1 ratio: <1.4 indicates parasympathetic dominance, >1.4 sympathetic dominance; healthy resting ratio 2.0-3.0"
+  clinical_interpretation:
+    pathophysiology: "SD2 quantifies long-axis length of Poincaré plot ellipse, representing continuous long-term variability. For stationary signals, SD2 ≈ √2 × SDNN. Captures slow variations from baroreflex, thermoregulation, and renin-angiotensin system. SD2 reflects both sympathetic and parasympathetic modulation; ratio SD2/SD1 quantifies autonomic balance."
+    clinical_significance: "SD2 <30ms indicates severe autonomic failure with high mortality risk. Normal resting: 50-150ms. SD2/SD1 ratio clinical utility: <1.4 vagal dominance (athletes, sleep), 1.4-2.5 balanced, >3.5 sympathetic dominance (stress, heart failure). SD2 >200ms may indicate excessive variability from arrhythmias or ectopy requiring ECG review."
+    age_factors: "SD2 decreases with age: 20-30 years (120±50ms), 40-50 years (80±35ms), 60-70 years (50±25ms). SD2/SD1 ratio increases with age (declining vagal tone). Athletes: SD2 150-250ms. Position: SD2 decreases 30-40% from supine to standing. Circadian variation: SD2 highest during deep sleep."
+  interpretation:
+    in_range: "Normal SD2 indicates balanced autonomic regulation and healthy long-term heart rate variability."
+    below_range: "Low SD2 suggests reduced long-term variability, often seen in autonomic dysfunction or cardiovascular disease."
+    above_range: "High SD2 indicates excessive long-term variability, possibly due to arrhythmias or unstable heart rhythms."
+  contradiction:
+    sdnn: "Low SD2 contradicts high SDNN, as both reflect long-term variability and autonomic balance."
+  correlation:
+    sdnn: "Correlated with SDNN and long-term HRV."
+  thresholds:
+    contradiction:
+      sdnn:
+        strong: 0.3    # Brennan et al. (2001): SD2 ≈ √2 × SDNN for stationary data; >30% deviation indicates trends or non-stationarity
+        slight: 0.15   # 15-30% acceptable for short recordings with respiratory or postural variations
+    correlation:
+      sdnn:
+        strong: 0.1    # Correlation r>0.95 expected for clean stationary signals; <10% difference indicates excellent data quality
+        slight: 0.2    # 10-20% acceptable for non-stationary recordings or presence of VLF components
+
+sample_entropy:
+  normal_range:
+    1_min: [0.5, 1.5]
+    5_min: [0.5, 1.5]
+  description: "Sample entropy measures the complexity and predictability of a physiological signal like the PPG. Lower entropy indicates a more predictable and regular signal, often seen in reduced variability, while higher entropy reflects greater irregularity and noise, which can be indicative of arrhythmias or signal abnormalities."
+  interpretation:
+    in_range: "Normal sample entropy suggests a balance between signal regularity and variability, indicative of healthy cardiac function."
+    below_range: "Low sample entropy points to a highly predictable and regular signal, often associated with autonomic dysfunction, decreased HRV, or reduced parasympathetic activity, common in chronic cardiovascular diseases."
+    above_range: "Elevated sample entropy may indicate excessive signal irregularity, potentially due to arrhythmias or noise, requiring further investigation."
+  contradiction:
+    fractal_dimension: "Low sample entropy contradicts high fractal dimension, as both reflect signal complexity."
+  correlation:
+    dfa: "Correlated with DFA and other measures of complexity, such as approximate entropy."
+  thresholds:
+    contradiction:
+      fractal_dimension:
+        strong: 0.25   # Strong contradiction if the difference exceeds 25%.
+        slight: 0.1    # Slight contradiction if the difference is between 10% and 25%.
+    correlation:
+      dfa:
+        strong: 0.05   # Strong correlation if values are within 5% of each other.
+        slight: 0.15   # Slight correlation if within 15%.
+
+approximate_entropy:
+  normal_range:
+    1_min: [0.5, 1.5]
+    5_min: [0.5, 1.5]
+  description: "Approximate entropy measures the complexity and unpredictability of physiological signals such as the PPG. It reflects the likelihood of similar patterns recurring. High entropy indicates increased randomness, while low entropy suggests regularity, often seen in reduced HRV or autonomic dysfunction."
+  interpretation:
+    in_range: "Normal approximate entropy reflects healthy variability in physiological signals, with an appropriate balance between regularity and randomness."
+    below_range: "Low approximate entropy is indicative of overly regular physiological processes, often seen in patients with heart failure or autonomic neuropathy, where HRV is reduced."
+    above_range: "High approximate entropy suggests excessive signal irregularity, which can be associated with arrhythmias, high stress levels, or noise in the data."
+  contradiction:
+    sample_entropy: "High approximate entropy contradicts low sample entropy, as both should measure similar signal properties."
+  correlation:
+    sample_entropy: "Correlated with sample entropy and other complexity measures."
+  thresholds:
+    contradiction:
+      sample_entropy:
+        strong: 0.2    # Strong contradiction if the values differ by more than 20%.
+        slight: 0.1    # Slight contradiction for differences between 10% and 20%.
+    correlation:
+      sample_entropy:
+        strong: 0.05   # Strong correlation if within 5%.
+        slight: 0.15   # Slight correlation if within 15%.
+
+recurrence_rate:
+  normal_range:
+    1_min: [1, 5]
+    5_min: [1, 5]
+  description: "Recurrence rate measures how often the physiological signal returns to the same state over time, providing insight into the periodicity of the signal. A reduced recurrence rate may reflect autonomic dysfunction or irregular cardiac rhythms, while an elevated recurrence rate can indicate excessive signal regularity."
+  interpretation:
+    in_range: "A normal recurrence rate indicates a healthy balance of periodicity in the signal, reflecting stable cardiac and autonomic function."
+    below_range: "Low recurrence rate points to irregular or chaotic signal behavior, potentially indicating arrhythmias, autonomic dysfunction, or cardiac instability."
+    above_range: "High recurrence rate suggests excessive regularity in the signal, often seen in conditions with reduced HRV or high predictability, such as in chronic cardiovascular diseases."
+  contradiction:
+    sample_entropy: "High recurrence rate contradicts high sample entropy, as increased regularity should reduce signal complexity."
+  correlation:
+    approximate_entropy: "Correlated with other measures of signal regularity and predictability."
+  thresholds:
+    contradiction:
+      sample_entropy:
+        strong: 0.25   # Strong contradiction if recurrence rate and sample entropy differ by more than 25%.
+        slight: 0.15   # Slight contradiction for differences between 15% and 25%.
+    correlation:
+      approximate_entropy:
+        strong: 0.1    # Strong correlation if within 10%.
+        slight: 0.2    # Slight correlation if within 20%.
+
+determinism:
+  normal_range:
+    1_min: [90, 100]
+    5_min: [90, 100]
+  description: "Determinism quantifies the predictability of a physiological signal based on past behavior. High determinism reflects a predictable signal, while low determinism suggests a more chaotic signal. This measure is critical in assessing the regularity and stability of heart rate or blood flow dynamics."
+  interpretation:
+    in_range: "Normal determinism indicates a healthy balance between signal predictability and variability, reflecting stable cardiovascular function."
+    below_range: "Low determinism suggests chaotic and unpredictable heart rate patterns, which may indicate arrhythmias, autonomic dysfunction, or cardiac instability."
+    above_range: "High determinism suggests overly predictable heart rhythms, which may point to reduced HRV or the onset of autonomic imbalance, often seen in aging or cardiovascular disease."
+  contradiction:
+    approximate_entropy: "High determinism contradicts high approximate entropy, as high entropy reflects randomness while determinism reflects predictability."
+  correlation:
+    recurrence_rate: "Correlated with recurrence rate and signal regularity."
+  thresholds:
+    contradiction:
+      approximate_entropy:
+        strong: 0.3    # Strong contradiction if the difference is greater than 30%.
+        slight: 0.1    # Slight contradiction if between 10% and 30%.
+    correlation:
+      recurrence_rate:
+        strong: 0.05   # Strong correlation if within 5%.
+        slight: 0.15   # Slight correlation if within 15%.
+
+laminarity:
+  normal_range:
+    1_min: [90, 100]
+    5_min: [90, 100]
+  description: "Laminarity measures the smooth, repetitive patterns in the physiological signal, such as heart rate. A high degree of laminarity indicates consistent, smooth signal behavior, while reduced laminarity points to irregularity, which could suggest arrhythmias or autonomic dysfunction."
+  interpretation:
+    in_range: "Normal laminarity suggests a healthy balance of smooth, regular heart rhythms with some variability, indicating proper cardiac function."
+    below_range: "Low laminarity suggests irregular heart rhythms, often seen in arrhythmias, atrial fibrillation, or autonomic dysfunction."
+    above_range: "High laminarity reflects overly regular and smooth heart rhythms, which may indicate reduced HRV, often associated with autonomic dysfunction or cardiovascular disease."
+  contradiction:
+    dfa: "High laminarity contradicts high DFA, as DFA measures fractal scaling, which should align with less regularity."
+  correlation:
+    determinism: "Correlated with determinism and signal predictability."
+  thresholds:
+    contradiction:
+      dfa:
+        strong: 0.25   # Strong contradiction if laminarity is 25% higher than DFA.
+        slight: 0.1    # Slight contradiction for differences between 10% and 25%.
+    correlation:
+      determinism:
+        strong: 0.05   # Strong correlation if values are within 5% of each other.
+        slight: 0.15   # Slight correlation if within 15%.
+
+systolic_duration:
+  normal_range:
+    1_min: [-inf, 400]
+    5_min: [-inf, 400]
+  description: "Systolic duration represents the time the heart spends in contraction during the cardiac cycle. Short systolic durations may indicate high heart rates or reduced cardiac output, while prolonged durations could indicate cardiac overload or ventricular dysfunction."
+  interpretation:
+    in_range: "Normal systolic duration suggests appropriate cardiac output and ventricular function, with balanced contraction and relaxation phases."
+    below_range: "Short systolic duration may indicate increased heart rate, reduced stroke volume, or conditions such as tachycardia, requiring evaluation of cardiac output."
+    above_range: "Prolonged systolic duration suggests ventricular overload or poor cardiac function, often seen in heart failure or hypertensive conditions."
+  contradiction:
+    diastolic_duration: "A prolonged systolic duration with short diastolic duration contradicts normal heart function."
+  correlation:
+    diastolic_duration: "Should be correlated with diastolic duration to maintain healthy systolic/diastolic balance."
+  thresholds:
+    contradiction:
+      diastolic_duration:
+        strong: 0.3    # Strong contradiction if systolic duration is 30% higher or lower than diastolic duration.
+        slight: 0.1    # Slight contradiction if the difference is between 10% and 30%.
+    correlation:
+      diastolic_duration:
+        strong: 0.05   # Strong correlation if systolic and diastolic durations are within 5% of each other.
+        slight: 0.15   # Slight correlation if within 15%.
+
+diastolic_duration:
+  normal_range:
+    1_min: [400, 600]
+    5_min: [400, 600]
+  description: "Diastolic duration reflects the time the heart spends in relaxation, allowing ventricular filling. This phase is crucial for the heart to receive blood before the next contraction. Shortened diastolic duration is often seen in conditions with elevated heart rates, poor relaxation, or cardiovascular stress, while prolonged diastolic duration may indicate bradycardia or impaired ventricular contraction."
+  interpretation:
+    in_range: "Normal diastolic duration suggests healthy ventricular relaxation and adequate filling, indicating efficient heart function."
+    below_range: "Short diastolic duration may indicate reduced ventricular filling, commonly due to tachycardia or stress-related conditions that increase heart rate, such as sepsis or heart failure."
+    above_range: "Prolonged diastolic duration may indicate bradycardia or conditions leading to decreased ventricular contractility, such as heart block or dilated cardiomyopathy."
+  contradiction:
+    systolic_duration: "A prolonged diastolic duration with short systolic duration contradicts healthy cardiac output."
+  correlation:
+    systolic_duration: "Should be correlated with systolic duration to maintain a balanced cardiac cycle."
+  thresholds:
+    contradiction:
+      systolic_duration:
+        strong: 0.3    # Strong contradiction if the systolic duration differs by more than 30%.
+        slight: 0.15   # Slight contradiction for differences between 15% and 30%.
+    correlation:
+      systolic_duration:
+        strong: 0.05   # Strong correlation if systolic and diastolic durations are within 5% of each other.
+        slight: 0.15   # Slight correlation if within 15%.
+
+systolic_area:
+  normal_range:
+    1_min: [60, 80]  # 60–80% of total area
+    5_min: [60, 80]
+  description: "The systolic area under the curve represents the amount of blood ejected during the systolic phase, reflecting cardiac output. A larger systolic area suggests increased cardiac workload, while a reduced systolic area indicates impaired ejection fraction or ventricular dysfunction."
+  interpretation:
+    in_range: "Normal systolic area indicates balanced cardiac output, reflecting healthy ventricular contraction and blood ejection."
+    below_range: "Reduced systolic area suggests decreased cardiac output or impaired systolic function, often seen in heart failure, reduced stroke volume, or myocardial ischemia."
+    above_range: "Increased systolic area indicates elevated cardiac output, which may be caused by hypertension, increased ventricular contractility, or stress-related conditions."
+  contradiction:
+    diastolic_area: "A disproportionately large systolic area contradicts low diastolic area and may indicate poor cardiac relaxation."
+  correlation:
+    systolic_duration: "Correlated with systolic duration and overall cardiac output."
+  thresholds:
+    contradiction:
+      diastolic_area:
+        strong: 0.25  # Strong contradiction if the difference between systolic and diastolic areas exceeds 25%.
+        slight: 0.1   # Slight contradiction for differences between 10% and 25%.
+    correlation:
+      systolic_duration:
+        strong: 0.05  # Strong correlation if the systolic area and duration are within 5% of each other.
+        slight: 0.15  # Slight correlation if within 15%.
+
+diastolic_area:
+  normal_range:
+    1_min: [20, 40]  # 20–40% of total area
+    5_min: [20, 40]
+  description: "The diastolic area under the curve reflects ventricular filling during the relaxation phase. An abnormal diastolic area can indicate poor ventricular compliance or excessive preload. A balance between systolic and diastolic areas is essential for optimal cardiac function."
+  interpretation:
+    in_range: "Normal diastolic area suggests effective ventricular relaxation and filling, ensuring proper cardiac function."
+    below_range: "Reduced diastolic area may indicate decreased ventricular compliance or filling, often seen in heart failure, restrictive cardiomyopathy, or tachycardia."
+    above_range: "Increased diastolic area suggests enhanced ventricular filling, which may be compensatory due to increased preload or reduced ventricular contractility."
+  contradiction:
+    systolic_area: "A disproportionately large diastolic area contradicts low systolic area and may suggest reduced cardiac output."
+  correlation:
+    diastolic_duration: "Correlated with diastolic duration and overall cardiac relaxation."
+  thresholds:
+    contradiction:
+      systolic_area:
+        strong: 0.25  # Strong contradiction if the difference between systolic and diastolic areas exceeds 25%.
+        slight: 0.1   # Slight contradiction for differences between 10% and 25%.
+    correlation:
+      diastolic_duration:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+systolic_slope:
+  description: "Reflects the steepness of the systolic rise in the waveform."
+  normal_range:
+    1_min: [0.8, 1.2]
+    5_min: [0.8, 1.2]
+  interpretation:
+    in_range: "Normal systolic slope, indicating appropriate ventricular contraction."
+    below_range: "Low systolic slope may suggest weak ventricular contraction or reduced cardiac output."
+    above_range: "High systolic slope suggests increased ventricular contraction, often due to stress or elevated cardiac output."
+  contradiction:
+    diastolic_slope: "A disproportionately high systolic slope contradicts low diastolic slope, indicating imbalanced cardiac function."
+  correlation:
+    systolic_duration: "Correlated with systolic duration and cardiac output."
+  thresholds:
+    contradiction:
+      diastolic_slope:
+        strong: 0.2   # Strong contradiction if the difference exceeds 20%.
+        slight: 0.1   # Slight contradiction for differences between 10% and 20%.
+    correlation:
+      systolic_duration:
+        strong: 0.05  # Strong correlation if systolic slope and duration are within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+diastolic_slope:
+  description: "Reflects the steepness of the diastolic decay in the waveform."
+  normal_range:
+    1_min: [0.8, 1.2]
+    5_min: [0.8, 1.2]
+  interpretation:
+    in_range: "Normal diastolic slope, indicating healthy cardiac relaxation."
+    below_range: "Low diastolic slope suggests impaired relaxation or increased afterload."
+    above_range: "High diastolic slope may indicate rapid cardiac relaxation or compensatory mechanisms."
+  contradiction:
+    systolic_slope: "A high diastolic slope with low systolic slope contradicts normal cardiac function."
+  correlation:
+    diastolic_duration: "Correlated with diastolic duration and cardiac relaxation."
+  thresholds:
+    contradiction:
+      systolic_slope:
+        strong: 0.2   # Strong contradiction if the difference exceeds 20%.
+        slight: 0.1   # Slight contradiction for differences between 10% and 20%.
+    correlation:
+      diastolic_duration:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+signal_skewness:
+  normal_range:
+    1_min: [-0.5, 0.5]
+    5_min: [-0.5, 0.5]
+  description: "Signal skewness measures the asymmetry of the PPG waveform. A skewed waveform may indicate abnormalities in vascular compliance, arrhythmias, or signal noise. Negative skewness reflects prolonged diastolic filling, while positive skewness indicates faster systolic ejection."
+  interpretation:
+    in_range: "Normal skewness reflects a well-balanced systolic and diastolic waveform, indicating proper cardiac and vascular function."
+    below_range: "Negative skewness suggests prolonged diastolic filling or delayed ventricular contraction, often seen in diastolic dysfunction or heart failure."
+    above_range: "Positive skewness indicates rapid systolic ejection, which may suggest increased heart rate or vascular resistance, often seen in stress, hypertension, or compensatory cardiac output."
+  contradiction:
+    systolic_amplitude_variability: "High signal skewness contradicts low systolic amplitude variability, as high skewness usually reflects variability in the signal."
+  correlation:
+    systolic_amplitude_variability: "Correlated with systolic and diastolic variability, reflecting overall signal irregularity."
+  thresholds:
+    contradiction:
+      systolic_amplitude_variability:
+        strong: 0.25  # Strong contradiction if signal skewness differs by more than 25% from amplitude variability.
+        slight: 0.1   # Slight contradiction for differences between 10% and 25%.
+    correlation:
+      systolic_amplitude_variability:
+        strong: 0.05  # Strong correlation if skewness and amplitude variability are within 5% of each other.
+        slight: 0.15  # Slight correlation if within 15%.
+
+peak_trend_slope:
+  normal_range:
+    1_min: [0.8, 1.5]
+    5_min: [0.8, 1.5]
+  description: "Peak trend slope represents the rate of change between successive peaks in the pulse waveform, reflecting changes in cardiac output or vascular resistance. An increasing slope suggests heightened cardiac workload, while a decreasing slope indicates reduced output or poor compliance."
+  interpretation:
+    in_range: "A normal peak trend slope reflects stable cardiac output and peripheral vascular resistance, indicating a balanced cardiovascular system."
+    below_range: "A decreasing peak trend slope suggests reduced cardiac output or poor vascular compliance, often seen in heart failure, low cardiac output states, or vascular stiffness."
+    above_range: "An increasing peak trend slope indicates elevated cardiac output or increased vascular resistance, which may be caused by stress, hypertension, or compensatory mechanisms in response to physiological demand."
+  contradiction:
+    systolic_slope: "A low peak trend slope contradicts high systolic slope, indicating an imbalance in cardiac function."
+  correlation:
+    systolic_slope: "Correlated with systolic slope and overall cardiac output."
+  thresholds:
+    contradiction:
+      systolic_slope:
+        strong: 0.3   # Strong contradiction if peak trend slope differs by more than 30% from systolic slope.
+        slight: 0.1   # Slight contradiction for differences between 10% and 30%.
+    correlation:
+      systolic_slope:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+systolic_amplitude_variability:
+  normal_range:
+    1_min: [0.8, 1.2]
+    5_min: [0.8, 1.2]
+  description: "Reflects the variability in systolic peak amplitudes in the pulse waveform, which indicates fluctuations in cardiac output and ventricular contraction strength."
+  interpretation:
+    in_range: "Normal systolic amplitude variability suggests stable cardiac output and healthy ventricular contraction."
+    below_range: "Low systolic amplitude variability indicates reduced cardiac output or weak ventricular contraction, possibly due to heart failure or poor ventricular performance."
+    above_range: "High systolic amplitude variability may suggest fluctuating cardiac output, often seen in stress, arrhythmias, or fluctuating blood pressure."
+  contradiction:
+    diastolic_amplitude_variability: "High systolic amplitude variability with low diastolic amplitude variability indicates imbalanced cardiac function."
+  correlation:
+    systolic_duration: "Correlated with systolic duration and overall cardiac output variability."
+  thresholds:
+    contradiction:
+      diastolic_amplitude_variability:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      systolic_duration:
+        strong: 0.1
+        slight: 0.2
+
+diastolic_amplitude_variability:
+  normal_range:
+    1_min: [0.8, 1.2]
+    5_min: [0.8, 1.2]
+  description: "Represents the variability in diastolic peak amplitudes in the pulse waveform, reflecting changes in cardiac relaxation and filling during the diastolic phase."
+  interpretation:
+    in_range: "Normal diastolic amplitude variability suggests stable cardiac relaxation and appropriate ventricular filling."
+    below_range: "Low diastolic amplitude variability may indicate impaired cardiac relaxation or reduced ventricular filling, often associated with diastolic dysfunction."
+    above_range: "High diastolic amplitude variability could indicate unstable cardiac relaxation patterns, possibly due to arrhythmias or compensatory mechanisms."
+  contradiction:
+    systolic_amplitude_variability: "High diastolic amplitude variability with low systolic amplitude variability indicates imbalanced cardiac function."
+  correlation:
+    diastolic_duration: "Correlated with diastolic duration and cardiac relaxation variability."
+  thresholds:
+    contradiction:
+      systolic_amplitude_variability:
+        strong: 0.3  # A significant difference between systolic and diastolic variability greater than 30%.
+        slight: 0.15
+    correlation:
+      diastolic_duration:
+        strong: 0.1
+        slight: 0.2
+
+# ECG-PPG Combined Features
+
+p_wave_duration:
+  normal_range:
+    1_min: [80, 110]
+    5_min: [80, 110]
+  description: "Represents the duration of the P-wave in the ECG, which reflects atrial depolarization. Prolonged P-wave duration is often associated with atrial enlargement or conduction delays."
+  interpretation:
+    in_range: "Normal P-wave duration indicates healthy atrial depolarization and normal atrial conduction."
+    below_range: "Short P-wave duration may suggest increased heart rate or premature atrial contraction."
+    above_range: "Prolonged P-wave duration may indicate atrial enlargement, conduction delays, or atrial hypertrophy, commonly seen in hypertensive heart disease or mitral valve disorders."
+  contradiction:
+    pr_interval: "Prolonged P-wave duration contradicts a normal PR interval, as both reflect atrial conduction."
+  correlation:
+    pr_interval: "Correlated with PR interval, reflecting atrial conduction and AV nodal delay."
+  thresholds:
+    contradiction:
+      pr_interval:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      pr_interval:
+        strong: 0.1
+        slight: 0.2
+
+pr_interval:
+  normal_range:
+    1_min: [120, 200]
+    5_min: [120, 200]
+  description: "The PR interval is the time between the onset of the P-wave and the beginning of the QRS complex. It reflects atrial depolarization and the delay in the AV node before ventricular activation. A prolonged PR interval indicates delayed AV conduction."
+  interpretation:
+    in_range: "Normal PR interval suggests healthy AV conduction and coordinated atrial and ventricular depolarization."
+    below_range: "Short PR interval indicates increased conduction speed, often seen in pre-excitation syndromes such as Wolff-Parkinson-White syndrome."
+    above_range: "Prolonged PR interval suggests delayed AV conduction, commonly seen in first-degree heart block or with aging."
+  contradiction:
+    p_wave_duration: "Prolonged PR interval with a short P-wave duration contradicts normal atrial conduction."
+  correlation:
+    qrs_duration: "Correlated with QRS duration in conditions affecting overall conduction time."
+  thresholds:
+    contradiction:
+      p_wave_duration:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      qrs_duration:
+        strong: 0.1
+        slight: 0.2
+
+qrs_duration:
+  normal_range:
+    1_min: [80, 120]
+    5_min: [80, 120]
+  description: "Represents the time taken for ventricular depolarization in the ECG. Prolonged QRS duration is associated with conduction delays, ventricular hypertrophy, or bundle branch blocks."
+  interpretation:
+    in_range: "Normal QRS duration indicates healthy ventricular depolarization and electrical conduction."
+    below_range: "Short QRS duration may indicate high conduction efficiency, often seen in athletes or with increased heart rate (tachycardia)."
+    above_range: "Prolonged QRS duration suggests conduction delays (e.g., bundle branch block) or ventricular hypertrophy, commonly seen in hypertensive heart disease, left ventricular hypertrophy, or heart failure."
+  contradiction:
+    qt_interval: "Prolonged QRS duration contradicts a normal QT interval, as both reflect ventricular activity."
+  correlation:
+    qt_interval: "Correlated with QT interval, especially in conditions affecting ventricular repolarization."
+  thresholds:
+    contradiction:
+      qt_interval:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      qt_interval:
+        strong: 0.1
+        slight: 0.2
+
+qt_interval:
+  normal_range:
+    1_min: [350, 450]
+    5_min: [350, 450]
+  description: "The QT interval represents the total time for ventricular depolarization and repolarization. A prolonged QT interval is a risk factor for arrhythmias such as Torsades de Pointes, while a short QT interval is associated with increased heart rate or hypercalcemia."
+  interpretation:
+    in_range: "Normal QT interval indicates coordinated ventricular depolarization and repolarization, with no significant risk of arrhythmias."
+    below_range: "Short QT interval may suggest increased heart rate or hypercalcemia, often seen during exercise or with certain electrolyte imbalances."
+    above_range: "Prolonged QT interval increases the risk of dangerous arrhythmias, such as Torsades de Pointes, and may be associated with electrolyte imbalances (e.g., hypokalemia) or congenital long QT syndrome."
+  contradiction:
+    qrs_duration: "Prolonged QT interval with short QRS duration contradicts normal ventricular function."
+  correlation:
+    qrs_duration: "Correlated with QRS duration and ventricular repolarization abnormalities."
+  thresholds:
+    contradiction:
+      qrs_duration:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      qrs_duration:
+        strong: 0.1
+        slight: 0.2
+
+st_segment_duration:
+  normal_range:
+    1_min: [80, 120 ms]
+    5_min: [80, 120 ms]
+  description: "The ST segment represents the plateau phase of ventricular repolarization. Abnormal ST segment durations or elevations are indicative of myocardial ischemia, infarction, or stress."
+  interpretation:
+    in_range: "Normal ST segment duration suggests healthy ventricular repolarization with no evidence of ischemia."
+    below_range: "Short ST segment may indicate early repolarization, often seen with increased heart rate or during hypercalcemia."
+    above_range: "Prolonged or elevated ST segment suggests myocardial ischemia, injury, or infarction, often associated with coronary artery disease or acute myocardial infarction."
+  contradiction:
+    qt_interval: "Prolonged ST segment contradicts a normal QT interval, as both reflect ventricular repolarization."
+  correlation:
+    qt_interval: "Correlated with QT interval in conditions affecting repolarization."
+  thresholds:
+    contradiction:
+      qt_interval:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      qt_interval:
+        strong: 0.1
+        slight: 0.2
+
+pulse_transit_time:
+  normal_range:
+    1_min: [100, 300]
+    5_min: [100, 300]
+  description: "Pulse Transit Time (PTT) represents the time between the R-wave in the ECG and the onset of the pulse wave in the PPG signal. Shorter PTT indicates increased arterial stiffness, while prolonged PTT suggests greater arterial compliance."
+  interpretation:
+    in_range: "Normal PTT indicates healthy arterial compliance and normal cardiovascular function."
+    below_range: "Short PTT suggests increased arterial stiffness, often associated with hypertension, arteriosclerosis, or vascular dysfunction."
+    above_range: "Prolonged PTT indicates reduced arterial stiffness or fluid overload, often seen in individuals with healthy vascular compliance or in heart failure."
+  contradiction:
+    pwv: "Short PTT contradicts normal pulse wave velocity (PWV), as both reflect arterial stiffness."
+  correlation:
+    pwv: "Inversely correlated with PWV and arterial stiffness."
+  thresholds:
+    contradiction:
+      pwv:
+        strong: 0.3  # Strong contradiction if PTT and PWV mismatch by more than 30%.
+        slight: 0.15
+    correlation:
+      pwv:
+        strong: 0.1
+        slight: 0.2
+
+pulse_arrival_time:
+  normal_range:
+    1_min: [120, 400]
+    5_min: [120, 400]
+  description: "Pulse Arrival Time (PAT) measures the time between the R-wave in the ECG and the peak of the pulse wave in the PPG. Prolonged PAT suggests slower blood ejection, while shorter PAT is indicative of faster ejection or high cardiac output."
+  interpretation:
+    in_range: "Normal PAT suggests normal cardiac output and arterial compliance."
+    below_range: "Short PAT indicates faster cardiac output, often seen during exercise or increased sympathetic activity."
+    above_range: "Prolonged PAT suggests reduced cardiac output or impaired blood ejection, commonly seen in heart failure or peripheral vascular disease."
+  contradiction:
+    cardiac_output: "Prolonged PAT contradicts high cardiac output, as both reflect ventricular function."
+  correlation:
+    stroke_volume: "Correlated with stroke volume and overall cardiac output."
+  thresholds:
+    contradiction:
+      cardiac_output:
+        strong: 0.3
+        slight: 0.15
+    correlation:
+      stroke_volume:
+        strong: 0.1
+
+electromechanical_delay:
+  normal_range:
+    1_min: [100, 300]
+    5_min: [100, 300]
+  description: "The electromechanical delay (EMD) represents the time between electrical activation (ECG) and mechanical response (PPG). Increased EMD indicates delayed mechanical contraction relative to electrical activation, which may suggest cardiac dysfunction or vascular stiffness."
+  interpretation:
+    in_range: "Normal EMD indicates coordinated electrical and mechanical cardiac function."
+    below_range: "Short EMD suggests hyperdynamic circulation, often seen in high-output states or during early stages of sepsis."
+    above_range: "Prolonged EMD suggests delayed mechanical response to electrical activity, commonly seen in left ventricular dysfunction, vascular stiffness, or ischemic heart disease."
+  contradiction:
+    stroke_volume: "Prolonged EMD contradicts high stroke volume, as both should reflect coordinated electrical and mechanical cardiac function."
+  correlation:
+    cardiac_output: "Correlated with cardiac output and left ventricular function, as both reflect the efficiency of cardiac performance."
+  thresholds:
+    contradiction:
+      stroke_volume:
+        strong: 0.3  # Mismatch in stroke volume and EMD greater than 30% indicates a critical issue.
+        slight: 0.15
+    correlation:
+      cardiac_output:
+        strong: 0.1
+        slight: 0.2
+
+synchronization_hr_pr:
+  normal_range:
+    1_min: [4, 5.9]  # Range to assess the difference between HR and PR
+    5_min: [4, 5.9]  # Same range for 5-minute segments (synchronization should be consistent)
+  description: "Synchronization between heart rate (HR) and pulse rate (PR) reflects the coordination between cardiac electrical activity and peripheral blood flow. Desynchronization may indicate arrhythmias, conduction delays, or poor peripheral perfusion, common in conditions such as atrial fibrillation or heart failure."
+  interpretation:
+    in_range: "Normal synchronization between HR and PR suggests proper cardiovascular function and adequate peripheral perfusion, with no evidence of arrhythmias."
+    below_range: "Desynchronization where PR is lower than HR suggests conditions like poor peripheral perfusion, heart failure, or arrhythmias like atrial fibrillation, where electrical signals fail to produce corresponding mechanical pulses."
+    above_range: "Desynchronization where PR is higher than HR indicates premature ventricular contractions (PVCs) or irregular pulse transmission, commonly seen in arrhythmias or cardiovascular dysfunction."
+  contradiction:
+    arrhythmias: "Loss of HR-PR synchronization contradicts normal heart rhythm, as desynchronization often indicates arrhythmias."
+  correlation:
+    atrial_fibrillation: "Correlated with arrhythmias like atrial fibrillation (AFib), where not all heartbeats produce a detectable pulse wave."
+  thresholds:
+    contradiction:
+      arrhythmias:
+        strong: 0.5  # Strong contradiction if HR and PR differ by more than 50% of the expected value.
+        slight: 0.2  # Slight contradiction for differences between 20% and 50%.
+    correlation:
+      atrial_fibrillation:
+        strong: 0.1  # Strong correlation if within 10%.
+        slight: 0.2  # Slight correlation if within 20%.
+
+rsa:
+  normal_range:
+    1_min: [5, 20]
+    5_min: [10, 30]  # Slightly wider range for 5-minute segments to account for respiratory cycle variations
+  description: "Respiratory Sinus Arrhythmia (RSA) is the variation in heart rate that occurs during the respiratory cycle. Typically, heart rate increases during inhalation and decreases during exhalation, reflecting the balance between sympathetic and parasympathetic (vagal) activity. RSA is often considered a marker of parasympathetic function and overall autonomic balance."
+  interpretation:
+    in_range: "Normal RSA indicates healthy parasympathetic regulation and autonomic balance, commonly associated with a relaxed state and efficient cardiovascular function."
+    below_range: "Reduced RSA suggests diminished parasympathetic activity, often associated with chronic stress, autonomic dysfunction, or cardiovascular diseases. This can indicate poor vagal tone and a potential risk for cardiovascular conditions like hypertension or heart failure."
+    above_range: "Increased RSA reflects enhanced parasympathetic activity, commonly seen during recovery from stress, relaxation techniques, or in highly trained athletes. This may also be observed following interventions such as deep breathing exercises or vagal stimulation."
+  contradiction:
+    hrv: "Reduced RSA contradicts high HRV features like RMSSD or pNN50, as both should align in reflecting parasympathetic control."
+  correlation:
+    parasympathetic_activity: "Correlated with parasympathetic activity and vagal tone, as RSA reflects autonomic regulation."
+  thresholds:
+    contradiction:
+      hrv:
+        strong: 0.3  # Strong contradiction if RSA differs significantly from HRV.
+        slight: 0.15
+    correlation:
+      parasympathetic_activity:
+        strong: 0.1
+        slight: 0.2
+
+rrv:
+  normal_range:
+    1_min: [0.1, 0.3]
+    5_min: [0.15, 0.4]  # Slightly higher range for 5-minute segments to capture longer-term variability
+  description: "Respiratory Rate Variability (RRV) measures the variability in the breathing rate over time. It reflects the capacity of the autonomic nervous system to regulate respiratory rhythms in response to physiological demands. Reduced RRV is often associated with impaired autonomic function or increased stress, while higher RRV suggests greater autonomic flexibility."
+  interpretation:
+    in_range: "Normal RRV indicates healthy autonomic control over respiratory function, suggesting a balanced and responsive respiratory system."
+    below_range: "Reduced RRV may indicate autonomic dysfunction, stress, or compromised respiratory control. This is often seen in conditions like respiratory diseases (e.g., COPD), sepsis, or chronic cardiovascular diseases where the ability to regulate respiratory patterns is impaired."
+    above_range: "Increased RRV suggests enhanced respiratory regulation, often seen during recovery from stress, after exercise, or with interventions like respiratory therapy. In some cases, high RRV may reflect improved autonomic regulation or better cardiovascular-respiratory coupling."
+  contradiction:
+    rsa: "Reduced RRV contradicts high RSA or HRV values, as both should align in indicating healthy autonomic control."
+  correlation:
+    autonomic_function: "Correlated with RSA and overall autonomic function, as both reflect respiratory and cardiovascular regulation."
+  thresholds:
+    contradiction:
+      rsa:
+        strong: 0.3  # A mismatch greater than 30% indicates a strong contradiction.
+        slight: 0.15
+    correlation:
+      autonomic_function:
+        strong: 0.1
+        slight: 0.2
+
+fractal_dimension_ppg:
+  normal_range:
+    1_min: [1.2, 1.4]
+    5_min: [1.2, 1.45]  # Slightly wider range for 5-minute segments to account for signal complexity variations
+  description: "Fractal dimension of the PPG waveform measures the complexity of the signal and is associated with the overall health of the cardiovascular and autonomic nervous systems. Lower fractal dimensions indicate reduced complexity, often due to autonomic dysfunction or cardiovascular disease. A higher fractal dimension may indicate irregularities in the waveform, potentially linked to arrhythmias or artifact noise."
+  interpretation:
+    in_range: "Normal fractal dimension indicates healthy complexity in the PPG waveform, suggesting intact cardiovascular and autonomic function."
+    below_range: "Low fractal dimension may point to autonomic imbalance or cardiovascular dysfunction, potentially due to conditions such as heart failure, diabetes, or neuropathy."
+    above_range: "High fractal dimension could suggest irregular waveform patterns often seen in arrhythmias or due to artifact noise in the measurement, requiring further validation of signal quality."
+  contradiction:
+    hrv: "Low fractal dimension contradicts high HRV and parasympathetic activity, as both should reflect signal complexity and autonomic balance."
+  correlation:
+    cardiovascular_health: "Correlated with overall cardiovascular health and vascular stiffness, as fractal dimension reflects signal regularity."
+  thresholds:
+    contradiction:
+      hrv:
+        strong: 0.3   # Strong contradiction if the fractal dimension differs by more than 30% from expected HRV measures.
+        slight: 0.15  # Slight contradiction for differences between 15% and 30%.
+    correlation:
+      cardiovascular_health:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+dfa_ppg:
+  normal_range:
+    1_min: [0.5, 1.5]
+    5_min: [0.5, 1.6]  # Slightly wider range for 5-minute segments to capture long-range correlations
+  description: "Detrended Fluctuation Analysis (DFA) evaluates long-range correlations and fractal scaling properties in the PPG signal, reflecting the self-similarity of physiological systems over time. It is used to assess autonomic control, with abnormal values indicating disrupted cardiac or vascular regulation."
+  interpretation:
+    in_range: "Normal DFA suggests proper autonomic regulation and healthy cardiovascular dynamics, with good signal consistency over time."
+    below_range: "Low DFA indicates decreased complexity and may suggest autonomic dysfunction, which could be due to conditions like heart failure, diabetes, or chronic stress."
+    above_range: "High DFA could indicate excessive self-similarity in the signal, potentially due to arrhythmias, excessive noise, or a lack of variability in the physiological processes."
+  contradiction:
+    fractal_dimension: "Low DFA contradicts high fractal dimension, as both should align in reflecting signal complexity and self-similarity."
+  correlation:
+    autonomic_balance: "Correlated with overall autonomic balance and heart rate variability, as DFA reflects signal scaling properties."
+  thresholds:
+    contradiction:
+      fractal_dimension:
+        strong: 0.2  # Strong contradiction if DFA differs by more than 20% from fractal dimension.
+        slight: 0.1  # Slight contradiction for differences between 10% and 20%.
+    correlation:
+      autonomic_balance:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
+
+spo2:
+  description: "Oxygen saturation level in blood measured via PPG using infrared (IR) and red light. Low SpO2 suggests hypoxia or respiratory failure."
+  normal_range:
+    1_min: [95, 100]
+    5_min: [95, 100]  # Same range for 5-minute segments (SpO2 should remain stable)
+  references:
+    - "WHO Guidelines (2011): Normal SpO2 95-100%, Hypoxemia <90%, Severe hypoxemia <85%"
+    - "FDA Pulse Oximetry Guidance (2021): Accuracy ±2% in 95-100% range"
+    - "BTS Guidelines (2017): Target SpO2 94-98% for most patients, 88-92% for COPD with hypercapnia"
+  clinical_interpretation:
+    pathophysiology: "SpO2 measures percentage of hemoglobin saturated with oxygen. Based on differential absorption of red (660nm) and infrared (940nm) light by oxygenated vs deoxygenated hemoglobin."
+    clinical_significance: "SpO2 <90% indicates respiratory failure requiring intervention. SpO2 <85% is life-threatening. Accuracy decreases with poor perfusion, dark skin pigmentation, nail polish, or motion artifact."
+    age_factors: "Newborns acceptable range 90-95% (first hours), then 95-100%. Adults/elderly: 95-100%. COPD patients may have baseline 88-92%."
+  interpretation:
+    in_range: "Normal oxygen saturation, indicating adequate oxygenation and respiratory function."
+    below_range: "Low SpO2 suggests hypoxia, potentially due to respiratory failure or poor oxygenation."
+    above_range: "High SpO2 may indicate over-oxygenation, which is rare in clinical practice."
+  contradiction:
+    perfusion_index: "Low SpO2 contradicts normal perfusion index (PI), as both should reflect adequate peripheral oxygenation and perfusion."
+  correlation:
+    respiratory_function: "Correlated with respiratory function, hypoxia, or oxygenation levels, as SpO2 reflects blood oxygen saturation."
+  thresholds:
+    contradiction:
+      perfusion_index:
+        strong: 0.25  # PI<0.4% with SpO2>95% indicates poor signal quality (25% mismatch in expected correlation)
+        slight: 0.1   # PI 0.4-1% may affect SpO2 accuracy (10-25% confidence reduction)
+    correlation:
+      respiratory_function:
+        strong: 0.1    # Respiratory rate 12-20 with SpO2>95% = strong correlation (healthy ventilation)
+        slight: 0.2    # Borderline respiratory parameters with borderline SpO2 (moderate correlation)
+
+perfusion_index:
+  description: "Represents the strength of the pulse signal from the PPG, reflecting peripheral blood flow. Low PI indicates poor perfusion."
+  normal_range:
+    1_min: [0.02, 20]
+    5_min: [0.02, 20]  # Same range for 5-minute segments (PI should be relatively stable)
+  references:
+    - "Lima AP, Beelen P, Bakker J (2002): PI normal range 0.3-10%, median 1.4% in healthy subjects; PI <0.4% associated with reduced SpO2 accuracy"
+    - "Masimo Corporation Technical White Paper (2014): PI <0.02% indicates insufficient signal quality; PI >20% rare except in sepsis or vasodilation"
+    - "Shelley KH (2007): PI predicts fluid responsiveness better than CVP; ΔPI >14% during passive leg raise indicates volume responder"
+  clinical_interpretation:
+    pathophysiology: "Perfusion Index (PI) = (AC component / DC component) × 100%, where AC is pulsatile arterial blood and DC is non-pulsatile tissue absorption. PI reflects peripheral vascular tone modulated by sympathetic nervous system and local metabolic factors. Low PI indicates vasoconstriction or poor cardiac output; high PI suggests vasodilation or hyperdynamic circulation."
+    clinical_significance: "PI <0.4% reduces pulse oximetry accuracy (SpO2 error ±3-4%). PI 0.4-2% normal peripheral perfusion. PI >10% may indicate septic shock (sensitivity 83%, specificity 78%). Dynamic PI variation (pleth variability) predicts fluid responsiveness in mechanically ventilated patients. Used clinically to assess peripheral perfusion in shock, hypothermia, Raynaud phenomenon."
+    age_factors: "PI higher in neonates (2-4%) due to higher cardiac output/body surface ratio. Adults: 1-2% typical. Elderly may have lower PI (0.5-1.5%) due to arterial stiffening. Site-dependent: finger (1.4%), earlobe (1.2%), forehead (0.6%). Cold exposure reduces PI by 50-70%."
+  interpretation:
+    in_range: "Normal perfusion index, indicating adequate peripheral blood flow."
+    below_range: "Low PI suggests poor peripheral perfusion, possibly due to cardiovascular dysfunction or vasoconstriction."
+    above_range: "High PI indicates strong peripheral perfusion, often seen in hyperdynamic states or increased cardiac output."
+  contradiction:
+    spo2: "Low PI contradicts high SpO2, as both should reflect adequate perfusion and oxygenation."
+  correlation:
+    vascular_health: "Correlated with peripheral perfusion, cardiovascular health, and arterial stiffness, as PI reflects blood flow strength."
+  thresholds:
+    contradiction:
+      spo2:
+        strong: 0.25  # Lima et al. (2002): PI <0.4% with SpO2 >95% indicates unreliable SpO2 reading; >25% mismatch warrants site change
+        slight: 0.1   # PI 0.4-0.8% with normal SpO2 acceptable but monitor for signal quality degradation
+    correlation:
+      vascular_health:
+        strong: 0.1   # PI correlates with cardiac index (r=0.65); <10% variation indicates stable perfusion state
+        slight: 0.2   # 10-20% variation normal during position changes or autonomic fluctuations
+
+respiratory_rate_ppg:
+  normal_range:
+    1_min: [12, 20]
+    5_min: [12, 20]  # Same range for 5-minute segments (normal respiratory rate at rest)
+  description: "The respiratory rate derived from the PPG waveform is an important non-invasive measure of a patient's breathing status. This rate is essential in detecting respiratory distress, bradypnea, or tachypnea, which can be indicators of underlying pulmonary or cardiovascular conditions such as COPD, pneumonia, or sepsis."
+  references:
+    - "WHO/UNICEF Guidelines (2015): Normal adult respiratory rate 12-20 breaths/min; tachypnea >20/min predicts serious illness (sensitivity 53%, specificity 92%)"
+    - "Fieselmann JF et al. (1993): Respiratory rate >27/min independently predicts cardiopulmonary arrest (OR 3.1); most sensitive vital sign for deterioration"
+    - "Addison K et al. (2015): PPG-derived respiratory rate accuracy: 90% agreement ±2 breaths/min compared to capnography; requires clean PPG signal"
+  clinical_interpretation:
+    pathophysiology: "Respiratory rate derived from PPG baseline wander caused by thoracic impedance changes during breathing. Amplitude modulation (AM) at respiratory frequency (0.15-0.4 Hz) and frequency modulation (FM) from respiratory sinus arrhythmia enable extraction. Accuracy depends on signal quality, movement artifacts, and breathing pattern regularity."
+    clinical_significance: "Respiratory rate <10/min indicates respiratory depression (narcotics, sedatives, brainstem injury). Rate >24/min early warning sign for sepsis, pneumonia, ARDS, heart failure (sensitivity 76%). Normal rate 12-20/min. PPG-derived RR useful for continuous monitoring without chest sensors. False readings from motion artifact, irregular breathing, Cheyne-Stokes respiration."
+    age_factors: "Age-dependent norms: newborns 30-60/min, infants 24-40/min, children 18-30/min, adults 12-20/min, elderly 12-18/min. Sleep reduces rate by 2-4 breaths/min. Exercise increases to 35-45/min (moderate) or >60/min (maximal). Anxiety commonly elevates to 20-25/min."
+  interpretation:
+    in_range: "Normal respiratory rate suggests that the patient is maintaining healthy respiratory function, with no immediate signs of distress."
+    below_range: "Low respiratory rate may indicate bradypnea, often seen in cases of respiratory depression, sleep apnea, or narcotic overdose, requiring immediate clinical attention."
+    above_range: "Elevated respiratory rate (tachypnea) is a marker of respiratory distress and can indicate sepsis, pneumonia, or acute respiratory failure, requiring urgent medical intervention."
+  contradiction:
+    rsa: "High respiratory rate contradicts normal RSA, as both should reflect coordinated respiratory function and heart rate variability."
+  correlation:
+    respiratory_health: "Correlated with HRV, RSA, and respiratory health, as respiratory rate reflects overall pulmonary function."
+  thresholds:
+    contradiction:
+      rsa:
+        strong: 0.25  # Tachypnea (>24/min) with strong RSA contradicts >25%; RSA amplitude decreases at high rates (Hirsch & Bishop 1981)
+        slight: 0.1   # 10-25% discordance acceptable; RSA maintained at rates 12-20/min but diminishes >24/min
+    correlation:
+      respiratory_health:
+        strong: 0.05  # Respiratory rate 12-20/min with normal SpO2/RSA indicates excellent respiratory health; <5% deviation
+        slight: 0.15  # Rate 10-12 or 20-24/min with borderline parameters; 5-15% variation acceptable
+
+ppr_ir_red_ratio:
+  normal_range:
+    1_min: [0.8, 1.2]
+    5_min: [0.8, 1.2]  # Same range for 5-minute segments (ratio should be consistent)
+  description: "The Photoplethysmogram Ratio (PPR) between infrared (IR) and red light absorption is used to calculate oxygen saturation (SpO2) levels. A balance between IR and red light is crucial for accurate oxygenation assessment. Abnormal PPR ratios can indicate hypoxia or measurement artifacts."
+  interpretation:
+    in_range: "A normal PPR ratio indicates appropriate oxygen saturation, suggesting that the patient’s lungs and cardiovascular system are adequately oxygenating blood."
+    below_range: "A low PPR ratio often correlates with reduced oxygenation, potentially indicating conditions like hypoxia, lung disease, or acute respiratory distress syndrome (ARDS)."
+    above_range: "A high PPR ratio may suggest measurement errors or abnormal oxygen saturation levels, which could be caused by vascular abnormalities or poor signal quality."
+  contradiction:
+    spo2: "Abnormal PPR contradicts normal SpO2 values, as both should reflect similar oxygen saturation levels."
+  correlation:
+    oxygenation_levels: "Correlated with oxygen saturation levels and respiratory function, as PPR reflects the ratio of infrared and red light absorption."
+  thresholds:
+    contradiction:
+      spo2:
+        strong: 0.3   # Strong contradiction if PPR differs by more than 30% from expected SpO2 values.
+        slight: 0.1   # Slight contradiction for differences between 10% and 30%.
+    correlation:
+      oxygenation_levels:
+        strong: 0.05  # Strong correlation if within 5%.
+        slight: 0.15  # Slight correlation if within 15%.
