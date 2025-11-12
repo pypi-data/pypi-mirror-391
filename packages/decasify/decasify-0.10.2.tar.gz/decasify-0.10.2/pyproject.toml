@@ -1,0 +1,23 @@
+[build-system]
+requires = ["maturin>=1.6,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "decasify"
+dependencies = ["cffi"]
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Natural Language :: Turkish",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Programming Language :: Rust",
+  "Topic :: Text Processing :: Filters",
+]
+dynamic = ["version"]
+
+[tool.maturin]
+locked = true
+features = ["pyo3/extension-module", "pythonmodule"]
