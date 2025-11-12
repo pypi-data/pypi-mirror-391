@@ -1,0 +1,102 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "culendar"
+version = "0.20251111"
+description = "Culendar is a free/libre calendar application in python and curses."
+authors = ["Mit <culendar@miteux.net>"]
+maintainers = ["Mit <culendar@miteux.net>"]
+license = "WTFPL"
+readme = "README.md"
+homepage = "https://framagit.org/mit/culendar"
+repository = "https://framagit.org/mit/culendar"
+keywords = ["calendar", "curses", "console"]
+# https://pypi.org/classifiers/
+classifiers = [ 
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console :: Curses",
+    "Intended Audience :: End Users/Desktop",
+    "License :: Public Domain",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+packages = [{include = "culendar"}]
+include = ["CHANGELOG.md", "screenshot0.png"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://framagit.org/mit/culendar/-/issues"
+"Merge Requests" = "https://framagit.org/mit/culendar/-/merge_requests"
+
+[tool.poetry.scripts]
+culendar = "culendar:run"
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+caldav = ">=1.2.1"
+icalendar = ">=5.0.4"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "*"
+flake8-fixme = "*"
+flake8-noqa = "*"
+flake8-pyproject = "*"
+isort = "*"
+mypy = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-html = "*"
+
+[tool.flake8]
+max-line-length = 160
+exclude = [".venv", "venv"]
+
+[tool.isort]
+# https://github.com/PyCQA/isort/wiki/isort-Settings
+line_length = 160
+skip_gitignore = true
+# https://pycqa.github.io/isort/docs/configuration/multi_line_output_modes.html
+multi_line_output = 3
+reverse_relative = true
+use_parentheses = true
+combine_star = true
+force_grid_wrap = 2
+include_trailing_comma = true
+
+[tool.mypy]
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-exclude
+exclude = ["\\.venv", "venv"]
+allow_redefinition = false
+ignore_missing_imports = true
+local_partial_types = true
+
+[tool.pytest.ini_options]
+pythonpath = "."
+junit_family = "xunit2"
+junit_logging = "all"
+addopts = [
+    "--color=auto",
+    "--code-highlight=yes",
+    "--junit-xml=reports/report.xunit",
+    "--html=reports/report.html",
+    "--self-contained-html",
+    "--cov",
+    "--cov-report=term",
+    "--cov-report=xml",
+    "--cov-report=html",
+]
+[tool.coverage.run]
+source = ["culendar"]
+branch = true
+relative_files = true
+[tool.coverage.report]
+precision = 2
+[tool.coverage.xml]
+output = "reports/coverage.xml"
+[tool.coverage.html]
+directory = "reports/coverage"

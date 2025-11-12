@@ -1,0 +1,14 @@
+95,96c95,104
+<                 # get first calendar from principal
+<                 cal = calendars[0]
+---
+>                 # guess the correct calendar
+> 		        uuid=dav_client.url.url_raw.split("/")[-2]
+>         		got_uuid=False
+>         		for c in calendars:
+>         			if uuid in str(c):
+> 		    	    	cal = c
+> 			    	    got_uuid=True
+>             			break
+>         		if not got_uuid:
+> 		        	cal = calendars[0]
