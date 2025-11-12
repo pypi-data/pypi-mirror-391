@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: comet-toolbox
+Version: 0.9.10
+Summary: Dynamic functional connectivity toolbox for multiverse analysis
+Project-URL: Homepage, https://github.com/mibur1/comet
+Project-URL: Issues, https://github.com/mibur1/comet/issues
+Author-email: Micha Burkhardt <micha.burkhardt@uol.de>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: <3.14,>=3.11
+Requires-Dist: bctpy>=0.6.1
+Requires-Dist: hmmlearn>=0.3.3
+Requires-Dist: importlib-resources>=6.5.2
+Requires-Dist: ipykernel>=7.1.0
+Requires-Dist: ipywidgets>=8.1.8
+Requires-Dist: jinja2>=3.1.6
+Requires-Dist: joblib>=1.5.2
+Requires-Dist: ksvd>=0.0.3
+Requires-Dist: mat73>=0.65
+Requires-Dist: matplotlib>=3.10.7
+Requires-Dist: networkx>=3.5
+Requires-Dist: nibabel>=5.3.2
+Requires-Dist: nilearn>=0.12.1
+Requires-Dist: notebook>=7.4.7
+Requires-Dist: numba>=0.62.1
+Requires-Dist: numpy>=2.3.4
+Requires-Dist: pandas>=2.3.3
+Requires-Dist: pybids>=0.21.0
+Requires-Dist: pycwt>=0.5.0b0
+Requires-Dist: pyqt6>=6.10.0
+Requires-Dist: qdarkstyle>=3.2.3
+Requires-Dist: scikit-learn>=1.7.2
+Requires-Dist: scipy>=1.16.3
+Requires-Dist: seaborn>=0.13.2
+Requires-Dist: statsmodels>=0.14.5
+Requires-Dist: tqdm-joblib>=0.0.5
+Requires-Dist: tqdm>=4.67.1
+Provides-Extra: build
+Requires-Dist: build>=1.3.0; extra == 'build'
+Requires-Dist: hatchling>=1.27.0; extra == 'build'
+Requires-Dist: twine>=6.2.0; extra == 'build'
+Provides-Extra: doc
+Requires-Dist: nbsphinx>=0.9.6; extra == 'doc'
+Requires-Dist: sphinx-autodoc-typehints>=1.14.0; extra == 'doc'
+Requires-Dist: sphinx-rtd-theme>=3.0.2; extra == 'doc'
+Requires-Dist: sphinx>=8.1.3; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: pydfc>=1.0.7; extra == 'test'
+Requires-Dist: pytest>=9.0.0; extra == 'test'
+Requires-Dist: teneto>=0.5.3; extra == 'test'
+Description-Content-Type: text/markdown
+
+<div style="padding-top:1em; padding-bottom: 0.5em;">
+<img src="src/comet/data/img/logo.svg" width =130 align="right" />
+</div>
+
+# Comet - A toolbox for dynamic functional connectivity and multiverse analysis
+
+[![DOI](https://img.shields.io/badge/DOI-10.1101%2F2024.01.21.576546-blue?logo=arxiv)](https://doi.org/10.1101/2024.01.21.576546) [![PyPI](https://img.shields.io/badge/PyPI-comet--toolbox-orange?logo=PyPI)](https://pypi.org/project/comet-toolbox/)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2e766745c5c04d4786ea28f7135c193e)](https://app.codacy.com/gh/mibur1/comet/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) [![Documentation Status](https://readthedocs.org/projects/comet-toolbox/badge/?version=latest)](https://comet-toolbox.readthedocs.io/en/latest/) [![Coverage Status](https://coveralls.io/repos/github/mibur1/comet/badge.svg)](https://coveralls.io/github/mibur1/comet)
+
+## About the toolbox
+
+Please refer to the **[documentation](https://comet-toolbox.readthedocs.io/en/latest/)** for detailed information about the toolbox and the current features. The following README will only provide a very brief overview.
+
+> [!NOTE]
+> This package is under active development. If you have any questions, suggestions, or want to contribute, please do not hesitate to reach out on GitHub or via the email address in the [`pyproject.toml`](https://github.com/mibur1/dfc-multiverse/blob/main/pyproject.toml) file. Some features are also not yet tested, so there will be bugs (the question is just how many).
+
+
+### Installation and usage
+
+As Comet contains a fair amount of dependencies, it should be installed in a dedicated Python environment (e.g. [conda](https://conda-forge.org/download) or another environment manager of your choice) to avoid version conflicts. Comet runs on all major operating systems (Linux, Windows, macOS), although development and testing are primarily conducted on Linux. If you encounter any issues, please let us know via the [issue tracker](https://github.com/mibur1/comet/issues).
+
+```
+conda create -n comet python==3.11
+conda activate comet
+pip install comet-toolbox
+```
+
+Usage of the toolbox is then possible through either the GUI (might take 1-2 minutes to open on the *first* start):
+
+```
+comet-gui
+```
+
+or through the scripting API:
+
+```{code}python
+from comet import connectivity, graph, multiverse
+```
+
+A comprehensive set of usage examples are provided in the **[documentation](https://github.com/mibur1/dfc-multiverse/tree/main/tutorials)**.
+
+### Code structure
+
+```{code}   
+/
+├─ src/comet/         ← Parent directory
+│  ├─ connectivity.py ← Functional connectivity module
+│  ├─ graph.py        ← Graph analysis module
+│  ├─ multiverse.py   ← Multiverse analysis module
+│  ├─ gui.py          ← Graphical user interface
+│  ├─ utils.py        ← Miscellaneous helper functions
+│  ├─ cifti.py        ← CIFTI related functions
+│  └─ bids.py         ← BIDS related functions (placeholder)
+├─ docs/              ← Documentation
+├─ tutorials/         ← Example jupyter notebooks
+├─ tests/             ← Unit tests
+├─ pyproject.toml     ← Packaging & dependencies
+└─ README.md          ← Project overview
+```
+
+### Contributing
+
+We warmly welcome contributions and suggestions for new features! Comet is an open and collaborative project, and your input helps make it better for the entire community.
+More detailed contribution guidelines will follow soon. For now, before submitting a pull request, please open an [issue](https://github.com/mibur1/comet/issues) on GitHub to start a discussion or share ideas.
