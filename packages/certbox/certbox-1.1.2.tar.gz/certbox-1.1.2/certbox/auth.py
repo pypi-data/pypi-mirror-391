@@ -1,0 +1,51 @@
+"""
+Authentication module for Certbox API.
+"""
+
+from fastapi import HTTPException, Security, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Optional
+
+from .config import get_active_config
+
+# HTTP Bearer token security scheme
+security = HTTPBearer(auto_error=False)
+
+
+async def verify_token(credentials: Optional[HTTPAuthorizationCredentials] = Security(security)) -> bool:
+    """
+    Verify the API token.
+    
+    Args:
+        credentials: The HTTP authorization credentials
+        
+    Returns:
+        True if the token is valid
+        
+    Raises:
+        HTTPException: If the token is invalid or missing
+    """
+    # Get the active configuration
+    active_config = get_active_config()
+    
+    # If no token is configured, authentication is disabled
+    if not active_config.api_token:
+        return True
+    
+    # Check if credentials are provided
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Verify the token
+    if credentials.credentials != active_config.api_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    return True
