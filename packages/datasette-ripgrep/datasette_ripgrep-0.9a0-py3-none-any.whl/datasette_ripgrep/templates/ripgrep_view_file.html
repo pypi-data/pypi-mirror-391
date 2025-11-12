@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subpath }}{% endblock %}
+
+{% block extra_head %}
+<style>
+pre {
+    white-space: pre-wrap;
+    padding-left: {{ widest_line_number + 1.5 }}ch;
+}
+code:before {
+    content: attr(data-line);
+    display: inline-block;
+    width: {{ widest_line_number + 1.5 }}ch;
+    margin-left: -{{ widest_line_number + 1.5 }}ch;
+    -webkit-user-select: none;
+    color: #666;
+}
+:target {
+    background-color: #FFFF99;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ subpath }}</h1>
+
+<pre>{% for i, line in lines -%}
+<code id="L{{ i + 1 }}" data-line="{{ i + 1 }}">{{ line if line else "&nbsp;"|safe }}</code>
+{% endfor %}</pre>
+
+{% endblock %}
