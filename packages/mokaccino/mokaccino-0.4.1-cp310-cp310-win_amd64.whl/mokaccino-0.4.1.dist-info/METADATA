@@ -1,0 +1,97 @@
+Metadata-Version: 2.4
+Name: mokaccino
+Version: 0.4.1
+Classifier: Programming Language :: Rust
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Development Status :: 4 - Beta
+Classifier: Topic :: Software Development :: Libraries
+Requires-Dist: pytest ; extra == 'dev'
+Provides-Extra: dev
+Home-Page: https://github.com/jeteve/mokaccino_py
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown; charset=UTF-8; variant=GFM
+Project-URL: Documentation, https://github.com/jeteve/mokaccino_py#readme
+Project-URL: Issues, https://github.com/jeteve/mokaccino_py/issues
+Project-URL: Source, https://github.com/jeteve/mokaccino_py
+
+# About Mokaccino
+![CI](https://github.com/jeteve/mokaccino_py/actions/workflows/CI.yml/badge.svg)
+
+This is a Python binding for https://crates.io/crates/mokaccino.
+
+Mokaccino is a Percolator.
+
+A Percolator is a component that allows the matching of a stream of documents (for instance representing events) against a set of queries (representing specific interests in events).
+
+# Install/Usage
+
+Install via pip compatible tools as usual.
+
+Example Usage (taken from a test):
+
+```python
+
+def test_percolator():
+    p = Percolator()
+    assert p is not None
+    qids = [
+        p.add_query(Query.from_kv("name", "sausage")),
+        p.add_query(Query.from_kprefix("name", "amaz")),
+        p.add_query(Query.from_kgt("price", 12)),
+        p.add_query(Query.from_kv("name", "sausage") | Query.from_kgt("price", 12)),
+    ]
+
+    assert p.percolate_list(Document()) == []
+    assert p.percolate_list(Document().with_value("name", "burger")) == []
+    assert p.percolate_list(Document().with_value("name", "sausage")) == [qids[0], qids[3]]
+    assert p.percolate_list(Document().with_value("name", "amaz")) == [qids[1]]
+    assert p.percolate_list(Document().with_value("name", "amazing")) == [qids[1]]
+    assert p.percolate_list(Document().with_value("name", "amazon")) == [qids[1]]
+    assert p.percolate_list(Document().with_value("price", "12")) == []
+    assert p.percolate_list(Document().with_value("price", "13")) == [qids[2], qids[3]]
+    assert p.percolate_list(
+        Document().with_value("price", "13").with_value("name", "amazed")
+    ) == [qids[1], qids[2], qids[3]]
+
+```
+
+More extensive documentation should probably be provided, but in the meanwhile, have a look
+at the unit tests, which cover everything you can do with this:
+
+https://github.com/jeteve/mokaccino_py/tree/main/tests
+
+
+# Development
+
+This uses uv/uvx to handle the python side of things
+
+1. Prepare the venv
+
+```sh
+uv venv --python 3.13
+```
+
+2. Compile everything using maturin
+
+```sh
+uvx maturin develop
+```
+
+3. Run some examples or unit tests
+
+```sh
+uv sync --extra dev
+pytest
+uv run examples/...
+```
+
+
+In development, loop through 3 and 2:
+
+```sh
+uvx maturin develop && pytest
+```
+
+This is developed at https://github.com/jeteve/mokaccino_py
+
