@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: PyPermission
+Version: 0.2.0
+Summary: The python RBAC library for projects where SQLAlchemy is a valid option.
+Author: Jendrik A. Potyka, Fabian A. Preiss
+Author-email: Jendrik A. Potyka <jpotyka@digon.io>, Fabian A. Preiss <fpreiss@digon.io>
+License-Expression: LGPL-3.0-only
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Operating System :: OS Independent
+Classifier: Typing :: Typed
+Requires-Dist: sqlalchemy>=2.0.43
+Maintainer: Jendrik A. Potyka, Fabian A. Preiss
+Maintainer-email: Jendrik A. Potyka <jpotyka@digon.io>, Fabian A. Preiss <fpreiss@digon.io>
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+![alt text](./assets/logo_font_path.svg "Title")
+
+`PyPermission` - The python RBAC library for projects where `SQLAlchemy` is a valid option.
+
+[![repository](https://img.shields.io/badge/src-GitLab-orange)](https://gitlab.com/DigonIO/pypermission)
+[![mirror](https://img.shields.io/badge/mirror-GitHub-orange)](https://github.com/DigonIO/pypermission)
+[![License: LGPLv3](assets/badges/license.svg)](https://spdx.org/licenses/LGPL-3.0-only.html)
+[![pipeline status](https://gitlab.com/DigonIO/pypermission/badges/master/pipeline.svg)](https://gitlab.com/DigonIO/pypermission/-/pipelines)
+[![coverage report](https://gitlab.com/DigonIO/pypermission/badges/master/coverage.svg)](https://gitlab.com/DigonIO/pypermission/-/pipelines)
+[![Code style: black](assets/badges/black.svg)](https://github.com/psf/black)
+[![Imports: isort](assets/badges/isort.svg)](https://pycqa.github.io/isort/)
+
+---
+
+If you find the PyPermission library beneficial, please consider supporting the project by [starring it on GitHub](https://github.com/DigonIO/pypermission).
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/digonio/pypermission)](https://github.com/DigonIO/pypermission)
+
+# PyPermission - RBAC for Python with SQLAlchemy
+
+## Features
+
++ Authorization for pythonistas [(Quick Start)](https://pypermission.digon.io/quick_start/)
++ Persistency via SQLAlchemy
+    + SQLite
+    + PostgreSQL (psycopg)
++ Full integration guide [(Guide)](https://pypermission.digon.io/guide/)
++ RBAC state analysis (optional)
+    + Export the RBAC DAG as NetworkX DiGraph
+    + Visualize the RBAC DAG via Plotly
++ Lightweight
++ High test coverage
++ Online documentation [(Full doc)](https://pypermission.digon.io/)
+
+## Installing `PyPermission` with pip
+
+The `PyPermission` library can be installed directly from the PyPI repositories with:
+
+```console
+pip install PyPermission
+```
+
+If you want to use PostgreSQL, you need to install the `postgres` dependency group:
+
+```console
+pip install 'PyPermission[postgres]'
+```
+
+## Example
+
+```python title="my_project.main.py"
+from sqlalchemy.engine import create_engine
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine("sqlite:///:memory:", future=True)
+db_factory = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+from pypermission import RBAC, Permission, create_rbac_database_table
+
+create_rbac_database_table(engine=engine)
+
+with db_factory() as db:
+    # Create an 'admin' Role
+    RBAC.role.create(role="admin", db=db)
+
+    # Allow all Members of the 'admin' Role, to edit any user
+    RBAC.role.grant_permission(
+        role="admin",
+        permission=Permission(
+            resource_type="user",
+            resource_id="*",
+            action="edit",
+        ),
+        db=db,
+    )
+
+    # Create a Subject for the user 'Alex'
+    RBAC.subject.create(subject="Alex", db=db)
+
+    # Assign Subject 'Alex' to the 'admin' Role
+    RBAC.subject.assign_role(
+        subject="Alex", role="admin", db=db
+    )
+
+    # Test if user 'Alex' can edit user 'Max'
+    RBAC.subject.assert_permission(
+        subject="Alex",
+        permission=Permission(
+            resource_type="user",
+            resource_id="123",
+            action="edit",
+        ),
+        db=db,
+    )
+```
+
+## Documentation
+
++ [Online documentation](https://pypermission.digon.io/)
++ [API reference](https://pypermission.digon.io/api/rbac/)
+
+## Sponsor
+
+![Digon.IO GmbH Logo](./assets/logo_digon.io_gmbh.png "Digon.IO GmbH")
+
+Fine-Tuned AI services for developers.
+
+Digon.IO provides end-to-end consulting and development for SMEs and software companies building data-driven solutions - with a focus on supply chain optimization and text processing. [(Website)](https://digon.io) [(Technical Blog)](https://digon.io/en/blog)
+
+_The sponsor logo is the property of Digon.IO GmbH. Standard trademark and copyright restrictions apply to any use outside this repository._
+
+## License
+
++ **Library source code:** Licensed under [LGPLv3](https://spdx.org/licenses/LGPL-3.0-only.html).
++ **Library logo:**  The library logo is a trademark of the project (unregistered). You are permitted to use the logo **only** in contexts that directly reference, document, or promote this library. For example, in a dependent project or in a blog post discussing this library. Any other use is prohibited.

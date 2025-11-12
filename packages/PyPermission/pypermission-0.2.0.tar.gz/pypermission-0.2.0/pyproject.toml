@@ -1,0 +1,50 @@
+[project]
+name = "PyPermission"
+version = "0.2.0"
+description = "The python RBAC library for projects where SQLAlchemy is a valid option."
+readme = "README.md"
+authors = [
+    { name = "Jendrik A. Potyka", email = "jpotyka@digon.io" },
+    { name = "Fabian A. Preiss", email = "fpreiss@digon.io" },
+]
+maintainers = [
+    { name = "Jendrik A. Potyka", email = "jpotyka@digon.io" },
+    { name = "Fabian A. Preiss", email = "fpreiss@digon.io" },
+]
+license = "LGPL-3.0-only"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+requires-python = ">=3.13"
+dependencies = ["sqlalchemy>=2.0.43"]
+
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "coverage>=7.10.7",
+    "ipykernel>=6.30.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-coverage>=2.0.0",
+    "mkdocs-material>=9.6.21",
+    "mkdocstrings[python]>=0.30.1",
+    "pdbpp>=0.11.7",
+    "plotly-stubs>=0.0.6",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "pytest-markdown-docs>=0.9.0",
+    "ruff>=0.14.4",
+    "sqlalchemy[mypy]>=2.0.43",
+    "types-networkx>=3.5.0.20251001",
+]
+postgres = ["psycopg>=3.2.10"]
+util = ["networkx>=3.5", "plotly>=6.3.1"]
