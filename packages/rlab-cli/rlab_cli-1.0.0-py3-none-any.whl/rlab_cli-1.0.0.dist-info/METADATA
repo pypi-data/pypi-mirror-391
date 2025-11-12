@@ -1,0 +1,163 @@
+Metadata-Version: 2.4
+Name: rlab-cli
+Version: 1.0.0
+Summary: RLab Platform CLI - Digital Twins for Educational Robotics powered by Nueroid
+Author-email: RLab Team <rlab@rosversity.com>
+License: MIT
+Project-URL: Homepage, https://github.com/Rosversity/rlab-cli
+Project-URL: Documentation, https://github.com/Rosversity/rlab-cli#readme
+Project-URL: Repository, https://github.com/Rosversity/rlab-cli.git
+Project-URL: Issues, https://github.com/Rosversity/rlab-cli/issues
+Keywords: digital-twins,robotics,education,nueroid,rlab
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Education
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# RLab CLI
+
+A comprehensive command-line interface for the RLab Platform, providing digital twin capabilities for educational robotics powered by the Nueroid framework.
+
+## Features
+
+- **Digital Twin Framework**: Complete Model/Shadow/Twin architecture using abstract factory pattern
+- **Educational Robotics**: Specialized for robotics learning and research environments
+- **Multi-User Support**: Role-based access for students, professors, administrators, and industry partners
+- **COE Compliance**: Built-in reporting for Center of Excellence requirements
+- **Interactive CLI**: Easy-to-use command-line interface for all operations
+
+## Installation
+
+### From PyPI (when published)
+```bash
+pip install rlab-cli
+```
+
+### From Source
+```bash
+git clone https://github.com/Rosversity/rlab-cli.git
+cd rlab-cli
+pip install -e .
+```
+
+### Development Installation
+```bash
+git clone https://github.com/Rosversity/rlab-cli.git
+cd rlab-cli
+pip install -e .[dev]
+```
+
+## Quick Start
+
+After installation, you can start the RLab CLI:
+
+```bash
+rlab
+# or
+rlab-cli
+```
+
+This will launch the interactive command-line interface where you can:
+
+1. **Initialize RLab Facility** - Set up your educational facility
+2. **User Management** - Register and manage users (students, professors, etc.)
+3. **Robotics Lab Management** - Add and manage robotics assets
+4. **Digital Twin Operations** - Interact with digital twins
+5. **Learning & Research** - Create learning modules and research projects
+6. **COE Reports** - Generate compliance reports
+7. **System Information** - View system status
+
+## Architecture
+
+RLab CLI is built on the Nueroid Digital Twin Framework using an abstract factory pattern:
+
+- **Model**: Static data, UI widgets, 3D assets, and data tables
+- **Shadow**: Workflows, hardware interfaces, and process management  
+- **Twin**: Dashboard widgets, user interactions, and real-time data
+
+### Digital Twin Hierarchy
+
+- **Facility**: Educational institution level
+- **Product**: Major systems (software/hardware platforms)
+- **System**: Functional systems (user management, lab management)
+- **Asset**: Individual robotics equipment
+- **Component**: Learning modules and components
+- **Process**: Executable workflows
+
+## Example Usage
+
+```python
+from rlab_cli import RLabPlatform, UserType
+
+# Initialize platform
+rlab = RLabPlatform()
+facility = rlab.initialize_rlab_facility("My University RLab")
+
+# Register users
+rlab.register_user("prof_smith", UserType.PROFESSOR)
+rlab.register_user("student_jane", UserType.STUDENT)
+
+# Add robotics assets
+vacuum_robot = rlab.add_robotics_asset("Main Lab", "CleanBot 3000", "Cleaning Robot")
+vacuum_robot.model.static_data["cost"] = 50000
+vacuum_robot.model.static_data["coe_component"] = "ATL Consumables"
+
+# Generate COE report
+report = rlab.generate_coe_report()
+print(f"Total Allocation: ₹{report['total_allocation']:,}")
+```
+
+## User Types
+
+- **School Admin**: Full administrative access
+- **Management**: Oversight and reporting capabilities
+- **Professor**: Course and research management
+- **Student**: Learning and project participation
+- **Industry**: Partnership and collaboration features
+- **Research Partner**: Research collaboration tools
+- **Vendor**: Equipment and service management
+- **Developer**: Technical development access
+
+## Digital Twin Types
+
+- **Component**: Individual learning components
+- **Asset**: Physical robotics equipment
+- **System**: Functional systems and subsystems
+- **Product**: Complete product platforms
+- **Facility**: Institutional level organization
+- **Process**: Executable workflow processes
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Support
+
+For questions and support:
+- Create an issue on [GitHub](https://github.com/Rosversity/rlab-cli/issues)
+- Email: rlab@rosversity.com
+
+## Acknowledgments
+
+- Built with the Nueroid Digital Twin Framework
+- Designed for educational robotics and COE compliance
+- Developed by the Rosversity team
