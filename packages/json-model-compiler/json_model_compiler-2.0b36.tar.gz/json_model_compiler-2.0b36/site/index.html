@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+  </head>
+  <body>
+    <nav>
+     <a href="#/README">Intro</a>
+     <a href="#/DOC">Doc</a>
+     <a href="#/TUTO">Tuto</a>
+     <a href="#/HOWTO">HowTo</a>
+     <a href="#/SPEC">Spec</a>
+     <a href="#/JMC">Compiler</a>
+     <a href="#/API">APIs</a>
+     <a href="#/MODELS">Models</a>
+     <a href="#/PUBS">Pubs</a>
+     <a href="#/BENCH">Bench</a>
+     <a href="#/BACKLOG">Backlog</a>
+     <a href="#/ABOUT">About</a>
+    </nav>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "JSON Model",
+        logo: "json_logo.svg",
+        homepage: "README.md",
+        repo: "https://github.com/clairey-zx81/json-model",
+        relativePath: true,
+        auto2top: true,
+        coverpage: "cover.md",
+        executeScript: true,
+        mergeNavbar: true,
+      };
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-perl.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-markdown.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+    <!-- Performance Radar Chart -->
+    <script src="//cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      /*
+       * Generate an interactive dynamic radar chart about tool performance on a bench.
+       */
+      async function showRadar(display, source, sort = true) {
+        const resp = await fetch(source)
+        const res = await resp.json()
+        // data model: [ {"label": "", "data": [0.0]} ]
+        const data = res.map((x) => { return {...x, fill: true} })
+
+        // only keep used case indexes
+        let indexes = []
+
+        for (let i = 0; i < data[0].data.length; i++)
+          for (let t = 0; t < data.length; t++)
+            if (data[t].data[i] > 0.0) {
+              indexes.push(i)
+              break
+            }
+
+        if (sort) {
+          // count wins and adjust with overall performance
+          let wins = [], winners = []
+
+          for (let t = 0; t < data.length; t++) {
+              // number of wins, aka ranked first
+              wins[t] = data[t].data.filter(s => s === 1.0).length
+              wins[t] && winners.push(t)
+              // add a fractionnal part to avoid ties
+              wins[t] += data[t].data.filter(s => s !== null).reduce((a, v) => a + v, 0.0) / data[t].data.length
+          }
+
+          // ensure that we have a secondary sort criterion
+          const tools = Array.from({length: data.length}, (_, i) => i)
+          if (winners.length == 1 && data.length > 1) {
+            tools.sort( (i, j) => wins[j] - wins[i] )
+            winners.push(tools[1])
+          }
+
+          // rank winning tools by decreasing overall performance
+          winners.sort( (i, j) => wins[j] - wins[i] )
+
+          // sorting criterion for each cases
+          function key(data, i) {
+            for (let rank = 0; rank < winners.length; rank++) {
+              const tool = winners[rank]
+              if (data[tool].data[i] === 1.0)
+                return (winners.length - rank) + data[winners[(rank ? 0 : 1) % tools.length]].data[i]
+            }
+          }
+
+          const keys = indexes.map(i => key(data, i))
+          indexes.sort( (i, j) => keys[j] - keys[i] )
+        }
+
+        // extract needed data in order
+        data.forEach(o => {
+          o.data = indexes.map(i => o.data[i])
+        })
+
+        // TODO improve chart size and resize management?
+        const labels = indexes.map(i => i + 1)
+        const ctx = document.getElementById(display).getContext('2d')
+        const radar = new Chart(ctx, {
+          type: 'radar',
+          data: { labels: labels, datasets: data },
+          options: {
+            plugins: {
+              legend: {
+                // when a dataset is hidden or shown, adjust values wrt the fastest visible tool
+                onClick: (e, item, legend) => {
+                  const datasets = radar.data.datasets
+                  const dataset = datasets[item.datasetIndex]
+                  // toggle clicked dataset visibility
+                  dataset.hidden = !dataset.hidden
+                  // adjust data
+                  for (let idx = 0; idx < dataset.data.length; idx++) {
+                    // compute visible fastest for this case
+                    let maxi = 0.0
+                    for (let ds = 0; ds < datasets.length; ds++)
+                      if (!datasets[ds].hidden && datasets[ds].data[idx] > maxi)
+                        maxi = datasets[ds].data[idx]
+                    // update data according to fastest
+                    if (maxi !== 1.0 && maxi !== 0.0)
+                      for (let ds = 0; ds < datasets.length; ds++)
+                        datasets[ds].data[idx] /= maxi
+                  }
+                  // redraw radar to show updated data with an animation
+                  radar.update()
+                }
+              }
+            },
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 1.0
+              }
+            },
+            aspectRatio: window.innerWidth < window.innerHeight ? 1 : 1.8,
+            responsive: true,
+            maintainAspectRatio: false,
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "#": "JSON Model for JSON Schema Draft 2020-12 (fuzzy version)",
+  "~": "https://json-model.org/models/json-model",
+  "$": {
+    "": "https://json-model.org/models/json-schema-draft-2020-12-fuzzy"
+  },
+  "%": {
+    "<": "$https://json-model.org/models/json-schema-draft-2020-12",
+    "$core.?$schema": "$URL",
+    "$validation.?pattern": "",
+    "$applicator.?patternProperties": {"": "$Schema"},
+    "$deprecated": {
+      "?definitions": { "": "$Schema" },
+      "?dependencies": { "": {"|": [ "$Schema", "$stringArray" ] }},
+      "?$recursiveAnchor": "",
+      "?$recursiveRef": ""
+    },
+    "$fuzzy": { "": "$ANY" },
+    "$ObjectSchema.+": { "*": ["$deprecated", "$fuzzy"] }
+  },
+  "@": "$Schema"
+}
