@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: python3-cyberfusion-corectl
+Version: 3.2.3
+Summary: CLI for Core API.
+Author-email: Cyberfusion <support@cyberfusion.io>
+Project-URL: Source, https://vcs.cyberfusion.nl/core/python3-cyberfusion-corectl
+Description-Content-Type: text/markdown
+Requires-Dist: python3-cyberfusion-cluster-apicli==3.1
+Requires-Dist: python3-cyberfusion-cluster-support==3.9.1
+Requires-Dist: python3-cyberfusion-common==2.11.1
+Requires-Dist: click==8.1.8
+Requires-Dist: plotext==5.3.2
+Requires-Dist: requests
+Requires-Dist: rich==13.3.1
+Requires-Dist: typer==0.20.0
+Provides-Extra: borg
+Requires-Dist: cryptography==44.0.3; extra == "borg"
+
+# python3-cyberfusion-corectl
+
+CLI for Cyberfusion Core API.
+
+# Install
+
+## Recommended
+
+Follow instructions on https://core-api.cyberfusion.io/redoc#section/Documentation/CLI.
+
+## PyPI (expert only)
+
+Run one of the following commands to install the package from PyPI.
+
+Python version 3.9 or higher is required.
+
+    # Default
+
+    pip3 install python3-cyberfusion-corectl
+
+    # Alternative: with Borg support
+    #
+    # This installs dependencies needed to manage Borg, which do not work on all
+    # operating systems.
+
+    pip3 install python3-cyberfusion-corectl[borg]
