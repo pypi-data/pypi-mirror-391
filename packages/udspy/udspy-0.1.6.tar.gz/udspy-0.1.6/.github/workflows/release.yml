@@ -1,0 +1,153 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 0.2.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  id-token: write  # For PyPI trusted publishing
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build package
+        run: python -m build
+
+      - name: Check distribution
+        run: twine check dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          print-hash: true
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "First release - showing all commits"
+            COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            echo "Changes since $PREVIOUS_TAG"
+            COMMITS=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Save changelog to file
+          {
+            echo "# Changelog"
+            echo ""
+            echo "## Changes"
+            echo ""
+            echo "$COMMITS"
+          } > CHANGELOG.md
+
+          # Also save for GitHub release
+          {
+            echo "changelog<<EOF"
+            cat CHANGELOG.md
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+          files: |
+            dist/*
+
+      - name: Comment on related issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '');
+
+            // Get all tags to find the previous one
+            const { data: tags } = await github.rest.repos.listTags({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+
+            // Find current tag index and get previous tag
+            const currentTagIndex = tags.findIndex(t => t.name === tag);
+            const previousTag = currentTagIndex < tags.length - 1 ? tags[currentTagIndex + 1].name : null;
+
+            let commits;
+            if (previousTag) {
+              // Compare with previous tag
+              console.log(`Comparing ${previousTag}...${tag}`);
+              const comparison = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: previousTag,
+                head: tag
+              });
+              commits = comparison.data.commits;
+            } else {
+              // First release - get all commits
+              console.log('First release - getting all commits');
+              const { data: allCommits } = await github.rest.repos.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100
+              });
+              commits = allCommits;
+            }
+
+            // Extract issue numbers from commit messages
+            const issueNumbers = new Set();
+            commits.forEach(commit => {
+              const message = commit.commit.message;
+              const matches = message.matchAll(/#(\d+)/g);
+              for (const match of matches) {
+                issueNumbers.add(match[1]);
+              }
+            });
+
+            // Comment on each issue
+            if (issueNumbers.size > 0) {
+              console.log(`Found ${issueNumbers.size} issues to comment on: ${[...issueNumbers].join(', ')}`);
+              for (const issueNumber of issueNumbers) {
+                try {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: parseInt(issueNumber),
+                    body: `🎉 This issue has been included in release [${tag}](https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${tag})`
+                  });
+                  console.log(`Commented on issue #${issueNumber}`);
+                } catch (error) {
+                  console.error(`Failed to comment on issue #${issueNumber}:`, error.message);
+                }
+              }
+            } else {
+              console.log('No issues referenced in commits');
+            }
