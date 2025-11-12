@@ -1,0 +1,22 @@
+name: Slash Command Dispatch
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: write
+
+jobs:
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        with:
+          token: ${{ github.token }}
+          commands: rebase
+          permission: write
+          issue-type: pull-request
+
