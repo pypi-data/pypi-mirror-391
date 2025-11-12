@@ -1,0 +1,160 @@
+[build-system]
+requires = ["setuptools>=70.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "duplifinder.__version__.__version__"}
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project]
+name = "duplifinder"
+dynamic = ["version"]
+description = "Detect duplicate Python definitions, text patterns, and token similarities for codebase maintainability."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+
+authors = [
+    {name = "Dhruv", email = "dhruv13x@gmail.com"}
+]
+maintainers = [
+    {name = "Dhruv", email = "dhruv13x@gmail.com"}
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Quality Assurance",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Typing :: Typed"
+]
+
+keywords = [
+    "code-duplicates",
+    "python-ast",
+    "refactoring",
+    "code-analysis",
+    "static-analysis",
+    "ci-cd"
+]
+
+dependencies = [
+    "pyyaml>=6.0",
+    "rich>=13.0",
+    "tqdm>=4.66",
+    "pydantic>=2.5"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-cov",
+  "hypothesis>=6.100.0",
+  "pytest-asyncio>=0.21.0",
+  "pytest-mock>=3.10.0",
+  "pytest-timeout>=2.3.0",
+
+  "ruff>=0.6.0",
+  "black>=24.3.0",
+  "mypy>=1.11.0",
+  "types-PyYAML>=6.0.1",
+
+  "trio>=0.25.0",
+
+  "build",
+  "twine"
+]
+
+docs = [
+    "sphinx>=7.0",
+    "sphinx-rtd-theme>=2.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/dhruv13x/duplifinder"
+Repository = "https://github.com/dhruv13x/duplifinder.git"
+Issues = "https://github.com/dhruv13x/duplifinder/issues"
+Changelog = "https://github.com/dhruv13x/duplifinder/blob/main/CHANGELOG.md"
+"Release Notes" = "https://github.com/dhruv13x/duplifinder/releases"
+
+[project.scripts]
+duplifinder = "duplifinder.main:main"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | node_modules/.*
+)/
+'''
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_ignores = false
+plugins = []
+exclude = ["^tests/.*", "^build/.*", "^dist/.*"]
+
+[[tool.mypy.overrides]]
+module = ["rich.*", "tqdm.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+pythonpath = ["src"]
+timeout = 10
+testpaths = ["tests"]
+addopts = [
+  "-ra",
+  "--strict-config",
+  "--strict-markers",
+  "-v",
+  "--tb=short",
+  "--durations=10",
+  "--import-mode=importlib",
+  "--cov=src",
+  "--cov-fail-under=90",
+  "-m", "not slow",
+  "--cov-report=term-missing",
+  "--cov-report=html",
+  "--cov-report=term-missing:skip-covered",
+  "--cov-report=xml"
+]
+
+markers = [
+    "slow: Marks slow tests",
+    "integration: Marks integration tests requiring external services"
+]
+
+filterwarnings = [
+    "ignore::DeprecationWarning:.*asyncio"
+]
