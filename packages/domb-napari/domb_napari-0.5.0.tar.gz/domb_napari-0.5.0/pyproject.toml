@@ -1,0 +1,63 @@
+[project]
+name = "domb-napari"
+version = "0.5.0"
+authors = [
+  {name = "Borys Olifirov", email = "omnia.faty@gmail.com"}
+]
+description = "napari plugin for analyzing the redistribution of fluorescence-labeled proteins"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">= 3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+
+classifiers = [
+    "Framework :: napari",
+
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Utilities"
+]
+
+dependencies = [
+    "napari",
+    "dipy",
+    "numpy",
+    "scipy",
+    "scikit-image",
+    "tifffile",
+    "pandas",
+    "matplotlib",
+    "numba",
+    "pybaselines"
+]
+
+[project.urls]
+Homepage = "https://github.com/wisstock/domb-napari"
+Documentation = "https://github.com/wisstock/domb-napari"
+Repository = "https://github.com/wisstock/domb-napari"
+BugTracker = "https://github.com/wisstock/domb-napari/issues"
+Issues = "https://github.com/wisstock/domb-napari/issues"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+
+[project.entry-points."napari.manifest"]
+domb-napari = "domb_napari:napari.yaml"
