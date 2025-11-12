@@ -1,0 +1,53 @@
+# Include important files
+include README.md
+include LICENSE
+include .env.example
+
+# Include source code
+recursive-include src *.py
+recursive-include src *.css
+recursive-include src *.tcss
+
+# Exclude sensitive files - CRITICAL for security
+exclude .env
+exclude .credential.json
+exclude .token.json
+exclude .credentials.json
+exclude *.json
+
+# Exclude development and testing files
+exclude .gitignore
+exclude .git
+recursive-exclude tests *
+recursive-exclude docs *
+recursive-exclude .git *
+recursive-exclude .claude *
+
+# Exclude data directory with databases and logs
+recursive-exclude data *
+
+# Exclude virtual environment
+recursive-exclude venv *
+recursive-exclude env *
+recursive-exclude ENV *
+
+# Exclude Python cache
+recursive-exclude * __pycache__
+recursive-exclude * *.py[cod]
+recursive-exclude * *$py.class
+recursive-exclude * *.so
+
+# Exclude IDE files
+recursive-exclude .vscode *
+recursive-exclude .idea *
+recursive-exclude * *.swp
+recursive-exclude * *.swo
+
+# Exclude OS files
+exclude .DS_Store
+exclude Thumbs.db
+
+# Exclude test artifacts
+recursive-exclude .pytest_cache *
+recursive-exclude htmlcov *
+exclude .coverage
