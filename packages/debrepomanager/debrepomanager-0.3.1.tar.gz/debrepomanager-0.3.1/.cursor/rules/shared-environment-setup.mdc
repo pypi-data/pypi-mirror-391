@@ -1,0 +1,261 @@
+---
+alwaysApply: true
+---
+# Environment Setup
+
+Environment and dependency management practices.
+
+## Isolated Environments
+
+Never use system-wide installations for project dependencies.
+
+**Use environment isolation:**
+- Isolate project dependencies from system
+- Prevent version conflicts between projects
+- Reproducible development environments
+- Easy cleanup and switching between projects
+
+**Environment managers by ecosystem:**
+- Use language-specific environment managers
+- Examples: virtual environments, version managers, environment tools
+- Follow ecosystem best practices
+- Document which tools to use in project README
+
+**Benefits:**
+- Each project has own dependency versions
+- Clean uninstall (delete environment directory)
+- No pollution of system installation
+- Easy onboarding for new developers
+
+**Setup documentation:**
+- Document environment setup steps in README
+- Include installation of environment manager
+- Provide setup scripts when helpful
+- Test setup on fresh system regularly
+
+## AI-Assisted Environment Setup
+
+When AI assists with environment setup, always confirm with user first.
+
+**Confirmation required for:**
+- Installing environment managers or tools
+- Creating virtual environments or containers
+- Modifying system configuration
+- Installing dependencies
+- Writing configuration files
+- Executing setup scripts
+
+**Setup workflow:**
+1. Propose environment setup plan
+2. List all tools and steps required
+3. Ask user to confirm before proceeding
+4. Execute only after explicit approval
+5. Report what was done after completion
+
+**User control:**
+- User decides what gets installed
+- User confirms directory locations
+- User chooses between alternative tools
+- User approves configuration values
+- Never assume preferences
+
+## Dependency Management
+
+Manage project dependencies explicitly and reproducibly.
+
+**Pin dependency versions:**
+- Specify exact versions in manifest files
+- Enables reproducible builds
+- Prevents unexpected breakage from updates
+- Documents known-good versions
+- Critical for production deployments
+
+**Lock files:**
+- Commit lock files to version control
+- Lock files capture full dependency tree
+- Ensures exact same versions across environments
+- Update lock files deliberately, not accidentally
+
+**Dependency manifests:**
+- Use language-appropriate manifest files
+- Separate development and production dependencies
+- Document version constraints clearly
+- Minimize dependencies
+
+**Update strategy:**
+- Update dependencies deliberately
+- Test thoroughly after updates
+- Review changelogs before updating
+- Security updates applied promptly
+- Balance updates with stability
+
+**Dependency evaluation:**
+- Check maintenance status before adding
+- Review dependencies periodically
+- Remove unused dependencies
+- Consider license compatibility
+- Evaluate bundle size impact (where relevant)
+
+## Environment Variables
+
+Use environment variables for all configuration.
+
+**Never hardcode configuration:**
+- All config comes from environment
+- Database connections
+- API endpoints
+- Feature flags
+- Resource limits
+- Deployment-specific settings
+
+**Security:**
+- Never commit secrets to version control
+- Use environment variables for sensitive data
+- `.env` files for local development (add to `.gitignore`)
+- Provide `.env.example` with dummy/default values
+- Document all required variables
+
+**Configuration validation:**
+- Validate all required variables present
+- Check variable formats and values
+- Fail fast on startup if misconfigured
+- Provide clear error messages for missing config
+- Use sensible defaults for development
+
+**Environment-specific config:**
+- Development, staging, production configurations
+- Override mechanism (env vars > config files > defaults)
+- Document differences between environments
+- Test with production-like configuration
+
+## Build Configuration
+
+Configure build systems for different targets and environments.
+
+**Build for multiple targets:**
+- Support development and production builds
+- Platform-specific builds (when multi-platform)
+- Debug vs release configurations
+- Different optimization levels
+
+**Development builds:**
+- Fast build times for iteration
+- Include debug symbols
+- Enable development features
+- Detailed error messages
+- No aggressive optimization
+
+**Production builds:**
+- Optimize for performance and size
+- Remove debug code and symbols
+- Enable all optimizations
+- Minify/bundle when applicable
+- Verify build artifacts
+
+**Build reproducibility:**
+- Version control build configuration
+- Document build requirements
+- Pin build tool versions
+- Consistent builds across environments
+- Automated builds in CI/CD
+
+## Database Practices
+
+Manage database schema and data safely.
+
+**Migrations only:**
+- All schema changes through migrations
+- Never modify database schema directly
+- Migrations are version controlled
+- Sequential and reversible migrations
+- Test migrations thoroughly
+
+**Migration best practices:**
+- One migration per logical change
+- Test migrations up AND down (forward and rollback)
+- Backup before production migrations
+- Plan rollback procedures
+- Review migrations before applying
+
+**Development data:**
+- Include seed data for development
+- Realistic but minimal test data
+- Anonymize production data if used locally
+- Document data setup process
+- Fast data reset for clean state
+
+**Testing with databases:**
+- Use separate test database
+- Clean database between test runs
+- Use transactions for test isolation (when possible)
+- Fast fixtures for common scenarios
+- Don't depend on specific data existing
+
+**Production database safety:**
+- Backup before changes
+- Test migrations on staging first
+- Monitor during and after migrations
+- Plan rollback procedures
+- Never modify production data directly
+
+## Local Development Environment
+
+Optimize for fast feedback and productivity.
+
+**Development workflow:**
+- Fast startup for quick iteration
+- Hot reload / live reload when available
+- Watch mode for continuous testing
+- Clear error messages and stack traces
+- Easy debugging setup
+
+**Fast feedback loops:**
+- Incremental builds
+- Run affected tests only during development
+- Linting on save
+- Format on save
+- Fast compile/transpile
+
+**Debugging support:**
+- Use appropriate debugging tools for your platform
+- Interactive debuggers when available (breakpoints, stepping, inspection)
+- Structured logging when debugger unavailable
+- Learn debugging tools specific to your stack
+- Reproduce issues locally before fixing
+- Remove debug code before committing
+
+**Environment parity:**
+- Development environment mirrors production
+- Use containers for consistency (when appropriate)
+- Document environment differences
+- Test in production-like environment before deploy
+- Catch environment-specific issues early
+
+## Multiple Build Targets
+
+For multi-platform or multi-device projects.
+
+**Configure build system:**
+- One target per platform/device/variant
+- Consistent build commands across targets
+- Document platform-specific requirements
+- Parallel builds when possible
+
+**Platform-specific dependencies:**
+- Each platform may have own toolchain
+- Document toolchain setup for each platform
+- Version all platform tools
+- Test builds for all targets regularly
+
+**Testing across platforms:**
+- Test on actual target platforms
+- Emulators/simulators for development
+- Real hardware for final validation
+- Platform-specific test suites
+- CI/CD builds all targets
+
+**Code organization:**
+- Shared code + platform-specific code
+- Clear boundaries between platform and common code
+- Build system selects appropriate code per target
+- Document build process for each platform

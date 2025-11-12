@@ -1,0 +1,267 @@
+---
+alwaysApply: true
+---
+# Security Practices
+
+Security best practices across all projects.
+
+## Secret Management
+
+Never commit secrets or expose credentials.
+
+**Never commit:**
+- Passwords, API keys, tokens
+- Private keys, certificates
+- Database credentials
+- Service account credentials
+- Encryption keys
+
+**Use environment variables:**
+- Store secrets in environment variables
+- Never hardcode secrets in code
+- Use `.env` files for local development (add to `.gitignore`)
+- Provide `.env.example` with dummy values
+- Document all required environment variables
+
+**Production secrets:**
+- Use secrets management services
+- Rotate secrets regularly
+- Limit access to secrets
+- Audit secret access
+- Revoke compromised secrets immediately
+
+**Never log secrets:**
+- Sanitize logs to remove sensitive data
+- Be careful with debug logs
+- Review logging before production
+- Monitor for accidental secret exposure
+
+## Input Validation
+
+Validate all external inputs to prevent security vulnerabilities.
+
+**Validate everything:**
+- All external input is untrusted
+- Validate at system boundaries
+- Check format, type, range, length
+- Reject invalid input, don't try to fix
+- Fail securely on validation errors
+
+**Validation approach:**
+- Use allowlists over blocklists
+- Define what's valid, reject everything else
+- Validate semantic meaning, not just format
+- Consider context-specific validation
+- Use language/framework validation features
+
+**Common input sources:**
+- User input (UI, command line, sensors)
+- Network data (APIs, protocols, messages)
+- File/storage data
+- External system data
+- Configuration files
+
+**Input validation principles:**
+- Validate before processing or storing
+- Check bounds and constraints
+- Prevent injection attacks (parameterized queries, escaping)
+- Sanitize when necessary
+- Never trust, always verify
+
+## Authentication and Authorization
+
+Implement secure access control.
+
+**Authentication:**
+- Use proven authentication mechanisms
+- Never roll your own crypto
+- Use secure password hashing algorithms
+- Implement account lockout after failed attempts
+- Use multi-factor authentication for sensitive operations
+- Secure session management
+
+**Authorization:**
+- Implement proper authorization checks
+- Check permissions for every operation
+- Principle of least privilege
+- Don't rely on client-side checks
+- Test authorization boundaries thoroughly
+
+**Session management:**
+- Generate secure random session tokens
+- Set appropriate session timeouts
+- Invalidate sessions on logout
+- Protect session tokens from exposure
+
+**Credential management:**
+- Enforce strong credential policies
+- Use appropriate hashing/encryption for credentials
+- Never store credentials in plaintext
+- Secure credential transmission
+- Implement secure recovery mechanisms
+
+## Error Handling and Logging
+
+Handle errors securely and log appropriately.
+
+**Error messages:**
+- Don't expose internal details to users
+- Generic messages for users
+- Detailed logs for debugging
+- No stack traces to end users
+- No database errors to users
+
+**Logging security events:**
+- Log authentication attempts (success and failure)
+- Log authorization failures
+- Log security-relevant changes
+- Log suspicious activity
+- Include timestamp, user, action, result
+
+**Structured logging:**
+- Use structured log format for easier analysis
+- Include context (user, session, request ID)
+- Different log levels (debug, info, warn, error)
+- Don't log sensitive data (passwords, tokens, PII)
+
+**Monitor and alert:**
+- Monitor logs for security patterns
+- Alert on suspicious activity
+- Track failed login attempts
+- Detect unusual access patterns
+- Respond to security events promptly
+
+## Secure Configuration
+
+Configure systems securely by default.
+
+**Production configuration:**
+- Disable debug mode in production
+- Remove development/test features
+- Use secure defaults
+- Minimize exposed services
+- Regular security updates
+
+**Communication security:**
+- Use encrypted communication channels
+- Enforce secure protocols
+- Validate certificates/signatures
+- Authenticate communication endpoints
+- Prevent man-in-the-middle attacks
+
+**Access control:**
+- Principle of least privilege
+- Role-based or capability-based access control
+- Regularly review permissions
+- Remove unnecessary access
+- Audit access changes
+
+**Secure defaults:**
+- Security features enabled by default
+- Require explicit action to weaken security
+- Fail securely when errors occur
+- Minimize attack surface
+
+## Dependency Security
+
+Keep dependencies secure and up to date.
+
+**Monitor dependencies:**
+- Track known vulnerabilities
+- Use security scanning tools
+- Review dependency security regularly
+- Subscribe to security advisories
+
+**Keep updated:**
+- Regular dependency updates
+- Test after updating
+- Security patches applied promptly
+- Balance updates with stability
+
+**Minimize dependencies:**
+- Only add necessary dependencies
+- Evaluate dependencies before adding
+- Consider maintenance status
+- Review dependency licenses
+- Remove unused dependencies
+
+**Supply chain security:**
+- Verify dependency integrity
+- Use lock files for reproducible builds
+- Review dependency changes
+- Watch for suspicious updates
+
+## Data Protection
+
+Protect sensitive data throughout its lifecycle.
+
+**Encryption:**
+- Encrypt sensitive data at rest
+- Encrypt data in transit (TLS/SSL)
+- Use strong encryption algorithms
+- Manage encryption keys securely
+- Never implement custom encryption
+
+**Data access:**
+- Limit access to sensitive data
+- Log access to sensitive information
+- Implement proper access controls
+- Review data access patterns
+- Audit data access regularly
+
+**Data retention:**
+- Define data retention policies
+- Delete data when no longer needed
+- Secure data deletion (can't recover)
+- Comply with privacy regulations
+- Document retention policies
+
+**Privacy compliance:**
+- GDPR, CCPA, and other regulations
+- Data minimization (collect only what's needed)
+- User consent for data collection
+- Right to access and deletion
+- Data portability
+
+## Security Testing
+
+Include security testing in development process.
+
+**Test security features:**
+- Authentication thoroughly tested
+- Authorization boundaries tested
+- Input validation tested
+- Encryption verified
+- Error handling tested
+
+**Security test coverage:**
+- 100% for authentication logic
+- 100% for authorization checks
+- 100% for input validation
+- Test with malicious/malformed inputs
+- Test boundary conditions
+- Test error paths for security holes
+
+**Security review:**
+- Test for common vulnerabilities in your domain
+- Security-focused code reviews
+- External security audits for critical systems
+- Act on findings promptly
+
+**Automated security testing:**
+- Security scanning in CI/CD when available
+- Dependency vulnerability scanning
+- Static code analysis for security issues
+- Regular automated scans
+- Manual review supplements automation
+
+## Platform-Specific Security
+
+Security practices vary by platform. Create local security rules for your project type.
+
+**Examples (create only what you need):**
+- Web services: `local-web-security.mdc` (XSS, CSRF, SQL injection, HTTPS, security headers)
+- Embedded systems: `local-firmware-security.mdc` (secure boot, buffer overflow prevention, hardware attacks)
+- Mobile apps: `local-mobile-security.mdc` (jailbreak detection, secure storage, certificate pinning)
+
+Universal security principles apply everywhere, but implementation details are platform-specific.

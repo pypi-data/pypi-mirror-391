@@ -1,0 +1,298 @@
+name: CI Auto-Fix
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to fix (leave empty for current branch)'
+        required: false
+        type: number
+      fix_type:
+        description: 'Type of fix to apply'
+        required: true
+        type: choice
+        options:
+          - all
+          - formatting
+          - imports
+          - trailing-spaces
+        default: 'all'
+
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-fix:
+    name: Auto-Fix CI Issues
+    runs-on: [self-hosted, ubuntu-latest]
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(github.event.comment.body, '/fix-ci'))
+
+    steps:
+      - name: Get PR details
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            let pr_number;
+            let branch;
+
+            if (context.eventName === 'workflow_dispatch') {
+              pr_number = ${{ inputs.pr_number || 'null' }};
+              if (pr_number) {
+                const pr = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr_number
+                });
+                branch = pr.data.head.ref;
+                core.setOutput('pr_number', pr_number);
+                core.setOutput('branch', branch);
+              } else {
+                core.setOutput('branch', context.ref.replace('refs/heads/', ''));
+              }
+            } else {
+              pr_number = context.issue.number;
+              const pr = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr_number
+              });
+              branch = pr.data.head.ref;
+              core.setOutput('pr_number', pr_number);
+              core.setOutput('branch', branch);
+            }
+
+      - name: React to comment
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'rocket'
+            });
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ steps.pr.outputs.branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e ".[dev]"
+
+      - name: Determine fix type
+        id: fix-type
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ inputs.fix_type }}" >> $GITHUB_OUTPUT
+          else
+            echo "type=all" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Apply Black formatting
+        if: steps.fix-type.outputs.type == 'all' || steps.fix-type.outputs.type == 'formatting'
+        run: |
+          # Find Python package directory dynamically (any *repomanager directory)
+          PKG_DIR=$(find . -maxdepth 1 -type d -name "*repomanager" ! -name ".*" | head -1 | sed 's|^\./||')
+          black ${PKG_DIR}/ tests/
+          echo "FORMATTING_APPLIED=true" >> $GITHUB_ENV
+
+      - name: Fix imports (isort)
+        if: steps.fix-type.outputs.type == 'all' || steps.fix-type.outputs.type == 'imports'
+        run: |
+          pip install isort
+          PKG_DIR=$(find . -maxdepth 1 -type d -name "*repomanager" ! -name ".*" | head -1 | sed 's|^\./||')
+          isort ${PKG_DIR}/ tests/
+          echo "IMPORTS_FIXED=true" >> $GITHUB_ENV
+
+      - name: Remove trailing spaces
+        if: steps.fix-type.outputs.type == 'all' || steps.fix-type.outputs.type == 'trailing-spaces'
+        run: |
+          # Remove trailing whitespace from Python files
+          # Find package directory dynamically
+          PKG_DIR=$(find . -maxdepth 1 -type d -name "*repomanager" ! -name ".*" | head -1 | sed 's|^\./||')
+          find ${PKG_DIR} tests -name "*.py" -type f -exec sed -i 's/[[:space:]]*$//' {} +
+          echo "TRAILING_SPACES_REMOVED=true" >> $GITHUB_ENV
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          COMMIT_MSG="chore: auto-fix CI issues"
+
+          if [ "$FORMATTING_APPLIED" = "true" ]; then
+            COMMIT_MSG="$COMMIT_MSG\n- Apply Black formatting"
+          fi
+          if [ "$IMPORTS_FIXED" = "true" ]; then
+            COMMIT_MSG="$COMMIT_MSG\n- Fix import sorting"
+          fi
+          if [ "$TRAILING_SPACES_REMOVED" = "true" ]; then
+            COMMIT_MSG="$COMMIT_MSG\n- Remove trailing spaces"
+          fi
+
+          git add -A
+          git commit -m "$(echo -e "$COMMIT_MSG")"
+          git push
+
+      - name: Comment on PR
+        if: steps.pr.outputs.pr_number && steps.changes.outputs.has_changes == 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            let fixes = [];
+            if (process.env.FORMATTING_APPLIED === 'true') fixes.push('✅ Black formatting');
+            if (process.env.IMPORTS_FIXED === 'true') fixes.push('✅ Import sorting');
+            if (process.env.TRAILING_SPACES_REMOVED === 'true') fixes.push('✅ Trailing spaces');
+
+            const comment = `## 🤖 Auto-Fix Applied
+
+            The following fixes have been automatically applied:
+
+            ${fixes.join('\n')}
+
+            Please review the changes and re-run the CI checks.
+
+            ---
+            <sub>Triggered by: @${context.actor}</sub>`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.pr.outputs.pr_number }},
+              body: comment
+            });
+
+      - name: Comment if no changes
+        if: steps.pr.outputs.pr_number && steps.changes.outputs.has_changes != 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.pr.outputs.pr_number }},
+              body: '✅ No auto-fixable issues found. The code already meets formatting standards.'
+            });
+
+  suggest-fixes:
+    name: Suggest Manual Fixes
+    runs-on: [self-hosted, ubuntu-latest]
+    needs: auto-fix
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e ".[dev]"
+
+      - name: Run checks and collect suggestions
+        id: suggestions
+        continue-on-error: true
+        run: |
+          # Find package directory dynamically
+          PKG_DIR=$(find . -maxdepth 1 -type d -name "*repomanager" ! -name ".*" | head -1 | sed 's|^\./||')
+          
+          # Run mypy and collect errors
+          mypy ${PKG_DIR}/ > mypy_errors.txt 2>&1 || true
+
+          # Run flake8 and collect warnings that can't be auto-fixed
+          flake8 ${PKG_DIR}/ tests/ --select=F,E9 > flake8_errors.txt 2>&1 || true
+
+          # Check for missing type hints
+          find ${PKG_DIR} -name "*.py" -exec grep -H "^[[:space:]]*def " {} \; | \
+            grep -v "def __" | grep -v " -> " | head -10 > missing_hints.txt || true
+
+          echo "SUGGESTIONS_READY=true" >> $GITHUB_ENV
+
+      - name: Post suggestions
+        if: env.SUGGESTIONS_READY == 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+
+            let comment = '## 💡 Manual Fix Suggestions\n\n';
+            comment += 'Some issues require manual fixes:\n\n';
+
+            // MyPy errors
+            try {
+              const mypyErrors = fs.readFileSync('mypy_errors.txt', 'utf8');
+              if (mypyErrors.trim()) {
+                comment += '### Type Errors (MyPy)\n';
+                comment += '```\n' + mypyErrors + '\n```\n\n';
+              }
+            } catch (e) {}
+
+            // Flake8 critical errors
+            try {
+              const flake8Errors = fs.readFileSync('flake8_errors.txt', 'utf8');
+              if (flake8Errors.trim()) {
+                comment += '### Critical Errors (Flake8)\n';
+                comment += '```\n' + flake8Errors + '\n```\n\n';
+              }
+            } catch (e) {}
+
+            // Missing type hints
+            try {
+              const missingHints = fs.readFileSync('missing_hints.txt', 'utf8');
+              if (missingHints.trim()) {
+                comment += '### Missing Type Hints\n';
+                comment += 'Some functions are missing type hints:\n';
+                comment += '```\n' + missingHints + '\n```\n\n';
+              }
+            } catch (e) {}
+
+            comment += '---\n';
+            comment += 'Run `make check-all` locally to see all issues.\n';
+
+            // Only post if there are actual suggestions AND we have a PR number
+            if (comment.includes('###') && context.issue && context.issue.number) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+
+
