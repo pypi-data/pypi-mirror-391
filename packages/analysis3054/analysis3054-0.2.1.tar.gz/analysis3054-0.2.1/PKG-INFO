@@ -1,0 +1,110 @@
+Metadata-Version: 2.4
+Name: analysis3054
+Version: 0.2.1
+Summary: Advanced time-series analytics and forecasting toolkit for commodity and power trading
+Author-email: Your Name <you@example.com>
+License: MIT
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pandas>=1.5
+Requires-Dist: numpy>=1.24
+Requires-Dist: plotly>=5.20
+Requires-Dist: statsmodels>=0.13
+Requires-Dist: scipy>=1.10
+Provides-Extra: stats
+Requires-Dist: pmdarima>=2.0; extra == "stats"
+Requires-Dist: arch>=6.0; extra == "stats"
+Provides-Extra: ml
+Requires-Dist: scikit-learn>=1.2; extra == "ml"
+Requires-Dist: xgboost>=2.0; extra == "ml"
+Requires-Dist: lightgbm>=4.0; extra == "ml"
+Requires-Dist: catboost>=1.2; extra == "ml"
+Provides-Extra: dl
+Requires-Dist: tensorflow>=2.12; extra == "dl"
+Provides-Extra: prophet
+Requires-Dist: prophet>=1.1; extra == "prophet"
+Requires-Dist: neuralprophet>=0.6.0; extra == "prophet"
+Provides-Extra: tbats
+Requires-Dist: tbats>=1.1.3; extra == "tbats"
+Provides-Extra: plot
+Requires-Dist: plotly>=5.20; extra == "plot"
+Provides-Extra: all
+Requires-Dist: analysis3054[dl,ml,plot,prophet,stats,tbats]; extra == "all"
+
+# EIA Band Plot & Time Series Forecasting
+
+This package provides two primary utilities:
+
+* **`five_year_plot`** – Generate interactive 5‑year band plots using
+  Plotly.  These plots mirror the charts used by the U.S. Energy
+  Information Administration (EIA) to contextualize recent values
+  against the range, minimum, maximum and average of the last five
+  years.  Multiple numeric columns within a DataFrame can be plotted
+  simultaneously as separate subplots.
+
+* **`ml_forecast`** – Train individual AutoGluon time series models
+  for each numeric column in a DataFrame and forecast future values.
+  The function returns a DataFrame with point forecasts and, if
+  requested, prediction intervals.  Each series is trained
+  independently using the specified presets (default: `best_quality`).
+
+## Installation
+
+Install the package with:
+
+
+```bash
+pip install analysis3054
+```
+
+To enable the optional machine‑learning forecasting features, also
+install the AutoGluon time series dependency:
+
+```bash
+pip install analysis3054[ml]
+```
+
+## Usage
+
+### Five‑Year Band Plot
+
+```python
+import pandas as pd
+from analysis3054 import five_year_plot
+
+# Example DataFrame with a 'date' column and one or more numeric columns
+df = pd.read_csv("my_timeseries_data.csv")
+
+# Create the plot
+fig = five_year_plot(date='date', df=df, prior_year_lines=1)
+fig.show()
+```
+
+### Machine Learning Forecasting
+
+```python
+import pandas as pd
+from analysis3054 import ml_forecast
+
+df = pd.read_csv("my_timeseries_data.csv")
+
+# Forecast the next 12 periods for each numeric column
+result = ml_forecast(date='date', df=df, periods=12)
+
+# Access point forecasts
+forecasts = result.forecasts
+
+# Access confidence intervals (if requested)
+conf_ints = result.conf_intervals
+```
+
+See the docstrings of each function for detailed parameter descriptions.
+
+## User Guide
+
+For a complete overview of all available functions, advanced
+forecasting methods, statistical analyses and plotting utilities,
+consult the **USER_GUIDE.md** file included with the package.  It
+provides step‑by‑step examples, explains optional parameters such as
+confidence interval computation and plotting, and offers best
+practices for combining models and interpreting results.
