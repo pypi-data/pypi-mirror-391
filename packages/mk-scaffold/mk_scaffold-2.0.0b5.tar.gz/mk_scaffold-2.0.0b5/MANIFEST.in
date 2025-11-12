@@ -1,0 +1,14 @@
+include LICENSE
+include README.md
+include constraints.txt
+include py.typed
+include pyproject.toml
+include requirements*.txt
+include setup.*
+
+recursive-include mk_scaffold *.py
+
+prune bin
+prune docs
+prune examples
+prune tests
