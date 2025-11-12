@@ -1,0 +1,84 @@
+Metadata-Version: 2.4
+Name: bhashini-client
+Version: 0.1.4
+Summary: A Python client for interacting with Bhashini inference services (ASR, NMT, TTS).
+Home-page: https://github.com/your-org/bhashini-client
+Author: Sai
+Author-email: digitalindiabhashinidivision@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# bhashini-client
+
+A simple Python client library for interacting with [Bhashini](https://bhashini.gov.in/) inference APIs.  
+Currently supports:
+- **ASR** (Automatic Speech Recognition)
+- **NMT** (Machine Translation)
+- **TTS** (Text-to-Speech)
+
+
+## Installation
+
+```bash
+pip install bhashini-client
+```
+
+
+## Example Usage
+```python
+from bhashini_client import BhashiniClient
+
+client = BhashiniClient(api_key="api-key")
+
+# ASR basics
+print(client.asr("https://example.com/audio.wav", "te"))
+
+# ASR with explicit configuration
+print(
+    client.asr(
+        "https://example.com/audio.wav",
+        "te",
+        serviceId="bhashini/ai4bharat/conformer-multilingual-asr",
+        samplingRate=44100,
+    )
+)
+
+# NMT with optional processors
+print(
+    client.nmt(
+        "What are you doing?",
+        "en",
+        "hi",
+        numTranslation="False",
+        preProcessors=["glossary"],
+        postProcessors=["glossary"],
+    )
+)
+
+# TTS with preprocessing and file output
+print(
+    client.tts(
+        "à¤®à¥‡à¤°à¤¾ à¤¨à¤¾à¤® à¤µà¤¿à¤¹à¤¿à¤° à¤¹à¥ˆ",
+        "en",
+        save_to="output_audio.wav",
+        gender="female",
+        preProcessors=["text-normalization"],
+        postProcessors=["high-compression"],
+    )
+)
+```
