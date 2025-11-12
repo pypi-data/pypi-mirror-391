@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling>=1.25"] # [cite: 63]
+build-backend = "hatchling.build" # [cite: 63]
+
+[project]
+# 1. CHANGE THIS: Make the name unique to you
+name = "arya2513-passgen" 
+
+# 2. CHANGE THIS: Use the standard starting version
+version = "0.1.0" 
+
+description = "A simple random password generator."
+
+# 3. CHANGE THIS: This line explicitly fixes the warnings
+readme = { file = "README.md", content-type = "text/markdown" } 
+
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [ { name = "Your Name" } ] #
+keywords = ["password", "generator", "security"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Homepage = "https://github.com/arya2513/Pypi-project"
+Issues = "https://github.com/arya2513/Pypi-project/issues"
+
+[tool.hatch.build.targets.wheel]
+# This tells the builder where your package code is [cite: 87]
+packages = ["src/mypackage"] 
+
+[tool.hatch.build.targets.sdist]
+include = [ # [cite: 90]
+    "src/mypackage",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]

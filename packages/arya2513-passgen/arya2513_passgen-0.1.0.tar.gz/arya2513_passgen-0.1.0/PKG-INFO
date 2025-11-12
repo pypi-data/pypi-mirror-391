@@ -1,0 +1,25 @@
+Metadata-Version: 2.4
+Name: arya2513-passgen
+Version: 0.1.0
+Summary: A simple random password generator.
+Project-URL: Homepage, https://github.com/arya2513/Pypi-project
+Project-URL: Issues, https://github.com/arya2513/Pypi-project/issues
+Author: Your Name
+License: MIT
+Keywords: generator,password,security
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# My Package (Password Generator)
+
+This is a simple random password generator, created by following the PyPI guide.
+
+## Usage
+
+```python
+# Remember to use the 'name' from your pyproject.toml
+from arya2513-passgen import generate_password
+
+print(generate_password(16))
