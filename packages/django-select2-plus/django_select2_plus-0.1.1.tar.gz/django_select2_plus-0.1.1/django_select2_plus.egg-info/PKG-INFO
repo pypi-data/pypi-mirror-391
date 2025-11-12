@@ -1,0 +1,106 @@
+Metadata-Version: 2.4
+Name: django-select2-plus
+Version: 0.1.1
+Summary: Select2 mejorado para Django con dependencias dinámicas y re-init en modales
+Author-email: Vladik Muñoz <vladikma87@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 vladik muñoz
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights   
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      
+        copies of the Software, and to permit persons to whom the Software is         
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in    
+        all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     
+        THE SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/vladikma/django-select2-plus.git
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Django>=3.2
+Requires-Dist: django-widget-tweaks
+Dynamic: license-file
+
+# django-select2-plus
+
+`django-select2-plus` es una implementación mejorada de widgets **Select2** para Django, permitiendo cargar opciones dinámicamente mediante AJAX, manejar **selects dependientes** y ofrecer una integración simple con **Bootstrap 5**.
+
+Este paquete nace como solución práctica cuando se necesitan selects que cambien según otros campos, sin recargar la página y con buen rendimiento.
+
+---
+
+## 🚀 Características
+
+- ✅ Compatible con Django >=3.8
+- ✅ Integración mejorada con Bootstrap 5
+- ✅ Soporte para dependencias dinámicas (`depend_*`)
+- ✅ Carga remota mediante API / AJAX
+- ✅ Compatible con formularios Django regulares y CBV
+- ✅ Fácil de extender y personalizar
+
+---
+## 📦 Instalación
+
+```python
+pip install django-select2-plus
+
+INSTALLED_APPS = [
+    ...
+    "django_select2_plus",
+]
+
+urlpatterns = [
+    ...
+    path("select2-plus/", include("django_select2_plus.urls")),
+]
+```
+## 🔗 Uso
+
+```python
+from django_select2_plus.widgets import Select2PlusWidget, DeferredModelChoiceField, apply_dependent_selects
+
+class PersonaForm(forms.Form):
+    class PersonaForm(forms.ModelForm):
+    departamento = forms.ModelChoiceField(
+        queryset=Departamento.objects.all(),
+        widget=Select2PlusWidget(select_type='search', model_name='departamento')
+    )
+
+    provincia = DeferredModelChoiceField(
+        queryset=Provincia.objects.none(),
+        widget=Select2PlusWidget(select_type='search', model_name='provincia', depend='departamento')
+    )
+
+    distrito = DeferredModelChoiceField(
+        queryset=Distrito.objects.none(),
+        widget=Select2PlusWidget(select_type='source', model_name='distrito', depend='provincia')
+    )
+
+    etnia = DeferredModelChoiceField(
+        queryset=Etnia.objects.all(),
+        widget=Select2PlusWidget(select_type='simple', model_name='etnia', auto_load=True)
+    )
+
+    class Meta:
+        model = Persona
+        fields = ['nombre', 'departamento', 'provincia', 'distrito', 'etnia']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        apply_dependent_selects(self)
+
+```
+## 🎨 Incluir en la plantilla(muy importante)
+{{ form.media }}
