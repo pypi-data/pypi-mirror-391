@@ -1,0 +1,69 @@
+Metadata-Version: 2.4
+Name: bydhvs
+Version: 0.4.12
+Summary: A module for communicating with the BYD HVS Battery system
+Author-email: bbr111 <ben1@gmx.net>
+License: GPL-3.0
+Project-URL: HomePage, https://github.com/bbr111/python-bydhvs
+Project-URL: DOWNLOAD, https://github.com/bbr111/python-bydhvs/releases
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Utilities
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: crcmod>=1.7
+Dynamic: license-file
+
+# python-bydhvs
+Python Wrapper for BYD b-Box HVM/HVS/LVS
+
+This is a python module to communicate with an BYD HVM/HVS/LVS.
+
+inspired by (https://github.com/christianh17/ioBroker.bydhvs)
+
+If used with **BYD Be Connect** at the same time. This module is **not** working correctly.
+
+Tested with 2 Towers and 5 Modules. Thx @st0ne-dot-at
+
+Installation
+------------
+The module is available from the [Python Package Index](https://pypi.python.org/pypi)
+
+
+    $ pip3 install bydhvs
+
+On a Fedora-based system or a CentOS/RHEL host with EPEL.
+
+    $ sudo dnf -y install python3-bydhvs
+
+Usage
+-----
+
+The file ``example.py`` contains an example about how to use this module.
+
+Build
+-----
+To build dev prepare system:
+
+    $ python -m pip install --upgrade pip
+    $ pip install build
+
+build package:
+  
+    $ python -m build
+
+License
+-------
+
+``python-byd`` is licensed under GPL-3.0 license, for more details check LICENSE.
