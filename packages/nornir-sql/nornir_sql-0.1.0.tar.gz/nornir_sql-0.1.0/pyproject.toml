@@ -1,0 +1,106 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "nornir_sql"
+authors = [ {name = "Viktor Kertesz", email = "vkertesz2@gmail.com"},
+]
+
+readme = "README.rst"
+requires-python = ">=3.7,<4"
+dependencies = [
+    "nornir >=3,<4",
+    "sqlalchemy >=2.0",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dynamic = ['version', 'description']
+
+[project.entry-points."nornir.plugins.inventory"]
+"SQLInventory" = "nornir_sql.plugins.inventory.sql:SQLInventory"
+
+[tool.flit.module]
+name = "nornir_sql"
+
+[project.urls]
+Source = "https://github.com/realvitya/nornir_sql"
+Documentation = "https://realvitya.github.io/nornir_sql"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "pytest-cov",
+    "pytest",
+    "pylint",
+    "flit>=3.2",
+    "invoke",
+    "toml",
+    "Sphinx<3.6",
+    "sphinx_rtd_theme",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --cov=nornir_sql --cov-report=term-missing"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+testpaths = [
+    "tests"
+]
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | private
+    | docs
+    | db
+    | misc
+    | private
+  )/
+  | settings.py     # This is where you define files that should not be stylized by black
+                     # the root of the project
+)
+'''
+[tool.pylint.general]
+# fail-under = "8.0"
+
+[tool.pylint.basic]
+# No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
+no-docstring-rgx="^(_|test_|Meta$)"
+good-names="db,nr,i,ip,j,k,ex,Run,_,fi,fo"
+
+[tool.pylint.messages_control]
+# Line length is enforced by Black, so pylint doesn't need to check it.
+# Pylint and Black disagree about how to format multi-line arrays; Black wins.
+disable = """,
+    line-too-long,
+    bad-continuation,
+    """
+
+[tool.pylint.miscellaneous]
+# Don't flag TODO_ as a failure, let us commit with things that still need to be done in the code
+notes = """,
+    FIXME,
+    XXX,
+    """
