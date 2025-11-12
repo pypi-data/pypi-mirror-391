@@ -1,0 +1,171 @@
+[project]
+name = "statespacecheck"
+dynamic = ["version"]
+description = "Goodness-of-fit diagnostics for state space models"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Eric Denovellis", email = "eric.denovellis@ucsf.edu" },
+    { name = "Sirui Zeng", email = "zengsr@bu.edu" },
+    { name = "Uri T. Eden", email = "tzvi@bu.edu" },
+]
+keywords = [
+    "neuroscience",
+    "state-space-models",
+    "goodness-of-fit",
+    "bayesian",
+    "diagnostics",
+    "kalman-filter",
+]
+dependencies = ["numpy>=1.26.0", "scipy>=1.11.0", "matplotlib>=3.8.0"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://edeno.github.io/statespacecheck"
+Documentation = "https://edeno.github.io/statespacecheck"
+Repository = "https://github.com/edeno/statespacecheck"
+Issues = "https://github.com/edeno/statespacecheck/issues"
+Changelog = "https://github.com/edeno/statespacecheck/releases"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "hypothesis>=6.0.0",
+    "pre-commit>=4.0.0",
+]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.26.0",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.0",
+    "mkdocs-section-index>=0.3.0",
+    "mkdocs-jupyter>=0.25.0",
+    "jupytext>=1.16.0",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/statespacecheck/_version.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [".git_archival.txt"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/statespacecheck"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "NPY", # numpy-specific rules
+    "D",   # pydocstyle
+]
+ignore = [
+    "D100", # Missing docstring in public module
+    "D104", # Missing docstring in public package
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D"]
+"examples/**/*.py" = [
+    "D",     # Docstrings not needed in notebooks
+    "E501",  # Line length - markdown comments often exceed 100 chars
+    "E402",  # Module imports not at top - notebooks often have setup cells first
+    "NPY002", # Legacy numpy random - acceptable in examples for simplicity
+]
+"examples/**/*.ipynb" = [
+    "E501",  # Line length - code in notebooks can be long for readability
+    "NPY002", # Legacy numpy random - acceptable in examples for simplicity
+]
+"docs/tutorials/**/*.ipynb" = [
+    "E501",  # Line length - code in notebooks can be long for readability
+    "NPY002", # Legacy numpy random - acceptable in examples for simplicity
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--cov=statespacecheck",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+extra_checks = true
+
+[[tool.mypy.overrides]]
+module = "scipy.*"
+ignore_missing_imports = true
