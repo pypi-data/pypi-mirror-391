@@ -1,0 +1,30 @@
+[project]
+name = "xgatools"
+version = "0.1.6"
+description = "Extreme General Agent Tools"
+readme = "README.md"
+requires-python = ">=3.11"
+
+
+dependencies = [
+    "click==8.2.1",
+    "colorlog==6.9.0",
+    "pyyaml==6.0.2",
+    "mcp==1.13.0",
+    "daytona-sdk==0.25.5",
+    "tavily-python==0.7.11",
+    "schedule==1.2.2",
+]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.hatch.build]
+exclude = ["log/*", ".idea/*", ".env"]
+
+
+[project.scripts]
+xgatools = "xgatools:main"
