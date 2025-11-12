@@ -1,0 +1,43 @@
+[project]
+name = "lazy-tailscale"
+version = "0.1.0"
+description = "A textual user interface for interacting with Tailscale."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Pascal Pfeiffer" }]
+requires-python = ">=3.14"
+
+dependencies = [
+  "aiohttp>=3.13.2",
+  "click>=8.3.0",
+  "pydantic>=2.12.3",
+  "requests>=2.32.5",
+  "textual>=6.5.0",
+]
+
+[dependency-groups]
+dev = [
+  "factory-boy>=3.3.3",
+  "isort>=7.0.0",
+  "pytest>=8.4.2",
+  "pytest-asyncio>=1.2.0",
+  "pytest-mock>=3.15.1",
+  "responses>=0.25.8",
+  "ruff>=0.14.3",
+  "textual-dev>=1.8.0",
+]
+
+[project.scripts]
+lazytailscale = "lazy_tailscale.cli:run"
+
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+addopts = "-v -rfEs --asyncio-mode auto --show-capture no"
+
+[tool.ruff]
+line-length = 140
+src = ["src/lazy_tailscale", "tests"]
+show-fixes = true
