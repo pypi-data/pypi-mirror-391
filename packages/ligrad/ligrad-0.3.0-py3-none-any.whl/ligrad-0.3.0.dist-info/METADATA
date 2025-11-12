@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: ligrad
+Version: 0.3.0
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=2.2
+Requires-Dist: scipy>=1.15
+Requires-Dist: astropy>=7.0
+Requires-Dist: pylightcurve>=4.0
+
+# LiGrad
+
+Transit Model for Gravity-Darkened Oblate Stars
+
+This package can be used for generating transit light-curves for gravity-darkened, oblate stars using a simple vectorized approach.
+
+It features:
+- Gravity-darkening calculation
+- Limb-darkening (Claret 4-parameter)
+- Vectorized method for planet occultation integration
+- Example scripts and a LaTeX manual included
+
+See MANUAL.pdf for detailed instructions.
+
+```bash
+pip install git+https://github.com/evoulimiotis/LiGrad.git
