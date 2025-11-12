@@ -1,0 +1,64 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools>=64",
+    "wheel"
+]
+
+[project]
+authors = [
+    {email = "yudong9912@gmail.com", name = "Linpg Foundation"}
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython"
+]
+dependencies = ["mypy"]
+description = "A set of tools for managing, compiling, and uploading your own package."
+license-files = ["LICEN[CS]E*"]
+name = "linpgtoolbox"
+readme = "README.md"
+requires-python = ">=3.11"
+version = "25.11"
+
+[project.scripts]
+linpgtb = "linpgtoolbox.cli:cli"
+
+[project.urls]
+"Bug Tracker" = "https://github.com/LinpgFoundation/linpg-toolbox/issues"
+"Homepage" = "https://github.com/LinpgFoundation/linpg-toolbox"
+
+[tool.black]
+target-version = ['py314']
+
+[tool.linpgtoolbox]
+ignores = [".*_compiler\\.py$"]
+includes = [
+    "CODE_OF_CONDUCT.md",
+    "LICENSE",
+    "README.md"
+]
+
+[tool.mypy]
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+python_version = "3.14"
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+
+[tool.setuptools.package-data]
+"*" = ["*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.tomlsort]
+all = true
+in_place = true
+spaces_indent_inline_array = 4
