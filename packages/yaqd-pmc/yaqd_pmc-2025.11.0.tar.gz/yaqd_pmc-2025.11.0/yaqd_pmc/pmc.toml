@@ -1,0 +1,120 @@
+protocol = "pmc"
+doc = """
+Motor driver for motors from Precision MicroControl Corporation.
+"""
+traits = ["has-transformed-position", "is-daemon"]
+hardware = ["pmc:dcx-pci100", "pmc:dcx-mc110"]
+
+[links]
+source = "https://github.com/yaq-project/yaqd-pmc/"
+bugtracker = "https://github.com/yaq-project/yaqd-pmc/issues"
+manufacturer = "https://pmccorp.com/products/api.php"
+example-configs = "https://github.com/yaq-project/yaqd-pmc/tree/main/example-yaq-configs/pmc"
+
+[config]
+counts_per_mm.type = "int"
+counts_per_mm.default = 58200
+counts_per_mm.doc = "Encoder counts per mm of travel"
+controller.type = "int"
+controller.default = 0
+controller.doc = "Index of the controller in MCAPI"
+axis.type = "int"
+axis.default = 0
+axis.doc = "Axis number for the individual motor in the controller"
+tolerance.type = "int"
+tolerance.default = 20
+tolerance.doc = "Tolerance in motor steps"
+acceleration.type = "float"
+acceleration.default = 70000
+acceleration.doc = "Acceleration for the motor in steps/sec/sec"
+gain.type = "float"
+gain.default = 2211
+gain.doc = "Gain parameter"
+velocity.type = "float"
+velocity.default = 11000
+velocity.dodoc = "Velocity of motion in steps/sec"
+integral_gain.type = "float"
+integral_gain.default = 0
+integral_gain.doc = "Integral Gain"
+integration_limit.type = "int"
+integration_limit.default = 0
+integration_limit.doc = "Integration Limit"
+integration_option.type = "int"
+integration_option.default = 0
+integration_option.doc = "Integration Option"
+derivative_gain.type = "float"
+derivative_gain.default = 6000
+derivative_gain.doc = "Derivative Gain"
+derivative_sample.type = "float"
+derivative_sample.default = 0.001364
+derivative_sample.doc = "Derivative Sample"
+following_error.type = "float"
+following_error.default = 0
+following_error.doc = "Following Error"
+velocity_gain.type = "float"
+velocity_gain.default = 0
+velocity_gain.doc = "Velocity Gain"
+accel_gain.type = "float"
+accel_gain.default = 0
+accel_gain.doc = "Acceleration Gain"
+decel_gain.type = "float"
+decel_gain.default = 0
+decel_gain.doc = "Deceleration Gain"
+encoder_scaling.type = "float"
+encoder_scaling.default = 0
+encoder_scaling.doc = "Encoder Scaling"
+update_rate.type = "int"
+update_rate.default = 0
+update_rate.doc = "Update Rate"
+position_deadband.type = "float"
+position_deadband.default = 0
+position_deadband.doc = "Position Deadband"
+delay_at_target.type = "float"
+delay_at_target.default = 0
+delay_at_target.doc = "Delay At Target"
+output_offset.type = "float"
+output_offset.default = 0
+output_offset.doc = "Output Offset"
+output_deadband.type = "float"
+output_deadband.default = 0
+output_deadband.doc = "Output Deadband"
+units.type = "string"
+units.default = "mm"
+units.doc = "Units"
+startup_behavior.type = {type="enum", symbols=["trust_driver", "trust_state"], name="startup"}
+startup_behavior.default = "trust_driver"
+startup_behavior.doc = "Where to get the current position. If trust state, then it will use the position stored to state (if present)"
+
+enable_backlash_correction.type = "boolean"
+enable_backlash_correction.default = false
+enable_backlash_correction.doc = "Enable correction which sends the motor past its destination when travelling to higher mm values (lower step values)"
+
+backlash.type = "int"
+backlash.default = 1000
+backlash.doc = "Number of steps to exceed the destination when backlash correcting. Must be a positive integer as backlash correction only applies in one direction."
+
+[state]
+hw_limits.default = [0, 50]
+
+[messages]
+  [messages.stop]
+  doc = "Halt motion of the motor"
+
+  [messages.steps_to_mm]
+  request = [{"type"="int", "name"="steps", "doc"="Number of motor steps"}]
+  response = "float"
+  doc = "Convert motor steps to mm travel"
+
+  [messages.mm_to_steps]
+  request = [{"type"="float", "name"="mm", "doc"="mm of travel"}]
+  response = "int"
+  doc = "Convert mm travel to motor steps"
+
+  [messages.reset_to_known_position]
+  request = [{"type"="float", "name"="position", "doc"="Current actual position in mm"}]
+  doc = "Reset the represented position to a known actual position"
+
+[installation]
+PyPI = "https://pypi.org/project/yaqd-pmc"
+conda-forge = "https://anaconda.org/conda-forge/yaqd-pmc"
+

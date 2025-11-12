@@ -1,0 +1,77 @@
+[shared-settings]
+units="mm"
+acceleration = 70000.0
+gain = 2211.0
+velocity = 11000.0
+dwell = 0.001
+integral_gain = 0
+derivative_gain = 6000.0
+derivative_sample = 0.001364
+startup_behavior = "trust_state"
+
+[D3_stage]
+port = 39051
+controller = 0
+axis = 1
+tolerance = 100
+enable_backlash_correction = false
+backlash = 1000
+
+[D1_stage]
+port = 39052
+controller = 0
+axis = 2
+tolerance = 100
+enable_backlash_correction = true
+backlash = 2500
+
+["OPA2_grating"]
+enable = false
+port = 39003
+controller = 0
+axis = 3
+tolerance = 20
+enable_backlash_correction = true
+backlash = -500
+
+["OPA2_BBO"]
+enable = false
+port = 39004
+controller = 0
+axis = 4
+tolerance = 20
+enable_backlash_correction = true
+backlash = -500
+
+["OPA2_mixer"]
+enable = false
+port = 39005
+controller = 0
+axis = 5
+tolerance = 20
+enable_backlash_correction = true
+backlash = -500
+
+["OPA3_grating"]
+port = 39006
+controller = 1
+axis = 1
+tolerance = 40
+enable_backlash_correction = false
+backlash = -500
+
+["OPA3_BBO"]
+port = 39007
+controller = 1
+axis = 2
+tolerance = 40
+enable_backlash_correction = false
+backlash = -500
+
+["OPA3_mixer"]
+port = 39008
+controller = 1
+axis = 3
+tolerance = 40
+enable_backlash_correction = false
+backlash = 1000

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["flit_core >=2,<4,!=3.7.0"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "yaqd_pmc"
+dist-name = "yaqd-pmc"
+author = "yaq developers"
+home-page = "https://yaq.fyi"
+description-file = "README.md"
+requires-python = ">=3.7"
+requires = ["yaqd-core>=2023.6.0"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+
+[tool.flit.metadata.urls]
+Source = "https://github.com/yaq-project/yaqd-pmc"
+Issues = "https://github.com/yaq-project/yaqd-pmc/issues"
+
+[tool.flit.metadata.requires-extra]
+dev = ["black", "pre-commit"]
+
+[tool.flit.scripts]
+yaqd-pmc = "yaqd_pmc._pmc:PmcMotor.main"
+
+[tool.black]
+line-length = 99
+target-version = ['py37', 'py38']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | build
+  | dist
+)/
+'''
