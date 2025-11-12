@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "teson"
+version = "0.1.0"
+description = "TEson (Token-efficient structured object notation) - A Python library for converting arbitrary JSON data structures to CSV format"
+readme = "README.md"
+license = "MIT AND (Apache-2.0 OR BSD-2-Clause)"
+authors = [
+  { name = "Jayed", email = "jayedbinjahangir@gmail.com" }
+]
+dependencies = []
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/jayeeed/teson"
+
+[tool.setuptools.packages.find]
+where = ["."]
