@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculator_pkg_jake"
+version = "0.1.0"
+
+[project.scripts]
+calculator_pkg_jake = "calculator_pkg_jake.__main__:main"
