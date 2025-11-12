@@ -1,0 +1,88 @@
+Metadata-Version: 2.4
+Name: flickerprint
+Version: 1.0
+Summary: FlickerPrint: Non-invasive measurement of biomolecular condensate mechanical properties from confocal microscopy images.
+Author: Carl Jones, Jack Law, Thomas Williamson, Fynn Wolf, Endre Tønnessen
+Maintainer: Thomas Williamson
+Project-URL: Documentation, https://flickerprint.github.io/FlickerPrint/
+Project-URL: Source, https://github.com/FlickerPrint/FlickerPrint
+Requires-Python: >=3.9, <3.12
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: python-javabridge>=4.0.4
+Requires-Dist: python-bioformats>=4.1.0
+Requires-Dist: matplotlib
+Requires-Dist: scikit-image
+Requires-Dist: pandas
+Requires-Dist: seaborn
+Requires-Dist: h5py>=3.11.1
+Requires-Dist: tqdm
+Requires-Dist: argh
+Requires-Dist: wget
+Requires-Dist: strictyaml>=1.7.3
+Requires-Dist: tables>=3.9.1
+Requires-Dist: opencv-python>=4.10.0.84
+Requires-Dist: exifread>=3.0.0
+Requires-Dist: tensorflow>=2.16.2
+Requires-Dist: shiny==1.2.1
+Requires-Dist: trieste
+Requires-Dist: shinyswatch
+Requires-Dist: jinja2
+Requires-Dist: cmake
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: maintainer
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# FlickerPrint
+
+FlickerPrint is a software package for conducting flicker spectroscopy analysis to find the interfacial tension and bending rigidity of soft bodies such as biomolecular condensates and vesicles from their shape fluctuations in confocal microscopy images.
+
+## Prerequisites
+
+FlickerPrint requires Python 3.9 to 3.11 and an installation of Java.
+Full details of how to install these prerequisites are available in the [documentation](https://flickerprint.github.io/FlickerPrint/).
+
+## Installation
+
+FlickerPrint can be installed directly using pip:
+
+```bash
+python3 -m pip install flickerprint
+```
+
+To build the package from the source code, clone the Git repository, then navigate to the ``FlickerPrint/src`` directory of the repository and run:
+
+```bash
+python3 -m pip install -e .
+```
+
+## Usage
+
+FlickerPrint is primarily used through the command line. To see the available commands and options, run:
+
+```bash
+flickerprint --help
+```
+
+To create a new experiment, run:
+
+```bash
+flickerprint create-project <project_name>
+```
+
+To analyse a dataset, ``cd`` into the experiment directory and run:
+
+```bash
+flickerprint run [-c cores]
+```
+
+To visualise the results, run:
+
+```bash
+flickerprint view-output
+```
