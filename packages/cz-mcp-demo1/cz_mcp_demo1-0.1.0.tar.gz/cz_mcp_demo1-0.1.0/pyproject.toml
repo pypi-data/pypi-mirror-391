@@ -1,0 +1,16 @@
+[project]
+name = "cz-mcp-demo1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mcp[cli]>=1.21.0",
+]
+
+[project.scripts]
+cz-mcp-demo1 = "cz_mcp_demo1:main"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
