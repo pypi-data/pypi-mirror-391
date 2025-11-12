@@ -1,0 +1,43 @@
+Metadata-Version: 2.3
+Name: yourag
+Version: 0.1.4
+Summary: Your tool for RAG on any source of knowledge
+Keywords: rag,ai,knowledge,search
+Author: Manuel Gil
+Author-email: Manuel Gil <manuelgilsitio@gmail.com>
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: black>=25.9.0
+Requires-Dist: chromadb>=1.3.2
+Requires-Dist: google-api-python-client>=2.186.0
+Requires-Dist: google-auth-oauthlib>=1.2.3
+Requires-Dist: openai>=2.7.1
+Requires-Dist: pydantic>=2.12.3
+Requires-Dist: python-dotenv>=1.2.1
+Requires-Dist: srt>=3.5.3
+Requires-Dist: youtube-transcript-api>=1.2.3
+Requires-Python: >=3.12
+Project-URL: Homepage, https://github.com/GILSAMAS/yourag
+Project-URL: Issues, https://github.com/GILSAMAS/yourag/issues
+Project-URL: Repository, https://github.com/GILSAMAS/yourag
+Description-Content-Type: text/markdown
+
+# YouRAG
+
+Your tool for RAG on any source of knowledge.
+
+## Install
+
+`uv add yourag`
+
+## How to use 
+
+`
+yourag init --knowledge https://youtube.com/... --name docker-video
+yourag query --name docker-video --question "How do I install this?"
+yourag delete --name myvideo
+`
