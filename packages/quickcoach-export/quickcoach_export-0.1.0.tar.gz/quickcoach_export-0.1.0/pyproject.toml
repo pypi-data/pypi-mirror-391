@@ -1,0 +1,31 @@
+[project]
+name = "quickcoach-export"
+version = "0.1.0"
+description = "Export your workout history from QuickCoach to CSV files"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+authors = [
+    { name = "John Brock" }
+]
+keywords = ["quickcoach"]
+dependencies = [
+    "selenium>=4.38.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/JohnHBrock/quickcoach-scraper"
+Repository = "https://github.com/JohnHBrock/quickcoach-scraper"
+Issues = "https://github.com/JohnHBrock/quickcoach-scraper/issues"
+
+[project.scripts]
+quickcoach-export = "quickcoach_export.main:main"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8.4",
+    "pyright>=1.1.390",
+]
+
+[tool.uv]
+package = true
