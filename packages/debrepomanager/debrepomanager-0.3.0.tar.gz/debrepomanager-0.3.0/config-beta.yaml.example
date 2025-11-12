@@ -1,0 +1,41 @@
+# Configuration for BETA environment
+# Repository URL: http://deb.repo.com/beta/
+
+gpg:
+  key_id: "YOUR_GPG_KEY_ID"
+  use_agent: true
+
+aptly:
+  path: "/usr/bin/aptly"
+  root_base: "/srv/aptly/beta"
+  publish_base: "/srv/repo/public-beta"
+
+repositories:
+  codenames:
+    - bookworm
+    - noble
+    - trixie
+    - jammy
+  components:
+    - jethome-tools
+    - jethome-armbian
+    - jethome-bookworm
+  architectures:
+    - amd64
+    - arm64
+    - riscv64
+  auto_create: true
+  dual_format:
+    enabled: true
+    method: symlink
+    auto_symlink: true
+
+snapshots:
+  max_keep: 5
+  format: "{component}-{codename}-%Y%m%d-%H%M%S"
+
+retention:
+  default:
+    min_versions: 3
+    max_age_days: 30
+

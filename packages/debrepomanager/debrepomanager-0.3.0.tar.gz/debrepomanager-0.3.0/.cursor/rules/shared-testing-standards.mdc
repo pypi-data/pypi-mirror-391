@@ -1,0 +1,215 @@
+---
+alwaysApply: true
+---
+# Testing Standards
+
+Testing conventions and expectations.
+
+## Test Coverage Expectations
+
+Aim for meaningful test coverage that catches real issues.
+
+**Coverage guidelines:**
+- High coverage for business logic (80%+ baseline)
+- 100% coverage for critical paths
+- 100% coverage for security-sensitive code
+- Focus on meaningful tests, not just coverage numbers
+- Test value, not vanity metrics
+
+**What to prioritize:**
+- Business logic and algorithms
+- User-facing functionality
+- Security features (authentication, authorization, validation)
+- Data integrity operations
+- Error handling paths
+- Integration points between components
+
+**Don't obsess over:**
+- 100% coverage for everything
+- Testing trivial getters/setters
+- Framework boilerplate code
+- Third-party library internals
+
+## Test Types
+
+Use appropriate test types for different scenarios.
+
+**Unit Tests:**
+- Fast, isolated tests of individual components
+- Test single function, method, or class
+- Mock external dependencies
+- Run frequently during development
+- Catch regressions quickly
+- Should be majority of test suite
+
+**Integration Tests:**
+- Test component interactions
+- Test with real dependencies when feasible
+- Verify interfaces work correctly
+- Test data flow between components
+- Critical path coverage
+- More complex than unit tests
+
+**Performance/Load Tests:**
+- Test critical operations under load
+- Identify bottlenecks and degradation
+- Verify performance requirements met
+- Test with realistic data volumes
+- Catch performance regressions
+- Run before releases
+
+**Security Tests:**
+- 100% coverage for authentication logic
+- 100% coverage for input validation
+- 100% coverage for authorization checks
+- Test for common vulnerabilities
+- Test boundary conditions
+- Test error paths for security holes
+
+**End-to-End Tests:**
+- Test complete user workflows
+- Verify system works as whole
+- Catch integration issues
+- Fewer than unit tests (slower)
+- Focus on critical user journeys
+
+## Test Organization
+
+Organize tests for clarity and maintainability.
+
+**Structure:**
+- Mirror source code structure
+- Tests live near code they test
+- Group related tests together
+- Separate unit/integration/e2e tests
+- Follow language/framework conventions
+
+**Test naming:**
+- Descriptive names explaining what's tested
+- Include: what is tested, under what conditions, expected result
+- Make failures easy to understand
+- Be specific and clear
+- Follow project naming conventions
+
+**Test files:**
+- One test file per source file or module
+- Clear naming pattern for test files
+- Follow framework conventions
+- Easy to find corresponding tests
+
+## Test Independence
+
+Keep tests isolated and independent.
+
+**No shared state:**
+- Each test runs independently
+- Clean state before each test
+- Tests don't depend on execution order
+- Parallel execution safe
+
+**Test fixtures:**
+- Use fixtures/setup for common test data
+- Keep test data minimal and realistic
+- Clean up fixtures after tests
+- Avoid brittle fixtures
+
+**Database tests:**
+- Use separate test database
+- Clean database between test runs
+- Fast fixtures or transactions
+- Don't depend on existing data
+
+## Test Execution
+
+Make tests easy to run and maintain.
+
+**Run tests frequently:**
+- Run affected tests during development
+- Run full suite before commits
+- Run in CI/CD on every push
+- Fast feedback is critical
+
+**Test suite performance:**
+- Keep suite fast (< 10 minutes ideal)
+- Parallelize when possible
+- Optimize slow tests
+- Consider test pyramid (many unit, fewer integration)
+
+**Failed tests:**
+- Fix failing tests immediately
+- Don't skip or ignore failing tests
+- Treat test failures as bugs
+- Keep build green
+
+**Flaky tests:**
+- Fix flaky tests as high priority
+- Investigate root cause
+- Don't just retry or ignore
+- Flaky tests erode confidence
+
+## Test-Driven Development
+
+Write tests alongside implementation.
+
+**Approach:**
+- Write test for new functionality
+- Implement minimum code to pass
+- Refactor while keeping tests green
+- Repeat (Red-Green-Refactor cycle)
+
+**Benefits:**
+- Tests guide design
+- High confidence in code
+- Easier refactoring
+- Better interfaces
+
+**Practical TDD:**
+- Not mandatory for all code
+- Valuable for complex logic
+- Critical paths benefit most
+- Use judgment, not dogma
+
+## Mocking and Test Doubles
+
+Use mocks appropriately for isolated testing.
+
+**When to mock:**
+- External services and APIs
+- Slow dependencies (database, filesystem)
+- Non-deterministic behavior (time, random)
+- Hard-to-trigger conditions (errors, edge cases)
+
+**Mocking best practices:**
+- Mock at interface boundaries
+- Don't over-specify mocks (brittle tests)
+- Verify mocks match real behavior
+- Use real dependencies for integration tests
+- Keep mocks simple and clear
+
+**Test doubles:**
+- Stubs: provide canned responses
+- Mocks: verify interactions
+- Fakes: working implementations
+- Choose appropriate type for scenario
+
+## Test Maintenance
+
+Keep tests valuable and up to date.
+
+**Update tests with code:**
+- Tests are first-class code
+- Refactor tests like production code
+- Keep tests readable and maintainable
+- Remove obsolete tests
+
+**Test quality:**
+- Tests should be clear and focused
+- One concept per test when possible
+- Avoid complex test logic
+- Make failures obvious
+
+**Test debt:**
+- Don't let test quality degrade
+- Fix broken tests promptly
+- Improve test coverage over time
+- Delete tests that no longer add value

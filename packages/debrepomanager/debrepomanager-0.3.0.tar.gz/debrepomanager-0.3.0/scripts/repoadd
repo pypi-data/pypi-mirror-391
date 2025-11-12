@@ -1,0 +1,282 @@
+#!/usr/bin/env bash
+#
+# repoadd - Add packages to Debian repository (stable/beta/test)
+#
+# Usage: repoadd <stable|beta|test> <codename> <dir> [component]
+#
+# Examples:
+#   repoadd stable bookworm armbian-bookworm
+#   repoadd stable bookworm ./packages/ jethome-custom
+#   repoadd beta noble jethome-tools
+#   repoadd test bookworm ./packages/
+#
+# Repository URLs:
+#   stable: http://deb.repo.com/
+#   beta:   http://deb.repo.com/beta/
+#   test:   http://deb.repo.com/test/
+
+set -e
+set -o pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Default config path (can be overridden via REPOMANAGER_CONFIG env var)
+# Note: v0.2+ supports auto-detection from standard locations, so --config is optional
+CONFIG_FILE="${REPOMANAGER_CONFIG:-/etc/repomanager/config.yaml}"
+
+# Function to print colored messages
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $*"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $*"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $*" >&2
+}
+
+# Function to show usage
+usage() {
+    cat <<EOF
+Usage: $(basename "$0") <stable|beta|test> <codename> <dir> [component]
+
+Arguments:
+  <stable|beta|test>  Repository environment
+                      - stable: http://deb.repo.com/
+                      - beta:   http://deb.repo.com/beta/
+                      - test:   http://deb.repo.com/test/
+
+  <codename>          Distribution codename (e.g., bookworm, noble, trixie)
+
+  <dir>               Directory containing .deb packages (searched recursively)
+
+  [component]         Optional: explicit component name (default: derived from dir name)
+                      If not specified, component is auto-generated:
+                      - From directory name with jethome- prefix
+                      - Example: armbian-bookworm → jethome-armbian-bookworm
+
+Examples:
+  $(basename "$0") stable bookworm armbian-bookworm
+    → Loads to: http://deb.repo.com/ bookworm jethome-armbian-bookworm
+
+  $(basename "$0") stable bookworm ./packages/ jethome-custom
+    → Loads to: http://deb.repo.com/ bookworm jethome-custom
+
+  $(basename "$0") beta noble ./tools/ jethome-tools
+    → Loads to: http://deb.repo.com/beta/ noble jethome-tools
+
+  $(basename "$0") test bookworm ./packages/
+    → Loads to: http://deb.repo.com/test/ bookworm jethome-packages
+
+Environment Variables:
+  REPOMANAGER_CONFIG  Path to config file (default: /etc/repomanager/config.yaml)
+                      v0.2+ supports auto-detection from standard locations
+  DRY_RUN            Set to 1 to simulate without making changes
+  DEBUG              Set to 1 for verbose output
+
+EOF
+    exit 1
+}
+
+# Parse arguments
+if [ $# -lt 3 ] || [ $# -gt 4 ]; then
+    log_error "Invalid number of arguments"
+    usage
+fi
+
+ENVIRONMENT="$1"
+CODENAME="$2"
+PACKAGE_DIR="$3"
+COMPONENT_EXPLICIT="${4:-}"
+
+# Validate environment
+case "$ENVIRONMENT" in
+    stable|beta|test)
+        ;;
+    *)
+        log_error "Invalid environment: $ENVIRONMENT"
+        log_error "Must be one of: stable, beta, test"
+        usage
+        ;;
+esac
+
+# Validate codename (basic check)
+if [[ ! "$CODENAME" =~ ^[a-z0-9-]+$ ]]; then
+    log_error "Invalid codename: $CODENAME"
+    log_error "Codename must contain only lowercase letters, numbers, and hyphens"
+    exit 1
+fi
+
+# Validate package directory
+if [ ! -d "$PACKAGE_DIR" ]; then
+    log_error "Package directory not found: $PACKAGE_DIR"
+    exit 1
+fi
+
+# Convert to absolute path
+PACKAGE_DIR="$(cd "$PACKAGE_DIR" && pwd)"
+
+# Check for .deb files
+DEB_COUNT=$(find "$PACKAGE_DIR" -name "*.deb" -type f | wc -l)
+if [ "$DEB_COUNT" -eq 0 ]; then
+    log_error "No .deb files found in $PACKAGE_DIR"
+    exit 1
+fi
+
+log_info "Found $DEB_COUNT .deb package(s) in $PACKAGE_DIR"
+
+# Determine component name
+if [ -n "$COMPONENT_EXPLICIT" ]; then
+    # Use explicitly specified component
+    COMPONENT="$COMPONENT_EXPLICIT"
+    log_info "Using explicit component: $COMPONENT"
+else
+    # Auto-generate from directory name
+    COMPONENT_BASE=$(basename "$PACKAGE_DIR")
+
+    # Construct component name with jethome- prefix if not already present
+    if [[ "$COMPONENT_BASE" == jethome-* ]]; then
+        COMPONENT="$COMPONENT_BASE"
+    else
+        COMPONENT="jethome-${COMPONENT_BASE}"
+    fi
+    log_info "Auto-generated component from directory name: $COMPONENT"
+fi
+
+log_info "Environment: $ENVIRONMENT"
+log_info "Codename: $CODENAME"
+log_info "Component: $COMPONENT"
+log_info "Package directory: $PACKAGE_DIR"
+
+# Repository URL mapping
+case "$ENVIRONMENT" in
+    stable)
+        REPO_URL="http://deb.repo.com/"
+        ;;
+    beta)
+        REPO_URL="http://deb.repo.com/beta/"
+        ;;
+    test)
+        REPO_URL="http://deb.repo.com/test/"
+        ;;
+esac
+
+log_info "Repository URL: ${REPO_URL} → deb ${REPO_URL} ${CODENAME} ${COMPONENT}"
+
+# Check if debrepomanager is available
+if ! command -v debrepomanager &> /dev/null; then
+    log_error "debrepomanager command not found"
+    log_error "Please install debrepomanager or ensure it's in PATH"
+    exit 1
+fi
+
+# Check config file exists (if not using default locations)
+# v0.2+ auto-detects config from: /etc/repomanager/config.yaml, ~/.repomanager/config.yaml, ./repomanager.yaml
+if [ "$CONFIG_FILE" != "/etc/repomanager/config.yaml" ] && [ ! -f "$CONFIG_FILE" ]; then
+	log_warn "Config file not found: $CONFIG_FILE"
+	log_warn "Will use debrepomanager auto-detection from standard locations"
+fi
+
+# Build command arguments
+CMD_ARGS=()
+
+# Add config file if specified and exists
+# Note: v0.2+ auto-detects config, so --config is optional
+if [ -n "$REPOMANAGER_CONFIG" ] && [ -f "$CONFIG_FILE" ]; then
+	CMD_ARGS+=(--config "$CONFIG_FILE")
+	log_info "Using explicit config: $CONFIG_FILE"
+else
+	log_info "Using auto-detected config (v0.2+)"
+fi
+
+# Add verbose flag if DEBUG is set
+if [ -n "$DEBUG" ]; then
+    CMD_ARGS+=(--verbose)
+fi
+
+# Add dry-run flag if DRY_RUN is set
+if [ -n "$DRY_RUN" ]; then
+    CMD_ARGS+=(--dry-run)
+    log_warn "DRY RUN MODE - No changes will be made"
+fi
+
+# Step 1: Check if repository exists, create if needed
+log_info "Step 1: Checking repository existence..."
+
+if debrepomanager "${CMD_ARGS[@]}" list --codename "$CODENAME" 2>/dev/null | grep -q "${COMPONENT}-${CODENAME}"; then
+    log_info "Repository already exists: ${COMPONENT}-${CODENAME}"
+else
+    log_warn "Repository does not exist, creating..."
+
+    if [ -n "$DRY_RUN" ]; then
+        log_info "[DRY RUN] Would create repository: ${CODENAME}/${COMPONENT}"
+    else
+        debrepomanager "${CMD_ARGS[@]}" create-repo \
+            --codename "$CODENAME" \
+            --component "$COMPONENT"
+
+        if [ $? -eq 0 ]; then
+            log_info "Repository created successfully"
+        else
+            log_error "Failed to create repository"
+            exit 1
+        fi
+    fi
+fi
+
+# Step 2: Add packages to repository
+log_info "Step 2: Adding packages to repository..."
+
+if [ -n "$DRY_RUN" ]; then
+    log_info "[DRY RUN] Would add $DEB_COUNT packages from $PACKAGE_DIR"
+    find "$PACKAGE_DIR" -name "*.deb" -type f | while read -r pkg; do
+        log_info "  - $(basename "$pkg")"
+    done
+else
+    debrepomanager "${CMD_ARGS[@]}" add \
+        --codename "$CODENAME" \
+        --component "$COMPONENT" \
+        --package-dir "$PACKAGE_DIR"
+
+    if [ $? -eq 0 ]; then
+        log_info "Packages added successfully"
+    else
+        log_error "Failed to add packages"
+        exit 1
+    fi
+fi
+
+# Step 3: Show summary
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+log_info "SUCCESS: Packages uploaded to repository"
+echo "═══════════════════════════════════════════════════════════════"
+echo ""
+echo "Repository Information:"
+echo "  Environment:  $ENVIRONMENT"
+echo "  Codename:     $CODENAME"
+echo "  Component:    $COMPONENT"
+echo "  URL:          $REPO_URL"
+echo "  Packages:     $DEB_COUNT"
+echo ""
+echo "APT Configuration:"
+echo "  Add to /etc/apt/sources.list.d/jethome.list:"
+echo ""
+echo "    deb ${REPO_URL} ${CODENAME} ${COMPONENT}"
+echo ""
+echo "Then run:"
+echo "    sudo apt update"
+echo "    sudo apt install <package-name>"
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+

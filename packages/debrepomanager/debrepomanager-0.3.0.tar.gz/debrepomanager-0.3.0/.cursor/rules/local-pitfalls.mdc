@@ -1,0 +1,391 @@
+---
+tags: ["pitfalls", "best-practices", "python"]
+---
+
+# Common Pitfalls to Avoid
+
+## ❌ Don't Do This / ✅ Do This Instead
+
+### 0. Repository Creation Without --force Check
+
+❌ **Don't**: Создавать репо без проверки существования
+```python
+def create_repo(codename, component):
+    # Just create, may fail if exists
+    aptly.repo_create(...)
+```
+
+✅ **Do**: Проверять существование и поддерживать --force
+```python
+def create_repo(codename: str, component: str, force: bool = False):
+    if self.repo_exists(codename, component):
+        if force:
+            logger.warning(f"Recreating repo (--force)")
+            self.delete_repo(codename, component)
+        else:
+            raise ValueError(f"Repo exists. Use --force to recreate")
+    # Create repo...
+```
+
+**MVP requirement**: --force опция обязательна для CLI
+
+### 1. Indentation: Tabs vs Spaces
+
+❌ **Don't**: Use tabs in Python
+```python
+def function():
+	pass  # tabs here - ERROR!
+```
+
+✅ **Do**: Use 4 spaces
+```python
+def function():
+    pass  # 4 spaces - CORRECT
+```
+
+### 2. Missing Type Hints
+
+❌ **Don't**: Skip type hints
+```python
+def process(data):
+    return data
+```
+
+✅ **Do**: Add type hints
+```python
+def process(data: Dict[str, Any]) -> Dict[str, Any]:
+    return data
+```
+
+### 3. Using print() Instead of logging
+
+❌ **Don't**: Use print()
+```python
+print("Processing...")
+print(f"Error: {error}")
+```
+
+✅ **Do**: Use logging
+```python
+logger.info("Processing...")
+logger.error(f"Error: {error}")
+```
+
+### 4. Catching All Exceptions
+
+❌ **Don't**: Catch everything
+```python
+try:
+    something()
+except:  # Catches EVERYTHING including KeyboardInterrupt!
+    pass
+```
+
+✅ **Do**: Catch specific exceptions
+```python
+try:
+    something()
+except ValueError as e:
+    logger.error(f"Validation failed: {e}")
+    raise
+except FileNotFoundError as e:
+    logger.error(f"File not found: {e}")
+    raise
+```
+
+### 5. No Tests for New Code
+
+❌ **Don't**: Write code without tests
+```python
+# Just implemented new_function()
+# No tests written
+```
+
+✅ **Do**: Write tests first (TDD)
+```python
+# tests/test_module.py
+def test_new_function():
+    """Test new function."""
+    result = new_function()
+    assert result == expected
+
+# Then implement
+def new_function():
+    # Implementation
+    pass
+```
+
+### 6. Hardcoding Paths
+
+❌ **Don't**: Hardcode paths
+```python
+config = "/etc/debrepomanager/config.yaml"
+aptly_root = "/srv/aptly/bookworm"
+```
+
+✅ **Do**: Use configuration
+```python
+config = Config()
+config_path = config.get_config_path()
+aptly_root = config.get_aptly_root(codename)
+```
+
+### 7. String Formatting
+
+❌ **Don't**: Use old-style formatting
+```python
+msg = "Hello, %s! You are %d." % (name, age)
+msg = "Hello, {}! You are {}.".format(name, age)
+```
+
+✅ **Do**: Use f-strings
+```python
+msg = f"Hello, {name}! You are {age}."
+```
+
+### 8. Path Operations
+
+❌ **Don't**: Use os.path
+```python
+import os.path
+if os.path.exists(config_path):
+    with open(config_path) as f:
+        data = f.read()
+```
+
+✅ **Do**: Use pathlib.Path
+```python
+from pathlib import Path
+config_path = Path("/etc/debrepomanager/config.yaml")
+if config_path.exists():
+    data = config_path.read_text()
+```
+
+### 9. Missing Docstrings
+
+❌ **Don't**: Skip docstrings
+```python
+def add_packages(codename, component, packages):
+    # No docstring!
+    pass
+```
+
+✅ **Do**: Add Google-style docstrings
+```python
+def add_packages(
+    codename: str,
+    component: str,
+    packages: List[str]
+) -> bool:
+    """Add packages to repository.
+
+    Args:
+        codename: Distribution codename
+        component: Repository component
+        packages: List of package paths
+
+    Returns:
+        True if successful
+
+    Raises:
+        ValueError: If inputs are invalid
+    """
+    pass
+```
+
+### 10. Shell=True in subprocess
+
+❌ **Don't**: Use shell=True
+```python
+cmd = f"aptly repo create {repo_name}"
+subprocess.run(cmd, shell=True)  # Command injection risk!
+```
+
+✅ **Do**: Use list of arguments
+```python
+subprocess.run(["aptly", "repo", "create", repo_name], shell=False)
+```
+
+### 11. Not Handling FileNotFoundError
+
+❌ **Don't**: Assume files exist
+```python
+with open(config_file) as f:
+    config = f.read()  # May crash!
+```
+
+✅ **Do**: Handle missing files
+```python
+try:
+    with open(config_file) as f:
+        config = f.read()
+except FileNotFoundError:
+    logger.error(f"Config not found: {config_file}")
+    raise ConfigError(f"Config file missing: {config_file}")
+```
+
+### 12. Trailing Spaces
+
+❌ **Don't**: Leave trailing spaces
+```python
+def function():
+    return True    # trailing spaces here
+```
+
+✅ **Do**: Remove trailing spaces
+```python
+def function():
+    return True
+```
+
+**Tip**: Configure your editor to remove trailing spaces on save.
+
+### 13. Importing from __init__.py
+
+❌ **Don't**: Import everything
+```python
+from debrepomanager import *
+```
+
+✅ **Do**: Import specific names
+```python
+from debrepomanager import Config, AptlyManager
+```
+
+### 14. Mutable Default Arguments
+
+❌ **Don't**: Use mutable defaults
+```python
+def process(items=[]):  # BAD! Shared between calls
+    items.append("new")
+    return items
+```
+
+✅ **Do**: Use None and create new object
+```python
+def process(items: Optional[List[str]] = None) -> List[str]:
+    if items is None:
+        items = []
+    items.append("new")
+    return items
+```
+
+### 15. Not Using Context Managers
+
+❌ **Don't**: Manual file handling
+```python
+f = open(file_path)
+data = f.read()
+f.close()  # May not execute if error occurs
+```
+
+✅ **Do**: Use context managers
+```python
+with open(file_path) as f:
+    data = f.read()
+# Automatically closed
+```
+
+### 16. Ignoring Return Values
+
+❌ **Don't**: Ignore return values
+```python
+subprocess.run(cmd)  # Ignores errors!
+```
+
+✅ **Do**: Check return values
+```python
+result = subprocess.run(cmd, check=True, capture_output=True)
+if result.returncode != 0:
+    handle_error(result.stderr)
+```
+
+### 17. Not Validating User Input
+
+❌ **Don't**: Trust user input
+```python
+def delete_repo(codename):
+    # No validation!
+    subprocess.run(["rm", "-rf", f"/srv/aptly/{codename}"])
+```
+
+✅ **Do**: Validate before using
+```python
+def delete_repo(codename: str):
+    VALID_CODENAMES = ["bookworm", "noble", "trixie"]
+    if codename not in VALID_CODENAMES:
+        raise ValueError(f"Invalid codename: {codename}")
+
+    # Safe to use
+    path = Path(f"/srv/aptly/{codename}")
+    if path.exists():
+        shutil.rmtree(path)
+```
+
+### 18. Logging Sensitive Data
+
+❌ **Don't**: Log secrets
+```python
+logger.info(f"GPG passphrase: {passphrase}")
+logger.debug(f"Config: {config}")  # May contain secrets
+```
+
+✅ **Do**: Log safely
+```python
+logger.info("GPG key imported")
+logger.debug("Configuration loaded successfully")
+```
+
+### 19. Multiple aptly Calls
+
+❌ **Don't**: Make multiple calls
+```python
+for package in packages:
+    aptly.add_package(package)  # N calls!
+```
+
+✅ **Do**: Use bulk operations
+```python
+aptly.add_packages(packages)  # 1 call
+```
+
+### 20. Not Cleaning Up Resources
+
+❌ **Don't**: Forget cleanup
+```python
+temp_dir = create_temp_dir()
+process(temp_dir)
+# Temp dir never cleaned up!
+```
+
+✅ **Do**: Use try-finally
+```python
+temp_dir = create_temp_dir()
+try:
+    process(temp_dir)
+finally:
+    shutil.rmtree(temp_dir)  # Always cleaned up
+```
+
+## Performance Anti-Patterns
+
+### 1. N+1 Queries
+❌ Multiple separate operations
+✅ Batch operations
+
+### 2. No Caching
+❌ Repeated expensive calls
+✅ Cache results
+
+### 3. Blocking Operations
+❌ No timeout on subprocess
+✅ Set reasonable timeouts
+
+## See Also
+
+- [code-style.md](code-style.md) - Correct style patterns
+- [testing.md](testing.md) - Testing patterns
+- [security.md](security.md) - Security patterns
+- [error-handling.md](error-handling.md) - Error handling patterns
+
+
