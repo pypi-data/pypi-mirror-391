@@ -1,0 +1,67 @@
+Metadata-Version: 2.4
+Name: event-marker
+Version: 1.8.0
+Summary: A Qt-based video player for manual, frame-level event marking
+Author-email: Mel Xu <zix63@pitt.edu>
+License: MIT
+Project-URL: Homepage, https://github.com/Melokeo/event-marker
+Project-URL: Repository, https://github.com/Melokeo/event-marker
+Project-URL: Issues, https://github.com/Melokeo/event-marker/issues
+Keywords: video,annotation,marking,PyQt6,event-marker
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyQt6>=6.4.0
+Requires-Dist: PyQt6-Qt6>=6.4.0
+Requires-Dist: PyQt6-sip>=13.4.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: PyYAML>=6.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-qt>=4.2.0; extra == "dev"
+Requires-Dist: opencv-python>=4.5.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Provides-Extra: csv-analysis
+Requires-Dist: scipy>=1.7.0; extra == "csv-analysis"
+Dynamic: license-file
+
+# event-marker
+
+A qt-based video player for manual, frame level event marking.
+
+Was written after being tortured by OOM caused by previous matlab playback. 
+
+## Playback
+- `← →` steps `STEP` number of frames (default `STEP = 1 frame`);
+- `↑ ↓` steps more (`LARGE_STEP_MULTIPLIER*STEP`) of frames;
+- `space` for play/pause;
+- `numpad +-` adjust playback speed by 1.1x/0.9x;
+- `numpad Enter` resets speed to 1x;
+- double click on the right-bottom frame number label to enter and jump to target frame.
+- timeline is draggable.
+
+## Marking controls
+- `1..5` (above qwerty) sets marker at current timepoint;
+- markers will appear as dots and lines above timeline; left click will jump to that frame;
+- `CTRL+Z` undo, `CTRL+SHIFT+Z` redo (no ctrl+Y, no)
+- marked events will be printed when the window closes
+- the events will be saved, if any change were made, on:
+  - new video is opened
+  - window is closed
+  - pressing `CTRL+S`
