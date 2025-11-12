@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2023 Sunip K. Mukherjee
+#
+# SPDX-License-Identifier: Apache-2.0
+
+[build-system]
+requires = [
+    "meson-python",
+    "numpy >= 1.14.5" # in order to get include dirs for meson without --no-build-isolation on pip install. isolation = false does not work.
+]
+build-backend = "mesonpy"
+
+[project]
+name = "msis21py"
+version = "0.0.2"
+requires-python = ">=3.9"
+authors = [
+    {name = "Sunip K. Mukherjee", email = "sunipkmukherjee@gmail.com"},
+]
+description = "Python bindings for NRLMSIS-2.1 model"
+keywords = [
+  "thermosphere",
+  "ionosphere"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Fortran",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = ['meson', 'ninja', 'numpy >= 1.14.5', 'xarray', 'geomagdata >= 1.6.1']
+
+[project.urls]
+homepage = "https://github.com/sunipkm/msis21py"
+
+[project.scripts]
+Msis21Test = "msis21py.base:test"
