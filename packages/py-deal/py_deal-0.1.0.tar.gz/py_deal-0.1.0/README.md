@@ -1,0 +1,114 @@
+# 🧩 DEAL — Dataclass Environment Auto Loader
+
+[![PyPI version](https://img.shields.io/pypi/v/py-deal.svg?color=blue)](https://pypi.org/project/py-deal/)
+[![Python version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+---
+
+**DEAL** (Dataclass Environment Auto Loader) is a lightweight Python library that loads and validates `.env` files into a typed `dataclass` schema.
+
+It automatically:
+- Casts environment variables to the correct types (`str`, `int`, `float`, `bool`, `Optional`, `list`, `dict`);
+- Reads from a `.env` file or system environment;
+- Masks sensitive values (e.g. fields containing `"KEY"`) in `str(Config)`;
+- Exposes a static `Config` holder accessible from anywhere in your code.
+
+---
+
+## 🚀 Installation
+
+### From PyPI
+
+```bash
+pip install py-deal
+```
+
+### From source
+
+```
+git clone https://github.com/kundlatsch/py_deal.git
+cd py_deal
+pip install .
+```
+
+## ⚙️ Usage Example
+
+```
+from dataclasses import dataclass
+from typing import List, Dict, Any
+from deal.config import Config
+
+@dataclass
+class Settings:
+    APP_NAME: str
+    DEBUG: bool
+    PORT: int
+    ALLOWED_HOSTS: List[str]
+    DB_CONFIG: Dict[str, Any]
+    AWS_KEY: str
+    DB_KEY: str
+    API_TOKEN: str
+
+
+# Load configuration from .env
+Config.load(Settings, env_path=".env")
+
+# Print masked output
+print(str(Config))
+
+# Access raw values
+print(Config.settings.APP_NAME)
+print(Config.settings.DB_CONFIG["port"])
+```
+
+### Example .env
+```
+APP_NAME=My Cool App
+DEBUG=true
+PORT=8080
+ALLOWED_HOSTS=localhost,127.0.0.1
+DB_CONFIG={"host": "localhost", "port": 5432}
+AWS_KEY=abc123SECRET
+DB_KEY=mydbsuperkey
+API_TOKEN=tok_xyz_999
+```
+
+### Output
+```
+=== Loaded Settings ===
+APP_NAME='My Cool App'
+DEBUG=True
+PORT=8080
+ALLOWED_HOSTS=['localhost', '127.0.0.1']
+DB_CONFIG={'host': 'localhost', 'port': 5432}
+AWS_KEY=abc*****
+DB_KEY=myd*****
+API_TOKEN='tok_xyz_999'
+My Cool App
+5432
+```
+
+## 🧑‍💻 Development Setup
+
+Clone and install dependencies
+
+```bash
+git clone https://github.com/kundlatsch/py_deal.git
+cd py_deal
+pip install -r requirements.txt
+```
+
+Run tests
+
+```bash
+pytest -v
+
+# You can manually test the library with the included script
+python -m scripts.manual_test
+```
+
+## 📜 License
+
+MIT © 2025 [Gustavo Kundlatsch](https://github.com/kundlatsch)
+
