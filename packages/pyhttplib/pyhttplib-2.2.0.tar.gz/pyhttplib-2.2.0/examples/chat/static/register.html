@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Simple Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Theme toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-text">Dark</span>
+    </div>
+
+    <div class="auth-container">
+        <h1>Register</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required autocomplete="username" minlength="3" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required autocomplete="new-password" minlength="6">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password" minlength="6">
+            </div>
+            <div id="message"></div>
+            <button type="submit" class="auth-button">Register</button>
+        </form>
+        <div class="auth-link">
+            <a href="/login">Already have an account? Login here</a>
+        </div>
+    </div>
+
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggle = document.querySelector('.theme-toggle');
+            const icon = toggle.querySelector('.theme-icon');
+            const text = toggle.querySelector('.theme-text');
+
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+
+            html.setAttribute("data-theme", newTheme);
+
+            if (newTheme === "light") {
+                icon.textContent = "☀️";
+                text.textContent = "Light";
+            } else {
+                icon.textContent = "🌙";
+                text.textContent = "Dark";
+            }
+
+            // Save theme preference
+            fetch("/api/theme", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ theme: newTheme })
+            });
+        }
+
+        // Load theme on page load
+        fetch("/api/theme")
+            .then(r => r.json())
+            .then(data => {
+                const toggle = document.querySelector('.theme-toggle');
+                const icon = toggle.querySelector('.theme-icon');
+                const text = toggle.querySelector('.theme-text');
+
+                if (data.theme === "light") {
+                    document.documentElement.setAttribute("data-theme", "light");
+                    icon.textContent = "☀️";
+                    text.textContent = "Light";
+                } else {
+                    // Explicitly set dark theme
+                    document.documentElement.setAttribute("data-theme", "dark");
+                    icon.textContent = "🌙";
+                    text.textContent = "Dark";
+                }
+            })
+            .catch(() => {
+                // Default to dark theme on error
+                document.documentElement.setAttribute("data-theme", "dark");
+            });
+
+        // Handle register form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const username = formData.get('username');
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+
+            const messageDiv = document.getElementById('message');
+
+            // Client-side validation
+            if (password !== confirmPassword) {
+                messageDiv.innerHTML = '<div class="error-message">Passwords do not match</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password, confirmPassword })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageDiv.innerHTML = '<div class="success-message">Registration successful! Welcome! Redirecting...</div>';
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 1000);
+                } else {
+                    messageDiv.innerHTML = `<div class="error-message">${result.error || 'Registration failed'}</div>`;
+                }
+            } catch (error) {
+                messageDiv.innerHTML = '<div class="error-message">Network error occurred</div>';
+                console.log(error);
+            }
+        });
+    </script>
+</body>
+</html>

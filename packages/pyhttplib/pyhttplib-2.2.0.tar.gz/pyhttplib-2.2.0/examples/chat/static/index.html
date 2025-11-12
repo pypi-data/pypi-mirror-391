@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Chat</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!-- Settings Button -->
+    <div class="settings-button" onclick="showSettingsModal()">
+        <span class="settings-icon">⚙️</span>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content settings-modal">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Theme Section -->
+                <div class="settings-section">
+                    <h4>Appearance</h4>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Theme</span>
+                            <span class="setting-description">Choose your preferred theme</span>
+                        </div>
+                        <div class="theme-toggle-container">
+                            <button class="theme-toggle-btn" onclick="toggleTheme()">
+                                <span class="theme-icon">🌙</span>
+                                <span class="theme-text">Dark</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section (shown when logged in) -->
+                <div id="profileSettingsSection" class="settings-section" style="display: none;">
+                    <h4>Profile</h4>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Your Profile</span>
+                            <span class="setting-description">View and edit your profile information</span>
+                        </div>
+                        <div class="setting-actions">
+                            <button class="setting-btn" onclick="showProfile()">View</button>
+                            <button class="setting-btn primary" onclick="editProfile()">Edit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Section (shown when logged in) -->
+                <div id="accountSettingsSection" class="settings-section" style="display: none;">
+                    <h4>Account</h4>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Username</span>
+                            <span class="setting-description">Change your username</span>
+                        </div>
+                        <button class="setting-btn" onclick="changeUsername()">Change</button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Password</span>
+                            <span class="setting-description">Update your password</span>
+                        </div>
+                        <button class="setting-btn" onclick="changePassword()">Change</button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Session</span>
+                            <span class="setting-description">Sign out of your account</span>
+                        </div>
+                        <button class="setting-btn" onclick="logout()">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Danger Zone (shown when logged in) -->
+                <div id="dangerZoneSection" class="settings-section danger-zone" style="display: none;">
+                    <h4>Danger Zone</h4>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <span class="setting-label">Delete Account</span>
+                            <span class="setting-description">Permanently delete your account and all data</span>
+                        </div>
+                        <button class="setting-btn danger" onclick="deleteAccount()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User Profile</h3>
+                <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-info">
+                    <div class="profile-username" id="profileUsername">Username</div>
+                    <div class="profile-bio" id="profileBio">No bio available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button class="modal-close" onclick="closeModal('editProfileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="form-group">
+                        <label for="profileBioInput">Bio:</label>
+                        <textarea id="profileBioInput" name="bio" rows="4" placeholder="Tell us about yourself..." maxlength="500"></textarea>
+                    </div>
+                    <div id="editProfileMessage"></div>
+                    <button type="submit" class="auth-button">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Username Modal -->
+    <div id="changeUsernameModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Username</h3>
+                <button class="modal-close" onclick="closeModal('changeUsernameModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="changeUsernameForm">
+                    <div class="form-group">
+                        <label for="newUsernameInput">New Username:</label>
+                        <input type="text" id="newUsernameInput" name="username" required minlength="3" maxlength="20">
+                    </div>
+                    <div id="changeUsernameMessage"></div>
+                    <button type="submit" class="auth-button">Change Username</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <button class="modal-close" onclick="closeModal('changePasswordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label for="currentPasswordInput">Current Password:</label>
+                        <input type="password" id="currentPasswordInput" name="current_password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPasswordInput">New Password:</label>
+                        <input type="password" id="newPasswordInput" name="new_password" required minlength="6">
+                    </div>
+                    <div id="changePasswordMessage"></div>
+                    <button type="submit" class="auth-button">Change Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteAccountModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Account</h3>
+                <button class="modal-close" onclick="closeModal('deleteAccountModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <strong>Warning:</strong> This action cannot be undone. Your account and all data will be permanently deleted.
+                </div>
+                <form id="deleteAccountForm">
+                    <div class="form-group">
+                        <label for="deletePasswordInput">Enter your password to confirm:</label>
+                        <input type="password" id="deletePasswordInput" name="password" required>
+                    </div>
+                    <div id="deleteAccountMessage"></div>
+                    <button type="submit" class="auth-button danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Popup Modal -->
+    <div id="userProfileModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="profileModalUsername">User Profile</h3>
+                <button class="modal-close" onclick="closeModal('userProfileModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-info">
+                    <div class="profile-bio-section">
+                        <h4>Bio</h4>
+                        <div id="profileModalBio" class="profile-bio-display">Loading...</div>
+                    </div>
+                    <div class="profile-actions">
+                        <button id="setRecipientButton" class="profile-action-btn" onclick="setRecipientFromProfile()">
+                            Send Private Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>WebSocket Chat</h2>
+    <div id="chat"></div>
+    <div style="display: flex; width: 100%; max-width: 600px; gap: 10px;">
+        <select id="recipientSelect" style="min-width: 120px;">
+            <option value="everyone">Everyone</option>
+        </select>
+        <input id="input" type="text" placeholder="Type a message..." autocomplete="off" disabled style="flex: 1;" />
+        <button id="send" disabled>Send</button>
+    </div>
+
+    <script>
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('input');
+        const send = document.getElementById('send');
+        const recipientSelect = document.getElementById('recipientSelect');
+
+        let username = '';
+        let ws = null;
+        let isLoggedIn = false;
+        let currentProfileUser = '';
+
+        // Theme management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeBtn = document.querySelector('.theme-toggle-btn');
+            const icon = themeBtn.querySelector('.theme-icon');
+            const text = themeBtn.querySelector('.theme-text');
+
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "dark" : "light";
+
+            html.setAttribute("data-theme", newTheme);
+
+            if (newTheme === "light") {
+                icon.textContent = "☀️";
+                text.textContent = "Light";
+            } else {
+                icon.textContent = "🌙";
+                text.textContent = "Dark";
+            }
+
+            // Save theme preference
+            fetch("/api/theme", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ theme: newTheme })
+            });
+        }
+
+        // Settings modal functions
+        function showSettingsModal() {
+            showModal('settingsModal');
+        }
+
+        // User options functions (legacy support)
+        function toggleOptions() {
+            showSettingsModal();
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Profile functions
+        async function showProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.profile) {
+                        document.getElementById('profileUsername').textContent = data.profile.username;
+                        document.getElementById('profileBio').textContent = data.profile.bio || 'No bio available';
+                        showModal('profileModal');
+                    } else {
+                        alert('Failed to load profile: ' + (data.error || 'Unknown error'));
+                    }
+                } else {
+                    alert('Failed to load profile');
+                }
+            } catch (error) {
+                console.error('[Profile] Error loading profile for view:', error);
+                alert('Error loading profile');
+            }
+        }
+
+        async function editProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.profile) {
+                        document.getElementById('profileBioInput').value = data.profile.bio || '';
+                        showModal('editProfileModal');
+                    } else {
+                        alert('Failed to load profile: ' + (data.error || 'Unknown error'));
+                    }
+                } else {
+                    alert('Failed to load profile');
+                }
+            } catch (error) {
+                console.error('[Profile] Error loading profile for edit:', error);
+                alert('Error loading profile');
+            }
+        }
+
+        // Form handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Edit profile form
+            document.getElementById('editProfileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const bio = document.getElementById('profileBioInput').value;
+                const messageDiv = document.getElementById('editProfileMessage');
+                
+                try {
+                    const response = await fetch('/api/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ bio: bio })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Profile updated successfully!';
+                        setTimeout(() => closeModal('editProfileModal'), 1000);
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = result.error || 'Failed to update profile';
+                    }
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Error updating profile';
+                }
+            });
+
+            // Change username form
+            document.getElementById('changeUsernameForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const username = document.getElementById('newUsernameInput').value;
+                const messageDiv = document.getElementById('changeUsernameMessage');
+                
+                try {
+                    const response = await fetch('/api/account/username', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username: username })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Username changed successfully!';
+                        // Update the displayed username
+                        updateAccountInfo();
+                        setTimeout(() => closeModal('changeUsernameModal'), 1000);
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = result.error || 'Failed to change username';
+                    }
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Error changing username';
+                }
+            });
+
+            // Change password form
+            document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const currentPassword = document.getElementById('currentPasswordInput').value;
+                const newPassword = document.getElementById('newPasswordInput').value;
+                const messageDiv = document.getElementById('changePasswordMessage');
+                
+                try {
+                    const response = await fetch('/api/account/password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                            current_password: currentPassword,
+                            new_password: newPassword 
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        messageDiv.style.color = 'green';
+                        messageDiv.textContent = 'Password changed successfully!';
+                        this.reset();
+                        setTimeout(() => closeModal('changePasswordModal'), 1000);
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = result.error || 'Failed to change password';
+                    }
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Error changing password';
+                }
+            });
+
+            // Delete account form
+            document.getElementById('deleteAccountForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const password = document.getElementById('deletePasswordInput').value;
+                const messageDiv = document.getElementById('deleteAccountMessage');
+                
+                if (!confirm('Are you absolutely sure you want to delete your account? This cannot be undone.')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/account/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ password: password })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        alert('Account deleted successfully');
+                        window.location.href = '/login.html';
+                    } else {
+                        messageDiv.style.color = 'red';
+                        messageDiv.textContent = result.error || 'Failed to delete account';
+                    }
+                } catch (error) {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = 'Error deleting account';
+                }
+            });
+        });
+
+        function changeUsername() {
+            showModal('changeUsernameModal');
+        }
+
+        function changePassword() {
+            showModal('changePasswordModal');
+        }
+
+        function deleteAccount() {
+            showModal('deleteAccountModal');
+        }
+
+        // Update logout function to close dropdown
+        function logout() {
+            document.getElementById('userOptionsDropdown').style.display = 'none';
+            fetch('/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/login.html';
+                })
+                .catch(error => {
+                    console.error('[Auth] Logout error:', error);
+                    window.location.href = '/login.html';
+                });
+        }
+
+        // Load theme and check login status on page load
+        async function initializePage() {
+            // Load theme
+            try {
+                const themeResponse = await fetch("/api/theme");
+                const themeData = await themeResponse.json();
+                const themeBtn = document.querySelector(".theme-toggle-btn");
+                const icon = themeBtn.querySelector(".theme-icon");
+                const text = themeBtn.querySelector(".theme-text");
+
+                if (themeData.theme === "light") {
+                    document.documentElement.setAttribute("data-theme", "light");
+                    icon.textContent = "☀️";
+                    text.textContent = "Light";
+                } else {
+                    // Explicitly set dark theme
+                    document.documentElement.setAttribute("data-theme", "dark");
+                    icon.textContent = "🌙";
+                    text.textContent = "Dark";
+                }
+            } catch (e) {
+                // Default to dark theme on error
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+
+            // Check login status
+            try {
+                const authResponse = await fetch("/api/auth/status");
+                const authData = await authResponse.json();
+
+                if (authData.authenticated) {
+                    isLoggedIn = true;
+                    username = authData.username;
+                    storeCurrentUsername(username); // Store for private messaging
+                    // Show settings sections for logged in users
+                    showSettingsSections();
+                    // Initialize recipient dropdown and UI
+                    populateUserList();
+                    updateInputPlaceholder();
+                    // Connect directly to WebSocket
+                    connectToWebSocket();
+                } else {
+                    // Hide settings sections for anonymous users
+                    hideSettingsSections();
+                    // Show login prompt
+                    showLoginPrompt();
+                }
+            } catch (e) {
+                // Hide settings sections on error
+                hideSettingsSections();
+                showLoginPrompt();
+            }
+        }
+
+        // Settings sections visibility
+        function showSettingsSections() {
+            document.getElementById('profileSettingsSection').style.display = 'block';
+            document.getElementById('accountSettingsSection').style.display = 'block';
+            document.getElementById('dangerZoneSection').style.display = 'block';
+        }
+
+        function hideSettingsSections() {
+            document.getElementById('profileSettingsSection').style.display = 'none';
+            document.getElementById('accountSettingsSection').style.display = 'none';
+            document.getElementById('dangerZoneSection').style.display = 'none';
+        }
+
+        // Update account info function (for username changes)
+        function updateAccountInfo() {
+            // Re-initialize to refresh user info
+            initializePage();
+        }
+
+        // Initialize page
+        initializePage();
+
+        // Logout function
+        async function logout() {
+            try {
+                await fetch("/api/logout", { method: "POST" });
+                location.reload();
+            } catch (e) {
+                location.reload();
+            }
+        }
+
+        // Show login prompt for unauthenticated users
+        function showLoginPrompt() {
+            chat.innerHTML = '<div><em>Please <a href="/login">login</a> or <a href="/register">register</a> to use the chat.</em></div>';
+            input.disabled = true;
+            send.disabled = true;
+        }
+
+        function connectToWebSocket() {
+            // Prevent multiple connections
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.debug('[WebSocket] Already connected');
+                return;
+            }
+
+            // Get session token from cookies
+            const sessionToken = getCookie('session');
+            if (!sessionToken) {
+                chat.innerHTML += '<div><em>Error: No session token found. Please refresh and log in again.</em></div>';
+                console.error('[Auth] No session token found');
+                return;
+            }
+
+            console.info('[WebSocket] Connecting with session token:', sessionToken.substring(0, 10) + '...');
+
+            try {
+                // Connect to WebSocket server
+                ws = new WebSocket(`ws://${location.host}/api/chat`);
+
+                ws.onopen = () => {
+                    console.info('[WebSocket] Connected, sending session token');
+                    chat.innerHTML += '<div><em>Connected to chat.</em></div>';
+                    // Send session token as first message for authentication
+                    ws.send(sessionToken);
+
+                    // Enable chat input
+                    input.disabled = false;
+                    send.disabled = false;
+                    input.focus();
+                };
+
+                ws.onmessage = (event) => {
+                    const msg = event.data;
+                    console.debug('[WebSocket] Message received:', msg);
+                    // Check if it's an authentication error
+                    if (msg.includes('Authentication required') || msg.includes('Invalid session')) {
+                        chat.innerHTML += `<div style="color: red;"><em>${msg}</em></div>`;
+                        input.disabled = true;
+                        send.disabled = true;
+                    } else {
+                        // Parse message to make usernames clickable
+                        const formattedMsg = formatChatMessage(msg);
+                        chat.innerHTML += `<div>${formattedMsg}</div>`;
+                        
+                        // Check if it's a connection/disconnection message to update user list
+                        if (msg.includes(' connected.') || msg.includes(' disconnected.')) {
+                            // Update the user list after a short delay to allow server to update
+                            setTimeout(populateUserList, 500);
+                        }
+                    }
+                    chat.scrollTop = chat.scrollHeight;
+                };
+
+                ws.onclose = (event) => {
+                    console.warn('[WebSocket] Closed:', event.code, event.reason);
+                    chat.innerHTML += '<div><em>Disconnected.</em></div>';
+                    input.disabled = true;
+                    send.disabled = true;
+                };
+
+                ws.onerror = (error) => {
+                    console.error('[WebSocket] Error:', error);
+                    chat.innerHTML += '<div style="color: red;"><em>Connection error. Please refresh the page.</em></div>';
+                    input.disabled = true;
+                    send.disabled = true;
+                };
+            } catch (error) {
+                console.error('[WebSocket] Failed to create:', error);
+                chat.innerHTML += '<div style="color: red;"><em>Failed to connect to chat. Please refresh the page.</em></div>';
+            }
+        }
+
+        // Helper function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Debug: Check if elements exist
+        console.debug('[UI] Send button element:', send);
+        console.debug('[UI] Input element:', input);
+        console.debug('[UI] Chat element:', chat);
+
+        send.onclick = async () => {
+            console.debug('[UI] Send button clicked (onclick)');
+            console.debug('[UI] Input value:', input.value.trim());
+            console.debug('[UI] WebSocket state:', ws ? ws.readyState : 'null');
+            console.debug('[UI] Send button disabled:', send.disabled);
+            console.debug('[UI] Input disabled:', input.disabled);
+            
+            const message = input.value.trim();
+            if (!message) {
+                console.debug('[Chat] No message to send');
+                return;
+            }
+
+            const recipient = recipientSelect.value;
+            
+            if (recipient === 'everyone') {
+                // Send public message
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    console.info('[Chat] Sending public message:', message);
+                    ws.send(message);
+                    input.value = '';
+                } else {
+                    if (!ws) console.warn('[Chat] WebSocket is null');
+                    if (ws && ws.readyState !== WebSocket.OPEN) console.warn('[Chat] WebSocket not open, state:', ws.readyState);
+                }
+            } else {
+                // Send private message
+                console.info('[PM] Sending private message to:', recipient);
+                const success = await sendPrivateMessageToUser(recipient, message);
+                if (success) {
+                    input.value = '';
+                }
+            }
+        };
+
+        // Alternative event listener
+        send.addEventListener('click', () => {
+            console.debug('[UI] Send button clicked (addEventListener)');
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                send.click();
+            }
+        });
+
+        // Private messaging functions
+        let privateMessageTarget = null;
+
+        function formatChatMessage(msg) {
+            // Check if it's a DM message format: [DM] username: message
+            const dmMatch = msg.match(/^\[DM\]\s+([^:]+):\s*(.*)$/);
+            if (dmMatch) {
+                const [, username, message] = dmMatch;
+                // Don't make our own username clickable
+                if (username.trim() === sessionStorage.getItem('currentUsername')) {
+                    return `[DM] <strong>${username}:</strong> ${message}`;
+                } else {
+                    return `[DM] <span class="chat-username" onclick="showUserProfile('${username.trim()}')">${username}</span>: ${message}`;
+                }
+            }
+            
+            // Check if it's a regular chat message (username: message format)
+            const match = msg.match(/^([^:]+):\s*(.*)$/);
+            if (match) {
+                const [, username, message] = match;
+                // Don't make our own username clickable
+                if (username.trim() === sessionStorage.getItem('currentUsername')) {
+                    return `<strong>${username}:</strong> ${message}`;
+                } else {
+                    return `<span class="chat-username" onclick="showUserProfile('${username.trim()}')">${username}</span>: ${message}`;
+                }
+            }
+            
+            // For system messages (connected/disconnected), don't make clickable
+            return msg;
+        }
+
+        async function sendPrivateMessageToUser(recipient, message) {
+            if (!recipient || !message) {
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipient: recipient,
+                        content: message
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        console.info('[PM] Private message sent successfully');
+                        // Show the sent message in chat with [DM] prefix
+                        const chatDiv = document.getElementById('chat');
+                        chatDiv.innerHTML += `<div style="color: #4a90e2;">[DM to ${recipient}] ${username} ${message}</div>`;
+                        chatDiv.scrollTop = chatDiv.scrollHeight;
+                        return true;
+                    } else {
+                        console.error('[PM] Failed to send private message:', data.error);
+                        const chatDiv = document.getElementById('chat');
+                        chatDiv.innerHTML += `<div style="color: red;"><em>Failed to send private message: ${data.error || 'Unknown error'}</em></div>`;
+                        return false;
+                    }
+                } else {
+                    console.error('[PM] Failed to send private message - server error');
+                    const chatDiv = document.getElementById('chat');
+                    chatDiv.innerHTML += `<div style="color: red;"><em>Failed to send private message</em></div>`;
+                    return false;
+                }
+            } catch (error) {
+                console.error('[PM] Error sending private message:', error);
+                const chatDiv = document.getElementById('chat');
+                chatDiv.innerHTML += `<div style="color: red;"><em>Error sending private message</em></div>`;
+                return false;
+            }
+        }
+
+        // User profile and recipient management functions
+        async function showUserProfile(targetUsername) {
+            if (!targetUsername || targetUsername === sessionStorage.getItem('currentUsername')) {
+                return;
+            }
+            
+            console.info('[Profile] Showing profile for user:', targetUsername);
+            currentProfileUser = targetUsername;
+
+            try {
+                // Load user profile
+                const response = await fetch(`/api/profile/${targetUsername}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.profile) {
+                        document.getElementById('profileModalUsername').textContent = data.profile.username;
+                        document.getElementById('profileModalBio').textContent = data.profile.bio || 'No bio available';
+                    } else {
+                        document.getElementById('profileModalUsername').textContent = targetUsername;
+                        document.getElementById('profileModalBio').textContent = 'Profile not available';
+                    }
+                } else {
+                    document.getElementById('profileModalUsername').textContent = targetUsername;
+                    document.getElementById('profileModalBio').textContent = 'Profile not available';
+                }
+
+                // Show modal
+                showModal('userProfileModal');
+            } catch (error) {
+                console.error('[Profile] Error loading user profile:', error);
+                alert('Error loading user information');
+            }
+        }
+
+        function setRecipientFromProfile() {
+            if (currentProfileUser) {
+                // Check if the user is already in the dropdown
+                let userExists = false;
+                for (let i = 0; i < recipientSelect.options.length; i++) {
+                    if (recipientSelect.options[i].value === currentProfileUser) {
+                        userExists = true;
+                        break;
+                    }
+                }
+                
+                // If user doesn't exist in dropdown, add them
+                if (!userExists) {
+                    const option = document.createElement('option');
+                    option.value = currentProfileUser;
+                    option.textContent = currentProfileUser;
+                    recipientSelect.appendChild(option);
+                }
+                
+                recipientSelect.value = currentProfileUser;
+                updateInputPlaceholder();
+                closeModal('userProfileModal');
+                input.focus();
+                console.info('[Profile] Set recipient to:', currentProfileUser);
+            }
+        }
+
+        function updateInputPlaceholder() {
+            const recipient = recipientSelect.value;
+            if (recipient === 'everyone') {
+                input.placeholder = 'Type a message...';
+            } else {
+                input.placeholder = `Send private message to ${recipient}...`;
+            }
+        }
+
+        async function populateUserList() {
+            try {
+                const response = await fetch('/api/users/online');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.users) {
+                        const currentUser = sessionStorage.getItem('currentUsername');
+                        
+                        // Clear existing options except "Everyone"
+                        while (recipientSelect.children.length > 1) {
+                            recipientSelect.removeChild(recipientSelect.lastChild);
+                        }
+                        
+                        // Add online users to dropdown
+                        data.users.forEach(username => {
+                            if (username !== currentUser) { // Double-check to exclude current user
+                                const option = document.createElement('option');
+                                option.value = username;
+                                option.textContent = username;
+                                recipientSelect.appendChild(option);
+                            }
+                        });
+                        
+                        console.info('[UserList] Online users populated:', data.users);
+                    } else {
+                        console.warn('[UserList] Failed to get online users:', data.error || 'Unknown error');
+                    }
+                } else {
+                    console.error('[UserList] Failed to fetch online users');
+                }
+            } catch (error) {
+                console.error('[UserList] Error populating user list:', error);
+            }
+        }
+
+        // Event listener for recipient dropdown
+        recipientSelect.addEventListener('change', updateInputPlaceholder);
+
+        // Store current username when authenticated
+        function storeCurrentUsername(user) {
+            sessionStorage.setItem('currentUsername', user);
+        }
+    </script>
+</body>
+</html>
