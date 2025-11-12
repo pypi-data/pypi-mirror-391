@@ -1,0 +1,269 @@
+package: qsiprep
+title: Visual report for participant '{subject}' - QSIPrep
+sections:
+
+- name: Summary
+  reportlets:
+  - bids: {datatype: figures, suffix: "summary"}
+
+- name: Anatomical
+  reportlets:
+  - bids:
+      datatype: figures
+      extension: [.html]
+      suffix: conform
+
+  - bids: {datatype: figures, desc: seg, suffix: mask}
+    caption: |
+      This panel shows the final, preprocessed anatomical reference image,
+      with contours delineating the detected brain mask and brain tissue segmentations.
+    subtitle: Brain mask and brain tissue segmentation of the T1w
+
+  - bids: {datatype: figures, space: .*, suffix: t1w2mni, regex_search: True}
+    caption: Spatial normalization of the anatomical reference to the <code>{space}</code> template.
+    description: |
+      Results of nonlinear alignment of the anatomical reference one or more template
+      space(s). Hover on the panels with the mouse pointer to transition between both
+      spaces.
+    static: false
+    subtitle: Spatial normalization of the anatomical reference
+
+  - bids: {datatype: figures, desc: intramodalcoreg, suffix: [T1w, T2w]}
+    caption: Coregistration between the intramodal DWI template to the anatomical reference image.
+    static: false
+    subtitle: Coregistration of the Intramodal to anatomical templates
+
+- name: <em>B<sub>0</sub></em> field mapping
+  ordering: session,acquisition,run,fmapid
+  reportlets:
+  - bids: {datatype: figures, desc: topupsummary, suffix: dwi}
+
+  - bids: {datatype: figures, suffix: fmapregvsm}
+    caption: Voxel shift map overlaid on the reference EPI image.
+    static: false
+    subtitle: Voxel shift map
+
+  - bids: {datatype: figures, suffix: fmapreg}
+    caption: Results of affine coregistration between the magnitude image of the fieldmap and the reference EPI image.
+    static: false
+    subtitle: Fieldmap to EPI registration
+
+  - bids: {datatype: figures, desc: mapped, suffix: fieldmap}
+    caption: |
+      Inhomogeneities of the <em>B<sub>0</sub></em> field introduce (oftentimes severe) spatial distortions
+      along the phase-encoding direction of the image. Some scanners produce a <em>B<sub>0</sub></em>
+      mapping of the field, using Spiral Echo Imaging (SEI) or postprocessing a "phase-difference"
+      acquisition. The plot below shows an anatomical "magnitude" reference and the corresponding
+      fieldmap.
+    description: |
+      Hover over the panels with the mouse pointer to also visualize the intensity of the
+      field inhomogeneity in Hertz.
+    static: false
+    subtitle: "Preprocessed <em>B<sub>0</sub></em> mapping acquisition"
+
+  - bids: {datatype: figures, desc: phasediff, suffix: fieldmap}
+    caption: |
+      Inhomogeneities of the <em>B<sub>0</sub></em> field introduce (oftentimes severe) spatial distortions
+      along the phase-encoding direction of the image. A Gradient-Recalled Echo (GRE) scheme was included for the
+      mapping of the <em>B<sub>0</sub></em> inhomogeneities by subtracting the phase maps obtained at
+      two subsequent echoes. The plot below shows an anatomical "magnitude" reference and the corresponding
+      fieldmap.
+    description: |
+      Hover over the panels with the mouse pointer to also visualize the intensity of the
+      field inhomogeneity in Hertz.
+    static: false
+    subtitle: "Preprocessed mapping of phase-difference acquisition"
+  - bids: {datatype: figures, desc: pepolar, suffix: fieldmap}
+    caption: |
+      Inhomogeneities of the <em>B<sub>0</sub></em> field introduce (oftentimes severe) spatial distortions
+      along the phase-encoding direction of the image. Utilizing two or more images with different
+      phase-encoding polarities (PEPolar) or directions, it is possible to estimate the inhomogeneity
+      of the field. The plot below shows a reference EPI (echo-planar imaging) volume generated
+      using two or more EPI images with varying phase-encoding blips.
+    description: |
+      Hover on the panels with the mouse pointer to also visualize the intensity of the
+      inhomogeneity of the field in Hertz.
+    static: false
+    subtitle: "Preprocessed estimation with varying Phase-Encoding (PE) blips"
+  - bids: {datatype: figures, desc: anat, suffix: fieldmap}
+    caption: |
+      Inhomogeneities of the <em>B<sub>0</sub></em> field introduce (oftentimes severe) spatial distortions
+      along the phase-encoding direction of the image. Utilizing an <em>anatomically-correct</em> acquisition
+      (for instance, T1w or T2w), it is possible to estimate the inhomogeneity of the field by means of nonlinear
+      registration. The plot below shows a reference EPI (echo-planar imaging) volume generated
+      using two or more EPI images with the same PE encoding, after alignment to the anatomical scan.
+    description: |
+      Hover on the panels with the mouse pointer to also visualize the intensity of the
+      inhomogeneity of the field in Hertz.
+    static: false
+    subtitle: "Preprocessed estimation by nonlinear registration to an anatomical scan (&ldquo;<em>fieldmap-less</em>&rdquo;)"
+
+  - bids: {datatype: figures, desc: brainmask, suffix: fieldmap}
+    caption: |
+      Brainmask used for estimating the fieldmap
+    static: false
+    subtitle: Fieldmap Brain Mask
+
+- name: Diffusion
+  ordering: session,task,acquisition,ceagent,reconstruction,direction,run,echo
+  reportlets:
+  - bids: {datatype: figures, desc: summary, suffix: dwi}
+  - bids: {datatype: figures, desc: validation, suffix: dwi}
+  - bids: {datatype: figures, desc: samplingscheme, suffix: dwi}
+    caption: |
+      Animation of the DWI sampling scheme. Each separate scan is its own color
+    static: false
+    subtitle: DWI Sampling Scheme
+
+  - bids: {datatype: figures, desc: fmapCoreg, suffix: dwi}
+    caption: |
+      The estimated fieldmap was aligned to the corresponding EPI reference
+      with a rigid-registration process of the fieldmap reference image,
+      using <code>antsRegistration</code>.
+      Overlaid on top of the co-registration results, the final DWI mask is represented
+      with a red contour for reference.
+    static: false
+    subtitle: Alignment between the anatomical reference of the fieldmap and the target EPI
+
+  - bids: {datatype: figures, desc: fieldmap, suffix: dwi}
+    caption: |
+      Estimated fieldmap, as reconstructed on the target DWI run space to allow
+      the assessment of its alignment with the distorted data.
+      The anatomical reference is the fieldmap's reference moved into the target EPI's grid through
+      the estimated transformation.
+      In other words, this plot should be equivalent to that of the
+      <em>Preprocessed estimation with varying Phase-Encoding (PE) blips</em> shown above in the
+      fieldmap section.
+      Therefore, the fieldmap should be positioned relative to the anatomical reference exactly
+      as it is positioned in the reportlet above.
+    static: false
+    subtitle: "Reconstructed <em>B<sub>0</sub></em> map in the corresponding run's space (debug mode)"
+
+  - bids: {datatype: figures, desc: sdc, suffix: b0}
+    caption: |
+      Results of performing susceptibility distortion correction (SDC) on the
+      DWI reference image. The "distorted" image is the image that would be used to
+      align to the anatomical reference if SDC were not applied. The "corrected"
+      image is the image that was used.
+    static: false
+    subtitle: Susceptibility distortion correction
+
+  - bids: {datatype: figures, desc: sdcdrbuddi, suffix: b0}
+    caption: |
+      Results of performing susceptibility distortion correction (SDC) using DRBUDDI.
+      b=0 images are shown.
+    static: false
+    subtitle: Susceptibility distortion correction
+
+  - bids: {datatype: figures, desc: sdcdrbuddi, suffix: b0t2w}
+    caption: |
+      Results of performing susceptibility distortion correction (SDC) using DRBUDDI.
+      The overlay shown is an ad-hoc segmentation of a t2w image and is only for
+      display purposes.
+    static: false
+    subtitle: Susceptibility distortion correction
+
+  - bids: {datatype: figures, desc: sdc, suffix: fa}
+    caption: |
+      DRBUDDI uses the Fractional Anisotropy (FA) as part of its multimodal
+      susceptibility distortion correction (SDC). This report shows the FA
+      images from both Phase Encoding Directions before and after DRBUDDI's
+      SDC are applied.
+    static: false
+    subtitle: Susceptibility distortion correction - FA
+
+  - bids: {datatype: figures, desc: forcedsyn, suffix: dwi}
+    caption: |
+      The dataset contained some fieldmap information, but the argument <code>--force-syn</code>
+      was used. The higher-priority SDC method was used. Here, we show the results
+      of performing SyN-based SDC on the EPI for comparison.
+    static: false
+    subtitle: Experimental fieldmap-less susceptibility distortion correction
+
+  - bids: {datatype: figures, desc: denoising, suffix: dwi}
+    caption: |
+      "Effect of denoising on a low and high-<em>b</em> image."
+    static: false
+    subtitle: DWI Denoising
+
+  - bids: {datatype: figures, desc: unringing, suffix: dwi}
+    caption: |
+      "Effect of removing Gibbs ringing on a low and high-<em>b</em> image."
+    static: false
+    subtitle: Gibbs Ringing Removal
+
+  - bids: {datatype: figures, desc: biascorr, suffix: dwi}
+    caption: |
+      "Effect of correcting <em>B<sub>1</sub></em> bias on a low and high-<em>b</em> image."
+    static: false
+    subtitle: <em>B<sub>1</sub></em> Bias Correction
+
+  - bids: {datatype: figures, desc: biascorrpost, suffix: dwi}
+    caption: |
+      "Effect of correcting <em>B<sub>1</sub></em> bias on a low and high-<em>b</em> resampled image."
+    static: false
+    subtitle: <em>B<sub>1</sub></em> Bias Correction (Post-Resampling)
+
+  - bids: {datatype: figures, suffix: b0ref}
+    caption: |
+      b=0 template and final mask output. The t1 and signal intersection mask is blue,
+      their xor is red and the entire mask is plotted in cyan.
+    static: false
+    subtitle: "<em>b</em>=0 Reference Image"
+
+  - bids: {datatype: figures, desc: coreg, suffix: dwi}
+    caption: |
+      This panel shows the alignment of the reference EPI (dMRI b=0) image to the
+      anatomical reference image.
+      The reference EPI has been contrast enhanced and susceptibility-distortion
+      corrected (if applicable) for improved anatomical fidelity.
+      The anatomical image has been resampled into EPI space, as well as the
+      anatomical white matter mask, which appears as a red contour.
+    static: false
+    subtitle: Alignment of dMRI and anatomical MRI data (coregistration)
+
+  - bids: {datatype: figures, desc: intramodalcoreg, suffix: dwi}
+    caption: |
+      b=0 reference image warped to the across-scan/session intramodal template.
+    static: false
+    subtitle: Alignment of dMRI to Intramodal Template
+
+  - bids: {datatype: figures, desc: acpc, suffix: dwi}
+    caption: |
+      This panel shows the alignment of the reference EPI (DWI) image to
+      AC-PC alignment.
+    static: false
+    subtitle: Reorientation of DWI reference image to AC-PC
+
+  - bids: {datatype: figures, desc: shorelineiters, suffix: dwi}
+    caption: |
+      Difference in motion estimates over SHORELine iterations. Values close to zero
+      indicate good convergence.
+    subtitle: SHORELine Convergence
+
+  - bids: {datatype: figures, desc: carpetplot, suffix: dwi}
+    caption: |
+      A plot of slice-by-volume outliers (if Eddy was used) or cross correlation.
+    subtitle: DWI Summary
+
+- name: About
+  nested: true
+  reportlets:
+  - bids: {datatype: figures, suffix: about}
+  - custom: boilerplate
+    path: '{reportlets_dir}/logs'
+    bibfile: ['qsiprep', 'data/boilerplate.bib']
+    caption: |
+      <p>We kindly ask to report results preprocessed with this tool using the following boilerplate.</p>
+      <p class="alert alert-info" role="alert">
+      <strong>Copyright Waiver</strong>.
+      The boilerplate text was automatically generated by <em>QSIPrep</em> with the
+      express intention that users should copy and paste this text into their manuscripts <em>unchanged</em>.
+      It is released under the
+      <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 license</a>.
+      </p>
+    title: Methods
+  - custom: errors
+    path: '{out_dir}/sub-{subject}/log/{run_uuid}'
+    captions: <em>QSIPrep</em> may have recorded failure conditions.
+    title: Errors
