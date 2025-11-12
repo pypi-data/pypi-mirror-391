@@ -1,0 +1,45 @@
+Metadata-Version: 2.4
+Name: sign_vector_conditions
+Version: 2.2
+Summary: SageMath package for (chemical) reaction networks using sign vector conditions
+Home-page: https://github.com/MarcusAichmayr/sign_vector_conditions
+Author: Marcus S. Aichmayr
+Author-email: aichmayr@mathematik.uni-kassel.de
+License: GPL-3.0-or-later
+Keywords: reaction networks,equilibrium,robustness,generalized mass-action,sign vector conditions,oriented matroids
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: elementary_vectors>=2.1
+Requires-Dist: sign_vectors>=1.1
+Requires-Dist: certlin>=1.1
+Provides-Extra: passagemath
+Requires-Dist: passagemath-symbolics; extra == "passagemath"
+Requires-Dist: passagemath-flint; extra == "passagemath"
+Requires-Dist: passagemath-graphs; extra == "passagemath"
+Requires-Dist: passagemath-repl; extra == "passagemath"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
+
+# Sign vector conditions for chemical reaction networks
+
+## Description
+
+SageMath package for (chemical) reaction networks using sign vector conditions
+
+To install the current version of this package, go to [sign_crn](https://pypi.org/project/sign-crn/).
+See also the repository on [GitHub](https://github.com/MarcusAichmayr/sign_crn).
