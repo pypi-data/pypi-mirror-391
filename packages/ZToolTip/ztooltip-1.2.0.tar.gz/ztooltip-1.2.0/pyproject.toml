@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ZToolTip"
+version = "1.2.0"
+description = "A modern and fully customizable tooltip library for PyQt and PySide"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "FaBuLuZz"}
+]
+keywords = ["python", "qt", "pyqt", "pyside", "tooltip", "modern"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = ">=3.7"
+dependencies = [
+    "pywin32>=311",
+    "QtPy>=2.4.1"
+]
+
+[project.urls]
+Homepage = "https://github.com/FaBuLuZz/ZToolTip"
+
+[tool.setuptools.packages.find]
+where = ["src"]
