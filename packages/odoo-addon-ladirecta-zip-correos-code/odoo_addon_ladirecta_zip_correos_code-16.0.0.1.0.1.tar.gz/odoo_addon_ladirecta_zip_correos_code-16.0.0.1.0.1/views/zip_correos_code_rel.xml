@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="zip_correos_code_action" model="ir.actions.act_window">
+        <field name="name">ZIP Correos Codes Relation</field>
+        <field name="res_model">zip.correos.code.rel</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        name="ZIP Correos Codes Relation"
+        id="zip_correos_code_menuitem"
+        action="zip_correos_code_action"
+        parent="contacts.res_partner_menu_config"
+        sequence="99"
+    />
+    <record id="zip_correos_code_tree" model="ir.ui.view">
+        <field name="name">ZIP Correos Code Relation</field>
+        <field name="model">zip.correos.code.rel</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="zip" />
+                <field name="correos_code_id" />
+            </tree>
+        </field>
+    </record>
+</odoo>
