@@ -1,0 +1,462 @@
+Metadata-Version: 2.4
+Name: snappay
+Version: 0.0.1b0
+Summary: Python SDK for SnapPay payment and subscription platform
+Author-email: SnapPay Team <support@snappay.dev>
+Maintainer-email: SnapPay Team <support@snappay.dev>
+License: MIT
+Project-URL: Homepage, https://snappay.dev
+Project-URL: Documentation, https://docs.snappay.dev/sdk/python
+Project-URL: Repository, https://github.com/snappay/snappay-sdk-py
+Project-URL: Bug Tracker, https://github.com/snappay/snappay-sdk-py/issues
+Project-URL: Changelog, https://github.com/snappay/snappay-sdk-py/blob/main/CHANGELOG.md
+Keywords: payments,subscriptions,stripe,snappay,billing,saas
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Office/Business :: Financial
+Classifier: Topic :: Internet :: WWW/HTTP
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: aiohttp-sse-client>=0.2.1
+Requires-Dist: typing-extensions>=4.0.0; python_version < "3.10"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: aioresponses>=0.7.4; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0.0; extra == "dev"
+Requires-Dist: uuid>=1.30; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx>=6.0.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.3.0; extra == "docs"
+Requires-Dist: myst-parser>=2.0.0; extra == "docs"
+Dynamic: license-file
+
+# SnapPay Python SDK
+
+[![PyPI version](https://badge.fury.io/py/snappay.svg)](https://pypi.org/project/snappay/)
+[![Python Version](https://img.shields.io/pypi/pyversions/snappay)](https://pypi.org/project/snappay/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-snappay.dev-blue)](https://docs.snappay.dev/sdk/python)
+
+A modern, production-ready Python SDK for integrating with SnapPay's payment and subscription platform. Built with async/await support, comprehensive error handling, and enterprise-grade features.
+
+## ✨ Features
+
+- 🚀 **Async/Await Support**: Built on aiohttp for high-performance async operations
+- 🔄 **Automatic Retry Logic**: Smart exponential backoff with jitter
+- 🛡️ **Type Safety**: Full type hints and TypedDict definitions
+- 📊 **Usage Tracking**: Built-in metered billing support
+- 🔐 **Access Control**: Feature-based access management
+- 📡 **Real-time Events**: SSE support for webhook events
+- 🎯 **Idempotency**: Prevent duplicate operations
+- 📝 **Comprehensive Logging**: Detailed request/response logging
+- 🧪 **Well Tested**: Extensive test coverage with mocks
+- 📚 **Rich Documentation**: Detailed examples and API documentation
+
+## 📦 Installation
+
+```bash
+pip install snappay
+```
+
+For development:
+
+```bash
+pip install snappay[dev]
+```
+
+## 🚀 Quick Start
+
+```python
+import asyncio
+from snappay import SnapPay
+
+async def main():
+    # Initialize client with API key
+    async with SnapPay(api_key="pk_test_your_api_key") as client:
+
+        # Create or retrieve a customer
+        customer = await client.customers.get(
+            cusId="user_123",
+            email="user@example.com",
+            name="John Doe"
+        )
+
+        # Create a checkout session
+        checkout = await client.checkout.create_session(
+            customer_id=customer["customer_id"],
+            product_id="pro_monthly",
+            success_url="https://example.com/success",
+            cancel_url="https://example.com/cancel"
+        )
+
+        print(f"Checkout URL: {checkout['url']}")
+
+# Run the async function
+asyncio.run(main())
+```
+
+## 📖 Configuration
+
+### Environment Variables
+
+```bash
+export SNAPPAY_API_KEY="pk_test_your_api_key"
+export SNAPPAY_BASE_URL="https://api.snappay.dev"  # Optional
+export SNAPPAY_MAX_RETRIES="3"  # Optional
+export SNAPPAY_TIMEOUT="30"  # Optional
+```
+
+### Advanced Configuration
+
+```python
+from snappay import SnapPay, SnapPayConfig
+from snappay.config import RetryConfig, TimeoutConfig
+
+# Create custom configuration
+config = SnapPayConfig(
+    api_key="pk_test_your_api_key",
+    base_url="https://api.snappay.dev",
+    retry=RetryConfig(
+        max_retries=5,
+        base_delay=1.0,
+        max_delay=60.0,
+        jitter=True
+    ),
+    timeout=TimeoutConfig(
+        total=30,
+        connect=10
+    ),
+    logging={
+        "enabled": True,
+        "level": "DEBUG",
+        "log_requests": True,
+        "log_responses": True,
+        "redact_sensitive": True
+    }
+)
+
+# Use custom configuration
+async with SnapPay(config=config) as client:
+    # Your code here
+    pass
+```
+
+## 🔧 Core Features
+
+### Customer Management
+
+```python
+# Create or get customer
+customer = await client.customers.get(
+    cusId="user_123",
+    email="user@example.com",
+    name="John Doe",
+    metadata={"source": "mobile_app", "plan": "free"}
+)
+
+# Update customer
+updated = await client.customers.update_customer(
+    customer_id=customer["customer_id"],
+    name="Jane Doe",
+    metadata={"plan": "pro"}
+)
+
+# List customers with pagination
+customers = await client.customers.list_customers(
+    limit=20,
+    starting_after="cus_abc123"
+)
+
+# Get customer by email
+customer = await client.customers.get_customer_by_email("user@example.com")
+
+# Delete customer (soft delete)
+success = await client.customers.delete_customer(customer["customer_id"])
+```
+
+### Checkout Sessions
+
+```python
+# Create checkout session
+checkout = await client.checkout.create_session(
+    customer_id="cus_123",
+    product_id="pro_monthly",
+    success_url="https://example.com/success?session_id={CHECKOUT_SESSION_ID}",
+    cancel_url="https://example.com/cancel",
+    metadata={
+        "campaign": "summer_sale",
+        "referrer": "blog"
+    }
+)
+
+print(f"Send customer to: {checkout['url']}")
+```
+
+### Access Control
+
+```python
+# Check feature access
+access = await client.access.check(
+    customer_id="cus_123",
+    feature_id="premium_features"
+)
+
+if access["has_access"]:
+    print(f"Access granted! Remaining: {access.get('usage_remaining', 'Unlimited')}")
+else:
+    print("Access denied - subscription required")
+```
+
+### Usage Tracking
+
+```python
+# Track usage for metered features
+result = await client.usage.track(
+    customer_id="cus_123",
+    feature_id="api_calls",
+    usage=25,
+    idempotency_key="unique_key_123"  # Prevent duplicates
+)
+
+# Get current usage
+usage = await client.usage.get(
+    customer_id="cus_123",
+    feature_id="api_calls"
+)
+
+print(f"Used: {usage['total_usage']} / {usage.get('limit', 'Unlimited')}")
+```
+
+### Real-time Events (SSE)
+
+```python
+# Subscribe to webhook events via SSE
+def handle_subscription_created(event):
+    print(f"New subscription: {event.customer_id}")
+    print(f"Data: {event.event_data}")
+
+def handle_payment_failed(event):
+    print(f"Payment failed for: {event.customer_id}")
+
+# Register event handlers
+client.on_event("subscription.created", handle_subscription_created)
+client.on_event("invoice.payment.failed", handle_payment_failed)
+
+# Start listening
+await client.start_events()
+
+# Keep running
+await asyncio.sleep(3600)  # Listen for 1 hour
+
+# Stop listening
+await client.stop_events()
+```
+
+### Event Streaming with Async Generator
+
+```python
+# Stream events using async generator
+async for event in client.stream_events():
+    print(f"Event: {event.webhook_event_type}")
+    print(f"Customer: {event.customer_id}")
+    print(f"Data: {event.event_data}")
+
+    # Process specific events
+    if event.webhook_event_type == "subscription.created":
+        await process_new_subscription(event)
+```
+
+## 🔒 Error Handling
+
+The SDK provides comprehensive error handling with specific exception types:
+
+```python
+from snappay.types import (
+    AuthenticationError,
+    ValidationError,
+    NotFoundError,
+    RateLimitError,
+    ConflictError,
+    PaymentError,
+    ServerError,
+    SnapPayError
+)
+
+try:
+    customer = await client.customers.get("user_123")
+except AuthenticationError as e:
+    print(f"Invalid API key: {e}")
+except ValidationError as e:
+    print(f"Invalid parameters: {e}")
+    print(f"Failed parameter: {e.details.get('param')}")
+except NotFoundError as e:
+    print(f"Resource not found: {e}")
+except RateLimitError as e:
+    print(f"Rate limited. Retry after: {e.retry_after} seconds")
+except SnapPayError as e:
+    print(f"API error: {e}")
+    print(f"Request ID: {e.request_id}")
+```
+
+## 🔄 Retry Logic
+
+The SDK includes automatic retry with exponential backoff:
+
+```python
+from snappay.utils import retry_on_failure
+
+# Automatic retry for transient failures
+@retry_on_failure(max_retries=3, base_delay=1.0)
+async def critical_operation():
+    return await client.customers.get("user_123")
+
+# Or configure globally
+config = SnapPayConfig(
+    api_key="pk_test_key",
+    retry={"max_retries": 5, "base_delay": 2.0, "max_delay": 60.0}
+)
+```
+
+## 📊 Pagination
+
+Handle paginated responses efficiently:
+
+```python
+# Manual pagination
+all_customers = []
+has_more = True
+starting_after = None
+
+while has_more:
+    response = await client.customers.list_customers(
+        limit=100,
+        starting_after=starting_after
+    )
+    all_customers.extend(response["data"])
+    has_more = response.get("has_more", False)
+    if response["data"]:
+        starting_after = response["data"][-1]["customer_id"]
+
+# Or use the built-in paginate helper (for services that support it)
+all_items = await client._paginate(
+    endpoint="/api/v1/customers",
+    limit=100,
+    max_items=1000  # Stop after 1000 items
+)
+```
+
+## 🧪 Testing
+
+Run tests with pytest:
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=snappay
+
+# Run specific test file
+pytest tests/test_client.py
+
+# Run with verbose output
+pytest -v
+```
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+```bash
+# Clone repository
+git clone https://github.com/snappay/snappay-sdk-py.git
+cd snappay-sdk-py
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+### Code Quality
+
+```bash
+# Format code
+black .
+
+# Sort imports
+isort .
+
+# Type checking
+mypy snappay
+```
+
+## 📚 Examples
+
+See the [`example/`](example/) directory for comprehensive examples:
+
+- [`basic_usage.py`](example/basic_usage.py) - Basic SDK operations
+- [`advanced_usage.py`](example/advanced_usage.py) - Advanced features and patterns
+- [`sse_basic.py`](example/sse_basic.py) - Real-time event streaming
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- 📖 [Documentation](https://docs.snappay.dev/sdk/python)
+- 💬 [Discord Community](https://discord.gg/snappay)
+- 📧 [Email Support](mailto:support@snappay.dev)
+- 🐛 [Report Issues](https://github.com/snappay/snappay-sdk-py/issues)
+
+## 🙏 Acknowledgments
+
+Built with ❤️ by the SnapPay team. Special thanks to all our contributors and users.
+
+---
+
+**Ready to integrate payments in minutes?** Get started with SnapPay today!
+
+```python
+# It's as simple as this!
+async with SnapPay(api_key="your_key") as client:
+    checkout = await client.checkout.create_session(
+        customer_id="cus_123",
+        product_id="pro_plan",
+        success_url="https://yourapp.com/success"
+    )
+    print(f"Send customer to: {checkout['url']}")
+```
