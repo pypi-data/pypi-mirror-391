@@ -1,0 +1,100 @@
+# 🚗🛜📲 MIBBridge
+
+A simple bridge to connect to the internal HTTP(S) server present on the media units of the VWAG New Small Family cars (VW up!, Škoda Citigo and SEAT Mii), as the maps+more app does.
+
+> [!NOTE]
+> This bridge does not implement interfacing with the [Volkswagen Infotainment Web Interface (VIWI)](https://www.w3.org/submissions/viwi-protocol/) but only provides the bridge for sending traffic via Bluetooth to it.
+> An application to access the REST interface and handle authentication with the car is in preparation.
+
+![a screenshot of MIBBridge in action, allowing the request `GET /car/info/vin` to be performed](docs/screenshot.png)
+
+
+## Motivation
+
+The Volkswagen New Small Family Platform features the possibility to include the so called “Composite Phone” upgrade.
+This allows you to use the Volkswagen-provided maps+more app to access the data of the car and to navigate, essentially moving the functionality of a “real” infotainment system to your phone.
+The maps+more app communicates with the car via a REST API (which is partially documented [here](https://www.w3.org/submissions/viwi-protocol/) and [here](https://www.w3.org/submissions/viwi-service-car/)), while all HTTP traffic is tunnelled via RFCOMM. This application implements this tunnel.
+
+
+## Installation
+
+### pip
+
+You can install MIBBridge from `pip`:
+
+```bash
+pip install mibbridge
+```
+
+
+## Status
+
+Getting the VIN via `GET /car/info/vin` works.
+All other requests work as well.
+
+
+## Command Line Usage
+
+Connect to the car via Bluetooth.
+
+Then run:
+
+```bash
+mibbridge <mac address/Unix socket> [mapping]
+```
+
+Input the MAC column separated, e.g. `12:34:56:78:90:00`.
+The application automatically binds to `localhost`.
+The default mapping is `4080:80,4443:443`, which resembles the default mapping in the maps+more app.
+
+Now you can access the cars data via e.g. `curl`.
+
+
+## API Usage
+
+```python
+from mibbridge import MIBBridge
+
+# create your bluetooth socket
+BT_ADDR = "12:34:56:78:90:00"
+socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+socket.connect((BT_ADDR, 5))
+
+# set up your port mapping (dict, key is local, value is car side)
+mapping = {4080 : 80, 4443 : 443}
+
+#set up logging (optional)
+logger = logging.getLogger("MIBBridge")
+logging.basicConfig(level=logging.INFO)
+
+# set up MIBBridge
+bridge = MIBBridge(socket, mapping, logger=logger)
+
+# run
+bridge.start()
+
+# stop with
+bridge.stop()
+```
+
+Note that `stop()` does stop all TCP connections, but not the passed socket.
+The passed socket can either be a `bluetooth.BluetoothSocket` or a regular `socket.socket`.
+
+
+## Protocol Details
+
+See [here](docs/protocol.md).
+
+
+## Disclaimer
+
+This project is not associated with VWAG or its sub-brands.
+All trademarks are the property of their respective owners.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the European Union Public License (EUPL), version 1.2.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+European Union Public License for more details.
