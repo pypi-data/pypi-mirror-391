@@ -1,0 +1,12 @@
+# SETUP Command Help
+
+```
+usage: python.exe C:\Users\joedi\AppData\Local\Programs\Python\Python314\Scripts\codesentinel setup
+       [-h] [--gui] [--non-interactive]
+
+options:
+  -h, --help         show this help message and exit
+  --gui              Use GUI setup wizard
+  --non-interactive  Run non-interactive setup
+
+```

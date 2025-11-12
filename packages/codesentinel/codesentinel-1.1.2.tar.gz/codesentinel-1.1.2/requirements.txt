@@ -1,0 +1,28 @@
+# CodeSentinel Requirements
+# ========================
+# 
+# This is the unified requirements file for CodeSentinel.
+# For development-only dependencies, use: pip install -r requirements-dev.txt
+# 
+# Production Installation: pip install -r requirements.txt
+# Development Installation: pip install -r requirements.txt -r requirements-dev.txt
+
+# ========================
+# CORE DEPENDENCIES (Production)
+# ========================
+
+# Python version compatibility
+pathlib2>=2.3.0; python_version < "3.4"  # For pathlib compatibility on Python 3.3 and earlier
+
+# System monitoring and process management
+psutil>=5.8.0  # For process monitoring, orphan detection, and system introspection
+
+# Alert system and notifications
+requests>=2.25.0  # For HTTP requests, Slack webhooks, email (via SMTP), and external APIs
+
+# Task scheduling and automation
+schedule>=1.1.0  # For automated scheduled task execution and workflow management
+
+# GUI Framework (optional but included for full functionality)
+# tkinter - Included with Python 3.7+, no pip installation needed
+# To install on Linux: sudo apt-get install python3-tk

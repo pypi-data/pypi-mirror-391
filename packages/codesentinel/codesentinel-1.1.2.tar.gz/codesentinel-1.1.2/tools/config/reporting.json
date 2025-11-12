@@ -1,0 +1,203 @@
+{
+  "reporting": {
+    "enabled": true,
+    "base_path": "docs/reports",
+    "archive_path": "docs/reports/archive",
+    "retention": {
+      "daily": 30,
+      "weekly": 26,
+      "biweekly": 26,
+      "monthly": -1,
+      "releases": -1,
+      "features": -1
+    },
+    "compression": {
+      "enabled": true,
+      "after_days": 30,
+      "format": "tar.gz"
+    }
+  },
+  "schedules": {
+    "daily": {
+      "enabled": true,
+      "schedule": "09:00",
+      "reports": [
+        "security_scan",
+        "performance_health",
+        "error_digest"
+      ]
+    },
+    "weekly": {
+      "enabled": true,
+      "schedule": "Monday 09:00",
+      "reports": [
+        "sprint_progress",
+        "code_quality_audit",
+        "dependency_security",
+        "performance_trends",
+        "root_compliance"
+      ]
+    },
+    "biweekly": {
+      "enabled": true,
+      "schedule": "Friday 17:00",
+      "reports": [
+        "security_audit",
+        "efficiency_analysis",
+        "minimalism_compliance",
+        "integration_tests"
+      ]
+    },
+    "monthly": {
+      "enabled": true,
+      "schedule": "last 16:00",
+      "reports": [
+        "system_health_overview",
+        "codebase_metrics"
+      ]
+    },
+    "releases": {
+      "enabled": true,
+      "trigger": "on_release",
+      "reports": [
+        "pre_release_testing",
+        "distribution_packaging",
+        "security_assessment",
+        "performance_impact"
+      ]
+    },
+    "features": {
+      "enabled": true,
+      "trigger": "on_feature_merge",
+      "reports": [
+        "implementation_docs",
+        "code_review_summary",
+        "integration_impact"
+      ]
+    }
+  },
+  "reports": {
+    "security_scan": {
+      "type": "json",
+      "template": "templates/security_scan.json",
+      "description": "Daily security vulnerability assessment and credential checks"
+    },
+    "performance_health": {
+      "type": "json",
+      "template": "templates/performance_health.json",
+      "description": "Daily system resource monitoring (CPU, memory, I/O)"
+    },
+    "error_digest": {
+      "type": "json",
+      "template": "templates/error_digest.json",
+      "description": "Daily consolidated error reporting with trends"
+    },
+    "sprint_progress": {
+      "type": "markdown",
+      "template": "templates/sprint_progress.md",
+      "description": "Weekly development velocity, completed tasks, and blockers"
+    },
+    "code_quality_audit": {
+      "type": "markdown",
+      "template": "templates/code_quality_audit.md",
+      "description": "Weekly DRY violations, duplication analysis, and import optimization"
+    },
+    "dependency_security": {
+      "type": "markdown",
+      "template": "templates/dependency_security.md",
+      "description": "Weekly new vulnerabilities in packages and update recommendations"
+    },
+    "performance_trends": {
+      "type": "json",
+      "template": "templates/performance_trends.json",
+      "description": "Weekly performance trends analysis"
+    },
+    "root_compliance": {
+      "type": "markdown",
+      "template": "templates/root_compliance.md",
+      "description": "Weekly root directory policy adherence and unauthorized file detection"
+    },
+    "security_audit": {
+      "type": "markdown",
+      "template": "templates/security_audit.md",
+      "description": "Bi-weekly comprehensive security assessment"
+    },
+    "efficiency_analysis": {
+      "type": "markdown",
+      "template": "templates/efficiency_analysis.md",
+      "description": "Bi-weekly code reuse metrics and technical debt assessment"
+    },
+    "minimalism_compliance": {
+      "type": "markdown",
+      "template": "templates/minimalism_compliance.md",
+      "description": "Bi-weekly archive cleanup status and deprecated code identification"
+    },
+    "integration_tests": {
+      "type": "json",
+      "template": "templates/integration_tests.json",
+      "description": "Bi-weekly cross-component functionality validation"
+    },
+    "system_health_overview": {
+      "type": "markdown",
+      "template": "templates/system_health_overview.md",
+      "description": "Monthly 30-day performance trends and reliability metrics"
+    },
+    "codebase_metrics": {
+      "type": "json",
+      "template": "templates/codebase_metrics.json",
+      "description": "Monthly lines of code, complexity analysis, and maintainability scores"
+    },
+    "pre_release_testing": {
+      "type": "markdown",
+      "template": "templates/pre_release_testing.md",
+      "description": "Pre-release comprehensive test coverage and regression analysis"
+    },
+    "distribution_packaging": {
+      "type": "markdown",
+      "template": "templates/distribution_packaging.md",
+      "description": "Release build artifacts, metadata validation, and installation testing"
+    },
+    "security_assessment": {
+      "type": "markdown",
+      "template": "templates/security_assessment.md",
+      "description": "Release final security review and vulnerability status"
+    },
+    "performance_impact": {
+      "type": "json",
+      "template": "templates/performance_impact.json",
+      "description": "Release performance benchmarks vs. previous versions"
+    },
+    "implementation_docs": {
+      "type": "markdown",
+      "template": "templates/implementation_docs.md",
+      "description": "Feature implementation overview, usage examples, and configuration changes"
+    },
+    "code_review_summary": {
+      "type": "markdown",
+      "template": "templates/code_review_summary.md",
+      "description": "Feature architecture decisions and SEAM compliance verification"
+    },
+    "integration_impact": {
+      "type": "markdown",
+      "template": "templates/integration_impact.md",
+      "description": "Feature performance implications and dependency changes"
+    }
+  },
+  "alerts": {
+    "report_generation_failure": {
+      "enabled": true,
+      "severity": "warning",
+      "channels": ["console", "file"]
+    },
+    "report_generation_success": {
+      "enabled": false,
+      "severity": "info",
+      "channels": ["file"]
+    },
+    "archival_cleanup": {
+      "enabled": true,
+      "severity": "info",
+      "channels": ["file"]
+    }
+  }
+}
