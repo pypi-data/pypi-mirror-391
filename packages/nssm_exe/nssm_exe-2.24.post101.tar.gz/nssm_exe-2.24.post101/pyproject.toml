@@ -1,0 +1,21 @@
+[project]
+name = "nssm_exe"
+version = "2.24-101"
+description = "Bundles nssm.exe (Non-Sucking Service Manager) and installs the executable into the Python Scripts directory for Windows (provides a portable nssm.exe when the package is installed)."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["nssm_exe"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"nssm_exe/nssm.exe" = "nssm_exe/nssm.exe"
+
+# Install exe to Scripts directory
+[tool.hatch.build.targets.wheel.shared-data]
+"nssm_exe/nssm.exe" = "Scripts/nssm.exe"
