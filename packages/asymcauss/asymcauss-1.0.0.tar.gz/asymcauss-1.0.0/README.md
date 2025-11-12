@@ -1,0 +1,280 @@
+# asymcaus: Asymmetric Causality Testing (GAUSS-Compatible)
+
+[![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)]()
+[![GAUSS Compatible](https://img.shields.io/badge/GAUSS-compatible-orange.svg)]()
+
+**A Python implementation fully compatible with the original GAUSS code by Abdulnasser Hatemi-J (2012).**
+
+## Overview
+
+This package provides asymmetric causality testing with **exact compatibility** with the original GAUSS implementation. All function names, parameters, and logic match the GAUSS code.
+
+### Reference
+
+> Hatemi-J, A. (2012). "Asymmetric causality tests with an application."  
+> *Empirical Economics*, 43(1), 447-456.
+
+## Key Features
+
+✅ **Full GAUSS Compatibility**
+- Function names match GAUSS code exactly
+- Same parameters and return values
+- Identical mathematical implementation
+- Compatible results with original code
+
+✅ **Complete Implementation**
+- `asymmetric_causality_test()` ← `asymCause()`
+- `cumulative_component()` ← `cumulativeComp()`
+- `select_lag_order()` ← `lag_length2()`
+- `compute_wald_statistic()` ← `W_test()`
+- `bootstrap_critical_values()` ← `Bootstrap_Toda()`
+- `varlags()` ← `varlags()`
+- `rstrctvm()` ← `rstrctvm()`
+- `estvar_params()` ← `estvar_params()`
+
+✅ **All Information Criteria**
+- AIC (Akaike Information Criterion)
+- AICC (Corrected AIC)
+- SBC (Schwarz Bayesian Criterion / BIC)
+- HQC (Hannan-Quinn Criterion)
+- HJC (Hatemi-J Criterion)
+
+✅ **Interactive Visualizations**
+- Component decomposition plots
+- Test results visualization
+- Multi-test comparisons
+
+## Installation
+
+```bash
+git clone https://github.com/merwanroudane/asymcaus.git
+cd asymcaus
+pip install -e .
+```
+
+## Quick Start
+
+### GAUSS-Compatible Syntax
+
+```python
+import numpy as np
+from asymcaus import asymmetric_causality_test, COMPONENT_POSITIVE, IC_SBC
+
+# Generate data
+y = np.random.randn(200, 1).cumsum(axis=0)
+z = np.random.randn(200, 1).cumsum(axis=0)
+
+# Test asymmetric causality (GAUSS-compatible)
+Wstat, critical_values, lag_order, azd = asymmetric_causality_test(
+    y=y,
+    z=z,
+    pos=COMPONENT_POSITIVE,  # 1 = positive, 0 = negative
+    infocrit=IC_SBC,         # 3 = SBC/BIC
+    intorder=0,              # Integration order
+    ln_form=0,               # Log transformation (0=no, 1=yes)
+    maxlags=8,               # Maximum lags
+    bootmaxiter=1000,        # Bootstrap iterations
+    fullprint=0              # Print details (0=no, 1=yes)
+)
+
+print(f"Wald Statistic: {Wstat:.4f}")
+print(f"Critical Values (1%, 5%, 10%): {critical_values}")
+print(f"Optimal Lag Order: {lag_order}")
+```
+
+## GAUSS Function Mapping
+
+| GAUSS Function | Python Function | Description |
+|----------------|-----------------|-------------|
+| `asymCause()` | `asymmetric_causality_test()` | Main testing function |
+| `cumulativeComp()` | `cumulative_component()` | Decompose into pos/neg components |
+| `lag_length2()` | `select_lag_order()` | Select optimal lag order |
+| `W_test()` | `compute_wald_statistic()` | Calculate Wald statistic |
+| `Bootstrap_Toda()` | `bootstrap_critical_values()` | Bootstrap critical values |
+| `rstrctvm()` | `rstrctvm()` | Create restriction matrices |
+| `varlags()` | `varlags()` | Create lagged data |
+| `estvar_params()` | `estvar_params()` | Estimate VAR parameters |
+
+## Parameter Compatibility
+
+### Information Criteria (infocrit)
+
+```python
+from asymcaus import IC_AIC, IC_AICC, IC_SBC, IC_HQC, IC_HJC, IC_MAXLAGS
+
+# GAUSS: infocrit = 1
+# Python:
+infocrit = IC_AIC  # or simply: infocrit = 1
+
+# GAUSS: infocrit = 3
+# Python:
+infocrit = IC_SBC  # or simply: infocrit = 3
+```
+
+| Value | GAUSS | Python Constant | Description |
+|-------|-------|-----------------|-------------|
+| 1 | AIC | `IC_AIC` | Akaike Information Criterion |
+| 2 | AICC | `IC_AICC` | Corrected AIC |
+| 3 | SBC | `IC_SBC` | Schwarz Bayesian Criterion |
+| 4 | HQC | `IC_HQC` | Hannan-Quinn Criterion |
+| 5 | HJC | `IC_HJC` | Hatemi-J Criterion |
+| 6 | Use maxlags | `IC_MAXLAGS` | Use specified maximum lags |
+
+### Component Type (pos)
+
+```python
+from asymcaus import COMPONENT_POSITIVE, COMPONENT_NEGATIVE
+
+# GAUSS: pos = 1
+# Python:
+pos = COMPONENT_POSITIVE  # or simply: pos = 1
+
+# GAUSS: pos = 0
+# Python:
+pos = COMPONENT_NEGATIVE  # or simply: pos = 0
+```
+
+## Complete Examples
+
+### Example 1: Basic Test (GAUSS-style)
+
+```python
+from asymcaus import asymmetric_causality_test
+
+# GAUSS equivalent:
+# { Wstat, WcriticalvalsS, ICOrder, Azdsys } = asymCause(y, z, 1, 3, 0, 0, 8, 1000, 0);
+
+Wstat, WcriticalvalsS, ICOrder, Azdsys = asymmetric_causality_test(
+    y, z, pos=1, infocrit=3, intorder=0, ln_form=0, 
+    maxlags=8, bootmaxiter=1000, fullprint=0
+)
+```
+
+### Example 2: Component Decomposition
+
+```python
+from asymcaus import cumulative_component
+
+# GAUSS equivalent:
+# { CUMDYZpc, CUMDYZnc } = cumulativeComp(data, 0, 0);
+
+CUMDYZpc, CUMDYZnc = cumulative_component(data, ln_form=0, fullprint=0)
+```
+
+### Example 3: All Four Combinations
+
+```python
+from asymcaus import test_all_combinations
+
+results = test_all_combinations(
+    y, z,
+    infocrit=3,
+    bootmaxiter=1000
+)
+
+# Results contain:
+# - pos_to_pos: Positive shocks → Positive shocks
+# - pos_to_neg: Positive shocks → Negative shocks
+# - neg_to_pos: Negative shocks → Positive shocks
+# - neg_to_neg: Negative shocks → Negative shocks
+```
+
+## Visualization
+
+```python
+from asymcaus import plot_components, plot_causality_results, plot_multiple_tests
+
+# Plot cumulative components
+fig1 = plot_components(data, pos_comp, neg_comp, var_names=['y', 'z'])
+fig1.show()
+
+# Plot test results
+fig2 = plot_causality_results(Wstat, critical_values)
+fig2.show()
+
+# Compare multiple tests
+fig3 = plot_multiple_tests(results)
+fig3.show()
+```
+
+## Running Examples
+
+```bash
+cd examples
+python gauss_compatible_example.py
+```
+
+This will:
+1. Generate sample data
+2. Decompose into components
+3. Test all combinations
+4. Create visualizations
+5. Show GAUSS equivalence guide
+
+## Compatibility Verification
+
+The package has been tested for compatibility with the original GAUSS code:
+
+✅ Same shock decomposition results  
+✅ Identical lag selection  
+✅ Matching Wald statistics  
+✅ Equivalent bootstrap critical values  
+✅ Same restriction matrix logic  
+
+## Documentation
+
+- **README.md** - This file
+- **GAUSS_COMPATIBILITY.md** - Detailed compatibility guide
+- **examples/** - Working examples with GAUSS equivalents
+
+## Dependencies
+
+- Python >= 3.7
+- numpy >= 1.20.0
+- scipy >= 1.7.0
+- plotly >= 5.0.0
+
+## Citation
+
+```bibtex
+@software{asymcaus2024,
+  author = {Roudane, Merwan},
+  title = {asymcaus: Asymmetric Causality Testing (GAUSS-Compatible)},
+  year = {2024},
+  url = {https://github.com/merwanroudane/asymcaus}
+}
+
+@article{hatemi2012asymmetric,
+  title={Asymmetric causality tests with an application},
+  author={Hatemi-J, Abdulnasser},
+  journal={Empirical Economics},
+  volume={43},
+  number={1},
+  pages={447--456},
+  year={2012}
+}
+```
+
+## License
+
+MIT License - see LICENSE file
+
+## Author
+
+**Dr. Merwan Roudane**
+- Email: merwanroudane920@gmail.com
+- GitHub: https://github.com/merwanroudane
+
+## Acknowledgments
+
+- Original GAUSS code by Abdulnasser Hatemi-J
+- Scott Hacker for VAR estimation procedures
+- Alan G. Isaac for varlags function
+
+---
+
+**Version**: 1.0.0  
+**Status**: Production/Stable  
+**GAUSS Compatibility**: ✅ Verified
