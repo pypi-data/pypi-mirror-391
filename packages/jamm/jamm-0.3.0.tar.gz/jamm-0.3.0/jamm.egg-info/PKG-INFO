@@ -1,0 +1,308 @@
+Metadata-Version: 2.4
+Name: jamm
+Version: 0.3.0
+Summary: Jamm API Python SDK
+Author: Jamm Team
+License: MIT
+Project-URL: Homepage, https://jamm-pay.jp
+Project-URL: Bug Tracker, https://jamm-pay.jp
+Project-URL: Documentation, https://docs.jamm.pay/sdk/python
+Project-URL: Source, https://jamm-pay.jp
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: grpcio>=1.73.0
+Requires-Dist: protobuf>=6.31.1
+Requires-Dist: pydantic<2.12.0,>=2.11.7
+Requires-Dist: requests>=2.32.4
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: types-protobuf>=5.29.0; extra == "dev"
+Requires-Dist: types-requests>=2.32.0; extra == "dev"
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: Faker>=37.4.0; extra == "dev"
+Requires-Dist: protoc-gen-openapiv2>=0.0.1; extra == "dev"
+Dynamic: license-file
+
+# Jamm SDK for Python
+
+Lightweight Python client for the Jamm API. Focused on:
+
+- Straightforward auth (client credentials OAuth2)
+- Clean dict responses (flattened where practical)
+- Helpful error metadata (`error_type`, `error_code`, decoded debug values)
+- Simple pagination (lazy charge iterator)
+
+## Installation
+
+Production (when published):
+
+```bash
+pip install jamm-sdk
+```
+
+Local development (editable):
+
+```bash
+pip install -e .
+```
+
+## Quick Start
+
+```python
+import jamm
+
+client = jamm.configure(
+    client_id="your_client_id",
+    client_secret="your_client_secret",
+    env="develop",  # or "staging" / "production"
+)
+
+print(client.healthcheck())
+```
+
+## Configuration
+
+The SDK can be configured using environment variables or programmatically:
+
+### Programmatic Configuration
+
+```python
+from jamm import JammClient, ClientConfig
+
+config = ClientConfig(
+    api_base_url="https://api.staging.jamm.com/v1",
+    client_id="your_client_id",
+    client_secret="your_client_secret"
+)
+
+client = JammClient(config)
+```
+
+## Features Overview
+
+| Domain      | Highlights                                                                    |
+| ----------- | ----------------------------------------------------------------------------- |
+| Healthcheck | Ping connectivity quickly                                                     |
+| Customers   | CRUD + contract; normalized: `link_initialized`, `bank_information`, `status` |
+| Payments    | On-session / off-session flows                                                |
+| Contracts   | Fetch existing customer contract                                              |
+| Charges     | Get, list, lazy iterator `charges.iter()`                                     |
+| Banking     | Bank search, major banks, branches (get/search/list)                          |
+| Errors      | Unified `ApiError` with rich metadata                                         |
+
+## API Reference
+
+### Health Check
+
+```python
+# Verify API connectivity
+response = client.healthcheck()
+print(response)
+```
+
+### Customer Management
+
+```python
+buyer_data = {
+    "email": "customer@example.com",
+    "name": "John Doe",
+    "katakana_last_name": "ドウ",
+    "katakana_first_name": "ジョン",
+    "address": "123 Tokyo Street, Shibuya",
+    "birth_date": "1990-01-01",
+    "gender": "male",
+    "force_kyc": False,
+    "metadata": {"source": "api"}
+}
+
+customer = client.customers.create(buyer=buyer_data)
+print(customer["id"])  # flattened
+customer = client.customers.get("cus-customer_id_here")
+updated = client.customers.update(
+    customer_id="cus-customer_id_here",
+    data={"name": "Updated Name", "metadata": {"updated": True}},
+)
+contract = client.customers.get_contract("cus-customer_id_here")
+delete_result = client.customers.delete("cus-customer_id_here")
+```
+
+### Payment Processing
+
+```python
+from datetime import datetime, timedelta
+expires_at = (datetime.now() + timedelta(days=2)).isoformat() + "Z"
+
+off_session = client.payments.off_session(
+    customer_id="cus-customer_id_here",
+    price=1000,
+    description="Monthly subscription",
+    expires_at=expires_at,
+)
+
+on_session = client.payments.on_session(
+    customer_id="cus-customer_id_here",
+    price=1000,
+    description="One-time payment",
+    redirect_urls={
+        "success_url": "https://yoursite.com/success",
+        "failure_url": "https://yoursite.com/cancel",
+    },
+    expires_at=expires_at,
+)
+
+new_customer_session = client.payments.on_session(
+    buyer=buyer_data,
+    redirect_urls={
+        "success_url": "https://yoursite.com/success",
+        "failure_url": "https://yoursite.com/cancel",
+    },
+    expires_at=expires_at,
+)
+
+new_customer_with_charge = client.payments.on_session(
+    buyer=buyer_data,
+    price=1000,
+    description="Initial payment",
+    redirect_urls={
+        "success_url": "https://yoursite.com/success",
+        "failure_url": "https://yoursite.com/cancel",
+    },
+    expires_at=expires_at,
+)
+```
+
+### Contract Management
+
+```python
+contract = client.contracts.get("cus-customer_id_here")
+if contract:
+    print("Contract found")
+else:
+    print("No active contract")
+```
+
+### Charge Operations
+
+```python
+charge = client.charges.get("trx-charge_id_here")
+page = client.charges.list(customer_id="cus-customer_id_here", page_size=25)
+for c in client.charges.iter(customer_id="cus-customer_id_here", page_size=100, limit=500):
+    process(c)
+```
+
+### Banking Operations
+
+```python
+bank = client.banks.get("0001")
+major_banks = client.banks.get_major_banks()
+search_results = client.banks.search("みずほ")
+branch = client.bank_branches.get("0001", "001")
+branches = client.bank_branches.search("0001", "東京")
+all_branches = client.bank_branches.list_for_bank("0001")
+```
+
+## Authentication
+
+OAuth2 client credentials handled automatically once configured.
+
+## Development Setup
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -e .
+```
+
+### Running Tests
+
+```bash
+python tests/test_sdk.py --client-id YOUR_ID --client-secret YOUR_SECRET --env develop
+```
+
+Abbreviated example output:
+
+```text
+✅ Healthcheck ok
+✅ Customer created
+✅ Off-session payment created
+✅ On-session payment created
+✅ Major banks fetched
+```
+
+## Helper: generate_buyer()
+
+```python
+from faker import Faker
+import time
+
+def generate_buyer(base_email=None, name=None, force_kyc=False):
+    """Generate realistic buyer data for testing"""
+    fake_en = Faker("en_US")
+    fake_jp = Faker("ja_JP")
+    timestamp = int(time.time())
+
+    return {
+        "email": f"{fake_en.user_name()}+{timestamp}@jamm-pay.jp",
+        "name": name or fake_en.name(),
+        "katakana_last_name": fake_jp.last_kana_name(),
+        "katakana_first_name": fake_jp.first_kana_name(),
+        "address": fake_jp.address(),
+        "birth_date": fake_en.date_of_birth(minimum_age=20, maximum_age=70).strftime("%Y-%m-%d"),
+        "gender": fake_en.random_element(["male", "female"]),
+        "force_kyc": force_kyc,
+        "metadata": {"source": "faker_generated", "timestamp": str(timestamp)}
+    }
+
+# Usage
+buyer_data = generate_buyer()
+customer = client.customers.create(buyer=buyer_data)
+```
+
+## Error Handling
+
+Every failed SDK call raises `jamm.ApiError`.
+
+| Field            | Meaning                                                            |
+| ---------------- | ------------------------------------------------------------------ |
+| `code`           | HTTP status (0 = network/transport)                                |
+| `message`        | Short description                                                  |
+| `details`        | Parsed JSON body                                                   |
+| `error_type`     | Internal debug enum-like (e.g. `ERROR_TYPE_PAYMENT_CHARGE_FAILED`) |
+| `error_code`     | High-level code (`internal`, `invalid`, etc.)                      |
+| `debug_values`   | All collected debug markers                                        |
+| `decoded_values` | Base64-decoded detail values                                       |
+
+```python
+from jamm import ApiError
+try:
+    client.charges.get("trx-nonexistent")
+except ApiError as e:
+    print(e.code, e.message, e.error_type)
+    if e.error_code:
+        print("error_code:", e.error_code)
+    if e.decoded_values:
+        print("decoded:", e.decoded_values)
+```
+
+Network issues surface with `code == 0` and `details` containing `{"network_error": True}`.
+
+## Notes & Next Steps
+
+Planned (non-breaking): enum wrapper for `error_type`, helper predicates, optional typed response models. Contributions welcome.
