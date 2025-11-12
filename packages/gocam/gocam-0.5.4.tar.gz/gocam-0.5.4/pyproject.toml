@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gocam"
+description = "GO CAM Data Model (Python)"
+authors = [{ name = "The Gene Ontology Consortium", email = "help@geneontology.org" }]
+requires-python = ">=3.10"
+readme = "README.md"
+license-files = ["LICENSE"]
+dynamic = ["version"]
+
+dependencies = [
+    "click>=8,<9",
+    "linkml-runtime>=1.1.24,<2",
+    "prefixmaps>=0.2.6,<0.3",
+    "pydantic>=2,<3",
+    "pyyaml>=6,<7",
+    "requests>=2,<3",
+]
+
+[project.optional-dependencies]
+cx2 = [
+    "ndex2>=3.9.0,<4",
+    "networkx[extra]>=3,<4",
+]
+oaklib = ["oaklib"]
+owl = ["py-horned-owl"]
+
+[project.scripts]
+gocam = "gocam.cli:cli"
+
+[dependency-groups]
+dev = [
+    "linkml>=1.3.5,<2",
+    "mkdocs-material>=8.2.8,<9",
+    "mkdocs-mermaid2-plugin>=1.1.1",
+    "pytest>=8.2.2,<9",
+    "requests-mock>=1.12.1,<2",
+    "ruff>=0.6.9,<0.7",
+    "schemasheets>=0.1.14,<0.2",
+]
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration"
+]
+
+[tool.ruff]
+exclude = [
+    "project",
+    "src/gocam/datamodel"
+]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
