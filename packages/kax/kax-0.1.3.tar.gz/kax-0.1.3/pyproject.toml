@@ -1,0 +1,26 @@
+[project]
+name = "kax"
+version = "0.1.3"
+description = "Biblioteca cliente de sistema de almacenamiento en memoria."
+authors = [
+    {name = "Julio Salazar", email = "julio.salazar@cinvestav.mx"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "certifi==2025.6.15",
+    "charset-normalizer==3.4.2",
+    "idna==3.10",
+    "paho-mqtt==2.1.0",
+    "python-dateutil==2.9.0.post0",
+    "pytz==2025.2",
+    "requests==2.32.4",
+    "six==1.17.0",
+    "tzdata==2025.2",
+	"urllib3==2.5.0"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
