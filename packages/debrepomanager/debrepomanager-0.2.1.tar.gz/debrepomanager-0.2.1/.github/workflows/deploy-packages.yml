@@ -1,0 +1,128 @@
+name: Deploy Packages
+
+# Workflow для автоматической выгрузки собранных пакетов через rsync
+# Credentials будут добавлены позже в GitHub Secrets
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_dir:
+        description: 'Directory with .deb packages (relative to workspace)'
+        required: true
+        default: 'dist/'
+      codename:
+        description: 'Target codename (bookworm, noble, etc.)'
+        required: true
+        type: choice
+        options:
+          - bookworm
+          - noble
+          - trixie
+          - jammy
+      component:
+        description: 'Repository component'
+        required: true
+        default: 'jethome-tools'
+      deploy_target:
+        description: 'Where to deploy'
+        required: true
+        type: choice
+        options:
+          - staging  # For testing
+          - production  # For production repo.site.com
+        default: staging
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Packages via rsync
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Validate package directory
+        run: |
+          if [ ! -d "${{ github.event.inputs.package_dir }}" ]; then
+            echo "Error: Package directory not found: ${{ github.event.inputs.package_dir }}"
+            exit 1
+          fi
+
+          deb_count=$(find "${{ github.event.inputs.package_dir }}" -name "*.deb" | wc -l)
+          if [ "$deb_count" -eq 0 ]; then
+            echo "Error: No .deb files found in ${{ github.event.inputs.package_dir }}"
+            exit 1
+          fi
+
+          echo "Found $deb_count .deb package(s) to deploy"
+
+      # TODO: Add SSH key setup when credentials provided
+      # - name: Setup SSH
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      # TODO: Configure rsync destination based on deploy_target
+      - name: Deploy via rsync (PLACEHOLDER)
+        run: |
+          echo "=== RSYNC DEPLOYMENT (not configured yet) ==="
+          echo "Package dir: ${{ github.event.inputs.package_dir }}"
+          echo "Codename: ${{ github.event.inputs.codename }}"
+          echo "Component: ${{ github.event.inputs.component }}"
+          echo "Target: ${{ github.event.inputs.deploy_target }}"
+          echo ""
+          echo "To enable, configure GitHub Secrets:"
+          echo "  - DEPLOY_SSH_KEY_STAGING"
+          echo "  - DEPLOY_SSH_KEY_PRODUCTION"
+          echo "  - DEPLOY_HOST_STAGING"
+          echo "  - DEPLOY_HOST_PRODUCTION"
+          echo "  - DEPLOY_USER"
+          echo "  - DEPLOY_PATH_BASE"
+          echo ""
+          echo "Then uncomment rsync commands in this workflow"
+
+      # TODO: Uncomment when credentials configured
+      # - name: rsync packages to staging
+      #   if: github.event.inputs.deploy_target == 'staging'
+      #   run: |
+      #     rsync -avz --progress \
+      #       ${{ github.event.inputs.package_dir }}/*.deb \
+      #       ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST_STAGING }}:${{ secrets.DEPLOY_PATH_BASE }}/incoming/
+
+      # - name: rsync packages to production
+      #   if: github.event.inputs.deploy_target == 'production'
+      #   run: |
+      #     rsync -avz --progress \
+      #       ${{ github.event.inputs.package_dir }}/*.deb \
+      #       ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST_PRODUCTION }}:${{ secrets.DEPLOY_PATH_BASE }}/incoming/
+
+      # TODO: Add remote repomanager command execution
+      # - name: Add packages to repository (remote)
+      #   run: |
+      #     HOST="${{ secrets.DEPLOY_HOST_PRODUCTION }}"
+      #     if [ "${{ github.event.inputs.deploy_target }}" == "staging" ]; then
+      #       HOST="${{ secrets.DEPLOY_HOST_STAGING }}"
+      #     fi
+      #
+      #     ssh ${{ secrets.DEPLOY_USER }}@$HOST \
+      #       "repomanager add \
+      #         --codename ${{ github.event.inputs.codename }} \
+      #         --component ${{ github.event.inputs.component }} \
+      #         --package-dir ${{ secrets.DEPLOY_PATH_BASE }}/incoming/"
+
+      - name: Summary
+        run: |
+          echo "### Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Codename**: ${{ github.event.inputs.codename }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Component**: ${{ github.event.inputs.component }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target**: ${{ github.event.inputs.deploy_target }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ⏳ Waiting for credentials configuration" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Configure secrets to enable actual deployment." >> $GITHUB_STEP_SUMMARY
+

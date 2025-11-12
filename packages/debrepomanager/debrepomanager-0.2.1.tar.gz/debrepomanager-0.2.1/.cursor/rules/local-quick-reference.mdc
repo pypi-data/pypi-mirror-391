@@ -1,0 +1,213 @@
+---
+tags: ["reference", "quick-start", "commands"]
+---
+
+# Quick Reference - debrepomanager v0.2.0
+
+## 📊 Current Status (2025-11-07)
+
+**Version**: v0.2.0 (Production Ready)  
+**Coverage**: 92.98% (4 modules at 100%)  
+**Tests**: 263 passed (30s timeout)  
+**PyPI**: https://pypi.org/project/debrepomanager/
+
+## 🔧 Make Commands
+
+```bash
+make help              # Show all commands
+make install-dev       # Install with dev dependencies
+make test              # Run tests (263 tests, ~7s)
+make test-coverage     # Tests with coverage HTML report
+make format            # Format code (black + isort)
+make lint              # Lint code (flake8)
+make type-check        # Type check (mypy)
+make check-all         # All checks (required before commit!)
+make clean             # Remove artifacts
+```
+
+## 📦 Module Reference
+
+### debrepomanager/ (7 modules)
+
+| Module | Coverage | Description |
+|--------|----------|-------------|
+| __init__.py | 100% | Package exports |
+| config.py | 100% | Config auto-detection + ENV |
+| gpg.py | 100% | GPG signing |
+| metadata.py | 100% | Repository tracking |
+| utils.py | 97% | Utilities |
+| aptly.py | 88% | Aptly wrapper |
+| cli.py | 87% | CLI interface |
+
+### tests/ (263 tests)
+
+| Type | Count | Files |
+|------|-------|-------|
+| Unit | 186 | test_*.py |
+| Fuzzing | 25 | test_fuzz_*.py |
+| Metadata | 31 | test_metadata.py |
+| Config v0.2 | 10 | test_config_v02.py |
+| Integration | 10 | integration/test_integration.py |
+
+## 🚀 CLI Commands
+
+```bash
+# Auto-detection (no --config needed!)
+debrepomanager list
+debrepomanager create-repo bookworm jethome-tools
+debrepomanager add --codename noble --component tools *.deb
+debrepomanager sync  # Rebuild metadata (NEW in v0.2)
+
+# With config
+debrepomanager --config /path/to/config.yaml list
+
+# With ENV
+REPOMANAGER_APTLY_ROOT_BASE=/custom/path debrepomanager list
+```
+
+## 📁 Key File Locations
+
+### Documentation (35+ files in docs/)
+- **docs/README.md** - Documentation index
+- **docs/QUICKSTART.md** - Quick start guide
+- **docs/CONFIG.md** - Configuration reference (v0.2)
+- **docs/MIGRATION_v0.2.md** - Migration guide
+- **docs/ARCHITECTURE.md** - Architecture details
+- **docs/IMPLEMENTATION_PLAN.md** - Full plan
+- **PROJECT_STATUS_v02.md** - Current status
+- **COVERAGE_PROGRESS.md** - Coverage details
+
+### Configuration
+- **config.yaml.example** - Template with all options
+- **~/.repomanager/config.yaml** - User config (auto-detected)
+- **/etc/repomanager/config.yaml** - System config (auto-detected)
+- **./repomanager.yaml** - Local config (auto-detected)
+
+### GitHub Workflows (.github/workflows/)
+- **tests.yml** - Unit tests + integration tests
+- **code-review.yml** - Code quality checks
+- **publish-pypi.yml** - PyPI publishing
+- **docs-update.yml** - Documentation updates
+- **deploy-packages.yml** - Package deployment
+- **ci-auto-fix.yml** - Auto-fix workflows
+
+## 🧪 Testing Quick Reference
+
+```bash
+# All tests with coverage
+pytest --cov=debrepomanager --cov-report=html
+
+# Specific test file
+pytest tests/test_metadata.py -v
+
+# With timeout (configured: 30s)
+pytest tests/test_fuzz_*.py  # Fuzzing tests
+
+# Integration tests (Docker)
+make test-integration
+
+# Skip slow/integration
+pytest -m "not slow"
+pytest -m "not integration"
+```
+
+## 🔍 Common Code Patterns
+
+### Config Loading (v0.2)
+```python
+# Auto-detection
+config = Config()  # Searches standard locations
+
+# Explicit path
+config = Config("/path/to/config.yaml")
+
+# ENV override
+os.environ["REPOMANAGER_GPG_KEY_ID"] = "KEY123"
+config = Config()  # ENV has highest priority
+```
+
+### Aptly Operations
+```python
+manager = AptlyManager(config)
+manager.create_repo("bookworm", "tools")
+manager.add_packages("bookworm", "tools", ["pkg.deb"])
+manager.sync_metadata()  # Rebuild metadata (v0.2)
+```
+
+### Metadata Operations (NEW in v0.2)
+```python
+metadata = MetadataManager("/srv/aptly")
+metadata.add_repository("bookworm", "tools")
+repos = metadata.list_repositories()  # Fast listing
+count = metadata.sync_from_aptly(manager)  # Sync
+```
+
+## 📊 Coverage Requirements
+
+**Overall**: 80% minimum (current: 92.98% ✅)
+
+**Per-module targets**:
+- config.py, gpg.py, metadata.py, __init__.py: 100% ✅
+- utils.py: 97% ✅
+- aptly.py: 85%+ (current: 88% ✅)
+- cli.py: 85%+ (current: 87% ✅)
+
+## 🔐 Security Checklist
+
+- [ ] Never log passphrases or secrets
+- [ ] Validate all inputs
+- [ ] Use pathlib for paths
+- [ ] No shell=True in subprocess
+- [ ] ENV vars for sensitive data
+- [ ] File permissions: 600 for secrets
+
+## ✅ Pre-Commit Checklist
+
+```bash
+# Required before commit
+make check-all
+
+# Manual checks
+- [ ] Tests passing (263 tests)
+- [ ] Coverage >= 92% 
+- [ ] No trailing spaces
+- [ ] Docstrings added
+- [ ] Type hints added
+- [ ] CHANGELOG updated (if needed)
+```
+
+## 🎯 Git Workflow
+
+**CRITICAL**: NEVER push to main/master directly!
+
+```bash
+# Create feature branch
+git checkout -b feature/my-feature
+
+# Work and commit
+git add -A
+git commit -m "feat(scope): description"
+
+# Push and create PR
+git push -u origin feature/my-feature
+gh pr create
+
+# Wait for CI, then merge via GitHub
+```
+
+## 🌐 Environment Variables (v0.2)
+
+```bash
+REPOMANAGER_APTLY_ROOT_BASE    # Override aptly root
+REPOMANAGER_APTLY_PUBLISH_BASE # Override publish base
+REPOMANAGER_GPG_KEY_ID         # Override GPG key
+REPOMANAGER_GPG_USE_AGENT      # true/false/1/0
+```
+
+## 📚 See Also
+
+- [local-mvp-status.mdc](local-mvp-status.mdc) - Detailed status v0.2.0
+- [local-architecture.mdc](local-architecture.mdc) - Module structure
+- [local-aptly.mdc](local-aptly.mdc) - Aptly patterns
+- [local-pitfalls.mdc](local-pitfalls.mdc) - Common mistakes
+- [docs/IMPLEMENTATION_PLAN.md](../../docs/IMPLEMENTATION_PLAN.md) - Full plan

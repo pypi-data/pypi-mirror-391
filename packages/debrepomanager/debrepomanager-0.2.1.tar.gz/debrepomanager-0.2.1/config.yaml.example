@@ -1,0 +1,123 @@
+# Debian Repository Manager Configuration
+# Copy this file to /etc/repomanager/config.yaml and adjust settings
+
+# GPG signing configuration
+gpg:
+  # GPG key ID to use for signing repositories
+  key_id: "YOUR_GPG_KEY_ID"
+
+  # Use gpg-agent for passphrase caching (recommended for server)
+  use_agent: true
+
+  # Path to gpg binary (optional, auto-detected if not specified)
+  # gpg_path: "/usr/bin/gpg"
+
+# Aptly configuration
+aptly:
+  # Base directory for aptly roots (each codename gets its own subdirectory)
+  root_base: "/srv/aptly"
+
+  # Base directory for published repositories (web server document root)
+  publish_base: "/srv/repo/public"
+
+  # Path to aptly binary (optional, auto-detected if not specified)
+  # aptly_path: "/usr/bin/aptly"
+
+  # Aptly architectures list (can be overridden per repository)
+  # architectures:
+  #   - amd64
+  #   - arm64
+  #   - riscv64
+
+# Retention policies for package cleanup
+retention:
+  # Default policy applied to all components unless overridden
+  default:
+    # Minimum number of versions to keep (always preserved, regardless of age)
+    min_versions: 5
+
+    # Maximum age in days (older packages are removed if more than min_versions exist)
+    max_age_days: 90
+
+    # Keep latest N versions even if aged out (optional, default: 1)
+    # Ensures recent versions are not deleted even if they exceed max_age_days
+    keep_latest: 1
+
+    # Allow deletion of last remaining version if aged out (default: false)
+    # If false (default), always keeps at least newest version regardless of age
+    # If true, can delete last version if it exceeds max_age_days
+    delete_last_aged_version: false
+
+  # Per-component overrides
+  overrides:
+    # Example: less aggressive retention for armbian mirrors
+    jethome-armbian:
+      min_versions: 3
+      max_age_days: 60
+      keep_latest: 2  # Keep 2 latest versions even if old
+
+    # Example: more aggressive retention for debug packages
+    # jethome-debug:
+    #   min_versions: 2
+    #   max_age_days: 30
+    #   delete_last_aged_version: true  # Can delete last version if too old
+
+# Repository configuration
+repositories:
+  # Note: Codenames and components are created dynamically when you create repositories.
+  # No need to list them here - use any codename/component when running commands.
+  #
+  # Examples:
+  #   debrepomanager create-repo bookworm jethome-tools
+  #   debrepomanager create-repo noble jethome-armbian
+  #   debrepomanager add --codename trixie --component my-custom-repo packages/*.deb
+
+  # Default architectures for new repositories (can be overridden per repo)
+  architectures:
+    - amd64
+    - arm64
+    - riscv64
+
+  # Automatically create repository when adding packages to non-existent repo
+  auto_create: true
+
+  # Dual format support (both old and new formats work simultaneously)
+  # Old format: deb http://repo.jethome.ru bookworm jethome-bookworm
+  # New format: deb http://repo.jethome.ru/bookworm jethome-bookworm main
+  dual_format:
+    # Enable simultaneous support for both formats
+    enabled: true
+
+    # Method: symlink (recommended), nginx, dual_publish
+    method: "symlink"
+
+    # Automatically create symlinks when publishing
+    auto_symlink: true
+
+# Logging configuration
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # Log file path (optional, logs to stdout if not specified)
+  # file: "/var/log/repomanager/repomanager.log"
+
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Advanced options
+advanced:
+  # Number of snapshots to keep per component (older snapshots are cleaned up)
+  max_snapshots: 10
+
+  # Snapshot naming format (strftime format with component/codename placeholders)
+  # %f adds microseconds to prevent duplicate names in rapid succession
+  snapshot_format: "{component}-{codename}-%Y%m%d-%H%M%S%f"
+
+  # Parallel operations (currently not implemented, reserved for future)
+  # parallel: false
+
+  # Dry-run by default for cleanup operations (safety)
+  # cleanup_dry_run_default: true
+
+

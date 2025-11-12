@@ -1,0 +1,300 @@
+---
+alwaysApply: true
+---
+# Version Control
+
+Git workflow and collaboration standards.
+
+## Commit Message Standards
+
+Use conventional commits for clarity and consistency.
+
+**Format:** `type(scope): description`
+
+**Types:**
+- `feat` - New feature
+- `fix` - Bug fix
+- `docs` - Documentation
+- `style` - Formatting
+- `refactor` - Code refactoring
+- `test` - Tests
+- `chore` - Maintenance
+- `perf` - Performance
+
+**Best practices:**
+- Clear and concise description
+- Use present tense
+- Describe what and why
+- Reference issue numbers when applicable
+- Add body for complex changes
+
+**Examples:**
+- `feat(auth): add OAuth login`
+- `fix(api): handle null database response`
+- `refactor(parser): simplify token handling`
+
+**Cursor rules and commands (`.cursor/`):**
+- Scope: `cursor-rules` for rules, `cursor-cmd` for commands
+- Use standard types (feat, fix, docs, refactor, etc.)
+- Examples:
+  - `feat(cursor-rules): add testing standards`
+  - `docs(cursor-rules): update commit message policy`
+  - `feat(cursor-cmd): add security audit command`
+  - `fix(cursor-cmd): update sync command`
+
+**Multi-platform/module projects:**
+- Scope: platform, module, aspect, or subsystem name
+- Use `/` to specify subsystems
+- Examples:
+  - `feat(esp32): add WiFi driver`
+  - `fix(stm32): resolve SPI timing`
+  - `feat(backend): add user endpoint`
+  - `fix(esp32/drivers): add I2C support`
+  - `fix(backend/api): handle timeout`
+
+## Branch Naming
+
+Use consistent, descriptive branch names.
+
+**Pattern:** `type/description`
+
+**Examples:**
+- `feature/user-authentication`
+- `bugfix/login-error-handling`
+- `hotfix/critical-memory-leak`
+- `refactor/simplify-api-layer`
+
+**Guidelines:**
+- Lowercase with hyphens
+- Descriptive but concise
+- Include issue number when applicable
+- Avoid ambiguous names
+
+## Git Workflow
+
+**Branch and commit:**
+- Create feature branches from master (or main if project uses it)
+- Commit early and often
+- Keep commits atomic (one logical change)
+- Write meaningful commit messages
+- Each commit should work (build and pass tests)
+
+**Stay synchronized:**
+- Pull latest changes before starting work
+- Sync with master regularly
+- Resolve conflicts promptly
+- Push changes to remote regularly
+
+**Keep history clean:**
+- Squash related commits before merging
+- Don't commit WIP to master
+- Use `.gitignore` properly
+- Remove temporary/debug commits
+
+**Never commit:**
+- Secrets or credentials
+- Generated files (unless necessary)
+- Personal IDE configurations
+- Large binary files (use Git LFS if needed)
+- Sensitive data
+
+**Merge conflicts:**
+- Communicate with affected developers
+- Understand both sides
+- Test thoroughly after resolution
+- Don't blindly pick one side
+- Commit resolution separately
+
+## Rebase vs Merge
+
+**Rebase:**
+- For feature branches before merging
+- Creates linear history
+- Easier to follow
+- Never rebase public/shared branches
+
+**Merge:**
+- For long-lived branches
+- Preserves complete history
+- Safer for shared work
+
+**Squash and merge:**
+- For feature branches to master
+- Combines commits into one
+- Keeps master history clean
+
+**Guidelines:**
+- Rebase feature on master before PR
+- Squash related commits within branch
+- Never force push to shared branches
+
+## Pull Requests
+
+**PR description:**
+- Clear title
+- What changed and why
+- Link to related issues
+- Breaking changes highlighted
+- Testing instructions
+- Screenshots for UI changes
+
+**Before creating:**
+- Self-review your changes
+- All tests pass locally
+- Documentation updated
+- Code formatted and linted
+- No debug code or TODOs
+- No sensitive information
+
+**PR size:**
+- Focused and reasonably sized
+- Split large changes
+- One logical change per PR
+
+**Draft PRs:**
+- Early feedback on approach
+- Mark ready when complete
+
+**Responding to feedback:**
+- Address all comments
+- Don't force push during review
+- Discuss and resolve conversations
+- Re-request review after changes
+
+**PR lifecycle:**
+- Keep updated with master
+- Monitor CI/CD status
+- Be responsive
+- Don't let PRs go stale
+
+## Code Review
+
+**What to review:**
+- Functionality correctness
+- Code quality and readability
+- Test coverage adequacy
+- Security and performance
+- Backward compatibility
+
+**Giving feedback:**
+- Be constructive and specific
+- Explain reasoning
+- Suggest alternatives
+- Appreciate good work
+- Focus on code, not person
+
+**Comment types:**
+- `nit:` - Minor, not blocking
+- `blocking:` - Must fix
+- `question:` - Need clarification
+- `suggestion:` - Optional
+- `praise:` - Acknowledge good work
+
+**Receiving feedback:**
+- Don't take personally
+- Fix blocking issues promptly
+- Discuss concerns respectfully
+- Implement or respond to all
+
+**Review timing:**
+- Within 1-2 business days
+- Prioritize urgent changes
+- Balance thoroughness with speed
+
+## Merge Requirements
+
+**Before merging:**
+- All tests pass
+- Code review approved
+- No merge conflicts
+- CI/CD checks green
+- Documentation updated
+- Linter passes
+- Branch up to date with master
+
+**After merge:**
+- Delete feature branch
+- Close related issues
+- Monitor deployment
+- Verify change works
+
+## Branch Management
+
+**Creating branches:**
+- Branch from master (or main if project uses it)
+- Descriptive names
+- Focused purpose
+- Push early
+
+**Protected branch policy:**
+- No direct commits to master (or main)
+- No direct commits to development branches (dev/develop)
+- Always require feature branches for changes
+- Always require PR for merging to protected branches
+
+**When user attempts work on protected branches:**
+1. Detect if current branch is master, main, dev, or develop
+2. Suggest creating appropriate feature branch based on change context
+3. Propose branch name following naming conventions
+4. Ask user for confirmation before creating branch
+5. Only create branch after user approval
+6. Never commit directly without explicit user override
+
+**Maintaining branches:**
+- Sync with master regularly
+- Keep CI green
+- Update with feedback
+
+**Cleanup:**
+- Delete after merge
+- Remove stale branches regularly
+- Archive important unmerged work
+
+## CI/CD Workflows
+
+**GitHub Actions workflows:**
+- Always include `workflow_dispatch` trigger in all workflows
+- Enables manual workflow execution
+- Required for autofix and debugging capabilities
+- Add alongside other triggers (push, pull_request, etc.)
+
+**Example workflow trigger configuration:**
+```yaml
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:  # Always include this
+```
+
+**Workflow best practices:**
+- Pin action versions (use commit SHA or tags)
+- Add timeout limits to prevent runaway jobs
+- Use secrets for credentials
+- Cache dependencies when possible
+- Fail fast on errors
+- Keep workflows focused and modular
+
+**Workflow testing:**
+- Test workflows in feature branches
+- Use workflow_dispatch for manual testing
+- Verify all paths and conditions
+- Test failure scenarios
+
+## Collaboration
+
+**Team communication:**
+- Keep team informed
+- Discuss architectural changes early
+- Ask for help when stuck
+- Share knowledge
+- Communicate breaking changes
+
+**Protect master branch:**
+- Enforce branch protection rules (see Branch Management section)
+- Require status checks
+- Require reviews
+- Prevent force push to master
+
+**Note:** Use "master" for new projects, "main" if project already uses it.
