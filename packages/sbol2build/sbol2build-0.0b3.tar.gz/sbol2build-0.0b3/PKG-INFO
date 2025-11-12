@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: sbol2build
+Version: 0.0b3
+Summary: SBOL2Build: python package for construction of SBOL objects during build planning
+Author-email: Gonzalo Vidal <gonzalo.vidalpena@colorado.edu>, Ryan Greer <ryan.greer@colorado.edu>
+Maintainer-email: Ryan Greer <ryan.greer@colorado.edu>
+Project-URL: Homepage, https://github.com/MyersResearchGroup/SBOL2Build
+Project-URL: Bug Tracker, https://github.com/MyersResearchGroup/SBOL2Build/issues
+Keywords: SBOL,genetic,automation,build,synthetic biology
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: sbol2
+Requires-Dist: biopython
+Requires-Dist: pydna
+Provides-Extra: test
+Requires-Dist: pytest<5.0.0; extra == "test"
+Requires-Dist: pytest-cov[all]; extra == "test"
+Dynamic: license-file
+
+# BuildPlanner
+SBOL2Build is a Python library for assisting in the planning, documentation, and distribution of DNA assembly plans using the Synthetic Biology Open Language 2.3 data standard.
+
+It was developed to support build functionality and workflows in [SynBioSuite](https://synbiosuite.org), based off the [SBOL Best Practices](https://github.com/SynBioDex/SBOL-examples/tree/main/SBOL/best-practices/BP011/).
+
+
+
+![PyPI - Version](https://img.shields.io/pypi/v/sbol2build)
+[![Documentation Status](https://readthedocs.org/projects/sbol2build/badge/?version=latest)](https://sbol2build.readthedocs.io/en/latest/?badge=latest)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sbol2build)
+![PyPI - License](https://img.shields.io/pypi/l/sbol2build)
+![gh-action badge](https://github.com/MyersResearchGroup/sbol2build/workflows/Python%20package/badge.svg)
+
+## Installing SBOL2Build: 
+```pip install sbol2build```
+
+## Documentation
+
+ Please visit the documentation with API reference and tutorials at Read the Docs: [sbol2build.rtfd.io](https://sbol2build.readthedocs.io)
+
+## Environment Setup
+
+If you are interested in contributing to **BuildPlanner**, please set up your local development environment with the same tools used in CI and linting.
+
+### 1. Install [uv](https://docs.astral.sh/uv/)
+
+`uv` manages all Python dependencies (including dev tools) with a lockfile for reproducibility.
+
+#### Linux/Bash
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+#### Mac OSX with Homebrew
+```bash
+brew install uv
+```
+### 2. Sync dependencies
+```bash
+uv sync --all-groups
+```
+This will create a virtual environment with the dependiencies. Activate using:
+```bash
+source .venv/bin/activate
+```
+
+### 3. Install pre-commit hooks
+We use pre-commit to automatically run the Ruff linter before every commit.
+Install and enable the hooks with:
+```bash
+uv run pre-commit install
+```
+
+
+#### Running tests:
+`uv run python -m unittest discover -s tests`
