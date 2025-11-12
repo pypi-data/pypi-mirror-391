@@ -1,0 +1,400 @@
+Metadata-Version: 2.4
+Name: verse-sdk
+Version: 0.2.0
+Summary: Verse Python SDK
+License: MIT
+License-File: LICENSE
+Requires-Python: >=3.12
+Requires-Dist: cuid2>=2.0.1
+Requires-Dist: opentelemetry-api>=1.34.1
+Requires-Dist: opentelemetry-exporter-otlp[logs]>=1.34.1
+Requires-Dist: opentelemetry-instrumentation-logging>=0.44.0
+Requires-Dist: opentelemetry-instrumentation>=0.44.0
+Requires-Dist: opentelemetry-sdk[logs]<1.35.0,>=1.34.1
+Requires-Dist: requests>=2.31.0
+Description-Content-Type: text/markdown
+
+# Verse Python SDK
+
+A Python SDK for observability and tracing in AI applications. Supports decorators and context managers with automatic instrumentation for popular LLM frameworks.
+
+## Installation
+
+```bash
+pip install verse-sdk
+```
+
+## Quick Start
+
+```python
+from verse_sdk import verse, observe
+
+# Initialize
+verse.init(
+    app_name="my-app",
+    exporters=[verse.exporters.console()],
+    vendor="pydantic_ai"  # Optional: auto-instrument LLM calls
+)
+
+# Option 1: Decorators (recommended)
+@observe()
+async def my_function(query: str):
+    result = await process_query(query)
+    return result
+
+# Option 2: Context managers
+async def my_function_v2(query: str):
+    with verse.trace("my_function") as trace:
+        trace.input(query)
+        with verse.span("process_query") as span:
+            result = await process_query(query)
+            span.output(result)
+        trace.output(result)
+    return result
+```
+
+## Table of Contents
+
+- [Initialization](#initialization)
+- [Exporters](#exporters)
+- [Decorators](#decorators)
+- [Context Managers](#context-managers)
+- [Context Methods](#context-methods)
+- [Integrations](#integrations)
+- [Examples](#examples)
+- [API Reference](#api-reference)
+
+## Initialization
+
+```python
+verse.init(
+    app_name="my-app",           # Required: identifies your project
+    environment="production",     # Optional: environment label
+    exporters=[...],             # Required: list of exporters
+    vendor="pydantic_ai",        # Optional: enables auto-instrumentation
+    version="1.0.0"              # Optional: app version
+)
+```
+
+## Exporters
+
+### Console
+```python
+verse.exporters.console()
+verse.exporters.console({"scopes": ["agent-workflow-1"]})  # With scope filtering
+```
+
+### Langfuse
+```python
+from verse_sdk import LangfuseConfig
+
+verse.exporters.langfuse(
+    LangfuseConfig(
+        host="https://cloud.langfuse.com",
+        public_key="pk-...",
+        private_key="sk-..."
+    )
+)
+
+# Or use environment variables: LANGFUSE_HOST, LANGFUSE_PUBLIC_KEY, LANGFUSE_PRIVATE_KEY
+verse.exporters.langfuse()
+```
+
+### OTEL
+```python
+from verse_sdk import OtelConfig
+
+verse.exporters.otel(
+    OtelConfig(host="http://localhost:4318")
+)
+```
+
+### Verse
+```python
+from verse_sdk import VerseConfig
+
+verse.exporters.verse(
+    VerseConfig(
+        api_key="your-api-key",
+        host="http://localhost:4318",
+        project_id="your-project-id"
+    )
+)
+
+# Or use environment variables: VERSE_API_KEY, VERSE_HOST, VERSE_PROJECT_ID
+verse.exporters.verse()
+```
+
+### Scope Filtering
+
+Route traces to specific exporters by scope:
+
+```python
+# Configure exporters with scopes
+verse.init(
+    app_name="my-app",
+    exporters=[
+        verse.exporters.console({"scopes": ["agent-a"]}),
+        verse.exporters.langfuse({"scopes": ["agent-b"]})
+    ]
+)
+
+# Set scope on traces
+@observe(type="trace", scope="agent-a")
+def my_function():
+    pass
+```
+
+## Decorators
+
+Decorators automatically capture inputs, outputs, and errors.
+
+### Available Decorators
+
+```python
+from verse_sdk import observe
+```
+
+### Basic Usage
+
+```python
+@observe(type="trace")
+async def answer_question(question: str):
+    context = await retrieve_context(question)
+    return await generate_answer(question, context)
+
+@observe(type="span")
+async def retrieve_context(question: str):
+    return await db.search(question)
+
+@observe(type="generation")
+async def generate_answer(question: str, context: str):
+    return await llm.complete(f"Context: {context}\nQ: {question}")
+
+@observe(type="tool")
+def search_database(query: str):
+    return db.search(query)
+```
+
+### Customization
+
+```python
+# Custom name
+@observe(name="custom_name")
+def my_function():
+    pass
+
+# Disable input/output capture
+@observe(capture_input=False, capture_output=False)
+def sensitive_llm_call():
+    pass
+
+# Add custom attributes
+@observe(level="debug", custom_attr="value")
+def detailed_operation():
+    pass
+```
+
+### Accessing Current Context
+
+```python
+from verse_sdk import get_current_trace_context, get_current_span_context
+
+@observe()
+def workflow():
+    trace_ctx = get_current_trace_context()
+    trace_ctx.user("user-123").session("session-456")
+    return process_data()
+
+@observe()
+def process_data():
+    span_ctx = get_current_span_context()
+    span_ctx.level("info").metadata({"step": "processing"})
+    return "result"
+```
+
+## Context Managers
+
+Context managers provide fine-grained control over when attributes are set.
+
+### Basic Usage
+
+```python
+def process_request(user_id: str, query: str):
+    with verse.trace("process_request") as trace:
+        trace.input({"user_id": user_id, "query": query})
+        trace.session(user_id).user(user_id)
+
+        with verse.span("validate") as span:
+            span.input(query).level("debug")
+            is_valid = validate(query)
+            span.output(is_valid)
+
+        if is_valid:
+            with verse.generation("llm_call") as gen:
+                gen.model("gpt-4").vendor("openai").input(query)
+                response = llm.complete(query)
+                gen.output(response).usage({
+                    "input_tokens": 150,
+                    "output_tokens": 50,
+                    "total_tokens": 200
+                })
+
+        trace.output(response)
+        return response
+```
+
+### Grouped Context Managers (Python 3.10+)
+
+```python
+with (
+    verse.trace("my_trace", session_id="user-123") as trace,
+    verse.span("my_span", level="info") as span,
+):
+    result = process()
+    span.output(result)
+    trace.output(result)
+```
+
+### Setting Attributes
+
+```python
+# Option 1: During initialization
+with verse.trace(name="my_trace", session_id="user-123", scope="agent-a"):
+    pass
+
+# Option 2: After initialization (chainable)
+with verse.trace("my_trace") as trace:
+    trace.session("user-123").scope("agent-a").tags(["production"])
+```
+
+## Context Methods
+
+### Common Methods (All Contexts)
+
+- `.input(data)` - Set input
+- `.output(data)` - Set output
+- `.metadata(dict)` - Add metadata
+- `.error(exception)` - Record error
+- `.score(dict)` - Add evaluation score
+- `.event(name, level, **attrs)` - Add event
+- `.set_attributes(**kwargs)` - Set custom attributes
+
+### TraceContext
+
+- `.session(session_id)` - Set session ID
+- `.user(user_id)` - Set user ID
+- `.scope(scope)` - Set scope for filtering
+- `.tags(list)` - Add tags
+
+### SpanContext
+
+- `.level(level)` - Set log level ("info", "debug", "warning")
+- `.operation(op)` - Set operation type ("tool", "db.query")
+- `.status_message(message)` - Set status message
+
+### GenerationContext
+
+Inherits SpanContext methods, plus:
+
+- `.model(model_name)` - Set model identifier
+- `.vendor(vendor)` - Set model vendor
+- `.usage(dict)` - Set token usage (`{"input_tokens": 150, "output_tokens": 50, "total_tokens": 200}`)
+- `.messages(list)` - Set message history
+
+## Integrations
+
+Enable auto-instrumentation by setting the `vendor` parameter:
+
+### Pydantic AI
+```python
+verse.init(app_name="my-app", vendor="pydantic_ai", exporters=[...])
+
+agent = Agent("openai:gpt-4")
+result = await agent.run("query")  # Automatically traced
+```
+
+### LiteLLM
+```python
+verse.init(app_name="my-app", vendor="litellm", exporters=[...])
+
+from litellm import completion
+response = completion(model="gpt-4", messages=[...])  # Automatically traced
+```
+
+### LangChain
+```python
+verse.init(app_name="my-app", vendor="langchain", exporters=[...])
+# Your LangChain code is automatically traced
+```
+
+## API Reference
+
+### Decorators
+
+**`@observe(name=None, type=str capture_input=True, capture_output=True, capture_metadata=True, observation_type=str, **attrs)`**
+
+Creates an observation.
+
+### Context Managers
+
+**`verse.trace(name, session_id=None, user_id=None, scope=None, tags=None, metadata=None, **attrs)`**
+
+Returns `TraceContext`
+
+**`verse.span(name, input=None, output=None, level=None, op=None, status_message=None, metadata=None, **attrs)`**
+
+Returns `SpanContext`
+
+**`verse.generation(name, model=None, vendor=None, input=None, output=None, messages=None, usage=None, **attrs)`**
+
+Returns `GenerationContext`
+
+### Helper Functions
+
+**`get_current_trace_context() -> TraceContext`**
+
+Get the current trace context from active span. Raises `ValueError` if unavailable.
+
+**`get_current_span_context() -> SpanContext`**
+
+Get the current span context from active span. Raises `ValueError` if unavailable.
+
+**`get_current_generation_context() -> GenerationContext`**
+
+Get the current generation context from active span. Raises `ValueError` if unavailable.
+
+### Data Formats
+
+**Usage:**
+```python
+{"input_tokens": 150, "output_tokens": 50, "total_tokens": 200}
+```
+
+**Score:**
+```python
+{"name": "quality", "value": 0.95, "comment": "Excellent"}
+```
+
+## Best Practices
+
+1. **Use decorators by default** - Cleaner code with automatic input/output capture
+2. **Use context managers for fine-grained control** - When you need dynamic names or conditional logic
+3. **Combine both approaches** - Decorators for functions, context managers within functions
+4. **Choose appropriate observation types**:
+   - **Trace**: Top-level workflows
+   - **Span**: Sub-operations, processing steps
+   - **Generation**: LLM API calls
+   - **Tool**: Function/tool calls in agent systems
+5. **Enable auto-instrumentation** - Set `vendor` parameter for supported frameworks
+6. **Use scope filtering** - Route traces to different exporters by scope
+
+## Shutdown
+
+```python
+verse.shutdown()  # Flush all traces before exit
+```
+
+## Support
+
+For issues and questions, please open an issue on GitHub.
