@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: artelib
+Version: 1.0.0
+Summary: A simple web framework inspired by Flask
+Home-page: https://github.com/yourusername/artelib
+Author: Artem057
+Author-email: Artem057 <justarockergame@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/artelib
+Project-URL: Bug Reports, https://github.com/yourusername/artelib/issues
+Project-URL: Source, https://github.com/yourusername/artelib
+Keywords: web,framework,flask-like,http
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.1
+Requires-Dist: pyttsx3>=2.90.0
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# ArteLib
+
+Current Version: 1
+
+Smart python lib
+
+## Inclusions
+
+### speak:
+
+Functions:
+
+say(text: str, speed: int = 180): text - required, speed - default 180
+
+It can speeak
+
+### web
+
+Functions:
+
+Web( __ name __)
+
+It can make website (with only localhost)
+
+## Installation
+
+```bash
+pip install artelib

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "artelib"
+dynamic = ["version"]
+description = "A simple web framework inspired by Flask"
+authors = [
+    {name = "Artem057", email = "justarockergame@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["web", "framework", "flask-like", "http"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "requests>=2.25.1",
+    "pyttsx3>=2.90.0"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/artelib"
+"Bug Reports" = "https://github.com/yourusername/artelib/issues"
+"Source" = "https://github.com/yourusername/artelib"
