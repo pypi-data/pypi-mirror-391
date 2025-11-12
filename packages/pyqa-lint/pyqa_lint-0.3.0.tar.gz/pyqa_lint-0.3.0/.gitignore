@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 Blackcat Informatics® Inc.
+# Aider artifacts
+.aider*
+.claude*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+pytest-report.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific
+chroma_db/
+*.log
+/stubs/
+
+# Local server configuration
+config.yaml
+.serena
+datasets/*
+scripts/pyreadstat_patch/pyreadstat_source
+.lint-cache
+
+# Tool caches
+/.ruff_cache/
+/.mypy_cache/
+/src/**/.ruff_cache/
+/src/**/.mypy_cache/
+cache-demo
