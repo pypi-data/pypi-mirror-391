@@ -1,0 +1,9 @@
+prefix=c:/
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: aubio
+Description: a library for audio labelling
+Version: 0.4.10
+Libs: -L${libdir} -laubio -lm D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/sndfile.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/FLAC.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/samplerate.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/rubberband.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/avcodec.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/avformat.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/avutil.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/swresample.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/vorbisenc.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/vorbis.lib D:/a/aubio-ledfx/aubio-ledfx/vcpkg_installed/x64-windows-release/lib/ogg.lib
+Cflags: -I${includedir}/aubio
