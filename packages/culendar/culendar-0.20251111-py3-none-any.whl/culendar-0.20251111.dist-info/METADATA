@@ -1,0 +1,74 @@
+Metadata-Version: 2.3
+Name: culendar
+Version: 0.20251111
+Summary: Culendar is a free/libre calendar application in python and curses.
+License: WTFPL
+Keywords: calendar,curses,console
+Author: Mit
+Author-email: culendar@miteux.net
+Maintainer: Mit
+Maintainer-email: culendar@miteux.net
+Requires-Python: >=3.9
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console :: Curses
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: License :: Other/Proprietary License
+Classifier: License :: Public Domain
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Dist: caldav (>=1.2.1)
+Requires-Dist: icalendar (>=5.0.4)
+Project-URL: Bug Tracker, https://framagit.org/mit/culendar/-/issues
+Project-URL: Homepage, https://framagit.org/mit/culendar
+Project-URL: Merge Requests, https://framagit.org/mit/culendar/-/merge_requests
+Project-URL: Repository, https://framagit.org/mit/culendar
+Description-Content-Type: text/markdown
+
+# Culendar
+Culendar is a [free/libre](LICENSE) calendar application in python and
+curses.
+
+## Features
+- Displays your events on a week, hour by hour
+- Displays a TODO list
+- Adds, deletes, edits, categorizes events
+- Colour themes for your categorized events
+- Imports from ICalendar format or from [calcurse](http://calcurse.org/)
+  files
+- Customizable
+- Displays webcals
+- Deals with caldavs
+
+## How to install
+- pip install culendar
+
+or
+
+- git clone https://framagit.org/mit/culendar
+- cd culendar
+- poetry install
+- poetry run culendar to run it
+
+## How to use
+- Run it. Default key "h" to get help, "c" to configure.
+
+## No warranties
+Culendar has been tested on Debian stable and old-stable,
+rxvt-unicode as a terminal and UTF-8 encoding only.
+It needs much more testing to be officially reliable.
+
+Don't hesitate to [report bugs](https://framagit.org/mit/culendar/-/issues) or [request features](https://framagit.org/mit/culendar/-/merge_requests).
+
+## Screenshots
+![culendar screenshot](screenshot0.png)
+
+## Chat:
+IRC: #culendar on irc.geeknode.org/6697
+
