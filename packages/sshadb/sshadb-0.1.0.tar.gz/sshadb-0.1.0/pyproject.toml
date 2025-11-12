@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sshadb"
+version = "0.1.0"
+description = "Run Android ADB over SSH on a remote host with a simple Python API"
+requires-python = ">=3.11"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+dependencies = [
+  "paramiko>=3.3,<4",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+]
+keywords = ["adb", "android", "ssh", "remote", "paramiko"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sshadb = ["py.typed"]
+
+[project.urls]
+Homepage = "https://github.com/dhkimxx/sshadb"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.4",
+  "pytest-cov>=4",
+  "python-dotenv>=1.0",
+]
+dev = [
+  "pytest>=7.4",
+  "pytest-cov>=4",
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "python-dotenv>=1.0",
+]
