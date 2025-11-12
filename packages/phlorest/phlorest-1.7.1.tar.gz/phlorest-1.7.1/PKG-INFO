@@ -1,0 +1,140 @@
+Metadata-Version: 2.1
+Name: phlorest
+Version: 1.7.1
+Summary: A cldfbench plugin to curate language phylogenies
+Home-page: https://github.com/phlorest/phlorest
+Author: Simon Greenhill and Robert Forkel
+Author-email: dlce.rdm@eva.mpg.de
+License: Apache 2.0
+Project-URL: Bug Tracker, https://github.com/phlorest/phlorest/issues
+Keywords: cldf
+Platform: any
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: Apache Software License
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: newick>=1.9
+Requires-Dist: commonnexus>=1.9
+Requires-Dist: cldfviz>=0.10
+Requires-Dist: pycldf>=1.33.0
+Requires-Dist: clldutils
+Requires-Dist: cldfbench>=1.10.0
+Requires-Dist: cldfcatalog
+Requires-Dist: attrs
+Requires-Dist: pyglottolog>=3.9.0
+Requires-Dist: termcolor
+Provides-Extra: dev
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pyglottolog; extra == "test"
+Requires-Dist: pytest>=5; extra == "test"
+Requires-Dist: pytest-mock; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: newick; extra == "test"
+Requires-Dist: numpy; extra == "test"
+
+# phlorest
+
+A [cldfbench](https://github.com/cldf/cldfbench) plugin to curate language phylogenies.
+
+
+## Install
+
+```shell
+pip install phlorest
+```
+
+
+## Usage
+
+### Bootstrapping a `phlorest`-curated dataset
+
+`phlorest` provides a `cldfbench` dataset template to create the skeleton of files and directories for a
+`phlorest`-curated dataset, to be run with [cldfbench new](https://github.com/cldf/cldfbench/#creating-a-skeleton-for-a-new-dataset-directory).
+
+Running
+
+```shell
+cldfbench new --template phlorest 
+```
+
+will create a dataset skeleton looking as follows
+```shell
+$ tree testtree/
+testtree/
+├── cldf
+│   └── README.md
+├── cldfbench_testtree.py
+├── etc
+│   ├── characters.csv
+│   └── taxa.csv
+├── metadata.json
+├── raw
+│   └── README.md
+├── setup.cfg
+├── setup.py
+└── test.py
+```
+
+
+### Implementing CLDF creation
+
+Implementing CLDF creation means - as for any other `cldfbench`-curated dataset - filling in the
+`cmd_makecldf` method of the `Dataset` subclass in `cldfbench_<id>.py`.
+
+The CLDF writer which can be accessed as `args.writer` within `cmd_makecldf` is an instance of
+`phlorest.CLDFWriter`, which has convenience methods to add summary- or posterior trees to the CLDF
+dataset. At least a summary is needed to make a dataset valid. Adding one looks as follows
+
+```python
+    args.writer.add_summary(
+        self.raw_dir.read_tree(...),
+        self.metadata,
+        args.log)
+```
+
+
+### Running CLDF creation
+
+With `cmd_makecldf` implemented, CLDF creation can be triggered running
+```shell
+cldfbench makecldf cldfbench_<id>.py
+```
+
+The resulting CLDF dataset can be validated running
+```shell
+pytest
+```
+
+
+### Release workflow
+
+```shell
+cldfbench makecldf --glottolog-version v5.2 --with-cldfreadme cldfbench_<id>.py
+pytest
+cldfbench zenodo --communities phlorest cldfbench_<id>.py
+cldfbench readme cldfbench_<id>.py
+phlorest check --with-R cldfbench_<id>.py
+git commit -a -m"release vX.Y"
+git push origin
+phlorest release cldfbench_<id>.py vX.Y
+```
+
+
+## Dependencies
+
+The `run_treeannotator` method of `Dataset` requires the `treeannotator` command from BEAST to be
+installed. For details on how to install `treeannotator` (and `BEAST`), see https://beast.community/index.html
