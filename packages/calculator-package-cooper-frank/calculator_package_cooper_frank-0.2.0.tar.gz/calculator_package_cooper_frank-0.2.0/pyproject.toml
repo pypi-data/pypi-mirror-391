@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculator_package_cooper_frank"
+version = "0.2.0"
+
+[project.scripts]
+calculator_package_cooper_frank = "calculator_package_cooper_frank.__main__:main"
