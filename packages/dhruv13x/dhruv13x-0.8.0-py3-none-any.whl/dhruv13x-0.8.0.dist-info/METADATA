@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: dhruv13x
+Version: 0.8.0
+Summary: Dhruv's complete meta tooling suite — installs all utilities in one package.
+Project-URL: Homepage, https://pypi.org/project/dhruv13x/
+Project-URL: Source, https://github.com/dhruv13x/dhruv13x
+Project-URL: Issues, https://github.com/dhruv13x/dhruv13x/issues
+Author-email: dhruv <dhruv13x@gmail.com>
+License: MIT © dhruv13x
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Build Tools
+Requires-Python: >=3.11
+Requires-Dist: autoheader
+Requires-Dist: create-dump
+Requires-Dist: duplifinder
+Requires-Dist: enterprise-docs
+Requires-Dist: import-surgeon
+Requires-Dist: importdoc
+Requires-Dist: projectclone
+Requires-Dist: projectrestore
+Requires-Dist: pyinitgen
+Requires-Dist: pypurge
+Requires-Dist: routine-workflow
+Provides-Extra: dev
+Requires-Dist: black>=24.3.0; extra == 'dev'
+Requires-Dist: coverage>=7.5.0; extra == 'dev'
+Requires-Dist: hypothesis>=6.100.0; extra == 'dev'
+Requires-Dist: mypy>=1.11.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: pytest-mock>=3.10.0; extra == 'dev'
+Requires-Dist: pytest-timeout>=2.3.0; extra == 'dev'
+Requires-Dist: pytest>=8.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.6.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# dhruv13x
+
+Meta-package for the Enterprise Automation Suite.
+
+This initial version (0.0.1) contains only package structure and 
+serves as the foundation for upcoming commands, integrations, and automation tooling.
