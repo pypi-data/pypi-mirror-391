@@ -1,0 +1,11 @@
+[console_scripts]
+pyqa = pyqa.cli:app
+
+[pyqa.catalog.plugins]
+pyqa_builtin_catalog = pyqa.plugins:noop_plugin
+
+[pyqa.cli.plugins]
+pyqa_builtin_cli = pyqa.plugins:noop_plugin
+
+[pyqa.diagnostics.plugins]
+pyqa_builtin_diagnostics = pyqa.plugins:noop_plugin
