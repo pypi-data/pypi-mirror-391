@@ -1,0 +1,51 @@
+Metadata-Version: 2.4
+Name: vestacrystparser
+Version: 0.2.0
+Summary: Parser for VESTA crystal structure visualisation files.
+Author-email: Bernard Field <bfield@lbl.gov>, Musa Hussein <mhussein@lbl.gov>
+Maintainer-email: Bernard Field <bfield@lbl.gov>
+License-Expression: MIT
+Project-URL: Repository, https://github.com/Griffin-Group/vestacrystparser
+Project-URL: Documentation, https://griffin-group.github.io/vestacrystparser/
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: File Formats
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: pymatgen
+Requires-Dist: pymatgen; extra == "pymatgen"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: autopep8; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: sphinx; extra == "dev"
+Requires-Dist: myst-parser; extra == "dev"
+Dynamic: license-file
+
+# vestacrystparser
+
+**vestacrystparser** is an unofficial general-purpose Python parser for
+[VESTA](https://jp-minerals.org/vesta/) crystal visualisation files.
+It provides a programmatic API for creating and modifying VESTA files.
+It is intended to enable batch-creating consistent visualisation states,
+removing the tedium of manually adjusting settings via the GUI.
+
+This project is functional, but feature-incomplete.
+High-level API for modifying specific parts of the file in specific ways are
+implemented as needed or requested.
+Pull requests adding more methods are welcome.
+However, the low-level API can cover all cases, albeit requiring more care.
+
+See the [documentation](https://griffin-group.github.io/vestacrystparser/)
+for instructions for installation and usage.
+
+**vestacrystparser** is made available under the MIT License (see `LICENSE`
+file).
