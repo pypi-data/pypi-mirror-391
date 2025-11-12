@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bytedocs-flask"
+version = "1.0.1"
+description = "Alternative to Swagger with better design, auto-detection, and AI integration"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+authors = [
+    {name = "ByteDocs Contributors"}
+]
+keywords = [
+    "flask",
+    "documentation",
+    "api",
+    "swagger",
+    "openapi",
+    "bytedocs",
+    "auto-documentation",
+    "api-doc",
+    "rest-api",
+    "python",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Flask",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+]
+dependencies = [
+    "flask>=2.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+ai = [
+    "openai>=2.0.0",
+    "google-generativeai>=0.8.0",
+    "anthropic>=0.70.0",
+]
+all = [
+    "openai>=2.0.0",
+    "google-generativeai>=0.8.0",
+    "anthropic>=0.70.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aibnuhibban/bytedocs-flask"
+"Bug Reports" = "https://github.com/aibnuhibban/bytedocs-flask/issues"
+Source = "https://github.com/aibnuhibban/bytedocs-flask"
+
+[tool.setuptools]
+packages = [
+    "bytedocs_flask",
+    "bytedocs_flask.ai",
+    "bytedocs_flask.ai.providers",
+    "bytedocs_flask.auth",
+    "bytedocs_flask.core",
+    "bytedocs_flask.parser",
+    "bytedocs_flask.ui",
+]
+
+[tool.setuptools.package-data]
+bytedocs_flask = [
+    "ui/templates/**/*",
+    "ui/templates/**/*.html",
+]
