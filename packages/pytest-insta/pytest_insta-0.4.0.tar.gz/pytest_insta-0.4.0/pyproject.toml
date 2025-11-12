@@ -1,0 +1,56 @@
+[project]
+name = "pytest-insta"
+version = "0.4.0"
+description = "A practical snapshot testing plugin for pytest"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Valentin Berlier", email = "berlier.v@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "pytest>=9.0.0",
+    "wrapt>=2.0.1",
+]
+
+keywords = [
+  "pytest-plugin",
+  "pytest",
+  "testing",
+  "snapshot",
+  "snapshot-testing"
+]
+
+classifiers = ["Framework :: Pytest"]
+
+[project.entry-points."pytest11"]
+insta = "pytest_insta.plugin"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "python-semantic-release==7.34.6",
+    "ruff>=0.14.4",
+]
+
+[tool.pytest.ini_options]
+addopts = "tests --import-mode=importlib"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "strict"
+
+[tool.semantic_release]
+branch = "main"
+version_variable = ["src/pytest_insta/__init__.py:__version__"]
+version_toml = "pyproject.toml:project.version"
+major_on_zero = false
+build_command = """
+    uv lock --upgrade-package "$PACKAGE_NAME"
+    git add uv.lock
+    uv build
+"""
