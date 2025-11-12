@@ -1,0 +1,178 @@
+Screen {
+  background: $surface;
+  layout: horizontal;
+  layers: behind below above;
+}
+
+Header {
+  background: $primary;
+  color: $text;
+  text-style: bold;
+}
+
+StatusBadge {
+    height: 3;
+    layout: horizontal;
+    border: gray;
+    padding: 0 2;
+    width: 100%;
+  }
+
+StatusBadge > Label {
+    margin: 0 1;
+}
+
+Footer {
+  background: $panel;
+}
+
+
+.loading {
+  color: $warning;
+  padding: 1;
+}
+
+#side-panel {
+    width: 34%;
+  }
+
+DevicesList {
+  border: gray;
+  max-height: 30%;
+  }
+
+DevicesList:focus-within {
+    border: solid $primary;
+}
+
+ExitNodesList {
+    border: gray;
+    height: 20%;
+  }
+
+ExitNodesList:focus-within {
+    border: solid $primary;
+}
+
+ExitNodeListItem {
+    padding: 0 1;
+    layout: horizontal;
+    height: auto;
+    color: $text;
+  }
+
+ExitNodeListItem:focus {
+  background: $secondary;
+  text-style: bold;
+}
+
+DeviceListItem {
+  height: auto;
+  background: $surface;
+  layout: horizontal;
+}
+
+DeviceListItem:focus {
+  background: $secondary;
+  text-style: bold;
+}
+
+DeviceListItem .device-name {
+  width: 4fr;
+  color: $text;
+ content-align: left middle;
+}
+
+DeviceListItem .device-detail {
+  color: $text-muted;
+}
+
+DeviceListItem .status-online {
+  color: $success;
+}
+
+DeviceListItem .status-offline {
+  color: $error;
+}
+
+LoadingIndicator {
+  width: 2;
+  color: $text;
+  content-align: left middle;
+  visibility: hidden;
+  }
+
+.item-loading{
+    background: red;
+  }
+
+.os-logo {
+  width: auto;
+  color: $text;
+  padding: 0 2;
+}
+.ssh-indicator {
+  width: 10;
+  color: $text;
+  padding: 0 2;
+}
+
+OnlineIndicator {
+  width: auto;
+  color: $text;
+  padding: 0 2;
+}
+
+.offline {
+    color: $text-warning;
+  }
+
+.online {
+    color: $success;
+  }
+
+#detail-container {
+  border: gray;
+  height: 100%;
+  }
+
+
+#notification-container {
+    width: 20%;
+    height: 90%;
+    dock: right;
+    layout: vertical;
+    layer: behind;
+    margin: 1;
+}
+
+Notification {
+    layer: above;
+    border: solid $primary;
+    padding: 1;
+    width: auto;
+    height: auto;
+    width: 100%;
+  }
+
+.success-notification {
+  border: $success;
+  color: $success;
+  }
+.error-notification {
+    color: $error;
+    border: $error;
+  }
+
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+Notification ProgressBar {
+    width: 100%;
+  }
+Notification ProgressBar Bar {
+    width: 100%;
+  }

@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: lazy-tailscale
+Version: 0.1.0
+Summary: A textual user interface for interacting with Tailscale.
+Author: Pascal Pfeiffer
+License-Expression: MIT
+Requires-Dist: aiohttp>=3.13.2
+Requires-Dist: click>=8.3.0
+Requires-Dist: pydantic>=2.12.3
+Requires-Dist: requests>=2.32.5
+Requires-Dist: textual>=6.5.0
+Requires-Python: >=3.14
+Description-Content-Type: text/markdown
+
+
+
+## Interface
+
+
+```python
+client = TailscaleClient(token="ABC", tailnet="my-tailnet")
+devices = client.list_devices()
+
+client = AsyncTailscaleClient(token="ABC", tailnet="my-tailnet")
+devices = await client.list_devices()
+
+
+## Development
+`source .env && uv run textual run --dev -c lazytailscale --port 7342`
+`uv run textual console --port 7342 -x SYSTEM -x DEBUG -x INFO`
+
+
+
+
+
+```
+```
+
+
+```
