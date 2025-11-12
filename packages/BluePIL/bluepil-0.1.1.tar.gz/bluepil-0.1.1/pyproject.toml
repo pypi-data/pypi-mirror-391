@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BluePIL"
+version = "0.1.1"
+description = "Automatic memory management for Pillow - take the blue pill"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "wanmanewan", email = "noreply.ewanm@gmail.com"}
+]
+dependencies = [
+    "Pillow>=8.0.0"
+]
+keywords = ["pillow", "PIL", "image", "memory", "cleanup"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics",
+]
+
+[project.urls]
+Homepage = "https://github.com/ewan-m/bluepil"
+Issues = "https://github.com/ewan-m/bluepil/issues"
+Repository = "https://github.com/ewan-m/bluepil"
+
+[tool.setuptools]
+packages = ["BluePIL"]
