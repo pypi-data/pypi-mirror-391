@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "livekit-plugins-induslabs"
+dynamic = ["version"]
+description = "Agent Framework plugin for services using IndusLabs API."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [{ name = "IndusLabs", email = "support@induslabs.io" }]
+keywords = ["webrtc", "realtime", "audio", "video", "livekit", "induslabs", "tts", "stt"]
+
+# Dependencies mirror those needed by the plugin implementation.  In addition
+# to LiveKit Agents itself, we require numpy for audio manipulation,
+# aiohttp for HTTP interactions, and webrtcvad for voice activity detection.
+dependencies = [
+  "livekit-agents[codecs] >= 1.2.15",
+  "numpy >= 1.26",
+  "aiohttp >= 3.9.0",
+  "webrtcvad >= 2.0.10",
+  "induslabs >= 0.0.4",
+]
+
+[project.urls]
+Documentation = "https://docs.induslabs.io"
+Website = "https://induslabs.io/"
+Source = "https://github.com/INDUS-AI-DEV/induslabs-livekit-plugins"
+
+[tool.hatch.version]
+path = "livekit/plugins/induslabs/version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["livekit"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/livekit", "/README.md"]

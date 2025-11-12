@@ -1,0 +1,129 @@
+# LiveKit IndusLabs Plugin
+
+Official LiveKit Agents plugin for IndusLabs Text-to-Speech (TTS) and Speech-to-Text (STT).
+
+## Installation
+
+```bash
+pip install livekit-plugins-induslabs
+```
+
+## Setup
+
+Get your API key from [induslabs.io](https://induslabs.io) and set it:
+
+```bash
+export INDUSLABS_API_KEY="your-api-key-here"
+export LIVEKIT_URL="ws://localhost:7880"
+export LIVEKIT_API_KEY="your-livekit-key"
+export LIVEKIT_API_SECRET="your-livekit-secret"
+```
+
+## Basic Agent
+
+```python
+from dotenv import load_dotenv
+from livekit import agents
+from livekit.agents import AgentSession, Agent
+from livekit.plugins import openai, silero
+from livekit.plugins.induslabs import TTS, STT
+
+load_dotenv()
+
+class VoiceAssistant(Agent):
+    def __init__(self):
+        super().__init__(
+            instructions="You are a helpful voice assistant."
+        )
+
+async def entrypoint(ctx: agents.JobContext):
+    session = AgentSession(
+        stt=STT(),
+        tts=TTS(voice="Indus-hi-Urvashi"),
+        llm=openai.LLM(model="gpt-4o-mini"),
+        vad=silero.VAD.load(),
+    )
+    
+    await session.start(room=ctx.room, agent=VoiceAssistant())
+    await session.generate_reply(
+        instructions="Greet the user warmly."
+    )
+
+if __name__ == "__main__":
+    agents.cli.run_app(agents.WorkerOptions(entrypoint_fnc=entrypoint))
+```
+
+Run with:
+```bash
+python agent.py dev
+```
+
+## TTS Usage
+
+```python
+from livekit.plugins.induslabs import TTS
+
+# Basic
+tts = TTS(voice="Indus-hi-Urvashi")
+
+# With options
+tts = TTS(
+    voice="Indus-hi-Urvashi",
+    sample_rate=24000,
+    speed=1.2,
+    pitch_shift=2.0,
+    loudness_db=3.0,
+)
+
+# Streaming
+stream = tts.stream()
+stream.push("Hello world")
+stream.flush()
+async for event in stream:
+    audio_frame = event.frame
+```
+
+### Available Voices
+- `Indus-hi-Urvashi` – Hindi, female
+- `Indus-en-Aarav` – English, male
+
+## STT Usage
+
+```python
+from livekit.plugins.induslabs import STT
+
+# Basic
+stt = STT()
+
+# With language
+stt = STT(language="hi")  # Hindi
+
+# Streaming
+stream = stt.stream(language="en")
+async for event in stream:
+    if event.type == SpeechEventType.FINAL_TRANSCRIPT:
+        print(event.alternatives[0].text)
+```
+
+## Configuration
+
+### TTS Options
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `voice` | `"Indus-hi-Urvashi"` | Voice ID |
+| `sample_rate` | 24000 | Audio sample rate |
+| `speed` | 1.0 | Playback speed |
+| `pitch_shift` | 0.0 | Pitch (semitones) |
+| `loudness_db` | 0.0 | Volume (dB) |
+
+### STT Options
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `sample_rate` | 16000 | Audio sample rate |
+| `language` | None | Language code (auto-detect) |
+
+## Support
+
+- 📧 support@induslabs.io
+- 🌐 [induslabs.io](https://induslabs.io)
+- 📚 [docs.induslabs.io](https://docs.induslabs.io)
