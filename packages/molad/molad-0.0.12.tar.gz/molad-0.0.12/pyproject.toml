@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[project]
+name = "molad"
+version = "0.0.12"
+authors = [
+  { name="Chaim Chaikin", email="molad@chaimchaikin.com" },
+]
+description = "Molad for Python"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "hdate >= 1.1.2",
+]
+[project.urls]
+"Homepage" = "https://github.com/chaimchaikin/molad"
+"Bug Tracker" = "https://github.com/chaimchaikin/molad/issues"
+[tool.pytest.ini_options]
+pythonpath = [
+   ".", "src",
+]
