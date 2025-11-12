@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: molecularprofiles
+Version: 3.0.0
+Summary: Meteorological data analysis suite
+Author-email: Pere Munar Adrover <pere.munar@uab.cat>, Markus Gaug <markus.gaug@uab.cat>, Scott Griffiths <sgriffiths@ifae.es>, Georgios Voutsinas <georgios.voutsinas@unige.ch>, Mykhailo Dalchenko <mykhailo.dalchenko@unige.ch>
+License: Copyright (c) 2020, Molecularprofiles Project
+        
+        Redistribution and use in source and binary forms, with or withoutmodification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+        THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+        IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+        (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+        HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Home, https://gitlab.cta-observatory.org/cta-array-elements/ccf/mdps
+Project-URL: Doc, http://cta-array-elements.gitlab-pages.cta-observatory.org/ccf/MDPs/
+Classifier: License :: OSI Approved :: BSD License
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: astropy
+Requires-Dist: pygrib
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: pylint>=2.15; extra == "test"
+Requires-Dist: black>=22.5; extra == "test"
+Requires-Dist: coverage-badge; extra == "test"
+Provides-Extra: doc
+Requires-Dist: sphinx; extra == "doc"
+Requires-Dist: numpydoc; extra == "doc"
+Requires-Dist: pydata-sphinx-theme; extra == "doc"
+Requires-Dist: myst-parser; extra == "doc"
+Requires-Dist: sphinx-paramlinks; extra == "doc"
+Requires-Dist: sphinx-argparse; extra == "doc"
+Requires-Dist: nbsphinx; extra == "doc"
+Requires-Dist: sphinx-design; extra == "doc"
+Requires-Dist: linkify-it-py; extra == "doc"
+Requires-Dist: ipykernel; extra == "doc"
+Provides-Extra: dev
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: setuptools_scm[toml]; extra == "dev"
+Provides-Extra: all
+Requires-Dist: molecularprofiles[dev,doc,test]; extra == "all"
+Dynamic: license-file
+
+# molecularprofiles
+
+A collection of routines to read an analyze meteorological data in `grib2` format.
+
+See [project documentation](http://cta-array-elements.gitlab-pages.cta-observatory.org/ccf/MDPs/) for API docs.
+
+## Development installation:
+
+- Clone the code with git:
+  ```shell
+  > git clone https://gitlab.cta-observatory.org/cta-array-elements/ccf/mdps.git
+  ```
+- Checkout an appropriate branch (currently, dev branch contains the most recent code):
+  ```shell
+  git checkout -b <branch_name>
+  ```
+- Use `mamba` to setup a clean environment
+  ```shell
+  > mamba create -n molecularprofiles -c conda-forge python==3.12
+  > mamba activate molecularprofiles
+  ```
+- Install molecularprofiles in editable mode with test dependencies:
+  ```shell
+  > pip install -e.[test,doc,dev]
+  ```
+- Don't forget to install a pre-commit hook:
+  ```shell
+  > pre-commit install
+  ```
