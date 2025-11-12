@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rl-softmax-policy"
+version = "0.1.0"
+description = "Softmax-based (Boltzmann) action selection strategy for Reinforcement Learning."
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Afi Prasla" }]
+keywords = ["reinforcement-learning", "softmax", "boltzmann", "policy", "rl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
