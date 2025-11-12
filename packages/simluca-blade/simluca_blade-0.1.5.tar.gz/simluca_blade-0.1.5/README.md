@@ -1,0 +1,159 @@
+# SimLUCA_Blade 🚀🧪
+
+A simulation framework for spatiotemporal biochemical reaction systems. It lets you:
+- Define reactions using a simple embedded reaction language with operator overloading.
+- Build a 2D radial-slice mesh of a rotationally symmetric container and compute diffusion geometries.
+- Automatically assemble RHS and sparse Jacobian (with numba JIT) for fast stiff ODE integration.
+- Visualize simulation results with animations.
+
+Units 📏⏱️:
+- Length: nm
+- Time: s
+- 3D interpretation: revolve the 2D (x, r)-slice around r=0 to form the container.
+
+# Features ✨
+- Reaction language ✍️:
+  - Group species with @, build reactions with >>, compose rates with + and *.
+  - Supports cytosolic (volume) species and membrane (surface) species.
+- Mesh and geometry 🧱:
+  - Border and interior node generation via Voronoi relaxation.
+  - Delaunay triangulation, neighbor adjacency, border adjacency.
+  - Geometric factors (areas/volumes) consistent with rotational symmetry.
+- Diffusion 🌊:
+  - Cytosolic diffusion on triangle mesh; membrane diffusion along border edges.
+  - Precomputed geometry factors; efficient vectorized/numba kernels.
+- Fast stiff ODE solving ⚙️:
+  - `solve_ivp` with sparse Jacobian and numba-compiled RHS/Jacobian assembly.
+- Visualization 🎥:
+  - Triangles colored by cytosolic species; border edges colored by membrane species.
+  - Optional mirrored view across r=0; log-scaled colorbars.
+
+# Installation 📦
+
+Requirements:
+- Python 3.9+ recommended
+- Dependencies: numpy, scipy, shapely, numba, matplotlib, tqdm
+
+Install deps:
+```bash
+mamba install numpy scipy shapely numba matplotlib tqdm
+```
+
+Install SimLUCA_Blade
+```bash
+pip install simluca-blade
+```
+
+Optional (for H.264 video export) 🎬:
+- ffmpeg (macOS: `brew install ffmpeg`, Ubuntu: `sudo apt-get install ffmpeg`)
+
+# Geometry and shape file 📐
+
+The container is defined by a 1D shape profile: each line i (starting at x=0) is the maximum radius r(x=i nm).
+- File format: plain text, one floating-point radius per line.
+- Resolution parameter (nm) controls density of border and interior nodes.
+
+Example generator (rod-like shape) — see test/shape_gen.py:
+```python
+# ...existing code (see test/shape_gen.py for a full example)...
+with open('test/shape.txt', 'w') as f:
+    # write radii line by line
+    # f.write(f"{r}\n")
+    ...
+```
+
+# Quickstart ⚡
+
+Minimal end-to-end script:
+```python
+from SimLUCA_Blade import CytSubs, MemSubs, ReactionSys, SolveSystem, MakeAnimation
+import numpy as np
+
+# 1) Define species (with diffusion coefficients in nm^2/s)
+Cyt_A = CytSubs("Cyt_A", diffusion_coeff=1.6e7)
+Cyt_B = CytSubs("Cyt_B", diffusion_coeff=1.6e7)
+Mem_M = MemSubs("Mem_M", diffusion_coeff=1e4)
+
+# 2) Build reaction system from a shape profile
+rs = ReactionSys(shape_file="test/shape.txt", resolution=30)
+
+# 3) Add reactions: use @ to group, >> to form reaction, +/* to build rate
+# Example: Cyt_A -> Mem_M with membrane-assisted term
+k_bind = 1e2
+k_assist = 1e7
+rs.AddReaction(Cyt_A >> Mem_M, (k_bind + k_assist * Mem_M) * Cyt_A)
+
+# Another example: Cyt_B production from Mem_M
+k_prod = 2.0
+rs.AddReaction(Mem_M >> Cyt_B, k_prod * Mem_M)
+
+# 4) Prepare (build mesh, precompute diffusion, compile plans)
+rs.Establish()
+
+# 5) Initial conditions (per-site sampler functions)
+rng = np.random.default_rng(0)
+Cyt_A.SetInitDistribution(rng.uniform, low=0.5, high=1.0)
+Cyt_B.SetInitDistribution(rng.uniform, low=0.0, high=0.2)
+Mem_M.SetInitDistribution(rng.uniform, low=50.0, high=100.0)
+
+# 6) Integrate
+sol = SolveSystem(rs, t_span=(0.0, 200.0), save_every=1.0, method="Radau", atol=1e-8, rtol=1e-4)
+
+# 7) Animate (mirror=True shows a symmetric view across r=0)
+MakeAnimation(rs, sol, tri_species=Cyt_A, bor_species=Mem_M, mirror=True, save_dir="out.mp4")
+```
+
+# Reaction language 🧩
+
+Species classes:
+- `CytSubs(name, diffusion_coeff=...)` — cytosolic (volume) species
+- `MemSubs(name, diffusion_coeff=...)` — membrane (surface) species
+
+Operators:
+- Group species: `A @ B` produces a group
+- Make a reaction: `A >> B` or `A @ B >> C @ D`
+- Rate expressions: build polynomials with numbers and species
+  - `k * A * B + c` means k·A·B + c (sets of variables multiply by union)
+  - Add reactions with: `ReactionSys.AddReaction(reaction, rate_expression)`
+
+Examples:
+```python
+A = CytSubs("A"); B = CytSubs("B"); C = MemSubs("C")
+rs.AddReaction(A @ B >> C, 1e6 * A * B)         # production on membrane
+rs.AddReaction(C >> A @ B, 0.5 * C + 1.0)           # linear + constant term
+```
+
+# API highlights 🛠️
+
+Core exports (from SimLUCA_Blade.__init__):
+- CytSubs, MemSubs — species types
+- ReactionSys — system builder and runtime
+  - `Establish(animation_dir=None)` builds mesh and compiles numba plans
+  - Properties: `N_Tri`, `N_Bor`, `CytOffset`, `MemOffset`, `NameToKindIndex`, etc.
+- SolveSystem(reaction_sys, t_span, ...) — integrates using `scipy.integrate.solve_ivp`
+  - Uses sparse Jacobian and numba-accelerated evaluation
+- MakeAnimation(reaction_sys, solution, tri_species, bor_species, mirror=False, save_dir=None, ...)
+  - Log-scaled color maps for both mesh and border; mirrored view optional
+
+Mesh and diffusion (from VolumeTessellation):
+- `Container(shape_file, resolution)` — builds border and interior nodes via Voronoi relaxation, Delaunay triangulation
+- `DiffusionProperties(trimesh)` — precomputes geometry-based factors:
+  - triangle-triangle and border-border diffusion factors
+  - triangle-to-membrane transfer coefficient
+
+# Performance notes 🚄
+- First run includes numba warm-up; subsequent calls are fast.
+- Stiff solvers (Radau/BDF) with Jacobian sparsity are recommended.
+- Smaller `resolution` increases mesh density and cost; tune to balance accuracy and speed.
+
+# Troubleshooting 🐛
+- ffmpeg not found or video save fails:
+  - Install ffmpeg, or omit `save_dir` to just show the animation. A Pillow fallback is attempted if ffmpeg fails.
+- Shapely/GEOS issues:
+  - Ensure `shapely` is installed and a compatible GEOS is available in your environment.
+
+# Example 📁
+A complete example is provided in `test/test.py`. It builds a MinDE system on a rod-shaped cell, runs the simulation, and saves an animation.
+
+# License 📜
+See repository for licensing information.
