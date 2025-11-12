@@ -1,0 +1,133 @@
+# brnltk
+
+**brnltk** is a Part-of-Speech (POS) tagging and dialect processing library for Bengali, supporting multiple regional dialects. It uses **LSTM-based deep learning models**, N-gram similarity, and rule-based stemming to provide accurate POS tagging, translation between Bengali dialects, tokenization, stemming, and sentence similarity checking.
+
+---
+
+## Features
+
+* **POS Tagging**
+  Train or load a POS tagging model for various Bengali dialects using LSTM with fallback mechanisms:
+
+  * Dictionary lookup
+  * Suffix-based normalization
+  * N-gram similarity
+
+* **Dialect Translation**
+  Translate Bengali sentences from one regional dialect to another using n-gram similarity between words.
+
+* **Tokenization**
+  Word-level and sentence-level tokenization for Bengali text.
+
+* **Stemming**
+  Light stemming of Bengali words using rule-based suffix removal.
+
+* **Sentence Similarity**
+  Compute similarity scores between Bengali sentences using n-gram-based overlap.
+
+---
+
+## Dialect Name Mapping
+
+The library follows this `AREA_MAPPING`:
+
+| Short Name   | Full Column Name         |
+| ------------ | ------------------------ |
+| Barishal     | Barishal_bangla_speech   |
+| Sylhet       | Sylhet_bangla_speech     |
+| Chittagong   | Chittagong_bangla_speech |
+| Mymensingh   | Mymensingh_bangla_speech |
+| Noakhali     | Noakhali_bangla_speech   |
+| General      | General                  |
+
+Example usage:
+
+```python
+from brnltk import translate
+
+translated = translate(
+    sentence="তুমি ভাত খাই",
+    from_area="General",
+    to_area="Chittagong"
+)
+Installation
+1. Clone the repository
+git clone https://github.com/ShakirHaque/brposNLTK.git
+cd brposNLTK
+
+2. Install locally
+pip install .
+
+3. Install dependencies
+pip install tensorflow pandas numpy requests
+
+
+Optional:
+
+pip install keras scikit-learn
+
+Usage Examples
+POS Tagging
+from brnltk import run_pos_tagger
+
+# Use the AREA_MAPPING keys directly
+predict_func, _, _ = run_pos_tagger(column_name='Mymensingh', train=True)
+sentence = "আমি শাকির"
+
+result = predict_func(sentence, return_confidence=True)
+for word, tag, conf in result:
+    print(f"{word:<15} --> {tag:<10} (confidence: {conf:.2f})")
+
+Dialect Translation
+from brnltk import translate
+
+original_sentence = "তুমি ভাত খাই"
+translated_sentence = translate(
+    sentence=original_sentence,
+    from_area="General",
+    to_area="Chittagong"
+)
+
+print("Original:", original_sentence)
+print("Translated:", translated_sentence)
+
+Tokenization
+from brnltk import word_tokenize
+
+text = "আমি ভাত খাই এবং কাজ করি।"
+tokens = word_tokenize(text)
+print("Tokens:", tokens)
+
+Stemming
+from brnltk import stem_sentence
+
+sentence = "ছেলেটি খেলাধুলা করছে"
+stemmed = stem_sentence(sentence)
+print("Stemmed:", stemmed)
+
+Sentence Similarity
+from brnltk import overall_similarity
+
+sentence1 = "আমি আজ স্কুলে যাই"
+sentence2 = "আমি স্কুলে যাচ্ছি আজ"
+score = overall_similarity(sentence1, sentence2)
+print(f"Similarity Score: {score:.2f}")
+
+Dataset Information
+
+The library relies on a curated dataset containing Bengali words in multiple dialects, including:
+
+General, English Translation, পদ (Google API), Updated Human, পদ (Human),
+Barishal_bangla_speech, Sylhet_bangla_speech, Chittagong_bangla_speech,
+Mymensingh_bangla_speech, Noakhali_bangla_speech
+
+
+Use the AREA_MAPPING keys directly for all functions.
+
+Contributing
+
+Contributions are welcome! Please create a pull request or open an issue for any feature requests or bug reports.
+
+License
+
+MIT License © 2025 Shakir
