@@ -1,0 +1,116 @@
+---
+tags: ["docker", "python", "environment"]
+---
+
+# Docker and Python Versions
+
+## Docker Compose
+
+### ВСЕГДА используй `docker compose` (v2)
+
+❌ **Don't**:
+```bash
+docker-compose up
+docker-compose down
+```
+
+✅ **Do**:
+```bash
+docker compose up
+docker compose down
+```
+
+**Почему**: Docker Compose v2 интегрирован в Docker CLI и является текущим стандартом.
+
+### В документации
+
+Всегда используй `docker compose` (два слова, через пробел):
+- README.md
+- Integration tests docs
+- GitHub Actions workflows
+- Makefile commands
+
+### В скриптах и командах
+
+```bash
+# Правильно
+docker compose up --build
+docker compose down -v
+docker compose run --rm service /bin/bash
+
+# Неправильно
+docker-compose up --build
+```
+
+## Python Versions
+
+### Supported Versions for Testing
+
+**Minimum**: Python 3.11
+**Maximum**: Python 3.13 (latest stable release as of 2025)
+
+**Test Matrix в GitHub Actions:**
+```yaml
+matrix:
+  python-version: ['3.11', '3.12', '3.13']
+```
+
+### Почему Python 3.11+
+
+- ✅ Modern features (faster, better typing)
+- ✅ Active support (3.8-3.10 близки к EOL)
+- ✅ Performance improvements
+- ✅ Better error messages
+
+### В документации указывать
+
+```
+Requirements:
+- Python >= 3.11
+- Tested on: Python 3.11, 3.12, 3.13
+```
+
+### pyproject.toml
+
+```toml
+[project]
+requires-python = ">=3.11"
+
+[tool.black]
+target-version = ['py311', 'py312', 'py313']
+
+[tool.mypy]
+python_version = "3.11"  # Minimum version for type checking
+```
+
+## GitHub Actions
+
+### Test Matrix
+
+```yaml
+strategy:
+  matrix:
+    python-version: ['3.11', '3.12', '3.13']
+```
+
+**НЕ включать**:
+- ❌ Python 3.8
+- ❌ Python 3.9
+- ❌ Python 3.10
+
+### Docker Integration Tests
+
+```yaml
+- name: Run integration tests
+  run: |
+    cd tests/integration
+    docker compose up --build --abort-on-container-exit
+```
+
+**НЕ использовать** `docker-compose`
+
+## См. также
+
+- [testing.md](testing.md) - Testing guidelines
+- [development.md](development.md) - Development workflow
+

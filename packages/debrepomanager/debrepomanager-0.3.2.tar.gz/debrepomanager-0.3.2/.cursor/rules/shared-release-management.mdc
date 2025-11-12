@@ -1,0 +1,260 @@
+---
+alwaysApply: true
+---
+# Release Management
+
+Version and release management practices.
+
+## Semantic Versioning
+
+Use semantic versioning for clear version communication.
+
+**Version format:** `MAJOR.MINOR.PATCH`
+
+**MAJOR version:**
+- Incompatible API changes
+- Breaking changes for users
+- Requires user action to upgrade
+- Major architectural changes
+
+**MINOR version:**
+- New functionality added
+- Backward compatible
+- New features or enhancements
+- No breaking changes
+
+**PATCH version:**
+- Backward compatible bug fixes
+- Security patches
+- Performance improvements
+- Documentation fixes
+
+**Pre-release versions:**
+- Alpha, beta, release candidate
+- Format: `1.0.0-alpha.1`, `1.0.0-beta.2`, `1.0.0-rc.1`
+- Testing and feedback before stable release
+- Clear expectations for stability
+
+**Version 0.x.y:**
+- Initial development phase
+- APIs may change frequently
+- Not yet stable
+- Move to 1.0.0 when API is stable
+
+## Version Tagging
+
+Tag releases in version control.
+
+**Git tags:**
+- Tag every release in git
+- Format: `v1.2.3` or `1.2.3` (be consistent)
+- Annotated tags with release notes
+- Never move or delete release tags
+- Tags mark specific commit as release
+
+**Tagging process:**
+- Tag after all release changes merged
+- Include changelog in tag annotation
+- Push tags to remote repository
+- Verify tag points to correct commit
+- Document tagging process
+
+**Tag organization:**
+- Clear naming convention
+- Chronological order visible
+- Easy to find specific versions
+- Support automation and tooling
+
+## Changelog Maintenance
+
+Keep comprehensive changelog for users and developers.
+
+**Changelog structure:**
+- Follow Keep a Changelog format
+- Organized by version (newest first)
+- Each version has release date
+- Unreleased section for upcoming changes
+- Link to version tags or releases
+
+**Change categories:**
+- **Added:** New features
+- **Changed:** Changes to existing functionality
+- **Deprecated:** Features to be removed
+- **Removed:** Removed features
+- **Fixed:** Bug fixes
+- **Security:** Security fixes and improvements
+
+**What to include:**
+- User-facing changes and new features
+- API changes and additions
+- Breaking changes (prominently)
+- Deprecations with timeline and migration path
+- Important bug fixes
+- Security fixes (carefully worded)
+
+**What to exclude:**
+- Internal refactorings
+- Minor code cleanups
+- Development tool changes
+- CI/CD updates
+- Changes not affecting users
+
+**Keep updated:**
+- Add to Unreleased section as changes are made
+- Move to versioned section on release
+- Review before each release
+- Link to detailed commit history or PRs
+
+## Release Notes
+
+Communicate releases effectively.
+
+**Release notes should include:**
+- Version number and release date
+- Summary of changes (highlights)
+- Link to full changelog
+- Breaking changes prominently
+- Migration guide for breaking changes
+- Known issues or limitations
+- Acknowledgments and contributors
+
+**Target audience:**
+- Users: what's new and what changed
+- Developers: API changes and migrations
+- Operators: deployment considerations
+- Different detail levels for different audiences
+
+**Distribution:**
+- Post on releases page
+- Announce to users (email, blog, etc.)
+- Social media for major releases
+- Internal team notification
+- Update documentation
+
+## Build Artifacts
+
+Manage build outputs and distribution.
+
+**Artifact versioning:**
+- Every build artifact has version
+- Version matches git tag
+- Include build metadata (commit hash, date)
+- Reproducible from version tag
+- Clear artifact naming convention
+
+**Artifact storage:**
+- Store release artifacts
+- Organized by version
+- Accessible for rollback
+- Retention policy for old versions
+- Secure storage for production artifacts
+
+**Artifact integrity:**
+- Checksums for verification
+- Signatures for authenticity (when needed)
+- Verify artifacts before deployment
+- Prevent tampering
+- Document verification process
+
+**Distribution:**
+- Multiple distribution channels as needed
+- Version-specific download links
+- Latest version clearly marked
+- Archive old versions
+- Fast and reliable distribution
+
+## Breaking Changes
+
+Handle breaking changes responsibly.
+
+**Before introducing breaking changes:**
+- Deprecate features first when possible
+- Provide migration path
+- Communicate early and clearly
+- Give users time to adapt
+- Major version bump
+
+**Deprecation process:**
+- Mark features as deprecated
+- Document deprecation in changelog
+- Provide timeline for removal
+- Suggest alternatives
+- Warning messages in code (if applicable)
+- At least one minor version before removal
+
+**Migration guides:**
+- Clear before/after examples
+- Step-by-step migration instructions
+- Common pitfalls and solutions
+- Timeline for migration
+- Support for users migrating
+
+**Communication:**
+- Announce breaking changes prominently
+- Email notifications for major users
+- Highlight in release notes
+- Update documentation
+- Provide support during transition
+
+## Release Schedule
+
+Plan and communicate release timing.
+
+**Release cadence:**
+- Regular schedule (weekly, monthly, quarterly)
+- Or as-needed for features/fixes
+- Balance predictability with flexibility
+- Communicate schedule to users
+- Time-based or feature-based releases
+
+**Release types:**
+- **Planned releases:** Regular scheduled releases
+- **Hotfix releases:** Urgent bug or security fixes
+- **Feature releases:** New functionality
+- **Patch releases:** Bug fixes only
+- Different processes for different types
+
+**Release preparation:**
+- Code freeze period
+- Final testing on release branch
+- Documentation updates
+- Changelog review and completion
+- Stakeholder notification
+- Rollback plan ready
+
+**Hotfix process:**
+- Fast-track for critical issues
+- Minimal changes, focused on fix
+- Test thoroughly despite urgency
+- Deploy to staging first when possible
+- Communicate to affected users immediately
+- Follow up with root cause analysis
+
+## Release Checklist
+
+Ensure quality and completeness before releasing.
+
+**Before release:**
+- All tests pass
+- Documentation updated
+- Changelog complete
+- Version number bumped
+- Git tag created
+- Build artifacts generated
+- Artifacts tested
+- Migration guides ready (if breaking changes)
+- Release notes written
+
+**During release:**
+- Deploy/distribute artifacts
+- Update version references
+- Announce release
+- Monitor for issues
+- Be available for urgent fixes
+
+**After release:**
+- Monitor error rates and metrics
+- Collect user feedback
+- Address issues promptly
+- Document lessons learned
+- Plan next release

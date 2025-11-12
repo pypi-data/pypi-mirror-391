@@ -1,0 +1,277 @@
+---
+alwaysApply: true
+---
+# Rules Management
+
+Guidelines for managing project-specific cursor rules.
+
+## Rule Precedence
+
+**Local rules always override shared rules.**
+
+When both local and shared rules address the same topic:
+- **Prefer local rules** - project-specific needs take priority
+- **Shared rules provide defaults** - universal guidelines when no local rule exists
+- **No merging** - local rule completely replaces shared rule for that topic
+- **Explicit overrides** - teams can customize without modifying shared rules
+
+This allows:
+- Project-specific exceptions and customizations
+- Gradual adoption of shared guidelines
+- Team autonomy in decision-making
+- Experimentation without affecting shared standards
+
+## Modifying Shared Rules
+
+**Never modify `shared-*.mdc` files directly in projects.**
+
+Shared rules are synced from central repository and should remain unchanged in projects:
+- **Modifications will be overwritten** - next sync will restore original versions
+- **Projects lose consistency** - local changes break uniformity across projects
+- **Sync conflicts** - modifications create confusion about rule source of truth
+
+**Instead of modifying shared rules:**
+- **Create local overrides** - use `local-*.mdc` files to customize or replace shared rules
+- **Local rules take precedence** - completely override shared rules for same topic
+- **Preserve sync ability** - projects can receive shared rule updates without conflicts
+
+**If shared rule needs improvement:**
+- **Update in source workspace** - modify shared rule in central `.cursor/` repository
+- **Re-sync to projects** - use `sync-shared-rules` command to distribute updates
+- **Consistent improvements** - all projects benefit from enhanced shared rules
+
+This approach maintains clean separation between universal standards and project-specific needs.
+
+## Naming Convention
+
+Use `local-` prefix for project-specific rules to distinguish from `shared-` rules synced from the shared repository.
+
+**Project architecture determines naming pattern:**
+- **Multi-platform projects** (embedded, cross-platform): `local-platform-{name}.mdc` or `local-platform-{name}-{aspect}.mdc`
+- **Multi-module projects** (web services, apps): `local-{aspect}-{module}.mdc`
+- **Cross-cutting rules** (any project): `local-{topic}.mdc`
+
+**Multi-platform examples:**
+- `local-platform-esp32.mdc` - ESP32 platform rules
+- `local-platform-esp32-testing.mdc` - ESP32 testing specifics
+- `local-platform-stm32-build.mdc` - STM32 build configuration
+
+**Multi-module examples:**
+- `local-testing-backend.mdc` - Backend testing conventions
+- `local-api-backend.mdc` - Backend API design
+- `local-deployment-frontend.mdc` - Frontend deployment
+
+**Cross-cutting examples:**
+- `local-architecture.mdc` - Project architecture decisions
+- `local-database.mdc` - Database schema and conventions
+
+Choose naming pattern and depth based on project architecture and complexity.
+
+## Naming Consistency
+
+Local rule names should mirror shared rule topics when extending them for consistency.
+
+**Multi-platform projects (platform-first):**
+- `shared-testing-standards.mdc` → `local-platform-esp32-testing.mdc`
+- `shared-security-practices.mdc` → `local-platform-esp32-security.mdc`
+- `shared-code-quality.mdc` → `local-platform-stm32-code-quality.mdc`
+
+**Multi-module projects (aspect-first):**
+- `shared-code-quality.mdc` → `local-code-quality-backend.mdc`
+- `shared-testing-standards.mdc` → `local-testing-frontend.mdc`
+- `shared-security-practices.mdc` → `local-security-backend.mdc`
+- `shared-api-design.mdc` → `local-api-backend.mdc`
+
+**Cross-cutting project rules:**
+- `local-architecture.mdc` - Project architecture decisions
+- `local-deployment.mdc` - Deployment procedures
+- `local-database.mdc` - Database schema and conventions
+
+## When to Create Project Rules
+
+Create project-specific rules when:
+- Tech stack is chosen and patterns emerge
+- Framework-specific conventions need documentation
+- Language-specific style guides exist
+- Platform-specific practices develop
+- Project architecture decisions are made
+- Architecture evolves (refactoring, new modules, migration)
+- Adding rules to existing project (use `init-cursor-rules` command to analyze and generate)
+
+Project rules can be language/framework-specific (unlike shared rules which are universal).
+
+## Service-Specific Rules
+
+Shared rules are universal and framework-agnostic. For project-specific needs, create local rules.
+
+**Examples of service-specific topics (create only what you need):**
+- API design patterns (web services)
+- Cloud deployment strategies (cloud services)
+- Hardware abstraction layers (embedded systems)
+- Platform-specific guidelines (mobile apps, embedded platforms)
+- Observability and monitoring setup (production services)
+
+**Naming patterns by project type:**
+
+Multi-platform (embedded):
+- `local-platform-esp32-hardware.mdc` - Hardware abstraction
+- `local-platform-esp32-deployment.mdc` - Flashing and deployment
+
+Multi-module (web/services):
+- `local-api-backend.mdc` - Backend API design
+- `local-deployment-backend.mdc` - Backend deployment
+- `local-monitoring-backend.mdc` - Backend observability
+
+Cross-cutting:
+- `local-api-design.mdc` - General API design patterns
+- `local-deployment.mdc` - General deployment strategy
+
+**Pattern:**
+1. Identify project-specific need
+2. Choose appropriate naming pattern for your project type
+3. Keep focused (50-150 lines, max 300)
+4. Build on shared rule principles
+
+Projects decide structure depth based on complexity and requirements.
+
+## File Organization
+
+Organize rules by domain:
+- One rule file per domain/category
+- Use descriptive names with `local-` prefix
+- Keep each file focused on single concern
+
+## Multi-Module Projects
+
+For projects with multiple modules, platforms, or components, choose the appropriate naming pattern.
+
+### Multi-Platform Projects (Embedded, Cross-Platform)
+
+Platform is the primary architectural concern. Use platform-first naming:
+
+**Pattern:** `local-platform-{name}.mdc` or `local-platform-{name}-{aspect}.mdc`
+
+**Examples:**
+- `local-platform-esp32.mdc` - General ESP32 platform rules
+- `local-platform-esp32-testing.mdc` - ESP32 testing specifics
+- `local-platform-stm32-build.mdc` - STM32 build configuration
+- `local-platform-rpi-deployment.mdc` - Raspberry Pi deployment
+
+**Why platform-first?** Platforms are fundamentally different (chips, SDKs, toolchains). All platform aspects grouped together.
+
+### Multi-Module Projects (Web, Services, Apps)
+
+Cross-cutting concerns span modules. Use aspect-first naming:
+
+**Pattern:** `local-{aspect}-{module}.mdc`
+
+**Examples:**
+- `local-testing-backend.mdc` - Backend testing conventions
+- `local-testing-frontend.mdc` - Frontend testing conventions
+- `local-api-backend.mdc` - Backend API design
+- `local-deployment-frontend.mdc` - Frontend deployment
+- `local-security-backend.mdc` - Backend security practices
+
+**Why aspect-first?** Modules share architectural patterns (REST, GraphQL, auth). All testing, all API design, all security grouped together.
+
+### Choosing the Right Pattern
+
+- **Platform-centric project** (ESP32 + STM32 + RPi) → Use `local-platform-{name}-{aspect}.mdc`
+- **Service-centric project** (Backend + Frontend + Mobile) → Use `local-{aspect}-{module}.mdc`
+- **Hybrid project** → Use both patterns as appropriate
+
+Use globs in frontmatter to target files based on YOUR project structure.
+
+## File Length
+
+Target file length:
+- **Target**: 50-150 lines
+- **Maximum**: 300 lines when content demands
+- Keep rules focused and easy to read
+- One rule file per domain/category
+- Quality and completeness over strict limits
+- Comprehensive lifecycle files may need extra length
+
+## Tags and Globs
+
+Use tags and globs to apply rules to specific files.
+
+**Tags for categorization:**
+```yaml
+---
+tags: ["python", "backend"]
+---
+```
+
+**Globs for file targeting:**
+
+Define globs based on your project's file organization:
+- By file type: `["**/*.c", "**/*.h"]`
+- By module directory: `["module-name/**/*"]`
+- Multiple patterns: `["dir1/**/*.py", "dir2/**/*.py"]`
+- Exclude tests: `["src/**/*.ts", "!**/*.test.ts"]`
+
+Test globs against your actual files to ensure they match intended targets.
+
+**Example frontmatter:**
+```yaml
+---
+tags: ["python", "backend"]
+globs: ["api/**/*.py", "services/**/*.py"]
+---
+```
+
+## Maintenance
+
+Keep project rules up to date:
+- Update rules when tech stack evolves
+- Review rules when adding new modules/platforms
+- Archive rules when modules are deprecated or removed
+- Review quarterly for relevance
+- Remove obsolete rules that no longer apply
+
+Active maintenance ensures rules remain useful and accurate.
+
+## .cursor/ Folder Scope
+
+**One `.cursor/` folder per git repository.**
+
+### Valid Configurations
+
+✅ **Each git repository has its own `.cursor/` folder:**
+- Main repository: `.cursor/`
+- Git submodule A: `submodules/lib-a/.cursor/`
+- Git submodule B: `submodules/lib-b/.cursor/`
+
+Each is independent because each is a separate git repository.
+
+### Invalid Configurations
+
+❌ **Multiple `.cursor/` folders in same git repository:**
+```
+my-project/              # One git repo
+  .cursor/               # Root rules
+  backend/.cursor/       # ⚠️ Same repo - shouldn't exist
+  frontend/.cursor/      # ⚠️ Same repo - shouldn't exist
+```
+
+**Problems:**
+- Cursor IDE behavior unclear (which rules apply?)
+- Rule precedence unpredictable
+- Maintenance complexity
+- Indicates misunderstanding of `.cursor/` purpose
+
+### Proper Solutions
+
+Instead of nested `.cursor/` folders in same repo, use:
+- **Glob patterns** - target specific subdirectories: `globs: ["backend/**/*.py"]`
+- **Module-specific rules** - `local-backend.mdc`, `local-frontend.mdc` files
+- **Tags** - categorize and organize rules within single `.cursor/rules/`
+
+### If You Find Nested Folders
+
+If you discover nested `.cursor/` folders in same repository:
+1. **Determine if valid** - check if subdirectory is actually a git submodule
+2. **If submodule** - keep it (separate project, independent management)
+3. **If same repo** - consolidate into root `.cursor/` with globs/tags
+4. **Use sync-shared-rules per repo** - sync each git repository's `.cursor/` independently
