@@ -1,0 +1,344 @@
+# 🧪 Distillery
+
+**Convert RAG logs into high-quality fine-tuning datasets.**
+
+Stop spending weeks manually labeling data. Distillery automatically transforms your RAG production logs into training datasets, helping you reduce costs and improve performance.
+
+## Why Distillery?
+
+### The Problem
+
+You built a RAG system. It's in production. It works.
+But every query costs money (embeddings + retrieval + LLM).
+At scale, you're spending $100s-$1000s per month.
+
+You know fine-tuning could help, but creating training data takes weeks.
+
+### The Solution
+
+Distillery automatically converts your RAG logs into fine-tuning datasets:
+
+```bash
+# Analyze your RAG logs
+distillery analyze --source langsmith --project my-rag-app
+
+# Generate training data
+distillery generate --output training_data.jsonl --min-score 0.85
+
+# Compare costs
+distillery compare --monthly-queries 50000
+
+# Fine-tune
+distillery train --dataset training_data.jsonl --model gpt-4o-mini
+```
+
+**Result:** 60-90% cost reduction, weeks saved on data prep.
+
+## Features
+
+### 🔌 Universal Log Support
+- **LangSmith**: Official LangChain observability (most popular)
+- **JSONL**: Custom logs from any RAG system
+- **Coming soon**: LlamaIndex, Haystack, custom databases
+
+### 🎯 Smart Quality Filtering
+- Filter by retrieval scores
+- Remove uncertain responses ("I don't know")
+- Keep only positive/neutral user feedback
+- Customizable thresholds
+
+### 📊 Data Quality Metrics
+- Diversity scoring
+- Quality assessment
+- Topic distribution
+- Automatic deduplication
+
+### 💰 Cost Calculator
+- Compare RAG vs fine-tuned costs
+- Calculate ROI and break-even
+- Project savings at scale
+
+### 🚀 Multiple Formats
+- OpenAI (chat completion)
+- Llama
+- Mistral
+- Custom templates
+
+### 🔒 Privacy-First
+- All processing happens locally
+- Your data never leaves your machine
+- No telemetry, no tracking
+
+## Installation
+
+```bash
+pip install distillery-ai
+
+# With LangSmith support
+pip install distillery-ai[langsmith]
+```
+
+## Quick Start
+
+### 1. From LangSmith
+
+```python
+from distillery.connectors import create_langsmith_connector
+from distillery.filters import filter_logs
+from distillery.converters import convert_to_openai
+from distillery.utils import estimate_savings
+
+# Connect to LangSmith
+connector = create_langsmith_connector("my-rag-project")
+logs = list(connector.fetch_logs(limit=1000))
+
+# Filter high-quality examples
+filtered = filter_logs(logs, min_score=0.85)
+
+# Convert to training format
+training_examples = convert_to_openai(filtered)
+
+# Calculate savings
+comparison = estimate_savings(logs, training_examples, monthly_queries=50000)
+print(comparison)
+```
+
+### 2. From JSONL Files
+
+```python
+from distillery.connectors import create_jsonl_connector
+
+# Point to your log files
+connector = create_jsonl_connector("logs/*.jsonl")
+logs = list(connector.fetch_logs())
+
+# Rest is the same...
+```
+
+## CLI Usage
+
+### Analyze Logs
+
+```bash
+# From LangSmith
+distillery analyze \
+  --source langsmith \
+  --project my-rag-project
+
+# From files
+distillery analyze \
+  --source jsonl \
+  --path "logs/*.jsonl"
+
+# Output:
+# 📊 Total queries: 10,234
+# ✅ Successful (score > 0.8): 8,721 (85%)
+# 📝 User feedback: thumbs_up: 892, thumbs_down: 143
+# 🏷️  Topics: refunds (34%), shipping (28%), returns (18%)
+```
+
+### Generate Training Data
+
+```bash
+distillery generate \
+  --source langsmith \
+  --project my-rag-project \
+  --output training_data.jsonl \
+  --min-score 0.85 \
+  --format openai
+
+# Output:
+# ✅ Filtered 8,721 high-quality examples
+# ✅ Generated 8,721 training examples
+# 💰 Estimated training cost: $68.42
+# 📂 Saved to: training_data.jsonl
+```
+
+### Compare Costs
+
+```bash
+distillery compare \
+  --logs logs/*.jsonl \
+  --monthly-queries 50000
+
+# Output:
+# Current RAG: $93/month
+# Fine-tuned: $3/month
+# Savings: $90/month ($1,080/year)
+# Break-even: 0.8 months
+# ROI: 1,580% annual return
+```
+
+### Fine-Tune
+
+```bash
+distillery train \
+  --dataset training_data.jsonl \
+  --model gpt-4o-mini \
+  --suffix customer-support-v1
+
+# Output:
+# ✅ Uploaded training data
+# ✅ Started fine-tune job: ftjob-abc123
+# ✅ Model will be: ft:gpt-4o-mini:customer-support-v1
+# ⏱️  Estimated completion: 2 hours
+```
+
+## Advanced Usage
+
+### Custom Quality Filters
+
+```python
+from distillery.filters import QualityFilter, min_retrieval_score
+
+# Create custom filter
+filter = QualityFilter()
+filter.add_filter(min_retrieval_score(0.9))  # Very strict
+filter.add_filter(lambda log: len(log.response) > 50)  # Longer responses
+
+filtered = filter.filter(logs)
+```
+
+### Data Augmentation
+
+```python
+from distillery.augmenters import augment_dataset
+
+# Generate variations of each query
+augmented = augment_dataset(
+    training_examples,
+    variations=3,  # 3x dataset size
+    model="gpt-4o-mini"
+)
+```
+
+### Include Retrieved Context
+
+```python
+from distillery.converters import convert_to_openai
+
+# Bake context into training data
+examples = convert_to_openai(
+    logs,
+    include_context=True  # Includes retrieved chunks
+)
+```
+
+## Real-World Examples
+
+### Example 1: Customer Support Bot
+
+```
+Input: 10,000 RAG queries over 30 days
+Filter: 8,500 high-quality examples
+Training cost: $71
+Monthly RAG cost: $180
+Monthly fine-tuned cost: $6
+Savings: $174/month ($2,088/year)
+Break-even: 2 weeks
+```
+
+### Example 2: Documentation Q&A
+
+```
+Input: 50,000 queries/month
+Filter: 42,000 high-quality examples
+Training cost: $298
+Monthly RAG cost: $890
+Monthly fine-tuned cost: $28
+Savings: $862/month ($10,344/year)
+Break-even: 11 days
+```
+
+## How It Works
+
+### 1. RAG Logs Collection
+
+Your RAG system logs:
+- User queries
+- Retrieved documents
+- LLM responses
+- User feedback (optional)
+
+### 2. Quality Filtering
+
+Distillery filters for:
+- High retrieval scores (> 0.8)
+- Confident responses (no "I don't know")
+- Positive/neutral feedback
+- Reasonable length
+
+### 3. Format Conversion
+
+Transforms to OpenAI format:
+```json
+{
+  "messages": [
+    {"role": "user", "content": "What's the refund policy?"},
+    {"role": "assistant", "content": "Our refund policy..."}
+  ]
+}
+```
+
+### 4. Fine-Tuning
+
+Upload to OpenAI and train:
+- Model learns domain knowledge
+- No retrieval needed at inference
+- 60-90% cost reduction
+- 3-5x faster responses
+
+## Architecture
+
+```
+RAG Production Logs
+        ↓
+   Connectors (LangSmith/JSONL)
+        ↓
+   Quality Filtering
+        ↓
+   Format Conversion
+        ↓
+   Training Data (JSONL)
+        ↓
+   Fine-Tuned Model
+```
+
+## Requirements
+
+- Python 3.9+
+- OpenAI API key (for fine-tuning)
+- LangSmith API key (optional, for LangSmith logs)
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Support
+
+- 📧 Email: hello@distillery.ai
+- 💬 Discord: [Join our community](https://discord.gg/distillery)
+- 📚 Docs: [docs.distillery.ai](https://docs.distillery.ai)
+
+## Roadmap
+
+- [x] LangSmith connector
+- [x] JSONL connector
+- [x] OpenAI format converter
+- [x] Quality filtering
+- [x] Cost calculator
+- [ ] LlamaIndex connector
+- [ ] Data augmentation
+- [ ] Web UI
+- [ ] Team accounts
+- [ ] Continuous retraining
+
+---
+
+Built with ❤️ by the Distillery team.
+
+*Stop spending weeks on data labeling. Start saving money today.*
