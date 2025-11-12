@@ -1,0 +1,22 @@
+# Include documentation files
+include README.md
+include LICENSE
+include requirements.txt
+
+# Include package data (images, configs, etc.)
+recursive-include sheep_herding_rl/images *.png *.jpg *.jpeg
+recursive-include sheep_herding_rl *.py
+recursive-include sheep_herding_rl *.yaml *.yml *.json
+
+# Include YAML and JSON config files
+recursive-include * *.yaml
+recursive-include * *.yml
+recursive-include * *.json
+
+# Exclude compiled Python files and cache
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+
+# Exclude images if they're large (optional)
+# recursive-exclude images *
