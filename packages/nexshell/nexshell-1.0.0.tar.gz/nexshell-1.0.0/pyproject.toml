@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nexshell"
+version = "1.0.0"
+description = "A beautiful and feature-rich AI-powered CLI chatbot using Google Gemini"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "NexShell Team", email = "contact@nexshell.dev"}
+]
+keywords = ["chatbot", "ai", "gemini", "cli", "assistant", "terminal", "conversational-ai"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Communications :: Chat",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "google-generativeai>=0.3.0",
+    "python-dotenv>=1.0.0",
+    "colorama>=0.4.6",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/nexshell"
+Documentation = "https://github.com/yourusername/nexshell#readme"
+Repository = "https://github.com/yourusername/nexshell"
+Issues = "https://github.com/yourusername/nexshell/issues"
+
+[project.scripts]
+nexshell = "nexshell.cli:main"

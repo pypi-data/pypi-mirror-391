@@ -1,0 +1,252 @@
+Metadata-Version: 2.4
+Name: nexshell
+Version: 1.0.0
+Summary: A beautiful and feature-rich AI-powered CLI chatbot using Google Gemini
+Home-page: https://github.com/yourusername/nexshell
+Author: NexShell Team
+Author-email: NexShell Team <contact@nexshell.dev>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/nexshell
+Project-URL: Documentation, https://github.com/yourusername/nexshell#readme
+Project-URL: Repository, https://github.com/yourusername/nexshell
+Project-URL: Issues, https://github.com/yourusername/nexshell/issues
+Keywords: chatbot,ai,gemini,cli,assistant,terminal,conversational-ai
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Topic :: Communications :: Chat
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: google-generativeai>=0.3.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: colorama>=0.4.6
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# 🤖 NexShell - AI-Powered CLI Chatbot
+
+[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Google%20Gemini-4285F4.svg)](https://ai.google.dev/)
+
+A beautiful, feature-rich, and intelligent AI-powered CLI chatbot using Google Gemini 2.5 Flash.
+
+![NexShell Demo](https://via.placeholder.com/800x400.png?text=NexShell+Demo)
+
+## ✨ Features
+
+### 🎨 **Beautiful Interface**
+- Colorful and animated terminal UI
+- Smooth loading animations
+- Typing effect for bot responses
+- Color-coded syntax highlighting
+
+### 🤖 **Multi-Mode AI System**
+- **Normal Mode** - Balanced responses for general chat
+- **Code Mode** - Expert programming assistance
+- **Creative Mode** - Artistic and imaginative responses
+- **Concise Mode** - Brief, to-the-point answers
+
+### 💻 **System Integration**
+- Execute system commands directly from chat
+- View real-time session statistics
+- Auto-save conversations to files
+- Cross-platform support (Windows, Linux, Mac)
+
+### 🚀 **Advanced Features**
+- Context-aware conversations
+- Chat history management
+- Word and message counting
+- Session duration tracking
+- Comprehensive help system
+
+## 📦 Installation
+
+### Quick Install
+
+```bash
+pip install nexshell
+```
+
+### From Source
+
+```bash
+git clone https://github.com/yourusername/nexshell.git
+cd nexshell
+pip install -e .
+```
+
+For detailed installation instructions, see [INSTALL.md](INSTALL.md)
+
+## 🔑 Setup
+
+1. **Get your Gemini API key** from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+2. **Set your API key:**
+
+   ```bash
+   # Windows PowerShell
+   $env:GEMINI_API_KEY = "your_api_key_here"
+   
+   # Linux/Mac
+   export GEMINI_API_KEY="your_api_key_here"
+   ```
+
+3. **Run NexShell:**
+
+   ```bash
+   nexshell
+   ```
+
+## 🎮 Usage
+
+### Quick Start
+
+```bash
+nexshell
+```
+
+### 💡 Commands
+
+| Command | Description |
+|---------|-------------|
+| `/mode [type]` | Switch AI mode (normal/code/creative/concise) |
+| `/cmd [command]` | Execute system commands |
+| `/save` | Export conversation to file |
+| `/stats` | View session statistics |
+| `/history` | Show conversation summary |
+| `/clear` | Clear conversation history |
+| `/help` | Display help information |
+| `/exit` or `/quit` | Exit NexShell |
+
+### � AI Modes
+
+- **🤖 Normal** - Balanced AI for general conversations
+- **💻 Code** - Programming expert with detailed examples
+- **🎨 Creative** - Imaginative and artistic responses
+- **⚡ Concise** - Brief, bullet-point answers
+
+### 📝 Example Session
+
+```
+[normal] You ► /mode code
+✓ Switched to 💻 Code Assistant Mode
+
+[code] You ► How do I read a file in Python?
+
+NexShell ► Here's how to read a file in Python:
+
+```python
+# Method 1: Using with statement (recommended)
+with open('file.txt', 'r') as file:
+    content = file.read()
+    print(content)
+
+# Method 2: Read line by line
+with open('file.txt', 'r') as file:
+    for line in file:
+        print(line.strip())
+```
+
+[code] You ► /cmd python --version
+⚙️  Executing: python --version
+Python 3.11.0
+
+[code] You ► /stats
+
+📊 Session Statistics
+─────────────────────────────────────────
+🤖 Current Mode: 💻 Code Assistant Mode
+💬 Messages Exchanged: 3
+📝 Total Words: 156
+⏱️  Session Duration: 2m 34s
+```
+
+## 🔧 Configuration
+
+NexShell uses:
+- **Model**: Google Gemini 2.5 Flash
+- **Features**: Multi-turn conversations, context awareness, code execution
+- **Customization**: Modify `nexshell/cli.py` for advanced settings
+
+## 📦 Project Structure
+
+```
+nexshell/
+├── nexshell/
+│   ├── __init__.py      # Package initialization
+│   └── cli.py           # Main chatbot application
+├── .env.example         # Example environment file
+├── .gitignore          # Git ignore rules
+├── LICENSE             # MIT License
+├── MANIFEST.in         # Package manifest
+├── README.md           # This file
+├── INSTALL.md          # Detailed installation guide
+├── requirements.txt    # Python dependencies
+├── setup.py            # Package setup script
+└── pyproject.toml      # Modern Python packaging
+```
+
+## 🛡️ Security
+
+- ✅ API keys stored in environment variables
+- ✅ No sensitive data in code
+- ✅ `.gitignore` protects credentials
+- ✅ Secure command execution with timeout
+- ⚠️ Never share your API key publicly
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 🐛 Bug Reports & Feature Requests
+
+- 🐛 [Report bugs](https://github.com/yourusername/nexshell/issues)
+- 💡 [Request features](https://github.com/yourusername/nexshell/issues)
+- 💬 [Join discussions](https://github.com/yourusername/nexshell/discussions)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🌟 Star History
+
+If you find NexShell useful, please consider giving it a star! ⭐
+
+## 🙏 Acknowledgments
+
+- Powered by [Google Gemini 2.5 Flash](https://ai.google.dev/)
+- Built with Python 🐍
+- Inspired by modern CLI tools
+- Made with ❤️ by the community
+
+## 📞 Support
+
+- 📖 [Documentation](https://github.com/yourusername/nexshell#readme)
+- 💬 [Community Chat](https://discord.gg/nexshell)
+- 📧 Email: support@nexshell.dev
+- 🐦 Twitter: [@nexshell](https://twitter.com/nexshell)
+
+---
+
+<div align="center">
+
+**⭐ Star us on GitHub — it motivates us a lot! ⭐**
+
+[Website](https://nexshell.dev) • [Documentation](https://docs.nexshell.dev) • [Blog](https://blog.nexshell.dev)
+
+Made with � by developers, for developers
+
+</div>
