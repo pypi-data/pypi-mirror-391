@@ -1,0 +1,41 @@
+Metadata-Version: 2.3
+Name: mcp-songzhe-server
+Version: 0.1.1
+Summary: 这是一个使用高德地图的天气接口,获取当前城市天气的demo
+Keywords: mcp,gaodeweather,server
+Author: songzhe03
+Author-email: songzhe03 <songzhe03@baidu.com>
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+
+## 介绍
+
+这是一个使用高德地图的天气接口，获取当前城市天气的demo。
+
+## 使用方法
+
+## MCP 配置
+
+### uvx
+
+```json
+
+{
+
+  "mcpServers": {
+
+    "duckduckgo": {
+
+      "command": "uvx",
+
+      "args": [
+
+        "mcp-gaodeweather-server"
+
+      ]
+
+    }
+
+  }
+
+}
