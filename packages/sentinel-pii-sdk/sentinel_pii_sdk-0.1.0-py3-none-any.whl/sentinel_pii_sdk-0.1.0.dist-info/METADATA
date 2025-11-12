@@ -1,0 +1,249 @@
+Metadata-Version: 2.4
+Name: sentinel-pii-sdk
+Version: 0.1.0
+Summary: Python SDK for Sentinel PII Redaction - State-of-the-art PII detection and redaction using fine-tuned Granite models
+Project-URL: Homepage, https://huggingface.co/cernis-intelligence/sentinel
+Project-URL: Repository, https://github.com/cernis-intelligence/sentinel-pii-sdk
+Project-URL: Documentation, https://huggingface.co/cernis-intelligence/sentinel
+Author-email: Cernis Intelligence <support@cernis.ai>
+License: Apache-2.0
+License-File: LICENSE
+Keywords: granite,huggingface,nlp,pii,privacy,redaction
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Security
+Requires-Python: >=3.9
+Requires-Dist: accelerate>=0.20.0
+Requires-Dist: torch>=2.0.0
+Requires-Dist: tqdm>=4.65.0
+Requires-Dist: transformers>=4.36.0
+Provides-Extra: all
+Requires-Dist: faker>=20.0.0; extra == 'all'
+Provides-Extra: faker
+Requires-Dist: faker>=20.0.0; extra == 'faker'
+Description-Content-Type: text/markdown
+
+# Sentinel PII SDK
+
+**State-of-the-art PII detection and redaction using the Sentinel model**
+
+Sentinel PII SDK is a Python library for identifying and redacting Personally Identifiable Information (PII) in text.
+
+## Features
+
+- High-accuracy PII detection (95%+ recall)
+- Multiple handling modes: TAG, REDACT, or REPLACE
+- Batch processing support
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install sentinel-pii-sdk
+```
+
+With faker support for REPLACE mode:
+
+```bash
+pip install 'sentinel-pii-sdk[faker]'
+```
+
+### From Source
+
+```bash
+git clone https://github.com/cernis-intelligence/sentinel-pii-sdk.git
+cd sentinel-pii-sdk
+pip install -e .
+```
+
+## Quick Start
+
+```python
+from sentinel_pii import SentinelPIIRedactor
+
+# Initialize (model loads from HuggingFace on first use)
+redactor = SentinelPIIRedactor()
+
+# Detect PII in text
+text = "My name is John Smith and my email is john@email.com"
+result = redactor.redact_text(text)
+print(result)
+# Output: "My name is [PERSON_NAME] and my email is [EMAIL_ADDRESS]"
+```
+
+## Usage Examples
+
+### Basic PII Detection
+
+```python
+from sentinel_pii import SentinelPIIRedactor, PIIHandlingMode
+
+redactor = SentinelPIIRedactor()
+
+text = "Contact John Smith at john@email.com or call (555) 123-4567"
+
+# TAG mode - Show PII categories
+result = redactor.redact_text(text, mode=PIIHandlingMode.TAG)
+print(result)
+# "Contact [PERSON_NAME] at [EMAIL_ADDRESS] or call [PHONE_NUMBER]"
+
+# REDACT mode - Same as TAG
+result = redactor.redact_text(text, mode=PIIHandlingMode.REDACT)
+print(result)
+# "Contact [PERSON_NAME] at [EMAIL_ADDRESS] or call [PHONE_NUMBER]"
+
+# REPLACE mode - Replace with fake data (requires faker)
+result = redactor.redact_text(text, mode=PIIHandlingMode.REPLACE)
+print(result)
+# "Contact Jane Doe at jane.doe@example.com or call (555) 987-6543"
+```
+
+### Batch Processing
+
+```python
+from sentinel_pii import detect_pii_batch, PIIHandlingMode
+
+documents = [
+    "My email is john@email.com",
+    "Patient DOB: 1990-05-15, diagnosed with diabetes"
+]
+
+results = detect_pii_batch(documents, mode=PIIHandlingMode.TAG)
+for result in results:
+    print(result)
+```
+
+### Dataset Cleaning
+
+```python
+from sentinel_pii import clean_dataset, PIIHandlingMode
+
+# Clean a JSONL dataset file
+clean_dataset(
+    input_filename="input_data.jsonl",
+    output_filename="output_data.jsonl",
+    mode=PIIHandlingMode.TAG
+)
+```
+
+## Supported PII Categories
+
+The Sentinel model detects 20+ PII categories:
+
+**Identity**: PERSON_NAME, USERNAME, AGE, GENDER, DEMOGRAPHIC_GROUP
+
+**Contact**: EMAIL_ADDRESS, PHONE_NUMBER, STREET_ADDRESS, CITY, STATE, POSTCODE, COUNTRY
+
+**Dates**: DATE, DATE_OF_BIRTH
+
+**ID Numbers**: PERSONAL_ID, PASSPORT, DRIVERLICENSE
+
+**Financial**: CREDIT_CARD_INFO, BANKING_NUMBER
+
+**Security**: PASSWORD, SECURE_CREDENTIAL
+
+**Medical**: MEDICAL_CONDITION
+
+**Other**: ORGANIZATION_NAME, DOMAIN_NAME, NATIONALITY, RELIGIOUS_AFFILIATION
+
+## API Reference
+
+### SentinelPIIRedactor
+
+Main class for PII detection.
+
+```python
+redactor = SentinelPIIRedactor(pii_categories=None)
+```
+
+**Parameters:**
+- `pii_categories` (optional): Custom PII categories string
+
+**Methods:**
+
+- `redact_text(text, mode=PIIHandlingMode.TAG, locale="en_US")` - Process single text
+- `detect_pii(documents, mode=PIIHandlingMode.TAG, locale="en_US", show_progress=True)` - Process list of documents
+
+### Utility Functions
+
+- `detect_pii_batch(documents, mode=PIIHandlingMode.TAG, locale="en_US")` - Batch processing
+- `clean_dataset(input_filename, output_filename, mode=PIIHandlingMode.TAG, locale="en_US")` - Clean JSONL files
+
+### PIIHandlingMode
+
+Enum for handling modes:
+- `PIIHandlingMode.TAG` - Show PII categories in brackets
+- `PIIHandlingMode.REDACT` - Same as TAG
+- `PIIHandlingMode.REPLACE` - Replace with fake data (requires faker)
+
+## Model Information
+
+- **Model**: cernis-intelligence/sentinel on HuggingFace
+- **Performance**: 95%+ recall, ~100 docs/min on GPU
+- **License**: Apache 2.0
+
+## Requirements
+
+- Python >= 3.9
+- transformers >= 4.36.0
+- torch >= 2.0.0
+- accelerate >= 0.20.0
+- tqdm >= 4.65.0
+- faker >= 20.0.0 (optional, for REPLACE mode)
+
+## Examples
+
+The `examples/` directory contains working sample scripts:
+
+```bash
+# Basic single-text PII detection
+python3.11 examples/basic_usage.py
+
+# Process multiple documents at once
+python3.11 examples/batch_processing.py
+
+# Clean JSONL dataset files
+python3.11 examples/dataset_cleaning.py
+
+# Validate package structure (no model download)
+python3.11 examples/test_all_examples.py
+```
+
+You can also use the included `sample_data.jsonl` for testing:
+
+```python
+from sentinel_pii import clean_dataset, PIIHandlingMode
+
+clean_dataset(
+    "examples/sample_data.jsonl",
+    "output.jsonl",
+    mode=PIIHandlingMode.TAG
+)
+```
+
+
+## Contributing
+
+Contributions welcome! Please submit a Pull Request.
+
+## License
+
+Apache 2.0 License - see LICENSE file for details.
+
+## Support
+
+- HuggingFace: [cernis-intelligence/sentinel](https://huggingface.co/cernis-intelligence/sentinel)
+- Issues: [GitHub Issues](https://github.com/cernis-intelligence/sentinel-pii-sdk/issues)
+
+## Acknowledgments
+
+- Built on [IBM Granite 4.0](https://huggingface.co/ibm-granite/granite-4.0-micro)
+- Training data from [AI4Privacy](https://huggingface.co/datasets/ai4privacy/pii-masking-300k)
