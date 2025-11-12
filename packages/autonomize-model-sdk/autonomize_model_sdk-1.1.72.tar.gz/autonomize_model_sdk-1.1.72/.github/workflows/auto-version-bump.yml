@@ -1,0 +1,86 @@
+# .github/workflows/auto-version-bump.yml
+
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump_version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Bump version
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+            # Read current version
+            CURRENT_VERSION=$(uv run python -c "import tomli; print(tomli.load(open('pyproject.toml', 'rb'))['project']['version'])")
+
+            # Bump patch version
+            IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+            MAJOR=${VERSION_PARTS[0]}
+            MINOR=${VERSION_PARTS[1]}
+            PATCH=$((${VERSION_PARTS[2]} + 1))
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+
+            # Update version in pyproject.toml
+            sed -i "s/version = \"$CURRENT_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml
+
+            echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+            git add pyproject.toml
+            git commit -m "v$NEW_VERSION"
+            git checkout -b v$NEW_VERSION
+            git push origin v$NEW_VERSION
+            git checkout main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT }}
+          branch: v${{ env.VERSION }}
+          title: "[Automated] Version: ${{ env.VERSION }}"
+          body: |
+            This pull request was automatically generated as part of the versioning workflow.
+
+            **Summary of Changes:**
+            - Version updated to: `${{ env.VERSION }}`
+            - This PR includes updates to package versions, ensuring all dependencies and configurations reflect the new release.
+            - Automated process to maintain code consistency and versioning standards.
+
+            **Note:** This is an auto-generated PR, and will be auto-approved and doesn't require manual intervention.
+
+      - name: Auto approve and merge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: |
+          gh pr merge --merge --auto "${{ steps.cpr.outputs.pull-request-number }}"
+          gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

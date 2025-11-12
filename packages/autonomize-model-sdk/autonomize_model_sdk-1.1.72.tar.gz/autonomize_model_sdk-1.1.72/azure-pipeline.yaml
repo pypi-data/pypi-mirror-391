@@ -1,0 +1,52 @@
+variables:
+  vmImageName: 'ubuntu-latest'
+
+pr: none
+
+stages:
+- stage:
+  displayName: UT
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - checkout: self
+      submodules: true
+      persistCredentials: true
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.12'
+        addToPath: true
+        architecture: 'x64'
+    - script: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH=$PATH:$HOME/.cargo/bin
+      displayName: 'Install uv'
+    - script: echo "##vso[task.prependpath]$HOME/.cargo/bin"
+      displayName: Add uv to PATH
+    - script: |
+        uv sync --all-extras --dev
+        uv run pytest tests --cov=modelhub --cov-report=xml
+      displayName: 'Install dependencies & UT'
+    - task: SonarQubePrepare@7
+      inputs:
+        SonarQube: 'sonarqube-platform'
+        scannerMode: 'cli'
+        configMode: 'manual'
+        cliProjectKey: 'autonomize-ai_autonomize-model-sdk_AZVazrneTMqNrBl7Nvi9'
+        cliSources: '.'
+        extraProperties: |
+          # Additional properties that will be passed to the scanner,
+          # Put one key=value per line, example:
+          # sonar.exclusions=**/*.bin
+          sonar.exclusions=**/tests/**, **/azure-pipelines.yml
+          sonar.python.coverage.reportPaths=coverage.xml
+          sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
+    - task: SonarQubeAnalyze@7
+      inputs:
+        jdkversion: 'JAVA_HOME_17_X64'
+    - task: SonarQubePublish@7
+      inputs:
+        pollingTimeoutSec: '300'
