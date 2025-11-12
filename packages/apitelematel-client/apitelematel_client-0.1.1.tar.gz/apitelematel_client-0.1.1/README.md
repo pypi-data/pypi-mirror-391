@@ -1,0 +1,57 @@
+# Cliente oficial de apitelematel
+
+Paquete Python ligero para invocar los endpoints autorizados de `apitelematel` desde otras aplicaciones.
+
+## Instalación
+
+```sh
+pip install apitelematel-client
+```
+
+Si lo usas desde el mismo repositorio (para pruebas), instala las dependencias con `pip install -e .` y asegúrate de que `apitelematel_client` esté en el `PYTHONPATH`.
+
+## Configuración
+
+Se pueden usar variables de entorno o pasar los valores manualmente:
+
+```env
+APITELEMATEL_BASE_URL=http://servidor:5000/api_v1.0
+APITELEMATEL_SECRET_KEY=clave-secreta
+APITELEMATEL_TIMEOUT=15
+```
+
+En código:
+
+```python
+from apitelematel_client import ApiTelematelClient
+from apitelematel_client.config import ClientSettings
+
+settings = ClientSettings.from_env()
+cliente = ApiTelematelClient(settings=settings)
+resultado = cliente.query("SELECT * FROM PUB.gmclien", dsn="tlmplus")
+```
+
+También puedes instanciar `ApiTelematelClient` pasando directamente `base_url` y `secret_key`:
+
+```python
+cliente = ApiTelematelClient(base_url="http://servidor:5000/api_v1.0", secret_key="clave")
+```
+
+## Funcionalidades principales
+
+| Método | Endpoint | Parámetros relevantes |
+| --- | --- | --- |
+| `query(sql, connection_key=None, dsn=None)` | `/query` | SQL completo, opciona `connection_key`/`dsn` |
+| `get_cliente(cod_cli, connection_key=None)` | `/clientes` | `cod_cli` y `connection_key` opcional |
+
+Los métodos lanzan `ApiTelematelClientError` o `ApiTelematelServerError` cuando la llamada falla.
+
+## Contribuir
+
+1. Clona el repositorio y crea un entorno virtual.
+2. Ejecuta `pip install -e .[dev]` para tener las dependencias de tests.
+3. Corre `pytest tests_client` antes de enviar cambios.
+
+## Licencia
+
+Este paquete sigue la misma licencia que el proyecto principal (consulta `LICENSE`).
