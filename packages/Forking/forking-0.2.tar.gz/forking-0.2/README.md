@@ -1,0 +1,123 @@
+# Forking
+
+`Forking` is a Python context manager that run the code in a different
+process.
+
+That means funny business:
+
+```pycon
+>>> import os
+>>> from forking import Forking
+>>>
+>>>
+>>> with Forking():
+...     os._exit(0)
+>>> print("I will survive!")
+I will survive!
+>>>
+```
+
+Obviously side effects are only executed in the child process so not
+visible to the parent:
+
+```pycon
+>>> i = 1
+>>> with Forking():
+...     i += 1
+>>> print(i)
+1
+>>>
+```
+
+## Capturing `stdout` and `stderr`
+
+You can capture `stdout` and `stderr` though:
+
+```python
+child = Forking()
+with child:
+    print("Youpi")
+print(child.stdout)
+```
+
+Note that we can't do `with Forking() as child` because the `as child`
+part is not executed (as considered inside the with body).
+
+
+## Getting exit status informations
+
+You can also get info about the exit status of your process though
+`child.exit` which contains `code`, `signal` and `has_core_dump`:
+
+```pycon
+>>> child = Forking()
+>>> with child:
+...     os._exit(12)
+>>> print(child.exit.code)
+12
+>>>
+```
+
+## Reusing a context manager
+
+
+A `Forking` context can be reused (but its process will not):
+
+```pycon
+>>> child = Forking()
+>>> with child:
+...     os._exit(21)
+>>> print(child.exit.code)
+21
+>>> with child:
+...     os._exit(22)
+>>> print(child.exit.code)
+22
+>>>
+```
+
+## Timeout
+
+
+You can specify a `timeout` for your child, the following snipet runs
+in 0.2s, not 10s:
+
+```pycon
+>>> import time
+>>>
+>>> child = Forking()
+>>> child.timeout = 0.2
+>>> with child:
+...    time.sleep(10)
+...
+>>>
+```
+
+When a child is killed after exceeding its deadline, you'll have a
+`SIGKILL` in `child.exit.signal`:
+
+```
+>>> child.exit.signal
+9
+>>>
+```
+
+
+## Custom child exception hooks
+
+You can give a custom exception hook, either by subclassing:
+
+```python
+class FriendlyForking(Forking):
+    """A Forking class that use Friendly Traceback"""
+
+    def exception_hook(self, exc_type, exc_value, tb):
+        friendly_traceback.session.exception_hook(exc_type, exc_value, tb)
+```
+
+or if you're lazy:
+
+```python
+forking = Forking()
+forking.exception_hook = friendly_traceback.session.exception_hook
+```
