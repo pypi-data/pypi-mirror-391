@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: jsonbot
+Version: 1.0.6
+Summary: A simple Json object to Bot library built on top of a osonbot library
+Home-page: https://github.com/sinofarmonov323/jsonbot
+Author: https://t.me/jackson_rodger
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: osonbot
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# JsonBot
+
+# Installation
+```shell
+pip install jsonbot
+```
+
+# Usage
+```python
+from jsonbot import JsonBot
+
+JsonBot("token", {
+    "messages": {
+        "/start", {"response": "hello *{first_name}*", "parse_mode": "MarkdownV2", "reply_markup"},
+        "/help": {"response": "Hello how can i help you"}
+    }
+}).run()
+```
+## you can generate code to osonbot library itself (but not fully prepared)
+```python
+from jsonbot import JsonBot
+
+JsonBot("token", {
+    "/start", {"response": "hello *{first_name}*", "parse_mode": "MarkdownV2"},
+    "/help": {"response": "Hello how can i help you"}
+}).generate_code(library="osonbot", file="main.py")
+```
+## Handling Inline Messages
+```python
+from jsonbot import JsonBot
+
+JsonBot("token", {
+    "inline_messages": {
+        "callback_data1", {"response": "you clicked the first inline button"},
+        "callback_data2": {"response": "you clicked the sedond inline button"}
+    }
+}).run()
+```
+# Done
