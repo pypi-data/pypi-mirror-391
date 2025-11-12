@@ -1,0 +1,206 @@
+[
+  {
+    "type": "SmolAgentTool",
+    "name": "advanced_literature_search_agent",
+    "description": "Advanced multi-agent literature search system. Required pipeline: (1) query_planner must produce a structured plan and immediately dispatch each sub-query to multi_database_searcher; (2) multi_database_searcher must call ToolUniverse literature tools (PubMed_search_articles, EuropePMC_search_articles, SemanticScholar_search_papers, openalex_literature_search, ArXiv_search_papers, BioRxiv_search_preprints, MedRxiv_search_preprints, Crossref_search_works, DBLP_search_publications, DOAJ_search_articles, CORE_search_papers, PMC_search_papers) and return raw results; (3) result_analyzer must deduplicate and score results; (4) literature_synthesizer must generate a structured markdown report (Executive Summary, Key Findings, Trends, Methods, Top Papers with rationale, Gaps, References). Do not skip any stage; do not answer directly without calling tools.",
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Research query or topic to search in academic literature. The agent will automatically determine search strategy, database selection, filters, and result limits based on the query content and research domain."
+        }
+      },
+      "required": ["query"]
+    },
+    "settings": {
+      "agent_type": "ManagedAgent",
+      "available_tools": [],
+      "model": {
+        "provider": "AzureOpenAIModel",
+        "model_id": "gpt-5",
+        "api_key": "env:AZURE_OPENAI_API_KEY",
+        "azure_endpoint": "https://azure-ai.hms.edu",
+        "api_version": "2024-10-21"
+      },
+      "agent_init_params": {
+        "max_steps": 50,
+        "stream_outputs": true,
+        "verbosity_level": 1,
+        "planning_interval": 2,
+        "max_execution_time": 600
+      },
+      "sub_agents": [
+        {
+          "name": "query_planner",
+          "description": "Strategic query planning agent that analyzes intent, decomposes into prioritized sub-queries, and generates optimized search terms and target databases. After outputting the plan, immediately invoke multi_database_searcher with the sub-queries (no summaries). Output: JSON plan and explicit call instruction for multi_database_searcher.",
+          "agent_type": "CodeAgent",
+          "available_tools": [],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "add_base_tools": true,
+            "additional_authorized_imports": ["json", "datetime", "collections"],
+            "max_steps": 10,
+            "stream_outputs": true,
+            "verbosity_level": 1
+          }
+        },
+        {
+          "name": "multi_database_searcher",
+          "description": "Multi-database parallel search specialist. Must call the following ToolUniverse tools for each sub-query (as applicable): PubMed_search_articles, EuropePMC_search_articles, SemanticScholar_search_papers, openalex_literature_search, ArXiv_search_papers, BioRxiv_search_preprints, MedRxiv_search_preprints, Crossref_search_works, DBLP_search_publications, DOAJ_search_articles, CORE_search_papers, PMC_search_papers. Adapt queries to each API and return structured JSON with raw items (title, abstract, authors, doi, year, venue, citations, url). Do not summarize.",
+          "agent_type": "CodeAgent",
+          "available_tools": [
+            "PubMed_search_articles",
+            "EuropePMC_search_articles",
+            "SemanticScholar_search_papers",
+            "openalex_literature_search",
+            "ArXiv_search_papers",
+            "BioRxiv_search_preprints",
+            "MedRxiv_search_preprints",
+            "Crossref_search_works",
+            "DBLP_search_publications",
+            "DOAJ_search_articles",
+            "CORE_search_papers",
+            "PMC_search_papers"
+          ],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "add_base_tools": true,
+            "additional_authorized_imports": ["json", "concurrent.futures", "datetime", "urllib.parse", "re"],
+            "max_steps": 25,
+            "stream_outputs": true,
+            "verbosity_level": 1,
+            "max_tool_threads": 5
+          }
+        },
+        {
+          "name": "result_analyzer",
+          "description": "Intelligent result analysis agent. Input: multi_database_searcher raw results. Steps: deduplicate (DOI, normalized title similarity, author matching), compute composite relevance score (keyword match, normalized citations, venue impact, recency, cross-source frequency), filter low-quality (<0.3), rank and cluster by themes, identify high-impact and recent breakthroughs. Output: ranked, deduplicated list with scores, themes, and quality flags. Then instruct literature_synthesizer to produce the final report.",
+          "agent_type": "CodeAgent",
+          "available_tools": [],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "add_base_tools": true,
+            "additional_authorized_imports": ["json", "collections", "re", "difflib", "datetime", "math"],
+            "max_steps": 15,
+            "stream_outputs": true,
+            "verbosity_level": 1
+          }
+        },
+        {
+          "name": "literature_synthesizer",
+          "description": "Literature synthesis and report generation specialist. Input: result_analyzer ranked list. Produce a structured markdown report with sections: Executive Summary, Key Findings, Research Trends, Methodology Overview, Top Papers with rationale (10–15), Research Gaps, References (with DOIs/URLs). Use only analyzed items; do not invent citations.",
+          "agent_type": "CodeAgent",
+          "available_tools": [],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "add_base_tools": true,
+            "additional_authorized_imports": ["json", "collections", "datetime", "statistics"],
+            "max_steps": 20,
+            "stream_outputs": true,
+            "verbosity_level": 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "type": "SmolAgentTool",
+    "name": "open_deep_research_agent",
+    "description": "Research manager agent that decomposes the user task, delegates focused subtasks to domain sub‑agents (web researcher, synthesizer), enforces evidence use, requires numeric outputs with units, and returns a concise final answer with citations. It should: (1) draft a brief plan, (2) ask web_researcher to gather authoritative facts (URLs + extracted numbers), (3) validate consistency across sources, (4) instruct synthesizer to compute/compose the final result, and (5) output only the final, unit‑aware answer plus one short rationale line.",
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "task": {"type": "string", "description": "Research query/task to execute"}
+      },
+      "required": ["task"]
+    },
+    "settings": {
+      "agent_type": "ManagedAgent",
+      "available_tools": [],
+      "model": {
+        "provider": "AzureOpenAIModel",
+        "model_id": "gpt-5",
+        "api_key": "env:AZURE_OPENAI_API_KEY",
+        "azure_endpoint": "https://azure-ai.hms.edu",
+        "api_version": "2024-10-21"
+      },
+      "agent_init_params": {
+        "max_steps": 30,
+        "stream_outputs": true,
+        "verbosity_level": 1,
+        "planning_interval": 1
+      },
+      "sub_agents": [
+        {
+          "name": "web_researcher",
+          "description": "Web research specialist that (a) formulates robust search queries, (b) selects authoritative sources (official sites, Wikipedia with corroboration, reputable databases), (c) visits pages and extracts exact figures (units, context), (d) records 1–2 key quotes/snippets and the canonical URL, and (e) returns a short, source‑linked note ready for synthesis.",
+          "agent_type": "CodeAgent",
+          "available_tools": [
+            {"type": "smolagents", "class": "WebSearchTool", "import_path": "smolagents.default_tools"},
+            {"type": "smolagents", "class": "VisitWebpageTool", "import_path": "smolagents.default_tools"}
+          ],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "add_base_tools": true,
+            "additional_authorized_imports": ["requests", "bs4", "lxml"],
+            "max_steps": 12,
+            "stream_outputs": true,
+            "verbosity_level": 1,
+            "planning_interval": 1
+          }
+        },
+        {
+          "name": "synthesizer",
+          "description": "Synthesis specialist that reads prior research notes, performs any light calculation (unit conversion, division, rounding), resolves minor conflicts by favoring higher‑authority sources, and produces a single, precise answer with units and 1–2 citations. Keep prose minimal; prioritize the final numeric result and rationale.",
+          "agent_type": "ToolCallingAgent",
+          "available_tools": [
+            {"type": "smolagents", "class": "WebSearchTool", "import_path": "smolagents.default_tools"}
+          ],
+          "model": {
+            "provider": "AzureOpenAIModel",
+            "model_id": "gpt-5",
+            "api_key": "env:AZURE_OPENAI_API_KEY",
+            "azure_endpoint": "https://azure-ai.hms.edu",
+            "api_version": "2024-10-21"
+          },
+          "agent_init_params": {
+            "max_steps": 8,
+            "stream_outputs": false,
+            "planning_interval": 1
+          }
+        }
+      ]
+    }
+  }
+]
