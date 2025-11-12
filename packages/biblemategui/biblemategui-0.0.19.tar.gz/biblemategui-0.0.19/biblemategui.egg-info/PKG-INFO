@@ -1,0 +1,83 @@
+Metadata-Version: 2.4
+Name: biblemategui
+Version: 0.0.19
+Summary: BibleMate AI - Automate Your Bible Study
+Home-page: https://biblemate.ai
+Author: Eliran Wong
+Author-email: support@marvel.bible
+License: GNU General Public License (GPL)
+Project-URL: Source, https://github.com/eliranwong/biblemategui
+Project-URL: Tracker, https://github.com/eliranwong/biblemategui/issues
+Project-URL: Documentation, https://github.com/eliranwong/biblemategui/wiki
+Project-URL: Funding, https://www.paypal.me/MarvelBible
+Keywords: mcp agent biblemate ai anthropic azure chatgpt cohere deepseek genai github googleai groq llamacpp mistral ollama openai vertexai xai
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Topic :: Utilities
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10, <3.13
+Requires-Dist: biblemate
+Requires-Dist: nicegui
+Requires-Dist: apsw
+Provides-Extra: genai
+Requires-Dist: google-genai>=1.46.0; extra == "genai"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# BibleMate AI GUI
+
+BibleMate AI Web Application - Web GUI
+
+BibleMate AI Web Version is designed to combine the most valuable features from the following two projects into a single, unified web interface:
+
+https://github.com/eliranwong/biblemate
+
+and
+
+https://github.com/eliranwong/UniqueBible
+
+# Development in Progress ...
+
+Install for testing:
+
+> pip install --upgrade biblemategui
+
+Run:
+
+> biblemategui
+
+## Recent Updates
+
+[Cross-Highlighting & Synchronized Scrolling](https://youtu.be/TDyT1ioesmY)
+
+[![Watch the video](https://img.youtube.com/vi/TDyT1ioesmY/maxresdefault.jpg)](https://youtu.be/TDyT1ioesmY)
+
+[UI Overview](https://youtu.be/UL8b1O97560)
+
+[![Watch the video](https://img.youtube.com/vi/UL8b1O97560/maxresdefault.jpg)](https://youtu.be/UL8b1O97560)
+
+## Use Existing UniqueBible App Data
+
+```
+cd
+mkdir biblemate
+cd biblemate
+ln -s ../UniqueBible/marvelData data
+cd data
+eliran@ai-desk:~/biblemate/data$ ln -s ../../UniqueBible/audio/ audio
+```
