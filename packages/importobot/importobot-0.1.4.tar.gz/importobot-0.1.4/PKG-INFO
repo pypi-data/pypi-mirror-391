@@ -1,0 +1,122 @@
+Metadata-Version: 2.4
+Name: importobot
+Version: 0.1.4
+Summary: Automated test framework converter for migrating test cases from Zephyr, JIRA/Xray, and TestLink to Robot Framework format with bulk processing capabilities
+Author-email: athola <noreply@github.com>
+Maintainer-email: athola <noreply@github.com>
+License-Expression: BSD-2-Clause
+Project-URL: Homepage, https://github.com/athola/importobot
+Project-URL: Repository, https://github.com/athola/importobot
+Project-URL: Bug Tracker, https://github.com/athola/importobot/issues
+Project-URL: Documentation, https://github.com/athola/importobot/wiki
+Project-URL: Changelog, https://github.com/athola/importobot/blob/main/CHANGELOG.md
+Keywords: testing,automation,robot-framework,test-conversion,zephyr,jira,xray,testlink
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Information Technology
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Quality Assurance
+Classifier: Topic :: Utilities
+Classifier: Environment :: Console
+Classifier: Natural Language :: English
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: robotframework>=6.0.0
+Requires-Dist: robotframework-seleniumlibrary>=6.8.0
+Requires-Dist: robotframework-sshlibrary>=3.8.0
+Requires-Dist: robotframework-requests>=0.9.4
+Requires-Dist: robotframework-databaselibrary>=2.3.2
+Requires-Dist: psutil>=7.1.3
+Requires-Dist: bleach>=6.3.0
+Requires-Dist: asv>=0.6.5
+Provides-Extra: viz
+Requires-Dist: matplotlib>=3.10.7; extra == "viz"
+Provides-Extra: analytics
+Requires-Dist: numpy>=2.2.6; extra == "analytics"
+Requires-Dist: pandas>=2.3.3; extra == "analytics"
+Provides-Extra: demo
+Requires-Dist: matplotlib>=3.10.7; extra == "demo"
+Requires-Dist: numpy>=2.2.6; extra == "demo"
+Requires-Dist: pandas>=2.3.3; extra == "demo"
+Provides-Extra: advanced
+Requires-Dist: scipy>=1.15.3; extra == "advanced"
+Provides-Extra: medallion
+Provides-Extra: enterprise
+Requires-Dist: pandas>=2.3.3; extra == "enterprise"
+Requires-Dist: numpy>=2.2.6; extra == "enterprise"
+Provides-Extra: all
+Requires-Dist: matplotlib>=3.10.7; extra == "all"
+Requires-Dist: numpy>=2.2.6; extra == "all"
+Requires-Dist: pandas>=2.3.3; extra == "all"
+Dynamic: license-file
+
+# Importobot
+
+<div align="center">
+
+| | |
+| --- | --- |
+| Testing | [![Test](https://github.com/athola/importobot/actions/workflows/test.yml/badge.svg)](https://github.com/athola/importobot/actions/workflows/test.yml) [![Lint](https://github.com/athola/importobot/actions/workflows/lint.yml/badge.svg)](https://github.com/athola/importobot/actions/workflows/lint.yml) [![Typecheck](https://github.com/athola/importobot/actions/workflows/typecheck.yml/badge.svg)](https://github.com/athola/importobot/actions/workflows/typecheck.yml) |
+| Package | [![PyPI Version](https://img.shields.io/pypi/v/importobot.svg)](https://pypi.org/project/importobot/) [![PyPI Downloads](https://img.shields.io/pypi/dm/importobot.svg)](https://pypi.org/project/importobot/) |
+| Meta | [![License](https://img.shields.io/pypi/l/importobot.svg)](./LICENSE) [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/) [![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv) |
+
+</div>
+
+Importobot is a Python package for converting test case exports from Zephyr, TestRail, Xray, and TestLink into runnable Robot Framework suites. It was built to automate the tedious process of manually migrating large test libraries.
+
+## What's new
+
+**Recent Improvements:**
+- **MongoDB Library Support**: Fixed MongoDB library integration by replacing broken `robotframework-mongodblibrary` with modern `robot-mongodb-library`
+- **Type Safety**: Enhanced type checking and fixed enum conversion issues
+- **Code Quality**: Improved linting compliance and code organization
+
+See the [changelog](CHANGELOG.md) for a full list of changes.
+
+## Installation
+
+For end-users, install from PyPI:
+```sh
+pip install importobot
+```
+For developers contributing to the project, see the [Project Setup](https://github.com/athola/importobot/wiki/Getting-Started#project-setup) instructions.
+
+## Quick Start
+
+```python
+import importobot
+
+# Convert a single file from Zephyr JSON to a Robot Framework file
+converter = importobot.JsonToRobotConverter()
+summary = converter.convert_file("zephyr_export.json", "output.robot")
+
+# Convert an entire directory of exports
+result = converter.convert_directory("./exports", "./converted")
+```
+
+## Documentation
+
+All documentation is in the [project wiki](https://github.com/athola/importobot/wiki).
+
+- **[Getting Started](https://github.com/athola/importobot/wiki/Getting-Started)**: Install the tool and run your first conversion.
+- **[User Guide](https://github.com/athola/importobot/wiki/User-Guide)**: See detailed examples and usage patterns.
+- **[How to Navigate this Codebase](https://github.com/athola/importobot/wiki/How-to-Navigate-this-Codebase)**: For developers who want to understand the architecture.
+
+## Community
+
+For questions and discussions, please use the [GitHub issue tracker](https://github.com/athola/importobot/issues).
+
+## Contributing
+
+Contributions are welcome. Please see the [Contributing Guide](https://github.com/athola/importobot/wiki/Contributing) for more information.
+
+## License
+
+[BSD 2-Clause](./LICENSE)
