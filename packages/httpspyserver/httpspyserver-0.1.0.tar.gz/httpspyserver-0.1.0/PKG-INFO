@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: httpspyserver
+Version: 0.1.0
+Summary: Minimal HTTPS server using only Python's standard library.
+Keywords: https,ssl,server,python,cli
+Author-email: therationalconspiracist <idndteog19@gmail.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+License-File: LICENSE
+
+# https-server
+
+A minimal HTTPS server built purely with Python’s standard library.
+
+## 🚀 Usage
+```bash
+pip install httpspyserver
+httpspyserver --cert cert.pem --key key.pem -p 8443
+
+
+Create a Self-Signed Certificate
+
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes
+
