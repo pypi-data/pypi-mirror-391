@@ -1,0 +1,86 @@
+Metadata-Version: 2.4
+Name: structcfg-parser
+Version: 1.1.0
+Summary: Parser for Structured Configuration Language (SCL)
+Home-page: https://gitlab.com/shareui/scl
+Author: shareui
+License: MIT
+Project-URL: Homepage, https://gitlab.com/shareui/scl
+Project-URL: Bug Reports, https://discord.com/users/1367967801125376143
+Project-URL: Source, https://gitlab.com/shareui/scl
+Keywords: parser,configuration,scl,config,structured-config
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# SCL (Python) — usage guide
+
+This is a usage-focused guide. For the full SCL specification, see the root README.  
+Full documentation: [click](https://gitlab.com/shareui/scl/-/blob/main/README.md?ref_type=heads)
+
+## Installation
+
+```bash
+pip install structcfg-parser
+```
+
+Or in `requirements.txt`:
+```
+structcfg-parser==1.1.0
+```
+
+## Import and quick start
+
+```python
+import scl_parser
+
+# From file
+config = scl_parser.load("config.scl")
+
+# From string
+config = scl_parser.loads("count :: num { 42 }")
+
+# To file
+scl_parser.dump(config, "output.scl")
+
+# To string
+s = scl_parser.dumps(config)
+```
+
+## Examples
+
+```python
+import scl_parser
+
+cfg = scl_parser.loads("""
+app :: class {
+  name :: str { "Demo" }
+  debug :: bool { true }
+  ports :: list(num) { 80, 443 }
+  price :: fl { 19.99 }
+  note :: ml {
+    'hello
+    world'
+  }
+}
+""")
+print(cfg["app"]["name"])
+```
+
+## License
+
+MIT License
