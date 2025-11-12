@@ -1,0 +1,22 @@
+# INTEGRITY Command Help
+
+```
+usage: python.exe C:\Users\joedi\AppData\Local\Programs\Python\Python314\Scripts\codesentinel integrity
+       [-h] {status,start,stop,reset,verify,config} ...
+
+CodeSentinel Integrity Manager - SEAM Protection� for file stability
+
+positional arguments:
+  {status,start,stop,reset,verify,config}
+                        Integrity actions
+    status              Show current integrity state and monitoring status
+    start               Enable integrity monitoring and validation
+    stop                Disable integrity monitoring
+    reset               Clear integrity baseline and reset monitoring state
+    verify              Verify files against baseline
+    config              Manage integrity configuration
+
+options:
+  -h, --help            show this help message and exit
+
+```

@@ -1,0 +1,27 @@
+usage: python.exe C:\Users\joedi\AppData\Local\Programs\Python\Python314\Scripts\codesentinel clean
+       [-h] [--all] [--root] [--full] [--cache] [--temp] [--logs] [--build]
+       [--test] [--git] [--emojis] [--include-gui] [--dry-run] [--force]
+       [--verbose] [--older-than DAYS]
+
+options:
+  -h, --help         show this help message and exit
+  --all              Clean all safe targets (cache + temp + logs) - this is
+                     the default if no options specified
+  --root             Clean root directory clutter (__pycache__, .pyc files).
+                     Use --full for policy compliance
+  --full             When used with --root, also enforce policy compliance
+                     (remove unauthorized files/dirs)
+  --cache            Clean Python cache files (__pycache__, *.pyc, *.pyo)
+  --temp             Clean temporary files (*.tmp, .cache directories)
+  --logs             Clean old log files (*.log)
+  --build            Clean build artifacts (dist/, build/, *.egg-info)
+  --test             Clean test artifacts (.pytest_cache, .coverage, htmlcov/)
+  --git              Optimize git repository (gc, prune)
+  --emojis           Remove excessive emojis from code and documentation
+                     (policy violation)
+  --include-gui      Include GUI files in emoji scanning (default: excluded)
+  --dry-run          Show what would be deleted without deleting
+  --force            Skip confirmation prompts
+  --verbose          Show detailed output
+  --older-than DAYS  Only clean files older than N days (applies to logs and
+                     temp files)

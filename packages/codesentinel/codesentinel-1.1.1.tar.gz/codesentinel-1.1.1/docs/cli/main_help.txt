@@ -1,0 +1,50 @@
+usage: python.exe C:\Users\joedi\AppData\Local\Programs\Python\Python314\Scripts\codesentinel
+       [-h] [--config CONFIG] [--verbose]
+       {status,scan,maintenance,alert,schedule,update,clean,integrate,setup,dev-audit,integrity} ...
+
+CodeSentinel - SEAM Protected� Automated Maintenance & Security Monitoring
+
+positional arguments:
+  {status,scan,maintenance,alert,schedule,update,clean,integrate,setup,dev-audit,integrity}
+                        Available commands
+    status              Show CodeSentinel status
+    scan                Run security scan
+    maintenance         Run maintenance tasks
+    alert               Send alert
+    schedule            Manage maintenance scheduler
+    update              Update repository files and documentation
+    clean               Clean repository artifacts and temporary files
+    integrate           Integrate new CLI commands into existing workflows
+    setup               Run setup wizard
+    dev-audit           Run development audit
+    integrity           Manage file integrity validation and monitoring
+
+options:
+  -h, --help            show this help message and exit
+  --config CONFIG       Path to configuration file
+  --verbose, -v         Enable verbose output
+
+Examples:
+  codesentinel status                           # Show current status
+  codesentinel scan                             # Run security scan
+  codesentinel maintenance daily                # Run daily maintenance
+  codesentinel alert "Test message"             # Send test alert
+  codesentinel schedule start                   # Start maintenance scheduler
+  codesentinel schedule stop                    # Stop maintenance scheduler
+  codesentinel clean                            # Clean all (cache + temp + logs)
+  codesentinel clean --root                     # Clean root directory clutter
+  codesentinel clean --build --test             # Clean build and test artifacts
+  codesentinel clean --emojis --dry-run         # Preview policy-violating emoji removal (smart detection)
+  codesentinel clean --emojis --include-gui     # Include GUI files in emoji scan
+  codesentinel clean --dry-run                  # Preview what would be deleted
+  codesentinel update docs                      # Update repository documentation
+  codesentinel update changelog --version 1.2.3 # Update CHANGELOG.md
+  codesentinel update version patch             # Bump patch version
+  codesentinel integrate --new                  # Integrate new CLI commands into workflows
+  codesentinel integrate --all --dry-run        # Preview all integration opportunities
+  codesentinel integrate --workflow ci-cd       # Integrate into CI/CD workflows
+  codesentinel dev-audit                        # Run interactive development audit
+  codesentinel !!!!                             # Quick trigger for dev-audit
+  codesentinel !!!! scheduler                   # Focus audit on scheduler subsystem
+  codesentinel !!!! "new feature"               # Focus audit on new feature development
+        
