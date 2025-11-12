@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: asim
+Version: 25.11.2
+Summary: Automatic simulation system powered by neural networks
+Author: SHUniversity
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: torch >=2.8.0
+Requires-Dist: lightning >=2.5.5
+
+# Automatic simulation system powered by neural networks
+
+## Installation
+
+```bash
+pip install asim
+```
+
+## What is asim
+
+- Physical field modeling with automatic constraint enforcement
+- Flexible data grouping and normalization
+- Built-in support for recurrent architectures
+- Export/import of trained models
+
+## Using asim
+
+```python
+from asim.dataset import TimeSeriesDataManage, Ts, Fi, Fo, DummyDatasets
+from asim.model import PhysicalFieldModel
+from asim.simulator import PhysicalSimulator
+import matplotlib.pyplot as plt
+
+# 1. Define data and structure
+df = DummyDatasets.basicBoiler()  # pd.read_csv("demo.csv")
+cols = [
+    Ts(label="ts"),
+    Fi(group="boiler", label="power1", min=0.0, union="kw"),
+    Fi(group="boiler", label="power2", min=0.0, union="kw"),
+    Fo(group="boiler", label="load", min=0.0, union="t", loop=True),
+]
+dm = TimeSeriesDataManage(df, columns=cols, batch_size=64)
+
+# 2. Select the model, define the parameters, train and save
+fm = PhysicalFieldModel(dm, lr=0.003)
+fm.fit(epochs=100)
+fm.export("demo.sim.onnx")
+
+# 3. Use a simulator to simulate the operation
+simulator = PhysicalSimulator("demo.sim.onnx", dg=dm)
+result = simulator.steps(dm.df[100:900], y0={"boiler": [200.0]})
+for group, (x, y, y_) in result.items():
+    plt.figure(figsize=(15, 3))
+    plt.plot(y, c="#00f")
+    plt.plot(y_, c="#f00")
+    plt.show()
+```
