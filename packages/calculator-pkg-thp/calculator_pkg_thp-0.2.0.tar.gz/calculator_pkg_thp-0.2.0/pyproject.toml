@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculator_pkg_thp"
+version = "0.2.0"
+
+[project.scripts]
+calculator_pkg_thp = "calculator_pkg_thp.__main__:main"
