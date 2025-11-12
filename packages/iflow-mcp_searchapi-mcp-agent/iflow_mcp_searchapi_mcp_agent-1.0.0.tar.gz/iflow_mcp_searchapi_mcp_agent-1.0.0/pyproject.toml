@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_searchapi-mcp-agent"
+version = "1.0.0"
+description = "SearchAPI MCP Agent with A2A support - provides Google search, maps, flights, hotels, videos search functionality"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "IFLOW", email = "iflow@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "click>=8.0.0",
+    "google-generativeai>=0.3.0",
+    "httpx>=0.24.0",
+    "mcp>=0.5.0",
+    "pydantic>=2.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0"
+]
+
+[project.scripts]
+searchapi-mcp-agent = "searchapi_mcp_agent.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/iflow-mcp/searchapi-mcp-agent"
+Repository = "https://github.com/iflow-mcp/searchapi-mcp-agent"
+Issues = "https://github.com/iflow-mcp/searchapi-mcp-agent/issues"
+
+[tool.setuptools.packages.find]
+include = ["searchapi_mcp_agent*"]
+
+[tool.setuptools.package-data]
+searchapi_mcp_agent = ["*.py"]
