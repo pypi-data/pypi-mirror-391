@@ -1,0 +1,28 @@
+[build-system]
+requires = ["maturin>=1.0"]
+build-backend = "maturin"
+
+[project]
+name = "pybimb"
+version = "0.2.1"
+description = "[WIP] A fast imageloader for PyTorch"
+#readme = "README.md"
+authors = [
+    { name = "7karni", email = "7karni@proton.me" },
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.7"
+
+[project.urls]
+#Homepage = "[https://github.com/7karni/bimb](https://github.com/7karni/bimb)"

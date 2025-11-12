@@ -1,0 +1,29 @@
+[package]
+name = "bimb"
+version = "0.2.1"
+edition = "2024"
+authors = ["7karni <7karni@proton.me>"]
+description = "Image loader for Machine Learning pipelines (WIP)"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+
+[lib]
+name = "bimb"
+crate-type = ["cdylib"]
+
+[dependencies]
+image = "0.25.8"
+rayon = "1.11.0"
+walkdir = "2.5.0"
+pyo3 = { version = "0.27.0", features = ["extension-module", "abi3-py38"] }
+numpy = "0.27.0"
+rand = "0.8"
+crossbeam= "0.8"
+
+# v0.1.1: f32 buffer in rust, normalization moved to rust, equal full training speed vs pytorch (from 0.83x), 1.66x eager load speed
+# v0.1.2: pre-calculated normalization constants as multipliers, avoiding division in hotpath. +8k images/sec in eager load. 1.6x torch to 1.8x torch speed in eager load.
+# v0.1.3: parallelized buffer packing in fn _convert_images_to_buffer using .into_par_iter().map().unzip(). -- touching 1.9-1.98x torch speed on full eager load. ISSUE: testing doesnt account for cache warmup. fix in 0.1.4. also profile more deeply using pyspy because the small jump from 1.8-1.9x is underwhelming.
+# v0.1.4: added cache heating before timing eager loads in test-eager-load-only.py -- learned about this because in v0.1.3, heated caches caused faster timings shown in post-transform eager loads
+
+# v0.2.0: lazy loading added. bimb dataloader object added. functions impl for: new, get_next_batch, shuffle, __len__, get classmap. 0.514s pre-transform. 0.518s NCHW. pytorch 2.11s. on i310105f. 4.08x python
+# v0.2.1: native NCHW packing added to bimb. .permute(0,3,1,2) no longer needed in python. (and reverted changes from v0.3.0 prefetching. will do that in a separate branch.)
