@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "build"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ompute"
+version = "1.0.0"
+description = "Python package for Biological Omics Data Missing Value Imputation"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Sanjay S", email = "thy.sanjay@gmail.com" }]
+keywords = ["omics", "imputation", "proteomics", "metabolomics", "transcriptomics", "missing-value"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ompute", "ompute.*"]
+
+[project.optional-dependencies]
+full = [
+  "pandas>=2.0.0",
+  "numpy>=1.23.0",
+  "scikit-learn>=1.3.0",
+  "scipy>=1.10.0",
+  "statsmodels>=0.14.0",
+  "missingpy>=0.2.0",
+  "fancyimpute>=0.7.0",
+  "tensorflow>=2.12.0",
+  "pymc>=5.0.0",
+  "arviz>=0.16.0",
+  "tqdm>=4.66.0"
+]
+

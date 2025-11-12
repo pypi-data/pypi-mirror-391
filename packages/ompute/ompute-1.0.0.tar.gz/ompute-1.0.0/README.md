@@ -1,0 +1,108 @@
+# Ompute
+
+**Ompute** is a Python package for **omics data missing value imputation**, providing a unified interface to 22 individual and 10 Tribrid imputation models.
+Each model implements a reproducible classical, machine-learning, bayesian, or hybrid strategy to handle MCAR, MAR, and MNAR missing values in omics datasets.
+
+---
+
+## Imputation Model Details
+
+### Individual Imputation Models
+
+| Category | Model Name |
+|-----------|-------------|
+| **MCAR** | Mean Imputation |
+| **MCAR** | Median Imputation |
+| **MCAR** | Mode Imputation |
+| **MCAR** | Hot-Deck Imputation |
+| **MCAR** | KNN Imputation |
+| **MCAR** | MissForest Imputation |
+| **MCAR** | PPCA / BPCA |
+| **MCAR** | SVD / SoftImpute |
+| **MCAR** | Expectation-Maximization (EM) |
+| **MAR** | MICE / Iterative Imputer |
+| **MAR** | Linear / ElasticNet Regression Imputation |
+| **MAR** | Random Forest Regression Imputation |
+| **MAR** | Local Least Squares (LLS / LSA) |
+| **MAR** | SoftImpute (Matrix Completion) |
+| **MAR** | MissMDA (PCA Iterative) |
+| **MAR** | Bayesian Regression (DPR) |
+| **MAR** | Autoencoder Imputation |
+| **MNAR** | MinDet (Minimum Detection Limit) |
+| **MNAR** | MinProb (Minimum Probability) |
+| **MNAR** | Perseus Downshifted Normal |
+| **MNAR** | Truncated Normal Imputation |
+| **MNAR** | QRILC (Quantile Regression Imputation of Left-Censored) |
+
+---
+
+### Tribrid (Hybrid) Models
+
+| Model | MCAR Component | MAR Component | MNAR Component |
+|:------|:---------------|:---------------|:----------------|
+| **trb1** | KNN Imputation | MissForest Imputation | QRILC |
+| **trb2** | KNN Imputation | Random Forest Regression | QRILC |
+| **trb3** | Mean Imputation | MICE / Iterative Imputer | MinProb |
+| **trb4** | Median Imputation | Linear / ElasticNet Regression | Perseus Downshifted Normal |
+| **trb5** | Mode Imputation | MissForest Imputation | MinDet |
+| **trb6** | Hot-Deck Imputation | Local Least Squares (LLS / LSA) | Truncated Normal Imputation |
+| **trb7** | KNN Imputation | MissForest Imputation | Perseus Downshifted Normal |
+| **trb8** | SVD / SoftImpute | MissMDA (PCA Iterative) | QRILC |
+| **trb9** | PPCA / BPCA | MICE / Iterative Imputer | MinProb |
+| **trb10** | KNN Imputation | Random Forest Regression | MinDet |
+
+---
+## Input and Experimental Design Structure
+
+### 1. Input File (`input.csv`)
+
+The package **accepts only CSV files** as input.  
+The `input.csv` file can contain both **metadata columns** (e.g., `Gene`, `Protein`, `Protein Description`) and **data columns** (quantitative features such as intensities or expression values) to be considered for imputation.  
+Only the **data columns** specified in the experimental design file (`expdes.csv`) will be subjected to imputation.
+
+---
+
+### 2. Experimental Design File (`expdes.csv`)
+
+The `expdes.csv` file defines the structure and mapping between metadata and data columns for imputation.  
+It guides the imputation pipeline by indicating which columns in the input file correspond to biological metadata and which correspond to numeric data values.
+
+#### Example:
+| Column Name | Group | Replicate |
+|--------------|--------|------------|
+| Control | Control | 1 |
+| Control | Control | 2 |
+| Control | Control | 3 |
+| TreatmentA1 | Test1 | 1 |
+| TreatmentA2 | Test1 | 2 |
+| TreatmentA3 | Test1 | 3 |
+| TreatmentB1 | Test2 | 1 |
+| TreatmentB2 | Test2 | 2 |
+| TreatmentB3 | Test2 | 3 |
+
+---
+
+### 3. Notes
+
+- Both `input.csv` and `expdes.csv` must have **matching column names** for imputation and are **case-sensitive**.  
+- Missing values (`NaN` / `0` / blank) in data columns are imputed by the selected model.  
+- Other metadata columns remain same and reflected as it is conserving the original file structure.
+- The package expects all input files in **comma-separated CSV format** with headers.
+
+## Usage
+
+Each model can be executed directly as a function once the package is installed.
+
+```python
+import ompute
+
+# Example 1: Run an individual model
+ompute.knn(i="data/input.csv", d="data/expdes.csv", o="/results")
+
+# Example 2: Run a Tribrid model
+ompute.trb1(i="data/input.csv", d="data/expdes.csv", o="/results")
+
+# Example 3: Get imputed data as a pandas DataFrame
+df = ompute.mean(i="data/input.csv", d="data/expdes.csv", o="/results", return_df=True)
+
+
