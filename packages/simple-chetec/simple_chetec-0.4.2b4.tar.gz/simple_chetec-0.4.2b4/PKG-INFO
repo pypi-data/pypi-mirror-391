@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: simple-chetec
+Version: 0.4.2b4
+Summary: Stellar Interpretation for Meteoritic data and PLotting (for Everyone)
+Author-email: Mattias Ek <mattias.ek@pm.me>
+License-Expression: LGPL-3.0-or-later
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: numpy>=1.22
+Requires-Dist: matplotlib>=3.5
+Requires-Dist: scipy>=1.8
+Requires-Dist: h5py>=3.6
+Requires-Dist: pyyaml>=5.4
+Provides-Extra: dev
+Requires-Dist: ipykernel; extra == "dev"
+Requires-Dist: nugridpy; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: coverage[toml]; extra == "dev"
+Requires-Dist: nox; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: coverage[toml]; extra == "test"
+Provides-Extra: docs
+Requires-Dist: mkdocs==1.6.1; extra == "docs"
+Requires-Dist: mkdocs-material; extra == "docs"
+Requires-Dist: mkdocstrings==0.26.1; extra == "docs"
+Requires-Dist: mkdocstrings-python==1.11.1; extra == "docs"
+Requires-Dist: mkdocs-gen-files; extra == "docs"
+Requires-Dist: mkdocs-jupyter==0.25; extra == "docs"
+Requires-Dist: pymdown-extensions; extra == "docs"
+Dynamic: license-file
+
+# Stellar Interpretation for Meteoritic data and PLotting (for Everyone) - SIMPLE
+This is a development version of the SIMPLE package.
+
+This project is licensed under the GNU Lesser General Public License v3.0 or later (LGPLv3+).
+
+## Stable
+[![Tests](https://github.com/mattias-ek/SIMPLE/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/mattias-ek/SIMPLE/actions/workflows/tests.yml)
+[![Build & Release](https://github.com/mattias-ek/SIMPLE/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/mattias-ek/SIMPLE/actions/workflows/release.yml)
+[![PyPI](https://img.shields.io/pypi/v/simple-chetec.svg)](https://pypi.org/project/simple-chetec/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/simple-chetec.svg)
+![PyPI - License](https://img.shields.io/pypi/l/simple-chetec.svg)
+
+
+This latest release of the stable version of SIMPLE. Documentation for this version can be 
+found [here](https://mattias-ek.github.io/SIMPLE/).
+
+To install this version use
+```
+pip install simple-chetec
+```
+
+or, to upgrade use 
+
+```
+pip install --upgrade simple-chetec
+```
+
+## Pre-release
+[![Tests](https://github.com/mattias-ek/SIMPLE/actions/workflows/tests.yml/badge.svg?branch=staging)](https://github.com/mattias-ek/SIMPLE/actions/workflows/tests.yml)
+[![Build & Release](https://github.com/mattias-ek/SIMPLE/actions/workflows/release.yml/badge.svg?branch=staging)](https://github.com/mattias-ek/SIMPLE/actions/workflows/release.yml)
+[![codecov](https://codecov.io/gh/mattias-ek/SIMPLE/branch/staging/graph/badge.svg?token=tOp92fxmeF)](https://codecov.io/gh/mattias-ek/SIMPLE)
+[![PyPI](https://img.shields.io/pypi/v/simple-chetec.svg?include_prereleases)](https://pypi.org/project/simple-chetec/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/simple-chetec.svg?include_prereleases)
+![PyPI - License](https://img.shields.io/pypi/l/simple-chetec.svg?include_prereleases)
+
+
+The pre-release version of SIMPLE includes features and fixes ahead of stable, but may 
+also be less reliable. Documentation for the pre-release version can be found [here](https://mattias-ek.github.io/SIMPLE/pre-release/)
+
+
+To install this version use
+```
+pip install --pre simple-chetec
+```
+
+or to upgrade use, 
+
+```
+pip install --upgrade --pre simple-chetec
+```
