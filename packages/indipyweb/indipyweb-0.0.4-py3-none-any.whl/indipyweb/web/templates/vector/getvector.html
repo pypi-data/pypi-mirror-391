@@ -1,0 +1,83 @@
+
+
+## getvector.html - Shows a vector
+
+
+<%page args="vectorobj, timestamp, loggedin, blobfolder, message_timestamp"/>
+
+
+
+ <div class="w3-row w3-border-top">
+  <div class="w3-container w3-threequarter">
+    <h3>${vectorobj.label|h}</h3>
+  </div>
+  % if vectorobj.state == "Ok":
+      <div id="state_${vectorobj.itemid}" class="w3-container w3-quarter w3-green">
+  % elif vectorobj.state == "Busy":
+      <div id="state_${vectorobj.itemid}" class="w3-container w3-quarter w3-yellow">
+  % elif vectorobj.state == "Alert":
+      <div id="state_${vectorobj.itemid}" class="w3-container w3-quarter w3-red">
+  % else:
+      <div id="state_${vectorobj.itemid}" class="w3-container w3-quarter">
+  % endif
+
+  % if timestamp:
+    <p>State ${timestamp|h} : ${vectorobj.state|h}</p>
+  % else:
+    <p>State : ${vectorobj.state|h}</p>
+  % endif
+  </div>
+</div>
+
+  <div class="w3-container">
+    % if vectorobj.message:
+       % if message_timestamp:
+          <p>${message_timestamp|h} : ${vectorobj.message|h}</p>
+       % else:
+          <p>${vectorobj.message|h}</p>
+       % endif
+    % else:
+       <p>Message: Waiting...</p>
+    % endif
+  </div>
+
+% if vectorobj.perm != "ro" and loggedin and vectorobj.vectortype != "BLOBVector":
+ <form hx-post="/vector/submit/${vectorobj.itemid}" hx-target="#result_${vectorobj.itemid}">
+% endif
+
+ % for memberobj in sorted(vectorobj.members().values(), key=lambda memberobj: memberobj.label):
+    ## For each member, sorted by member label
+    % if vectorobj.vectortype == "LightVector":
+      <%include file="lightmember.html" args="vectorobj=vectorobj, memberobj=memberobj, loggedin=loggedin"/>
+    % elif vectorobj.vectortype == "TextVector":
+      <%include file="textmember.html" args="vectorobj=vectorobj, memberobj=memberobj, loggedin=loggedin"/>
+    % elif vectorobj.vectortype == "NumberVector":
+      <%include file="numbermember.html" args="vectorobj=vectorobj, memberobj=memberobj, loggedin=loggedin"/>
+    % elif vectorobj.vectortype == "SwitchVector":
+      <%include file="switchmember.html" args="vectorobj=vectorobj, memberobj=memberobj, loggedin=loggedin"/>
+    % elif vectorobj.vectortype == "BLOBVector":
+      <%include file="blobmember.html" args="vectorobj=vectorobj, memberobj=memberobj, loggedin=loggedin, blobfolder=blobfolder"/>
+    % endif
+ % endfor
+
+% if vectorobj.perm != "ro" and loggedin and vectorobj.vectortype != "BLOBVector":
+
+  <div class="w3-row w3-panel">
+    <div id="result_${vectorobj.itemid}" class="w3-container w3-threequarter">
+       <p></p>
+    </div>
+    <div class="w3-container w3-quarter">
+       <button  class="w3-button w3-black w3-ripple w3-round" type="submit">
+         Submit
+       </button>
+    </div>
+  </div>
+</form>
+
+% else:
+
+ <div id="result_${vectorobj.itemid}" class="w3-panel">
+   <p></p>
+ </div>
+
+% endif
