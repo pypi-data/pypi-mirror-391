@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(jlpm list:*)",
+      "Bash(jlpm install:*)",
+      "Bash(jlpm build)",
+      "Bash(jlpm lint:check:*)",
+      "Bash(jlpm prettier:*)",
+      "Bash(jlpm eslint:check:*)",
+      "Bash(jupyter labextension:*)",
+      "Bash(find:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(jlpm build:labextension:*)",
+      "Bash(rm:*)",
+      "Bash(jlpm run lint:check:*)",
+      "Bash(jlpm run lint:*)",
+      "Bash(jlpm run test:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(pip install:*)",
+      "Bash(python -m build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
