@@ -1,0 +1,147 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    CENTIMATORS 0.2.0 FEATURE OVERVIEW                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🤖 LLM-POWERED ESTIMATORS                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+DSPyMator (⭐ FLAGSHIP FEATURE)
+├─ Scikit-learn wrapper for DSPy LLM modules
+├─ Automatic prompt optimization (GEPA, BootstrapFewShot, MIPROv2)
+├─ Async execution with bounded concurrency
+├─ predict() for targets, transform() for full reasoning chains
+├─ Dataframe-agnostic (pandas/polars/numpy)
+└─ Comprehensive tutorial notebook included
+
+KerasCortex
+├─ Self-improving neural network meta-estimator
+├─ Uses LLMs to iteratively refine Keras architectures
+├─ Maintains performance history across iterations
+└─ Automated architecture search
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📊 NEW FEATURE TRANSFORMERS                                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+EmbeddingTransformer
+├─ Text and categorical feature embeddings via DSPy
+├─ Supports hosted models (OpenAI) and local models (SentenceTransformers)
+├─ Categorical mapping with custom templates
+├─ Batch processing with configurable sizes
+└─ Sklearn-compatible expanded output columns
+
+DimReducer
+├─ Unified interface for dimensionality reduction
+├─ Methods: PCA, t-SNE, UMAP
+├─ Consistent API across all methods
+└─ Proper fit/transform separation
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🧮 CUSTOM LOSS FUNCTIONS                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+SpearmanCorrelation
+├─ Differentiable Spearman rank correlation loss
+├─ Soft ranking via sigmoid approximation
+├─ Configurable regularization strength
+└─ Ideal for ranking tasks
+
+CombinedLoss
+├─ Weighted combination of MSE + Spearman
+├─ Balances absolute accuracy with rank preservation
+└─ Perfect for financial modeling
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🏗️ ADDITIONAL KERAS ESTIMATORS                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+LSTMRegressor
+├─ Long Short-Term Memory regression
+├─ Keras 3 with multi-backend support (JAX/TF/PyTorch)
+├─ Sklearn-compatible API with metadata routing
+└─ Automatic input reshaping for sequences
+
+BottleneckEncoder
+├─ Autoencoder with bottleneck architecture
+├─ Symmetric encoder-decoder structure
+└─ Non-linear dimensionality reduction
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📚 DOCUMENTATION & INFRASTRUCTURE                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Documentation
+├─ DSPyMator tutorial notebook (sentiment analysis example)
+├─ User guides for all major features
+├─ Enhanced API documentation
+└─ Improved navigation structure
+
+Package Structure
+├─ Lazy loading for optional dependencies
+├─ Better error messages for missing dependencies
+├─ Optional dependency groups: keras-jax, dspy, all
+└─ Improved import organization
+
+Testing & CI
+├─ Pre-commit hooks with Ruff
+├─ Coverage tracking with pytest-cov
+└─ Enhanced GitHub Actions workflows
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                            INSTALLATION                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Core (transformers only):
+    uv add centimators
+
+With LLM capabilities (DSPyMator, KerasCortex, EmbeddingTransformer):
+    uv add 'centimators[dspy]'
+
+With neural networks (MLPRegressor, LSTMRegressor, etc.):
+    uv add 'centimators[keras-jax]'
+
+Everything:
+    uv add 'centimators[all]'
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          QUICK EXAMPLE                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+import dspy
+from centimators.model_estimators import DSPyMator
+
+# Create LLM-powered classifier
+program = dspy.ChainOfThought("review -> sentiment, confidence")
+estimator = DSPyMator(program=program, target_names=["sentiment", "confidence"])
+
+# Optimize prompts automatically
+gepa = dspy.GEPA(metric=my_metric, auto='light')
+estimator.fit(X_train, y_train, optimizer=gepa, validation_data=0.2)
+
+# Predict with optimized LLM
+predictions = estimator.predict(X_test)
+
+# Get full reasoning chains
+full_output = estimator.transform(X_test)
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                        KEY DIFFERENTIATORS                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+✨ Only library that brings LLMs to sklearn pipelines with automatic optimization
+✨ Dataframe-agnostic via narwhals (pandas/polars/numpy)
+✨ Multi-framework neural networks (JAX/TensorFlow/PyTorch)
+✨ Built for competitions (Kaggle, Numerai, CrowdCent)
+✨ Production-ready code quality
+✨ Fully backward compatible with 0.1.x
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                           RESOURCES                                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📖 Documentation: https://crowdcent.github.io/centimators/
+📓 Tutorial: https://crowdcent.github.io/centimators/tutorials/dspymator/
+🐙 GitHub: https://github.com/crowdcent/centimators
+📦 PyPI: https://pypi.org/project/centimators/
+
