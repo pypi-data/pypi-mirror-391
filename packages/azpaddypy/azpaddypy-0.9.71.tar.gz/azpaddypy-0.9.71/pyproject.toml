@@ -1,0 +1,98 @@
+[project]
+name = "azpaddypy"
+version = "0.9.71"
+description = "Comprehensive Python logger for Azure, integrating OpenTelemetry for advanced, structured, and distributed tracing."
+readme = "README.md"
+requires-python = ">=3.11.10,<3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "azure-monitor-opentelemetry==1.6.10",
+    "azure-identity==1.23.0",
+    "azure-keyvault-secrets==4.10.0",
+    "azure-keyvault-keys==4.11.0",
+    "azure-keyvault-certificates==4.10.0",
+    "azure-storage-blob==12.25.1",
+    "azure-storage-file-share==12.21.0",
+    "azure-storage-queue==12.12.0",
+    "azure-cosmos==4.9.0",
+    "chardet==5.2.0",
+    "fastmcp==2.12.4",
+    "azure-mgmt-resource==24.0.0",
+    "azure-mgmt-storage==23.1.0",
+    "azure-mgmt-cosmosdb==9.8.0",
+    "azure-functions==1.22.1",
+    "azure-ai-projects==1.0.0",
+    "pytest==8.4.2"
+]
+
+[project.optional-dependencies]
+dev = [
+    "azure-cosmos==4.9.0",
+    "pytest==8.4.2",
+    "pytest-cov==7.0.0",
+    "pytest-asyncio==1.2.0",
+    "anyio==4.9.0",
+    "jupyter==1.1.1",
+    "ipykernel==7.0.1",
+    "pytest-profiling==1.7.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+addopts = """
+    -p asyncio
+    --asyncio-mode strict
+    --strict-markers
+    --strict-config
+    --durations=10
+    --durations-min=1.0
+    -ra
+    --tb=short
+    --color=yes
+"""
+
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "contract: marks tests as contract tests (test behavior contracts)",
+    "performance: marks tests as performance tests (timing assertions)",
+    "caching: marks tests that verify caching behavior",
+    "async_test: marks tests that use async/await",
+]
+
+[tool.coverage.run]
+source = ["azpaddypy"]
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/site-packages/*",
+]
+branch = true
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[dependency-groups]
+dev = [
+    "pyright==1.1.407",
+]
