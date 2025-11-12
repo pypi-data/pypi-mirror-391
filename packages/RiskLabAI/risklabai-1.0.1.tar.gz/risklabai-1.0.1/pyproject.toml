@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "RiskLabAI"
+version = "1.0.1"
+authors = [
+    { name = "RiskLab", email = "arian@risklab.ai" },
+]
+description = "Financial AI using Python, based on 'Advances in Financial Machine Learning' and 'Machine Learning for Asset Managers'."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+keywords = [
+    "finance",
+    "machine learning",
+    "quantitative finance",
+    "fintech",
+    "de prado",
+    "backtesting",
+]
+
+# --- CORE DEPENDENCIES ---
+# These are fast to install and essential for the library's main functions.
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "statsmodels",
+    "numba",
+    "joblib",
+    "ta",
+]
+
+# --- OPTIONAL DEPENDENCIES ---
+# These are installed on-demand by users, e.g., pip install RiskLabAI[pde]
+[project.optional-dependencies]
+pde = ["torch"]
+synth = ["quantecon"]
+plot = ["matplotlib", "seaborn" , "plotly"]
+dev = [
+    "yfinance",
+    "memory_profiler",
+    "jupyterlab",
+    "stable-baselines3",
+    "gymnasium",
+    "torchvision", # Often needed with torch
+    "torchaudio",  # Often needed with torch
+]
+all = [
+    "RiskLabAI[pde]",
+    "RiskLabAI[synth]",
+    "RiskLabAI[plot]",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/RiskLabAI/RiskLabAI.py"
+"Bug Tracker" = "https://github.com/RiskLabAI/RiskLabAI.py/issues"
+Changelog = "https://github.com/RiskLabAI/RiskLabAI.py/releases"
+
+# --- ENTRY POINT ---
+# This was moved from setup.cfg
+[project.scripts]
+RiskLabAI = "RiskLabAI.app:entry_point"
