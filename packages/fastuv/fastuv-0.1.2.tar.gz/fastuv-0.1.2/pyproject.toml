@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fastuv"
+version = "0.1.2"
+description = "Fast UV installer with China mirrors pre-configured - 预配置国内源的快速 uv 安装器"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    {name = "whillhill", email = "ooooofish@126.com"},
+]
+keywords = ["uv", "python", "package-manager", "china", "mirror", "fast"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Installation/Setup",
+]
+dependencies = []
+
+[project.urls]
+"Homepage" = "https://github.com/whillhill/fastuv"
+"Bug Reports" = "https://github.com/whillhill/fastuv/issues"
+"Source" = "https://github.com/whillhill/fastuv"
+
+[project.scripts]
+fastuv = "fastuv.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black",
+    "isort",
+    "mypy",
+]
+
+[tool.hatch.build]
+include = [
+    "src/fastuv/templates/*",
+    "src/fastuv/hooks/*",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fastuv"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/README.md",
+    "/LICENSE",
+]
