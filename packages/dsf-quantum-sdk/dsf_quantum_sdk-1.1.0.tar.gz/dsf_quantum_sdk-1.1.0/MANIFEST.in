@@ -1,0 +1,27 @@
+# MANIFEST.in
+# Include important files in the source distribution
+
+# Documentation
+include README.md
+include LICENSE
+
+# Configuration
+include pyproject.toml
+
+# Exclude unnecessary files from distribution
+exclude .gitignore
+exclude .github
+exclude *.pyc
+exclude *.pyo
+exclude *~
+exclude .DS_Store
+
+# Exclude directories
+recursive-exclude tests *
+recursive-exclude docs *
+recursive-exclude examples *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .DS_Store
+recursive-exclude * *.so
+recursive-exclude * *.dylib
