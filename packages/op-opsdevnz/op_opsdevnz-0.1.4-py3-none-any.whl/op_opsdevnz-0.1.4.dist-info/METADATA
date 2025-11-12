@@ -1,0 +1,113 @@
+Metadata-Version: 2.4
+Name: op-opsdevnz
+Version: 0.1.4
+Summary: OpsDev.nz helpers for resolving 1Password secrets with Service Account + CLI fallback.
+Author-email: "OpsDev.nz Platform Engineering" <john@opsdev.nz>
+Maintainer-email: "OpsDev.nz Platform Engineering" <john@opsdev.nz>
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/startmeup-nz/op-opsdevnz
+Project-URL: Source, https://github.com/startmeup-nz/op-opsdevnz
+Project-URL: Issues, https://github.com/startmeup-nz/op-opsdevnz/issues
+Keywords: 1password,secrets,octodns,opsdevnz
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Security
+Classifier: Topic :: System :: Systems Administration
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: onepassword-sdk>=0.3.1
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: build>=1.2.2; extra == "dev"
+Requires-Dist: mypy>=1.12.0; extra == "dev"
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.14.0; extra == "dev"
+Requires-Dist: ruff>=0.6.5; extra == "dev"
+Requires-Dist: twine>=5.1.1; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=8.3.0; extra == "test"
+Requires-Dist: pytest-mock>=3.14.0; extra == "test"
+Dynamic: license-file
+
+# op-opsdevnz
+
+[![CI](https://github.com/startmeup-nz/op-opsdevnz/actions/workflows/ci.yml/badge.svg)](https://github.com/startmeup-nz/op-opsdevnz/actions/workflows/ci.yml)
+
+Python package for resolving 1Password `op://` secrets across CI service accounts and developer workstations, plus a CLI fallback that depends on the authenticated 1Password CLI binary. Keeps OctoDNS and other automation workflows secret-free. Packaged for reuse by OpsDev.nz, a platform engineering collective sponsored by StartMeUp.nz.
+
+## Features
+
+- Resolve `op://` references via the official Service Account SDK with optional
+  CLI fallback for local workflows.
+- Rich error handling plus an API that can return the secret value *and* which
+  resolver was used.
+- Environment override helpers for CI sandboxes/tests.
+- OctoDNS hook (`opsdevnz.octodns_hooks.resolve`) for the Metaname provider.
+- Small CLI (`op-opsdevnz resolve …`) that mirrors the `resolve_secret()`
+  helper so shell scripts match the Python API semantics.
+
+## Installation
+
+```bash
+# editable install while developing locally
+pip install -e modules/op_opsdevnz
+
+# latest release from PyPI
+pip install op-opsdevnz
+
+# or install straight from GitHub if you need main branch changes
+pip install git+https://github.com/startmeup-nz/op-opsdevnz.git
+```
+
+## Usage
+
+```python
+from opsdevnz.onepassword import resolve_secret
+
+result = resolve_secret(
+    secret_ref_env="METANAME_API_TOKEN_REF",
+    env_override="METANAME_API_TOKEN",
+)
+print(result.value, result.source)  # -> ('***', 'sdk' | 'cli' | 'env')
+```
+
+CLI equivalent:
+
+```bash
+op-opsdevnz resolve --ref "op://Vault/Item/Field" --show-source
+op-opsdevnz resolve --ref-env METANAME_API_TOKEN_REF --env-override METANAME_API_TOKEN
+```
+
+### OctoDNS Hook
+
+Set the resolver environment variable so the OctoDNS Metaname provider can load
+the helper automatically:
+
+```bash
+export OCTODNS_METANAME_SECRET_RESOLVER="op_opsdevnz.octodns_hooks:resolve"
+```
+
+## Development
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .[dev]
+make check
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and
+[RELEASING.md](RELEASING.md) for publishing instructions.
+
+## License
+
+Apache-2.0 © OpsDev.nz
