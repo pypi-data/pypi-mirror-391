@@ -1,0 +1,126 @@
+[project]
+name = "FastSQLA"
+version = "0.5.0"
+description = "SQLAlchemy extension for FastAPI that supports asynchronous sessions and includes built-in pagination."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Hadrien David", email = "h@driendavid.com" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: AsyncIO",
+    "Framework :: FastAPI",
+    "Framework :: Pydantic :: 2",
+    "Framework :: Pydantic",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python",
+    "Programming Language :: SQL",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development",
+    "Typing :: Typed",
+]
+keywords = ["FastAPI", "SQLAlchemy", "AsyncIO"]
+dependencies = ["fastapi>=0.115.6", "sqlalchemy[asyncio]>=2.0.37", "structlog>=24.4.0"]
+
+[project.urls]
+Homepage = "https://github.com/hadrien/fastsqla"
+Documentation = "https://github.com/hadrien/fastsqla"
+Repository = "https://github.com/hadrien/fastsqla"
+Issues = "https://github.com/hadrien/fastsqla/issues"
+Changelog = "https://github.com/hadrien/fastsqla/releases"
+
+[tool.setuptools]
+license-files = []
+
+[project.optional-dependencies]
+docs = [
+    "mkdocs-glightbox>=0.4.0",
+    "mkdocs-llmstxt>=0.2.0",
+    "mkdocs-material>=9.5.50",
+    "mkdocstrings[python]>=0.27.0",
+]
+sqlmodel = ["sqlmodel>=0.0.22"]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "asgi-lifespan>=2.1.0",
+    "coverage>=7.6.1",
+    "faker>=28.4.1",
+    "httpx>=0.27.2",
+    "pytest>=8.3.2",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=5.0.0",
+    "pytest-watch",
+    "ruff>=0.6.4",
+    "toml>=0.10.2",
+    "aiosqlite>=0.20.0",
+    "python-semantic-release>=9.8.8",
+    "twine>=5.1.1",
+    "pdbpp>=0.11.7",
+]
+
+[tool.uv.sources]
+pytest-watch = { git = "https://github.com/styleseat/pytest-watch", rev = "0342193" }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = ["ignore::DeprecationWarning:"]
+
+[tool.coverage.run]
+branch = true
+omit = ["tests/*", ".venv/*"]
+concurrency = ["thread", "greenlet"]
+
+[tool.semantic_release.remote.token]
+env = "GH_TOKEN"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+allow_zero_version = true
+
+[tool.semantic_release.changelog]
+mode = "init"
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "./docs/changelog.md"
+
+[tool.tox]
+envlist = ["sqlmodel", "fastapi-pre121", "fastapi-post121"]
+
+[tool.tox.env_run_base]
+runner = "uv-venv-runner"
+commands = [
+    [
+        "pytest",
+        "--cov",
+        "fastsqla",
+        "--cov-report=term-missing",
+        "--cov-report=xml",
+    ],
+]
+allowlist_externals = ["pytest", "pip"]
+
+[tool.tox.env.sqlmodel]
+extras = ["sqlmodel"]
+
+[tool.tox.env.fastapi-pre121]
+commands_pre = [["pip", "install", "-U", "fastapi<0.121"]]
+
+[tool.tox.env.fastapi-post121]
+commands_pre = [["pip", "install", "-U", "fastapi>=0.121"]]
