@@ -1,0 +1,30 @@
+[project]
+name = "autolook_api"
+version = "0.2.0"
+authors = [
+  { name="Autolook", email="autolook.al@proton.me" },
+]
+description = "Official API wrapper client for the autolook.al service"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "aiohttp>=3",
+    "typing-extensions>=4",
+    "backports.zstd>=1",
+    "Brotli>=1",
+    "colorlog>=6",
+    "colorama>=0.4",
+    "python-dotenv>=1",
+]
+
+[project.urls]
+Homepage = "https://autolook.al"
+GitHub = "https://github.com/AutolookOrg/autolook-api-py"
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
