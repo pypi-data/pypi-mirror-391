@@ -1,0 +1,23 @@
+[project]
+name = "fairyex"
+description = "FairyEx - FEErical Extraction"
+authors = [
+    {name="Harry Ung"},
+]
+readme = "README.md"
+version = "0.1.3"
+
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "polars",
+    "pyarrow",
+]
+
+[tool.setuptools.packages.find]
+include = ["fairyex", "fairyex.kernel"]
+
+[project.urls]
+Documentation = "https://codacave.gitlab.io/fairyex/"
+Repository = "https://gitlab.com/CodaCave/fairyex"
