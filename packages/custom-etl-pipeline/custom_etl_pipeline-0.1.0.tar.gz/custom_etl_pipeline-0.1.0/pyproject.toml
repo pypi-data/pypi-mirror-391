@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "custom-etl-pipeline"
+version = "0.1.0"
+description = "Modular ETL logic for Alteryx"
+authors = [{ name = "Youssef", email = "youssefaferdou90@gmail.com" }]
+dependencies = [
+    "pandas",
+    "python-dotenv",
+    "sqlite3"
+]
+
+[tool.setuptools]
+packages = ["extract", "load", "transform", "parsing", "DB", "config"]
