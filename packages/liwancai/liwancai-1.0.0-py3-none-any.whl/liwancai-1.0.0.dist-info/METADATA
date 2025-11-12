@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: liwancai
+Version: 1.0.0
+Summary: liwancai的个人工具包
+Home-page: https://github.com/liwancai/liwancai
+Author: liwancai
+Author-email: liwancai@example.com
+Keywords: tools utilities data-analysis logging database
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.16.0
+Requires-Dist: pandas>=0.24.0
+Requires-Dist: logbook>=1.5.3
+Requires-Dist: requests>=2.22.0
+Requires-Dist: tqdm>=4.32.0
+Requires-Dist: prettytable>=0.7.2
+Requires-Dist: toml>=0.10.0
+Requires-Dist: pymysql>=1.0.0
+Requires-Dist: sshtunnel>=0.4.0
+
+
+liwancai的个人工具包
+
+这个包包含了数据分析、日志处理、数据库连接等常用功能模块。
+
+主要模块包括：
+- EQDBLinks: 数据库连接相关功能
+- EQStructure: 数据结构定义
+- EQUseApi: API调用封装
+- Functions: 通用工具函数
+- MainBase: 基础类
+- THSFuncs: 同花顺相关功能
