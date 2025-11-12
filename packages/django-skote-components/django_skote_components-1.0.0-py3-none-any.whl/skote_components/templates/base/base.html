@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Dashboard{% endblock %} | {% block site_name %}Skote Admin{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="{% block meta_description %}Premium Multipurpose Admin & Dashboard Template{% endblock %}" name="description">
+    <meta content="{% block meta_author %}Themesbrand{% endblock %}" name="author">
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'skote/images/favicon.ico' %}">
+
+    <!-- Bootstrap Css -->
+    <link href="{% static 'skote/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css">
+    <!-- Icons Css -->
+    <link href="{% static 'skote/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+    <!-- App Css-->
+    <link href="{% static 'skote/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body data-sidebar="{% block sidebar_theme %}light{% endblock %}">
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+        
+        {% block header %}
+            {% include 'layouts/header.html' %}
+        {% endblock header %}
+            
+        
+        {% block sidebar %}
+            {% include 'layouts/sidebar.html' %}
+        {% endblock sidebar %}
+            
+
+        <!-- Start right Content here -->
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+
+                    {% block page_title %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                                <h4 class="mb-sm-0 font-size-18">{% block page_heading %}Dashboard{% endblock %}</h4>
+
+                                {% block breadcrumb %}
+                                <div class="page-title-right">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                                        <li class="breadcrumb-item active">{% block breadcrumb_active %}Dashboard{% endblock %}</li>
+                                    </ol>
+                                </div>
+                                {% endblock breadcrumb %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endblock page_title %}
+
+                    {% block content %}
+                    {% endblock content %}
+
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            
+            {% block footer %}
+                {% include 'layouts/footer.html' %}
+            {% endblock footer %}
+                
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+
+    
+    {% block right_sidebar %}
+        {% include 'layouts/right_sidebar.html' %}
+    {% endblock right_sidebar %}
+
+    
+    {% block components %}
+        
+    {% endblock components %}
+        
+        
+
+    <!-- Right bar overlay-->
+    <div class="rightbar-overlay"></div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'skote/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'skote/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'skote/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'skote/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'skote/libs/node-waves/waves.min.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
+
+    <script src="{% static 'skote/js/app.js' %}"></script>
+
+    {% block inline_js %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<div class="accordion{% if flush %} accordion-flush{% endif %}" id="{{ accordion_id }}">
+    {% for item in items %}
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+            <button class="accordion-button{% if not item.active %} collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ accordion_id }}{{ forloop.counter }}" aria-expanded="{% if item.active %}true{% else %}false{% endif %}" aria-controls="collapse{{ accordion_id }}{{ forloop.counter }}">
+                {{ item.title }}
+            </button>
+        </h2>
+        <div id="collapse{{ accordion_id }}{{ forloop.counter }}" class="accordion-collapse collapse{% if item.active %} show{% endif %}" aria-labelledby="heading{{ forloop.counter }}"{% if not always_open %} data-bs-parent="#{{ accordion_id }}"{% endif %}>
+            <div class="accordion-body">
+                {{ item.content|safe }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

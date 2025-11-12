@@ -1,0 +1,127 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Two Step Verification 2 | Skote - Admin & Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'skote/images/favicon.ico' %}">
+
+    <!-- Bootstrap Css -->
+    <link href="{% static 'skote/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{% static 'skote/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{% static 'skote/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="card overflow-hidden">
+                        <div class="bg-primary bg-soft">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="text-primary p-4 text-center">
+                                        <h5 class="text-primary">Verify Account</h5>
+                                        <p>Enter the verification code.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div>
+                                <a href="{% url 'home' %}">
+                                    <div class="avatar-md profile-user-wid mb-4">
+                                        <span class="avatar-title rounded-circle bg-light">
+                                            <img src="{% static 'skote/images/logo.svg' %}" alt="" class="rounded-circle" height="34">
+                                        </span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="p-2">
+                                <form method="POST" action="{% url 'two_step_verify' %}">
+                                    {% csrf_token %}
+                                    <div class="text-center">
+
+                                        <div class="avatar-md mx-auto">
+                                            <div class="avatar-title rounded-circle bg-light">
+                                                <i class="bx bxs-lock-open h1 mb-0 text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="p-2 mt-4">
+                                            <h4>Verify your account</h4>
+                                            <p class="mb-5">Please enter the 4 digit code sent to <span class="fw-semibold">{{ email|default:"example@abc.com" }}</span></p>
+
+                                            <div class="row">
+                                                <div class="col-3">
+                                                    <div class="mb-3">
+                                                        <label for="digit1-input" class="visually-hidden">Digit 1</label>
+                                                        <input type="text" class="form-control form-control-lg text-center two-step" maxLength="1" data-value="1" id="digit1-input" name="digit1">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <div class="mb-3">
+                                                        <label for="digit2-input" class="visually-hidden">Digit 2</label>
+                                                        <input type="text" class="form-control form-control-lg text-center two-step" maxLength="1" data-value="2" id="digit2-input" name="digit2">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <div class="mb-3">
+                                                        <label for="digit3-input" class="visually-hidden">Digit 3</label>
+                                                        <input type="text" class="form-control form-control-lg text-center two-step" maxLength="1" data-value="3" id="digit3-input" name="digit3">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-3">
+                                                    <div class="mb-3">
+                                                        <label for="digit4-input" class="visually-hidden">Digit 4</label>
+                                                        <input type="text" class="form-control form-control-lg text-center two-step" maxLength="1" data-value="4" id="digit4-input" name="digit4">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <button class="btn btn-success w-md" type="submit">Confirm</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="mt-5 text-center">
+                        <p>Didn't receive a code ? <a href="{% url 'resend_code' %}" class="fw-medium text-primary"> Resend </a> </p>
+                        <p>© <script>document.write(new Date().getFullYear())</script> Skote. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'skote/libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'skote/libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'skote/libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'skote/libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'skote/libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- two-step-verification -->
+    <script src="{% static 'skote/js/pages/two-step-verification.init.js' %}"></script>
+
+    <!-- App js -->
+    <script src="{% static 'skote/js/app.js' %}"></script>
+</body>
+
+</html>

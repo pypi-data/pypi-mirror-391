@@ -1,0 +1,42 @@
+{% load static %}
+<!-- ========== Left Sidebar Start ========== -->
+<div class="vertical-menu">
+    <div data-simplebar class="h-100">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+
+                {% block sidebar_menu %}
+                <li class="menu-title">Menu</li>
+
+                <li>
+                    <a href="{% url 'home' %}" class="waves-effect">
+                        <i class="bx bx-home-circle"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                {% comment %}
+                <!-- Example multi-level menu -->
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bx-store"></i>
+                        <span>Ecommerce</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{% url 'products' %}">Products</a></li>
+                        <li><a href="{% url 'orders' %}">Orders</a></li>
+                    </ul>
+                </li>
+                {% endcomment %}
+
+                {% endblock sidebar_menu %}
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

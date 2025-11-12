@@ -1,0 +1,5 @@
+<div class="placeholder-{{ animation }}">
+    {% for i in "x"|rjust:lines %}
+    <span class="placeholder{% if size %} placeholder-{{ size }}{% endif %}{% if color %} bg-{{ color }}{% endif %}" style="width: {{ width }};{% if height != 'auto' %} height: {{ height }};{% endif %}"></span>
+    {% endfor %}
+</div>

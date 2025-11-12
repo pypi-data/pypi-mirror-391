@@ -1,0 +1,26 @@
+<div class="btn-group{% if direction != 'down' %} drop{{ direction }}{% endif %}">
+    {% if split %}
+    <button type="button" class="btn btn-{{ button_type }}{% if button_size %} btn-{{ button_size }}{% endif %} waves-effect waves-light">
+        {{ button_text }}
+    </button>
+    <button type="button" class="btn btn-{{ button_type }}{% if button_size %} btn-{{ button_size }}{% endif %} dropdown-toggle dropdown-toggle-split waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="visually-hidden">Toggle Dropdown</span>
+    </button>
+    {% else %}
+    <button type="button" class="btn btn-{{ button_type }}{% if button_size %} btn-{{ button_size }}{% endif %} dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ button_text }} <i class="mdi mdi-chevron-down"></i>
+    </button>
+    {% endif %}
+
+    <div class="dropdown-menu{% if alignment == 'end' %} dropdown-menu-end{% endif %}">
+        {% for item in items %}
+            {% if item.divider %}
+                <div class="dropdown-divider"></div>
+            {% elif item.header %}
+                <h6 class="dropdown-header">{{ item.text }}</h6>
+            {% else %}
+                <a class="dropdown-item" href="{{ item.url|default:'#' }}">{{ item.text }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

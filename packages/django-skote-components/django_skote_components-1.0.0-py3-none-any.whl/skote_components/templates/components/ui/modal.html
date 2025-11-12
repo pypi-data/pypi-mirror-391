@@ -1,0 +1,24 @@
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-labelledby="{{ modal_id }}Label" aria-hidden="true">
+    <div class="modal-dialog{% if size %} modal-{{ size }}{% endif %}{% if centered %} modal-dialog-centered{% endif %}{% if scrollable %} modal-dialog-scrollable{% endif %}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ modal_id }}Label">{{ title }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            {% if body %}
+            <div class="modal-body">
+                {{ body }}
+            </div>
+            {% endif %}
+            {% if footer_buttons %}
+            <div class="modal-footer">
+                {% for button in footer_buttons %}
+                <button type="button" class="btn btn-{{ button.type|default:'secondary' }} waves-effect{% if button.dismiss %} waves-light" data-bs-dismiss="modal{% endif %}">
+                    {{ button.text }}
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

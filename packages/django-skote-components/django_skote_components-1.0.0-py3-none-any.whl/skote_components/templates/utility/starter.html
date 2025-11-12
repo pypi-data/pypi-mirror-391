@@ -1,0 +1,68 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Starter Page{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0 font-size-18">Starter Page</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Utility</a></li>
+                    <li class="breadcrumb-item active">Starter Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="card-title">Welcome to Skote</h4>
+                <p class="card-title-desc">This is a starter page to help you get started with your project.</p>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mt-4">
+                            <h5 class="font-size-14 mb-3">Getting Started</h5>
+                            <ul class="ps-3 mb-0">
+                                <li class="py-1">Read the documentation</li>
+                                <li class="py-1">Explore the components</li>
+                                <li class="py-1">Customize your theme</li>
+                                <li class="py-1">Build amazing applications</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="mt-4">
+                            <h5 class="font-size-14 mb-3">Features</h5>
+                            <ul class="ps-3 mb-0">
+                                <li class="py-1">Bootstrap 5 Framework</li>
+                                <li class="py-1">Responsive Design</li>
+                                <li class="py-1">Django Integration</li>
+                                <li class="py-1">Multiple Layouts</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary">Get Started</a>
+                    <a href="#" class="btn btn-outline-secondary">Learn More</a>
+                </div>
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+<!-- end row -->
+{% endblock %}

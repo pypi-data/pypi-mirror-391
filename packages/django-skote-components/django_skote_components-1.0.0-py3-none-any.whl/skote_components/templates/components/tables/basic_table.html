@@ -1,0 +1,24 @@
+{% if responsive %}
+<div class="table-responsive">
+{% endif %}
+    <table class="table{% if striped %} table-striped{% endif %}{% if bordered %} table-bordered{% endif %}{% if hover %} table-hover{% endif %}{% if small %} table-sm{% endif %}{% if table_class %} {{ table_class }}{% endif %}">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell|safe }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% if responsive %}
+</div>
+{% endif %}

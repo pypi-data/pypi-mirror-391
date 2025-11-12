@@ -1,0 +1,21 @@
+{% if href %}
+<a href="{{ href }}" class="btn {% if outline %}btn-outline-{{ type }}{% else %}btn-{{ type }}{% endif %}{% if size %} btn-{{ size }}{% endif %}{% if block %} w-100{% endif %}{% if disabled %} disabled{% endif %} waves-effect waves-light">
+    {% if icon and icon_position == 'left' %}
+    <i class="{{ icon }} me-1"></i>
+    {% endif %}
+    {{ text }}
+    {% if icon and icon_position == 'right' %}
+    <i class="{{ icon }} ms-1"></i>
+    {% endif %}
+</a>
+{% else %}
+<button type="button" class="btn {% if outline %}btn-outline-{{ type }}{% else %}btn-{{ type }}{% endif %}{% if size %} btn-{{ size }}{% endif %}{% if block %} w-100{% endif %} waves-effect waves-light"{% if disabled %} disabled{% endif %}>
+    {% if icon and icon_position == 'left' %}
+    <i class="{{ icon }} me-1"></i>
+    {% endif %}
+    {{ text }}
+    {% if icon and icon_position == 'right' %}
+    <i class="{{ icon }} ms-1"></i>
+    {% endif %}
+</button>
+{% endif %}
