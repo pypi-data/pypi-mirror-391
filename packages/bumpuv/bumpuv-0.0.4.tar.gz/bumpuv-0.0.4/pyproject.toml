@@ -1,0 +1,67 @@
+[project]
+name = "bumpuv"
+version = "0.0.4"
+description = "Version bumping tool for Python projects using pyproject.toml, similar to npm version"
+keywords = [
+  "version",
+  "bump",
+  "pyproject",
+  "git",
+  "release",
+  "semver",
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+]
+readme = "README.md"
+authors = [
+  { name = "heiwa4126", email = "heiwa4126@gmail.com" },
+]
+requires-python = ">=3.9"
+dependencies = [
+  "GitPython>=3.1.0",
+  "packaging>=21.0",
+  "tomli>=2.0.0; python_version<'3.11'",
+  "tomli-w>=1.0.0",
+  "colorama>=0.4.0",
+]
+
+[project.license]
+file = "LICENSE"
+
+[project.urls]
+Documentation = "https://github.com/heiwa4126/bumpuv#readme"
+Issues = "https://github.com/heiwa4126/bumpuv/issues"
+Source = "https://github.com/heiwa4126/bumpuv"
+
+[project.scripts]
+bumpuv = "bumpuv.__main__:main"
+
+[build-system]
+requires = [
+  "uv_build>=0.9.8",
+]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.18.1",
+  "pep440check>=0.0.1",
+  "poethepoet>=0.37.0",
+  "pytest>=8.4.2",
+  "ruff>=0.13.0",
+  "types-colorama>=0.4.15.20250801",
+  "validate-pyproject>=0.24.1",
+]
+
+[tool.uv.build-backend]
+source-exclude = [
+  "**/*_test.py",
+  "tests/**",
+]
+wheel-exclude = [
+  "**/*_test.py",
+  "tests/**",
+]
