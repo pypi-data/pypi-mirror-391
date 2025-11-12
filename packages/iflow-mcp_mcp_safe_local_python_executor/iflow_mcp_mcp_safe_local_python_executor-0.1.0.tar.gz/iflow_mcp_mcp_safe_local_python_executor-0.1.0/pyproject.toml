@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_mcp_safe_local_python_executor"
+version = "0.1.0"
+description = "MCP server exposing tool for a safe local Python code execution"
+readme = "README.md"
+authors = [
+    {name = "Maxim Saplin"}
+]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "mcp[cli]>=1.5.0",
+    "smolagents==1.12.0",
+]
+
+[project.scripts]
+mcp_safe_local_python_executor = "mcp_server:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/maxim-saplin/mcp_safe_local_python_executor/tree/main"
+
+[tool.setuptools.packages.find]
+where = ["."]
