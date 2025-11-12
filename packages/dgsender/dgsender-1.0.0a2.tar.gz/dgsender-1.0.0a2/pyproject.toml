@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dgsender"
+version = "1.0.0a2"
+authors = [
+    {name = "Roman Rasputin", email = "admin@roro.su"},
+]
+description = "Unified sender package for email, telegram, slack and zabbix with async support."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Distributed Computing",
+]
+keywords = ["telegram", "email", "zabbix"]
+license = {text = "MIT License"}
+dependencies = [
+    "requests>=2.25.0"
+]
+
+[project.optional-dependencies]
+mail = []
+tg = [
+    "requests>=2.25.0",
+]
+zabbix = [
+    "divinegift>=1.3.16",
+]
+slack = [
+    "requests>=2.25.0",
+]
+"async_mail" = []
+"async_tg" = [
+    "aiohttp>=3.8.0",
+]
+"async_slack" = [
+    "aiohttp>=3.8.0",
+]
+metrics = [
+    "dgmetrics>=1.0.0a7"
+]
+all = [
+    "requests>=2.25.0",
+    "aiohttp>=3.8.0",
+    "dgmetrics>=1.0.0a7"
+]
+
+
+[project.urls]
+Homepage = "https://gitlab.com/gng-group/dgsender"
+BugTracker = "https://gitlab.com/gng-group/dgsender/issues"
+
+[[tool.poetry.source]]
+name = "hosted"
+url = "https://repository.s7corp.ru/repository/aims-pl-pypi/"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "primary"
