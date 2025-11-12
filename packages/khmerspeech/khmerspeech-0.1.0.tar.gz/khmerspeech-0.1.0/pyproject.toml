@@ -1,0 +1,17 @@
+[project]
+name = "khmerspeech"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ftfy>=6.3.1",
+    "phonenumbers>=9.0.16",
+    "regex>=2025.9.18",
+    "urlextract>=1.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.2",
+]
