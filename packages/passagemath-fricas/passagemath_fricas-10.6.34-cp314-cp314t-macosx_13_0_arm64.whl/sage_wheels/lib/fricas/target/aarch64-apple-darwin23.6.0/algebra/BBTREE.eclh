@@ -1,0 +1,34 @@
+
+#ifdef ECL_DYNAMIC_VV
+static cl_object *VV;
+#else
+static cl_object VV[VM];
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+static cl_object L476_bbtree_setleaves___l__1_(cl_object , cl_object , cl_object );
+static cl_object L477_bbtree_balancedbinarytree_nnis__2_(cl_object , cl_object , cl_object );
+static cl_object L478_bbtree_mapup___ms_3_(cl_object , cl_object , cl_object );
+static cl_object L479_bbtree_mapup__2_m__4_(cl_object , cl_object , cl_object , cl_object );
+static cl_object L480_bbtree_mapdown___sm__5_(cl_object , cl_object , cl_object , cl_object );
+static cl_object L481_bbtree_mapdown___sm__6_(cl_object , cl_object , cl_object , cl_object );
+static cl_object L482_balancedbinarytree__(cl_object );
+static cl_object L483_balancedbinarytree_(cl_object volatile );
+static cl_object Cblock;
+#define VM 50
+#define VMtemp 30
+#define ECL_DEFINE_SETF_FUNCTIONS 
+#ifdef __cplusplus
+}
+#endif
+/*
+ * Exported Lisp functions
+ */
+#define compiler_cfuns_size 8
+static const struct ecl_cfunfixed compiler_cfuns[] = {
+ /*t,m,narg,padding,name=function-location,block=name-location,entry,entry_fixed,file,file_position*/
+{0,0,3,0,ecl_make_fixnum(27),ecl_make_fixnum(0),(cl_objectfn)L476_bbtree_setleaves___l__1_,NULL,ECL_NIL,ecl_make_fixnum(0)},
+{0,0,3,0,ecl_make_fixnum(31),ecl_make_fixnum(2),(cl_objectfn)L477_bbtree_balancedbinarytree_nnis__2_,NULL,ECL_NIL,ecl_make_fixnum(1375)},
+{0,0,3,0,ecl_make_fixnum(32),ecl_make_fixnum(3),(cl_objectfn)L478_bbtree_mapup___ms_3_,NULL,ECL_NIL,ecl_make_fixnum(2215)},
