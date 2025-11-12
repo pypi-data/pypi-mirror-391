@@ -1,0 +1,42 @@
+[project]
+name = "jarvis-os"
+version = "0.1.22"
+description = "Voice assistant with AI, voice input, and system control"
+authors = [{ name = "Arvin Adeli", email = "adeli.d.arvin@gmail.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+    "vosk",
+    "pyaudio",
+    "keyboard",
+    "requests",
+    "pyttsx3",
+    "rich>=13.0",
+    "pygame",
+    "beautifulsoup4",
+    "pygetwindow",
+    "pyautogui",
+    "pywin32",
+    "psutil",
+    "google-genai>=0.3.0",   
+    "protobuf>=4.23.0",      
+    "google-auth>=2.20.0",  
+    "grpcio>=1.56.0",    
+    "fuzzywuzzy",
+    "python-Levenshtein",
+    "faiss-cpu",
+    "sentence-transformers",
+    "numpy",
+    "appdirs>=1.4.4"
+]
+
+[project.scripts]
+jarvis-os = "jarvis_os.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["jarvis_os", "jarvis_os.yapper"]
