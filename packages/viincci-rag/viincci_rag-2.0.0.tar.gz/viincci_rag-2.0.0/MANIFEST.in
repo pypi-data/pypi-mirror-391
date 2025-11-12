@@ -1,0 +1,27 @@
+# Include package data
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+
+# Include configuration files
+recursive-include V4/config *.json
+recursive-include V4/config .gitkeep
+recursive-include V4/db .gitkeep
+recursive-include viincci_rag/config *.json
+recursive-include viincci_rag/config .gitkeep
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude .git*
+
+# Exclude test and build artifacts
+prune tests
+prune docs
+prune _posts
+prune build
+prune dist
+prune *.egg-info
