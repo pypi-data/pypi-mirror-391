@@ -1,0 +1,115 @@
+[project]
+name = "fastapi-assets"
+version = "0.1.0"
+description = "FastAPI Assets - A validation and assertion toolkit for FastAPI file uploads and request metadata."
+authors = [
+    {name = "Fastapi-Assets Development Team", email = "openvergecommunity@gmail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "fastapi==0.115.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/OpenVerge/fastapi-assets"
+"Docs" = "https://openverge.github.io/fastapi-assets/"
+
+[project.optional-dependencies]
+pandas = [
+    "pandas==2.3.3",
+]
+image = [
+
+    "pillow==12.0.0",
+]
+dev = [
+    "anyio>=4.11.0",
+    "httpx>=0.28.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.0",
+    "mkdocstrings[python]>=0.30.1",
+    "mypy>=1.18.2",
+    "pytest>=9.0.0",
+    "pytest-asyncio>=1.3.0",
+    "ruff>=0.14.4",
+    "tox>=4.32.0",
+    "tox-uv>=1.29.0",
+]
+
+optional = ["fastapi-assets[pandas]", "fastapi-assets[image]"]
+
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fastapi_assets*"]
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"fastapi_assets" = ["py.typed"]
+
+# Pytest Configuration
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "--maxfail=1 --disable-warnings"  
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+filterwarnings = [
+    "ignore::UserWarning:argparse",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests",
+    "anyio: marks tests that use anyio",
+]
+
+# Ruff Configuration (Linting + Formatting)
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["build", "dist", ".venv", "docs"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "B",  # bugbear
+    "I",  # import sorting
+    "UP", # pyupgrade
+    "C4", # comprehensions
+    "RUF",# ruff-specific
+]
+ignore = [
+    "E501",  # Ignore line-length errors (handled by formatter)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint.isort]
+known-first-party = ["fastapi_assets"]
+combine-as-imports = true
+
+# Mypy Configuration (Static Type Checking)
+[tool.mypy]
+python_version = "3.10"
+check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_any_unimported = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+strict_optional = true
+ignore_missing_imports = true
+
