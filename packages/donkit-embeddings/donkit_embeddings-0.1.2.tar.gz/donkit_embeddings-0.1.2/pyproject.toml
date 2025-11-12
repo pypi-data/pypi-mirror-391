@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "donkit-embeddings"
+version = "0.1.2"
+description = "Custom embeddings implementations for Donkit RagOps"
+authors = ["Donkit AI <opensource@donkit.ai>"]
+license = "MIT"
+packages = [{ include = "donkit", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain-core = "^0.3.79"
+openai = "^2.1.0"
+google-genai = "^1.38.0"
+ollama = "^0.6.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
