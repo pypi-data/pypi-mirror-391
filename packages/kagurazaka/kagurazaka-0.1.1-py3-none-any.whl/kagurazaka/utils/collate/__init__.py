@@ -1,0 +1,1 @@
+from .default_extended import default_collate as default_collate_extended
