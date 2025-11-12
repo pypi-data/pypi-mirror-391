@@ -1,0 +1,38 @@
+name: Test
+
+on: [push]
+
+jobs:
+  Test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [Ubuntu]
+        python-version: ['3.14', '3.10']
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v7
+      with:
+        version: "latest"
+        enable-cache: true
+
+    - name: Install dependencies
+      run: uv sync
+
+    - name: Run pytest
+      run: uv run pytest -v --cov --cov-report xml --cov-report term
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: unittests
+        env_vars: OS,PYTHON
+        fail_ci_if_error: true
