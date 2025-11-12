@@ -1,0 +1,108 @@
+name: Dependency Compatibility Test
+
+on:
+  schedule:
+    # Run weekly on Mondays at 8 AM UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  test-latest-deps:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+        
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        version: "latest"
+    
+    - name: Create virtual environment
+      run: uv venv --python ${{ matrix.python-version }}
+    
+    - name: Install latest dependencies
+      run: |
+        source .venv/bin/activate
+        uv pip install -r requirements-dev.txt -U
+        uv pip install -e .
+    
+    - name: Run compatibility tests
+      run: |
+        source .venv/bin/activate
+        python -W ignore -m pytest tests --cov=src/mcp_server_tavily --cov-report=term --verbose
+      env:
+        TAVILY_API_KEY: fake_api_key_for_testing
+    
+    - name: Report dependency versions
+      if: always()
+      run: |
+        source .venv/bin/activate
+        echo "## Dependency Versions" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        uv pip list >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        
+  create-issue-on-failure:
+    needs: test-latest-deps
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create issue on test failure
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const title = 'Dependency Compatibility Test Failed';
+          const body = `
+          ## Dependency Compatibility Test Failed
+          
+          The scheduled dependency compatibility test has failed. This indicates that the latest versions of our dependencies may have introduced breaking changes.
+          
+          **Action Items:**
+          1. Review the failed test output in the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          2. Update code to be compatible with latest dependency versions
+          3. Pin problematic dependency versions if needed
+          4. Update tests if the failure is due to test-specific issues
+          
+          **Workflow:** \`${{ github.workflow }}\`
+          **Run ID:** \`${{ github.run_id }}\`
+          **Triggered by:** \`${{ github.event_name }}\`
+          `;
+          
+          // Check if issue already exists
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: ['dependencies', 'automated-issue']
+          });
+          
+          const existingIssue = issues.data.find(issue => issue.title === title);
+          
+          if (!existingIssue) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['bug', 'dependencies', 'automated-issue']
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existingIssue.number,
+              body: `Another dependency compatibility test failure occurred.\n\n**Run ID:** \`${{ github.run_id }}\`\n**Date:** ${new Date().toISOString()}`
+            });
+          }
