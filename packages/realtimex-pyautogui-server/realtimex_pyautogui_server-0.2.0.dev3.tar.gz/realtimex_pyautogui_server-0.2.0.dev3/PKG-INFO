@@ -1,0 +1,74 @@
+Metadata-Version: 2.4
+Name: realtimex-pyautogui-server
+Version: 0.2.0.dev3
+Summary: RealTimeX MCP server for deterministic GUI control via PyAutoGUI
+Author: RealTimeX
+License-Expression: MIT
+License-File: LICENSE
+Keywords: automation,gui,mcp,pyautogui,realtimex
+Requires-Python: >=3.10
+Requires-Dist: fastmcp>=2.13.0.2
+Requires-Dist: opencv-python>=4.12.0.88
+Requires-Dist: pillow>=12.0.0
+Requires-Dist: pyautogui>=0.9.54
+Description-Content-Type: text/markdown
+
+# realtimex-pyautogui-server
+
+RealTimeX's MCP server for deterministic desktop control with PyAutoGUI. This fork adapts the reference implementation with production defaults, a dedicated wait tool, and safeguards that prevent accidental keystrokes during pauses.
+
+## Features
+- Mouse movement, clicks, and drag support with **automatic coordinate scaling**
+- Keyboard typing and hotkeys
+- Screen size, pixel, and screenshot utilities
+- **Dedicated `wait(seconds)` tool** for precise pauses without injecting keystrokes
+- **Resolution-independent coordinates**: Automatically scales coordinates from reference resolution to current screen
+- Automatically releases modifier keys before typing to prevent stuck-shift issues
+- Global PyAutoGUI defaults tuned for automation (`PAUSE`, `FAILSAFE`)
+
+## Coordinate Scaling
+
+The server automatically scales mouse coordinates from a reference resolution (default: 1920×1080) to your current screen resolution. This allows you to use consistent coordinate values across different display configurations.
+
+### How It Works
+- Define coordinates based on a reference screen (1920×1080 by default)
+- `move_mouse` and `drag_mouse` automatically scale to your actual screen size
+- Success messages show both original and scaled coordinates for debugging
+
+### Example
+```python
+# On a 2560×1440 screen:
+move_mouse(500, 90)  # Input: reference coordinates
+# Output: "Mouse moved to coordinates (500, 90) [scaled to (666, 120)]."
+```
+
+## Configuration
+
+### PyAutoGUI Settings
+- Set `REALTIMEX_FAILSAFE` to `0` or `1` (default `1`) to control PyAutoGUI's failsafe corner abort.
+- Set `REALTIMEX_PAUSE` to a float (seconds) to override the global pause between PyAutoGUI actions (default `0.3`).
+
+### Coordinate Scaling Settings
+- Set `REFERENCE_SCREEN_WIDTH` to customize the reference screen width (default: `1920`)
+- Set `REFERENCE_SCREEN_HEIGHT` to customize the reference screen height (default: `1080`)
+
+**Example:**
+```bash
+export REFERENCE_SCREEN_WIDTH=2560
+export REFERENCE_SCREEN_HEIGHT=1440
+uvx realtimex-pyautogui-server
+```
+
+## Usage
+```bash
+uvx realtimex-pyautogui-server
+```
+
+The server communicates over stdio and is compatible with MCP clients like Claude Desktop and the MCP Inspector.
+
+## Development
+```bash
+uv sync
+uv run ruff check
+uv run pytest
+```
