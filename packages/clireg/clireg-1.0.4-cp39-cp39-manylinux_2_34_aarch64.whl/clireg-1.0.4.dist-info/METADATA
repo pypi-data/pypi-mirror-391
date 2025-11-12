@@ -1,0 +1,56 @@
+Metadata-Version: 2.2
+Name: clireg
+Version: 1.0.4
+Summary: CliReg: Robust point cloud registration in Python, driven by combinatorial optimization solvers
+Keywords: point cloud,registration,optimization,maximal cliques
+Author-Email: Javier Laserna <j.laserna@upm.es>
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Other Audience
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: Unix
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Project-URL: Homepage, https://github.com/jlaserna/clireg
+Requires-Python: <3.13,>=3.8
+Requires-Dist: numpy
+Requires-Dist: typer[all]>=0.6.0
+Requires-Dist: pydantic>=2
+Provides-Extra: all
+Requires-Dist: open3d>=0.13; extra == "all"
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
+Provides-Extra: visualizer
+Requires-Dist: open3d>=0.13; extra == "visualizer"
+Description-Content-Type: text/markdown
+
+## Install
+
+```sh
+pip install clireg
+```
+
+If you also want to install all the *(optional)* dependencies, like Open3D for running the visualizer:
+
+```sh
+pip install "clireg[all]"
+```
+
+## Running the system
+
+Next, follow the instructions on how to run the system by typing:
+
+```sh
+clireg --help
+```
+
+This should print the following help message:
+![out]()
