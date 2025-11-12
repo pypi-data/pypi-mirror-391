@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiosatisfactory"
+version = "0.1.0"
+description = "Async client for Satisfactory dedicated server APIs"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Rikys" }
+]
+dependencies = [
+    "aiohttp>=3.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Rikys/aiosatisfactory"
+Documentation = "https://github.com/Rikys/aiosatisfactory#readme"
+Issues = "https://github.com/Rikys/aiosatisfactory/issues"
+
+[tool.setuptools.packages.find]
+include = ["aiosatisfactory*"]
