@@ -1,0 +1,72 @@
+Metadata-Version: 2.4
+Name: funcLibrary
+Version: 0.1.0
+Summary: A simple Python string utilities library
+Author-email: Ali Youseliyani <ayouseilyani@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/Aliyouseliyani/python_built_in_methods
+Project-URL: Source, https://github.com/Aliyouseliyani/python_built_in_methods
+Keywords: string,utilities,python
+Description-Content-Type: text/markdown
+
+🧵 PyStringLite
+
+A lightweight educational Python library that re-implements some of the most commonly used built-in string methods — manually, without using Python's internal string functions.
+
+⚡ Great for learning how core string functions work under the hood!
+📦 Available on PyPI (soon)
+
+✨ Features
+
+✅ Capitalization (capitalize)
+✅ Counting substrings (count)
+✅ Checking character types (isdigit, islower, isupper)
+✅ Find & Index (find, index)
+✅ Replace occurrences (replace)
+✅ Strip whitespace (lstrip, rstrip)
+✅ Split string from right (rsplit)
+✅ Swap case (swapcase)
+
+All functions are implemented using basic Python logic (loops, ASCII checks, slicing) — no shortcuts using built-ins.
+
+🚀 Installation
+
+Once you upload to PyPI, users will install with:
+```bash
+pip install funcLibrary
+```
+
+📚 Usage Example
+```python
+
+
+import funcLibrary.string_methods as psl
+
+print(psl.capitalize("hello"))           # Hello
+print(psl.count("lo", "hello world"))    # 1
+print(psl.endswith("world", "hello world"))  # True
+print(psl.find("lo", "hello"))           # 3
+print(psl.isdigit("12345"))              # True
+print(psl.islower("hello"))              # True
+print(psl.isupper("HELLO"))              # True
+print(psl.replace("lo", "L0", "hello", 1)) # heL0o
+print(psl.rstrip("hello   "))            # "hello"
+print(psl.lstrip("   hello"))            # "hello"
+print(psl.swapcase("Hello"))             # hELLO
+```
+🎯 Why This Library?
+
+Python's built-in string methods are optimized and complex inside CPython.
+This project:
+
+🔍 Helps you understand string manipulation logic
+🎓 Serves as a learning tool for new developers
+💡 Shows how things work “behind the scenes”
+
+🔬 Benchmarks
+
+These functions are not meant to replace Python’s built-ins for performance — this is an educational project.
+
+But hey, you're free to benchmark and compare 😉
+
+You already imported perf_counter — maybe later add a bench.py to compare your
