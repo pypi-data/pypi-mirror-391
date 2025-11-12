@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "calculator_package_alicechen"
+version = "0.1.0"
+
+[project.scripts]
+calculator_package_alicechen = "calculator_package_alicechen.__main__:main"
