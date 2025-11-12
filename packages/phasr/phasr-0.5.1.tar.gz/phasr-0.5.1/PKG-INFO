@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: phasr
+Version: 0.5.1
+Summary: Package to calculate scattering phase shifts for arbitrary radial potentials using the phase shift method as well as resulting crosssections as mainly used in the context of elastic electron nucleus scattering.
+Project-URL: homepage, https://github.com/Partynumbers42/phasr
+Project-URL: repository, https://github.com/Partynumbers42/phasr
+Author-email: Frederic Noël <noel@ipt.unibe.ch>
+License: BSD-3-Clause
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Typing :: Typed
+Requires-Python: >=3.8
+Requires-Dist: mpmath
+Requires-Dist: numdifftools
+Requires-Dist: numpy
+Requires-Dist: scipy
+Provides-Extra: dev
+Requires-Dist: ipython; extra == 'dev'
+Requires-Dist: mypy; extra == 'dev'
+Requires-Dist: pdbpp; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: rich; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Description-Content-Type: text/markdown
+
+# phasr
+
+[![License](https://img.shields.io/pypi/l/phasr.svg?color=green)](https://github.com/Partynumbers42/phasr/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/phasr.svg?color=green)](https://pypi.org/project/phasr)
+[![Python Version](https://img.shields.io/pypi/pyversions/phasr.svg?color=green)](https://python.org)
+[![CI](https://github.com/Partynumbers42/phasr/actions/workflows/ci.yml/badge.svg)](https://github.com/Partynumbers42/phasr/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Partynumbers42/phasr/branch/main/graph/badge.svg)](https://codecov.io/gh/Partynumbers42/phasr)
+
+Package to calculate scattering phase shifts for arbitrary radial potentials using the phase shift method as well as resulting crosssections as mainly used in the context of elastic electron nucleus scattering.
+
+For the documentation visit: https://partynumbers42.github.io/phasr/
+
+This Project is still an early development version. Use with care. 
