@@ -1,0 +1,304 @@
+Employee.js
+const mongoose = require('mongoose');
+
+const employeeSchema = new mongoose.Schema({
+  EmployeeName: { type: String, required: true },
+  EmployeeID: { type: String, required: true, unique: true },
+  Designation: { type: String, required: true },
+  Department: { type: String, required: true },
+  JoiningDate: { type: Date, required: true }
+});
+
+module.exports = mongoose.model('Employee', employeeSchema);
+
+server.js
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const Employee = require('./models/Employee');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Connect MongoDB
+mongoose.connect('mongodb://localhost:27017/Employees', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+// Add Employee
+app.post('/api/employees', async (req, res) => {
+  try {
+    const employee = new Employee(req.body);
+    await employee.save();
+    res.status(201).send('Employee added successfully');
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+
+// Search Employee by ID
+app.get('/api/employees/:id', async (req, res) => {
+  try {
+    const employee = await Employee.findOne({ EmployeeID: req.params.id });
+    if (!employee) return res.status(404).send('Employee not found');
+    res.json(employee);
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+
+// Update Employee Designation
+app.put('/api/employees/:id', async (req, res) => {
+  try {
+    const result = await Employee.findOneAndUpdate(
+      { EmployeeID: req.params.id },
+      { Designation: req.body.Designation },
+      { new: true }
+    );
+    if (!result) return res.status(404).send('Employee not found');
+    res.send('Designation updated successfully');
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+app.delete('/api/employees/:id', async (req, res) => {
+  try {
+    const result = await Employee.findOneAndDelete({ EmployeeID: req.params.id });
+    if (!result) return res.status(404).send('Employee not found');
+    res.send('Employee deleted successfully');
+  } catch (err) {
+    res.status(400).send(err.message);
+  }
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
+
+app.js
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './components/Home';
+import AddEmployee from './components/AddEmployee';
+import SearchEmployee from './components/SearchEmployee';
+import UpdateEmployee from './components/UpdateEmployee';
+import DeleteEmployee from './components/DeleteEmployee';
+
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/add" element={<AddEmployee />} />
+        <Route path="/search" element={<SearchEmployee />} />
+        <Route path="/delete" element={<DeleteEmployee />} />
+        <Route path="/update" element={<UpdateEmployee />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+home.js
+import { Link } from 'react-router-dom';
+
+export default function Home() {
+  return (
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h2>Employee Management System</h2>
+      <Link to="/add">Add Employee</Link> |{" "}
+      <Link to="/search">Search Employee</Link> |{" "}
+      <Link to="/update">Update Employee</Link> |{" "}
+      <Link to="/delete">Delete Employee</Link>
+
+    </div>
+  );
+}
+
+AddEmployee.js
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function AddEmployee() {
+  const [employee, setEmployee] = useState({
+    EmployeeName: '', EmployeeID: '', Designation: '', Department: '', JoiningDate: ''
+  });
+
+  const handleChange = e => setEmployee({ ...employee, [e.target.name]: e.target.value });
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    await axios.post('http://localhost:5000/api/employees', employee);
+    alert('Employee added successfully');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="EmployeeName" placeholder="Name" onChange={handleChange} />
+      <input name="EmployeeID" placeholder="ID" onChange={handleChange} />
+      <input name="Designation" placeholder="Designation" onChange={handleChange} />
+      <input name="Department" placeholder="Department" onChange={handleChange} />
+      <input name="JoiningDate" type="date" onChange={handleChange} />
+      <button type="submit">Add Employee</button>
+    </form>
+  );
+}
+
+AddEmployee.js use form
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+
+export default function AddEmployee() {
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      await axios.post('http://localhost:5000/api/employees', data);
+      alert('Employee added successfully');
+      reset(); // Clears form after submission
+    } catch (error) {
+      alert('Error adding employee');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} style={{ textAlign: 'center', marginTop: '40px' }}>
+      <h2>Add Employee</h2>
+
+      <input {...register('EmployeeName', { required: 'Name required' })} placeholder="Employee Name" />
+      {errors.EmployeeName && <p>{errors.EmployeeName.message}</p>}
+
+      <input {...register('EmployeeID', { required: 'Employee ID required' })} placeholder="Employee ID" />
+      {errors.EmployeeID && <p>{errors.EmployeeID.message}</p>}
+
+      <input {...register('Designation', { required: 'Designation required' })} placeholder="Designation" />
+      {errors.Designation && <p>{errors.Designation.message}</p>}
+
+      <input {...register('Department', { required: 'Department required' })} placeholder="Department" />
+      {errors.Department && <p>{errors.Department.message}</p>}
+
+      <input type="date" {...register('JoiningDate', { required: 'Joining date required' })} />
+      {errors.JoiningDate && <p>{errors.JoiningDate.message}</p>}
+
+      <button type="submit">Add Employee</button>
+    </form>
+  );
+}
+
+
+delete.js
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function DeleteEmployee() {
+  const [id, setId] = useState('');
+
+  const handleDelete = async () => {
+    if (!id) return alert('Please enter Employee ID');
+    try {
+      await axios.delete(`http://localhost:5000/api/employees/${id}`);
+      alert('Employee deleted successfully');
+      setId('');
+    } catch (error) {
+      alert('Employee not found');
+    }
+  };
+
+  return (
+    <div style={{ textAlign: 'center', marginTop: '40px' }}>
+      <h2>Delete Employee</h2>
+      <input
+        placeholder="Enter Employee ID"
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        style={{ padding: '8px', marginRight: '8px' }}
+      />
+      <button onClick={handleDelete} style={{ padding: '8px 16px' }}>
+        Delete
+      </button>
+    </div>
+  );
+}
+delete.js use form
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+
+export default function DeleteEmployee() {
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/employees/${data.EmployeeID}`);
+      alert('Employee deleted successfully');
+      reset();
+    } catch {
+      alert('Employee not found');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} style={{ textAlign: 'center', marginTop: '40px' }}>
+      <h2>Delete Employee</h2>
+
+      <input
+        {...register('EmployeeID', { required: 'Employee ID is required' })}
+        placeholder="Enter Employee ID"
+      />
+      {errors.EmployeeID && <p>{errors.EmployeeID.message}</p>}
+
+      <button type="submit">Delete</button>
+    </form>
+  );
+}
+
+
+update.jsimport { useState } from 'react';
+import axios from 'axios';
+
+export default function UpdateEmployee() {
+  const [id, setId] = useState('');
+  const [designation, setDesignation] = useState('');
+
+  const handleUpdate = async () => {
+    try {
+      await axios.put(`http://localhost:5000/api/employees/${id}`, { Designation: designation });
+      alert('Designation updated successfully');
+    } catch {
+      alert('Employee not found');
+    }
+  };
+
+  return (
+    <div>
+      <input placeholder="Employee ID" value={id} onChange={e => setId(e.target.value)} />
+      <input placeholder="New Designation" value={designation} onChange={e => setDesignation(e.target.value)} />
+      <button onClick={handleUpdate}>Update</button>
+    </div>
+  );
+}
+search.js
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function SearchEmployee() {
+  const [id, setId] = useState('');
+  const [result, setResult] = useState('');
+
+  const handleSearch = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/employees/${id}`);
+      setResult(JSON.stringify(res.data, null, 2));
+    } catch {
+      setResult('Employee not found');
+    }
+  };
+
+  return (
+    <div>
+      <input placeholder="Enter Employee ID" value={id} onChange={e => setId(e.target.value)} />
+      <button onClick={handleSearch}>Search</button>
+      <textarea rows="6" cols="50" value={result} readOnly />
+    </div>
+  );
+}
