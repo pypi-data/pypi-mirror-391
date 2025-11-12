@@ -1,0 +1,65 @@
+[tool.poetry]
+name = "longship"
+version = "2025.11.12"
+description = "A client library for accessing Longship API"
+
+authors = ["Wojtek Siudzinski <admin@suda.pl>"]
+
+readme = "README.md"
+packages = [
+    {include = "longship_api_client"},
+    {include = "longship"},
+]
+include = ["CHANGELOG.md", "longship_api_client/py.typed"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = ">=0.23.0,<0.29.0"
+attrs = ">=22.2.0"
+python-dateutil = "^2.8.0"
+
+[tool.poetry.group.dev.dependencies]
+openapi-python-client = "^0.14.1"
+pytest = "^7.0.0"
+pytest-cov = "^4.0.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target_version = ['py38', 'py39', 'py310', 'py311']
+exclude = '''
+(
+  /(
+    | \.git
+    | \.venv
+    | \.mypy_cache
+  )/
+)
+'''
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=longship",
+    "--cov=longship_api_client",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["F", "I", "UP"]
