@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jvs-cli"
+dynamic = ["version"]
+description = "Terminal-based AI chat interface with streaming support"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [{name = "JVS CLI Contributors"}]
+requires-python = ">=3.10"
+keywords = ["cli", "chat", "ai", "terminal", "streaming"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "prompt-toolkit>=3.0.0",
+    "httpx>=0.24.0",
+    "pydantic>=2.0.0",
+    "orjson>=3.9.0",
+    "python-dateutil>=2.8.0",
+    "aiohttp>=3.9.0",
+]
+
+[project.scripts]
+jvs-cli = "jarvis_cli.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["jarvis_cli*"]
+exclude = ["tests*", "jarvis_cli_golang*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "jarvis_cli.__version__"}
