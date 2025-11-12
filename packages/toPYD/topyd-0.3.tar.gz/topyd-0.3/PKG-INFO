@@ -1,0 +1,226 @@
+Metadata-Version: 2.4
+Name: toPYD
+Version: 0.3
+Summary: 将Python源文件编译为 pyd/so 二进制扩展模块
+Project-URL: Homepage, https://github.com/yourusername/your-package-name
+Project-URL: Repository, https://github.com/yourusername/your-package-name
+Author: GoodIdear
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: click>=8.0.0
+Requires-Dist: cython>=3.0.0
+Requires-Dist: pathspec>=0.12.1
+Requires-Dist: setuptools>=70.0.0
+Description-Content-Type: text/markdown
+
+# toPYD - Python 代码编译为 pyd 工具
+
+一个用于将 Python 源代码文件（.py/.pyx）批量编译为二进制扩展模块（.pyd/.so）的命令行工具，基于 Cython 实现。
+
+## 功能特点
+
+- 🚀 批量编译 Python 源文件为二进制扩展模块（.pyd 或 .so）
+- 📁 支持自定义排除规则和 .gitignore 集成
+- 🏗️ 保留原始目录结构输出编译结果
+- 📦 自动提取所有源文件中的 import 语句并生成 `hidden_import.py` 文件（可用于 PyInstaller 等打包工具）
+- 🧹 自动清理编译后的文件名（去除中间平台标识）
+- 💻 提供友好的命令行界面
+
+## 安装
+
+### 使用 uv（推荐）
+
+```bash
+uv add topyd
+```
+
+### 使用 pip
+
+```bash
+pip install topyd
+```
+
+### 从源码安装
+
+```bash
+git clone <repository-url>
+cd toPYD
+uv sync
+```
+
+## 使用方法
+
+### 1. 命令行界面（推荐）
+
+安装后，可以直接使用 `topyd` 命令：
+
+```bash
+# 查看帮助信息
+topyd
+
+# 编译当前目录下的所有 Python 文件
+topyd setup -a
+
+# 编译指定文件
+topyd setup -f file1.py -f file2.py
+
+# 自定义源目录和输出目录
+topyd setup -a -s ./src -o ./dist
+
+# 添加排除规则
+topyd setup -a -e "test_*" -e "*.log" -e "/build/"
+
+# 不使用 .gitignore 排除规则
+topyd setup -a --exclude-file false
+
+# 查看详细帮助
+topyd setup --help
+```
+
+### 2. 编程接口
+
+也可以在 Python 代码中直接调用：
+
+```python
+from toPYD import to_pyd
+
+# 默认配置编译当前目录下的所有Python文件
+to_pyd()
+
+# 自定义配置
+to_pyd(
+    exclude=[
+        "test_*",  # 排除以test_开头的文件
+        "debug*.py",  # 排除以debug开头的py文件
+        "temp/",  # 排除temp目录
+        "__pycache__",  # 排除缓存目录
+        ".*"  # 排除隐藏文件
+    ],
+    gitignore=True,  # 使用.gitignore规则
+    source_root=".",  # 源码根目录
+    pyd_output_dir="build_pyd",  # 输出目录
+    c_files_dir="build/c_files",  # C中间文件目录
+    write_hidden_import=True  # 生成隐藏导入文件
+)
+```
+
+## 命令参数说明
+
+### setup 命令
+
+| 参数 | 短选项 | 类型 | 默认值 | 说明 |
+|------|--------|------|--------|------|
+| `--files` | `-f` | 多个 | - | 指定要编译的文件，可指定多个 |
+| `--all` | `-a` | 标志 | - | 编译根目录下的全部 py/pyx 文件 |
+| `--exclude` | `-e` | 多个 | - | 排除的目录或文件，支持 gitignore 语法规则 |
+| `--exclude-file` | `-ef` | 字符串 | `True` | 自定义排除规则文件路径，默认使用 .gitignore |
+| `--source-root` | `-s` | 路径 | `.` | 源代码根目录 |
+| `--output-dir` | `-o` | 路径 | `build_pyd` | 编译后文件输出目录 |
+| `--c-files-dir` | `-c` | 路径 | `build/c_files` | Cython 中间文件目录 |
+| `--hidden-import` | - | 布尔 | `True` | 是否生成 hidden_import.py 文件 |
+
+### 使用示例
+
+```bash
+# 基本用法 - 编译所有文件
+topyd setup -a
+
+# 指定文件编译
+topyd setup -f main.py -f utils.py
+
+# 自定义配置
+topyd setup -a -s ./src -o ./dist -c ./temp
+
+# 排除特定文件和目录
+topyd setup -a -e "test_*" -e "*.log" -e "/build/" -e "__pycache__"
+
+# 使用自定义 gitignore 文件
+topyd setup -a --exclude-file ./my_gitignore
+
+# 不使用 gitignore 排除规则
+topyd setup -a --exclude-file false
+```
+
+### installer 命令（开发中）
+
+```bash
+# 将编译后的 pyd 文件通过 PyInstaller 打包（功能开发中）
+topyd installer -m main.py
+```
+
+| 参数 | 短选项 | 类型 | 说明 |
+|------|--------|------|------|
+| `--main-file` | `-m` | 路径 | 启动文件路径（必需） |
+
+> **注意**: installer 命令目前正在开发中，计划提供与 PyInstaller 类似的打包功能。
+
+## API 参数说明
+
+| 参数 | 类型 | 默认值 | 说明                          |
+|------|------|--------|-----------------------------|
+| `exclude` | `str` 或 `list` | `None` | 自定义排除规则，支持通配符（gitignore规则）    |
+| `gitignore` | `bool` 或 `str` | `True` | 是否加载.gitignore规则，字符串表示自定义路径 |
+| `source_root` | `str` | `"."` | 源码根目录路径                     |
+| `pyd_output_dir` | `str` | `"build_pyd"` | 编译后文件输出目录                   |
+| `c_files_dir` | `str` | `"build/c_files"` | Cython中间文件目录                |
+| `write_hidden_import` | `bool` | `True` | 是否生成隐藏导入文件                  |
+
+## 输出结构
+
+编译完成后，将在指定输出目录中生成以下内容：
+
+```
+build_pyd/
+├── module1.pyd              # 编译后的模块
+├── package/
+│   ├── module2.pyd          # 子包中的模块
+│   └── submodule/
+│       └── module3.pyd      # 子模块
+└── hidden_import.py         # 所有导入语句汇总（可选）
+```
+
+
+## hidden_import.py 作用
+
+该文件收集了所有被编译文件中的 import 语句，用于解决 PyInstaller 等打包工具无法检测 pyd 文件中隐式导入的问题。
+
+示例内容：
+```python
+import os
+from sys import argv
+from mypackage import module
+```
+
+
+## 注意事项
+
+1. 编译过程中会自动去除平台相关标识，如将 `module.cp310-win_amd64.pyd` 重命名为 `module.pyd`
+2. 支持 `.py` 和 `.pyx` 文件编译
+3. 排除规则支持 Git 风格的通配符匹配
+4. 编译生成的中间文件存储在指定的 `c_files_dir` 目录中
+5. 如果遇到编译问题，可以检查源文件中是否包含不支持的语法或依赖
+
+## 常见问题
+
+### 遇到 Cython 错误
+如果遇到 `Cython.xxxx.Errors.xxxxx: xxx.py` 报错，是Cython错误，一般来说是文件中文名称或者不符合python命名规范的文件名造成。
+
+解决：1.单独编译这个文件 2.重命名文件后在编译
+
+
+### 如何使用自定义的 .gitignore 文件？
+
+```python
+to_pyd(gitignore="path/to/your/.gitignore")
+```
+
+
+### 编译后的文件如何使用？
+
+编译生成的 .pyd 文件可以直接在 Python 中导入使用，与普通 Python 模块无异：
+```python
+import module  # 对应 module.pyd
+from package import module2  # 对应 package/module2.pyd
+```

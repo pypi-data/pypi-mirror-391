@@ -1,0 +1,35 @@
+[project]
+name = "toPYD"
+version = "0.3"
+dependencies = [
+    "click>=8.0.0",
+    "cython>=3.0.0",
+    "pathspec>=0.12.1",
+#    "pyinstaller>=6.15.0",
+    "setuptools>=70.0.0",
+]
+authors = [
+    { name = "GoodIdear", email = "" },
+]
+description = "将Python源文件编译为 pyd/so 二进制扩展模块"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+toPYD = "toPYD:cli"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/your-package-name"
+Repository = "https://github.com/yourusername/your-package-name"
