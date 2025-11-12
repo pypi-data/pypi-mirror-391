@@ -1,0 +1,137 @@
+[project]
+name = "django_audit_fields"
+version = "2.0.5"
+description = "Add model fields to track creation and modification dates, users and more on save"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+keywords = ["django", "clinicedc", "edc", "clinical trials", "research", "data management", "esource"]
+authors = [
+    { name = "Erik van Widenfelt", email = "ew2789@gmail.com" },
+]
+maintainers = [
+    { name = "Erik van Widenfelt", email = "ew2789@gmail.com" },
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 5.2",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.12"
+dependencies = ["django-revision>=2.0.0"]
+
+[project.urls]
+Homepage = "https://github.com/erikvw/django-audit-fields"
+Documentation = "https://github.com/erikvw/django-audit-fields/docs"
+Repository = "https://github.com/erikvw/django-audit-fields.git"
+Changelog = "https://github.com/erikvw/django-audit-fields/blob/main/CHANGES"
+
+
+[build-system]
+requires = ["uv_build>=0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "src"
+source-exclude = ["bin"]
+namespace = false
+
+
+[tool.ruff]
+line-length = 95
+indent-width = 4
+target-version = "py312"
+exclude = ["migrations", ".tox", ".venv"]
+
+[tool.ruff.lint]
+select = [
+    "A",
+    "ARG",
+    "B",
+    "C90",
+    "COM",
+    "DJ",
+    "DTZ",
+    "E",
+    "F",
+    "FA",
+    "FURB",
+    "I",
+    "INT",
+    "N",
+    "PD",
+    "PERF",
+    "PL",
+    "PLR",
+    "PTH",
+    "RET",
+    "RUF",
+    "S",
+    "SIM",
+    "T20",
+    "TRY",
+    "UP",
+    "W",
+    # "FIX",
+]
+ignore = ["DJ008", "DJ007", "DJ006", "COM812", "PLC0206"]
+
+[tool.ruff.lint.per-file-ignores]
+    "__init__.py" = ["F401"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.coverage.run]
+parallel = false
+branch = true
+source = ["src"]
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+omit = ["requirements.txt", "*/migrations/*"]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+]
+
+[tool.rstcheck]
+ignore_directives = ["toctree", "code-block"]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.11.3",
+    "django>=5.2.8",
+    "edc-test-settings>=2.0.0",
+    "tox>=4.32.0",
+    "tox-uv>=1.29.0",
+]
+docs = [
+    "furo>=2025.7.19",
+    "sphinx>=8.2.3",
+    "sphinx-design>=0.6.1",
+    "sphinx-inline-tabs>=2023.4.21",
+]
+lint = [
+    "ruff>=0.12.5",
+]
+
+[tool.uv.sources]
+django-audit-fields = { workspace = true }
+django-revision = { path = "../django-revision", editable = true }
