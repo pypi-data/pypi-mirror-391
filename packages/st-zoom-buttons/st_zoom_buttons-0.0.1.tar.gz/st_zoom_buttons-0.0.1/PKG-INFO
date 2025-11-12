@@ -1,0 +1,71 @@
+Metadata-Version: 2.4
+Name: st-zoom-buttons
+Version: 0.0.1
+Summary: Streamlit zoom buttons component
+Home-page: https://github.com/mysiar-org/st-zoom-buttons
+Author: Piotr Synowiec
+Author-email: psynowiec@gmail.com
+License: MIT
+Keywords: streamlit,streamlit-component
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: streamlit>=0.63
+Provides-Extra: devel
+Requires-Dist: wheel; extra == "devel"
+Requires-Dist: pytest==7.4.0; extra == "devel"
+Requires-Dist: playwright==1.39.0; extra == "devel"
+Requires-Dist: requests==2.31.0; extra == "devel"
+Requires-Dist: pytest-playwright-snapshot==1.0; extra == "devel"
+Requires-Dist: pytest-rerunfailures==12.0; extra == "devel"
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Streamlit zoom-buttons component
+
+---
+
+Streamlit zoom buttons component
+
+
+## Installation instructions
+
+```sh
+pip install st-zoom-buttons
+```
+
+## Usage instructions
+
+```python
+import streamlit as st
+
+from st_zoom_buttons import st_zoom_buttons
+
+clicked_button = st_zoom_buttons()
+
+st.write(f"Clicked: {clicked_button}")
+```
+
+Function interface
+
+```python
+def st_zoom_buttons(
+    key=None,
+    font_size="10px",
+    width="35px",
+    border_radius: int = 0,
+    disabled: list[str] | None = None,
+) -> str:
+```
+
+
