@@ -1,0 +1,5 @@
+[opentelemetry_instrumentor]
+boto3 = llm_tracekit:BedrockInstrumentor
+litellm = llm_tracekit:LiteLLMInstrumentor
+openai = llm_tracekit:OpenAIInstrumentor
+openai_agents = llm_tracekit:OpenAIAgentsInstrumentor
