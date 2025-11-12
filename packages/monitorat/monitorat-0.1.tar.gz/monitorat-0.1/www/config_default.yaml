@@ -1,0 +1,143 @@
+---
+# Minimal monitor@ configuration that renders a simple dashboard.
+site:
+  name: monitor@
+  title: System Monitor
+  base_url: http://localhost:6161
+paths:
+  data: data/  # relative to webroot (www/)
+  img: img/  # use absolute path for ~/.config/monitor@/img
+  favicon: favicon.ico
+  vendors: vendors/  # relative to monitor.py location
+notifications:
+  apprise_urls: []
+widgets:
+  enabled:  # provides order and visibility
+    - metrics  # www/widgets/* for available widgets
+    - wiki
+  metrics:  # temperature, cpu, memory, disk
+    name: System Metrics
+    enabled: true  # widget renders (default: true)
+    collapsible: false  # show hide/show toggle (default: false)
+    hidden: false  # start collapsed (default: false)
+    default: chart  # default view: "chart" or "table"
+    periods:  # configurable time periods for filtering
+      - 1 year
+      - 30 days
+      - 7 days
+      - 24 hours
+      - 6 hours
+      - 1 hour
+    table:
+      min: 5  # minimum rows to show
+      max: 200  # maximum rows to load
+    chart:
+      default_metric: cpu_memory  # options: cpu_memory, cpu_percent, memory_percent, disk_io, net_io, temp_c, load_1min
+      default_period: 1 hour  # default chart window: natural language (e.g., "1 hour", "7 days", "all")
+      height: 400px  # fixed chart height
+      days: 30  # number of days to display (-1 for all)
+    daemon:
+      enabled: true  # start the background metrics collector
+      interval_seconds: 60  # sampling cadence for the collector
+    history:
+      file: metrics.csv  # relative to data path unless absolute
+      max_rows: 1000  # cap for history API responses
+    storage:
+      mounts: []  # optional: paths to monitor
+    thresholds:  # caution/critical cutoffs for status badges
+      load:
+        caution: 1.0
+        critical: 2.0
+        normalize_per_cpu: true
+      memory:
+        caution: 75
+        critical: 90
+      temp:
+        caution: 60
+        critical: 80
+      disk:
+        caution: 80
+        critical: 95
+      storage:
+        caution: 85
+        critical: 95
+  speedtest:  # network speedtest monitoring
+    name: Speedtests
+    enabled: false  # disabled by default
+    collapsible: true
+    hidden: false
+    default: chart              # default view: "chart" or "table"
+    periods:  # configurable time periods for filtering
+      - 1 month
+      - 1 week
+      - 3 days
+      - 1 day
+      - 12 hours
+      - 1 hour
+    table:
+      min: 5  # minimum rows to show
+      max: 200  # maximum rows to load
+    chart:
+      height: 400px  # fixed chart height
+      days: 30  # number of days to display (-1 for all)
+      default_period: all  # default chart window: natural language (e.g., "1 day", "1 week", "all")
+  network:  # network monitoring and outage tracking
+    name: Network Outages
+    enabled: false  # disabled by default
+    log_file: /var/log/network.log  # path to network monitoring log
+    collapsible: true
+    hidden: false
+    metrics:
+      show: true
+    uptime:
+      show: true
+      periods:  # configurable time windows with natural language
+        - period: "1 hour"
+          segment_size: "5 minutes"
+        - period: "1 day"
+          segment_size: "1 hour"
+        - period: "1 week"
+          segment_size: "1 day"
+        - period: "1 month"
+          segment_size: "1 day"
+        - period: "1 year"
+          segment_size: "1 month"
+    gaps:
+      show: true
+      max: 3  # maximum outages to show initially
+      cadence: 0  # minimum outage duration in minutes to show
+      cadenceChecks: 0  # computed from cadence for confuse
+  services:  # service monitoring
+    name: Services
+    enabled: false  # disabled by default
+    collapsible: true
+    hidden: false
+    items: {}  # define monitored services here
+  reminders:  # reminder notifications
+    name: Reminders
+    enabled: false  # disabled by default
+    collapsible: true
+    hidden: false
+    state_file: reminders.json  # stored under paths.data unless absolute
+    nudges: [14, 7]  # reminder days before due
+    urgents: [3, 1, 0]  # urgent reminder days
+    time: "23:55"  # daily reminder time
+    pushover:
+      key: ''
+      token: ''
+    items: {}  # place reminder entries here (keys become reminder IDs)
+  wiki:  # markdown documentation widget
+    name: Documentation
+    enabled: true
+    collapsible: true  # enable collapse/expand
+    hidden: false  # start expanded
+    doc: ''  # path to markdown file, defaults to README.md
+    # doc: /home/__user__/documents/about.md
+privacy:  # toggle, for screenshots
+  mask_ips: true
+  replacements: {}
+# Global services configuration
+# services:
+#   my systemd service:
+#     url: http://example.com
+#     local: http://localhost:8080
