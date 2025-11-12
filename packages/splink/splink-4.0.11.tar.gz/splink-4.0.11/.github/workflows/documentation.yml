@@ -1,0 +1,81 @@
+name: docswithmkdoc
+
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      # files that affect the docs build:
+      - docs/**
+      - CONTRIBUTING.md
+      - mkdocs.yml
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv (with cache)
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+
+      - name: Install Python 3.13
+        run: uv python install 3.13
+
+      - name: Install dependencies
+        run: uv sync --group docs -p 3.13
+
+      - name: Build documentation
+        run: uv run mkdocs build
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2.0.2
+        with:
+          fail: false
+          args: --offline site/ --verbose './site/**/*.html'
+
+      - name: Upload built site
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: built_site
+          path: site
+
+      # some environment info
+      - run: uv tree
+      - run: uv run mkdocs --version
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v4.1.7
+        with:
+          name: built_site
+          path: site
+
+      - name: commit and force-push to gh-pages branch
+        run: |
+          pip install ghp-import==2.1.0
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          ghp-import -opfm "Update docs from commit ${{ github.sha }}" site

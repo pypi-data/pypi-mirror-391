@@ -1,0 +1,54 @@
+name: Postgres tests
+on:
+  pull_request:
+    branches:
+      - master
+      - "**dev"
+    paths:
+      - "splink/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      pg_splink_ci:
+        image: postgres
+        env:
+          POSTGRES_USER: splinkognito
+          POSTGRES_PASSWORD: splink123!
+          POSTGRES_DB: splink_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+    name: Run tests with Python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv (with cache)
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+          cache-suffix: "${{ runner.os }}-${{ matrix.python-version }}"
+
+      - name: Install Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync -p ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: uv run python -m pytest -v --durations=0 -m "postgres_only" tests/
