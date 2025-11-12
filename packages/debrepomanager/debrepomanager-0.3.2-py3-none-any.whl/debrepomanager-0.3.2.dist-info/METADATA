@@ -1,0 +1,476 @@
+Metadata-Version: 2.4
+Name: debrepomanager
+Version: 0.3.2
+Summary: Debian Repository Manager for multi-distribution package management
+Home-page: https://github.com/jethome/repomanager
+Author: Viacheslav Bocharov
+Author-email: Viacheslav Bocharov <vb@jethome.com>
+License: MIT
+Project-URL: Homepage, https://github.com/jethome/repomanager
+Project-URL: Documentation, https://github.com/jethome/repomanager/blob/main/README.md
+Project-URL: Repository, https://github.com/jethome/repomanager.git
+Project-URL: Issues, https://github.com/jethome/repomanager/issues
+Keywords: debian,repository,apt,aptly,package-management
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: System :: Software Distribution
+Classifier: Topic :: System :: Systems Administration
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyYAML>=6.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: python-debian>=0.1.49
+Requires-Dist: python-dateutil>=2.8.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.10.0; extra == "dev"
+Requires-Dist: pytest-timeout>=2.0.0; extra == "dev"
+Requires-Dist: hypothesis>=6.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: isort>=5.0.0; extra == "dev"
+Requires-Dist: types-PyYAML>=6.0.0; extra == "dev"
+Requires-Dist: types-python-dateutil>=2.8.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Debian Repository Manager (debrepomanager)
+
+A system for managing multiple Debian-like repositories with support for multiple distributions, architectures, and package collections, featuring atomic updates and GitHub Actions integration.
+
+[![Tests](https://github.com/jethome-iot/repomanager/workflows/Tests/badge.svg)](https://github.com/jethome-iot/repomanager/actions)
+[![PyPI version](https://badge.fury.io/py/debrepomanager.svg)](https://pypi.org/project/debrepomanager/)
+[![Python](https://img.shields.io/pypi/pyversions/debrepomanager.svg)](https://pypi.org/project/debrepomanager/)
+[![Coverage](https://img.shields.io/badge/coverage-93%25-brightgreen.svg)](https://github.com/jethome-iot/repomanager)
+
+## Features
+
+- 🚀 **Atomic updates** via aptly snapshots
+- 🔄 **Multi-codename**: bookworm, noble, trixie, jammy, etc.
+- 🏗️ **Multi-architecture**: amd64, arm64, riscv64
+- 📦 **Multi-component**: various package collections
+- 🔐 **GPG signing** for all repositories
+- 🧹 **Retention policies**: automatic cleanup of old versions
+- 🤖 **GitHub Actions**: CI/CD pipeline integration
+- 🔍 **Verification**: repository consistency checks
+- 🔀 **Dual format**: old and new APT URL formats support
+
+## Architecture
+
+Built on top of [aptly](https://www.aptly.info/) with:
+- Multi-root isolation (separate aptly root per codename)
+- Snapshots for atomic operations
+- Python CLI for easy management
+- GitHub Actions for automation
+
+See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed description.
+
+## Requirements
+
+### Server
+- aptly >= 1.5.0
+- gpg (GnuPG) >= 2.2
+- Python >= 3.11
+- rsync (for GitHub Actions)
+- SSH server (for GitHub Actions)
+
+### Development
+- Python >= 3.11 (tested on 3.11, 3.12, 3.13)
+- pip
+- virtualenv (recommended)
+- Docker (for integration tests)
+
+## Installation
+
+### From PyPI
+
+```bash
+pip install debrepomanager
+```
+
+### From source
+
+```bash
+git clone https://github.com/jethome-iot/repomanager.git
+cd repomanager
+pip install -e .
+```
+
+### For development
+
+```bash
+git clone https://github.com/jethome-iot/repomanager.git
+cd repomanager
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+```
+
+## Quick Start
+
+```bash
+# Create repository
+debrepomanager create-repo --codename bookworm --component jethome-tools
+
+# Add packages
+debrepomanager add --codename bookworm --component jethome-tools --package-dir /path/to/packages/
+
+# List repositories
+debrepomanager list
+
+# List packages in repository
+debrepomanager list --codename bookworm --component jethome-tools
+```
+
+## Configuration
+
+### Auto-Detection (Recommended)
+
+debrepomanager automatically finds configuration files:
+
+```bash
+# No --config needed! Searches standard locations:
+# 1. /etc/repomanager/config.yaml
+# 2. ~/.repomanager/config.yaml
+# 3. ./repomanager.yaml
+
+debrepomanager list
+debrepomanager create-repo bookworm jethome-tools
+```
+
+### Configuration Priority
+
+Priority (low → high):
+1. `/etc/repomanager/config.yaml` - System-wide
+2. `~/.repomanager/config.yaml` - User-level
+3. `./repomanager.yaml` - Local directory
+4. `--config path` - Explicit override
+5. `REPOMANAGER_*` env vars - Highest priority
+
+### Minimal Configuration
+
+Create `~/.repomanager/config.yaml`:
+
+```yaml
+gpg:
+  key_id: "YOUR_GPG_KEY_ID"
+
+aptly:
+  root_base: "/srv/aptly"
+  publish_base: "/srv/repo/public"
+
+repositories:
+  architectures: [amd64, arm64, riscv64]
+```
+
+**Note**: Codenames and components are created dynamically - no need to list them!
+
+### Environment Variables
+
+```bash
+export REPOMANAGER_APTLY_ROOT_BASE=/custom/path
+export REPOMANAGER_GPG_KEY_ID=TESTKEY123
+debrepomanager list
+```
+
+See [`docs/CONFIG.md`](docs/CONFIG.md) and `config.yaml.example` for all options.
+
+## Usage
+
+### Quick Upload Script (repoadd)
+
+For simplified package uploads with stable/beta/test environment support:
+
+```bash
+# Upload to stable repository
+scripts/repoadd stable bookworm armbian-bookworm
+
+# Upload to beta repository
+scripts/repoadd beta noble jethome-tools
+
+# Upload to test repository
+scripts/repoadd test bookworm ./packages/
+```
+
+The script automatically creates repositories if needed and handles component naming.
+
+See [REPOADD_SCRIPT.md](docs/REPOADD_SCRIPT.md) for detailed documentation.
+
+### Create repository
+
+```bash
+debrepomanager create-repo --codename bookworm --component jethome-tools
+```
+
+### Add packages
+
+```bash
+# Add specific packages
+debrepomanager add --codename bookworm --component jethome-tools \
+    --packages package1.deb package2.deb
+
+# Add all packages from directory
+debrepomanager add --codename bookworm --component jethome-tools \
+    --package-dir /path/to/packages/
+```
+
+### List repositories and packages
+
+```bash
+# List all repositories
+debrepomanager list
+
+# List repositories for specific codename
+debrepomanager list --codename bookworm
+
+# List packages in repository
+debrepomanager list --codename bookworm --component jethome-tools
+```
+
+### Delete repository
+
+```bash
+debrepomanager delete-repo --codename bookworm --component old-component --confirm
+```
+
+## Client Configuration
+
+### Debian Bookworm
+
+```bash
+# Import GPG key
+wget -qO - http://repo.site.com/pubkey.gpg | \
+    sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/jethome.gpg
+
+# Add repository (new format)
+echo "deb http://repo.site.com/bookworm jethome-tools main" | \
+    sudo tee /etc/apt/sources.list.d/jethome.list
+
+# Update
+sudo apt update
+
+# Install packages
+sudo apt install your-package
+```
+
+### Ubuntu Noble
+
+```bash
+# Import GPG key
+wget -qO - http://repo.site.com/pubkey.gpg | \
+    sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/jethome.gpg
+
+# Add repository
+echo "deb http://repo.site.com/noble jethome-tools main" | \
+    sudo tee /etc/apt/sources.list.d/jethome.list
+
+# Update
+sudo apt update
+```
+
+## Dual Format Support
+
+The system supports both old and new APT URL formats simultaneously:
+
+**Old format** (backward compatibility):
+```
+deb http://repo.site.com bookworm jethome-tools
+```
+
+**New format** (recommended):
+```
+deb http://repo.site.com/bookworm jethome-tools main
+```
+
+Both formats work simultaneously via symlinks. See [DUAL_FORMAT.md](docs/DUAL_FORMAT.md) for technical details.
+
+## Repository URL Structure
+
+Repositories are accessible via:
+```
+http://repo.site.com/{codename}/{component}
+```
+
+Examples:
+```
+http://repo.site.com/bookworm/jethome-tools
+http://repo.site.com/noble/jethome-armbian
+http://repo.site.com/trixie/jethome-bookworm
+```
+
+## Development
+
+### Project Structure
+
+```
+debrepomanager/
+├── debrepomanager/        # Main package
+│   ├── __init__.py
+│   ├── cli.py            # CLI interface
+│   ├── aptly.py          # Aptly wrapper
+│   ├── config.py         # Configuration management
+│   ├── gpg.py            # GPG operations
+│   └── utils.py          # Utilities
+├── tests/                # Tests
+├── docs/                 # Documentation
+├── .github/workflows/    # GitHub Actions
+└── config.yaml.example   # Configuration example
+```
+
+### Running Tests
+
+```bash
+# All tests
+pytest
+
+# With coverage
+pytest --cov=debrepomanager --cov-report=html
+
+# Specific module
+pytest tests/test_config.py
+
+# Verbose
+pytest -v
+```
+
+### Code Quality
+
+Project uses:
+- **Black** for formatting (spaces, not tabs)
+- **flake8** for linting
+- **mypy** for type checking
+
+```bash
+# Format
+black debrepomanager/
+
+# Lint
+flake8 debrepomanager/
+
+# Type check
+mypy debrepomanager/
+```
+
+## Documentation
+
+### For Users
+- [Quick Start](docs/QUICKSTART.md) - 5-minute getting started guide
+- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Complete deployment instructions
+- [APT Configuration](docs/APT_CONFIGURATION.md) - Client setup for all systems
+- [repoadd Script](docs/REPOADD_SCRIPT.md) - Simplified upload script for stable/beta/test
+
+### For Administrators
+- [Configuration Reference](docs/CONFIG.md) - Detailed config options
+
+### For Developers
+- [Architecture](docs/ARCHITECTURE.md) - Architecture decisions
+- [Development Guide](docs/DEVELOPMENT.md) - Developer workflow
+- [Changelog](docs/CHANGELOG.md) - Version history
+
+## Troubleshooting
+
+### GPG signing fails
+
+```bash
+# Check key availability
+gpg --list-secret-keys
+
+# Check gpg-agent
+gpg-connect-agent 'keyinfo --list' /bye
+
+# Restart gpg-agent
+gpgconf --kill gpg-agent
+gpg-connect-agent /bye
+```
+
+### Aptly errors
+
+```bash
+# Check repository status
+debrepomanager list
+
+# Check snapshots (via aptly directly)
+aptly -config /srv/aptly/bookworm/aptly.conf snapshot list
+
+# Check published repositories
+aptly -config /srv/aptly/bookworm/aptly.conf publish list
+```
+
+### Permission issues
+
+```bash
+# Check permissions
+ls -la /srv/aptly/
+ls -la /srv/repo/public/
+
+# Fix permissions
+chown -R repomanager:repomanager /srv/aptly/
+chown -R www-data:repomanager /srv/repo/public/
+chmod -R g+w /srv/aptly/ /srv/repo/public/
+```
+
+## GitHub Actions Integration
+
+For CI/CD workflows, configure GitHub Secrets:
+
+- `SSH_PRIVATE_KEY`: SSH key for server access
+- `SSH_HOST`: Server address (e.g., repo.site.com)
+- `SSH_USER`: SSH user (e.g., repomanager)
+- `GPG_PRIVATE_KEY`: GPG private key (base64 encoded)
+- `GPG_PASSPHRASE`: GPG key password
+- `GPG_KEY_ID`: GPG key ID
+
+See [Quick Start Guide](docs/QUICKSTART.md#github-actions-setup) for GitHub Actions examples.
+
+## License
+
+MIT License - see [LICENSE](LICENSE)
+
+## Authors
+
+JetHome Team
+
+## Contributing
+
+Pull requests are welcome! Please make sure to:
+1. Add tests for new functionality
+2. Update documentation
+3. Follow code style (black, flake8)
+4. Ensure all tests pass
+
+## Links
+
+- **Documentation**: [docs/](docs/)
+- **PyPI**: https://pypi.org/project/debrepomanager/
+- **Issues**: https://github.com/jethome-iot/repomanager/issues
+- **Discussions**: https://github.com/jethome-iot/repomanager/discussions
+
+## Project Status
+
+- **Version**: 0.1.2
+- **Status**: Production Ready (95% MVP)
+- **Tests**: 194 tests, 93% coverage
+- **Python**: 3.11, 3.12, 3.13 supported
+
+---
+
+**Made with ❤️ by JetHome Team**
