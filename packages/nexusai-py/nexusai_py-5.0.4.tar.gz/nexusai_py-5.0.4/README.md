@@ -1,0 +1,423 @@
+# Nexus AI - Python Client Library
+
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive Python wrapper for the **Nexus AI API** - providing access to 14 image generation models, 20+ text generation models, and interactive Akinator game API.
+
+## 🚀 Features
+
+- **🎨 Image Generation**: 14 AI models including Flux, Stable Diffusion, and specialized models
+- **💬 Text Generation**: 20+ models (Gemini, GPT-4, Llama, Qwen, DeepSeek, and more)
+- **⚡ Real-time Streaming**: ChatGPT-like streaming responses for text generation
+- **👁️ Image Vision**: Analyze images with Gemini models
+- **💾 Conversation History**: Automatic conversation context management
+- **🎮 Akinator Game**: Interactive guessing game API
+- **🔒 Type Safe**: Full type hints for better IDE support
+- **📦 Easy to Use**: Simple and intuitive API
+
+## 📋 Table of Contents
+
+- [Installation](#installation)
+- [Getting Your API Key](#getting-your-api-key)
+- [Quick Start](#quick-start)
+- [Image Generation](#image-generation)
+- [Text Generation](#text-generation)
+- [Streaming Responses](#streaming-responses)
+- [Image Vision](#image-vision)
+- [Akinator Game](#akinator-game)
+- [Error Handling](#error-handling)
+- [Rate Limits](#rate-limits)
+- [Examples](#examples)
+- [Support](#support)
+
+## 💻 Installation
+
+Install using pip:
+
+```bash
+pip install nexusai-py
+```
+
+## 🔑 Getting Your API Key (100% Free!)
+
+1. Go to [Nexus](https://nexus.drexus.xyz)
+
+2. Click **"Try Now For Free"** and sign in (Discord or Google recommended)
+
+3. Click **"Try Now For Free"** again to access the dashboard
+
+4. Scroll down to find the **"Your API Key"** box - that's your key!
+
+**Free Plan Includes:**
+- ✅ 500 requests per day
+- ✅ Access to all 14 image generation models
+- ✅ Access to all 20+ text generation models
+- ✅ Up to 2048x2048 image resolution
+- ✅ Real-time streaming support
+- ✅ Image vision capabilities
+- ✅ Conversation history
+- ✅ Akinator game API
+
+## 🚀 Quick Start
+
+```python
+from nexusai import NexusAI
+
+# Initialize the client
+client = NexusAI(api_key="your-api-key-here")
+
+# Generate an image
+result = client.generate_image(
+    prompt="A futuristic city at sunset",
+    model="flux",
+    width=1024,
+    height=768
+)
+
+# Get the full image URL
+image_url = client.get_full_image_url(result['imageUrl'])
+print(f"Image URL: {image_url}")
+
+# Generate text
+response = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="Explain quantum computing in simple terms"
+)
+print(response['completion'])
+```
+
+## 🎨 Image Generation
+
+### Basic Usage
+
+```python
+# Generate an image
+result = client.generate_image(
+    prompt="A beautiful mountain landscape",
+    model="flux",
+    width=1024,
+    height=768
+)
+
+# The API returns a relative path
+print(result['imageUrl'])  # /data/generated-images/abc123.png
+
+# Convert to full URL
+full_url = client.get_full_image_url(result['imageUrl'])
+print(full_url)  # https://nexus.drexus.xyz/data/generated-images/abc123.png
+```
+
+### Available Models
+
+| Model | Description | Best For |
+|-------|-------------|----------|
+| `flux` | High-quality general purpose | Realistic images |
+| `flux-realism` | Photo-realistic generation | Photography style |
+| `flux-anime` | Anime-style images | Anime characters & art |
+| `flux-3d` | 3D rendered style | 3D model visualization |
+| `flux-pro` | Professional quality | High-end production |
+| `any-dark` | Dark mode optimized | Dark themes & moods |
+| `turbo` | Fast generation | Quick prototyping |
+| `stable-diffusion` | Classic SD model | General purpose |
+| `stable-diffusion-animation` | Animation frames | Animation sequences |
+| `photo3d` | 3D photo-like | 3D-like photos |
+
+### Advanced Example
+
+```python
+# High-resolution anime artwork
+result = client.generate_image(
+    prompt="A cyberpunk warrior in neon city, highly detailed anime style",
+    model="flux-anime",
+    width=2048,
+    height=2048
+)
+
+# Save the image
+import requests
+from PIL import Image
+from io import BytesIO
+
+image_url = client.get_full_image_url(result['imageUrl'])
+response = requests.get(image_url)
+img = Image.open(BytesIO(response.content))
+img.save("output.png")
+print("Image saved as output.png")
+```
+
+## 💬 Text Generation
+
+### Basic Usage
+
+```python
+# Simple text generation
+response = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="Write a short poem about the ocean"
+)
+print(response['completion'])
+```
+
+### With System Instructions
+
+```python
+# Control the AI's behavior
+response = client.generate_text(
+    model="gemini-2.5-pro",
+    prompt="How do I center a div?",
+    system_instruction="You are a senior web developer. Always provide modern CSS solutions with code examples.",
+    temperature=0.7
+)
+print(response['completion'])
+```
+
+### Available Models
+
+**Google Gemini:**
+- `gemini-2.5-flash` - Latest fast model
+- `gemini-2.5-pro` - Most capable model
+- `gemini-2.0-flash` - Fast and efficient
+- And more Gemini variants...
+
+**OpenAI:**
+- `gpt-4` - Advanced reasoning
+
+**Meta AI:**
+- `llama-3.3-70b-instruct` - Meta Llama 3.3
+
+**Alibaba Cloud:**
+- `qwen2.5-coder-32b` - Specialized for code
+
+**DeepSeek:**
+- `deepseek-r1` - Advanced reasoning
+- `deepseek-v3.1` - Latest version
+
+**And many more!**
+
+### Conversation History
+
+```python
+# First message
+response1 = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="My name is Alice",
+    userid="user123"
+)
+
+# Follow-up - the AI remembers!
+response2 = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="What's my name?",
+    userid="user123"
+)
+print(response2['completion'])  # Should mention "Alice"
+
+# Clear history when done
+client.clear_conversation_history("user123")
+```
+
+## ⚡ Streaming Responses
+
+Get real-time streaming responses like ChatGPT:
+
+```python
+# Stream text as it's generated
+print("AI: ", end='', flush=True)
+for chunk in client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="Write a short story about a robot",
+    stream=True
+):
+    print(chunk, end='', flush=True)
+print()  # New line at the end
+```
+
+**Streaming is supported by:**
+- All Google Gemini models
+- All Meta Llama models
+- All Qwen models
+- DeepSeek models
+- GPT-4
+- And more!
+
+## 👁️ Image Vision
+
+Analyze images with Gemini models:
+
+### Single Image
+
+```python
+# Analyze an image from URL
+response = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="What objects are in this image?",
+    images="https://example.com/photo.jpg"
+)
+print(response['completion'])
+```
+
+### Multiple Images
+
+```python
+# Compare multiple images
+response = client.generate_text(
+    model="gemini-2.5-pro",
+    prompt="Compare these two images and describe the differences",
+    images=[
+        "https://example.com/image1.jpg",
+        "https://example.com/image2.jpg"
+    ]
+)
+print(response['completion'])
+```
+
+### Base64 Images
+
+```python
+# Use base64 encoded image data
+response = client.generate_text(
+    model="gemini-2.5-flash",
+    prompt="Describe this image in detail",
+    images={
+        "data": "iVBORw0KGgoAAAANSUhEUgAA...",
+        "mimeType": "image/png"
+    }
+)
+```
+
+**Note:** Image vision is only available with Gemini models!
+
+## 🎮 Akinator Game
+
+Play the interactive guessing game:
+
+```python
+# Start a new game
+game = client.start_akinator_game(region="en")
+game_id = game['gameId']
+print(game['question'])
+print("Answers:", game['answers'])
+
+# Answer questions
+while True:
+    answer = input("Your answer (yes/no/dont-know/probably/probably-not): ")
+    
+    result = client.answer_akinator(game_id, answer)
+    
+    # Check if character was guessed
+    if result.get('solved'):
+        print(f"\nFound it! {result['name']}")
+        print(f"Description: {result['description']}")
+        break
+    
+    # Next question
+    print(f"\nProgress: {result['progress']}%")
+    print(result['question'])
+
+# Clean up
+client.delete_akinator_game(game_id)
+```
+
+### Additional Akinator Features
+
+```python
+# Go back to previous question
+previous = client.akinator_go_back(game_id)
+
+# Check current progress
+progress = client.get_akinator_progress(game_id)
+print(f"Progress: {progress['progress']}%")
+
+# Available regions: en, es, fr, de, it, pt, ru, jp, zh
+game = client.start_akinator_game(region="es", child_mode=True)
+```
+
+## ⚠️ Error Handling
+
+The library provides specific exceptions for different error types:
+
+```python
+from nexusai import NexusAI
+from nexusai.exceptions import (
+    AuthenticationError,
+    RateLimitError,
+    BadRequestError,
+    ServerError
+)
+
+client = NexusAI(api_key="your-api-key")
+
+try:
+    result = client.generate_image(prompt="A sunset")
+except AuthenticationError as e:
+    print(f"Invalid API key: {e}")
+except RateLimitError as e:
+    print(f"Rate limit exceeded: {e}")
+except BadRequestError as e:
+    print(f"Invalid parameters: {e}")
+except ServerError as e:
+    print(f"Server error: {e}")
+```
+
+### Error Codes
+
+| Code | Exception | Description |
+|------|-----------|-------------|
+| 400 | `BadRequestError` | Missing or invalid parameters |
+| 401 | `AuthenticationError` | Invalid or missing API key |
+| 404 | `NotFoundError` | Resource not found |
+| 429 | `RateLimitError` | Rate limit exceeded (500/day) |
+| 500 | `ServerError` | Internal server error |
+
+## 📊 Rate Limits
+
+**Free Plan:**
+- 500 requests per day
+- Resets every 24 hours
+- Applies to all endpoints combined
+
+**Tips:**
+- Use streaming for long text generation (counts as 1 request)
+- Cache image URLs (they're valid for 2 hours)
+- Reuse conversation history instead of re-sending context
+
+## 📚 Examples
+
+Check out the `examples/` directory for complete working examples:
+
+- **`examples/image_generation.py`** - All image generation features
+- **`examples/text_generation.py`** - Text generation with streaming
+- **`examples/akinator_game.py`** - Interactive Akinator game
+
+Run an example:
+
+```bash
+python examples/image_generation.py
+```
+
+## 🆘 Support
+
+- **Discord**: [https://discord.gg/qdgkMkQbnt](https://discord.gg/qdgkMkQbnt)
+- **Email**: drezus.nexus@gmail.com
+- **Website**: [https://nexus.drexus.xyz](https://nexus.drexus.xyz)
+- **Documentation**: [https://nexus.drexus.xyz/docs](https://nexus.drexus.xyz/docs)
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## ⚡ Built With
+
+- **requests** - HTTP library for Python
+- **typing** - Type hints support
+
+---
+
+**Nexus AI** - All AI, One API.
+
+© 2025 Nexus API. All rights reserved.
