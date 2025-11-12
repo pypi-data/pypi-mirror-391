@@ -1,0 +1,37 @@
+[project]
+name = "configurenv"
+version = "1.0.0"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [
+    {name = "Peter Eichman", email = "peichman@umd.edu"},
+]
+maintainers = [
+    {name = "UMD Libraries", email = "lib-ssdr@umd.edu"},
+]
+readme = "README.md"
+dependencies = [
+    "pyyaml",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Repository = "https://github.com/umd-lib/configurenv"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-datadir",
+    "pytest-cov",
+    "ruff",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "single"
