@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:luthaf.fr)",
+      "Bash(uvx pre-commit run:*)",
+      "Bash(uv run pytest:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(python -m pytest tests/test_substructure.py::test_select_carbons -v)",
+      "Bash(uv run:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(for file in /Users/fzills/tools/rdkit2ase/docs/source/*.ipynb)",
+      "Bash(do sed -i '' 's/rdkit2ase/molify/g' \"$file\")",
+      "Bash(done)",
+      "Bash(for file in /Users/fzills/tools/rdkit2ase/tmp/*.ipynb)",
+      "Bash(do:*)"
+    ],
+    "deny": []
+  }
+}
