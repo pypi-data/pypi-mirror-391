@@ -1,0 +1,794 @@
+Metadata-Version: 2.4
+Name: sii-agent-sdk
+Version: 0.1.7
+Summary: Python SDK for SII-CLI - AI Agent Framework
+Author-email: GAIR-NLP <snowy2002@sjtu.edu.cn>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/GAIR-NLP/sii-cli
+Project-URL: Documentation, https://github.com/GAIR-NLP/sii-cli/tree/main/packages/python-sdk
+Project-URL: Repository, https://github.com/GAIR-NLP/sii-cli
+Project-URL: Issues, https://github.com/GAIR-NLP/sii-cli/issues
+Keywords: ai,agent,sii,gemini,assistant
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: anyio>=4.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: license-file
+
+# SII Agent SDK for Python
+
+Python SDK for SII-CLI - AI Agent Framework
+
+[![Python Version](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org/)
+[![PyPI](https://img.shields.io/pypi/v/sii-agent-sdk.svg)](https://pypi.org/project/sii-agent-sdk/)
+
+## 概述
+
+SII Agent SDK 是 SII-CLI 的 Python 接口，使 Python 开发者能够通过编程方式调用 SII-CLI 的强大 AI 智能体功能。
+
+本项目设计参考了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)，提供相似的 API 体验，同时集成了 SII 的特色功能。
+
+### 主要特性
+
+- ✅ **Claude SDK 风格 API**: API 设计参考 claude-agent-sdk-python，降低学习成本
+- ✅ **YOLO 自主执行**: 一句话触发，AI 自动完成任务（基于 SimpleYoloAgent）
+- ✅ **多认证支持**: 支持 USE_SII, USE_GEMINI, USE_OPENAI 等多种认证方式
+- ✅ **SII 专属工具**: 深度集成 sii_cognitions, sii_deep_research, sii_hybrid_search 等工具
+- ✅ **流式响应**: 基于 JSONL 协议，实时返回执行进度和结果
+- ✅ **类型安全**: 完整的类型提示和 IDE 支持
+- ✅ **进程隔离**: 通过 Node.js Bridge 实现 Python 与 SII-CLI Core 的进程间通信
+
+## 最新发布
+
+- **PyPI**: [`sii-agent-sdk` 0.1.5](https://pypi.org/project/sii-agent-sdk/0.1.5/)
+- **发布日期**: 2025-10-07
+- **状态**: Alpha（API 仍可能调整）
+
+> 自 0.1.2 起，Python SDK 已通过 PyPI 正式发布，继续依赖全局安装的 `@gair/sii-cli` 来提供 Node.js Bridge 能力。
+
+## 架构设计
+
+![alt text](../../assets/figures/fig1.png)
+
+### 组件说明
+
+1. **Python SDK** (`sii_agent_sdk/`)
+   - 提供 Pythonic 的 API 接口
+   - 管理 Bridge 进程生命周期
+   - 解析 JSONL 事件流
+   - 类型安全的消息封装
+
+2. **Node.js Bridge** (`bridge/`)
+   - 桥接 Python 和 Node.js 生态
+   - 处理 JSONL 协议通信
+   - 管理 SII-CLI Core 实例
+   - 提供进程隔离和错误恢复
+
+3. **SII-CLI Core** (`../core/`)
+   - 复用现有的核心功能
+   - AgentService: 对话式交互
+   - SimpleYoloAgent: 自主执行
+   - ToolRegistry: 工具管理
+
+## 安装
+
+```bash
+pip install sii-agent-sdk
+```
+
+### 前置要求
+
+- **Python**: >= 3.10
+- **Node.js**: >= 20.0.0
+- **SII-CLI**: 已构建的 `@gair/sii-cli` 包，`npm install -g @gair/sii-cli` ，具体可以参考[sii-cli 安装指南](https://github.com/GAIR-NLP/sii-cli-dev/blob/main/README.md)
+
+## 认证方式
+
+SII Agent SDK 支持三种认证方式，每种方式都有其独特的优势：
+
+| 认证类型                       | 说明                                              | 环境变量                                                 | 可用工具                | 推荐场景        |
+| ------------------------------ | ------------------------------------------------- | -------------------------------------------------------- | ----------------------- | --------------- |
+| `USE_SII` (默认)               | SII 平台认证                                      | `SII_USERNAME`<br>`SII_PASSWORD`                         | 所有工具 + SII 专属工具 | 完整功能        |
+| `USE_OPENAI`                   | OpenAI API Key                                    | `SII_OPENAI_BASE_URL`<br>`OPENAI_API_KEY` 或<br>`SII_OPENAI_API_KEY` | 基础工具                | 成本控制        |
+| `USE_OPENAI_WITH_SII_TOOLS` ✨ | **混合模式**<br>OpenAI 生成 + SII 工具 + 数据上传 | `SII_OPENAI_BASE_URL`<br>`SII_OPENAI_API_KEY`<br>`SII_USERNAME`<br>`SII_PASSWORD` | 所有工具 + SII 专属工具 | **两全其美** 🚀 |
+
+### 1. SII 认证（完整功能）
+
+使用 SII 平台账号进行认证，获得完整的功能支持：
+
+```bash
+export SII_USERNAME="your-username"
+export SII_PASSWORD="your-password"
+export SII_BASE_URL="https://www.opensii.ai/backend"  # 可选
+```
+
+```python
+from sii_agent_sdk import query, SiiAgentOptions
+
+async for msg in query(
+    prompt="...",
+    options=SiiAgentOptions(auth_type='USE_SII')
+):
+    print(msg)
+```
+
+**优势**：
+
+- ✅ 访问所有 SII 专属工具（认知库、深度研究等）
+- ✅ 完整的功能支持
+- ✅ 对话历史自动上传
+
+### 2. OpenAI 认证
+
+直接使用 OpenAI API Key，适合成本敏感场景：
+
+```bash
+export SII_OPENAI_BASE_URL="https://api.openai.com/v1"  # 必填：模型 base_url（OpenAI 官方为 https://api.openai.com/v1）
+export SII_OPENAI_API_KEY="sk-..."                      # 必填：OpenAI API Key
+```
+
+> ℹ️ **注意**：`SII_OPENAI_BASE_URL` 是 Bridge 与 OpenAI 通信所必需的配置，请与 `SII_OPENAI_API_KEY` 一并设置。
+> 
+> - 使用官方 OpenAI 服务时，保持默认值 `https://api.openai.com/v1`
+> - 若使用 Azure OpenAI、Together、Fireworks 等兼容服务，请替换为对应的 API Base URL，例如：`https://your-resource.openai.azure.com/openai`（需与服务商文档保持一致）
+
+```python
+async for msg in query(
+    prompt="...",
+    options=SiiAgentOptions(
+        auth_type='USE_OPENAI',
+        model='gpt-4o'  # 指定 OpenAI 模型
+    )
+):
+    print(msg)
+```
+
+**优势**：
+
+- ✅ 更低的 API 成本
+- ✅ 更快的响应速度
+- ✅ 支持最新的 OpenAI 模型
+
+**限制**：
+
+- ❌ 无法使用 SII 专属工具
+- ❌ 对话历史不会上传
+
+### 3. 混合认证（推荐！✨）
+
+**混合模式结合了两种认证方式的优势**，既享受 OpenAI 的低成本和高速度，又能使用 SII 的强大工具：
+
+```bash
+# 同时设置两种凭证
+export SII_OPENAI_BASE_URL="https://api.openai.com/v1"  # 必填：OpenAI 模型 base_url
+export SII_OPENAI_API_KEY="sk-..."                     # 必填：OpenAI API Key
+export SII_USERNAME="your-username"                    # SII 用户名
+export SII_PASSWORD="your-password"                    # SII 密码
+```
+
+> ℹ️ **注意**：混合模式下同样需要设置 `SII_OPENAI_BASE_URL`，否则 SDK 无法代理 OpenAI 请求。若使用自建或第三方 OpenAI 兼容服务，请替换为服务提供的 Base URL。
+
+```python
+async for msg in query(
+    prompt="搜索最新的 AI 趋势并总结",
+    options=SiiAgentOptions(
+        auth_type='USE_OPENAI_WITH_SII_TOOLS',  # 混合模式
+        model='gpt-4o'  # 使用 OpenAI 模型
+    )
+):
+    print(msg)
+```
+
+**工作原理**：
+
+- 🤖 **内容生成**：使用 OpenAI API（更便宜、更快）
+- 🔧 **工具调用**：使用 SII 后端（搜索、认知库等）
+- 📊 **数据上传**：对话历史自动上传到 DC 端
+
+**优势**：
+
+- ✅ OpenAI 的低成本和高速度
+- ✅ SII 的完整工具集
+- ✅ 对话数据自动上传
+- ✅ **两全其美的方案** 🎯
+
+**示例**：查看 `examples/hybrid_auth_example.py` 获取完整示例。
+
+### 自动检测认证模式
+
+SDK 支持**自动检测**环境变量并选择最合适的认证方式：
+
+```python
+# 不指定 auth_type，SDK 会自动检测
+async for msg in query(prompt="你好"):
+    print(msg)
+```
+
+**检测优先级**：
+
+1. **混合模式**（如果同时存在 OpenAI Key、`SII_OPENAI_BASE_URL` 与 SII 凭证）
+2. **OpenAI 模式**（如果只有 OpenAI Key 且设置了 `SII_OPENAI_BASE_URL`）
+3. **SII 模式**（如果只有 SII 凭证）
+
+### 配置快速参考
+
+```bash
+# 混合模式（推荐）
+export SII_OPENAI_BASE_URL="https://api.openai.com/v1"  # 必填：OpenAI 模型 base_url
+export SII_OPENAI_API_KEY="sk-..."
+export SII_USERNAME="your-username"
+export SII_PASSWORD="your-password"
+
+# OpenAI 模式
+export SII_OPENAI_BASE_URL="https://api.openai.com/v1"  # 必填：OpenAI 模型 base_url
+export OPENAI_API_KEY="sk-..."                      # 或使用 SII_OPENAI_API_KEY
+
+# SII 模式
+export SII_USERNAME="your-username"
+export SII_PASSWORD="your-password"
+
+# 可选配置
+export SII_BASE_URL="https://www.opensii.ai/backend"
+export SII_OPENAI_MODEL="gpt-4o"  # 默认模型
+```
+
+## 快速开始
+
+### 1. 基础查询
+
+最简单的用法，使用默认配置：
+
+```python
+import anyio
+from sii_agent_sdk import query
+
+async def main():
+    async for message in query(prompt="请问你是谁"):
+        print(message)
+
+anyio.run(main)
+```
+
+### 2. YOLO 自主执行模式
+
+让 AI 自动执行所有步骤，无需人工确认：
+
+```python
+import anyio
+import os
+from pathlib import Path
+from sii_agent_sdk import query, SiiAgentOptions
+
+
+async def main():
+    print("🎮 开始测试：生成双人对战五子棋游戏前端界面")
+    print("=" * 60)
+
+    # 设置工作目录
+    output_dir = Path(__file__).parent / "gomoku_game_output"
+    output_dir.mkdir(exist_ok=True)
+
+    print(f"📁 输出目录: {output_dir}")
+    print(f"🔍 Trajectory 将保存到: .sii/conversation_logs/")
+    print("=" * 60)
+
+    # 构建详细的提示词
+    prompt = """
+请帮我创建一个双人对战的五子棋游戏前端界面，要求如下：
+
+1. **技术栈**：使用纯 HTML + CSS + JavaScript（不依赖框架）
+2. **游戏功能**：
+   - 15x15 的棋盘
+   - 双人本地对战（黑白棋子轮流下棋）
+   - 显示当前轮到哪方
+   - 自动判断胜负（五子连珠）
+   - 重新开始游戏的按钮
+   - 悔棋功能
+
+3. **界面设计**：
+   - 美观的棋盘UI，有网格线
+   - 清晰的黑白棋子显示
+   - 显示游戏状态（轮到谁、谁赢了等）
+   - 响应式设计，适配不同屏幕
+
+4. **文件结构**：
+   - gomoku.html - 主HTML文件（包含完整的游戏）
+   - 可以将 CSS 和 JS 都内嵌在 HTML 中，方便使用
+
+5. **额外功能**（可选）：
+   - 胜利时的动画效果
+   - 音效（可选）
+   - 棋盘坐标显示
+
+请创建完整可运行的代码，并保存为 gomoku.html 文件。
+"""
+
+    print("\n📤 发送请求给 AI...")
+    print("-" * 60)
+
+    try:
+        message_count = 0
+
+        # 使用 YOLO 模式让 AI 自动执行工具调用
+        async for msg in query(
+            prompt=prompt,
+            options=SiiAgentOptions(
+                yolo=True,  # 启用 YOLO 模式，自动执行工具
+                max_turns=15,  # 最多15轮对话
+                cwd=str(output_dir),  # 在输出目录中工作
+                auth_type="USE_SII",  # 使用 SII 认证
+                system_prompt="You are a helpful frontend developer assistant. Create beautiful and functional web applications."
+            )
+        ):
+            message_count += 1
+            print(f"\n💬 消息 #{message_count}:")
+            print(msg)
+            print("-" * 60)
+
+        print(f"\n✅ 任务完成！共收到 {message_count} 条消息")
+
+    except Exception as e:
+        print(f"\n❌ 错误: {e}")
+        import traceback
+        traceback.print_exc()
+
+if __name__ == "__main__":
+    anyio.run(main)
+```
+
+### 3. 多轮 YOLO 会话（SiiAgentSession）
+
+有些任务需要在同一工作目录下连续推进多轮执行，例如“规划 → 实施 → 整理文档”。
+`SiiAgentSession` 提供了最小化的持久会话封装，能够在多轮 YOLO 模式下复用同一个 `session_id`、环境上下文和历史消息。
+
+> 示例脚本：`examples/multi_round_yolo_session.py`
+
+```python
+import anyio
+from sii_agent_sdk import SiiAgentOptions, SiiAgentSession
+
+
+async def main() -> None:
+    prompts = [
+        "你好",
+        "请继续，根据上一轮结果总结一下下一步计划。",
+        "再补充一个 README.md，告诉我如何运行刚才生成的项目。",
+    ]
+
+    options = SiiAgentOptions(
+        yolo=True,
+        max_turns=80,
+        auth_type="USE_SII",
+        model="GLM-4.6",
+        cwd="./multi_round_project",
+        timeout_ms=240000,
+    )
+
+    session = SiiAgentSession(options)
+
+    for round_index, prompt in enumerate(prompts, start=1):
+        print(f"\n===== Round {round_index}: {prompt} =====")
+        async for message in session.run(prompt):
+            print(message)
+
+    print(f"\n会话 ID: {session.session_id}")
+    print(f"历史长度: {len(session.history)} 条")
+
+
+anyio.run(main)
+```
+
+#### 关键参数说明
+
+| 配置项 | 作用 | 推荐设置 |
+| --- | --- | --- |
+| `SiiAgentOptions.yolo` | 是否启用 YOLO 模式 | `True`（多轮自动执行必开） |
+| `max_turns` | 每轮允许的最大对话轮数 | 根据任务复杂度调整，示例中为 80 |
+| `cwd` | 工作目录 | 设置为同一目录，便于多轮共享文件输出 |
+| `timeout_ms` | 单轮执行超时时间（毫秒） | 默认 120000，可按需延长 |
+| `auth_type` / `model` | 认证方式与模型 | 与单轮 YOLO 一致，根据需求选择 |
+
+`SiiAgentSession` 会在首次调用 `run()` 时向 Bridge 请求会话 ID，并在后续轮次重用；同时会自动累计 `session.history`，可用于追加自定义用户反馈或调试。
+
+#### 与单轮 `query()` 的区别
+
+| 场景 | 单轮 `query()` | `SiiAgentSession.run()` |
+| --- | --- | --- |
+| 会话 ID | 每次调用重新创建 | 多轮共享同一个 `session_id` |
+| 历史记录 | 默认不保留，需自行管理 | 自动在 `session.history` 中累积 |
+| 环境上下文 | 每次重新生成 | 首轮生成后在后续轮次复用 |
+| 使用场景 | 一次性任务 | 需要“计划 → 执行 → 检查”等连续流程 |
+
+如果只是执行一次 YOLO 任务，继续使用 `async for msg in query(...)` 即可；当需要多轮推进时，改用 `SiiAgentSession` 可以避免重复初始化、丢失上下文或生成多个轨迹文件。
+
+### 3. 使用 SII 专属工具
+
+充分利用 SII 平台的认知能力：
+
+```python
+import anyio
+from sii_agent_sdk import query, SiiAgentOptions
+
+async def main():
+    # 使用 SII 认知数据库和混合搜索
+    async for message in query(
+        prompt="搜索最新的大语言模型训练技术研究进展",
+        options=SiiAgentOptions(
+            auth_type="USE_SII",
+            allowed_tools=[
+                "sii_cognitions",
+                "sii_deep_research",
+                "sii_hybrid_search"
+            ],
+            max_turns=5
+        )
+    ):
+        if message.type == "assistant_message":
+            print(message.content[0].text)
+
+anyio.run(main)
+```
+
+### 4. 指定工作目录和模型
+
+自定义执行环境：
+
+```python
+import anyio
+from sii_agent_sdk import query, SiiAgentOptions
+
+async def main():
+    async for message in query(
+        prompt="分析 src/ 目录下的代码结构",
+        options=SiiAgentOptions(
+            cwd="/path/to/your/project",
+            model="gemini-2.0-flash-exp",
+            temperature=0.7,
+            max_turns=8,
+            allowed_tools=["read_file", "list_dir", "grep_search"]
+        )
+    ):
+        print(message)
+
+anyio.run(main)
+```
+
+## API 参考
+
+### `query()` 函数
+
+简单的一次性查询接口，适合大多数场景。
+
+```python
+async def query(
+    prompt: str,
+    *,
+    options: SiiAgentOptions | None = None
+) -> AsyncIterator[Message]
+```
+
+**参数**:
+
+- `prompt`: 用户输入的任务描述
+- `options`: 可选的配置选项（见下文）
+
+**返回**: 异步迭代器，产生 `Message` 对象
+
+### `SiiAgentOptions` 配置
+
+```python
+from dataclasses import dataclass
+from typing import List, Literal, Optional
+
+@dataclass
+class SiiAgentOptions:
+    # 认证配置
+    auth_type: Optional[str] = None  # "USE_SII", "USE_OPENAI", "USE_OPENAI_WITH_SII_TOOLS"
+                                     # 留空则自动检测
+
+    # 执行模式
+    yolo: bool = False               # YOLO 自主执行模式
+    max_turns: int = 10              # 最大对话轮数
+    timeout_ms: int = 120000         # 超时时间（毫秒）
+
+    # 工具控制
+    allowed_tools: Optional[List[str]] = None  # 允许使用的工具白名单
+
+    # 模型配置
+    model: Optional[str] = None      # 模型名称，如 "gpt-4o", "claude-sonnet-4.5"
+    temperature: Optional[float] = None  # 温度参数 (0.0-2.0)
+    system_prompt: Optional[str] = None  # 自定义系统提示
+    run_model: Literal["agent", "ask"] = "agent"  # 运行模型：agent=完整 CLI Prompt，ask=轻量问答
+
+    # 环境配置
+    cwd: Optional[str] = None        # 工作目录
+    session_id: Optional[str] = None # 会话 ID
+```
+
+#### 运行模型切换（`run_model`）
+
+- `agent`（默认）：复用 SII-CLI 的完整系统 Prompt、环境上下文和工具注入，适合需要工具链的复杂任务。
+- `ask`：仅向模型注入你提供的 `system_prompt`（若未提供，会自动使用默认 Ask Prompt），并禁用 CLI 级别的工具提示，适合轻量 Q&A。
+
+```python
+options = SiiAgentOptions(
+    run_model="ask",
+    system_prompt="你是一位耐心的助教，用中文回答所有问题。"
+)
+```
+
+Ask 模式下如果未传入 `system_prompt`，SDK 会自动注入默认提示：
+
+> `You are Ask Model running inside the SII CLI environment. Answer the user's question directly and concisely using only the provided context. Do not assume tool access unless explicitly mentioned.`
+
+### Message 类型
+
+所有消息都继承自 `Message` 基类：
+
+```python
+# 状态消息
+class StatusMessage(Message):
+    type: Literal["status"]
+    status: str                      # "initializing", "authenticating", "ready", "running"
+    message: str
+    auth_type: Optional[str]
+    available_tools: Optional[List[str]]
+
+# 助手消息
+class AssistantMessage(Message):
+    type: Literal["assistant_message"]
+    role: Literal["assistant"]
+    content: List[ContentBlock]      # 内容块列表
+
+# 工具调用
+class ToolCallMessage(Message):
+    type: Literal["tool_call"]
+    tool_name: str
+    tool_call_id: str
+    args: Dict[str, Any]
+
+# 工具结果
+class ToolResultMessage(Message):
+    type: Literal["tool_result"]
+    tool_call_id: str
+    result: Dict[str, Any]
+
+# 完成消息
+class CompletedMessage(Message):
+    type: Literal["completed"]
+    metadata: Dict[str, Any]         # turns_used, time_elapsed, tokens_used
+
+# 错误消息
+class ErrorMessage(Message):
+    type: Literal["error"]
+    error: Dict[str, Any]            # code, message, details
+```
+
+## 示例
+
+### 完整示例代码
+
+查看 `examples/` 目录获取更多示例：
+
+```
+examples/
+├── quick_start.py              # 快速入门（自动检测认证）
+├── hybrid_auth_example.py      # 混合认证模式示例 ✨
+├── gomoku_openai_example.py    # OpenAI 模式示例
+└── debug_quick_start.py        # 调试示例
+```
+
+运行示例：
+
+```bash
+cd examples
+
+# 快速开始（自动检测认证）
+python quick_start.py
+
+# 混合认证模式示例
+python hybrid_auth_example.py
+
+# OpenAI 模式示例
+python gomoku_openai_example.py
+```
+
+## 开发
+
+### 项目结构
+
+```
+packages/python-sdk/
+├── sii_agent_sdk/              # Python SDK 源码
+│   ├── __init__.py
+│   ├── query.py                # query() 函数实现
+│   ├── types.py                # 类型定义
+│   ├── errors.py               # 异常类
+│   ├── bridge.py               # Bridge 进程管理
+│   └── _internal/              # 内部实现
+│       ├── protocol.py         # JSONL 协议解析
+│       └── process.py          # 进程管理
+├── bridge/                     # Node.js Bridge
+│   ├── src/
+│   │   ├── index.ts            # Bridge 入口
+│   │   ├── protocol.ts         # 协议处理
+│   │   ├── executor.ts         # 执行器
+│   │   ├── stream.ts           # 事件流
+│   │   └── types.ts            # 类型定义
+│   ├── package.json
+│   └── tsconfig.json
+├── tests/                      # 测试
+│   ├── test_query.py
+│   ├── test_bridge.py
+│   └── test_types.py
+├── examples/                   # 示例
+├── docs/                       # 文档
+├── pyproject.toml              # Python 项目配置
+└── README.md                   # 本文件
+```
+
+### 运行测试
+
+```bash
+# 运行所有测试
+pytest tests/
+
+# 运行特定测试
+pytest tests/test_query.py -v
+
+# 生成覆盖率报告
+pytest tests/ --cov=sii_agent_sdk --cov-report=html
+```
+
+### 代码质量检查
+
+```bash
+# 代码格式化
+black sii_agent_sdk/ tests/ examples/
+
+# Lint 检查
+ruff check sii_agent_sdk/ tests/
+
+# 类型检查
+mypy sii_agent_sdk/
+```
+
+### 调试 Bridge
+
+设置环境变量启用详细日志：
+
+```bash
+export SII_BRIDGE_DEBUG=1
+python your_script.py
+```
+
+## 常见问题
+
+### 1. Bridge 进程启动失败
+
+**问题**: `BridgeNotFoundError: Bridge executable not found`
+
+**解决方案**:
+
+- 确保已构建 SII-CLI Core: `npm run build`
+- 检查 Node.js 版本: `node --version` (需要 >= 20.0.0)
+- 手动指定 Bridge 路径: `export SII_BRIDGE_PATH=/path/to/bridge`
+
+### 2. 认证失败
+
+**问题**: `AuthenticationError: Authentication failed`
+
+**解决方案**:
+
+- 检查环境变量是否正确设置
+- 验证 API Key 是否有效
+- 使用 `list_tools` 方法检查可用工具
+
+### 3. 工具调用超时
+
+**问题**: `TimeoutError: Tool execution timeout`
+
+**解决方案**:
+
+- 增加超时时间: `SiiAgentOptions(timeout_ms=300000)` # 5分钟
+- 减少 `max_turns` 限制复杂度
+- 使用更精确的 `allowed_tools` 过滤
+
+### 4. JSONL 解析错误
+
+**问题**: `JSONDecodeError: Failed to parse event`
+
+**解决方案**:
+
+- 启用调试模式查看原始输出
+- 更新到最新版本
+- 提交 issue 附带错误日志
+
+## 项目状态
+
+**当前版本**: 0.1.2 (Alpha)
+
+**开发进度**:
+
+- ✅ Phase 1: Node.js Bridge 基础结构
+- ✅ Phase 2: Python SDK 核心 API (`query()`)
+- ✅ Phase 3: YOLO 模式集成
+- ✅ Phase 4: 多认证方式支持
+- ✅ Phase 5: 完整测试覆盖
+- ✅ Phase 6: 性能优化
+- ✅ Phase 7: 发布到 PyPI
+
+### 已知限制
+
+- `SiiSDKClient` 类尚未完全实现持久会话功能
+- 工具白名单 (`allowed_tools`) 当前仅作为建议，未强制执行
+- 部分高级配置选项尚未实现（如自定义错误处理器）
+- 文档和示例仍在完善中
+
+### 路线图
+
+- [ ] 完善 `SiiSDKClient` 持久会话支持
+- [ ] 实现工具白名单强制过滤
+- [ ] 添加性能监控和指标收集
+- [ ] 支持自定义工具注册
+- [ ] 提供更丰富的事件钩子
+- [ ] 完善文档和教程
+- [ ] 发布到 PyPI
+
+## 贡献
+
+欢迎贡献！请遵循以下步骤：
+
+1. Fork 本仓库
+2. 创建功能分支: `git checkout -b feature/your-feature`
+3. 提交更改: `git commit -am 'Add new feature'`
+4. 推送到分支: `git push origin feature/your-feature`
+5. 提交 Pull Request
+
+更多详情请查看 [CONTRIBUTING.md](../../CONTRIBUTING.md)
+
+### 开发规范
+
+- 代码格式: Black (line-length=100)
+- 类型检查: 使用 mypy strict 模式
+- 测试覆盖率: 目标 >= 80%
+- 提交信息: 遵循 Conventional Commits
+
+## 许可
+
+Apache License 2.0 - 详见 [LICENSE](../../LICENSE)
+
+## 致谢
+
+- 本项目设计参考了 [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python)
+- 感谢 Anthropic 团队的优秀设计理念
+- 感谢 SII-CLI 核心团队提供强大的基础设施
+
+## 相关链接
+
+- [SII-CLI 主项目](https://github.com/GAIR-NLP/sii-cli)
+- [SII 平台官网](https://sii.gair-nlp.com)
+- [Claude Agent SDK](https://github.com/anthropics/claude-agent-sdk-python)
+- [问题反馈](https://github.com/GAIR-NLP/sii-cli/issues)
+- [讨论区](https://github.com/GAIR-NLP/sii-cli/discussions)
+
+---
+
+**提示**: 本项目处于早期开发阶段，API 可能会有较大变动。建议关注 [CHANGELOG.md](./CHANGELOG.md) 了解最新更新。
