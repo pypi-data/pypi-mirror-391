@@ -1,0 +1,69 @@
+Screen {
+    layout: vertical;
+}
+
+#toolbar {
+    height: 3;
+    dock: top;
+    background: $background;
+    color: $text;
+    padding: 1 2;
+}
+
+#content {
+    /* Use horizontal layout; omit flex properties since some versions of
+        * Textual do not recognize the flex shorthand.  The container will
+        * automatically fill the available space. */
+    layout: horizontal;
+}
+
+DirectoryTree {
+    width: 35%;
+    border: solid $primary;
+    padding: 1 1;
+}
+
+DataTable {
+    width: 65%;
+    border: solid $secondary;
+    padding: 1 1;
+}
+
+Footer {
+    dock: bottom;
+}
+
+#status_bar {
+    height: 1;
+    dock: bottom;
+    background: $background-darken-1;
+    color: $text;
+    padding-left: 1;
+    margin-bottom: 1;
+}
+
+DestinationModal {
+    align: center middle;
+}
+
+#dialog {
+    width: 80%;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
+    align-horizontal: center;
+}
+
+#dialog_buttons {
+    align-horizontal: center;
+}
+
+DestinationModal Button {
+    margin: 2;
+    width: 1fr;
+}
+
+DestinationModal Label {
+    content-align: center middle;
+    width: 1fr;
+}
