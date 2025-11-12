@@ -1,0 +1,21 @@
+when:
+  - event: tag
+    branch: main
+depends_on:
+  - test
+
+steps:
+  build_storybook:
+    image: node:23-alpine
+    commands:
+      - cd js
+      - npm install
+      - npx msw init public/ --save
+      - npm run build-storybook
+  publish_docs:
+    image: codeberg.org/xfix/plugin-codeberg-pages-deploy:1
+    settings:
+      folder: js/storybook-static
+      branch: storybook
+      ssh_key:
+        from_secret: deploy_ssh_key

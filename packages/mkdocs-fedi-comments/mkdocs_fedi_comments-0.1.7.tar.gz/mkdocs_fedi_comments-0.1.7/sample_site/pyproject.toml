@@ -1,0 +1,17 @@
+[project]
+name = "sample-site"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "griffe-fieldz>=0.3.0",
+    "mkdocs-awesome-nav>=3.2.0",
+    "mkdocs-fedi-comments",
+    "mkdocs-material==9.6.20",
+    "mkdocs-material-codeberg-source-facts>=0.1.0",
+    "mkdocstrings-python>=1.18.2",
+]
+
+[tool.uv.sources]
+mkdocs-fedi-comments = { workspace = true }

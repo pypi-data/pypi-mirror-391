@@ -1,0 +1,38 @@
+when:
+  branch: main
+  event: [push, pull_request, tag]
+
+steps:
+  build:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - apk add npm
+      - uv sync
+  test:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - uv run pytest
+  format:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - uv run ruff format --check
+      - uv run ruff check
+  check_sample_site_works:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - cd sample_site
+      - uv sync
+      - uv run mkdocs build
+  check_no_fedi_actor_works:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - cd no_fedi_actor
+      - uv sync
+      - uv run mkdocs build
+  lint_type_check_js:
+    image: node:23-alpine
+    commands:
+      - cd js
+      - npm install
+      - npm run lint
+      - npm run type

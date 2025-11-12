@@ -1,0 +1,41 @@
+[project]
+name = "mkdocs-fedi-comments"
+description = "Plugin enables adding comments to mkdocs sites from the Fediverse through an external service"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mkdocs>=1.6.1"]
+
+dynamic = ["version"]
+
+[build-system]
+requires = ["hatchling", "hatch-build-scripts"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "mkdocs_fedi_comments/version.py"
+
+
+[[tool.hatch.build.hooks.build-scripts.scripts]]
+work_dir = "js"
+out_dir = "mkdocs_fedi_comments/assets"
+commands = ["npm install; npm run build"]
+artifacts = ["dist/comments.js"]
+
+[project.entry-points."mkdocs.plugins"]
+"fedi-comments" = "mkdocs_fedi_comments:Plugin"
+
+[tool.uv.workspace]
+members = ["sample_site", "no_fedi_actor"]
+
+[dependency-groups]
+dev = [
+    "hatch>=1.14.2",
+    "pytest>=8.4.2",
+    "pytest-watcher>=0.4.3",
+    "rich>=14.1.0",
+    "ruff>=0.14.1",
+    "hatch-build-scripts>=1.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"

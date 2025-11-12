@@ -1,0 +1,1 @@
+::: mkdocs_fedi_comments.link_maker

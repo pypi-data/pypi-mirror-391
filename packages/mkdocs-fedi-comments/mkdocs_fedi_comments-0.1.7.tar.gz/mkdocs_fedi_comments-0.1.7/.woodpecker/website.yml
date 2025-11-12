@@ -1,0 +1,19 @@
+when:
+  branch: main
+  event: tag
+
+depends_on: ["test"]
+
+steps:
+  build:
+    image: ghcr.io/astral-sh/uv:python3.11-alpine
+    commands:
+      - apk add npm
+      - cd sample_site
+      - uv run mkdocs build
+  deploy:
+    image: codeberg.org/xfix/plugin-codeberg-pages-deploy:1
+    settings:
+      folder: sample_site/site
+      ssh_key:
+        from_secret: deploy_ssh_key

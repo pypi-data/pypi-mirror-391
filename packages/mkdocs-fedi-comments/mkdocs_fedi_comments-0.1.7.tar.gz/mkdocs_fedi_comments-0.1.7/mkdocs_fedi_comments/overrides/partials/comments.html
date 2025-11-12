@@ -1,0 +1,10 @@
+{% if page.meta.fedi_link %}
+<div id="comment-content"></div>
+
+<script type="module">
+    import { add } from "comments"
+    add("comment-content",
+        "{{ page.meta.fedi_comments_endpoint }}",
+        "{{ page.meta.fedi_encoded }}");
+</script>
+{% endif %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block extrahead %}
+{% if page.meta %}
+{% if page.meta.fedi_link %}
+<link rel="alternate" href="{{page.meta.fedi_link}}" type="application/activity+json">
+{% if page.meta.fedi_actor %}
+<link rel="fedi-actor" href="{{page.meta.fedi_actor}}" type="application/json">
+{% endif %}
+<script type="importmap">
+{
+  "imports": {
+    "comments": "{{ config.site_url }}/assets/javascript/comments.js"
+  }
+}
+</script>
+{% endif %}
+{% endif %}
+{% endblock %}

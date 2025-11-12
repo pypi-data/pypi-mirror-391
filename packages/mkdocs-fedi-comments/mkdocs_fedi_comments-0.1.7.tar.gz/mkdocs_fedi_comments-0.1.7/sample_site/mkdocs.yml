@@ -1,0 +1,62 @@
+watch: ["docs", "mkdocs.yml"]
+
+site_name: mkdocs-fedi-comments
+site_url: https://bovine.codeberg.page/mkdocs_fedi_comments
+
+repo_url: https://codeberg.org/bovine/mkdocs_fedi_comments/
+repo_name: bovine/mkdocs_fedi_comments
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  icon:
+    repo: fontawesome/brands/git-alt
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+
+plugins:
+  - fedi-comments:
+      base_path: https://comments.bovine.social/
+      actor:
+        name: mkdocs-fedi-comments
+        handle: mkdocs_fedi_comments
+        summary: This mkdocs plugins provides the ability to allow commenting from the Fediverse through an external service.
+  - search
+  - codeberg-source-facts
+  - awesome-nav
+  - mkdocstrings:
+      enable_inventory: true
+      handlers:
+        python:
+          inventories:
+            - https://docs.python.org/3/objects.inv
+          options:
+            docstring_style: sphinx
+            heading_level: 1
+            show_root_heading: true
+            line_length: 60
+            separate_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            filters:
+              - "!^_"
+              - "^__"
+              - "!^test_"
+            extensions:
+              - griffe_fieldz: { include_inherited: true }
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

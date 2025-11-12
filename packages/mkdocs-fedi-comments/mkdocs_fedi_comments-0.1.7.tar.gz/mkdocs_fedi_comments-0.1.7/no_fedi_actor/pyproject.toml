@@ -1,0 +1,10 @@
+[project]
+name = "no-fedi-actor"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mkdocs-fedi-comments", "mkdocs-material==9.6.20"]
+
+[tool.uv.sources]
+mkdocs-fedi-comments = { workspace = true }
