@@ -1,0 +1,108 @@
+Metadata-Version: 2.3
+Name: gresecml
+Version: 0.2.4
+Summary: A small CLI security toolkit
+Author: Mathias Greisen
+Requires-Python: >=3.13,<4
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: click (>=8.2.1,<9.0.0)
+Requires-Dist: keras (>=3.11.3,<4.0.0)
+Requires-Dist: pandas (>=2.3.2,<3.0.0)
+Requires-Dist: pyfiglet (>=1.0.4,<2.0.0)
+Requires-Dist: rich (>=14.1.0,<15.0.0)
+Requires-Dist: scapy (>=2.6.1,<3.0.0)
+Requires-Dist: tensorflow (>=2.20.0,<3.0.0)
+Description-Content-Type: text/markdown
+
+# GresecML
+This command-line tool analyzes network traffic from either a `.pcap` file or a live capture, and makes predictions using a TensorFlow model. Results can be displayed in the console and/or exported to an HTML file.
+
+---
+
+## ⚠️ Important
+This program was developed solely as part of an academic school project. It is intended for educational purposes only and should not be used in production environments or relied upon for professional applications.
+
+---
+
+## Features
+- Analyze `.pcap` files or capture of live network traffic  
+- Predict traffic sessions using a TensorFlow model  
+- Export results to an HTML report  
+- Filter sessions by probability thresholds  
+- Support for **lazy loading** to save memory  
+- Verbose mode for detailed console output  
+
+---
+
+## Workflow
+The prediction pipeline follows these steps:
+1. 	Capture – Collects packets from a  file or live network interface
+2. 	Sessions – Groups packets into sessions
+3. 	Prediction – Runs sessions through the TensorFlow model
+4. 	Output – Displays results in console and/or export to HTML
+
+---
+
+## Installation
+Install with pip:
+```bash
+pip install gresecml
+```
+
+---
+
+## Usage
+Run the CLI with:
+
+```bash
+gresecml [OPTIONS] COMMAND [ARGS]...
+```
+
+For help:
+```bash
+gresecml --help
+```
+---
+### Examples with "gresecml tf predict":
+
+- **Analyze a `.pcap` file with tensorflow and save results to HTML**  
+    ```bash
+    gresecml tf predict -i traffic.pcap -o results.html
+    ```
+
+- **Run live capture on default interface for 60 seconds**  
+    ```bash
+    gresecml tf predict
+    ```
+
+- **Run live capture on a specific interface with custom timeout**  
+    ```bash
+    gresecml tf predict -if eth0 -t 120
+    ```
+
+- **Enable verbose output and full HTML report**  
+    ```bash
+    gresecml tf predict -i traffic.pcap -o results.html -v -efo
+    ```
+
+- **Filter sessions with normal probability ≤ 70%**  
+    ```bash
+    gresecml tf predict -i traffic.pcap -pnm 70
+    ```
+
+- **Use lazy loading to save memory**  
+    ```bash
+    gresecml tf predict -i traffic.pcap -ll
+    ```
+
+### Notes
+- If no `--input` is provided, the tool defaults to live capture.  
+- Lazy loading is recommended for large `.pcap` files to reduce memory usage.  
+- The HTML output provides a structured table of predictions for possible further investigation. The table is sorted by the prediction_normal column.
+
+### Example Output
+When running with `--verbose`, predictions will be printed in the console.  
+If `--output` is specified, results will also be saved as an HTML file.
+
+---
