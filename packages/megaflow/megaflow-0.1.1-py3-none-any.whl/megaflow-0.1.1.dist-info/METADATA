@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: megaflow
+Version: 0.1.1
+Summary: Megaflow function SDK
+Author: Megaflow Team
+License: Proprietary
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# Megaflow SDK
+
+Megaflow function SDK for writing Megaflow functions.
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+Or for development:
+```bash
+pip install -e packages/megaflow-sdk
+```
+
+## Usage
+
+```python
+from megaflow import FunctionContext, Items
+from megaflow.types import Item
+
+async def run(context: FunctionContext) -> Items:
+    items = context.get_input_data()
+    # ... your function logic
+    return items
+```
+
+## API Reference
+
+See the [Megaflow Function Programmability documentation](../../megaflow-dev-doc/domains/function/extensibility/function_programmability.md) for complete API reference.
+
