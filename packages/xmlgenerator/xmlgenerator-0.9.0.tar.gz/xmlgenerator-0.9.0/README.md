@@ -1,0 +1,170 @@
+# XML Generator
+
+[![PyPI - Version](https://img.shields.io/pypi/v/xmlgenerator)](https://pypi.org/project/xmlgenerator)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/xmlgenerator)](https://pypistats.org/packages/xmlgenerator)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lexakimov/xmlgenerator)
+
+- [Русский 🇷🇺](README_RU.md)
+- [English 🇺🇸](README.md)
+
+Generates XML documents based on XSD schemas with the ability to customize data through a YAML configuration file.
+
+Simplifies the creation of test or demonstration XML data for complex schemas.
+
+## Features
+
+- Generation of XML documents based on XSD schemas
+- Customization of generated values via a YAML configuration file
+- Validation of generated documents
+- Command-line interface for convenient use
+
+## Installation
+
+### Installation via pip
+
+```bash
+pip install xmlgenerator
+```
+
+### Install executable file manually (linux)
+
+```bash
+curl -LO https://github.com/lexakimov/xmlgenerator/releases/latest/download/xmlgenerator-linux-amd64
+chmod +x xmlgenerator-linux-amd64
+sudo install xmlgenerator-linux-amd64 /usr/local/bin/xmlgenerator
+
+# also, you can install shell completions
+# available: bash, zsh, tcsh
+xmlgenerator -C bash | sudo tee /etc/bash_completion.d/xmlgenerator
+```
+
+## Usage
+
+The generator command is `xmlgenerator`
+
+**Flags and parameters:**
+
+```
+usage: xmlgenerator [-h] [-c <config.yml>] [-o <output.xml>] [-p] [-n alias=namespace] [-v <validation>] [-i]
+                    [-e <encoding>] [-s <seed>] [-d] [-V] [-C <shell>]
+                    xsd [xsd ...]
+
+Generates XML documents from XSD schemas
+
+positional arguments:
+  xsd                              paths to xsd schema(s) or directory with xsd schemas
+
+options:
+  -h, --help                       show this help message and exit
+  -c, --config <config.yml>        pass a YAML configuration file
+  -o, --output <output.xml>        save the output to a directory or file
+  -p, --pretty                     prettify the output XML
+  -n, --namespace alias=namespace  define XML namespace alias (repeatable flag)
+  -v, --validation <validation>    validate the generated XML document (none, schema, schematron; default: schema)
+  -i                               continue execution when validation errors occur
+  -e, --encoding <encoding>        the output XML encoding (utf-8, windows-1251; default: utf-8)
+  -s, --seed <seed>                set the randomization seed
+  -d, --debug                      enable debug mode
+  -V, --version                    show the current version
+  -C, --completion <shell>         print a shell completion script (bash, zsh, tcsh)
+```
+
+**Examples:**
+
+- Generate XML from a single schema and print to console:
+   ```bash
+   xmlgenerator path/to/your/schema.xsd
+   ```
+
+- Generate XML from all schemas in a directory and save to the `output` folder using a configuration file:
+   ```bash
+   xmlgenerator -c config.yml -o output/ path/to/schemas/
+   ```
+
+- Generate XML from a specific schema, save to a file with pretty formatting and windows-1251 encoding:
+   ```bash
+   xmlgenerator -o output.xml -p -e windows-1251 path/to/your/schema.xsd
+   ```
+
+- Generate XML with validation disabled:
+   ```bash
+   xmlgenerator -v none path/to/your/schema.xsd
+   ```
+
+## Configuration
+
+The generator can be configured using a YAML file passed via the `-c` or `--config` option.
+
+Description and examples of configuration are in [CONFIGURATION](./CONFIGURATION.md).
+
+## Validation
+
+Generated XML documents are checked for conformance against the schema used for generation.
+By default, validation against the source XSD schema is used.
+
+If a document does not conform to the schema, execution stops immediately.
+To keep processing despite validation errors, pass the `-i` flag.
+
+To disable validation, use the flag `-v none` or `--validation none`.
+
+## Contribution
+
+Contributions are welcome! Please open an issue or submit a pull request on GitHub.
+
+### Build from source
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/lexakimov/xmlgenerator.git
+   cd xmlgenerator
+   ```
+
+2. **Create and activate a virtual environment (recommended):**
+   ```bash
+   python -m venv .venv
+   ```
+    * **For Linux/macOS:**
+      ```bash
+      source .venv/bin/activate
+      ```
+    * **For Windows (Command Prompt/PowerShell):**
+      ```bash
+      .\.venv\Scripts\activate
+      ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4.1. **Install the package:**
+
+   Install in develop mode (code changes will be immediately reflected):
+   ```bash
+   pip install -e .
+   ```
+
+4.2. **Otherwise, build single executable:**
+
+   ```bash
+   python build_native.py
+   ```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contacts
+
+For any questions or issues, please contact [lex.akimov23@gmail.com].
+
+You can also create an [Issue on GitHub](https://github.com/lexakimov/xmlgenerator/issues) to report bugs or suggest
+improvements.
