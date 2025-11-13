@@ -1,0 +1,1120 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Passw0rts{% endblock %}
+
+{% block styles %}
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-base);
+        flex-wrap: wrap;
+        gap: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .search-box {
+        flex: 1;
+        max-width: 400px;
+        margin: 0;
+    }
+    
+    .view-toggle {
+        display: flex;
+        gap: 5px;
+        background-color: var(--bg-secondary);
+        padding: 4px;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+    }
+    
+    .view-toggle button {
+        background: transparent;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        border-radius: calc(var(--border-radius) - 2px);
+        transition: all var(--transition-speed);
+    }
+    
+    .view-toggle button.active {
+        background-color: var(--accent);
+        color: white;
+    }
+    
+    .view-toggle button:hover:not(.active) {
+        background-color: var(--bg-tertiary);
+    }
+    
+    .entry-card {
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-base);
+        margin-bottom: calc(var(--spacing-base) * 0.75);
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        box-shadow: 0 2px 4px var(--shadow);
+    }
+    
+    .entry-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px var(--shadow-hover);
+        border-color: var(--accent);
+    }
+    
+    .entry-list-item {
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: calc(var(--spacing-base) * 0.75);
+        margin-bottom: calc(var(--spacing-base) * 0.5);
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .entry-list-item:hover {
+        background-color: var(--bg-tertiary);
+        border-color: var(--accent);
+        transform: translateX(4px);
+    }
+    
+    .entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .entry-title {
+        font-size: calc(var(--font-size-base) * 1.3);
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 4px;
+    }
+    
+    .entry-meta {
+        color: var(--text-secondary);
+        font-size: var(--font-size-base);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        z-index: 1000;
+        animation: fadeIn var(--transition-speed);
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+        from { 
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .modal-content {
+        background-color: var(--bg-primary);
+        max-width: 600px;
+        margin: 50px auto;
+        padding: calc(var(--spacing-base) * 1.5);
+        border-radius: calc(var(--border-radius) * 1.5);
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--border-color);
+        animation: slideDown var(--transition-speed);
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-base);
+        padding-bottom: calc(var(--spacing-base) * 0.5);
+        border-bottom: 2px solid var(--border-color);
+    }
+    
+    .close {
+        font-size: calc(var(--font-size-base) * 2);
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: all var(--transition-speed);
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .close:hover {
+        color: var(--danger);
+        background-color: var(--bg-secondary);
+    }
+    
+    .password-field {
+        position: relative;
+    }
+    
+    .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 35px;
+        cursor: pointer;
+        color: var(--text-secondary);
+        transition: all var(--transition-speed);
+        padding: 5px;
+    }
+    
+    .password-toggle:hover {
+        color: var(--accent);
+    }
+    
+    .button-group {
+        display: flex;
+        gap: calc(var(--spacing-base) * 0.5);
+        margin-top: var(--spacing-base);
+        flex-wrap: wrap;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: calc(var(--spacing-base) * 3) var(--spacing-base);
+        color: var(--text-secondary);
+    }
+    
+    .empty-state h2 {
+        font-size: calc(var(--font-size-base) * 1.5);
+        margin-bottom: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .category-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background-color: var(--accent);
+        color: white;
+        border-radius: calc(var(--border-radius) * 0.5);
+        font-size: calc(var(--font-size-base) * 0.85);
+        margin-left: 8px;
+        font-weight: 500;
+    }
+    
+    /* Settings Panel */
+    .settings-button {
+        position: relative;
+    }
+    
+    .settings-panel {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100%;
+        background-color: var(--bg-primary);
+        border-left: 2px solid var(--border-color);
+        box-shadow: -4px 0 20px var(--shadow);
+        z-index: 2000;
+        transition: right var(--transition-speed);
+        overflow-y: auto;
+        padding: var(--spacing-base);
+    }
+    
+    .settings-panel.open {
+        right: 0;
+    }
+    
+    .settings-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1999;
+    }
+    
+    .settings-overlay.open {
+        display: block;
+    }
+    
+    .settings-section {
+        margin-bottom: calc(var(--spacing-base) * 1.5);
+    }
+    
+    .settings-section h3 {
+        font-size: calc(var(--font-size-base) * 1.2);
+        margin-bottom: var(--spacing-base);
+        color: var(--accent);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: calc(var(--spacing-base) * 0.5);
+        margin-top: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .theme-option {
+        padding: calc(var(--spacing-base) * 0.75);
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        text-align: center;
+        background-color: var(--bg-secondary);
+    }
+    
+    .theme-option:hover {
+        border-color: var(--accent);
+        transform: scale(1.05);
+    }
+    
+    .theme-option.active {
+        border-color: var(--accent);
+        background-color: var(--accent-light);
+        box-shadow: 0 0 0 3px var(--accent-light);
+    }
+    
+    .density-options {
+        display: flex;
+        gap: calc(var(--spacing-base) * 0.5);
+        margin-top: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .density-option {
+        flex: 1;
+        padding: calc(var(--spacing-base) * 0.75);
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all var(--transition-speed);
+        text-align: center;
+        background-color: var(--bg-secondary);
+    }
+    
+    .density-option:hover {
+        border-color: var(--accent);
+    }
+    
+    .density-option.active {
+        border-color: var(--accent);
+        background-color: var(--accent-light);
+    }
+    
+    .density-option-description {
+        font-size: calc(var(--font-size-base) * 0.85);
+        color: var(--text-secondary);
+    }
+    
+    .entry-list-title {
+        font-size: calc(var(--font-size-base) * 1.1);
+    }
+    
+    .entry-list-meta {
+        text-align: right;
+        white-space: nowrap;
+    }
+    
+    .entry-card-meta {
+        margin-top: calc(var(--spacing-base) * 0.4);
+        font-size: calc(var(--font-size-base) * 0.85);
+    }
+    
+    .slider-container {
+        margin-top: calc(var(--spacing-base) * 0.5);
+    }
+    
+    .slider {
+        width: 100%;
+        margin: calc(var(--spacing-base) * 0.5) 0;
+    }
+    
+    .slider-value {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: calc(var(--font-size-base) * 0.9);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<header>
+    <div class="header-content">
+        <h1>🔐 Passw0rts</h1>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="button button-small button-icon" onclick="openSettings()">
+                ⚙️ Customize
+            </button>
+            <button class="button button-small" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="dashboard-header">
+        <button class="button button-icon" onclick="showAddModal()">➕ Add Entry</button>
+        <input type="text" class="search-box" id="search-input" placeholder="🔍 Search passwords...">
+        <div class="view-toggle">
+            <button id="view-card" class="active" onclick="setView('card')" title="Card view">📇</button>
+            <button id="view-list" onclick="setView('list')" title="List view">📋</button>
+        </div>
+        <button class="button button-icon" onclick="generatePassword()">🎲 Generate</button>
+    </div>
+    
+    <div id="entries-container">
+        <div class="empty-state">
+            <h2>Loading...</h2>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settings-overlay" onclick="closeSettings()"></div>
+<div class="settings-panel" id="settings-panel">
+    <div class="modal-header">
+        <h2>⚙️ Customize Interface</h2>
+        <span class="close" onclick="closeSettings()">&times;</span>
+    </div>
+    
+    <div class="settings-section">
+        <h3>🎨 Theme</h3>
+        <div class="theme-grid">
+            <div class="theme-option" data-theme="light" onclick="selectTheme('light')">
+                <strong>☀️ Light</strong>
+            </div>
+            <div class="theme-option active" data-theme="dark" onclick="selectTheme('dark')">
+                <strong>🌙 Dark</strong>
+            </div>
+            <div class="theme-option" data-theme="blue" onclick="selectTheme('blue')">
+                <strong>🌊 Blue</strong>
+            </div>
+            <div class="theme-option" data-theme="purple" onclick="selectTheme('purple')">
+                <strong>💜 Purple</strong>
+            </div>
+            <div class="theme-option" data-theme="green" onclick="selectTheme('green')">
+                <strong>🌿 Green</strong>
+            </div>
+            <div class="theme-option" data-theme="nord" onclick="selectTheme('nord')">
+                <strong>❄️ Nord</strong>
+            </div>
+            <div class="theme-option" data-theme="solarized" onclick="selectTheme('solarized')">
+                <strong>🌅 Solarized</strong>
+            </div>
+            <div class="theme-option" data-theme="dracula" onclick="selectTheme('dracula')">
+                <strong>🧛 Dracula</strong>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h3>📏 Density</h3>
+        <div class="density-options">
+            <div class="density-option" data-density="compact" onclick="selectDensity('compact')">
+                <strong>Compact</strong>
+                <div class="density-option-description">More content</div>
+            </div>
+            <div class="density-option active" data-density="comfortable" onclick="selectDensity('comfortable')">
+                <strong>Comfortable</strong>
+                <div class="density-option-description">Balanced</div>
+            </div>
+            <div class="density-option" data-density="spacious" onclick="selectDensity('spacious')">
+                <strong>Spacious</strong>
+                <div class="density-option-description">More space</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h3>🔤 Font Size</h3>
+        <div class="slider-container">
+            <input type="range" min="12" max="18" value="14" class="slider" id="font-size-slider" oninput="updateFontSize(this.value)">
+            <div class="slider-value" id="font-size-value">14px</div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h3>🔐 Security</h3>
+        
+        <div style="margin-bottom: var(--spacing-base);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <strong>TOTP 2FA</strong>
+                <span id="totp-status">Loading...</span>
+            </div>
+            <button class="button" style="width: 100%; margin-bottom: 5px;" onclick="setupTOTP()" id="setup-totp-btn">
+                🔒 Set Up TOTP
+            </button>
+            <button class="button button-danger" style="width: 100%; display: none;" onclick="removeTOTP()" id="remove-totp-btn">
+                🗑️ Remove TOTP
+            </button>
+        </div>
+        
+        <div style="margin-bottom: var(--spacing-base);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <strong>USB Security Key</strong>
+                <span id="usbkey-status">Loading...</span>
+            </div>
+            <button class="button" style="width: 100%; margin-bottom: 5px;" onclick="registerUSBKey()" id="register-usbkey-btn">
+                🔑 Register USB Key
+            </button>
+            <button class="button button-danger" style="width: 100%; display: none;" onclick="removeUSBKey()" id="remove-usbkey-btn">
+                🗑️ Remove USB Key
+            </button>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <button class="button" style="width: 100%;" onclick="resetSettings()">🔄 Reset to Defaults</button>
+    </div>
+</div>
+
+<!-- View Entry Modal -->
+<div id="view-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="view-title"></h2>
+            <span class="close" onclick="closeModal('view-modal')">&times;</span>
+        </div>
+        <div id="view-details"></div>
+        <div class="button-group">
+            <button class="button" onclick="copyPassword()">📋 Copy Password</button>
+            <button class="button" onclick="editEntry()">✏️ Edit</button>
+            <button class="button button-danger" onclick="deleteEntry()">🗑️ Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Entry Modal -->
+<div id="edit-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="edit-modal-title">Add Entry</h2>
+            <span class="close" onclick="closeModal('edit-modal')">&times;</span>
+        </div>
+        <form id="entry-form">
+            <input type="hidden" id="entry-id">
+            
+            <label for="entry-title">Title *</label>
+            <input type="text" id="entry-title" required>
+            
+            <label for="entry-username">Username/Email</label>
+            <input type="text" id="entry-username">
+            
+            <label for="entry-password">Password *</label>
+            <div class="password-field">
+                <input type="password" id="entry-password" required>
+                <span class="password-toggle" onclick="togglePassword('entry-password')">👁️</span>
+            </div>
+            <button type="button" class="button button-small" onclick="generatePasswordForForm()">Generate</button>
+            
+            <label for="entry-url">URL</label>
+            <input type="url" id="entry-url">
+            
+            <label for="entry-category">Category</label>
+            <input type="text" id="entry-category" value="general">
+            
+            <label for="entry-notes">Notes</label>
+            <textarea id="entry-notes" rows="3"></textarea>
+            
+            <div class="button-group">
+                <button type="submit" class="button">💾 Save</button>
+                <button type="button" class="button" onclick="closeModal('edit-modal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let entries = [];
+    let currentEntry = null;
+    let currentView = 'card'; // 'card' or 'list'
+    
+    // Load entries on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadEntries();
+        initializeSettings();
+        
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            displayEntries(entries.filter(entry => 
+                entry.title.toLowerCase().includes(query) ||
+                (entry.username && entry.username.toLowerCase().includes(query)) ||
+                (entry.category && entry.category.toLowerCase().includes(query))
+            ));
+        });
+    });
+    
+    // Settings functions
+    function initializeSettings() {
+        const settings = CustomizationManager.settings;
+        
+        // Update active theme
+        document.querySelectorAll('.theme-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.theme === settings.theme);
+        });
+        
+        // Update active density
+        document.querySelectorAll('.density-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.density === settings.density);
+        });
+        
+        // Update font size slider
+        document.getElementById('font-size-slider').value = settings.fontSize;
+        document.getElementById('font-size-value').textContent = settings.fontSize + 'px';
+        
+        // Load saved view preference
+        currentView = localStorage.getItem('passw0rts_view') || 'card';
+        updateViewButtons();
+    }
+    
+    function openSettings() {
+        document.getElementById('settings-panel').classList.add('open');
+        document.getElementById('settings-overlay').classList.add('open');
+    }
+    
+    function closeSettings() {
+        document.getElementById('settings-panel').classList.remove('open');
+        document.getElementById('settings-overlay').classList.remove('open');
+    }
+    
+    function selectTheme(theme) {
+        CustomizationManager.setTheme(theme);
+        document.querySelectorAll('.theme-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.theme === theme);
+        });
+    }
+    
+    function selectDensity(density) {
+        CustomizationManager.setDensity(density);
+        document.querySelectorAll('.density-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.density === density);
+        });
+    }
+    
+    function updateFontSize(size) {
+        CustomizationManager.setFontSize(parseInt(size));
+        document.getElementById('font-size-value').textContent = size + 'px';
+    }
+    
+    function resetSettings() {
+        if (confirm('Reset all customization settings to defaults?')) {
+            CustomizationManager.resetToDefaults();
+            initializeSettings();
+        }
+    }
+    
+    function setView(view) {
+        currentView = view;
+        localStorage.setItem('passw0rts_view', view);
+        updateViewButtons();
+        displayEntries(entries);
+    }
+    
+    function updateViewButtons() {
+        document.getElementById('view-card').classList.toggle('active', currentView === 'card');
+        document.getElementById('view-list').classList.toggle('active', currentView === 'list');
+    }
+    
+    async function loadEntries() {
+        try {
+            const response = await fetch('/api/entries');
+            if (response.ok) {
+                entries = await response.json();
+                displayEntries(entries);
+            } else {
+                window.location.href = '/';
+            }
+        } catch (error) {
+            console.error('Error loading entries:', error);
+        }
+    }
+    
+    function displayEntries(entriesToShow) {
+        const container = document.getElementById('entries-container');
+        
+        if (entriesToShow.length === 0) {
+            container.innerHTML = '<div class="empty-state"><h2>No entries found</h2><p>Click "Add Entry" to create your first password entry</p></div>';
+            return;
+        }
+        
+        if (currentView === 'card') {
+            container.innerHTML = entriesToShow.map(entry => `
+                <div class="entry-card" onclick="viewEntry('${entry.id}')">
+                    <div class="entry-header">
+                        <div>
+                            <div class="entry-title">${escapeHtml(entry.title)}
+                                ${entry.category ? `<span class="category-badge">${escapeHtml(entry.category)}</span>` : ''}
+                            </div>
+                            <div class="entry-meta">
+                                👤 ${entry.username ? escapeHtml(entry.username) : 'No username'}
+                            </div>
+                        </div>
+                    </div>
+                    ${entry.url ? `<div class="entry-meta">🔗 ${escapeHtml(entry.url)}</div>` : ''}
+                    <div class="entry-meta entry-card-meta">
+                        🕒 Updated ${formatDate(entry.updated_at)}
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = entriesToShow.map(entry => `
+                <div class="entry-list-item" onclick="viewEntry('${entry.id}')">
+                    <div style="flex: 1;">
+                        <div class="entry-title entry-list-title">${escapeHtml(entry.title)}
+                            ${entry.category ? `<span class="category-badge">${escapeHtml(entry.category)}</span>` : ''}
+                        </div>
+                        <div class="entry-meta">
+                            👤 ${entry.username ? escapeHtml(entry.username) : 'No username'}
+                            ${entry.url ? ` | 🔗 ${escapeHtml(entry.url)}` : ''}
+                        </div>
+                    </div>
+                    <div class="entry-meta entry-list-meta">
+                        🕒 ${formatDate(entry.updated_at)}
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+    
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === 0) {
+            return 'Today';
+        } else if (diffDays === 1) {
+            return 'Yesterday';
+        } else if (diffDays < 7) {
+            return `${diffDays} days ago`;
+        } else if (diffDays < 30) {
+            return `${Math.floor(diffDays / 7)} weeks ago`;
+        } else if (diffDays < 365) {
+            return `${Math.floor(diffDays / 30)} months ago`;
+        } else {
+            return date.toLocaleDateString();
+        }
+    }
+    
+    async function viewEntry(entryId) {
+        try {
+            const response = await fetch(`/api/entries/${entryId}`);
+            if (response.ok) {
+                currentEntry = await response.json();
+                document.getElementById('view-title').textContent = currentEntry.title;
+                document.getElementById('view-details').innerHTML = `
+                    <p><strong>Username:</strong> ${currentEntry.username ? escapeHtml(currentEntry.username) : 'N/A'}</p>
+                    <p><strong>Password:</strong> ${'*'.repeat(currentEntry.password.length)}</p>
+                    <p><strong>URL:</strong> ${currentEntry.url ? `<a href="${escapeHtml(currentEntry.url)}" target="_blank">${escapeHtml(currentEntry.url)}</a>` : 'N/A'}</p>
+                    <p><strong>Category:</strong> ${currentEntry.category ? escapeHtml(currentEntry.category) : 'N/A'}</p>
+                    <p><strong>Notes:</strong> ${currentEntry.notes ? escapeHtml(currentEntry.notes) : 'N/A'}</p>
+                `;
+                document.getElementById('view-modal').style.display = 'block';
+            }
+        } catch (error) {
+            alert('Error loading entry');
+        }
+    }
+    
+    function showAddModal() {
+        currentEntry = null;
+        document.getElementById('edit-modal-title').textContent = 'Add Entry';
+        document.getElementById('entry-form').reset();
+        document.getElementById('entry-id').value = '';
+        document.getElementById('edit-modal').style.display = 'block';
+    }
+    
+    function editEntry() {
+        if (!currentEntry) return;
+        
+        document.getElementById('edit-modal-title').textContent = 'Edit Entry';
+        document.getElementById('entry-id').value = currentEntry.id;
+        document.getElementById('entry-title').value = currentEntry.title;
+        document.getElementById('entry-username').value = currentEntry.username || '';
+        document.getElementById('entry-password').value = currentEntry.password;
+        document.getElementById('entry-url').value = currentEntry.url || '';
+        document.getElementById('entry-category').value = currentEntry.category || 'general';
+        document.getElementById('entry-notes').value = currentEntry.notes || '';
+        
+        closeModal('view-modal');
+        document.getElementById('edit-modal').style.display = 'block';
+    }
+    
+    document.getElementById('entry-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const entryId = document.getElementById('entry-id').value;
+        const data = {
+            title: document.getElementById('entry-title').value,
+            username: document.getElementById('entry-username').value,
+            password: document.getElementById('entry-password').value,
+            url: document.getElementById('entry-url').value,
+            category: document.getElementById('entry-category').value,
+            notes: document.getElementById('entry-notes').value
+        };
+        
+        try {
+            const url = entryId ? `/api/entries/${entryId}` : '/api/entries';
+            const method = entryId ? 'PUT' : 'POST';
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            if (response.ok) {
+                closeModal('edit-modal');
+                loadEntries();
+            } else {
+                alert('Error saving entry');
+            }
+        } catch (error) {
+            alert('Error saving entry');
+        }
+    });
+    
+    async function deleteEntry() {
+        if (!currentEntry) return;
+        
+        if (confirm(`Delete "${currentEntry.title}"?`)) {
+            try {
+                const response = await fetch(`/api/entries/${currentEntry.id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    closeModal('view-modal');
+                    loadEntries();
+                }
+            } catch (error) {
+                alert('Error deleting entry');
+            }
+        }
+    }
+    
+    function copyPassword() {
+        if (!currentEntry) return;
+        
+        navigator.clipboard.writeText(currentEntry.password).then(() => {
+            alert('Password copied to clipboard (will clear in 30 seconds)');
+            setTimeout(() => {
+                navigator.clipboard.writeText('');
+            }, 30000);
+        });
+    }
+    
+    async function generatePassword() {
+        try {
+            const response = await fetch('/api/generate-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({length: 16, use_symbols: true})
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                alert(`Generated password: ${data.password}\nStrength: ${data.strength.label}`);
+                navigator.clipboard.writeText(data.password);
+            }
+        } catch (error) {
+            alert('Error generating password');
+        }
+    }
+    
+    async function generatePasswordForForm() {
+        try {
+            const response = await fetch('/api/generate-password', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({length: 16, use_symbols: true})
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('entry-password').value = data.password;
+            }
+        } catch (error) {
+            alert('Error generating password');
+        }
+    }
+    
+    function togglePassword(fieldId) {
+        const field = document.getElementById(fieldId);
+        field.type = field.type === 'password' ? 'text' : 'password';
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    async function logout() {
+        try {
+            await fetch('/api/auth/logout', {method: 'POST'});
+            window.location.href = '/';
+        } catch (error) {
+            window.location.href = '/';
+        }
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Security settings functions
+    async function checkSecurityStatus() {
+        // Check TOTP status
+        try {
+            const totpResponse = await fetch('/api/vault/totp/status');
+            const totpData = await totpResponse.json();
+            
+            if (totpData.enabled) {
+                document.getElementById('totp-status').textContent = '✅ Enabled';
+                document.getElementById('setup-totp-btn').style.display = 'none';
+                document.getElementById('remove-totp-btn').style.display = 'block';
+            } else {
+                document.getElementById('totp-status').textContent = '❌ Disabled';
+                document.getElementById('setup-totp-btn').style.display = 'block';
+                document.getElementById('remove-totp-btn').style.display = 'none';
+            }
+        } catch (error) {
+            document.getElementById('totp-status').textContent = '❓ Unknown';
+            document.getElementById('setup-totp-btn').style.display = 'block';
+            document.getElementById('remove-totp-btn').style.display = 'none';
+        }
+        
+        // Check USB key status
+        try {
+            const usbResponse = await fetch('/api/vault/usbkey/status');
+            const usbData = await usbResponse.json();
+            
+            if (usbData.registered) {
+                document.getElementById('usbkey-status').textContent = usbData.connected ? '✅ Connected' : '⚠️ Registered (Not Connected)';
+                document.getElementById('register-usbkey-btn').style.display = 'none';
+                document.getElementById('remove-usbkey-btn').style.display = 'block';
+            } else {
+                document.getElementById('usbkey-status').textContent = '❌ Not Registered';
+                document.getElementById('register-usbkey-btn').style.display = 'block';
+                document.getElementById('remove-usbkey-btn').style.display = 'none';
+            }
+        } catch (error) {
+            document.getElementById('usbkey-status').textContent = '❓ Error';
+        }
+    }
+    
+    async function setupTOTP() {
+        if (!confirm('Set up TOTP 2FA? You will need an authenticator app.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/vault/totp/setup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                
+                // Get QR code
+                const qrResponse = await fetch('/api/vault/totp/qrcode', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({secret: data.secret})
+                });
+                
+                if (qrResponse.ok) {
+                    const qrData = await qrResponse.json();
+                    
+                    // Show QR code in a modal or alert
+                    const qrWindow = window.open('', 'TOTP Setup', 'width=400,height=500');
+                    qrWindow.document.write(`
+                        <html>
+                        <head><title>TOTP Setup</title></head>
+                        <body style="font-family: Arial; padding: 20px; text-align: center;">
+                            <h2>🔒 TOTP Setup</h2>
+                            <p>Scan this QR code with your authenticator app:</p>
+                            <img src="${qrData.qr_code}" style="max-width: 100%;">
+                            <p style="word-break: break-all; background: #f0f0f0; padding: 10px; border-radius: 5px;">
+                                <strong>Secret:</strong> ${data.secret}
+                            </p>
+                            <button onclick="window.close()" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Close</button>
+                        </body>
+                        </html>
+                    `);
+                    
+                    document.getElementById('totp-status').textContent = '✅ Enabled';
+                    document.getElementById('setup-totp-btn').style.display = 'none';
+                    document.getElementById('remove-totp-btn').style.display = 'block';
+                    
+                    alert('TOTP setup successful! Save the secret in a safe place.');
+                }
+            } else {
+                const errorData = await response.json();
+                alert('Failed to setup TOTP: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error setting up TOTP: ' + error.message);
+        }
+    }
+    
+    async function removeTOTP() {
+        if (!confirm('Remove TOTP 2FA? This will reduce your account security.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/vault/totp/remove', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            });
+            
+            if (response.ok) {
+                document.getElementById('totp-status').textContent = '❌ Disabled';
+                document.getElementById('setup-totp-btn').style.display = 'block';
+                document.getElementById('remove-totp-btn').style.display = 'none';
+                alert('TOTP removed successfully');
+            } else {
+                const errorData = await response.json();
+                alert('Failed to remove TOTP: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error removing TOTP: ' + error.message);
+        }
+    }
+    
+    async function registerUSBKey() {
+        try {
+            // First, get list of USB devices
+            const devicesResponse = await fetch('/api/vault/usbkey/devices');
+            const devicesData = await devicesResponse.json();
+            
+            if (!devicesData.devices || devicesData.devices.length === 0) {
+                alert('No USB devices found. Please plug in your USB security key and try again.');
+                return;
+            }
+            
+            // Show device selection
+            let deviceList = 'Select a USB device:\n\n';
+            devicesData.devices.forEach((device, index) => {
+                deviceList += `${index + 1}. ${device}\n`;
+            });
+            
+            const selection = prompt(deviceList + '\nEnter device number (1-' + devicesData.devices.length + '):');
+            
+            if (!selection) return;
+            
+            const deviceIndex = parseInt(selection) - 1;
+            
+            if (deviceIndex < 0 || deviceIndex >= devicesData.devices.length) {
+                alert('Invalid selection');
+                return;
+            }
+            
+            // Ask for master password for verification
+            const masterPassword = prompt('Enter your master password to register the USB key:');
+            
+            if (!masterPassword) return;
+            
+            // Register the device
+            const registerResponse = await fetch('/api/vault/usbkey/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    device_index: deviceIndex,
+                    master_password: masterPassword
+                })
+            });
+            
+            if (registerResponse.ok) {
+                const registerData = await registerResponse.json();
+                alert('USB key registered successfully!\n\nDevice: ' + registerData.device);
+                checkSecurityStatus();
+            } else {
+                const errorData = await registerResponse.json();
+                alert('Failed to register USB key: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error registering USB key: ' + error.message);
+        }
+    }
+    
+    async function removeUSBKey() {
+        if (!confirm('Remove USB security key? You will need to use password authentication.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/vault/usbkey/remove', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            });
+            
+            if (response.ok) {
+                document.getElementById('usbkey-status').textContent = '❌ Not Registered';
+                document.getElementById('register-usbkey-btn').style.display = 'block';
+                document.getElementById('remove-usbkey-btn').style.display = 'none';
+                alert('USB key removed successfully');
+            } else {
+                const errorData = await response.json();
+                alert('Failed to remove USB key: ' + (errorData.error || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Error removing USB key: ' + error.message);
+        }
+    }
+    
+    // Check security status when opening settings
+    document.addEventListener('DOMContentLoaded', () => {
+        const settingsBtn = document.querySelector('[onclick="openSettings()"]');
+        if (settingsBtn && typeof window.openSettings === 'function') {
+            const originalOpenSettings = window.openSettings;
+            window.openSettings = function() {
+                originalOpenSettings();
+                checkSecurityStatus();
+            };
+        } else if (settingsBtn) {
+            // openSettings not defined yet, create it
+            window.openSettings = function() {
+                checkSecurityStatus();
+            };
+        }
+    });
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
