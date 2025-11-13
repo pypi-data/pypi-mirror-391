@@ -1,0 +1,1138 @@
+import asyncio
+import json
+import re
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from functools import cached_property
+from json import JSONDecodeError
+from types import NoneType, NotImplementedType
+from typing import Literal, Optional, Union
+
+# noinspection PyProtectedMember
+import httpx._client as httpx_private_client_module
+from httpx import (
+    AsyncBaseTransport,
+    AsyncClient,
+    BaseTransport,
+    Client,
+    HTTPError,
+    Limits,
+    Response,
+)
+
+# noinspection PyProtectedMember
+from httpx._client import BaseClient
+
+# noinspection PyProtectedMember
+from httpx._types import AuthTypes
+from httpx_aiohttp import AiohttpTransport
+from httpx_auth import HeaderApiKey
+from httpx_limiter import AsyncRateLimitedTransport, Rate
+
+from .._core_init import get_cached_data, update_cache
+from .._names import (
+    APP_BRAND_NAME,
+    ELAB_BRAND_NAME,
+    ElabStrictVersionMatchModes,
+)
+from ..configuration import (
+    KEY_API_TOKEN,
+    KEY_ASYNC_RATE_LIMIT,
+    KEY_ELAB_STRICT_VERSION_MATCH,
+    KEY_ENABLE_HTTP2,
+    KEY_HOST,
+    KEY_TIMEOUT,
+    KEY_VERIFY_SSL,
+    TOKEN_BEARER,
+    MinimalActiveConfiguration,
+    get_active_api_token,
+    get_active_async_capacity,
+    get_active_async_rate_limit,
+    get_active_enable_http2,
+    get_active_host,
+    get_active_timeout,
+    get_active_verify_ssl,
+    get_elab_version_mode,
+    preventive_missing_warning,
+)
+from ..configuration.config import ELAB_STRICT_VERSION_MATCH_DEFAULT_VAL, APIToken
+from ..loggers import Logger
+from ..styles import Missing
+from ..utils import (
+    get_app_version,
+    update_kwargs_with_defaults,
+)
+from ._names import ElabVersionDefaults
+
+USER_AGENT: str = (
+    f"{APP_BRAND_NAME}/{get_app_version()} {httpx_private_client_module.USER_AGENT}"
+)
+httpx_private_client_module.USER_AGENT = USER_AGENT
+logger = Logger()
+
+
+@dataclass
+class SessionDefaults:
+    limits: Limits = field(
+        default_factory=lambda: Limits(
+            max_connections=100,
+            max_keepalive_connections=20,
+            # The same as HTTPX default. The previous value "30"
+            # can be too much for the server when uvloop is used
+            keepalive_expiry=5,
+        )
+    )
+
+
+session_defaults = SessionDefaults()
+
+
+class _CustomHeaderApiKey(HeaderApiKey):
+    def __init__(self):
+        self.api_key = str(Missing())
+        self.header_name = TOKEN_BEARER
+        super().__init__(self.api_key, self.header_name)
+
+
+class SimpleClient(BaseClient):
+    def __new__(cls, *, is_async_client: bool, **kwargs) -> Union[Client, AsyncClient]:
+        host: str = kwargs.pop("host", get_active_host())
+        api_token: str | APIToken = kwargs.pop("api_token", get_active_api_token())
+        if not isinstance(api_token, APIToken):
+            api_token = APIToken(api_token)
+        auth: Optional[AuthTypes] = kwargs.pop("auth", _CustomHeaderApiKey())
+        if auth is None:
+            auth: AuthTypes = _CustomHeaderApiKey()
+            auth.api_key = api_token.token
+            logger.debug(
+                f"Argument 'auth' passed to {SimpleClient.__name__} is {None}. "
+                f"It has been be set to {HeaderApiKey} with "
+                f"API key/token '{api_token}'."
+            )
+        elif isinstance(auth, HeaderApiKey):
+            auth.api_key = api_token.token
+        else:
+            logger.debug(
+                f"'auth' has been set to {auth!r} for {SimpleClient.__name__} "
+                f"by an external method."
+                f"API token from configuration file '{api_token}' will be ignored."
+            )
+        enable_http2: bool = kwargs.pop("http2", get_active_enable_http2())
+        verify_ssl: bool = kwargs.pop("verify", get_active_verify_ssl())
+        timeout: float = kwargs.pop("timeout", get_active_timeout())
+        async_rate_limit: Optional[int] = kwargs.pop(
+            "async_rate_limit", get_active_async_rate_limit()
+        )
+        async_capacity: Optional[int] = kwargs.pop(
+            "async_capacity", get_active_async_capacity()
+        )
+        async_transport: Optional[AsyncBaseTransport] = kwargs.pop(
+            "async_transport", None
+        )
+        sync_transport: Optional[BaseTransport] = kwargs.pop("sync_transport", None)
+
+        for key_name, value in (
+            (KEY_HOST, host),
+            (KEY_API_TOKEN, api_token),
+            (KEY_ENABLE_HTTP2, enable_http2),
+            (KEY_VERIFY_SSL, verify_ssl),
+            (KEY_TIMEOUT, timeout),
+        ):
+            preventive_missing_warning((key_name, value))
+            if MinimalActiveConfiguration().get_value(key_name) != value:
+                logger.debug(
+                    f"Configuration value for '{key_name}' "
+                    f"is set to '{value}' for {SimpleClient.__name__} by an "
+                    f"external method."
+                )
+        if is_async_client is True:
+            if async_transport is None and async_rate_limit is not None:
+                # noinspection PyTypeChecker
+                async_transport = AsyncRateLimitedTransport.create(
+                    rate=Rate.create(magnitude=async_rate_limit, duration=1),
+                    # see more: https://midnighter.github.io/httpx-limiter/latest/tutorial/#single-rate-limit
+                    # In our case, magnitude=1, duration=1/async_rate_limit yields worse results.
+                    http2=enable_http2,  # type: ignore
+                    # See: https://github.com/Midnighter/httpx-limiter/issues/7#issuecomment-3197487921
+                    # http2 needs to be passed here if AsyncRateLimitedTransport is used
+                    verify=verify_ssl,  # type: ignore
+                )
+                logger.debug(
+                    f"Async rate limit is set to {async_transport.__class__.__name__} "
+                    f"instance {async_transport!r}: {async_rate_limit}"
+                )
+            elif async_transport is not None:
+                logger.debug(
+                    f"Async transport has been set to {async_transport!r} by an "
+                    f"external method."
+                )
+                if async_rate_limit is not None:
+                    logger.warning(
+                        f"When a manual transport parameter is passed to {SimpleClient}, "
+                        f"the '{KEY_ASYNC_RATE_LIMIT}' in the configuration file is ignored. "
+                    )
+            elif async_transport is None:
+                async_transport = AiohttpTransport(
+                    http2=enable_http2,
+                    verify=verify_ssl,
+                    timeout=timeout,  # type: ignore
+                )
+                logger.debug(
+                    f"Async transport has been to {async_transport!r} by {APP_BRAND_NAME}."
+                )
+            async_client = AsyncClient(
+                auth=auth,
+                http2=enable_http2,
+                verify=verify_ssl,
+                timeout=timeout,
+                transport=async_transport,
+                **kwargs,
+            )
+            if async_capacity is not None:
+                async_client._async_semaphore_ = asyncio.Semaphore(async_capacity)
+                logger.debug(
+                    f"Async semaphore is set to {async_client.__class__.__name__} "
+                    f"instance {async_client!r}: {async_capacity}"
+                )
+            return async_client
+        if sync_transport is not None:
+            logger.debug(
+                f"Sync transport has been set to {sync_transport!r} by an external method."
+            )
+        return Client(
+            auth=auth,
+            http2=enable_http2,
+            verify=verify_ssl,
+            timeout=timeout,
+            transport=sync_transport,
+            **kwargs,
+        )
+
+
+class GlobalSharedSession:
+    _instance = None
+    suppress_override_warning = False
+
+    class _GlobalSharedSession:
+        __slots__ = "_limited_to", "__dict__", "_kwargs"
+        # __dict__ necessary for @cached_property
+
+        def __init__(
+            self, *, limited_to: Literal["sync", "async", "all"] = "all", **kwargs
+        ):
+            self.limited_to = limited_to.lower()
+            self._kwargs = kwargs
+            update_kwargs_with_defaults(self._kwargs, session_defaults.__dict__)
+
+        @property
+        def limited_to(self) -> str:
+            return self._limited_to
+
+        @limited_to.setter
+        def limited_to(self, value: str):
+            if value not in ("sync", "async", "all"):
+                raise ValueError(
+                    f"Given limited_to is '{value}', "
+                    f"but it can only be 'sync', 'async', or 'all'."
+                )
+            self._limited_to = value
+
+        @cached_property
+        def sync_client(self) -> Optional[Client]:
+            if self.limited_to in ("sync", "all"):
+                client = SimpleClient(is_async_client=False, **self._kwargs)
+                logger.debug(
+                    f"{GlobalSharedSession.__name__} instance {self!r} "
+                    f"injected sync client {client!r}."
+                )
+                return client
+            return None
+
+        @cached_property
+        def async_client(self) -> Optional[AsyncClient]:
+            if self.limited_to in ("async", "all"):
+                client = SimpleClient(is_async_client=True, **self._kwargs)
+                logger.debug(
+                    f"{GlobalSharedSession.__name__} instance {self!r} "
+                    f"injected async client {client!r}."
+                )
+                return client
+            return None
+
+        def close(self) -> None:
+            GlobalSharedSession._instance = None
+            if self.sync_client is not None:
+                if self.sync_client.is_closed is False:
+                    self.sync_client.close()
+                    logger.debug(
+                        f"{self.__class__.__name__} has closed sync client {self.sync_client!r}."
+                    )
+            if self.async_client is not None:
+                if self.async_client.is_closed is False:
+                    # nest_asyncio is needed if there are multiple asyncio.run.
+                    # ("RuntimeError: Event loop is closed").
+                    try:
+                        event_loop = asyncio.get_running_loop()
+                    except RuntimeError:
+                        asyncio.set_event_loop(event_loop := asyncio.new_event_loop())
+                        try:
+                            event_loop.run_until_complete(self.async_client.aclose())
+                        except RuntimeError as e:
+                            raise RuntimeError(
+                                f"{GlobalSharedSession.__name__} has attempted to close {AsyncClient.__name__} "
+                                f"{self.async_client} connection in a new event loop, because "
+                                f"{GlobalSharedSession.__name__} could not find a running one. "
+                                f"But it seems that failed as well. "
+                                f"This likely means that either the event loop or "
+                                f"{GlobalSharedSession.__name__} is being used incorrectly. "
+                                f"Connection could not be closed. "
+                                f"You can also try calling the 'close' method again."
+                            ) from e
+                        else:
+                            event_loop.close()
+                            logger.debug(
+                                f"{self.__class__.__name__} has closed async client {self.async_client!r}."
+                            )
+                    else:
+                        event_loop.create_task(self.async_client.aclose())
+                        logger.debug(
+                            f"{self.__class__.__name__} has added a task for async client "
+                            f"{self.async_client!r} to be closed."
+                        )
+
+        def __enter__(self):
+            self._outer_instance = GlobalSharedSession._instance
+            # The instance is already created with __new__ by the time __enter__ is called
+            return self._outer_instance
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self._outer_instance.close()
+            self._outer_instance = None
+
+    def __new__(
+        cls,
+        *,
+        limited_to: Literal["sync", "async", "all"] = "all",
+        suppress_override_warning: bool = False,
+        **kwargs,
+    ) -> _GlobalSharedSession:
+        if cls._instance is None:
+            cls.suppress_override_warning = suppress_override_warning
+            cls._instance = cls._GlobalSharedSession(limited_to=limited_to, **kwargs)
+        return cls._instance
+
+
+class APIRequest(ABC):
+    __slots__ = (
+        "_shared_client",
+        "_is_using_global_shared_session",
+        "_kwargs",
+        "__dict__",
+    )
+
+    def __init__(
+        self,
+        shared_client: Union[Client, AsyncClient, None] = None,
+        **kwargs,
+    ):
+        update_kwargs_with_defaults(kwargs, session_defaults.__dict__)
+        self._kwargs = kwargs
+        if shared_client is not None:
+            kwargs.update(shared_client=shared_client)
+        self.is_global_shared_session_user = False
+        self.shared_client = shared_client
+        if (
+            kwargs
+            and kwargs != session_defaults.__dict__
+            and self.is_global_shared_session_user is True
+            and GlobalSharedSession.suppress_override_warning is False
+        ):
+            logger.warning(
+                f"{self.__class__.__name__} received keyword arguments {kwargs} "
+                f"while {GlobalSharedSession.__name__} is in use. "
+                f"But {GlobalSharedSession.__name__} will override any argument "
+                f"passed to {self.__class__.__name__}. You can pass the same arguments to"
+                f"{GlobalSharedSession.__name__} instead. You can suppress this warning "
+                f"by passing keyword argument 'suppress_override_warning = True' "
+                f"to {GlobalSharedSession.__name__}."
+            )
+
+    # noinspection PyMethodOverriding
+    def __init_subclass__(cls, /, is_async_client: bool = False, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.is_async_client = is_async_client
+
+    @cached_property
+    def client(self) -> Union[Client, AsyncClient]:
+        if self.shared_client is not None:
+            return self.shared_client
+        return SimpleClient(is_async_client=self.is_async_client, **self._kwargs)
+
+    @property
+    def is_global_shared_session_user(self) -> bool:
+        return self._is_using_global_shared_session
+
+    @is_global_shared_session_user.setter
+    def is_global_shared_session_user(self, value: bool):
+        if not isinstance(value, bool):
+            raise TypeError("is_using_global_shared_session value can only a bool!")
+        self._is_using_global_shared_session = value
+
+    @property
+    def shared_client(self) -> Union[Client, AsyncClient]:
+        return self._shared_client
+
+    @shared_client.setter
+    def shared_client(self, value: Union[Client, AsyncClient, None] = None):
+        if not isinstance(value, (Client, AsyncClient, NoneType)):
+            raise TypeError(
+                f"shared_client must be an instance of "
+                f"httpx.{Client.__name__} or httpx.{AsyncClient.__name__} or {None}."
+            )
+        if self.is_async_client is True and isinstance(value, Client):
+            raise ValueError(
+                f"is_async_client is true, but value set to "
+                f"shared_client is not an instance of httpx.{AsyncClient.__name__}!"
+            )
+        elif self.is_async_client is False and isinstance(value, AsyncClient):
+            raise ValueError(
+                f"is_async_client is not true, but value set to "
+                f"shared_client is not an instance of httpx.{Client.__name__}!"
+            )
+        # noinspection PyProtectedMember
+        if GlobalSharedSession._instance is not None:
+            if self.is_async_client is False:
+                if GlobalSharedSession().sync_client is not None:
+                    self._shared_client = GlobalSharedSession().sync_client
+                    self.is_global_shared_session_user = True
+                else:
+                    self._shared_client = None
+                    self.is_global_shared_session_user = False
+            else:
+                if GlobalSharedSession().async_client is not None:
+                    self._shared_client = GlobalSharedSession().async_client
+                    self.is_global_shared_session_user = True
+                else:
+                    self._shared_client = None
+                    self.is_global_shared_session_user = False
+        else:
+            self._shared_client = value
+
+    @abstractmethod
+    def _make(self, *args, **kwargs): ...
+
+    @abstractmethod
+    def close(self) -> Optional[NotImplementedType]:
+        if self.is_global_shared_session_user is True:
+            return NotImplemented
+        if not self.client.is_closed:
+            self.client.close()
+            logger.debug(f"Sync client {self.client!r} is closed.")
+        return None
+
+    @abstractmethod
+    async def aclose(self) -> Optional[NotImplementedType]:
+        if self.is_global_shared_session_user is True:
+            return NotImplemented
+        if not self.client.is_closed:
+            await self.client.aclose()
+            logger.debug(f"Async client {self.client!r} is closed.")
+        return None
+
+    @abstractmethod
+    def __call__(self, *args, **kwargs) -> Response:
+        response = self._make(*args, **kwargs)
+        if self.shared_client is None:
+            self.close()
+        return response
+
+    @abstractmethod
+    async def __acall__(self, *args, **kwargs) -> Response:
+        response = await self._make(
+            *args,
+            **kwargs,
+        )
+        if self.shared_client is None:
+            await self.aclose()
+        return response
+
+
+_DEBUG_LOG_EMIT_ONCE: bool = False
+
+
+class ElabFTWURLError(Exception): ...
+
+
+class ElabFTWUnsupportedVersion(ElabFTWURLError): ...
+
+
+class ElabFTWURL:
+    force_endpoint_validation: ElabStrictVersionMatchModes | None = None
+
+    def __init__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[int, str, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+    ) -> None:
+        self.endpoint_name = endpoint_name
+        self.endpoint_id = endpoint_id
+        self.sub_endpoint_name = sub_endpoint_name
+        self.sub_endpoint_id = sub_endpoint_id
+        self.query = query
+
+    @classmethod
+    def get_latest_version_endpoints(cls) -> dict[str, list[str]]:
+        latest_version = cls.get_latest_elab_version()
+        version_file = (
+            ElabVersionDefaults.versions_dir
+            / f"{latest_version}.{ElabVersionDefaults.file_ext}"
+        )
+        valid_endpoints = json.loads(version_file.read_text(encoding="utf-8"))
+        return valid_endpoints
+
+    @staticmethod
+    def get_latest_elab_version() -> str:
+        return ElabVersionDefaults.supported_versions[0]
+
+    @staticmethod
+    def get_elab_version() -> str:
+        missing = Missing()
+        host, endpoint = get_active_host(skip_validation=True), "info"
+        if host in (None, missing) or get_active_api_token(skip_validation=True) in (
+            None,
+            missing,
+        ):
+            raise ElabFTWURLError(
+                f"Configuration file(s) is incomplete. "
+                f"{ELAB_BRAND_NAME} version cannot be retrieved."
+            )
+        cached_data = get_cached_data()
+        cached_elab_version = cached_data.elab_hosts.get(host)
+        if cached_elab_version is not None:
+            elab_version = cached_elab_version
+        else:
+            client = SimpleClient(is_async_client=False)
+            try:
+                elab_server_request = client.get(
+                    f"{host}/{endpoint}", headers={"Accept": "application/json"}
+                )
+            except HTTPError as e:
+                raise ElabFTWURLError(
+                    f"Failed to retrieve '{host}/{endpoint}' response. "
+                    f"Exception details: {e!r}."
+                ) from e
+            else:
+                try:
+                    elab_server_info = elab_server_request.json()
+                except JSONDecodeError as e:
+                    raise ElabFTWURLError(
+                        f"Failed to retrieve '{host}/{endpoint}' response. "
+                        f"Exception details: {e!r}. Response status: "
+                        f"{elab_server_request.status_code}"
+                    ) from e
+                else:
+                    elab_version = elab_server_info["elabftw_version"]
+                    cached_data.elab_hosts.update({host: elab_version})
+                    update_cache(cached_data)
+                    logger.debug(
+                        f"ElabFTW version '{elab_version}' retrieved from server '{host}' "
+                        f"has been cached."
+                    )
+        return elab_version
+
+    @classmethod
+    def get_valid_endpoints(cls) -> Optional[dict[str, list[str]]]:
+        global _DEBUG_LOG_EMIT_ONCE
+        elab_version = cls.get_elab_version()
+        if elab_version not in ElabVersionDefaults.supported_versions:
+            validation_message: str = (
+                f"{ELAB_BRAND_NAME} version {elab_version} is not supported by "
+                f"{APP_BRAND_NAME} {get_app_version()}. "
+                f"Update {APP_BRAND_NAME} for newer {ELAB_BRAND_NAME} version support. "
+                f"Supported versions are: "
+                f"{', '.join(ElabVersionDefaults.supported_versions)}. "
+                f"You can ignore this validation by setting configuration "
+                f"'{KEY_ELAB_STRICT_VERSION_MATCH.lower()}' "
+                f"value to '{ElabStrictVersionMatchModes.yolo}' (or by setting the class "
+                f"{ElabFTWURL.__name__} attribute 'force_endpoint_validation' "
+                f"to '{ElabStrictVersionMatchModes.yolo}'). Setting the value to "
+                f"'{ElabStrictVersionMatchModes.abort}' would raise an exception and "
+                f"abort {APP_BRAND_NAME}."
+            )
+            match cls.force_endpoint_validation or get_elab_version_mode(
+                skip_validation=True
+            ):
+                case ElabStrictVersionMatchModes.abort:
+                    raise ElabFTWUnsupportedVersion(validation_message)
+                case ElabStrictVersionMatchModes.warn:
+                    if _DEBUG_LOG_EMIT_ONCE is False:
+                        logger.warning(validation_message)
+                        _DEBUG_LOG_EMIT_ONCE = True
+                    return None
+                case ElabStrictVersionMatchModes.yolo:
+                    return None
+                case _:
+                    if _DEBUG_LOG_EMIT_ONCE is False:
+                        logger.warning(
+                            f"Invalid value for Elab strict version match mode "
+                            f"(force_endpoint_validation). "
+                            f"Valid values are: {', '.join(ElabStrictVersionMatchModes)}. "
+                            f"Default value '{ELAB_STRICT_VERSION_MATCH_DEFAULT_VAL}' will be considered."
+                        )
+                        logger.warning(validation_message)
+                        _DEBUG_LOG_EMIT_ONCE = True
+                    return None
+
+        else:
+            version_file = (
+                ElabVersionDefaults.versions_dir
+                / f"{elab_version}.{ElabVersionDefaults.file_ext}"
+            )
+            valid_endpoints = json.loads(version_file.read_text(encoding="utf-8"))
+            return valid_endpoints
+
+    @property
+    def _host(self) -> str:
+        return get_active_host()
+
+    @property
+    def endpoint_name(self) -> str:
+        return self._endpoint_name
+
+    @endpoint_name.setter
+    def endpoint_name(self, value: str):
+        valid_endpoints = self.get_valid_endpoints()
+        if value is not None:
+            if valid_endpoints is None:
+                self._endpoint_name = value
+            else:
+                if value.lower() not in valid_endpoints.keys():
+                    raise ElabFTWURLError(
+                        f"Endpoint must be one of valid {ELAB_BRAND_NAME} ({self.get_elab_version()}) "
+                        f"endpoints: {', '.join(valid_endpoints.keys())}."
+                    )
+                self._endpoint_name = value
+        else:
+            self._endpoint_name = ""
+
+    @property
+    def sub_endpoint_name(self) -> str:
+        return self._sub_endpoint_name
+
+    @sub_endpoint_name.setter
+    def sub_endpoint_name(self, value: Optional[str]):
+        valid_endpoints = self.get_valid_endpoints()
+        if value is not None:
+            if valid_endpoints is None:
+                self._sub_endpoint_name = value
+            else:
+                if value.lower() not in (
+                    valid_sub_endpoint_name := valid_endpoints[self.endpoint_name]
+                ):
+                    if not valid_sub_endpoint_name:
+                        raise ElabFTWURLError(
+                            f"Endpoint '{self._endpoint_name}' does not have any sub-endpoint!"
+                        )
+
+                    raise ElabFTWURLError(
+                        f"A Sub-endpoint for endpoint '{self._endpoint_name}' must be "
+                        f"one of valid {ELAB_BRAND_NAME} ({self.get_elab_version()}) sub-endpoints: "
+                        f"{', '.join(valid_sub_endpoint_name)}."
+                    )
+                self._sub_endpoint_name = value
+        else:
+            self._sub_endpoint_name = ""
+
+    @property
+    def endpoint_id(self) -> Union[int, str, None]:
+        return self._endpoint_id
+
+    @endpoint_id.setter
+    def endpoint_id(self, value):
+        if value is not None:
+            if not re.match(r"^(\d+)$|^(me)$|^(current)$", value := str(value)):
+                # Although, eLabFTW primarily supports integer-only IDs,
+                # there are exceptions, like the alias
+                # ID "me" for receiving one's own user information.
+                raise ElabFTWURLError("Invalid endpoint ID (or entity ID).")
+            self._endpoint_id = value
+        else:
+            self._endpoint_id = ""
+
+    @property
+    def sub_endpoint_id(self) -> Union[int, str, None]:
+        return self._sub_endpoint_id
+
+    @sub_endpoint_id.setter
+    def sub_endpoint_id(self, value):
+        if self.sub_endpoint_name is None:
+            raise ElabFTWURLError(
+                "Sub-endpoint ID cannot be defined without first specifying its sub-endpoint name."
+            )
+        if value is not None:
+            if not re.match(r"^(\d+)$|^(me)$|^(current)$", value := str(value)):
+                raise ElabFTWURLError("Invalid sub-endpoint ID (or entity sub-ID).")
+            self._sub_endpoint_id = value
+        else:
+            self._sub_endpoint_id = ""
+            # Similar to an empty endpoint_id, an empty sub_endpoint_id sends back
+            # the whole list of available resources for a given sub-endpoint as a response.
+
+    @property
+    def query(self) -> str:
+        return self._query
+
+    @query.setter
+    def query(self, value: Optional[dict]):
+        self._query = "&".join([f"{k}={v}" for k, v in (value or dict()).items()])
+
+    def get(self) -> str:
+        url = (
+            f"{self._host}/{self.endpoint_name}/{self.endpoint_id}/"
+            f"{self.sub_endpoint_name}/{self.sub_endpoint_id}"
+        ).rstrip("/")
+        if self.query:
+            url += f"?{self.query}"
+        return url
+
+
+class GETRequest(APIRequest):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        return super().client.get(
+            url.get(), headers=headers or {"Accept": "application/json"}, **kwargs
+        )
+
+    def close(self) -> Optional[NotImplementedType]:
+        return super().close()
+
+    def aclose(self):
+        raise NotImplementedError(
+            f"{GETRequest.__name__} is not async and only supports 'close' method."
+        )
+
+    def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return super().__call__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class POSTRequest(APIRequest):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        data = {
+            k: v.strip() if isinstance(v, str) else v
+            for k, v in (kwargs.pop("data", dict())).items()
+        }
+        files = kwargs.pop("files", None)
+        return super().client.post(
+            url.get(),
+            headers=headers
+            or {
+                "Accept": "*/*",
+                # If json argument isn't empty, '"Content-Type": "application/json"' is automatically set.
+                # '"Content-Type": "multipart/form-data"', takes no effect, and
+                # the server will return a 400 bad request.
+                # See: https://blog.ian.stapletoncordas.co/2024/02/a-retrospective-on-requests
+                # '"Content-Type": "application/json"' doesn't (and shouldn't) work when "files" isn't empty.
+            },
+            json=data,
+            files=files,
+            **kwargs,
+        )
+
+    def close(self) -> Optional[NotImplementedType]:
+        return super().close()
+
+    def aclose(self):
+        raise NotImplementedError(
+            f"{POSTRequest.__name__} is not async and only supports 'close' method."
+        )
+
+    def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return super().__call__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class AsyncPOSTRequest(APIRequest, is_async_client=True):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    async def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        data = {
+            k: v.strip() if isinstance(v, str) else v
+            for k, v in (kwargs.pop("data", dict())).items()
+        }
+        files = kwargs.pop("files", None)
+        return await super().client.post(
+            url.get(),
+            headers=headers or {"Accept": "*/*"},
+            json=data,
+            files=files,
+            **kwargs,
+        )
+
+    async def aclose(self) -> Optional[NotImplementedType]:
+        return await super().aclose()
+
+    def close(self):
+        raise NotImplementedError(
+            f"{AsyncPOSTRequest.__name__} is async and only supports 'aclose' method."
+        )
+
+    async def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return await super().__acall__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class AsyncGETRequest(APIRequest, is_async_client=True):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    async def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        client = super().client
+        if async_semaphore := getattr(client, "_async_semaphore_", None):
+            async with async_semaphore:
+                return await client.get(
+                    url.get(),
+                    headers=headers or {"Accept": "application/json"},
+                    **kwargs,
+                )
+        return await super().client.get(
+            url.get(), headers=headers or {"Accept": "application/json"}, **kwargs
+        )
+
+    async def aclose(self) -> Optional[NotImplementedType]:
+        return await super().aclose()
+
+    def close(self):
+        raise NotImplementedError(
+            f"{AsyncGETRequest.__name__} is async and only supports 'aclose' method."
+        )
+
+    async def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return await super().__acall__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class PATCHRequest(APIRequest):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        data = {
+            k: v.strip() if isinstance(v, str) else v
+            for k, v in kwargs.pop("data", dict()).items()
+        }
+        return super().client.patch(
+            url.get(),
+            headers=headers
+            or {
+                "Accept": "application/json"
+            },  # '"Content-Type": "application/json"' is passed automatically when json argument is passed.
+            json=data,
+            **kwargs,
+        )
+
+    def close(self) -> Optional[NotImplementedType]:
+        return super().close()
+
+    def aclose(self):
+        raise NotImplementedError(
+            f"{PATCHRequest.__name__} is not async and only supports 'close' method."
+        )
+
+    def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return super().__call__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class AsyncPATCHRequest(APIRequest, is_async_client=True):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    async def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        data = {
+            k: v.strip() if isinstance(v, str) else v
+            for k, v in kwargs.pop("data", dict()).items()
+        }
+        return await super().client.patch(
+            url.get(),
+            headers=headers or {"Accept": "application/json"},
+            json=data,
+            **kwargs,
+        )
+
+    async def aclose(self) -> Optional[NotImplementedType]:
+        return await super().aclose()
+
+    def close(self):
+        raise NotImplementedError(
+            f"{AsyncPATCHRequest.__name__} is async and only supports 'aclose' method."
+        )
+
+    async def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return await super().__acall__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class DELETERequest(APIRequest):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        return super().client.delete(
+            url.get(),
+            headers=headers or {"Accept": "*/*", "Content-Type": "application/json"},
+            **kwargs,
+        )
+
+    def close(self) -> Optional[NotImplementedType]:
+        return super().close()
+
+    def aclose(self):
+        raise NotImplementedError(
+            f"{DELETERequest.__name__} is not async and only supports 'close' method."
+        )
+
+    def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return super().__call__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
+
+
+class AsyncDELETERequest(APIRequest, is_async_client=True):
+    __slots__ = ()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    async def _make(self, *args, headers: Optional[dict] = None, **kwargs) -> Response:
+        endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query = args
+        url = ElabFTWURL(
+            endpoint_name, endpoint_id, sub_endpoint_name, sub_endpoint_id, query
+        )
+        return await super().client.delete(
+            url.get(),
+            headers=headers or {"Accept": "*/*", "Content-Type": "application/json"},
+            **kwargs,
+        )
+
+    async def aclose(self) -> Optional[bool]:
+        return await super().aclose()
+
+    def close(self):
+        raise NotImplementedError(
+            f"{AsyncDELETERequest.__name__} is async and only supports 'aclose' method."
+        )
+
+    async def __call__(
+        self,
+        endpoint_name: str,
+        endpoint_id: Union[str, int, None] = None,
+        sub_endpoint_name: Optional[str] = None,
+        sub_endpoint_id: Union[int, str, None] = None,
+        query: Optional[dict] = None,
+        **kwargs,
+    ) -> Response:
+        return await super().__acall__(
+            endpoint_name,
+            endpoint_id,
+            sub_endpoint_name,
+            sub_endpoint_id,
+            query,
+            **kwargs,
+        )
+
+    def __acall__(self, *args, **kwargs):
+        raise NotImplementedError(
+            "__acall__ cannot be called directly. It's mainly an async"
+            " placeholder for __call__. Please use __call__ instead."
+        )
