@@ -1,0 +1,201 @@
+Metadata-Version: 2.4
+Name: iowarp-agent-toolkit
+Version: 0.0.0
+Summary: IOWarp Agent Toolkit - MCP Servers, Clients, and Tools for AI Agents
+Project-URL: Homepage, https://iowarp.github.io/agent-toolkit/
+Project-URL: Repository, https://github.com/iowarp/agent-toolkit
+Project-URL: Documentation, https://iowarp.github.io/agent-toolkit/
+Project-URL: Bug Reports, https://github.com/iowarp/agent-toolkit/issues
+Author-email: IoWarp Team - Gnosis Research Center <grc@illinoistech.edu>
+License: BSD-3-Clause
+License-File: LICENSE
+Keywords: ai-agents,hdf5,hpc,iowarp,llm-integration,mcp,model-context-protocol,research-tools,scientific-computing,slurm
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: click>=8.1.0
+Requires-Dist: fastmcp>=2.11.0
+Provides-Extra: adios
+Requires-Dist: adios2>=2.10.0; extra == 'adios'
+Requires-Dist: numpy>=2.0.0; extra == 'adios'
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'adios'
+Provides-Extra: all
+Requires-Dist: adios2>=2.10.0; extra == 'all'
+Requires-Dist: arxiv>=2.1.0; extra == 'all'
+Requires-Dist: h5py>=3.15.0; extra == 'all'
+Requires-Dist: matplotlib>=3.9.0; extra == 'all'
+Requires-Dist: numpy>=2.0.0; extra == 'all'
+Requires-Dist: pandas>=2.2.0; extra == 'all'
+Requires-Dist: psutil>=5.9.0; extra == 'all'
+Requires-Dist: pyarrow>=18.1.0; extra == 'all'
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'all'
+Provides-Extra: arxiv
+Requires-Dist: arxiv>=2.1.0; extra == 'arxiv'
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'arxiv'
+Provides-Extra: chronolog
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'chronolog'
+Provides-Extra: compression
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'compression'
+Provides-Extra: darshan
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'darshan'
+Provides-Extra: dev
+Requires-Dist: build>=1.0.0; extra == 'dev'
+Requires-Dist: mypy>=1.8.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=8.4.0; extra == 'dev'
+Requires-Dist: ruff>=0.12.5; extra == 'dev'
+Requires-Dist: twine>=4.0.0; extra == 'dev'
+Provides-Extra: hdf5
+Requires-Dist: h5py>=3.15.0; extra == 'hdf5'
+Requires-Dist: numpy>=2.0.0; extra == 'hdf5'
+Provides-Extra: jarvis
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'jarvis'
+Provides-Extra: lmod
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'lmod'
+Provides-Extra: ndp
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'ndp'
+Provides-Extra: node-hardware
+Requires-Dist: psutil>=5.9.0; extra == 'node-hardware'
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'node-hardware'
+Provides-Extra: pandas
+Requires-Dist: numpy>=2.0.0; extra == 'pandas'
+Requires-Dist: pandas>=2.2.0; extra == 'pandas'
+Provides-Extra: parallel-sort
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'parallel-sort'
+Provides-Extra: parquet
+Requires-Dist: pandas>=2.2.0; extra == 'parquet'
+Requires-Dist: pyarrow>=18.1.0; extra == 'parquet'
+Provides-Extra: plot
+Requires-Dist: matplotlib>=3.9.0; extra == 'plot'
+Requires-Dist: numpy>=2.0.0; extra == 'plot'
+Provides-Extra: slurm
+Requires-Dist: pydantic<3.0.0,>=2.4.2; extra == 'slurm'
+Description-Content-Type: text/markdown
+
+# iowarp-agent-toolkit
+
+[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![FastMCP](https://img.shields.io/badge/FastMCP-2.11%2B-purple)](https://gofastmcp.com)
+
+**IOWarp Agent Toolkit** - PyPI Package for IOWarp Agent Toolkit
+
+A comprehensive collection of Model Context Protocol (MCP) servers for scientific computing, HPC resources, and research datasets. Based on the [agent-toolkit](https://github.com/iowarp/agent-toolkit) project from the Gnosis Research Center at Illinois Institute of Technology.
+
+## Features
+
+- **15+ MCP Servers** for scientific computing and HPC
+- **Unified Interface** for AI agents to work with research tools
+- **Scientific Data Formats**: HDF5, Parquet, ADIOS
+- **HPC Integration**: Slurm job management, Lmod environment modules
+- **Research Tools**: ArXiv paper discovery, data visualization
+- **System Utilities**: Hardware info, compression, parallel sorting
+
+## Installation
+
+### Basic Installation
+
+```bash
+pip install iowarp-agent-toolkit
+```
+
+### With Specific MCP Servers
+
+```bash
+# Install with HDF5 support
+pip install iowarp-agent-toolkit[hdf5]
+
+# Install with multiple servers
+pip install iowarp-agent-toolkit[hdf5,slurm,arxiv]
+
+# Install all MCP servers
+pip install iowarp-agent-toolkit[all]
+```
+
+## Available MCP Servers
+
+- **hdf5** - HDF5 FastMCP for scientific data access
+- **parquet** - Apache Parquet data access
+- **pandas** - Data analysis and manipulation
+- **slurm** - HPC job management
+- **arxiv** - Research paper discovery
+- **plot** - Data visualization
+- **compression** - File compression tools
+- **lmod** - Environment module management
+- **chronolog** - Data logging
+- **adios** - Advanced I/O system
+- **ndp** - NDP dataset discovery
+- **darshan** - I/O characterization
+- **jarvis** - System configuration
+- **node-hardware** - Hardware information
+- **parallel-sort** - Parallel sorting
+
+## Usage
+
+### Command Line
+
+```bash
+# List all available MCP servers
+iowarp-agent-toolkit list-servers
+
+# Show information about a specific server
+iowarp-agent-toolkit info hdf5
+
+# Show version
+iowarp-agent-toolkit version
+```
+
+### Python API
+
+```python
+import iowarp_agent_toolkit
+
+print(iowarp_agent_toolkit.__version__)
+```
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Clone the repository
+git clone https://github.com/iowarp/iowarp-agent-toolkit.git
+cd iowarp-agent-toolkit
+
+# Install in development mode with all dependencies
+pip install -e ".[dev,all]"
+```
+
+### Running Tests
+
+```bash
+pytest
+```
+
+### Building the Package
+
+```bash
+python -m build
+```
+
+## License
+
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+Based on the [agent-toolkit](https://github.com/iowarp/agent-toolkit) project developed by the Gnosis Research Center at Illinois Institute of Technology with NSF support.
+
+## Links
+
+- **Homepage**: [https://iowarp.github.io/agent-toolkit/](https://iowarp.github.io/agent-toolkit/)
+- **Repository**: [https://github.com/iowarp/agent-toolkit](https://github.com/iowarp/agent-toolkit)
+- **PyPI**: [https://pypi.org/project/iowarp-agent-toolkit/](https://pypi.org/project/iowarp-agent-toolkit/)
