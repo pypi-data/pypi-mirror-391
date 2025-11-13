@@ -1,0 +1,112 @@
+Metadata-Version: 2.4
+Name: edgefirst-validator
+Version: 4.1.16
+Summary: EdgeFirst Validator
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: tqdm
+Requires-Dist: Pillow
+Requires-Dist: PyYAML
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: requests
+Requires-Dist: numpy
+Requires-Dist: lmdb
+Requires-Dist: polars
+Requires-Dist: PyTurboJPEG
+Requires-Dist: edgefirst-client
+Requires-Dist: tensorflow
+Provides-Extra: keras
+Requires-Dist: tensorflow[and-cuda]; extra == "keras"
+Provides-Extra: onnx
+Requires-Dist: onnxruntime-gpu; extra == "onnx"
+Provides-Extra: tflite
+Requires-Dist: tflite_runtime; extra == "tflite"
+Provides-Extra: studio
+Requires-Dist: tensorflow[and-cuda]; extra == "studio"
+Requires-Dist: onnxruntime-gpu; extra == "studio"
+Requires-Dist: torch; extra == "studio"
+Requires-Dist: torchvision; extra == "studio"
+Requires-Dist: opencv-python-headless; extra == "studio"
+
+# EdgeFirst Validator
+
+This repository contains the Packer configuration, entrypoint script, and the validation implementation used by EdgeFirst Studio to perform validation of Vision (detection, segmentation, multitask) models with support for Keras, TFLite, and ONNX. 
+
+## Overview
+- [Changelog](#changelog)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Documentation](#documentation)
+
+## Changelog
+- June 16, 2025 [v4.0.4]: EdgeFirst Validator (formerly Deep View Validator) - Ultralytics metrics and EdgeFirst Studio integrations.
+
+## Installation
+
+EdgeFirst-Validator is available and can be installed via pip through AWS CodeArtifact.
+
+```shell
+aws codeartifact login --tool pip --domain edgefirst --repository dve
+pip install edgefirst-validator
+```
+
+To validate ONNX models, install the optional dependencies
+
+```shell
+pip install edgefirst-validator[onnx]
+```
+
+To validate TensorFlow or Keras models, install the optional dependencies.
+
+```shell
+pip install edgefirst-validator[keras]
+```
+
+## Usage
+
+1. As a quickstart, deploy by default the validation of a YOLOv5 model with COCO128 dataset.
+
+    ```shell
+    python -m edgefirst.validator
+    ```
+
+2. Deploy validation as a user-managed session in EdgeFirst Studio. First login with EdgeFirst Client.
+
+    ```shell
+    edgefirst-client login
+    ```
+
+    ```shell
+    python -m edgefirst.validator --session-id <validator session ID>
+    ```
+
+    Otherwise, you can specify the credentials directly.
+
+    ```shell
+    python -m edgefirst.validator --token <token> --session-id <validator session ID>
+    ```
+
+    ```shell
+    python -m edgefirst.validator --username <username> --password <password> --session-id <Validator Session ID>
+    ```
+
+3. Deploy standalone validation.
+
+    ```shell
+    python -m edgefirst.validator <model path> <dataset path>
+    ```
+
+## Documentation
+
+Run the following commands to generate the documentation.
+
+```shell
+cd doc
+pip install -r requirements.txt
+```
+
+```shell
+make clean
+make html
+```
