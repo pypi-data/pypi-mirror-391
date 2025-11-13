@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: yamlpyconfig
+Version: 0.0.1
+Summary: Add your description here
+Author-email: ferdinand <gongjpa@gmail.com>
+License-Expression: Apache-2.0 OR MIT
+Keywords: aio,application,config,nacos,profile,yaml
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.12
+Requires-Dist: pydantic>=2.12.4
+Requires-Dist: pyyaml>=6.0.3
+Provides-Extra: nacos
+Requires-Dist: nacos-sdk-python>=2.0.9; extra == 'nacos'
