@@ -1,0 +1,3 @@
+__all__ = ['BaseZephyrException']
+
+class BaseZephyrException(Exception): ...

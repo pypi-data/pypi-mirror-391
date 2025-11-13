@@ -1,0 +1,3 @@
+UVLOOP_AVAILABLE: bool
+
+def uvloop_setup(use_subprocess: bool = False) -> None: ...

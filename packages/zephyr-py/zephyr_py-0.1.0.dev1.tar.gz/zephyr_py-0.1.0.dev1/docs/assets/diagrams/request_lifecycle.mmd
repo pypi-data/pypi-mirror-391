@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant C as Client
+    participant M as Middleware
+    participant R as Router
+    participant H as Handler
+    participant S as Service
+    participant D as Database
+
+    C->>M: HTTP Request
+    activate M
+    M->>M: Process Request
+    M->>R: Route Request
+    activate R
+    R->>H: Match Handler
+    activate H
+    H->>S: Call Service
+    activate S
+    S->>D: Query Data
+    activate D
+    D-->>S: Return Data
+    deactivate D
+    S-->>H: Return Result
+    deactivate S
+    H-->>R: Format Response
+    deactivate H
+    R-->>M: Return Response
+    deactivate R
+    M->>M: Process Response
+    M-->>C: HTTP Response
+    deactivate M
