@@ -1,0 +1,36 @@
+# Copyright 2022-2025 David Robillard <d@drobilla.net>
+# SPDX-License-Identifier: 0BSD OR ISC
+
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sphinxygen"
+version = "1.0.12"
+authors = [{name = "David Robillard", email = "d@drobilla.net"}]
+license = "ISC"
+description = "A script to generate Sphinx ReST from Doxygen XML"
+urls = {Homepage = "https://gitlab.com/drobilla/sphinxygen"}
+dependencies = []
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Topic :: Documentation :: Sphinx",
+    "Topic :: Software Development :: Documentation",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.scripts]
+sphinxygen = "sphinxygen.sphinxygen:main"
+
+[project.optional-dependencies]
+testing = ["html5lib"]
+
+[tool.setuptools]
+include-package-data = false
