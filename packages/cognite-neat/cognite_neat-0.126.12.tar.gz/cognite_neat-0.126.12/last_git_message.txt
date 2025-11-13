@@ -1,0 +1,18 @@
+Gracefully handling legacy inf for max count (#1413)
+
+# Description
+
+Unbounded Max count in legacy spreadsheets was set via `inf` string,
+which due to backwards compatibility must be supported. This PR
+introduces conversion of `inf` to None for users.
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## Changelog
+### Added
+
+- Support for legacy `inf` max count
