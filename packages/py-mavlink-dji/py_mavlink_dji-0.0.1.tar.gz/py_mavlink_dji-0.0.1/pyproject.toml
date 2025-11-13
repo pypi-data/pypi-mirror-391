@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "pymavlink"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py_mavlink_dji"
+version = "0.0.1"
+description = "MAVLink to DJI translator bridge (prototype)"
+authors = [
+  { name="Auto Generated", email="dev@example.com" }
+]
+dependencies = ["pymavlink", "pyserial"]
+
+
