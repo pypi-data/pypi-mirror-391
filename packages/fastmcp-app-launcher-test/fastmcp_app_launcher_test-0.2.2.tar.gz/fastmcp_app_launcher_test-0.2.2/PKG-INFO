@@ -1,0 +1,207 @@
+Metadata-Version: 2.4
+Name: fastmcp-app-launcher-test
+Version: 0.2.2
+Summary: 基于 fastmcp 的跨平台应用启动 MCP 服务
+Author-email: Codex MCP <codex@example.com>
+License: MIT License
+        
+        Copyright (c) 2025 Codex MCP
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/fjc/fastmcp-app-launcher
+Project-URL: Repository, https://github.com/fjc/fastmcp-app-launcher
+Project-URL: Bug Tracker, https://github.com/fjc/fastmcp-app-launcher/issues
+Keywords: mcp,fastmcp,automation,launcher,productivity
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Desktop Environment
+Classifier: Topic :: System :: Monitoring
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastmcp>=2.12.0
+Requires-Dist: pydantic>=2.9.0
+Provides-Extra: windows
+Requires-Dist: pywin32>=305; extra == "windows"
+Requires-Dist: pywinauto>=0.6.8; extra == "windows"
+Requires-Dist: psutil>=5.9.0; extra == "windows"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Dynamic: license-file
+
+# FastMCP 应用启动器
+
+使用 [fastmcp](https://github.com/modelcontextprotocol/fastmcp) 构建的跨平台 Model Context Protocol 服务，可通过 MCP 客户端（如 Claude Desktop）列出并打开本地应用，针对 Windows 托盘应用提供热键与窗口激活增强。
+
+## 安装
+
+```bash
+pip install fastmcp-app-launcher
+# 或使用 uv
+uv pip install fastmcp-app-launcher
+```
+
+安装完成后终端会提供 `app-launcher-mcp` 命令，可直接在 MCP 客户端中调用。
+
+## 目录结构
+
+```
+fastmcp_app_launcher/
+├── mcp-apps.example.json    # 示例配置
+├── pyproject.toml           # uv/fastmcp 配置
+├── README.md
+└── src/app_launcher_mcp
+    ├── __init__.py
+    ├── activator.py         # Windows 激活逻辑
+    ├── apps.py              # 配置加载与搜索
+    ├── server.py            # FastMCP 入口
+    └── service.py           # 业务封装
+```
+
+## 快速开始
+
+1. **创建 uv 虚拟环境（已在 `.venv` 目录演示，如需重新创建可按需运行）：**
+
+   ```bash
+   uv venv .venv
+   source .venv/bin/activate  # Windows 使用 .venv\\Scripts\\activate
+   ```
+
+2. **安装依赖：**
+
+   ```bash
+   uv sync          # 或 uv pip install -r pyproject.toml
+   # Windows 如需托盘/热键支持，安装额外依赖：
+   uv pip install .[windows]
+   ```
+
+3. **运行 MCP 服务器（stdio 模式）：**
+
+   ```bash
+   uv run app-launcher-mcp
+   # 或指定参数：
+   uv run app-launcher-mcp --no-auto-discover   # 禁用自动发现
+   uv run app-launcher-mcp --transport stdio    # 指定 Transport
+   ```
+
+4. **在 MCP 客户端中配置：**
+
+   ```json
+   {
+     "command": "uv",
+     "args": ["run", "--directory", "/Users/fjc/Desktop/项目/skills/python/fastmcp_app_launcher", "app-launcher-mcp"],
+     "env": {
+       "MCP_APPS": "QQ;C:/Program Files/Tencent/QQ/Bin/QQ.exe;qq,tencent;Ctrl+Alt+Z"
+     }
+   }
+   ```
+
+## 应用配置
+
+- **环境变量 `MCP_APPS`**：支持 JSON 数组或 `name;path;keywords;hotkey|...` 简写。
+- **配置文件**：程序在以下路径按顺序查找（找到即停止）：
+  1. `~/.mcp-apps.json`
+  2. `<工作目录>/mcp-apps.json`
+  3. `~/.config/mcp-apps/config.json`
+- **自动发现**：
+  - Windows：内置 QQ、微信、VS Code 等常见路径，并扫描开始菜单 `.lnk` 快捷方式（目录可通过环境变量 `MCP_WINDOWS_SHORTCUT_DIRS` 指定，使用 `os.pathsep` 分隔）。
+  - macOS：默认遍历 `/Applications`、`/System/Applications`、`~/Applications` 等目录，可使用 `MCP_MAC_APP_DIRS` 覆盖；扫描数量由 `MCP_AUTO_DISCOVER_LIMIT` 控制。
+
+可参考 `mcp-apps.example.json` 快速自定义列表。
+
+支持的应用字段（JSON 配置文件）
+
+- `name`：应用名
+- `path`：可执行文件或 `.lnk` 路径
+- `keywords`：匹配关键词数组
+- `hotkey`：可选，全局或应用支持的唤起热键（如 `Ctrl+Alt+Z`）
+- `relaunch_when_tray_hidden`：可选，Windows 托盘隐藏时尝试通过 Shell 再次“打开”以唤起主窗体（默认 false）
+- `shell_fallback_on_fail`：可选，所有激活方法失败后再通过 Shell 打开一次作为兜底（默认 false）
+
+## 可用工具
+
+| 工具名 | 描述 |
+| ------ | ---- |
+| `list_apps_tool` | 返回当前注册的全部应用及数量 |
+| `open_app_tool` | 参数 `app_name`、可选 `reload_before`，用于打开或激活应用 |
+| `reload_apps_tool` | 重新加载配置/环境，并返回最新应用数 |
+
+工具返回 `structuredContent` 中包含的字段示例：
+
+```json
+{
+  "query": "wechat",
+  "app": {"name": "微信", "path": "...", "hotkey": "Ctrl+Alt+W"},
+  "execution": {"success": true, "message": "通过热键激活窗口成功"}
+}
+```
+
+## Windows 特性
+
+- **托盘激活**：若安装 `pywin32`，服务会尝试发送热键、定位现有窗口并置前。
+- **pywinauto 支持**：可选安装以在托盘图标无法响应热键时通过 UI 自动化置顶窗口。
+- **自动回退**：当相关库缺失时，会直接调用 `os.startfile` 或 `subprocess.Popen` 启动新实例。
+
+## 故障排查
+
+- `未找到匹配的应用`：检查 `MCP_APPS` / 配置文件是否已加载，或在调用 `open_app_tool` 前执行 `reload_apps_tool`。
+- `pywin32 未安装`：在 Windows 环境执行 `uv pip install .[windows]`。
+- `权限相关错误`：Mac/Linux 打开 `.app` 时需确认拥有执行权限，可通过 `chmod +x` 处理。
+
+### QQ/微信托盘应用问题
+
+**问题**：QQ或微信在系统托盘时，激活失败导致打开新登录窗口。
+
+**原因**：Windows托盘应用的状态检测复杂，传统窗口查找算法容易误判。
+
+**解决方案**：
+1. 在配置中设置 `"relaunch_when_tray_hidden": true`（如示例配置所示）
+2. 确保已安装 `pywin32`：执行 `uv pip install .[windows]`
+3. 使用最新版本的激活逻辑，已针对QQ/微信等托盘应用优化
+
+**技术细节**：新版本改进了托盘状态检测算法，能正确识别"有正常窗口样式但不可见"的托盘应用，避免误判为普通隐藏窗口。
+
+欢迎根据需要扩展更多工具，例如批量更新应用、动态注册等。
+
+## 发布到 PyPI
+
+1. 更新 `pyproject.toml` 中的版本号，并确保代码/文档同步。
+2. 安装构建工具并生成分发包：
+
+   ```bash
+   uv pip install --upgrade build twine
+   uv build
+   twine check dist/*
+   ```
+
+3. 使用 PyPI API Token 上传：
+
+   ```bash
+   twine upload dist/*
+   ```
+
+发布成功后，用户即可通过 `pip install fastmcp-app-launcher` 获取最新版本。
