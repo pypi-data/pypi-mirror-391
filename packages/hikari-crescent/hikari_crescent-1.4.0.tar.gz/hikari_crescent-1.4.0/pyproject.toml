@@ -1,0 +1,106 @@
+[tool.poetry]
+name = "hikari-crescent"
+version = "v1.4.0"
+description = "🌙 A command handler for Hikari that keeps your project neat and tidy."
+readme = "README.md"
+authors = ["Lunarmagpie <bambolambo0@gmail.com>"]
+maintainers = [
+  "Lunarmagpie <bambolambo0@gmail.com>",
+  "Circuit <circuitsacul@icloud.com>",
+]
+license = "MPL-2.0"
+homepage = "https://github.com/hikari-crescent/hikari-crescent"
+repository = "https://github.com/hikari-crescent/hikari-crescent"
+documentation = "https://hikari-crescent.github.io/hikari-crescent/crescent.html"
+keywords = [
+  "discord",
+  "hikari",
+  "command handler",
+  "slash commands",
+  "application commands",
+]
+classifiers = ["Development Status :: 5 - Production/Stable"]
+include = ["crescent/banner.txt"]
+packages = [{ include = "crescent" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.15"
+hikari = "^2.3.0"
+sigparse = "^3.0.0"
+floodgate-rs = { version = "^0.1.1", optional = true }
+types-croniter = { version = "^5.0.0", optional = true }
+croniter = { version = "^5.0.0", optional = true }
+python-i18n = { version = ">=0.2", optional = true }
+
+[tool.poetry.extras]
+i18n = ["python-i18n"]
+cron = ["croniter", "types-croniter"]
+cooldowns = ["floodgate-rs"]
+
+[tool.poetry.group.typing.dependencies]
+mypy = "^1.4.0"
+pyright = "^1.1.315"
+nox = "^2023.4.22"
+
+[tool.poetry.group.linting.dependencies]
+ruff = "^0.10.0"
+isort = "^5.12.0"
+codespell = "^2.2.5"
+
+[tool.poetry.group.doc.dependencies]
+mkdocs-material = { version = "^9.5.39", extras = ["imaging"] }
+mkdocs = "^1.6.1"
+mkdocstrings-python = "^1.11.1"
+griffe-inherited-docstrings = "^1.0.0"
+
+[tool.poetry.group.tests.dependencies]
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+python-dotenv = "^1.0.0"
+hikari = { version = "*", extras = ["server"] }
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_unused_configs = true
+warn_return_any = true
+warn_redundant_casts = true
+namespace_packages = true
+warn_unused_ignores = false
+
+[tool.pyright]
+include = ["crescent", "examples"]
+exclude = ["tests"]
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
+reportPrivateUsage = false
+reportImportCycles = false
+reportIncompatibleMethodOverride = false
+reportWildcardImportFromLibrary = false
+
+[tool.ruff]
+lint.ignore = [
+  # Allow * imports to be used in the module level
+  "F403",
+  "F405",
+]
+lint.select = [
+  # Pyflakes
+  "E",
+  "F",
+  # Dangling Tasks
+  "RUF006",
+]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+skip = "examples/basic/basic.py"
+line_length = 99
+
+[tool.pytest.ini_options]
+asyncio_mode = 'strict'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
