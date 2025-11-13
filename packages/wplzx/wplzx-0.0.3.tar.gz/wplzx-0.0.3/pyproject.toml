@@ -1,0 +1,41 @@
+[project]
+name = "wplzx"
+version = "0.0.3"                       # 새 버전으로 갱신
+description = "Weighted Projective Line ZX (WPLZX) Lab – minimal reproducible pipeline"
+authors = [{ name = "Gunhee Cho" }]     # 이메일은 선택 (원하면 추가 가능)
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+
+# 런타임에 꼭 필요한 최소 의존성만 남깁니다.
+dependencies = [
+  "numpy>=1.24"
+]
+
+# 선택(옵션) 의존성은 extra로 분리
+[project.optional-dependencies]
+viz = [
+  "matplotlib>=3.7",
+  "networkx>=3.0"
+]
+qiskit = [
+  "qiskit>=1.0.0"
+]
+dev = [
+  "pytest>=7",
+  "build>=1.0",
+  "twine>=4.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/GunheeC/wplzx-lab"
+Repository = "https://github.com/GunheeC/wplzx-lab"
+Issues = "https://github.com/GunheeC/wplzx-lab/issues"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# 패키지 자동 탐색(하위 패키지 포함)
+[tool.setuptools.packages.find]
+include = ["wplzx*"]

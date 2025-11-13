@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: wplzx
+Version: 0.0.3
+Summary: Weighted Projective Line ZX (WPLZX) Lab – minimal reproducible pipeline
+Author: Gunhee Cho
+Project-URL: Homepage, https://github.com/GunheeC/wplzx-lab
+Project-URL: Repository, https://github.com/GunheeC/wplzx-lab
+Project-URL: Issues, https://github.com/GunheeC/wplzx-lab/issues
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.24
+Provides-Extra: viz
+Requires-Dist: matplotlib>=3.7; extra == "viz"
+Requires-Dist: networkx>=3.0; extra == "viz"
+Provides-Extra: qiskit
+Requires-Dist: qiskit>=1.0.0; extra == "qiskit"
+Provides-Extra: dev
+Requires-Dist: pytest>=7; extra == "dev"
+Requires-Dist: build>=1.0; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Dynamic: license-file
+
+# WPLZX-Lab
+
+Minimal, reproducible lab for **Weighted Projective Line ZX (WPLZX)**:
+- WZCC (Quantization-Aware Circuit Compression): \((a,\alpha,k)\mapsto \theta\) → grid snap → statevector check
+- MASD (Monodromy-Aware Surface Decoder): (coming soon)
+
+## Requirements
+- Python 3.11+
+- macOS/Apple Silicon or Linux (x86_64/ARM64)
+- `pip`, `venv`
+
+## Setup
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+
+
+## CI Status
+![CI](https://github.com/GunheeC/wplzx-lab/actions/workflows/ci.yml/badge.svg)
