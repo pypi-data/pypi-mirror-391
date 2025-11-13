@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tweetcaptureplus"
+version = "0.3.3"
+authors = [
+  { name="Abdallah Heidar", email="abdallahheidar@gmail.com" },
+  { name="Alperen Çetin", email="xacnio@pm.me" },
+]
+description = "Easily take screenshots of tweets, mentions, and full threads."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["twitter", "screenshot", "capture", "tweet", "thread", "mention"]
+classifiers=[
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[project.scripts]
+tweetcaptureplus = "tweetcaptureplus.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/abdallahheidar/tweetcaptureplus"
+Issues = "https://github.com/abdallahheidar/tweetcaptureplus/issues"
