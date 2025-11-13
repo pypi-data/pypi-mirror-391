@@ -1,0 +1,16 @@
+# context-map.yaml for PRD_Review_Workflow
+# 需求预评审工作流结构化上下文定义
+
+version: 1.0
+workflow: requirement-review-workflow
+
+includes:
+  # 公司内部通用规范
+  - ../../common/general.md
+
+  # 开发语言规范（可选，仅在需检查字段/术语时参考）
+  - ../../contexts/languages/java.md
+
+excludes:
+  # 排除技术实现细节、数据库索引、Job 任务等与业务问题无关内容
+  - ../../languages/java.md

@@ -1,0 +1,23 @@
+[project]
+name = "spec-cli"
+version = "0.1.6"
+description = "AI 规则仓库自动配置工具，用于下载和配置 airules 的规则文件"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "shirayner" }
+]
+dependencies = [
+    "click>=8.0.0",
+]
+
+[project.scripts]
+spec = "spec_cli.cli:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = []
+

@@ -1,0 +1,23 @@
+# context-map.yaml for RIPER-5
+# RIPER-5万能通用工作流结构化上下文定义
+
+version: 1.0
+workflow: RIPER-5
+
+includes:
+  # 通用规范
+  - ../../common/general.md
+  - ../../common/document.md
+  - ../../common/git.md
+  - ../../common/gitflow.md
+
+  # 开发语言规范（可选，仅在需检查字段/术语时参考）
+  - ../../languages/java.md
+
+  # 公司内部框架规范
+  - ../../frameworks/dal.md
+  - ../../frameworks/soa.md
+
+excludes:
+  # 排除技术实现细节、数据库索引、Job 任务等与业务问题无关内容
+  - ../../languages/python.md
