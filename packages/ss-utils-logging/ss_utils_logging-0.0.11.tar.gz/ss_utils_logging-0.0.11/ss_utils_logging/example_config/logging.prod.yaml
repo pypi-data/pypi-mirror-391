@@ -1,0 +1,76 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  json:
+    class: ss_utils_logging.formatters.ORJSONFormatter
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: json
+    stream: ext://sys.stdout
+    level: INFO
+
+loggers:
+  # Production: More aggressive suppression of external libraries
+  # Application loggers
+  main:
+    level: INFO
+
+  # Gunicorn/Uvicorn loggers
+  gunicorn.access:
+    level: WARNING
+    handlers: [console]
+    propagate: true
+
+  gunicorn.error:
+    level: WARNING
+    handlers: [console]
+    propagate: true
+
+  uvicorn.access:
+    level: WARNING
+    handlers: [console]
+    propagate: true
+
+  uvicorn.error:
+    level: WARNING
+    handlers: [console]
+    propagate: true
+
+  # ML/AI libraries
+  optimum:
+    level: WARNING
+
+  torch:
+    level: WARNING
+
+  transformers:
+    level: WARNING
+
+  # Async/WebSocket libraries
+  asyncio:
+    level: WARNING
+
+  websockets:
+    level: WARNING
+
+
+  # Other libraries
+  concurrent.futures:
+    level: WARNING
+
+  # HTTP libraries
+  httpx:
+    level: WARNING
+
+  httpcore:
+    level: WARNING
+
+  urllib3.connectionpool:
+    level: WARNING
+
+root:
+  level: INFO
+  handlers: [console]
