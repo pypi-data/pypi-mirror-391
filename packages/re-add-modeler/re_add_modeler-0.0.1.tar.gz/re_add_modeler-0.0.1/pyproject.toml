@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "re-add-modeler"
+version = "0.0.1"
+description = "GUI for modeling re-addition time courses."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "MIT"}
+authors = [
+    {name = "Finn"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+dependencies = [
+    "matplotlib",
+    "pyside6", 
+    "okin"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
