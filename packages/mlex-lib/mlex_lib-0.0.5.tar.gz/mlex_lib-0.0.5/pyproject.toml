@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlex-lib"
+version = "0.0.5"
+authors = [
+    {name = "Diego Pinheiro", email = "diegompin@gmail.com"}
+]
+description = "Money Laundering Expert System - A machine learning framework for financial fraud detection"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["machine-learning", "fraud-detection", "financial", "neural-networks", "gru", "lstm", "rnn"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License", 
+  "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "fastavro~=1.10.0",
+    "ipykernel~=6.29.5",
+    "matplotlib~=3.10.0",
+    "networkx~=3.4.2",
+    "numpy~=1.26.4",
+    "pandas~=2.2.3",
+    "pyarrow~=19.0.1",
+    "scikit-learn~=1.6.1",
+    "scipy~=1.11.4",
+    "seaborn~=0.13.2",
+    "shap~=0.47.0",
+    "skorch~=1.1.0",
+    "torch~=2.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0.0",
+    "pytest-cov>=3.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.950",
+    "pre-commit>=2.15.0",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/IoTDataAtelier/mlex"
+"Bug Tracker" = "https://github.com/IoTDataAtelier/mlex/issues"
+
+
+[tool.setuptools.packages.find]
+include = ["mlex", "mlex.*"]
+
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"
