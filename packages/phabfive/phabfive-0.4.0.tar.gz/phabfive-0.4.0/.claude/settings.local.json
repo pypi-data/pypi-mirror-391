@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(podman exec:*)",
+      "Bash(curl:*)",
+      "Bash(podman ps:*)",
+      "Bash(podman logs:*)",
+      "WebSearch",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:secure.phabricator.com)",
+      "WebFetch(domain:superuser.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gitlab.wikimedia.org)",
+      "WebFetch(domain:we.phorge.it)",
+      "Bash(uv run:*)",
+      "Bash(gh issue view:*)",
+      "WebFetch(domain:docs.astral.sh)",
+      "Bash(uv sync:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(git ls-tree:*)",
+      "WebFetch(domain:phorge.domain.tld)",
+      "Bash(git log:*)",
+      "Bash(make test)",
+      "WebFetch(domain:phabricator.wikimedia.org)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "outputStyle": "Learning"
+}
