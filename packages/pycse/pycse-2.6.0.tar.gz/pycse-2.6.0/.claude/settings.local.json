@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh issue view:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix orjson import error when using nlinfit. Fixed #35.\n\nChanged orjson from module-level import to lazy imports within SqlCache \nand JsonCache methods. This allows users to import and use nlinfit without \nrequiring orjson to be installed, since only the caching classes actually \nneed it.\n\nThe orjson dependency is still listed in pyproject.toml for users who want \nto use SqlCache or JsonCache features.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(pytest:*)",
+      "Bash(git commit:*)",
+      "Bash(python3:*)",
+      "Bash(ruff format:*)",
+      "Bash(ruff check:*)",
+      "Bash(ruff:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh issue create --title \"Migrate from deprecated jaxopt to optax\" --body \"$(cat <<''EOF''\n## Issue\nJAXopt is deprecated and no longer maintained. See: https://docs.jax.dev/en/latest/\n\nCurrently seeing deprecation warning:\n```\nDeprecationWarning: JAXopt is no longer maintained. See https://docs.jax.dev/en/latest/ for alternatives.\n```\n\n## Current Usage\njaxopt is used in 2 files:\n\n1. **`src/pycse/sklearn/dpose.py`** (line 66) - Uses multiple jaxopt optimizers:\n   - `jaxopt.BFGS`\n   - `jaxopt.LBFGS`\n   - `jaxopt.LBFGSB`\n   - `jaxopt.NonlinearCG`\n   - `jaxopt.OptaxSolver` (already wraps optax - easy to migrate)\n   - `jaxopt.GradientDescent`\n\n2. **`src/pycse/sklearn/kfoldnn.py`** (line 46):\n   - `jaxopt.LBFGS`\n\n## Migration Plan\n\n### Recommended Approach: Use optax (already in dependencies)\n\n**Optax** is the official JAX optimization library maintained by DeepMind and is the recommended replacement.\n\n### Migration Strategy\n\n1. **Easy wins** - Replace `jaxopt.OptaxSolver` with direct optax usage (already wrapping optax)\n\n2. **For neural networks** - Replace BFGS/L-BFGS with modern first-order optimizers:\n   - **Adam** or **AdamW** (most common for neural nets)\n   - **SGD with momentum**\n   - These often work better than second-order methods for neural networks\n\n3. **If BFGS-like methods are needed** - Use `jax.scipy.optimize.minimize` with method=''BFGS''\n\n### Benefits\n- ✅ No deprecation warnings\n- ✅ Better maintained (official JAX ecosystem)\n- ✅ Modern optimization algorithms\n- ✅ Likely better performance for neural network training\n- ✅ More flexible and composable\n\n### Tasks\n- [ ] Review current optimizer performance/requirements in dpose.py\n- [ ] Replace jaxopt optimizers with optax equivalents in dpose.py\n- [ ] Replace jaxopt.LBFGS in kfoldnn.py with optax optimizer (e.g., Adam)\n- [ ] Update tests to verify optimizer changes don''t break functionality\n- [ ] Update documentation to reflect new optimizers\n- [ ] Remove jaxopt from pyproject.toml dependencies after migration complete\n\n## References\n- JAX documentation: https://docs.jax.dev/en/latest/\n- Optax documentation: https://optax.readthedocs.io/\n- Optax on GitHub: https://github.com/google-deepmind/optax\nEOF\n)\")",
+      "Bash(gh issue create:*)",
+      "Bash(find:*)",
+      "Bash(git restore:*)",
+      "Read(//Users/jkitchin/.claude/skills/pycse/**)",
+      "Bash(git merge:*)",
+      "Bash(uv build:*)",
+      "Bash(unzip:*)",
+      "Bash(curl:*)",
+      "Bash(make build-3.12:*)",
+      "Bash(docker build:*)",
+      "Bash(docker run:*)",
+      "Read(//Users/jkitchin/Dropbox/python/**)",
+      "Bash(uv publish)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
