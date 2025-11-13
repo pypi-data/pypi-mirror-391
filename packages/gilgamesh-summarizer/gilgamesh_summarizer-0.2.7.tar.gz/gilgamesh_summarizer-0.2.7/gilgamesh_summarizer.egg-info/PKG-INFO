@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: gilgamesh-summarizer
+Version: 0.2.7
+Summary: A package for summarizing RDF graphs for Question Answering pipelines
+Home-page: UNKNOWN
+Author: Kostas Plas
+Author-email: kplas@di.uoa.gr
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# Gilgamesh Summarization Tool
+
+# Overview
+
+Gilgamehs is an LLM-based ontology summarizaton. Developed as a pipeline for optimization in Knowledge Graph Question Answering tasks, to reduce a KG's complexity and prune possible multi-hop questions, further increasing the QA system accuracy. This pipeline utilizes the capabilities of LLMs to create concise summaries and locate possible redundant key-value patterns in the target KG. Implemented as a PyPI package, this pipeline can be deployed to summarize knowledge graphs as an optimization for question answering tasks. 
+
+# Install
+
+__Basic requirements:__
+
+- Python version greater or equal to **3.10**.
+
+      pip install gilgamesh-summarizer
+
+# 🔍 Basic Usage: Creating summaries based on Key-Value Pairs
+
+Currently, the major functionality of our tool is in creating ontology summaries through discovering and condensing key-value pair formations in Knowledge Graph ontologies.
+
+Our pipline initially:
+
+1. Parses ontology file and knowledge graph data
+2. Create clusters from initial knowledge graph data
+3. Cluster numbers can be reduced by removing nodes with high degrees
+4. Clusters can be further reduced in size by spliting and re-clustering large clusers (powered by PyJedAI)
+
+```python
+from gilgamesh_summarizer.KnowledgeGraph import KnowledgeGraph
+
+kg = KnowledgeGraph(path_to_rdf_data,path_to_ontology)
+
+clusters, triples_dict = kg.create_clusters(prune_top_nodes=16,max_cluster_size=200)
+clusters
+```
+
+And provides an unsloth based fine-tuned model locates meaningful information that can be used to create summaries
+
+```python
+from gilgamesh_summarizer.Summarizer import Summarizer
+
+classifier = Summarizer(kg)
+results = classifier.classify_clusters(clusters, triples_dict)
+```
+
+# Notebook Demo
+
+An end to end example of the tool's summarization pipeline is presented here: [Notebook](https://colab.research.google.com/drive/1Ti1-wZOoofBinBLMEDKrTipDonNBHIwI?usp=sharing)
+
+# Github Repository
+
+The packages official Github [repo](https://github.com/KwtsPls/gilgamesh-summarizer)
+
+
