@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: gojan
+Version: 0.1.1
+Summary: Gojan — tiny package demonstrating runtime linking to TensorFlow + optional Flask and ML libs.
+Author-email: Your Name <you@example.com>
+License: MIT
+Project-URL: Homepage, https://example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: tensorflow==2.12.1
+Provides-Extra: web
+Requires-Dist: Flask>=2.2.0; extra == "web"
+Provides-Extra: ml
+Requires-Dist: numpy>=1.24; extra == "ml"
+Requires-Dist: pandas>=2.1; extra == "ml"
+Requires-Dist: scikit-learn>=1.2; extra == "ml"
+Requires-Dist: scipy>=1.10; extra == "ml"
+Requires-Dist: matplotlib>=3.7; extra == "ml"
+Requires-Dist: Pillow>=9.5; extra == "ml"
+Requires-Dist: seaborn>=0.12; extra == "ml"
+Provides-Extra: torch
+Requires-Dist: torch>=2.2.0; extra == "torch"
+Provides-Extra: all
+Requires-Dist: Flask>=2.2.0; extra == "all"
+Requires-Dist: numpy>=1.24; extra == "all"
+Requires-Dist: pandas>=2.1; extra == "all"
+Requires-Dist: scikit-learn>=1.2; extra == "all"
+Requires-Dist: scipy>=1.10; extra == "all"
+Requires-Dist: matplotlib>=3.7; extra == "all"
+Requires-Dist: Pillow>=9.5; extra == "all"
+Requires-Dist: seaborn>=0.12; extra == "all"
+Requires-Dist: torch>=2.2.0; extra == "all"
