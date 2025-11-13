@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mistral-ocr-gui"
+version = "0.4.0"
+authors = [{ name="Danielnara24" },]
+description = "A graphical user interface for processing images with the Mistral OCR API."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+license-files = ["LICENSE"]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+    "Environment :: Win32 (MS Windows)",
+]
+dependencies = [
+    "mistralai",
+    "tkinterdnd2",
+    "Pillow"
+]
+
+[project.urls]
+Homepage = "https://github.com/Danielnara24/Mistral-OCR"
+
+[project.gui-scripts]
+mistral-ocr = "mistral_ocr.gui:main"
