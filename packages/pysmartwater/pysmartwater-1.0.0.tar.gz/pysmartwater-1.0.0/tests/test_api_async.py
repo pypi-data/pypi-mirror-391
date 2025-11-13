@@ -1,0 +1,252 @@
+import asyncio
+import copy
+from datetime import datetime
+import logging
+import pytest
+import pytest_asyncio
+
+from src.pysmartwater import (
+    AsyncSmartWaterApi,
+    SmartWaterApi,
+    SmartWaterError,
+    SmartWaterAuthError,
+    SmartWaterConnectError,
+    SmartWaterDataError,
+    LoginMethod,
+)
+
+from . import TEST_USERNAME, TEST_PASSWORD
+
+_LOGGER = logging.getLogger(__name__)
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+logging.getLogger("grpc").setLevel(logging.WARNING)
+
+
+class TestContext:
+    def __init__(self):
+        self.api = None
+
+    async def cleanup(self):
+        if self.api:
+            await self.api.logout()
+            await self.api.close()
+            assert self.api.closed == True
+
+
+@pytest_asyncio.fixture
+async def context():
+    # Prepare
+    ctx = TestContext()
+
+    # pass objects to tests
+    yield ctx
+
+    # cleanup
+    await ctx.cleanup()
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("context")
+@pytest.mark.parametrize(
+    "name, method, usr, pwd, exp_except",
+    [
+        ("ok",   'Any',           TEST_USERNAME, TEST_PASSWORD, None),
+        ("ok",   'Google-Apis',   TEST_USERNAME, TEST_PASSWORD, None),
+        ("fail", 'Any',           "dummy_usr",   "wrong_pwd",   SmartWaterConnectError),
+        ("fail", 'Google-Apis',   "dummy_usr",   "wrong_pwd",   SmartWaterConnectError),
+    ]
+)
+async def test_login(name, method, usr, pwd, exp_except, request):
+    context = request.getfixturevalue("context")
+    assert context.api is None
+
+    context.api = AsyncSmartWaterApi(usr, pwd)
+    assert context.api.closed == False
+
+    if exp_except is None:
+        assert context.api._login_method is None
+        assert context.api._user_id is None
+
+        match method:
+            case 'Any':
+                await context.api.login()
+                
+            case 'Google-Apis':
+                await context.api._login_google_apis()
+
+        assert context.api._login_method is not None
+        assert context.api._access_token is not None
+        assert context.api._access_exp_ts > 0
+        assert context.api._refresh_token is not None
+
+        assert context.api._user_id is not None
+
+    else:
+        with pytest.raises(exp_except):
+            match method:
+                case 'Any':            await context.api.login()
+                case 'Google-Apis':    await context.api._login_google_apis()
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("context")
+@pytest.mark.parametrize(
+    "name, usr, pwd, exp_except",
+    [
+        ("login multi", TEST_USERNAME, TEST_PASSWORD, None),
+    ]
+)
+async def test_login_seq(name, usr, pwd, exp_except, request):
+    context = request.getfixturevalue("context")
+    assert context.api is None
+
+    # First call with wrong pwd
+    context.api = AsyncSmartWaterApi(usr, "wrong_pwd")
+    assert context.api.closed == False
+    assert context.api._login_method is None
+
+    with pytest.raises(SmartWaterConnectError):
+        await context.api.login()
+
+    # Next call with correct pwd
+    context.api = AsyncSmartWaterApi(usr, pwd)
+    assert context.api.closed == False
+    assert context.api._login_method is None
+
+    if exp_except is None:
+        await context.api.login()
+
+        assert context.api._login_method is not None
+
+    else:
+        with pytest.raises(exp_except):
+            await context.api.login()
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("context")
+@pytest.mark.parametrize(
+    "name, method, loop, exp_except",
+    [
+        ("ok",  'Auto',                  0, None),
+        ("ok",  LoginMethod.GOOGLE_APIS, 0, None),
+        #("24h", "Auto",                  24*60, None),    # Run 1 full day
+        #("24h", LoginMethod.GOOGLE_APIS, 24*60, None),    # Run 1 full day
+    ]
+)
+async def test_get_data(name, method, loop, exp_except, request):
+    context = request.getfixturevalue("context")
+    context.api = AsyncSmartWaterApi(TEST_USERNAME, TEST_PASSWORD)
+    assert context.api.closed == False
+
+    # Login
+    match method:
+        case 'Auto':                    await context.api.login()
+        case LoginMethod.GOOGLE_APIS:   await context.api._login_google_apis()
+
+    login_method_org = context.api._login_method
+
+    # Get profile
+    profile = await context.api.fetch_profile()
+
+    assert profile is not None
+    assert type(profile) is dict
+    assert len(profile) > 0
+
+    gateway_ids = []
+    tank_ids = []
+    pump_ids = []
+    account_type = profile.get("accountConfig", {}).get("type")
+    if account_type == "basic":
+        gateway_id = profile.get("accountConfig", {}).get("basicAccountConfig", {}).get("gatewayId")
+        tank_id = profile.get("accountConfig", {}).get("basicAccountConfig", {}).get("tankId")
+        pump_id = profile.get("accountConfig", {}).get("basicAccountConfig", {}).get("pumpId")
+
+        if gateway_id: gateway_ids.append(gateway_id)
+        if tank_id: tank_ids.append(tank_id)
+        if pump_id: pump_ids.append(pump_id)
+
+    # Get gateways listed in profile
+    for gateway_id in gateway_ids:
+        assert type(gateway_id) is str
+
+        gateway = await context.api.fetch_gateway(gateway_id)
+
+        assert gateway is not None
+        assert type(gateway) is dict
+        assert len(gateway) > 0
+        
+    # Get tanks listed in profile
+    for tank_id in tank_ids:
+        assert type(tank_id) is str
+
+        tank = await context.api.fetch_device(tank_id)
+
+        assert tank is not None
+        assert type(tank) is dict
+        assert len(tank) > 0
+        
+    # Get pumps listed in profile
+    for pump_id in pump_ids:
+        assert type(pump_id) is str
+
+        pump = await context.api.fetch_gateway(pump_id)
+
+        assert pump is not None
+        assert type(pump) is dict
+        assert len(pump) > 0
+
+    counter_success: int = 0
+    counter_fail: int = 0
+    reason_fail: dict[str,int] = {}
+    for idx in range(0,loop+1):
+        # Get fresh device statuses
+        try:
+            # Check access-token and refresh or re-login if needed
+            await context.api.login()
+            assert login_method_org == context.api._login_method
+
+            # Get all gateways
+            gateways = await context.api.fetch_gateways()
+
+            assert gateways is not None
+            assert type(gateways) is dict
+            assert len(gateways) >= len(gateway_ids)
+                
+            # Get all devices (tanks and pumps) for a gateway
+            devices = await context.api.fetch_devices(gateway_id)
+
+            assert devices is not None
+            assert type(devices) is dict
+            assert len(devices) >= len(tank_ids) + len(pump_ids)
+
+            counter_success += 1
+        
+        except Exception as ex:
+            counter_fail += 1
+            reason = str(ex)
+            reason_fail[reason] = reason_fail[reason]+1 if reason in reason_fail else 1
+            _LOGGER.warning(f"Fail: {ex}")
+
+        if loop:
+            # Simulate failure to recover from
+            #if idx % 6 == 0:
+            #    await context.api._async_logout("simulate failure")
+            #elif idx % 3 == 0:
+            #    await context.api._async_logout("login force refresh", DabPumpsLogin.ACCESS_TOKEN)
+
+            if method != "Auto":
+                context.api._login_method = method
+
+            _LOGGER.debug(f"Loop test, {idx} of {loop} (success={counter_success}, fail={counter_fail})")
+            await asyncio.sleep(60)
+
+    _LOGGER.info(f"Fail summary after {loop} loops:")
+    for reason,count in reason_fail.items():
+        _LOGGER.info(f"  {count}x {reason}")
+
+    assert counter_fail == 0
+
+
