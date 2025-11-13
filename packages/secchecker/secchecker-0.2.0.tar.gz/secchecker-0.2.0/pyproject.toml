@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secchecker"
+version = "0.2.0"
+description = "A comprehensive CLI tool to detect secrets and sensitive information in repositories for maintaining security best practices."
+readme = "README.md"
+authors = [
+    {name = "Vishnu Prashanth", email = "vishnu7stanite@gmail.com"}
+]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.8"
+keywords = ["security", "secrets", "devsecops", "cli", "python", "scanning", "audit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Quality Assurance",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    # No external dependencies - using only Python standard library
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "flake8>=3.8",
+    "black>=21.0",
+    "mypy>=0.800"
+]
+test = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0"
+]
+cli = ["rich>=10.0"]
+
+[project.urls]
+Homepage = "https://github.com/vishnu-77/secchecker"
+Documentation = "https://github.com/vishnu-77/secchecker#readme"
+Repository = "https://github.com/vishnu-77/secchecker.git"
+"Bug Tracker" = "https://github.com/vishnu-77/secchecker/issues"
+Changelog = "https://github.com/vishnu-77/secchecker/blob/main/CHANGELOG.md"
+
+[project.scripts]
+secchecker = "secchecker.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["secchecker"]
+omit = ["tests/*", "setup.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError"
+]
