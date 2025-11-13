@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "conciliate"
+version = "0.6.0"
+description = "AI context synchronization and propagation between dev environments"
+readme = "README_PYPI.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Conciliate Team"}
+]
+keywords = ["api", "openapi", "sync", "ai", "context", "fastapi"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "watchfiles>=0.21.0",
+    "deepdiff>=6.7.0",
+    "typer>=0.9.0",
+    "pyyaml>=6.0",
+    "httpx>=0.25.0",
+    "rich>=13.7.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "mcp>=1.0.0",
+    "faker>=20.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.7.0",
+]
+
+[project.scripts]
+conciliate = "conciliate.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/iv4n-ga6l/conciliate"
+Repository = "https://github.com/iv4n-ga6l/conciliate"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["conciliate*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
