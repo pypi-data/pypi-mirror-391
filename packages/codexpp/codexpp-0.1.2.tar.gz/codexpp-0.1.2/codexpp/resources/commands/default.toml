@@ -1,0 +1,432 @@
+[[commands]]
+id = "cx:analyze"
+title = "Repository Analysis"
+summary = "Analyze a specific codebase scope and provide an evidence-based, actionable briefing."
+prompt = """
+You are Codex collaborating with the developer through Codexpp.
+Provide an evidence-based analysis tailored by Depth and Focus. If critical info is missing, ask up to 2 short questions; otherwise state assumptions and proceed.
+
+Sections:
+- Executive Summary: purpose, key design notes, top 3 risks
+- Architecture & Data Flow: modules, boundaries, integrations, config
+- Dependencies & Surfaces: runtime/build deps, public interfaces, env assumptions
+- Quality & Risk: security, performance, testing gaps, tech debt
+- Hotspots & Evidence: cite files/lines with brief snippets
+- Recommendations & Roadmap: quick wins, short-term tasks, longer-term refactors
+
+Depth: {{depth}}
+Focus: {{focus}}
+Target scope: {{target}}
+Additional context: {{context}}
+"""
+tags = ["analysis", "cx"]
+
+[commands.inputs.target]
+description = "Directory, package, or file path to analyze."
+required = true
+placeholder = "TARGET"
+default = "."
+
+[commands.inputs.context]
+description = "Optional notes or constraints."
+required = false
+default = ""
+placeholder = "CONTEXT"
+
+[commands.inputs.focus]
+description = "Optional focus areas (e.g., arch,deps,tests,perf)."
+required = false
+default = ""
+placeholder = "FOCUS"
+
+[commands.inputs.depth]
+description = "Analysis depth: light, medium, or deep."
+required = false
+default = "medium"
+placeholder = "DEPTH"
+
+[[commands]]
+id = "cx:implement"
+title = "Feature Implementation"
+summary = "Plan and implement the requested change in small, verifiable steps with tests and clear validation."
+prompt = """
+You are Codex implementing a change request within the active repository.
+Follow this workflow:
+- Restate the goal and acceptance criteria.
+- Propose small, commit-sized steps with impacted files.
+- Apply changes with minimal diffs; keep style consistent.
+- Add/update tests and list manual verification steps.
+- Summarize modified/created files and how to validate.
+
+Feature request: {{spec}}
+Constraints or notes: {{notes}}
+Feature flag (optional): {{flag}}
+"""
+tags = ["implementation", "cx"]
+
+[commands.inputs.spec]
+description = "Feature description or task text."
+required = true
+placeholder = "SPEC"
+
+[commands.inputs.notes]
+description = "Additional guidance, constraints, or testing expectations."
+required = false
+default = ""
+placeholder = "NOTES"
+
+[commands.inputs.flag]
+description = "Feature flag name if rollout should be guarded."
+required = false
+default = ""
+placeholder = "FLAG"
+
+[[commands]]
+id = "cx:review"
+title = "Change Review"
+summary = "Review changes for quality, security, and performance with concrete, actionable feedback."
+prompt = """
+You are Codex reviewing a code change.
+Provide a concise, evidence-based review:
+- Change Summary: intent, scope, affected areas.
+- Positives: good practices (readability, tests, error handling, docs).
+- Concerns: bugs/regressions, security, performance, missing tests (cite file:line).
+- Suggestions: concrete changes with rationale; follow-up questions.
+
+Diff context or branch: {{diff_source}}
+Reviewer focus areas: {{focus}}
+Expected risk level (optional): {{risk}}
+"""
+tags = ["review", "quality", "cx"]
+
+[commands.inputs.diff_source]
+description = "Diff, PR URL, or commit reference to review."
+required = true
+placeholder = "DIFF_SOURCE"
+
+[commands.inputs.focus]
+description = "Optional reviewer focus areas."
+required = false
+default = ""
+placeholder = "FOCUS"
+
+[commands.inputs.risk]
+description = "Expected risk level: low, medium, or high."
+required = false
+default = ""
+placeholder = "RISK"
+
+[[commands]]
+id = "cx:triage"
+title = "Bug Triage"
+summary = "Analyze a bug report, suggest likely root causes, and provide targeted diagnostic steps."
+prompt = """
+You are Codex helping triage a bug report.
+Summarize the reported behaviour, list likely root causes, point to relevant code areas, and suggest immediate diagnostic steps.
+
+Bug report: {{report}}
+Recent changes or context: {{context}}
+Scope (optional): {{scope}}
+"""
+tags = ["triage", "debugging", "cx"]
+
+[commands.inputs.report]
+description = "Bug report or user feedback text."
+required = true
+placeholder = "REPORT"
+
+[commands.inputs.context]
+description = "Related commits, feature area, or environment info."
+required = false
+default = ""
+placeholder = "CONTEXT"
+
+[commands.inputs.scope]
+description = "Optional module or area to focus triage on."
+required = false
+default = ""
+placeholder = "SCOPE"
+
+[[commands]]
+id = "cx:refactor"
+title = "Refactoring Plan"
+summary = "Design a safe, behavior-preserving refactor plan with tests and rollback considerations."
+prompt = """
+You are Codex designing a refactor.
+Identify pain points, propose step-by-step refactor tasks, list affected files, and mention test considerations.
+
+Current implementation notes: {{notes}}
+Goals and constraints: {{goals}}
+Additional constraints (optional): {{constraints}}
+"""
+tags = ["refactor", "cx"]
+
+[commands.inputs.notes]
+description = "Current code and pain points to address."
+required = true
+placeholder = "NOTES"
+
+[commands.inputs.goals]
+description = "Goals, constraints, success metrics."
+required = false
+default = ""
+placeholder = "GOALS"
+
+[commands.inputs.constraints]
+description = "Optional constraints (performance, compatibility, CI)."
+required = false
+default = ""
+placeholder = "CONSTRAINTS"
+
+[[commands]]
+id = "cx:plan"
+title = "Feature Planning"
+summary = "Break down the requirement into actionable tasks, analyze dependencies and risks, and propose a test strategy."
+prompt = """
+You are Codex acting as a senior planner.
+Break down the feature request into concrete tasks, outline dependencies, and call out risks.
+For each task provide recommended files or modules to touch and any test updates required.
+
+Feature request: {{spec}}
+Repository hints: {{hints}}
+Constraints (optional): {{constraints}}
+Include rough estimates? (true/false, optional): {{estimate}}
+"""
+tags = ["planning", "cx"]
+
+[commands.inputs.spec]
+description = "Feature or problem statement to plan."
+required = true
+placeholder = "SPEC"
+
+[commands.inputs.hints]
+description = "Hints about existing code, modules, or constraints."
+required = false
+default = ""
+placeholder = "HINTS"
+
+[commands.inputs.constraints]
+description = "Optional constraints or assumptions to consider."
+required = false
+default = ""
+placeholder = "CONSTRAINTS"
+
+[commands.inputs.estimate]
+description = "If true, include rough time estimates."
+required = false
+default = "false"
+placeholder = "ESTIMATE"
+
+[[commands]]
+id = "cx:test"
+title = "Testing Guidance"
+summary = "Propose a practical test strategy: key behaviours, unit/integration tests, and commands."
+prompt = """
+You are Codex acting as a test strategist.
+List the key behaviours that must be validated, propose unit/integration tests, and mention tooling commands.
+
+Change summary: {{change}}
+Existing test suites: {{tests}}
+Coverage targets (optional): {{coverage}}
+"""
+tags = ["testing", "quality", "cx"]
+
+[commands.inputs.change]
+description = "Summary of planned or completed changes."
+required = true
+placeholder = "CHANGE"
+
+[commands.inputs.tests]
+description = "Notes about relevant test files or commands."
+required = false
+default = ""
+placeholder = "TESTS"
+
+[commands.inputs.coverage]
+description = "Optional coverage targets in percent."
+required = false
+default = ""
+placeholder = "COVERAGE"
+
+[[commands]]
+id = "cx:doc"
+title = "Documentation Update"
+summary = "Prepare concise, accurate documentation for the change, tailored to the audience."
+prompt = """
+You are Codex preparing documentation updates.
+Summarize the change, update user-facing notes, and list any follow-up docs that should be refreshed.
+
+Change summary: {{change}}
+Target audience: {{audience}}
+Style (optional): {{style}}
+"""
+tags = ["documentation", "cx"]
+
+[commands.inputs.change]
+description = "Summary of the change to document."
+required = true
+placeholder = "CHANGE"
+
+[commands.inputs.audience]
+description = "Documentation audience (e.g., developer, user, API)."
+required = false
+default = ""
+placeholder = "AUDIENCE"
+
+[commands.inputs.style]
+description = "Optional style or language notes."
+required = false
+default = ""
+placeholder = "STYLE"
+
+[[commands]]
+id = "cx:deploy"
+title = "Deployment Plan"
+summary = "Plan a safe, repeatable deployment: pre-checks, steps, verification, observability, and rollback readiness."
+prompt = """
+You are Codex coordinating a deployment.
+Provide pre-deployment checks, deployment steps, verification/observability, and rollback preparation. Include exact commands where possible.
+
+Release notes: {{notes}}
+Target environment: {{environment}}
+Maintenance window (optional): {{window}}
+Feature flag (optional): {{flag}}
+"""
+tags = ["ops", "deployment", "cx"]
+
+[commands.inputs.notes]
+description = "Summary or link to release notes for this version."
+required = true
+placeholder = "NOTES"
+
+[commands.inputs.environment]
+description = "Target environment (e.g., staging, production)."
+required = true
+placeholder = "ENVIRONMENT"
+
+[commands.inputs.window]
+description = "Optional maintenance window info."
+required = false
+default = ""
+placeholder = "WINDOW"
+
+[commands.inputs.flag]
+description = "Optional feature flag name for rollout control."
+required = false
+default = ""
+placeholder = "FLAG"
+
+[[commands]]
+id = "cx:rollback"
+title = "Rollback Strategy"
+summary = "Prepare a fast and safe rollback plan with triggers, steps, communications, and follow-up."
+prompt = """
+You are Codex preparing an emergency rollback plan.
+Outline detection signals, rollback steps, communication plan, and post-incident follow-up.
+
+Incident summary: {{incident}}
+Current version: {{version}}
+DB impact (yes/no, optional): {{db_impact}}
+Feature flag (optional): {{feature_flag}}
+"""
+tags = ["ops", "incident", "cx"]
+
+[commands.inputs.incident]
+description = "Summary or link of the incident."
+required = true
+placeholder = "INCIDENT"
+
+[commands.inputs.version]
+description = "Version currently live or rollback target."
+required = false
+default = ""
+placeholder = "VERSION"
+
+[commands.inputs.db_impact]
+description = "If data/migrations are impacted: yes or no."
+required = false
+default = ""
+placeholder = "DB_IMPACT"
+
+[commands.inputs.feature_flag]
+description = "Feature flag to disable during rollback (optional)."
+required = false
+default = ""
+placeholder = "FEATURE_FLAG"
+
+[[commands]]
+id = "cx:status"
+title = "Operational Status Briefing"
+summary = "Summarize system health, key metrics, incidents, risks, and recommended actions."
+prompt = """
+You are Codex compiling an operational status briefing.
+Summarize current health, key metrics, outstanding incidents, and recommended follow-up actions.
+
+Service scope: {{scope}}
+Latest metrics: {{metrics}}
+SLO targets (optional): {{slo}}
+"""
+tags = ["ops", "reporting", "cx"]
+
+[commands.inputs.scope]
+description = "Service or module scope to report on."
+required = true
+placeholder = "SCOPE"
+
+[commands.inputs.metrics]
+description = "Highlighted metrics, dashboard links, or panels."
+required = false
+default = ""
+placeholder = "METRICS"
+
+[commands.inputs.slo]
+description = "Optional SLO targets for context."
+required = false
+default = ""
+placeholder = "SLO"
+
+[[commands]]
+id = "cx:security"
+title = "Security Audit"
+summary = "Perform a rigorous security review, prioritize risks with CVSS, and recommend actionable mitigations."
+prompt = """
+You are Codex, a premier AI-powered application security auditor integrated within Codexpp.
+Perform a rigorous security review by enumerating vulnerabilities, assessing configurations, scoring risks (CVSS), and recommending actionable mitigations with effort estimates.
+
+Target scope: {{target}}
+Additional context: {{context}}
+Focus areas: {{focus}}
+Depth level: {{depth}}
+Output format: {{format}}
+"""
+tags = ["security", "audit", "risk", "cx"]
+
+[commands.inputs.target]
+description = "Codebase or infrastructure scope to review."
+required = true
+placeholder = "TARGET"
+default = "."
+
+[commands.inputs.context]
+description = "Additional details, requirements, or constraints."
+required = false
+default = ""
+placeholder = "CONTEXT"
+
+[commands.inputs.focus]
+description = "Specific focus areas (e.g., injection, auth, dependencies)."
+required = false
+default = ""
+placeholder = "FOCUS"
+
+[commands.inputs.depth]
+description = "Audit depth: light, medium, or deep."
+required = false
+default = "medium"
+placeholder = "DEPTH"
+
+[commands.inputs.format]
+description = "Output format: markdown (default), json, yaml, or html."
+required = false
+default = "markdown"
+placeholder = "FORMAT"
