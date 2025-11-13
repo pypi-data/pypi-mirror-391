@@ -1,0 +1,143 @@
+Metadata-Version: 2.4
+Name: keynet-core
+Version: 0.7.2
+Summary: Core utilities and models for keynet packages
+Project-URL: Homepage, https://github.com/WIM-Corporation/keynet
+Project-URL: Bug Tracker, https://github.com/WIM-Corporation/keynet/issues
+Author-email: hbjs <hbjs97@naver.com>
+License: MIT
+Keywords: core,keynet,utilities
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Requires-Dist: boto3>=1.39.2
+Requires-Dist: deprecated>=1.2.18
+Requires-Dist: mlflow==3.1.1
+Requires-Dist: types-deprecated>=1.2.15.20250304
+Description-Content-Type: text/markdown
+
+# keynet-core
+
+Keynet 패키지들의 핵심 유틸리티와 공통 모델
+
+## 설치
+
+```bash
+pip install keynet-core
+```
+
+## 주요 기능
+
+### 🔧 공통 유틸리티
+
+- 환경 변수 관리
+- 설정 파일 처리
+- 로깅 설정
+
+### 📦 공유 모델
+
+- 데이터 검증 모델
+- API 응답 모델
+- 설정 스키마
+
+### 🔌 의존성
+
+- 최소한의 의존성 유지
+- 다른 Keynet 패키지의 기반
+
+## 🔒 Security Features
+
+### 자동 민감정보 마스킹 (Automatic Sensitive Data Redaction)
+
+keynet-core는 stdout/stderr에 출력되는 민감정보를 자동으로 마스킹합니다.
+
+**보호되는 정보:**
+- AWS Access Keys (AKIA...)
+- KEYNET_ prefix credentials (KEYNET_minio, KEYNET_storage 등)
+- Passwords, tokens, API keys (key=value 형태, 최소 3자)
+- Private keys (PEM format)
+- MLflow URIs with credentials
+- 환경변수 (AWS_*, MLFLOW_*, RABBIT_*, KEYNET_*, APP_API_KEY 등)
+
+**자동 활성화:**
+
+`keynet-core`를 설치하면 자동으로 redaction이 활성화됩니다:
+
+```bash
+pip install keynet-core
+# Python 시작 시 자동으로 redaction 활성화!
+```
+
+```python
+# import 순서와 무관하게 보호됨
+import os
+
+# 환경변수 형태로 출력하면 자동 마스킹
+os.environ["AWS_ACCESS_KEY_ID"] = "KEYNET_myaccess"
+print(f"AWS_ACCESS_KEY_ID={os.getenv('AWS_ACCESS_KEY_ID')}")
+# 출력: AWS_ACCESS_KEY_ID=***ENV_VAR_xxxx***
+
+# KEYNET_ prefix 사용 시 명시적 감지
+print("Using credential: KEYNET_myaccess")
+# 출력: Using credential: ***KEYNET_KEY_xxxx***
+```
+
+**권장사항: KEYNET_ Prefix 사용**
+
+개발 환경에서 MinIO credential에 `KEYNET_` prefix를 사용하세요:
+
+```bash
+export AWS_ACCESS_KEY_ID=KEYNET_myaccess
+export AWS_SECRET_ACCESS_KEY=KEYNET_mysecret
+```
+
+- ✅ 자동 감지 보장
+- ✅ keynet 프로젝트 credential임을 명시
+
+**예외 메시지 sanitization:**
+
+```python
+from keynet_core.security import sanitize_exception
+
+try:
+    raise ValueError("Error: AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE")
+except ValueError as e:
+    sanitized = sanitize_exception(e)
+    print(sanitized)
+    # 출력: Error: AWS_ACCESS_KEY_ID=***ENV_VAR_xxxx***
+```
+
+**디버깅 시 비활성화:**
+
+```bash
+export KEYNET_DISABLE_REDACTION=1
+python train.py
+```
+
+## 사용 예제
+
+```python
+from keynet_core import Config, check_env
+
+# 환경 변수 검증
+if check_env():
+    print("필수 환경 변수 설정 완료")
+
+# 설정 로드
+config = Config()
+print(f"MLflow URI: {config.mlflow_tracking_uri}")
+```
+
+## API 문서
+
+자세한 API 문서는 [GitHub Wiki](https://github.com/WIM-Corporation/keynet/wiki) 참조
+
+## 라이선스
+
+MIT License
