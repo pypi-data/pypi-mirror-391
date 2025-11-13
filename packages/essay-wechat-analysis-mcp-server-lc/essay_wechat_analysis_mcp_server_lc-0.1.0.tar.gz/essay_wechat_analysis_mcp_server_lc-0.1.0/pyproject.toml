@@ -1,0 +1,20 @@
+[project]
+name = "essay-wechat-analysis-mcp-server-lc"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Melle_lichao", email = "lichao10060909@163.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "asyncmy>=0.2.10",
+    "mcp[cli]>=1.21.0",
+]
+
+[project.scripts]
+essay-wechat-analysis-mcp-server-lc = "essay_wechat_analysis_mcp_server_lc:main"
+
+[build-system]
+requires = ["uv_build>=0.8.12,<0.9.0"]
+build-backend = "uv_build"
