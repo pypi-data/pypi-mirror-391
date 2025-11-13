@@ -1,0 +1,57 @@
+[package]
+authors = ["Ben Ruijl <benruyl@gmail.com>"]
+categories = ["science"]
+description = "A blazing fast computer algebra system, with community extensions"
+edition = "2021"
+keywords = ["algebra", "symbolic", "manipulation", "mathematics", "physics"]
+license = "MIT"
+name = "symbolica_community"
+readme = "Readme.md"
+repository = "https://github.com/benruijl/symbolica-community"
+rust-version = "1.88"
+version = "0.20.0"
+
+
+[[bin]]
+name = "stub_gen"
+required-features = ["python_stubgen"]
+
+[lib]
+name = "symbolica_community"
+crate-type = ["rlib", "cdylib"]
+
+[features]
+python_stubgen = [
+    "pyo3-stub-gen",
+    "symbolica/python_stubgen",
+    "spynso3/python_stubgen",
+    "idenso/python_stubgen",
+    "vakint/python_stubgen",
+    "example_extension/python_stubgen",
+]
+
+[dependencies]
+example_extension = { path = "example_extension" }
+idenso = { version = "0.2.3", features = ["bincode", "python"] }
+symbolica = { version = "0.20", features = ["python_export"] }
+pyo3 = "0.27"
+pyo3-stub-gen = { version = "0.16", optional = true, default-features = false, features = [
+    "numpy",
+] }
+spynso3 = { version = "0.1" }
+vakint = { git = "https://github.com/alphal00p/vakint", rev = "86092e16d5db64aef9d4a7aade69ccd945703dc7", features = [
+    "symbolica_community_module",
+] }
+
+[patch.crates-io]
+spynso3 = { git = "https://github.com/alphal00p/spenso", rev = "5f163d973e6ffb4ff03c476b21f7b27c9f24003e" }
+idenso = { git = "https://github.com/alphal00p/spenso", rev = "5f163d973e6ffb4ff03c476b21f7b27c9f24003e" }
+spenso = { git = "https://github.com/alphal00p/spenso", rev = "5f163d973e6ffb4ff03c476b21f7b27c9f24003e" }
+spenso-hep-lib = { git = "https://github.com/alphal00p/spenso", rev = "5f163d973e6ffb4ff03c476b21f7b27c9f24003e" }
+#pyo3-stub-gen = { git = "https://github.com/Jij-Inc/pyo3-stub-gen", rev = "b13f213a748ee09bf22073e0e4d82cb09d797a5c", optional = true, default-features = false, features = [
+#    "numpy",
+#] }
+
+
+[build-dependencies]
+pyo3-build-config = "*"
