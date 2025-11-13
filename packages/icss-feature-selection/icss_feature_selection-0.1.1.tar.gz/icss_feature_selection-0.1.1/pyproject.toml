@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "icss-feature-selection"
+version = "0.1.1"
+authors = [
+    { name="Your Name", email="your.email@example.com" },
+]
+description = "A scikit-learn compatible feature selector using the Interval Chi-Square Score (ICSS) algorithm."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file="LICENSE" }
+keywords = ["feature selection", "scikit-learn", "chi-square", "interval data", "machine learning"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+
+# Add dependencies here
+dependencies = [
+    "numpy",
+    "scikit-learn"
+]
+
+[project.urls]
+Homepage = "https://github.com/YOUR_USERNAME/icss-feature-selection"
+Issues = "https://github.com/YOUR_USERNAME/icss-feature-selection/issues"
