@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "nuitka", "toml"]
+build-backend = "setuptools.build_meta"
+# build-backend = "nuitka.distutils.Build"
+
+[project]
+name = "qumind"
+version = "0.0.1"
+description = "Add your description here"
+authors = [
+    { name = "Yaqiang Sun", email = "sunyaking@163.com" },
+]
+license = {text = "GPL-3.0"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qumind*"]  # match qubitscope and qubitscope.*
+exclude = ["tests", "tests.*", "tmp", "tmp.*"]
+
+[tool.setuptools]
+include-package-data = true
