@@ -1,0 +1,63 @@
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[project]
+name = "scope-classifier"
+version = "0.3.1"
+description = "A scope classification library around your prompts"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Luigi Procopio", email = "luigi@principled-intelligence.com" },
+    { name = "Edoardo Barba", email = "edoardo@principled-intelligence.com" },
+]
+keywords = []
+classifiers = []
+dependencies = [
+    "pydantic>=2.0.0",
+    "typer>=0.12.3",
+    "requests",
+    "aiohttp",
+]
+
+[project.license]
+text = "Apache-2.0"
+
+[project.scripts]
+scope-classifier = "scope_classifier.cli.main:app"
+
+[project.optional-dependencies]
+hf = [
+    "transformers>=4.47.0,<5.0.0",
+    "accelerate>=1.11.0",
+]
+vllm = [
+    "transformers>=4.47.0,<5.0.0",
+    "vllm>=0.11.0",
+]
+serve = [
+    "scope-classifier[serve]",
+    "fastapi[standard]>=0.119.1",
+    "uvicorn>=0.29.0",
+    "vllm>=0.11.0",
+]
+
+[dependency-groups]
+dev = [
+    "ty==0.0.1a23",
+    "ipykernel",
+]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "src/scope_classifier",
+]
