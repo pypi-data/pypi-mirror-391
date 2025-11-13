@@ -1,0 +1,516 @@
+Metadata-Version: 2.4
+Name: fcs-order
+Version: 4.0.0
+Summary: Extract 2nd-, 3rd-, and 4th-order force constants using arbitrary machine-learning potentials; compatible with the original thirdorder and fourthorder sow and reap commands
+License: Apache License
+        Version 2.0, January 2004
+        http://www.apache.org/licenses/
+        
+        TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+        1. Definitions.
+        
+        "License" shall mean the terms and conditions for use, reproduction,
+        and distribution as defined by Sections 1 through 9 of this document.
+        
+        "Licensor" shall mean the copyright owner or entity authorized by
+        the copyright owner that is granting the License.
+        
+        "Legal Entity" shall mean the union of the acting entity and all
+        other entities that control, are controlled by, or are under common
+        control with that entity. For the purposes of this definition,
+        "control" means (i) the power, direct or indirect, to cause the
+        direction or management of such entity, whether by contract or
+        otherwise, or (ii) ownership of fifty percent (50%) or more of the
+        outstanding shares, or (iii) beneficial ownership of such entity.
+        
+        "You" (or "Your") shall mean an individual or Legal Entity
+        exercising permissions granted by this License.
+        
+        "Source" form shall mean the preferred form for making modifications,
+        including but not limited to software source code, documentation
+        source, and configuration files.
+        
+        "Object" form shall mean any form resulting from mechanical
+        transformation or translation of a Source form, including but not
+        limited to compiled object code, generated documentation, and
+        conversions to other media types.
+        
+        "Work" shall mean the work of authorship, whether in Source or
+        Object form, made available under the License, as indicated by a
+        copyright notice that is included in or attached to the work
+        (an example is provided in the Appendix below).
+        
+        "Derivative Works" shall mean any work, whether in Source or Object
+        form, that is based on (or derived from) the Work and for which the
+        editorial revisions, annotations, elaborations, or other modifications
+        represent, as a whole, an original work of authorship. For the purposes
+        of this License, Derivative Works shall not include works that remain
+        separable from, or merely link (or bind by name) to the interfaces of,
+        the Work and Derivative Works thereof.
+        
+        "Contribution" shall mean any work of authorship, including
+        the original version of the Work and any modifications or additions
+        to that Work or Derivative Works thereof, that is intentionally
+        submitted to Licensor for inclusion in the Work by the copyright owner
+        or by an individual or Legal Entity authorized to submit on behalf of
+        the copyright owner. For the purposes of this definition, "submitted"
+        means any form of electronic, verbal, or written communication sent
+        to the Licensor or its representatives, including but not limited to
+        communication on electronic mailing lists, source code control systems,
+        and issue tracking systems that are managed by, or on behalf of, the
+        Licensor for the purpose of discussing and improving the Work, but
+        excluding communication that is conspicuously marked or otherwise
+        designated in writing by the copyright owner as "Not a Contribution."
+        
+        "Contributor" shall mean Licensor and any individual or Legal Entity
+        on behalf of whom a Contribution has been received by Licensor and
+        subsequently incorporated within the Work.
+        
+        2. Grant of Copyright License. Subject to the terms and conditions of
+        this License, each Contributor hereby grants to You a perpetual,
+        worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+        copyright license to reproduce, prepare Derivative Works of,
+        publicly display, publicly perform, sublicense, and distribute the
+        Work and such Derivative Works in Source or Object form.
+        
+        3. Grant of Patent License. Subject to the terms and conditions of
+        this License, each Contributor hereby grants to You a perpetual,
+        worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+        (except as stated in this section) patent license to make, have made,
+        use, offer to sell, sell, import, and otherwise transfer the Work,
+        where such license applies only to those patent claims licensable
+        by such Contributor that are necessarily infringed by their
+        Contribution(s) alone or by combination of their Contribution(s)
+        with the Work to which such Contribution(s) was submitted. If You
+        institute patent litigation against any entity (including a
+        cross-claim or counterclaim in a lawsuit) alleging that the Work
+        or a Contribution incorporated within the Work constitutes direct
+        or contributory patent infringement, then any patent licenses
+        granted to You under this License for that Work shall terminate
+        as of the date such litigation is filed.
+        
+        4. Redistribution. You may reproduce and distribute copies of the
+        Work or Derivative Works thereof in any medium, with or without
+        modifications, and in Source or Object form, provided that You
+        meet the following conditions:
+        
+        (a) You must give any other recipients of the Work or
+        Derivative Works a copy of this License; and
+        
+        (b) You must cause any modified files to carry prominent notices
+        stating that You changed the files; and
+        
+        (c) You must retain, in the Source form of any Derivative Works
+        that You distribute, all copyright, patent, trademark, and
+        attribution notices from the Source form of the Work,
+        excluding those notices that do not pertain to any part of
+        the Derivative Works; and
+        
+        (d) If the Work includes a "NOTICE" text file as part of its
+        distribution, then any Derivative Works that You distribute must
+        include a readable copy of the attribution notices contained
+        within such NOTICE file, excluding those notices that do not
+        pertain to any part of the Derivative Works, in at least one
+        of the following places: within a NOTICE text file distributed
+        as part of the Derivative Works; within the Source form or
+        documentation, if provided along with the Derivative Works; or,
+        within a display generated by the Derivative Works, if and
+        wherever such third-party notices normally appear. The contents
+        of the NOTICE file are for informational purposes only and
+        do not modify the License. You may add Your own attribution
+        notices within Derivative Works that You distribute, alongside
+        or as an addendum to the NOTICE text from the Work, provided
+        that such additional attribution notices cannot be construed
+        as modifying the License.
+        
+        You may add Your own copyright statement to Your modifications and
+        may provide additional or different license terms and conditions
+        for use, reproduction, or distribution of Your modifications, or
+        for any such Derivative Works as a whole, provided Your use,
+        reproduction, and distribution of the Work otherwise complies with
+        the conditions stated in this License.
+        
+        5. Submission of Contributions. Unless You explicitly state otherwise,
+        any Contribution intentionally submitted for inclusion in the Work
+        by You to the Licensor shall be under the terms and conditions of
+        this License, without any additional terms or conditions.
+        Notwithstanding the above, nothing herein shall supersede or modify
+        the terms of any separate license agreement you may have executed
+        with Licensor regarding such Contributions.
+        
+        6. Trademarks. This License does not grant permission to use the trade
+        names, trademarks, service marks, or product names of the Licensor,
+        except as required for reasonable and customary use in describing the
+        origin of the Work and reproducing the content of the NOTICE file.
+        
+        7. Disclaimer of Warranty. Unless required by applicable law or
+        agreed to in writing, Licensor provides the Work (and each
+        Contributor provides its Contributions) on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+        implied, including, without limitation, any warranties or conditions
+        of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+        PARTICULAR PURPOSE. You are solely responsible for determining the
+        appropriateness of using or redistributing the Work and assume any
+        risks associated with Your exercise of permissions under this License.
+        
+        8. Limitation of Liability. In no event and under no legal theory,
+        whether in tort (including negligence), contract, or otherwise,
+        unless required by applicable law (such as deliberate and grossly
+        negligent acts) or agreed to in writing, shall any Contributor be
+        liable to You for damages, including any direct, indirect, special,
+        incidental, or consequential damages of any character arising as a
+        result of this License or out of the use or inability to use the
+        Work (including but not limited to damages for loss of goodwill,
+        work stoppage, computer failure or malfunction, or any and all
+        other commercial damages or losses), even if such Contributor
+        has been advised of the possibility of such damages.
+        
+        9. Accepting Warranty or Additional Liability. While redistributing
+        the Work or Derivative Works thereof, You may choose to offer,
+        and charge a fee for, acceptance of support, warranty, indemnity,
+        or other liability obligations and/or rights consistent with this
+        License. However, in accepting such obligations, You may act only
+        on Your own behalf and on Your sole responsibility, not on behalf
+        of any other Contributor, and only if You agree to indemnify,
+        defend, and hold each Contributor harmless for any liability
+        incurred by, or claims asserted against, such Contributor by reason
+        of your accepting any such warranty or additional liability.
+        
+        END OF TERMS AND CONDITIONS
+        
+        APPENDIX: How to apply the Apache License to your work.
+        
+        To apply the Apache License to your work, attach the following
+        boilerplate notice, with the fields enclosed by brackets "[]"
+        replaced with your own identifying information. (Don't include
+        the brackets!)  The text should be enclosed in the appropriate
+        comment syntax for the file format. We also recommend that a
+        file or class name and description of purpose be included on the
+        same "printed page" as the copyright notice for easier
+        identification within third-party archives.
+        
+        Copyright 2025 gtiders
+        
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        
+            http://www.apache.org/licenses/LICENSE-2.0
+        
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        
+Requires-Python: <3.14,>=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ase
+Requires-Dist: matplotlib
+Requires-Dist: numba
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: sparse
+Requires-Dist: spglib
+Requires-Dist: typer
+Provides-Extra: calorine
+Requires-Dist: calorine; extra == "calorine"
+Provides-Extra: deepmd
+Requires-Dist: deepmd-kit; extra == "deepmd"
+Provides-Extra: hiphive
+Requires-Dist: hiphive; extra == "hiphive"
+Provides-Extra: mlp
+Requires-Dist: pypolymlp; extra == "mlp"
+Provides-Extra: tace
+Requires-Dist: tace; extra == "tace"
+Provides-Extra: all
+Requires-Dist: calorine; extra == "all"
+Requires-Dist: deepmd-kit; extra == "all"
+Requires-Dist: hiphive; extra == "all"
+Requires-Dist: pypolymlp; extra == "all"
+Requires-Dist: tace; extra == "all"
+Dynamic: license-file
+
+# [中文文档 | Chinese README](README_zh.md)
+
+# fcs-order (English Guide)
+
+Tip: If this project helps you, please star the repo. Please read this README first; if you still have issues or suggestions, open an Issue with reproduction steps and environment info.
+
+Note: CLI help evolves with versions. Use `fcs-order --help` and `fcs-order <subcommand> --help` for the most accurate, up‑to‑date options and examples.
+
+Note: The `sow` and `reap` commands are compatible with traditional `thirdorder`/`fourthorder` tools; argument names and I/O conventions are slightly adjusted for a unified interface.
+
+Force-constants and SCPH toolkit built on ASE and Typer. Compute 2nd/3rd/4th-order interatomic force constants and run SCPH workflows using various ML potentials (NEP, DeepMD, PolyMLP, MTP, TACE) or Hiphive.
+
+Repo: https://github.com/gtiders/fcs-order
+
+---
+
+## Features
+- 2nd-order force constants (compatible with Phonopy `FORCE_CONSTANTS`)
+- 3rd/4th-order force constants (ShengBTE/text formats)
+- SCPH (self-consistent phonon) workflows
+- Multiple backends: NEP, DeepMD, PolyMLP, MTP, TACE, and Hiphive
+- VASP-oriented sow (generate displacements) and reap (reconstruct IFCs)
+- In principle, sow/reap can work with any ab initio code supported by ASE by adjusting parameters and I/O (file format, file ordering, paths, etc.)
+
+---
+
+## Installation
+- Python: >= 3.9, < 3.14
+- Optional backends (install as needed):
+  - NEP: `pip install calorine`
+  - DeepMD: `pip install deepmd-kit`
+  - PolyMLP: `pip install pypolymlp`
+  - Hiphive: `pip install hiphive`
+  - TACE: `pip install tace`
+
+Recommended (PyPI):
+```bash
+pip install fcs-order
+```
+From GitHub:
+```bash
+pip install git+https://github.com/gtiders/fcs-order.git
+```
+
+Notes:
+- To compute 2nd-order force constants (Phonopy-compatible `FORCE_CONSTANTS_2ND`), install Phonopy: `pip install phonopy`.
+- To run SCPH workflows, install Phonopy and Hiphive: `pip install phonopy hiphive`.
+
+---
+
+## I/O and conventions
+- Structures: any ASE-readable format (POSCAR/CONTCAR, CIF, XYZ/extxyz, …). Default: `POSCAR`.
+- Supercell specification:
+  - mlp2/scph: 3 integers (diagonal) or 9 integers (3×3 matrix) as a positional argument list.
+  - sow/reap, mlp3, mlp4: three positional integers `na nb nc`.
+- Cutoff `--cutoff/-c`:
+  - Negative values: by nearest-neighbor shells.
+  - Positive values: by real-space distance in nm.
+
+---
+
+## Quick start (typical workflow)
+1) Generate displaced and undisplaced structures with sow:
+```bash
+# Example for 3rd order (order=3), 2×2×2 supercell; negative cutoff means NN shells; VASP output
+fcs-order sow 2 2 2 -c -6 -r 3 -p POSCAR -f poscar -o disps
+# Output: disps/3RD.SPOSCAR and disps/3RD.POSCAR.0001 ...
+```
+2) Compute forces with your chosen backend and produce ASE-readable force files (vasprun.xml/OUTCAR, extxyz, …). Keep the file order identical to sow’s displaced structure order.
+
+3) Reconstruct 3rd/4th-order IFCs with reap:
+```bash
+# 3rd order (order=3). The file sequence MUST match the displaced structure sequence
+fcs-order reap 2 2 2 -c -6 -r 3 -p POSCAR disps/vasprun_*.xml
+# Output: FORCE_CONSTANTS_3RD
+```
+4) For 2nd-order IFCs, use mlp2 to write Phonopy-compatible `FORCE_CONSTANTS_2ND`.
+
+5) For SCPH, supply initial 2nd-order IFCs (optional) or have the backend evaluate within iterations, then run `scph <backend>`.
+
+---
+
+## sow: generate displaced structures
+Command:
+```
+fcs-order sow na nb nc --cutoff <CUTOFF> [--order 3|4] [--poscar POSCAR] \
+  [--out-format poscar|vasp|cif|xyz] [--out-dir DIR] [--name-template ...] [--undisplaced-name ...]
+```
+- Key options:
+  - `-r/--order`: 3 (third order) or 4 (fourth order), default 3.
+  - `-c/--cutoff`: negative=shells; positive=radius (nm).
+  - `-p/--poscar`: input structure; default POSCAR.
+  - `-f/--out-format`: output format; default poscar.
+  - `-o/--out-dir`: output directory.
+  - Templates: placeholders `{order}`, `{phase}`, `{index}`, `{index_padded}`, `{width}`, `{ext}` for `--name-template` / `--undisplaced-name`.
+- VASP-style outputs:
+  - Undisplaced: `3RD.SPOSCAR` or `4TH.SPOSCAR`
+  - Displaced: `3RD.POSCAR.0001`, `4TH.POSCAR.0001`, …
+
+---
+
+## reap: reconstruct IFCs from force files
+Command:
+```
+fcs-order reap na nb nc --cutoff <CUTOFF> [--order 3|4] [--poscar POSCAR] VASP_RUN_FILES...
+```
+- Force files must be ASE-readable (vasprun.xml/OUTCAR, extxyz, etc.).
+- Number of files must match required runs:
+  - 3rd order: `4 * N_irred`
+  - 4th order: `8 * N_irred`
+- Output: `FORCE_CONSTANTS_3RD` or `FORCE_CONSTANTS_4TH`
+
+---
+
+## mlp2: 2nd-order IFCs (Phonopy-compatible)
+Command group: `fcs-order mlp2 <backend>`, where `<backend>` ∈ {`nep`, `dp`, `ploymp`, `mtp2`, `tace`, `hiphive`}
+
+- Common parameters:
+  - `supercell_matrix`: 3 or 9 integers (positional).
+  - `--poscar`: primitive cell; default POSCAR.
+  - `--outfile/-o`: output filename; default `FORCE_CONSTANTS_2ND`.
+
+Examples:
+- NEP (GPU optional):
+```bash
+fcs-order mlp2 nep 2 2 2 -p nep.txt -g -o FORCE_CONSTANTS_2ND
+```
+- DP:
+```bash
+fcs-order mlp2 dp 2 2 2 -p model.pb -o FORCE_CONSTANTS_2ND
+```
+- PolyMLP:
+```bash
+fcs-order mlp2 ploymp 2 2 2 -p polymlp.pot -o FORCE_CONSTANTS_2ND
+```
+- MTP (subcommand name is `mtp2`; requires external `mlp` executable):
+```bash
+fcs-order mlp2 mtp2 2 2 2 -p pot.mtp --mtp-exe mlp -o FORCE_CONSTANTS_2ND
+```
+- TACE (supports `--device/--dtype/--level`):
+```bash
+fcs-order mlp2 tace 2 2 2 -m model.ckpt -o FORCE_CONSTANTS_2ND --device cuda --dtype float64 --level 0
+```
+- Hiphive (write to Phonopy text):
+```bash
+fcs-order mlp2 hiphive 2 2 2 -p potential.fcp
+```
+
+---
+
+## mlp3: 3rd-order IFCs
+Command group: `fcs-order mlp3 <backend>`, where `<backend>` ∈ {`nep`, `dp`, `ploymp`, `mtp2`, `tace`, `hiphive`}
+
+- Common parameters: `na nb nc`, `--cutoff/-c`, `--poscar` (default POSCAR), `--is-write`.
+
+Examples:
+- NEP:
+```bash
+fcs-order mlp3 nep 2 2 2 -c -6 -p nep.txt --is-write --is-gpu
+```
+- DP:
+```bash
+fcs-order mlp3 dp 2 2 2 -c -6 -p model.pb
+```
+- PolyMLP:
+```bash
+fcs-order mlp3 ploymp 2 2 2 -c -6 -p polymlp.pot
+```
+- MTP (subcommand name `mtp2`; requires `mlp`):
+```bash
+fcs-order mlp3 mtp2 2 2 2 -c -6 -p pot.mtp --mtp-exe mlp --is-write
+```
+- TACE:
+```bash
+fcs-order mlp3 tace 2 2 2 -c -6 -m model.ckpt --device cuda --dtype float32 --level 0
+```
+- Hiphive (export directly to ShengBTE format from fcp):
+```bash
+fcs-order mlp3 hiphive 2 2 2 -p potential.fcp
+```
+Output: `FORCE_CONSTANTS_3RD`
+
+---
+
+## mlp4: 4th-order IFCs
+Command group: `fcs-order mlp4 <backend>`, where `<backend>` ∈ {`nep`, `dp`, `ploymp`, `mtp2`, `tace`, `hiphive`}
+
+- Common parameters: `na nb nc`, `--cutoff/-c`, `--poscar` (default POSCAR), `--is-write`.
+
+Note: Despite algorithmic and implementation optimizations, 4th-order calculations may still be memory intensive; prefer high-memory environments.
+
+Examples:
+- NEP:
+```bash
+fcs-order mlp4 nep 2 2 2 -c -6 -p nep.txt --is-gpu
+```
+- DP:
+```bash
+fcs-order mlp4 dp 2 2 2 -c -6 -p model.pb
+```
+- PolyMLP:
+```bash
+fcs-order mlp4 ploymp 2 2 2 -c -6 -p polymlp.pot
+```
+- MTP (subcommand `mtp2`):
+```bash
+fcs-order mlp4 mtp2 2 2 2 -c -6 -p pot.mtp --mtp-exe mlp --is-write
+```
+- TACE (supports `--device/--dtype/--level`):
+```bash
+fcs-order mlp4 tace 2 2 2 -c -6 -m model.ckpt --device cuda --dtype float32 --level 0
+```
+- Hiphive (use fcp and supercell to obtain force constants):
+```bash
+fcs-order mlp4 hiphive 2 2 2 -c -6 -p potential.fcp
+```
+Output: `FORCE_CONSTANTS_4TH`
+
+---
+
+## scph: self-consistent phonons (SCPH)
+Command group: `fcs-order scph <backend>`, where `<backend>` ∈ {`nep`, `dp`, `ploymp`, `mtp2`, `tace`, `hiphive`}
+
+- Common parameters:
+  - `supercell_matrix`: 3 or 9 integers (positional).
+  - `--poscar`: primitive cell; default POSCAR.
+  - `--temperatures/-T`: e.g., "100,200,300".
+  - `--cutoff/-c`: cluster-space cutoff radius.
+  - `--alpha/-a`: mixing parameter; default 0.2.
+  - `--n-iterations/-i`: iterations; default 100.
+  - `--n-structures/-n`: structures per iteration; default 50.
+  - `--fcs-2nd/-F`: initial 2nd-order IFCs (optional).
+  - `--is-qm/-q`: use quantum statistics (default True).
+  - `--imag-freq-factor/-I`: factor for handling imaginary frequencies (default 1.0).
+
+Note: SCPH in this project integrates and calls capabilities from Hiphive. See the Hiphive docs: https://hiphive.materialsmodeling.org/
+
+Examples:
+- NEP (GPU optional):
+```bash
+fcs-order scph nep 2 2 2 -T 100,200,300 -c 4.5 -p nep.txt --poscar POSCAR --is-gpu
+```
+- DP:
+```bash
+fcs-order scph dp 2 2 2 -T 100,200,300 -c 4.5 -p graph.pb --poscar POSCAR
+```
+- TACE (supports `--device/--dtype/--level`):
+```bash
+fcs-order scph tace 2 2 2 -T 300 -c 4.5 -m model.ckpt --device cuda --dtype float32 --level 0
+```
+- Hiphive:
+```bash
+fcs-order scph hiphive 2 2 2 -T 100,200,300 -c 4.5 -p model.fcp --poscar POSCAR
+```
+- PolyMLP (ploymp):
+```bash
+fcs-order scph ploymp 2 2 2 -T 100,200,300 -c 4.5 -p polymlp.pot --poscar POSCAR
+```
+- MTP (subcommand `mtp2`; requires `mlp`):
+```bash
+fcs-order scph mtp2 2 2 2 -T 100,200,300 -c 4.5 -p pot.mtp --poscar POSCAR --mtp-exe mlp
+```
+
+During the run, `scph_SPOSCAR` is written; forces/IFCs are evaluated iteratively with convergence analysis and outputs afterward.
+
+---
+
+## FAQ
+- What does the cutoff sign mean?
+  - Negative: by nearest-neighbor shells; Positive: real-space distance (nm).
+- File order for reap?
+  - The force files must follow the sow displaced-structure order; preserve numbering when generating outputs.
+- Why is the MTP subcommand named `mtp2`?
+  - In the current implementation the MTP subcommand is `mtp2` (used across mlp2/3/4 and scph groups); see examples above.
+- Hiphive notes?
+  - Requires a readable fcp file; supercell size should be no smaller than that used when training the fcp.
+
+---
+
+## License
+Apache-2.0. See `LICENSE`.
