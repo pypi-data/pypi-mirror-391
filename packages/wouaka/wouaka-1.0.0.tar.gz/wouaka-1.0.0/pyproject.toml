@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wouaka"
+version = "1.0.0"
+description = "SDK Python officiel pour l'API Wouaka - Scoring crédit et KYC pour l'Afrique de l'Ouest"
+readme = "README.md"
+authors = [
+    {name = "Wouaka SAS", email = "support@wouaka.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Topic :: Office/Business :: Financial",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["wouaka", "credit-scoring", "kyc", "verification", "africa", "uemoa", "fintech", "microfinance"]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.28.0",
+    "python-dateutil>=2.8.2",
+    "pydantic>=2.0.0",
+    "cryptography>=41.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+]
+
+[project.urls]
+Homepage = "https://wouaka.com/developers/sdks"
+Documentation = "https://docs.wouaka.com"
+Repository = "https://github.com/wouaka/wouaka-python-sdk"
+Issues = "https://github.com/wouaka/wouaka-python-sdk/issues"
+
+[tool.setuptools]
+packages = ["wouaka", "wouaka.modules"]
+
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=wouaka --cov-report=html --cov-report=term"
