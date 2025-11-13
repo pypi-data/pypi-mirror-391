@@ -1,0 +1,191 @@
+[project]
+name = "pyasstosrt"
+version = "1.5.0"
+description = "Convert ASS subtitle to SRT format"
+authors = [
+    { name = "GitBib", email = "me@bnff.website" },
+]
+requires-python = ">=3.9"
+readme = "README.md"
+keywords = [
+    "ASS subtitle",
+    "SRT",
+    "Convert",
+    "subtitle",
+    "subtitles",
+    "Advanced SubStation Alpha",
+    "SubRip",
+    "conversion",
+    "subtitle conversion",
+    "caption",
+    "captions",
+    "batch conversion",
+    "video",
+    "media",
+    "CLI",
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+
+[project.license]
+text = "Apache License, Version 2.0"
+
+[project.optional-dependencies]
+cli = [
+    "typer>=0.20.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/GitBib/pyasstosrt"
+Repository = "https://github.com/GitBib/pyasstosrt"
+Documentation = "https://gitbib.github.io/pyasstosrt/"
+
+[project.scripts]
+pyasstosrt = "pyasstosrt.batch:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0.0,<8.0.0 ; python_version < '3.12'",
+    "pytest>=9.0.1 ; python_version >= '3.12'",
+    "pytest-cov>=4.1.0,<5.0.0 ; python_version < '3.12'",
+    "pytest-cov>=7.0.0 ; python_version >= '3.12'",
+    "ruff>=0.14.4",
+    "Sphinx>=8.0.2 ; python_version >= '3.12' and python_version < '3.14'",
+    "sphinx-immaterial>=0.13.8 ; python_version >= '3.12' and python_version < '3.14'",
+    "tomli>=2.3.0",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "pyasstosrt",
+]
+exclude = [
+    "tests",
+    "tests/*",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "pyasstosrt",
+]
+exclude = [
+    "tests",
+    "tests/*",
+]
+
+[tool.pdm.build]
+includes = [
+    "pyasstosrt",
+]
+excludes = [
+    "tests",
+    "tests/*",
+]
+
+[tool.black]
+line-length = 120
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pylint.MESSAGE_CONTROL]
+disable = [
+    "cyclic-import",
+    "duplicate-code",
+    "line-too-long",
+    "missing-class-docstring",
+    "missing-module-docstring",
+    "super-init-not-called",
+    "too-few-public-methods",
+    "too-many-ancestors",
+    "too-many-arguments",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-lines",
+    "too-many-locals",
+    "too-many-return-statements",
+    "ungrouped-imports",
+    "unused-import",
+]
+enable = "useless-suppression"
+
+[tool.pylint.REPORTS]
+reports = "no"
+
+[tool.pylint.FORMAT]
+max-line-length = "120"
+
+[tool.pylint.VARIABLES]
+ignored-argument-names = "args|kwargs|_|__"
+
+[tool.pylint.BASIC]
+good-names = "_,__,i,e,k,v,fn,get,post,put,patch,delete,route,asgi,websocket,Dependency,Body,Parameter,HandlerType,ScopeType,Auth,User"
+no-docstring-rgx = "(__.*__|main|test.*|.*test|.*Test|^_.*)$"
+
+[tool.pylint.LOGGING]
+logging-modules = [
+    "logging",
+    "picologging",
+]
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+]
+
+[tool.pycln]
+all = true
+
+[tool.pyright]
+include = [
+    "pyasstosrt",
+    "tests",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "B",
+    "I",
+]
+ignore = [
+    "B008",
+]
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "pyasstosrt",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
