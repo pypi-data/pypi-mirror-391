@@ -1,0 +1,21 @@
+Testing INKEY$
+==============
+
+Test 1: INKEY$ in non-interactive mode
+INKEY$ returns empty string (no input): PASS
+
+Test 2: Multiple INKEY$ calls
+Multiple calls return empty: PASS
+
+Test 3: INKEY$ polling loop
+Polling loop returns empty (no keys): PASS
+
+Test 4: INKEY$ returns string type
+String type confirmed: PASS
+
+INKEY$ tests complete!
+
+Note: INKEY$ is designed for interactive use.
+In automated tests (non-TTY), it returns empty string.
+For interactive testing, use a program that waits for keypresses.
+
