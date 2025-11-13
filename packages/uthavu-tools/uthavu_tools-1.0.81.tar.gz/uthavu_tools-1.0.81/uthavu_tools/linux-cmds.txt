@@ -1,0 +1,17 @@
+To safely delete the kleer_front folder (and everything inside it) from your Debian VPS, run:
+
+rm -rf ~/kleer_front
+
+
+✅ Explanation
+
+rm → remove
+
+-r → recursive (delete subfolders and files)
+
+-f → force (no confirmation prompts)
+
+~ → your home directory (so ~/kleer_front points to /home/debian/kleer_front)
+
+---------------------------------------------------------------------------------------------------
+sudo nginx -t && sudo systemctl reload nginx

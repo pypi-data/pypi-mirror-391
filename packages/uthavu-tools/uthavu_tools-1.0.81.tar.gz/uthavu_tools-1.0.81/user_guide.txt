@@ -1,0 +1,150 @@
+#todo
+- group id options
+- add dockerfile and gitlab-cicd before/while create repo - done
+- sudo nginx -t && sudo systemctl reload nginx - done
+- sudo certbot --nginx -d uthavu.com -d www.uthavu.com - done
+#todo
+
+- Point DNS (A records) for: `2fycleaningsolution.com → 72.60.97.244	` add for bto uthavu.com and www.uthavu.com
+- execute [usnginx]
+- install our uthavu tools --> pip install uthavu-tools==1.0.23
+	-> pip show -f uthavu-tools
+- copy/move your source code to local system.
+- go inside this folder
+- execute [createrepo] (will do update the variables for cicd also) 
+- execute [ushttps] --> may be fater 30 mins, will take some time to update the dns to our new server 
+- need to open the port in hostiner
+- http://72.60.97.244:9003/ - should work
+- https://test9.uthavu.com/ - should work
+
+
+5. Test:
+
+   * `https://2fycleaningsolution.com`
+   * `https://uthavu.com`
+   * `https://mithranassociates.com`
+
+
+output of ushttps:
+-------------------
+
+Till Success:
+-------------
+Certbot failed to authenticate some domains (authenticator: nginx). The Certificate Authority reported these problems:
+  Domain: uthavu.com
+  Type:   connection
+  Detail: During secondary validation: 162.215.226.4: Fetching http://: Invalid empty host in redirect target
+
+  Domain: www.uthavu.com
+  Type:   connection
+  Detail: During secondary validation: 162.215.226.4: Fetching http://: Invalid empty host in redirect target
+
+Hint: The Certificate Authority failed to verify the temporary nginx configuration changes made by Certbot. Ensure the listed domains point to this nginx server and that it is accessible from the internet.
+
+Some challenges have failed.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
+
+
+Another Issue:
+--------------
+root@srv1014288:/etc/nginx/sites-available# sudo certbot --nginx -d test5.uthavu.com -d www.test5.uthavu.com
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for test5.uthavu.com and www.test5.uthavu.com
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/test5.uthavu.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/test5.uthavu.com/privkey.pem
+This certificate expires on 2025-12-26.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Could not install certificate
+
+NEXT STEPS:
+- The certificate was saved, but could not be installed (installer: nginx). After fixing the error shown below, try installing it again by running:
+  certbot install --cert-name test5.uthavu.com
+
+Could not automatically find a matching server block for test5.uthavu.com. Set the `server_name` directive to use the Nginx installer.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
+
+After Success:
+-------------
+
+
+root@srv1014288:/etc/nginx/sites-available# sudo certbot -d "*.uthavu.com" -d uthavu.com --manual --preferred-challenges dns certonly
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for *.uthavu.com and uthavu.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please deploy a DNS TXT record under the name:
+
+_acme-challenge.uthavu.com.
+
+with the following value:
+
+MGtOfdhCrPL1QasOj9M91B51D3kAC9DWX92zy3OuQfg
+
+Before continuing, verify the TXT record has been deployed. Depending on the DNS
+provider, this may take some time, from a few seconds to multiple minutes. You can
+check if it has finished deploying with aid of online tools, such as the Google
+Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.uthavu.com.
+Look for one or more bolded line(s) below the line ';ANSWER'. It should show the
+value(s) you've just added.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+
+------------next-one---------------
+
+root@srv1014288:/etc/nginx/sites-available# sudo certbot -d "*.uthavu.com" -d uthavu.com --manual --preferred-challenges dns certonly
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for *.uthavu.com and uthavu.com
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please deploy a DNS TXT record under the name:
+
+_acme-challenge.uthavu.com.
+
+with the following value:
+
+NAyxTUYlBAGWVa-Y54wjL1jN8dlCn7U7jzRkh5qnNLg
+
+Before continuing, verify the TXT record has been deployed. Depending on the DNS
+provider, this may take some time, from a few seconds to multiple minutes. You can
+check if it has finished deploying with aid of online tools, such as the Google
+Admin Toolbox: https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.uthavu.com.
+Look for one or more bolded line(s) below the line ';ANSWER'. It should show the
+value(s) you've just added.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Press Enter to Continue
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/uthavu.com-0001/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/uthavu.com-0001/privkey.pem
+This certificate expires on 2025-12-26.
+These files will be updated when the certificate renews.
+
+NEXT STEPS:
+- This certificate will not be renewed automatically. Autorenewal of --manual certificates requires the use of an authentication hook script (--manual-auth-hook) but one was not provided. To renew this certificate, repeat this same certbot command before the certificate's expiry date.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+If you like Certbot, please consider supporting our work by:
+ * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+ * Donating to EFF:                    https://eff.org/donate-le
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+⚠️ Important note about renewal
+
+Since you used manual DNS challenge, Certbot cannot auto-renew.
+
+Every ~90 days, you’ll need to run the same command again and update the TXT record.
+
+👉 If your DNS provider supports an API (like Cloudflare, AWS Route53, etc.), you can automate DNS validation with --manual-auth-hook or certbot-dns-* plugins. That way, renewals are automatic.
+
+as of now:
+step 1: checkin
+step 2: merge
+step 3: aud --be or your app deploy command

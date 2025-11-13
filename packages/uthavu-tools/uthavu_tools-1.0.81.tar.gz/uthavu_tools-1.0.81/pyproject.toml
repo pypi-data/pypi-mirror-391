@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+#[tool.setuptools_scm]
+#version_scheme = "v-release"
+#local_scheme = "no-local-version"
+
+[project]
+name = "uthavu-tools"
+version = "1.0.81"   
+#dynamic = ["version"]   # <-- use setuptools-scm for version
+description = "Collection of CLI utilities from Uthavu Software"
+authors = [
+    { name = "Uthavu Software - The People’s Solution", email = "jawahar.s@uthavu.com" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+
+dependencies = [
+    "GitPython",  # Required for git_tools to function
+]
+
+[project.scripts]
+check-branch = "uthavu_tools.git_tools.checkbranch:main"
+clean-branch = "uthavu_tools.git_tools.cleanbranches:main"
+reset-branch = "uthavu_tools.git_tools.reset_branch:main"
+#list-repos = "uthavu_tools.git_tools.list_repos:main"
+list-repos = "uthavu_tools.git_tools.list_repos_with_branch:main"
+repo-summary = "uthavu_tools.git_tools.repo_summary:main"
+checkout-latest = "uthavu_tools.git_tools.auto_checkout_latest_branch:main"
+checkout-latest-remote = "uthavu_tools.git_tools.auto_checkout_latest_branch_remote:main"
+cleanup = "uthavu_tools.git_tools.cleanup:main"
+release = "uthavu_tools.git_tools.release:main"
+checkin = "uthavu_tools.git_tools.checkin:main"
+ut = "uthavu_tools.listtools:main"
+us-init = "uthavu_tools.git_tools.createrepo:main"
+usnginx = "uthavu_tools.debian_server.setup_nginx_config:main"
+usnginx-uthavu = "uthavu_tools.debian_server.setup_nginx_config_uthavu:main"
+ushttps = "uthavu_tools.debian_server.setup_nginx_https:main"
+uss = "uthavu_tools.debian_server.usserver:main"
+delete-project = "uthavu_tools.git_tools.delete_gitlab_project:main"
+merge = "uthavu_tools.git_tools.merge_dev_to_main:main"
+deploy = "uthavu_tools.git_tools.merge_dev_to_main:main"
+create-repo = "uthavu_tools.git_tools.just_create_repo:main"
+
+# deployment
+aud = "uthavu_tools.deployment.aud:main"
+#kfd = "uthavu_tools.debian_server.kleer.kleer_front_deploy:main"
+kfd = "uthavu_tools.debian_server.kleer.kleer_front_quick_deploy:main"
+kfc = "uthavu_tools.debian_server.kleer.switch_nginx_route:main"
+
+
+#kleer
+bya = "uthavu_tools.kleer.bya:main"
+
+
+#hotkeys
+vsc = "uthavu_tools.vs_hotkey:main"
+
+
+
+[tool.setuptools.package-data]
+"uthavu_tools.git_tools" = ["template_files/**", "template_files/**/.*"]

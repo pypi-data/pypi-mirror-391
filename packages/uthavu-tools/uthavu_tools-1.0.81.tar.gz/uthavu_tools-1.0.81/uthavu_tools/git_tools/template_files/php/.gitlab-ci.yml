@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  APP_NAME: [app_name]   # 👈 safe container name - eg: uthavu-site
+  APP_PORT: [app_port]         # 👈 make sure it’s different from your other apps - eg: 8081
+
+build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  image: debian:stable-slim   # 👈 instead of alpine:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+  script:
+    - ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "
+        docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
+        docker pull $CI_REGISTRY_IMAGE:latest &&
+        docker stop $APP_NAME || true &&
+        docker rm $APP_NAME || true &&
+        docker run -d --restart always --name $APP_NAME -p $APP_PORT:80 $CI_REGISTRY_IMAGE:latest
+      "
+  only:
+    - main

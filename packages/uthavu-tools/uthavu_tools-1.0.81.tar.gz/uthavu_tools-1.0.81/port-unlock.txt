@@ -1,0 +1,85 @@
+Thanks for sharing the `docker ps` output 🙌 That confirms your containers are up and mapped to host ports.
+
+You have these published:
+
+* `weddingdecorationramnad` → **:2021 → 80/tcp**
+* `honestmoneyexchanger` → **:2020 → 80/tcp**
+* `yuvanwebtech` → **:222 → 80/tcp**
+* `uthavu-site` → **:8081 → 80/tcp**
+* `2fcleaningsolutions-site` → **:8080 → 80/tcp**
+
+So if everything was open, you should be able to load them from a browser like:
+
+* `http://<your-server-ip>:2021`
+* `http://<your-server-ip>:2020`
+* `http://<your-server-ip>:222`
+* `http://<your-server-ip>:8081`
+* `http://<your-server-ip>:8080`
+
+---
+
+### Why they don’t load?
+
+From the earlier screenshot, I see **UFW was blocking traffic (port 22 was blocked, same applies for 2020/2021/8080/8081/222 too)**.
+
+Right now, the firewall is most likely blocking all incoming ports except maybe 80/443.
+
+---
+
+### 🔧 Fix Steps
+
+1. **Allow your custom ports in UFW**
+   Run these commands on the Debian server:
+
+   ```bash
+   sudo ufw allow 2020/tcp
+   sudo ufw allow 2021/tcp
+   sudo ufw allow 222/tcp
+   sudo ufw allow 8080/tcp
+   sudo ufw allow 8081/tcp
+   ```
+
+   If you also need HTTPS later:
+
+   ```bash
+   sudo ufw allow 443/tcp
+   ```
+
+2. **Reload UFW**
+
+   ```bash
+   sudo ufw reload
+   ```
+
+3. **Check rules**
+
+   ```bash
+   sudo ufw status verbose
+   ```
+
+   You should see:
+
+   ```
+   2020/tcp   ALLOW Anywhere
+   2021/tcp   ALLOW Anywhere
+   222/tcp    ALLOW Anywhere
+   8080/tcp   ALLOW Anywhere
+   8081/tcp   ALLOW Anywhere
+   ```
+
+4. **Test access**
+   Open a browser and try:
+
+   * `http://72.60.97.244:2021`
+   * `http://72.60.97.244:2020`
+   * `http://72.60.97.244:222`
+   * `http://72.60.97.244:8081`
+   * `http://72.60.97.244:8080`
+
+---
+
+⚠️ Alternative: If you don’t want to expose random high ports, we can set up **Nginx reverse proxy** to forward `https://yourdomain.com` → container ports. This way you only open **80/443** and secure them with SSL.
+
+---
+
+👉 Jawa, do you want me to guide you in **just opening the ports** so the sites are visible quickly, or go the **Nginx + domain + SSL** route (cleaner, production-ready)?

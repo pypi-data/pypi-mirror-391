@@ -1,0 +1,25 @@
+python -m build
+python -m twine upload dist/* -u __token__ -p pypi-AgEIcHlwaS5vcmcCJDhjZjIzMDUyLTYyYTItNDYyNy04ZjEwLTY3YzQ5NGFjYTc4OQACKlszLCIyOTUzNDA3Mi02ZWZkLTQ5ZTAtYTJlMi1lYWI5ZjJhYzY4ODMiXQAABiCQEOBO-DCY4fh30aowMLDFYmF0waW5pVWcvNNm0AtLS
+pip show -f uthavu-tools
+
+PS C:\Users\Jawahar> nslookup test.uthavu.com
+Server:  UnKnown
+Address:  fe80::a62a:95ff:fe2a:c1a4
+
+Non-authoritative answer:
+Name:    test.uthavu.com
+Address:  72.60.97.244
+
+PS C:\Users\Jawahar> nslookup www.test.uthavu.com
+Server:  UnKnown
+Address:  fe80::a62a:95ff:fe2a:c1a4
+
+*** UnKnown can't find www.test.uthavu.com: Non-existent domain
+PS C:\Users\Jawahar>
+
+
+.\publish.pyp
+pip install uthavu-tools==1.0.64   
+
+to install locally (its like run app in debug mode)
+pip install -e .

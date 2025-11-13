@@ -1,0 +1,57 @@
+stages:
+  - version
+  - build
+  - publish
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_CACHE_DIR: "1"
+
+# 🔖 Auto bump patch version and push new Git tag
+bump_version:
+  stage: version
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache git bash
+  script:
+    - "latest_tag=$(git describe --tags --abbrev=0 || echo v0.0.0)"
+    - "echo Latest tag: $latest_tag"
+    - base=${latest_tag#v}
+    - major=$(echo $base | cut -d. -f1)
+    - minor=$(echo $base | cut -d. -f2)
+    - patch=$(echo $base | cut -d. -f3)
+    - new_patch=$((patch+1))
+    - new_tag="v$major.$minor.$new_patch"
+    - echo "🔖 Bumping version to $new_tag"
+    - git config user.name "GitLab CI - jawahar"
+    - git config user.email "jawahar.s@uthavu.com"
+    - git tag $new_tag
+    - git push https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/uthavu-software/uthavu-products/uthavu-tools.git $new_tag
+  only:
+    - main   # Run bumping only on main branch commits-1
+
+# 📦 Build package
+build:
+  image: python:3.11
+  stage: build
+  script:
+    - pip install --upgrade build
+    - python -m build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 hour
+  only:
+    - tags   # Build only when a tag exists
+
+# 🚀 Publish to PyPI
+publish:
+  image: python:3.11
+  stage: publish
+  dependencies:
+    - build
+  script:
+    - pip install --upgrade twine
+    - python -m twine upload dist/* -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD"
+  only:
+    - tags   # Publish only for tags

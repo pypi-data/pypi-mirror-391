@@ -1,0 +1,28 @@
+import docker
+
+def docker_system_prune_all():
+    """Removes all stopped containers, all unused networks, all dangling images, and build cache."""
+    try:
+        client = docker.from_env()
+        print("Connected to Docker daemon.")
+        
+        # The 'prune_all=True' argument is similar to 'docker system prune -a'
+        # It removes all stopped containers, all unused networks, all images without at least one container associated to them, and all build cache.
+        print("Running system prune (removing stopped containers, dangling images, and build cache)...")
+        
+        report = client.containers.prune()
+        print(f"Pruned containers: {report.get('ContainersDeleted', [])}")
+        
+        report = client.images.prune(filters={'dangling': False})
+        print(f"Pruned images (untagged/unused): {report.get('ImagesDeleted', [])}")
+
+        report = client.volumes.prune()
+        print(f"Pruned volumes (unused/dangling): {report.get('VolumesDeleted', [])}")
+
+        print("✅ Docker system cleanup complete.")
+
+    except Exception as e:
+        print(f"❌ An error occurred: {e}")
+
+# Uncomment the line below to run the function (recommended):
+docker_system_prune_all()
