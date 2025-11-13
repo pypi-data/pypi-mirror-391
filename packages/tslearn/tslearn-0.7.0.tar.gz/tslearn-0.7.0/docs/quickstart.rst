@@ -1,0 +1,16 @@
+Quick-start guide
+=================
+
+For a list of functions and classes available in ``tslearn``, please have a
+look at our :doc:`API Reference <reference>`.
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    installation
+    gettingstarted
+    variablelength
+    backend
+    integration_other_software
+    contributing
