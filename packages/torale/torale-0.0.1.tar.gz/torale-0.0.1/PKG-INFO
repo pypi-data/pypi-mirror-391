@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: torale
+Version: 0.0.1
+Summary: Platform-agnostic background task manager for AI-powered automation
+Requires-Python: >=3.11
+Requires-Dist: alembic>=1.13.0
+Requires-Dist: anthropic>=0.34.0
+Requires-Dist: asyncpg>=0.29.0
+Requires-Dist: clerk-backend-api>=1.0.0
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: google-genai>=0.3.0
+Requires-Dist: grpcio>=1.76.0
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: novu-py>=1.3.0
+Requires-Dist: openai>=1.45.0
+Requires-Dist: psycopg2-binary>=2.9.0
+Requires-Dist: pydantic-settings>=2.4.0
+Requires-Dist: pydantic[email]>=2.9.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: sqlalchemy>=2.0.0
+Requires-Dist: temporalio>=1.7.0
+Requires-Dist: typer>=0.12.0
+Requires-Dist: uvicorn[standard]>=0.30.0
+Provides-Extra: dev
+Requires-Dist: pytest-asyncio>=0.24.0; extra == 'dev'
+Requires-Dist: pytest-cov>=5.0.0; extra == 'dev'
+Requires-Dist: pytest>=8.3.0; extra == 'dev'
+Requires-Dist: ruff>=0.6.0; extra == 'dev'
+Provides-Extra: research
+Requires-Dist: langfuse>=2.0.0; extra == 'research'
