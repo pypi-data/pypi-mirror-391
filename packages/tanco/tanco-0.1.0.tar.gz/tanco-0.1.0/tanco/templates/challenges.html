@@ -1,0 +1,7 @@
+<h1>Challenges</h1>
+
+<ul hx-target="#main">
+{% for item in data %}
+  <li><a href="/c/{{ item.name }}">{{ item.title }}</a></li>
+{% endfor %}
+</ul>

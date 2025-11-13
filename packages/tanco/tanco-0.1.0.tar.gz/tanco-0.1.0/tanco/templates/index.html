@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tanco test runner</title>
+  <script src="/static/htmx.min.js"></script>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <script>
+    htmx.config.scrollIntoViewOnBoost = false;
+    function toggleShell() {
+      document.getElementById('shell').classList.toggle('hidden') }
+    function clientGone() {
+      for (let el of document.getElementsByTagName('button')) {
+        el.disabled = true; }};
+    function clientHere() {
+      for (let el of document.getElementsByTagName('button')) {
+        el.disabled = false; }};
+  </script>
+</head>
+<body>
+
+<div id="whoami" hx-get="/whoami" hx-swap="outerHTML" hx-trigger="load once">
+</div>
+
+<h1>Tanco</h1>
+
+<nav>
+  <ul hx-boost="true" hx-target="#main">
+    <li><a href="/about">About</a></li>
+    <li><a href="/c">Challenges</a></li>
+    <li><a href="/me">My data</a></li>
+  </ul>
+</nav>
+
+{% if body %}
+<main id="main" hx-boost="true">
+  {{ body|safe }}
+</main>
+{% else %}
+<main id="main"
+      hx-trigger="load once"
+      hx-get="/about"
+      hx-boost="true">
+</main>
+{% endif %}
+
+
+</body>
+</html>

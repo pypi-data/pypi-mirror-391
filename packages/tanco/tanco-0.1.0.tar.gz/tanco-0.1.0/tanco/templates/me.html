@@ -1,0 +1,20 @@
+<title>user: {{ data.username }}</title>
+
+<h2>user: {{ data.username }}</h2>
+
+
+<h3>attempts</h3>
+<ul hx-target="#main">
+{% for a in data.attempts %}
+  <li>
+    <a class="has-tooltip" href="/a/{{ a.code }}">
+      {% if a.a_name %}<strong>{{ a.a_name }}</strong>{%
+         else %}{{ a.c_name }}{%
+         endif %}<span class="tooltip">{{ a.code }}</span></a>
+      {% if a.a_name %}
+        : {{ a.c_name }}
+      {% endif %}
+    started {{ a.ts }}
+  </li>
+{% endfor %}
+</ul>
