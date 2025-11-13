@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: chanter
+Version: 0.0.9
+Summary: Simple galaxy spectral modelling and fitting
+Author: Struan Stevenson
+Author-email: struan.stevenson@ed.ac.uk
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: astropy
+Requires-Dist: matplotlib
+Requires-Dist: spectres
+Requires-Dist: nautilus-sampler
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: summary
+
+# CHANTER
+
+#### CHANTER is a simple galaxy spectral energy distribution (SED) modelling/fitting code, based on the larger BAGPIPES code, of astronomical literary fame. CHANTER provides the barebones of Stellar Population Synthesis (SPS), as well as redshift and dust/IGM attenuation effects, and is written in a simple and digestible format, ideal for learning the theory behind larger spectral fitting software codes.
+
+Currently, I cannot include the SSP/IGM grids in the package due to PyPi size limitations, but this is being appealed.
