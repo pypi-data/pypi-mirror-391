@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "oncapintada"
+version = "0.0.4"
+authors = [
+  { name="Leandro Seixas", email="leandro.seixas@proton.me" },
+]
+description = "Materials informatics utils"
+readme = "README.md"
+license = {file = "LICENSE"} 
+requires-python = ">=3.10"
+dependencies = [
+    'numpy',
+    'pandas',
+    'ase',
+    'torch',
+    'scipy',
+    'matplotlib'
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/seixasgroup/oncapintada"
