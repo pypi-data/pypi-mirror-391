@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "adc-aios3"
+version = "0.1.0"
+description = "Async S3 client with lifecycle management"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["s3", "async", "aws", "storage"]
+authors = [
+    { name = "Max", email = "max@example.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "aiobotocore>=2.5.0",
+    "botocore>=1.29.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/ascet-dev/adc-aios3"
+Documentation = "https://adc-aios3.readthedocs.io/"
+Repository = "https://github.com/ascet-dev/adc-aios3.git"
+Issues = "https://github.com/ascet-dev/adc-aios3/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["adc_aios3"] 
