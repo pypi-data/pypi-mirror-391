@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lwcharts"
+version = "0.1.1"
+description = "TradingView Lightweight Charts for Jupyter notebooks"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "lwcharts contributors"}
+]
+keywords = ["jupyter", "charts", "tradingview", "lightweight-charts", "visualization", "trading", "finance"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "ipython>=7.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "build>=0.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/deepentropy/lwcharts"
+Documentation = "https://github.com/deepentropy/lwcharts#readme"
+Repository = "https://github.com/deepentropy/lwcharts"
+"Bug Tracker" = "https://github.com/deepentropy/lwcharts/issues"
+
+[tool.setuptools]
+packages = ["lwcharts"]
