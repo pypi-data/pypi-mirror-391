@@ -1,0 +1,351 @@
+Metadata-Version: 2.4
+Name: prompting-forge
+Version: 0.2.0
+Summary: A lightweight, modular library for building, composing, and managing structured prompts for LLMs
+License-File: LICENSE
+Requires-Python: >=3.10,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: genai-forge (>=0.2.3)
+Description-Content-Type: text/markdown
+
+# Prompting Forge
+
+A simple, focused library for creating and versioning prompt templates.
+
+## Core Concept
+
+**PromptTemplate** is the central object that:
+1. Defines a prompt with a system message and template with Python-style `{placeholders}`
+2. Automatically saves versions to `.prompt/{instance_name}/{instance_name}__prompt__v{version}.json`
+3. Extracts variables from the template automatically
+4. **Smart versioning**: Only creates a new version if the prompt changes (compares system, template, and variables)
+
+### Version Management
+
+- **First instantiation**: Creates v1
+- **Identical prompt**: Reuses existing version (no duplicate saved)
+- **Modified prompt**: Increments version number (v2, v3, etc.)
+- **Clear feedback**: Displays whether a new version was created or an existing one was reused
+
+## Quick Start
+
+```python
+from prompting_forge.prompting import PromptTemplate
+
+# Create a prompt template with an instance name to save it
+template = PromptTemplate(
+    system="You are a helpful assistant.",
+    template="Answer the following question about {topic}: {question}",
+    instance_name="my_prompt",
+)
+
+# The template is automatically saved to:
+# .prompt/my_prompt/my_prompt__prompt__v1.json
+```
+
+## Directory Structure
+
+```
+prompting-forge/
+├── prompting_forge/
+│   ├── __init__.py
+│   ├── prompting/
+│   │   ├── __init__.py
+│   │   └── prompt.py          # Core PromptTemplate class
+│   └── versioning.py          # Version saving logic
+├── example.py                 # Simple example
+└── README.md
+```
+
+## Saved Prompt Format
+
+When you instantiate a `PromptTemplate` with an `instance_name`, it saves a JSON file:
+
+```json
+{
+  "ts": "2025-11-12T10:30:00.000000+00:00",
+  "instance": "my_prompt",
+  "version": 1,
+  "system": "You are a helpful assistant.",
+  "template": "Answer the following question about {topic}: {question}",
+  "variables": ["question", "topic"]
+}
+```
+
+## Example
+
+Run the example:
+
+```bash
+python example.py
+```
+
+**First run** (creates v1):
+```
+✓ New prompt version created: v1
+  Saved to: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v1.json
+
+Template variables: ['impact', 'rca_hypothesis', 'severity', 'stakeholders', 'title']
+```
+
+**Second run** (detects identical prompt):
+```
+⊙ Prompt unchanged - using existing version: v1
+  Location: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v1.json
+
+Template variables: ['impact', 'rca_hypothesis', 'severity', 'stakeholders', 'title']
+```
+
+**After modifying the template** (creates v2):
+```
+✓ New prompt version created: v2
+  Saved to: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v2.json
+
+Template variables: [...]
+```
+
+### Test Versioning Behavior
+
+Run the comprehensive test to see all versioning scenarios:
+
+```bash
+python test_versioning.py
+```
+
+This demonstrates:
+- Creating initial version (v1)
+- Reusing identical prompts (stays at v1)
+- Creating new versions when content changes (v2, v3, etc.)
+- Comparing system messages, templates, and variables
+
+### Complete Workflow Example
+
+Run the full synthesis workflow:
+
+```bash
+python example_final_synthesis.py
+```
+
+This shows:
+1. Creating multiple prompt versions iteratively
+2. Using `FinalPromptTemplate` to synthesize with LLM
+3. Using the final prompt in production
+
+## Final Prompt Synthesis
+
+After creating multiple prompt versions, use `FinalPromptTemplate` to synthesize an optimized final prompt using an LLM:
+
+```python
+from prompting_forge.prompting import PromptTemplate, FinalPromptTemplate
+from genai_forge import get_llm
+
+# Create multiple versions
+v1 = PromptTemplate(
+    system="You are a helper.",
+    template="Help with {task}.",
+    instance_name="my_assistant",
+)
+
+v2 = PromptTemplate(
+    system="You are an expert helper.",
+    template="Provide detailed help with {task} for {audience}.",
+    instance_name="my_assistant",
+)
+
+# Synthesize final prompt from all versions
+llm = get_llm("openai:gpt-4o-mini")
+
+final = FinalPromptTemplate(
+    instance_name="my_assistant",
+    variables=["task", "audience"],  # Variables you want in final template
+    llm_client=llm,
+)
+
+# The LLM analyzes all versions and creates an optimized final prompt
+# Saved to: .prompt/my_assistant/final_prompt.json
+```
+
+### How It Works
+
+1. **Collects all versions**: Reads all `{instance_name}__prompt__v*.json` files
+2. **LLM synthesis**: Uses `PromptTemplate` + `LLMCall` to analyze versions
+3. **Creates optimized prompt**: LLM generates system message and template
+4. **Validates variables**: Ensures all required variables are in the final template
+5. **Saves final prompt**: Stores as `final_prompt.json` (version -1)
+6. **Reuses if exists**: Subsequent instantiations use the existing final prompt
+
+## LLM-Based Prompt Refinement (v0.2.x)
+
+**New Feature**: Iteratively improve prompts through LLM-based analysis and refinement.
+
+`RefinedPromptTemplate` automatically refines a prompt by:
+1. Generating outputs using the current prompt
+2. Analyzing those outputs to identify improvements
+3. Creating an improved prompt
+4. Repeating for N iterations
+
+### Two Refinement Modes
+
+**Isolated Mode** (default):
+- Analyzes only the most recent prompt-response pair
+- Faster, focuses on incremental improvements
+- Good for quick iterations
+
+**Cumulative Mode**:
+- Considers all prompts and responses from the entire refinement process
+- More comprehensive, identifies patterns across iterations
+- Better for finding optimal solutions
+
+### Quick Example
+
+```python
+from prompting_forge.prompting import PromptTemplate, RefinedPromptTemplate
+from genai_forge import get_llm
+
+# Create initial prompt versions
+v1 = PromptTemplate(
+    system="You are a code reviewer.",
+    template="Review this code: {code}",
+    instance_name="code_reviewer",
+)
+
+v2 = PromptTemplate(
+    system="You are an experienced code reviewer.",
+    template="Review the following {language} code: {code}",
+    instance_name="code_reviewer",
+)
+
+# Refine the prompt iteratively
+llm = get_llm("openai:gpt-4o-mini")
+
+refined = RefinedPromptTemplate(
+    instance_name="code_reviewer",
+    variables=["language", "code"],
+    llm_client=llm,
+    iterations=3,  # Number of refinement cycles
+    mode="isolated",  # or "cumulative"
+    test_query={
+        "language": "Python",
+        "code": "def add(a, b):\n    return a + b"
+    },
+    auto_run=True,  # Automatically test the refined prompt
+)
+
+# Refined prompt is saved to: .prompt/code_reviewer/refined_prompt.json
+```
+
+### Refinement Process
+
+For each iteration:
+
+1. **Generate**: Run the current prompt with test data
+2. **Analyze**: LLM reviews the output and identifies improvements
+3. **Refine**: LLM creates an improved version of the prompt
+4. **Repeat**: Continue for N iterations
+
+**Isolated Mode:**
+```
+Prompt v1 → Output → Analysis → Improved Prompt v2
+Prompt v2 → Output → Analysis → Improved Prompt v3
+...
+```
+
+**Cumulative Mode:**
+```
+Prompt v1 → Output ┐
+Prompt v2 → Output ├→ Analysis → Improved Prompt v3
+Prompt v3 → Output ┘
+...
+```
+
+### Starting Points
+
+`RefinedPromptTemplate` is flexible about where to start:
+
+1. **With final prompt**: Uses existing `final_prompt.json`
+2. **Multiple versions**: Creates a final prompt from all versions first
+3. **Single version**: Uses that version directly as the starting point
+
+### Complete Example
+
+Run the full refinement demonstration:
+
+```bash
+python example_refinement.py
+```
+
+This shows:
+- Isolated mode refinement
+- Cumulative mode refinement
+- Refinement without existing final prompt
+- Manual and automatic usage of refined prompts
+
+## API Reference
+
+### `PromptTemplate`
+
+**Parameters:**
+- `system` (Optional[str]): System message for the prompt
+- `template` (str): Template string with `{variable}` placeholders
+- `variables` (Optional[Iterable[str]]): Explicit variable list (auto-detected if not provided)
+- `instance_name` (Optional[str]): Name for saving versions (creates `.prompt/{instance_name}/` directory)
+- `version_root` (Optional[Path]): Root directory for `.prompt/` (defaults to current directory)
+
+**Methods:**
+- `format(variables, instructions=None)` → `ChatPrompt`: Format the template with variable values
+- `render(context, strict=True)` → `str`: Render template to plain string
+- `expected_variables()` → `Set[str]`: Get the set of variables in the template
+
+### `FinalPromptTemplate`
+
+**Parameters:**
+- `instance_name` (str): Name of the prompt instance to synthesize
+- `variables` (List[str]): Variable names the final template must use
+- `llm_client`: LLM client from genai-forge
+- `synthesis_instructions` (Optional[str]): Custom instructions for synthesis
+- `version_root` (Optional[Path]): Root directory for `.prompt/` folder
+
+**Requirements:**
+- At least 2 prompt versions must exist for the instance
+- Uses `PromptTemplate` + `LLMCall` internally for synthesis
+
+**Inherits from:** `BasePromptTemplate` (has same methods as `PromptTemplate`)
+
+### `RefinedPromptTemplate` (v0.2.x)
+
+**Parameters:**
+- `instance_name` (str): Name of the prompt instance to refine
+- `variables` (List[str]): Variable names the refined template must use
+- `llm_client`: LLM client from genai-forge
+- `iterations` (int): Number of refinement cycles (default: 3)
+- `mode` (str): Refinement mode - "isolated" or "cumulative" (default: "isolated")
+- `refinement_instructions` (Optional[str]): Custom instructions for refinement
+- `test_query` (Optional[Any]): Test data to use during refinement
+- `version_root` (Optional[Path]): Root directory for `.prompt/` folder
+- `refined_filename` (str): Filename for refined prompt (default: "refined_prompt.json")
+- `auto_run` (bool): If True, automatically test refined prompt (default: True)
+
+**Behavior:**
+- Starts from existing final prompt, or creates one from versions if needed
+- Iteratively improves the prompt using LLM-based analysis
+- Saves refined prompt to `.prompt/{instance_name}/{refined_filename}`
+- Optionally runs an LLM call with the refined prompt if `auto_run=True`
+
+**Inherits from:** `BasePromptTemplate` (has same methods as `PromptTemplate`)
+
+### `ChatPrompt`
+
+Simple dataclass representing a formatted prompt:
+- `system` (Optional[str]): System message
+- `user` (str): User message
+- `to_messages()` → `list[dict]`: Convert to message format for LLM APIs
+
+## License
+
+MIT
+
