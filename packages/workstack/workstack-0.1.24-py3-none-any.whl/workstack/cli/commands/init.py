@@ -1,0 +1,311 @@
+import dataclasses
+from pathlib import Path
+
+import click
+
+from workstack.cli.core import discover_repo_context
+from workstack.core.context import WorkstackContext
+from workstack.core.global_config import GlobalConfig
+from workstack.core.init_utils import (
+    add_gitignore_entry,
+    discover_presets,
+    get_shell_wrapper_content,
+    is_repo_named,
+    render_config_template,
+)
+from workstack.core.repo_discovery import ensure_workstacks_dir
+from workstack.core.shell_ops import ShellOps
+
+
+def detect_graphite(shell_ops: ShellOps) -> bool:
+    """Detect if Graphite (gt) is installed and available in PATH."""
+    return shell_ops.get_installed_tool_path("gt") is not None
+
+
+def create_and_save_global_config(
+    ctx: WorkstackContext,
+    workstacks_root: Path,
+    shell_setup_complete: bool,
+) -> GlobalConfig:
+    """Create and save global config, returning the created config."""
+    use_graphite = detect_graphite(ctx.shell_ops)
+    config = GlobalConfig(
+        workstacks_root=workstacks_root,
+        use_graphite=use_graphite,
+        shell_setup_complete=shell_setup_complete,
+        show_pr_info=True,
+        show_pr_checks=False,
+    )
+    ctx.global_config_ops.save(config)
+    return config
+
+
+def _add_gitignore_entry_with_prompt(
+    content: str, entry: str, prompt_message: str
+) -> tuple[str, bool]:
+    """Add an entry to gitignore content if not present and user confirms.
+
+    This wrapper adds user interaction to the pure add_gitignore_entry function.
+
+    Args:
+        content: Current gitignore content
+        entry: Entry to add (e.g., ".PLAN.md")
+        prompt_message: Message to show user when confirming
+
+    Returns:
+        Tuple of (updated_content, was_modified)
+    """
+    # Entry already present
+    if entry in content:
+        return (content, False)
+
+    # User declined
+    if not click.confirm(prompt_message, default=True):
+        return (content, False)
+
+    # Use pure function to add entry
+    new_content = add_gitignore_entry(content, entry)
+    return (new_content, True)
+
+
+def print_shell_setup_instructions(
+    shell: str, rc_file: Path, completion_line: str, wrapper_content: str
+) -> None:
+    """Print formatted shell integration setup instructions for manual installation.
+
+    Args:
+        shell: The shell type (e.g., "zsh", "bash", "fish")
+        rc_file: Path to the shell's rc file (e.g., ~/.zshrc)
+        completion_line: The completion command to add (e.g., "source <(workstack completion zsh)")
+        wrapper_content: The full wrapper function content to add
+    """
+    click.echo("\n" + "━" * 60)
+    click.echo("Shell Integration Setup")
+    click.echo("━" * 60)
+    click.echo(f"\nDetected shell: {shell} ({rc_file})")
+    click.echo("\nAdd the following to your rc file:\n")
+    click.echo("# Workstack completion")
+    click.echo(f"{completion_line}\n")
+    click.echo("# Workstack shell integration")
+    click.echo(wrapper_content)
+    click.echo("\nThen reload your shell:")
+    click.echo(f"  source {rc_file}")
+    click.echo("━" * 60)
+
+
+def perform_shell_setup(shell_ops: ShellOps) -> bool:
+    """Print shell integration setup instructions for manual installation.
+
+    Returns True if instructions were printed, False if setup was skipped.
+    """
+    shell_info = shell_ops.detect_shell()
+    if not shell_info:
+        click.echo("Unable to detect shell. Skipping shell integration setup.")
+        return False
+
+    shell, rc_file = shell_info
+
+    # Resolve symlinks to show the real file path in instructions
+    if rc_file.exists():
+        rc_file = rc_file.resolve()
+
+    click.echo(f"\nDetected shell: {shell}")
+    click.echo("Shell integration provides:")
+    click.echo("  - Tab completion for workstack commands")
+    click.echo("  - Automatic worktree activation on 'workstack switch'")
+
+    if not click.confirm("\nShow shell integration setup instructions?", default=True):
+        click.echo("Skipping shell integration. You can run 'workstack init --shell' later.")
+        return False
+
+    # Generate the instructions
+    completion_line = f"source <(workstack completion {shell})"
+    shell_integration_dir = Path(__file__).parent.parent / "shell_integration"
+    wrapper_content = get_shell_wrapper_content(shell_integration_dir, shell)
+
+    # Print the formatted instructions
+    print_shell_setup_instructions(shell, rc_file, completion_line, wrapper_content)
+
+    return True
+
+
+def _get_presets_dir() -> Path:
+    """Get the path to the presets directory."""
+    return Path(__file__).parent.parent / "presets"
+
+
+@click.command("init")
+@click.option("--force", is_flag=True, help="Overwrite existing repo config if present.")
+@click.option(
+    "--preset",
+    type=str,
+    default="auto",
+    help=(
+        "Config template to use. 'auto' detects preset based on repo characteristics. "
+        f"Available: auto, {', '.join(discover_presets(_get_presets_dir()))}."
+    ),
+)
+@click.option(
+    "--list-presets",
+    is_flag=True,
+    help="List available presets and exit.",
+)
+@click.option(
+    "--repo",
+    is_flag=True,
+    help="Initialize repository-level config only (skip global config setup).",
+)
+@click.option(
+    "--shell",
+    is_flag=True,
+    help="Show shell integration setup instructions (completion + auto-activation wrapper).",
+)
+@click.pass_obj
+def init_cmd(
+    ctx: WorkstackContext, force: bool, preset: str, list_presets: bool, repo: bool, shell: bool
+) -> None:
+    """Initialize workstack for this repo and scaffold config.toml."""
+
+    # Handle --shell flag: only do shell setup
+    if shell:
+        if ctx.global_config is None:
+            config_path = ctx.global_config_ops.path()
+            click.echo(f"Global config not found at {config_path}", err=True)
+            click.echo(
+                "Run 'workstack init' without --shell to create global config first.", err=True
+            )
+            raise SystemExit(1)
+
+        setup_complete = perform_shell_setup(ctx.shell_ops)
+        if setup_complete:
+            # Update global config with shell_setup_complete=True
+            new_config = GlobalConfig(
+                workstacks_root=ctx.global_config.workstacks_root,
+                use_graphite=ctx.global_config.use_graphite,
+                shell_setup_complete=True,
+                show_pr_info=ctx.global_config.show_pr_info,
+                show_pr_checks=ctx.global_config.show_pr_checks,
+            )
+            ctx.global_config_ops.save(new_config)
+        return
+
+    # Discover available presets on demand
+    presets_dir = _get_presets_dir()
+    available_presets = discover_presets(presets_dir)
+    valid_choices = ["auto"] + available_presets
+
+    # Handle --list-presets flag
+    if list_presets:
+        click.echo("Available presets:")
+        for p in available_presets:
+            click.echo(f"  - {p}")
+        return
+
+    # Validate preset choice
+    if preset not in valid_choices:
+        click.echo(f"Invalid preset '{preset}'. Available options: {', '.join(valid_choices)}")
+        raise SystemExit(1)
+
+    # Track if this is the first time init is run
+    first_time_init = False
+
+    # Check for global config first (unless --repo flag is set)
+    if not repo and not ctx.global_config_ops.exists():
+        first_time_init = True
+        config_path = ctx.global_config_ops.path()
+        click.echo(f"Global config not found at {config_path}")
+        click.echo("Please provide the path where you want to store all worktrees.")
+        click.echo("(This directory will contain subdirectories for each repository)")
+        workstacks_root = click.prompt("Worktrees root directory", type=Path)
+        workstacks_root = workstacks_root.expanduser().resolve()
+        config = create_and_save_global_config(ctx, workstacks_root, shell_setup_complete=False)
+        # Update context with newly created config
+        ctx = dataclasses.replace(ctx, global_config=config)
+        click.echo(f"Created global config at {config_path}")
+        # Show graphite status on first init
+        has_graphite = detect_graphite(ctx.shell_ops)
+        if has_graphite:
+            click.echo("Graphite (gt) detected - will use 'gt create' for new branches")
+        else:
+            click.echo("Graphite (gt) not detected - will use 'git' for branch creation")
+
+    # When --repo is set, verify that global config exists
+    if repo and not ctx.global_config_ops.exists():
+        config_path = ctx.global_config_ops.path()
+        click.echo(f"Global config not found at {config_path}", err=True)
+        click.echo("Run 'workstack init' without --repo to create global config first.", err=True)
+        raise SystemExit(1)
+
+    # Now proceed with repo-specific setup
+    repo_context = discover_repo_context(ctx, ctx.cwd)
+
+    # Determine config path based on --repo flag
+    if repo:
+        # Repository-level config goes in repo root
+        cfg_path = repo_context.root / "config.toml"
+    else:
+        # Worktree-level config goes in workstacks_dir
+        workstacks_dir = ensure_workstacks_dir(repo_context)
+        cfg_path = workstacks_dir / "config.toml"
+
+    if cfg_path.exists() and not force:
+        click.echo(f"Config already exists: {cfg_path}. Use --force to overwrite.")
+        raise SystemExit(1)
+
+    effective_preset: str | None
+    choice = preset.lower()
+    if choice == "auto":
+        effective_preset = "dagster" if is_repo_named(repo_context.root, "dagster") else "generic"
+    else:
+        effective_preset = choice
+
+    content = render_config_template(presets_dir, effective_preset)
+    cfg_path.write_text(content, encoding="utf-8")
+    click.echo(f"Wrote {cfg_path}")
+
+    # Check for .gitignore and add .PLAN.md and .env
+    gitignore_path = repo_context.root / ".gitignore"
+    if not gitignore_path.exists():
+        # Early return: no gitignore file
+        pass
+    else:
+        gitignore_content = gitignore_path.read_text(encoding="utf-8")
+        modified = False
+
+        # Add .PLAN.md
+        gitignore_content, plan_added = _add_gitignore_entry_with_prompt(
+            gitignore_content,
+            ".PLAN.md",
+            "Add .PLAN.md to .gitignore?",
+        )
+        modified = modified or plan_added
+
+        # Add .env
+        gitignore_content, env_added = _add_gitignore_entry_with_prompt(
+            gitignore_content,
+            ".env",
+            "Add .env to .gitignore?",
+        )
+        modified = modified or env_added
+
+        # Write if modified
+        if modified:
+            gitignore_path.write_text(gitignore_content, encoding="utf-8")
+            click.echo(f"Updated {gitignore_path}")
+
+    # On first-time init, offer shell setup if not already completed
+    if first_time_init:
+        # Reload global config after creating it
+        fresh_config = ctx.global_config_ops.load()
+        if not fresh_config.shell_setup_complete:
+            setup_complete = perform_shell_setup(ctx.shell_ops)
+            if setup_complete:
+                # Update global config with shell_setup_complete=True
+                new_config = GlobalConfig(
+                    workstacks_root=fresh_config.workstacks_root,
+                    use_graphite=fresh_config.use_graphite,
+                    shell_setup_complete=True,
+                    show_pr_info=fresh_config.show_pr_info,
+                    show_pr_checks=fresh_config.show_pr_checks,
+                )
+                ctx.global_config_ops.save(new_config)
