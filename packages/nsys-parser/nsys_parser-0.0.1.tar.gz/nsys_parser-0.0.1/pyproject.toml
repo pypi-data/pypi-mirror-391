@@ -1,0 +1,16 @@
+[project]
+name = "nsys_parser"
+version = "0.0.1"
+requires-python = ">=3.10"
+authors = [
+  { name="warpmatrix", email="warpmatrixlyk@gmail.com" },
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nsys_parser"]
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
