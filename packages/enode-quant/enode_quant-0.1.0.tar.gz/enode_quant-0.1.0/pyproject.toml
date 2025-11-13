@@ -1,0 +1,21 @@
+[project]
+name = "enode-quant"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+authors = [
+  {name = "Oscar Thiele Serrano"}
+]
+dependencies = [
+    "pandas>=2.3.3",
+    "requests>=2.32.5",
+    "typer>=0.20.0",
+]
+
+[project.scripts]
+enode = "enode_quant.cli.main:app"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
