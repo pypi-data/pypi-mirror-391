@@ -1,0 +1,48 @@
+Metadata-Version: 2.4
+Name: arcane-secret
+Version: 0.3.0
+Summary: A package to encode or decode tokens
+Author: Arcane
+Author-email: product@wearcane.com
+Requires-Python: >=3.6,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: pycryptodome (>=3.9.7,<4.0.0)
+Description-Content-Type: text/markdown
+
+# Arcane secret
+This package allows to encode and decode secrets.
+
+## Get Started
+
+```sh
+pip install arcane-secret
+```
+
+## Example Usage
+
+```python
+from arcane.secret import decode
+
+decoded_secret = decode('secret', 'path_to_secret_key_file')
+```
+
+or
+
+```python
+from arcane.secret import encode
+
+# Import your configs
+from configure import Config
+
+encoded_secret = encode(secret, Config.SECRET_KEY_FILE)
+```
+
