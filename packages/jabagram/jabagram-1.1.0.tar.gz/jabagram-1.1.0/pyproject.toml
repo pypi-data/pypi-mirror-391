@@ -1,0 +1,38 @@
+[project]
+name = "jabagram"
+version = "1.1.0"
+description = "Fully functional bridge between Telegram and XMPP"
+authors = [ {name = "Vasiliy Stelmachenok", email = "ventureo@yandex.ru"} ]
+maintainers = [ {name = "Vasiliy Stelmachenok", email = "ventureo@yandex.ru"} ]
+keywords = ["xmpp", "telegram", "asyncio", "bridge"]
+license = "GPL-3.0-only"
+readme = "README.md"
+requires-python = ">= 3.10"
+dependencies = ["aiohttp", "slixmpp", "unidecode"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+jabagram = "jabagram.runner:main"
+
+[project.urls]
+Homepage = "https://github.com/ventureoo/jabagram"
+Repository = "https://github.com/ventureoo/jabagram.git"
+"Bug Tracker" = "https://github.com/ventureoo/jabagram/issues"
+
+[tool.poetry.dependencies]
+slixmpp = { version = "^1.9.0", source = "codeberg-slixmpp" }
+
+[[tool.poetry.source]]
+name = "codeberg-slixmpp"
+url = "https://codeberg.org/api/packages/poezio/pypi/simple/"
+priority = "explicit"
