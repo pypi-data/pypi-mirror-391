@@ -1,0 +1,51 @@
+# Include necessary files for CLI package ONLY
+# CLI is a "dumb terminal" - it only needs CLI code, not server code
+include README.md
+include LICENSE
+include pyproject.toml
+include setup.py
+include cli/requirements.txt
+
+# Include ONLY CLI code
+recursive-include cli *.py
+recursive-include cli *.md
+recursive-include cli *.txt
+
+# EXCLUDE all server code - CLI communicates via HTTP API only
+prune server
+prune frontend
+prune tests
+prune docs
+prune external-libs
+prune database
+prune .rohkun
+prune accuracy-test-project
+prune test-confidence-verification
+prune test-report-format
+prune test-cli-project
+prune configure_supabase_urls.py
+prune start.py
+prune render.yaml
+prune Procfile
+prune package.json
+prune requirements.txt
+prune server.log
+prune *.md
+prune *.sql
+prune *.txt
+prune *.yaml
+prune *.yml
+prune *.json
+
+# Exclude cache and build files
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude *.egg-info
+global-exclude *.log
+global-exclude .env*
+global-exclude *.zip
+global-exclude dist/
+global-exclude build/
+
