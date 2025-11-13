@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# The package name used for pip install (must be unique on PyPI)
+name = "i050-utility-package"
+version = "0.1.0"
+description = "A utility for fast data sanitization and cleansing focusing on Pandas DataFrames."
+
+# Author Information
+authors = [
+    {name="Your Name", email="your.email@example.com"}, # REPLACE with your actual name and email
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+
+# Dependencies
+dependencies = [
+    "pandas>=1.0.0",
+]
+
+# PyPI Classifiers/Tags (helps users find your package)
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Development Status :: 3 - Alpha", 
+]
+
+# Instructions for setuptools to find the package inside the 'src' folder
+[tool.setuptools.packages.find]
+where = ["src"]
