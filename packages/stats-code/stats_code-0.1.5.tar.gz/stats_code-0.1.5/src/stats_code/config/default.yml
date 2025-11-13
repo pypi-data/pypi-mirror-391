@@ -1,0 +1,200 @@
+# A file defines the map program languages to their extend names.
+# The default colors comes from GitHub Linguist colors(https://github.com/github-linguist/linguist/blob/main/lib/linguist/languages.yml)
+
+version: 1.0.0
+
+skip:
+  paths:
+    # skip path in glob patterns
+    - "node_modules/**"
+    - "vendor/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/.git/**"
+    - "**/__pycache__/**"
+  language_types:
+    - "data"
+    - "unknown"
+  languages:
+    - "Markdown"
+    - "lockfile"
+    - "plain text"
+
+languages:
+  # language can be defined in 
+  # "language name"
+  #  type: "type of language"             # in "programing", "data", "markup", "script", "unknown", etc
+  #  name: ["list of file name patterns"] # in glob patterns
+  #  color: "#hexcolor"                   # color code
+
+  # Python
+  "Python":
+    type: "programming"
+    names: ["*.py", "*.pyd", "*.pyi"]
+    color: "#3572a5"
+
+  # JavaScript / TypeScript
+  "JavaScript":
+    type: "programming"
+    names: ["*.js", "*.jsx"]
+    color: "#f1e05a"
+
+  "TypeScript":
+    type: "programming"
+    names: ["*.ts", "*.tsx"]
+    color: "#3178c6"
+
+  # Java / Kotlin
+  "Java":
+    type: "programming"
+    names: ["*.java"]
+    color: "#b07219"
+
+  "Kotlin":
+    type: "programming"
+    names: ["*.kt", "*.kts"]
+    color: "#A97BFF"
+
+  # C family
+  "C":
+    type: "programming"
+    names: ["*.c", "*.h"]
+    color: "#555555"
+
+  "C++":
+    type: "programming"
+    names: ["*.cpp", "*.hpp", "*.cc", "*.cxx"]
+    color: "#f34b7d"
+
+  "Objective-C":
+    type: "programming"
+    names: ["*.m", "*.mm"]
+    color: "#c84e2b"
+
+  "CMake":
+    type: "programming"
+    names: ["CMakeLists.txt", "*.cmake"]
+    color: "#DA3434"
+
+  "C#":
+    type: "programming"
+    names: ["*.cs"]
+    color: "#178600"
+
+  # Rust / Go
+  "Rust":
+    type: "programming"
+    names: ["*.rs"]
+    color: "#dea584"
+
+  "Go":
+    type: "programming"
+    names: ["*.go"]
+    color: "#00ADD8"
+
+  # Ruby / Lua / PHP
+  "Ruby":
+    type: "programming"
+    names: ["*.rb"]
+    color: "#701516"
+
+  "Lua":
+    type: "programming"
+    names: ["*.lua"]
+    color: "#000080"
+
+  "PHP":
+    type: "programming"
+    names: ["*.php"]
+    color: "#4F5D95"
+
+  # Web
+  "HTML":
+    type: "markup"
+    names: ["*.html", "*.htm"]
+    color: "#e34c26"
+
+  "CSS":
+    type: "markup"
+    names: ["*.css"]
+    color: "#563d7c"
+
+  "SCSS":
+    type: "markup"
+    names: ["*.scss"]
+    color: "#c6538c"
+
+  "VUE":
+    type: "programming"
+    names: ["*.vue"]
+    color: "#41b883"
+
+  # Docs
+  "Markdown":
+    type: "markup"
+    names: ["*.md"]
+    color: "#083fa1"
+
+  # Data Formats
+  "JSON":
+    type: "data"
+    names: ["*.json"]
+    color: "#292929"
+
+  "YAML":
+    type: "data"
+    names: ["*.yaml", "*.yml"]
+    color: "#cb171e"
+
+  "TOML":
+    type: "data"
+    names: ["*.toml"]
+    color: "#9c4221"
+
+  "XML":
+    type: "data"
+    names: ["*.xml"]
+    color: "#0060ac"
+
+  # scripts
+  "Shell":
+    type: "script"
+    names: ["*.sh", "*.bash", "*.zsh"]
+    color: "#89e051"
+
+  "PowerShell":
+    type: "script"
+    names: ["*.ps1"]
+    color: "#012456"
+
+  # sql
+  "SQL":
+    type: "programming"
+    names: ["*.sql"]
+    color: "#e38c00"
+  
+  # docker
+  "Dockerfile":
+    type: "programming"
+    names: ["Dockerfile", "*.Dockerfile", "*.dockerfile"]
+    color: "#384d54"
+
+  "Docker-compose":
+    type: "programming"
+    names: ["docker-compose.yml", "docker-compose.yaml"]
+    color: "#384d54"
+
+  "lockfile":
+    type: "data"
+    names: ["*.lock", "*.lock.json", "*-lock.json"]
+    color: "#ededed"
+
+  "plain text":
+    type: "data"
+    names: ["*.txt", "LICENSE", "LICENSE.txt"]
+    color: "#ededed"
+
+  "Unknown":
+    type: "unknown"
+    names: ["*"]
+    color: "#ededed"
