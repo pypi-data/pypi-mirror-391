@@ -1,0 +1,32 @@
+[project]
+name = "multiple-minimum-monte-carlo"
+version = "0.0.9"
+description = "Open source implementation of multiple minimum Monte Carlo"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "ase",
+    "rdkit",
+    "scipy",
+    "torch>=2.5.1",
+]
+
+authors = [ { name = "Nicholas Casetti" } ]
+license = { file = "LICENSE" }
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "ipykernel",
+    "pytest",
+    "ruff",
+    "twine",
+]
+
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = { find = { exclude = ["tests*"] } }
