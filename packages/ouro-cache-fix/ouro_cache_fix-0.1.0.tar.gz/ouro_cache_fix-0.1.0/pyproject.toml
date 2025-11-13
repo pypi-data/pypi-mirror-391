@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ouro-cache-fix"
+version = "0.1.0"
+description = "Custom cache implementation to fix KV cache bug in ByteDance/Ouro-1.4B"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Edwin Villacis", email = "edwinvillacisa@yahoo.com"}
+]
+keywords = ["ouro", "universal-transformer", "cache", "huggingface", "transformers", "llm", "bug-fix", "kv-cache"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.36.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+examples = [
+    "peft>=0.7.0",
+    "datasets>=2.14.0",
+    "tqdm>=4.65.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Antizana/ouro-cache-fix"
+Documentation = "https://github.com/Antizana/ouro-cache-fix#readme"
+Repository = "https://github.com/Antizana/ouro-cache-fix.git"
+Issues = "https://github.com/Antizana/ouro-cache-fix/issues"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["ouro_cache_fix"]
+omit = [
+    "*/tests/*",
+    "*/examples/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if False:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
