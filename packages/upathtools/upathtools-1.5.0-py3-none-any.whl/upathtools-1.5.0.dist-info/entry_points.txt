@@ -1,0 +1,34 @@
+[fsspec.specs]
+appwrite = upathtools.filesystems:AppwriteFileSystem
+ast = upathtools.filesystems:PythonAstFS
+basemodel = upathtools.filesystems:BaseModelFS
+cli = upathtools.filesystems:CliFS
+distribution = upathtools.filesystems:DistributionFS
+flatunion = upathtools.filesystems:FlatUnionFileSystem
+gist = upathtools.filesystems:GistFileSystem
+markdown = upathtools.filesystems:MarkdownFS
+mcp = upathtools.filesystems:MCPFileSystem
+mod = upathtools.filesystems:ModuleFS
+notion = upathtools.filesystems:NotionFS
+openapi = upathtools.filesystems:OpenAPIFS
+pkg = upathtools.filesystems:PackageFS
+typeadapter = upathtools.filesystems:TypeAdapterFS
+wiki = upathtools.filesystems:WikiFileSystem
+
+[universal_pathlib.implementations]
+appwrite = upathtools.filesystems:AppwritePath
+ast = upathtools.filesystems:PythonAstPath
+basemodel = upathtools.filesystems:BaseModelPath
+cli = upathtools.filesystems:CliPath
+distribution = upathtools.filesystems:DistributionPath
+flatunion = upathtools.filesystems:FlatUnionPath
+gist = upathtools.filesystems:GistPath
+markdown = upathtools.filesystems:MarkdownPath
+mcp = upathtools.filesystems:MCPPath
+mod = upathtools.filesystems:ModulePath
+notion = upathtools.filesystems:NotionPath
+openapi = upathtools.filesystems:OpenAPIPath
+pkg = upathtools.filesystems:PackagePath
+typeadapter = upathtools.filesystems:TypeAdapterPath
+wiki = upathtools.filesystems:WikiPath
+
