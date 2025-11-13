@@ -1,0 +1,23 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+recursive-include drivee_client *.py
+recursive-include tests *.py
+recursive-include docs *.md *.rst
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
+global-exclude *.so
+global-exclude build.py
+global-exclude package_build.py
+global-exclude package_build_script.py
+global-exclude test_local_install.py
+global-exclude main.py
+prune .git
+prune .github
+prune .vscode
+prune build
+prune dist
+prune *.egg-info
+prune actions
