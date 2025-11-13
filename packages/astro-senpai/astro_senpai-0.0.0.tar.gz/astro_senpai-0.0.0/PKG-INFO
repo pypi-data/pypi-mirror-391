@@ -1,0 +1,32 @@
+Metadata-Version: 2.4
+Name: astro-senpai
+Version: 0.0.0
+Summary: SENPAI is a tool for analyzing and processing astronomical images.  SENPAI is going through peer review and will be released soon.
+Author-email: Zach Gazak <jzg@alum.mit.edu>
+Requires-Python: >=3.10
+Requires-Dist: arrow>=1.3.0
+Requires-Dist: astropy>=6.1.7
+Requires-Dist: colorlog>=6.9.0
+Requires-Dist: fastapi>=0.115.12
+Requires-Dist: imageio>=2.37.0
+Requires-Dist: matplotlib>=3.10.1
+Requires-Dist: numpy>=2.2.4
+Requires-Dist: opencv-python-headless>=4.11.0.86
+Requires-Dist: pandas>=2.3.1
+Requires-Dist: photutils>=2.0.2
+Requires-Dist: pydantic>=2.11.1
+Requires-Dist: pypng>=0.20220715.0
+Requires-Dist: python-multipart>=0.0.20
+Requires-Dist: pyyaml>=6.0.2
+Requires-Dist: rawpy>=0.25.1
+Requires-Dist: scikit-learn>=1.7.1
+Requires-Dist: seaborn>=0.13.2
+Requires-Dist: tqdm>=4.67.1
+Requires-Dist: uvicorn>=0.34.0
+Provides-Extra: dev
+Requires-Dist: pytest-asyncio>=0.25.2; extra == 'dev'
+Requires-Dist: pytest-cov>=5.0.0; extra == 'dev'
+Requires-Dist: pytest-datadir>=1.5.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.14.0; extra == 'dev'
+Requires-Dist: pytest>=8.3.3; extra == 'dev'
+Requires-Dist: ruff>=0.3.0; extra == 'dev'
