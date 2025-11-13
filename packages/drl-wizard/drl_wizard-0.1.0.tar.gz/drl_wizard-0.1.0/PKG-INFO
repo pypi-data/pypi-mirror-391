@@ -1,0 +1,28 @@
+Metadata-Version: 2.4
+Name: drl-wizard
+Version: 0.1.0
+Summary: Deep Reinforcement Learning training platform
+Author: Amin Lotfolahi
+License: MIT
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: sqlalchemy>=2.0
+Requires-Dist: aiosqlite>=0.20
+Requires-Dist: tensorboard>=2.14
+Requires-Dist: gymnasium[atari,mujoco]>=0.29
+Requires-Dist: gymnasium-robotics>=1.2
+Requires-Dist: mpe2>=0.0.1
+Requires-Dist: fastapi[standard]>=0.115
+Requires-Dist: uvicorn[standard]>=0.30
+Requires-Dist: pandas>=2.2
+Requires-Dist: stable-baselines3>=2.3
+Requires-Dist: ale-py>=0.10
+Requires-Dist: opencv-python>=4.9
+Provides-Extra: ui
+Requires-Dist: streamlit>=1.38; extra == "ui"
+Requires-Dist: pandas-stubs>=2.2; extra == "ui"
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
