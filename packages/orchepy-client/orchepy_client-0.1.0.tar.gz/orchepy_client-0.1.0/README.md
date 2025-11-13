@@ -1,0 +1,147 @@
+# Orchepy Python Client
+
+A Python client library for [Orchepy](https://github.com/derivia/orchepy) - A lightweight, domain-agnostic event orchestrator for workflow automation.
+
+## Features
+
+- 🚀 Async-first - Built on `httpx` for high-performance async operations
+- 🔒 Type-safe - Full type hints and Pydantic models
+- 📦 Simple API - Clean, intuitive interface matching Orchepy's REST API
+- 🎯 Lightweight - Minimal dependencies
+
+## Installation
+
+```bash
+pip install orchepy-client
+```
+
+## Quick Start
+
+```python
+import asyncio
+from orchepy_client import OrchepyClient
+
+async def main():
+    client = OrchepyClient(base_url="http://localhost:3296")
+
+    # Create a workflow
+    workflow = await client.create_workflow(
+        name="Sales Pipeline",
+        phases=["Lead", "Qualified", "Proposal", "Closed"],
+        initial_phase="Lead",
+    )
+
+    # Create a case
+    case = await client.create_case(
+        workflow_id=workflow["id"],
+        data={
+            "customer": "Acme Corp",
+            "value": 50000,
+            "contact": "john@acme.com"
+        }
+    )
+
+    # Move case to next phase
+    await client.move_case(
+        case_id=case["id"],
+        to_phase="Qualified",
+        reason="Customer showed interest"
+    )
+
+    # Update case data
+    await client.update_case_data(
+        case_id=case["id"],
+        data={"value": 75000}
+    )
+
+    # Get case info
+    case_info = await client.get_case(case["id"])
+    print(f"Case is now in phase: {case_info['current_phase']}")
+
+asyncio.run(main())
+```
+
+## API Reference
+
+### Client Initialization
+
+```python
+from orchepy_client import OrchepyClient
+
+client = OrchepyClient(
+    base_url="http://localhost:3296",
+    timeout=10.0  # optional, defaults to 10.0 seconds
+)
+```
+
+### Workflows
+
+```python
+# Create workflow
+workflow = await client.create_workflow(
+    name="My Workflow",
+    phases=["Phase 1", "Phase 2"],
+    initial_phase="Phase 1",
+    active=True,
+    webhook_url="https://example.com/webhook"  # optional
+)
+
+# Get workflow
+workflow = await client.get_workflow(workflow_id)
+
+# List workflows
+workflows = await client.list_workflows()
+```
+
+### Cases
+
+```python
+# Create case
+case = await client.create_case(
+    workflow_id="workflow-uuid",
+    data={"field": "value"},
+    metadata={"source": "api"}  # optional
+)
+
+# Get case
+case = await client.get_case(case_id)
+
+# List cases
+cases = await client.list_cases(
+    workflow_id="workflow-uuid",  # optional
+    current_phase="Phase 1",      # optional
+    status="active"                # optional
+)
+
+# Move case
+await client.move_case(
+    case_id="case-uuid",
+    to_phase="Phase 2",
+    reason="Moving forward",      # optional
+    triggered_by="user-123"       # optional
+)
+
+# Update case data
+await client.update_case_data(
+    case_id="case-uuid",
+    data={"new_field": "new_value"}
+)
+
+# Get case history
+history = await client.get_case_history(case_id)
+```
+
+### Error Handling
+
+```python
+from orchepy_client import OrchepyClientError
+
+try:
+    case = await client.get_case("invalid-id")
+except OrchepyClientError as e:
+    print(f"Error: {e}")
+```
+
+## License
+
+[MIT](./LICENSE)
