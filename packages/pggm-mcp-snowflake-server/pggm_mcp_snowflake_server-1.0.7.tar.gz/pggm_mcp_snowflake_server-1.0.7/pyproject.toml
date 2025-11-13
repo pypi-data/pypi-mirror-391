@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pggm-mcp-snowflake-server"
+version = "1.0.7"
+description = "Custom Model Context Protocol server for Snowflake"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "mcp",
+    "pydantic",
+    "snowflake-snowpark-python",
+    "pyyaml",
+    "jaraco.text",
+]
+
+[project.scripts]
+pggm_mcp_snowflake_server = "pggm_mcp_snowflake_server:main"
