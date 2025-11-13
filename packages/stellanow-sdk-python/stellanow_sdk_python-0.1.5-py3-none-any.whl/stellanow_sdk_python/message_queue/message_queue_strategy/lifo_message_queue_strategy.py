@@ -1,0 +1,65 @@
+"""
+Copyright (C) 2022-2025 Stella Technologies (UK) Limited.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+"""
+
+from typing import Optional
+
+from stellanow_sdk_python.message_queue.message_queue_strategy.base_deque_strategy import BaseDequeStrategy
+from stellanow_sdk_python.message_queue.message_queue_strategy.overflow_strategy import OverflowStrategy
+from stellanow_sdk_python.messages.event import StellaNowEventWrapper
+
+
+class LifoMessageQueueStrategy(BaseDequeStrategy):
+    """
+    A last-in, first-out (LIFO) message_queue strategy for storing messages.
+
+    Uses collections.deque for O(1) operations at both ends, making DROP_OLDEST efficient.
+
+    Args:
+        max_size: Maximum number of messages in queue. Default is 0 (unlimited).
+                  WARNING: Unlimited queue can cause memory overflow if messages are produced faster than consumed.
+        overflow_strategy: Strategy for handling queue overflow. Default is RAISE_EXCEPTION.
+                          - RAISE_EXCEPTION: Raise QueueFullError for application to handle (default)
+                          - DROP_OLDEST: Drop oldest message when full
+                          - DROP_NEWEST: Reject new message when full
+    """
+
+    def __init__(
+        self, max_size: int = 0, overflow_strategy: OverflowStrategy = OverflowStrategy.RAISE_EXCEPTION
+    ) -> None:
+        super().__init__(max_size, overflow_strategy)
+
+    def _drop_oldest(self) -> StellaNowEventWrapper:
+        """Remove oldest message from LIFO queue (left side)."""
+        return self._queue.popleft()
+
+    def enqueue(self, message: StellaNowEventWrapper) -> None:
+        with self._lock:
+            if self._handle_overflow(message):
+                # LIFO: append to right, pop from right
+                self._queue.append(message)
+
+    def try_dequeue(self) -> Optional[StellaNowEventWrapper]:
+        with self._lock:
+            if self._queue:
+                # LIFO: pop from right (most recent)
+                return self._queue.pop()
+            return None
