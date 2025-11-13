@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "bl3d"
+version = "1.0.0a1"
+description = "Domain Driven Design library"
+authors = ["Tanguy Le Carrour <tanguy@bioneland.org>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://git.easter-eggs.org/bioneland/bl3d"
+repository = "https://git.easter-eggs.org/bioneland/bl3d"
+
+exclude = ["**/*_spec.py"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+bles = "^1.0.0a1"
+
+[tool.poetry.group.dev.dependencies]
+invoke = "^1.7.3"
+termcolor = "^2.1.0"
+black = "^22.10.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
+
+[tool.poetry.group.typing.dependencies]
+mypy = "^0.990"
+types-setuptools = "^65.5.0"
+
+[tool.poetry.group.test.dependencies]
+mamba = "^0.11.2"
+robber = "^1.1.5"
+
+[tool.poetry.extras]
+event-sourcing = ["bles"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 89
+
+[[tool.mypy.overrides]]
+module = [
+    "mamba.*",
+    "robber.*",
+]
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
