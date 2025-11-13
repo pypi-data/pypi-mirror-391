@@ -1,0 +1,86 @@
+Metadata-Version: 2.4
+Name: versalaw2
+Version: 2.0.4
+Summary: Advanced Indonesian Legal AI with Ghost Contract Analysis & 100+ Expert Study Cases
+Author: Maya Legal Systems
+Author-email: Your Name <your.email@example.com>
+License: MIT License
+        
+        Copyright (c) 2024 Your Name
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/yourusername/versalaw2
+Project-URL: Documentation, https://github.com/yourusername/versalaw2#readme
+Project-URL: Repository, https://github.com/yourusername/versalaw2
+Project-URL: Issues, https://github.com/yourusername/versalaw2/issues
+Keywords: legal,ai,indonesia,contract,analysis,law
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: scikit-learn>=1.0.0
+Requires-Dist: transformers>=4.20.0
+Requires-Dist: torch>=1.9.0
+Requires-Dist: requests>=2.25.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=4.0; extra == "dev"
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# VersaLaw2 v2.0.4 🚀
+
+Advanced Indonesian Legal AI Assistant with Ghost Contract Analysis & 100+ Expert Study Cases
+
+## 🔮 Revolutionary Features
+
+### Ghost Contract Analysis
+First AI tool in Indonesia for analyzing futuristic tech contracts:
+- Brain-Computer Interface (BCI) Contracts
+- Neural Interface Agreements  
+- Digital Consent Validation
+- Supreme Court Level Reasoning
+
+### ⚖️ Expert Legal Intelligence
+- **100+ Advanced Study Cases** with detailed analysis
+- **5 Law Library Batches** covering complex legal domains
+- **Supreme Court Case Analysis** capabilities
+- **Cross-Disciplinary Expertise** (AI Law, International Law, Cyber Law)
+
+## 🎯 Quick Start
+
+```python
+from versalaw2 import EnhancedLegalClassifier
+
+# Initialize with expert knowledge base
+clf = EnhancedLegalClassifier()
+
+# Comprehensive legal analysis
+result = clf.comprehensive_analysis("BCI neural interface contract validity")
+print(f"Expert Insights: {result['classification']['has_expert_insights']}")
+print(f"Analysis Level: {result['classification']['analysis_level']}")
+
+# Ghost contract analysis  
+contract_result = clf.analyze_complex_contract("digital neural link agreement")
+print(f"Contract Type: {contract_result['analysis_type']}")
+print(f"Risk Level: {contract_result['risk_level']}")

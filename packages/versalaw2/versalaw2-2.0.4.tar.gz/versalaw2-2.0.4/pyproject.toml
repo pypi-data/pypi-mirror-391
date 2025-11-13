@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "versalaw2"
+version = "2.0.4"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"},
+]
+description = "Advanced Indonesian Legal AI with Ghost Contract Analysis & 100+ Expert Study Cases"
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["legal", "ai", "indonesia", "contract", "analysis", "law"]
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scikit-learn>=1.0.0",
+    "transformers>=4.20.0",
+    "torch>=1.9.0",
+    "requests>=2.25.0",
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/versalaw2"
+Documentation = "https://github.com/yourusername/versalaw2#readme"
+Repository = "https://github.com/yourusername/versalaw2"
+Issues = "https://github.com/yourusername/versalaw2/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=22.0",
+    "flake8>=4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["versalaw2*"]
+
+[tool.setuptools.package-dir]
+versalaw2 = "src/versalaw2"
