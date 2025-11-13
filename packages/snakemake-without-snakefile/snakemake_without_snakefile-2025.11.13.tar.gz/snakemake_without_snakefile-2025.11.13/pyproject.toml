@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snakemake_without_snakefile"
+version = "2025.11.13"
+description = "Modified Snakemake library that supports defining workflows via strings without Snakefile"
+readme = "README.md"
+requires-python = ">= 3.11"
+license = "MIT"
+authors = [
+  { name = "Johannes Köster", email = "johannes.koester@uni-due.de" },
+  { name = "DeeliN221", email = "DeeliN221zzl@gmail.com" },
+]
+keywords = ["workflow", "pipeline", "bioinformatics"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+dependencies = [
+  "appdirs",
+  "immutables",
+  "configargparse",
+  "connection_pool>=0.0.3",
+  "docutils",
+  "gitpython",
+  "humanfriendly",
+  "jinja2>=3.0,<4.0",
+  "jsonschema",
+  "nbformat",
+  "packaging >=24.0",
+  "psutil",
+  "pulp>=2.3.1,<3.4",
+  "pyyaml",
+  "referencing",
+  "requests>=2.8.1,<3.0",
+  "reretry",
+  "smart-open>=4.0,<8.0",
+  "snakemake-interface-executor-plugins>=9.3.2,<10.0",
+  "snakemake-interface-common>=1.20.1,<2.0",
+  "snakemake-interface-storage-plugins>=4.1.0,<5.0",
+  "snakemake-interface-report-plugins>=1.2.0,<2.0.0",
+  "snakemake-interface-logger-plugins>=1.1.0,<3.0.0",
+  "snakemake-interface-scheduler-plugins>=2.0.0,<3.0.0",
+  "tabulate",
+  "throttler",
+  "wrapt",
+  "yte>=1.5.5,<2.0",
+  "dpath>=2.1.6,<3.0.0",
+  "conda-inject>=1.3.1,<2.0",
+]
+
+[project.scripts]
+snakemake = "snakemake.cli:main"
+
+[tool.setuptools]
+# snakemake 源代码直接在根目录下，手动指定所有包
+packages = [
+  "snakemake",
+  "snakemake.assets",
+  "snakemake.caching",
+  "snakemake.common",
+  "snakemake.common.tests",
+  "snakemake.common.tests.testcases",
+  "snakemake.common.tests.testcases.groups",
+  "snakemake.common.tests.testcases.simple",
+  "snakemake.deployment",
+  "snakemake.executors",
+  "snakemake.io",
+  "snakemake.io.flags",
+  "snakemake.ioutils",
+  "snakemake.linting",
+  "snakemake.remote",
+  "snakemake.report",
+  "snakemake.report.html_reporter",
+  "snakemake.report.html_reporter.data",
+  "snakemake.report.html_reporter.template",
+  "snakemake.report.html_reporter.template.components",
+  "snakemake.scheduling",
+  "snakemake.script",
+  "snakemake.settings",
+  "snakemake.template_rendering",
+  "snakemake.unit_tests",
+  "snakemake.unit_tests.templates",
+]
+package-dir = { "snakemake" = "." }
+
+[tool.setuptools.package-data]
+"*" = ["*.html", "*.css", "*.js", "*.jinja2", "*.json", "*.yaml", "*.yml"]

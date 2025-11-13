@@ -1,0 +1,94 @@
+Metadata-Version: 2.4
+Name: snakemake_without_snakefile
+Version: 2025.11.13
+Summary: Modified Snakemake library that supports defining workflows via strings without Snakefile
+Author-email: Johannes Köster <johannes.koester@uni-due.de>, DeeliN221 <DeeliN221zzl@gmail.com>
+License-Expression: MIT
+Keywords: workflow,pipeline,bioinformatics
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: appdirs
+Requires-Dist: immutables
+Requires-Dist: configargparse
+Requires-Dist: connection_pool>=0.0.3
+Requires-Dist: docutils
+Requires-Dist: gitpython
+Requires-Dist: humanfriendly
+Requires-Dist: jinja2<4.0,>=3.0
+Requires-Dist: jsonschema
+Requires-Dist: nbformat
+Requires-Dist: packaging>=24.0
+Requires-Dist: psutil
+Requires-Dist: pulp<3.4,>=2.3.1
+Requires-Dist: pyyaml
+Requires-Dist: referencing
+Requires-Dist: requests<3.0,>=2.8.1
+Requires-Dist: reretry
+Requires-Dist: smart-open<8.0,>=4.0
+Requires-Dist: snakemake-interface-executor-plugins<10.0,>=9.3.2
+Requires-Dist: snakemake-interface-common<2.0,>=1.20.1
+Requires-Dist: snakemake-interface-storage-plugins<5.0,>=4.1.0
+Requires-Dist: snakemake-interface-report-plugins<2.0.0,>=1.2.0
+Requires-Dist: snakemake-interface-logger-plugins<3.0.0,>=1.1.0
+Requires-Dist: snakemake-interface-scheduler-plugins<3.0.0,>=2.0.0
+Requires-Dist: tabulate
+Requires-Dist: throttler
+Requires-Dist: wrapt
+Requires-Dist: yte<2.0,>=1.5.5
+Requires-Dist: dpath<3.0.0,>=2.1.6
+Requires-Dist: conda-inject<2.0,>=1.3.1
+Dynamic: license-file
+
+# snakemake_without_snakefile
+
+基于 [snakemake/snakemake](https://github.com/snakemake/snakemake) ，支持通过字符串直接定义和运行工作流，无需创建 Snakefile 文件。
+
+## 相对原版的改动
+
+### ✨ 新增功能
+
+1. **StringSourceFile 类** (sourcecache.py:105-142)
+   - 实现了在内存中存储 Snakefile 内容的 SourceFile 对象
+   - 支持将字符串作为工作流定义的来源
+
+2. **Workflow.include_string() 方法** (workflow.py:1667-1710)
+   - 允许直接从字符串加载 Snakefile 内容
+   - 支持完整的 Snakefile 语法和功能
+   - 可选的调试模式（打印编译后的代码）
+
+3. **Bug 修复** (api.py:610-612)
+   - 修复了直接使用 `scheduler='greedy'` 时 `scheduler_settings` 未初始化的问题
+
+### ❌ 移除的内容
+
+为了专注于核心库功能，移除了以下内容：
+
+- 文档目录 (docs/, apidocs/)
+- 测试套件 (tests/)
+- 示例项目 (examples/)
+- CI/CD 配置 (.github/)
+- 部分开发工具配置
+
+**注意**：保留了 `unit_tests/` 模块，用于支持 Snakemake 的内置测试功能。
+
+### ✅ 保留的功能
+
+- 完整的 Snakemake 工作流引擎
+- 所有调度器（greedy, MILP）
+- 16 种远程存储协议支持
+- Conda 和 Singularity 环境管理
+- 报告生成和 GUI 界面
+- 命令行工具
+
+## 许可证
+
+MIT License - 与原版 Snakemake 相同
