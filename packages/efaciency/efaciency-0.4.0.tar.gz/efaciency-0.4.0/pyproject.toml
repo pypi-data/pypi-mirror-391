@@ -1,0 +1,45 @@
+[project]
+name = "efaciency"
+authors = [{name = "Matthieu Paturet"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+requires-python = ">=3.10"
+dependencies = ["tzdata"]
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project.scripts]
+efaciency = "efaciency.cli:cli"
+
+[project.urls]
+"Homepage" = "https://github.com/capcir/efaciency"
+
+[tool.ruff]
+line-length = 100
+output-format = "concise"
+lint.select = ["ALL"]
+lint.ignore = [
+    "COM812",   # missing-trailing-comma (incompatible with ruff)
+    "D203",     # incorrect-blank-line-before-class (incompatible with ruff)
+    "D213",     # multi-line-summary-second-line (incompatible with D212)
+    "PLR2004",  # magic-value-comparison
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "D", "PLW", "S"]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=6",
+]
