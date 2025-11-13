@@ -1,0 +1,43 @@
+[project]
+name = "cosma"
+version = "0.3.0"
+requires-python = ">=3.12"
+description="Search engine for your files!"
+readme = "README.md"
+dependencies = [
+    "click-help-colors>=0.9.4",
+    "cosma-backend",
+    "cosma-tui",
+]
+license = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/cosmasense/cosma"
+Repository = "https://github.com/cosmasense/cosma"
+Issues = "https://github.com/cosmasense/cosma/issues"
+
+[project.scripts]
+cosma = "cosma:cli"
+
+[tool.uv.sources]
+cosma-backend = { workspace = true }
+cosma-tui = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[dependency-groups]
+dev = [
+    "basedpyright<=1.31.7",
+    "pyinstaller>=6.16.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
