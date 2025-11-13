@@ -1,0 +1,132 @@
+Metadata-Version: 2.4
+Name: stocklens-sdk
+Version: 1.0.1
+Summary: AI-Powered Stock Sentiment and Trend Analysis SDK
+Home-page: https://github.com/karthikrajesh10/stocklens_sdk
+Author: Karthik R S
+Author-email: karthikrajesh9010@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: textblob
+Requires-Dist: requests
+Requires-Dist: flask
+Requires-Dist: flask-cors
+Requires-Dist: gtts
+Requires-Dist: pandas
+Requires-Dist: yfinance
+Requires-Dist: scikit-learn
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+
+# 📊 StockLens SDK
+
+StockLens SDK is an AI-powered Python toolkit designed for stock sentiment analysis, news summarization, and trend prediction.  
+It enables traders, analysts, and developers to extract, analyze, and interpret financial insights from real-time market data using natural language processing (NLP) and machine learning.
+
+---
+
+## 🚀 Features
+
+- 📰 Fetch and analyze stock market news sentiment via NLP (TextBlob)  
+- 🧠 Generate summaries using transformer-based models (Hugging Face BART)  
+- 🔊 Convert summaries to speech with gTTS for auditory insights  
+- 📈 Compute technical indicators like RSI, MACD, and Bollinger Bands  
+- ⚙️ Predict short-term stock trends using combined sentiment and technical signals  
+
+---
+
+## 🧩 Installation
+
+
+pip install stocklens-sdk
+
+
+---
+
+## 💻 Usage Example
+
+
+from stocklens_sdk import analyze_sentiment, generate_summary, generate_audio
+
+# Example text
+text = "Apple reported strong quarterly earnings with increased iPhone sales."
+
+# Analyze and summarize
+summary = generate_summary([{"headline": "Apple Q2 Results", "summary": text}])
+audio = generate_audio(summary, "AAPL")
+
+print("Summary:", summary)
+print("Audio File:", audio)
+
+
+---
+
+## 🧠 Modules Overview
+
+| Module | Description |
+|---------|--------------|
+| news_fetcher.py | Fetches latest stock news via n8n webhook |
+| sentiment_utils.py | Performs sentiment scoring using TextBlob |
+| summarizer.py | Generates AI-powered natural summaries |
+| tts_generator.py | Converts summaries to speech (MP3 format) |
+| indicators.py | Computes RSI, MACD, and Bollinger Bands for trend insight |
+
+---
+
+## 🏗 Architecture Overview
+
+
+Frontend or Marketfeed API Call
+          ↓
+     Flask Backend
+          ↓
+     StockLens SDK
+          ├── Fetch News
+          ├── Analyze Sentiment
+          ├── Summarize Text
+          ├── Generate Audio
+          ↓
+  Returns JSON + Audio Summary
+
+
+---
+
+## 🧾 Acknowledgment
+
+This project, StockLens – AI-Powered Stock Sentiment and Trend Analyzer, was developed with the guidance and support of the Centre of Excellence, Artificial Intelligence and Robotics (AIR).  
+
+
+---
+
+
+
+## 🧑‍💻 Developer Notes
+
+The SDK can be integrated with web platforms like Marketfeed as a modular AI plugin.  
+It can process financial data, summarize insights, and output both text and speech results.  
+For enterprise-scale usage, batch or async processing can be enabled.
+
+---
+
+## 📜 License
+
+MIT License © 2025 — Developed by Karthik R S
+
+---
+
+## 🌐 Project Links
+
+- PyPI: [https://pypi.org/project/stocklens-sdk/](https://pypi.org/project/stocklens-sdk/)
+- GitHub: [https://github.com/karthikrajesh10/stocklens_sdk](https://github.com/karthikrajesh10/stocklens_sdk)
+```
