@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: django_userpack
+Version: 0.2.0
+Summary: A powerful and extendable Django user system with advanced fields, admin, and authentication features.
+Author: AboalfazlH
+License: MIT
+Project-URL: Homepage, https://github.com/aboalfazlH/django_userpack
+Project-URL: Repository, https://github.com/aboalfazl/django_userpack
+Project-URL: Documentation, https://pypi.org/project/django_userpack/
+Keywords: django,auth,user,custom user model,django user,django userpack
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: django>=4.2
+Requires-Dist: Pillow>=9.0
+Dynamic: license-file
+
+# Django_Userpack
+
+
+django_Userpack is a Python library for a advanced user for django
+
+## Installation
+
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Django_UserPack.
+
+```bash
+pip install Django_UserPack
+```
+
+## Usage
+```python
+INSTALLED_APPS = [
+    # your apps
+    ...
+    'django_userpack'
+]
+```
+and in user model:
+```python
+class CustomUser(AdvancedBaseUser):
+    # your settings
+```
+
+## Contributing
+
+[Pull requests](https://github.com/aboalfazlH/django_userpack) are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+
+[MIT](https://github.com/aboalfazlH/django_userpack/blob/main/README.md)
