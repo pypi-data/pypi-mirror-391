@@ -1,0 +1,397 @@
+# Sukuma
+
+<div align="center">
+
+<!-- Project details -->
+[![Python support][badge1]][burl1]
+[![PyPI Release][badge1a]][burl1]
+[![Repository][badge2]][burl2]
+[![Releases][badge3]][burl3]
+[![Licence][blic1]][blic2]
+[![Expand your project structure from atoms of code to galactic dimensions.][badge4]][burl4]
+
+<!-- Information on development -->
+[![Project type][badge5]][burl5]
+[![Project stage][badge6]][burl6]
+[![Contributions Welcome][badge7]][burl7]
+[![Open issues][badge8]][burl8]
+[![Merge Requests][badge9]][burl9]
+
+<!-- Styling policies -->
+[![BDD][bbbd1]][bbbd2]
+[![Code style: Ruff][badge10]][burl10]
+[![Docstrings][bdocstr1]][bdocstr2]
+[![Gitmoji][badge11]][burl11]
+[![Semantic Line Breaks][badge12]][burl12]
+
+<!-- Development utilities -->
+[![Poetry][badge13]][burl13]
+[![Pre-commit][badge14]][burl14]
+[![Bandit][badge15]][burl15]
+[![isort][badge16]][burl16]
+[![Editorconfig][badge17]][burl17]
+
+<!-- Open Source benchmarks -->
+<!-- UPDATEME by toggling this comment off after replacing your project's index in both anchors below
+[![OpenSSF Best Practices][bossf1]][bossf2] -->
+<!-- UPDATEME by toggling this comment off after replacing your project's index in both anchors below
+[![OSSRank][bossf3]][bossf4] -->
+
+<!-- Quality assurance -->
+[![Intended Effort Versioning][badge18]][burl18]
+<!-- UPDATEME by toggling this comment off after replacing your project's index in both anchors below
+[![Code Quality][bqa1]][bqa2] -->
+<!-- UPDATEME by toggling this comment off after replacing your project's index in both anchors below
+[![Coverage][badge19]][burl19] -->
+[![Pipelines][badge20]][burl20]
+
+_The all-encompassing finance manager on the command line_
+
+---
+
+**POWERED BY**
+
+[![Powered by Typer][btyper]][ltyper]
+[![Powered by Textual][btextual]][ltextual]
+[![Powered by Orbittings][borbittings]][lorbittings]
+
+</div>
+
+## :sunrise_over_mountains: Purpose & Function
+
+Sukuma is a personal finances application
+built with Python
+and tailored to users
+who want more than
+just another budgeting app.
+
+Sukuma was born
+out of a desire
+to deliver features
+we deem crucial
+for a personal finance app
+that no high-profile open source project
+provides in a single package:
+
+- Batteries-included double-entry accounting;
+- Both cash **and** investments tracking;
+- CLI and TUI-based interaction.
+
+<!-- DEFINE which features your project provides that make it enticing to potential users
+## :star_struck: Standout Features
+-->
+
+## :inbox_tray: Installation
+
+Use [`pipx`][install1] to install Sukuma
+in an isolated environment:
+
+```bash
+pipx install sukuma
+```
+
+Then you can run it from the command line:
+
+```bash
+sukuma --help
+```
+
+## :black_joker: How to Use It
+
+The top-level command
+is the entry point
+for additional
+operations:
+
+> _`sukuma [--version | -v]`_
+>> **`--version`**
+>>
+>> **`-v`**
+>>
+>> Print
+>> the current version of the program
+>> and exit.
+
+### Launch the Interface
+
+Launch the terminal interface
+with the `sukuma launch` command:
+
+> _`sukuma launch [(--config | -c) <file>]`_
+>> **`--config`**
+>>
+>> **`-c`**
+>>
+>> Specify a custom configuration file
+>> to launch the application.
+
+### Manage the Configuration
+
+The `sukuma config` command provides
+additional subcommands
+to manipulate
+the settings
+for your Sukuma installation:
+
+> _`sukuma config get [--path <file>] [--secret | -s] KEY`_
+>> **`KEY`**
+>>
+>> The configuration key
+>> to be retrieved. **[required]**
+>
+>> **`--path`**
+>>
+>> Specify
+>> a custom configuration file.
+>
+>> **`--secret`**
+>>
+>> **`-s`**
+>>
+>> Retrieve configuration
+>> from the secret manager instead.
+
+> _`sukuma config set [--path <file>] [--secret | -s] KEY VALUE`_
+>> **`KEY`**
+>>
+>> The configuration key
+>> to be retrieved. **[required]**
+>
+>> **`VALUE`**
+>>
+>> The value to be stored
+>> with the key. **[required]**
+>
+>> **`--path`**
+>>
+>> Specify
+>> a custom configuration file.
+>
+>> **`--secret`**
+>>
+>> **`-s`**
+>>
+>> Store configuration
+>> in the secret manager instead.
+
+> _`sukuma config extend [--path <file>] [--secret | -s] [--create-on-missing | -c] KEY VALUE`_
+>> **`KEY`**
+>>
+>> The configuration key
+>> to be extended. **[required]**
+>
+>> **`VALUE`**
+>>
+>> The value to be appended
+>> to the key. **[required]**
+>
+>> **`--path`**
+>>
+>> Specify
+>> a custom configuration file.
+>
+>> **`--secret`**
+>>
+>> **`-s`**
+>>
+>> Store configuration
+>> in the secret manager instead.
+>
+>> **`--create-on-missing`**
+>>
+>> **`-c`**
+>>
+>> Add the provided value
+>> in an array
+>> if the setting is not set.
+>> Will raise an error
+>> otherwise.
+
+> _`sukuma config unset [--path <file>] [--secret | -s] KEY`_
+>> **`KEY`**
+>>
+>> The configuration key
+>> to be removed. **[required]**
+>
+>> **`--path`**
+>>
+>> Specify
+>> a custom configuration file.
+>
+>> **`--secret`**
+>>
+>> **`-s`**
+>>
+>> Retrieve configuration
+>> from the secret manager instead.
+
+## :reminder_ribbon: Contributing
+
+There are several ways
+to contribute to Sukuma.
+Refer to our [`CONTRIBUTING` guide][burl7]
+for all relevant details.
+
+Currently,
+we are seeking help
+to tackle areas of focus
+that are more pressing
+to our project's progress
+and would make an immediate difference
+in helping us achieve our [mission][contributing1].
+
+Here are some key contributions
+your can help us with
+right now:
+
+- Provide input in [design discussions][contributing2]
+  to define the desired features of Sukuma.
+<!-- DEFINE additional areas of assistance as development progresses -->
+
+## :ship: Releases
+
+You can see
+the list of available releases
+on the [GitLab Releases][release1] page.
+
+We follow [Intended Effort Versioning][release2] specification,
+details can be found in our [`CONTRIBUTING` guide][burl18].
+
+## :shield: Licence
+
+[![Licence][blic1]][blic2]
+
+This project is licenced
+under the terms of the **GNU Affero General Public License v3.0 or later**.
+See [LICENCE][blic2] for more details.
+
+## :page_with_curl: Citation
+
+We provide a [`CITATION.cff`][cite1] file
+to make it easier to cite this project
+in your paper.
+
+## :women_with_bunny_ears: Similar Projects
+
+There are only [a few][similar1] projects
+which also tackle personal finances. :face_with_hand_over_mouth:
+
+However, there are some
+that might be worth
+checking out:
+
+- [GnuCash][similar2] is
+  arguably the most classic
+  open source personal finance manager;
+- [KMyMoney][similar3] is
+  a cross-platform personal finance manager
+  built on KDE;
+- [Firefly III][similar4] is
+  one of the most popular
+  self-hosted budgeting app
+  out there;
+- [Bagels][similar5] is
+  a TUI expense tracker,
+  also built with Textual!
+
+Additionally, the [Ledger][similar6]
+accounting system
+is a classical accounting system
+truthful to the UNIX philosophy,
+if you wish to implement
+a fully tailored workflow
+to better suit your needs.
+
+## Credits [![Expand your project structure from atoms of code to galactic dimensions.][badge4]][burl4]
+
+This project was generated with [Galactipy][burl4].
+
+<!-- Anchors -->
+
+[badge1]: https://img.shields.io/pypi/pyversions/sukuma?style=for-the-badge
+[badge1a]: https://img.shields.io/pypi/v/sukuma?style=for-the-badge&logo=pypi&color=3775a9
+[badge2]: https://img.shields.io/badge/GitLab-0B2640?style=for-the-badge&logo=gitlab&logoColor=white
+[badge3]: https://img.shields.io/gitlab/v/release/nummertopia%2Fsukuma?style=for-the-badge&logo=semantic-release&color=FFCA28
+[badge4]: https://img.shields.io/badge/made%20with-galactipy%20%F0%9F%8C%8C-179287?style=for-the-badge&labelColor=193A3E
+[badge5]: https://img.shields.io/badge/project%20type-toy-blue?style=for-the-badge
+[badge6]: https://img.shields.io/pypi/status/sukuma?style=for-the-badge&logo=theplanetarysociety&label=stage
+[badge7]: https://img.shields.io/static/v1.svg?label=Contributions&message=Welcome&color=0059b3&style=for-the-badge
+[badge8]: https://img.shields.io/gitlab/issues/open/nummertopia%2Fsukuma?style=for-the-badge&color=fca326
+[badge9]: https://img.shields.io/gitlab/merge-requests/open/nummertopia%2Fsukuma?style=for-the-badge&color=6fdac9
+[badge10]: https://img.shields.io/badge/code%20style-ruff-261230?style=for-the-badge&labelColor=grey
+[badge11]: https://img.shields.io/badge/%F0%9F%98%9C_gitmoji-ffdd67?style=for-the-badge
+[badge12]: https://img.shields.io/badge/sembr-FF6441?style=for-the-badge&logo=apmterminals&logoColor=white
+[badge13]: https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json&style=for-the-badge
+[badge14]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=for-the-badge
+[badge15]: https://img.shields.io/badge/security-bandit-yellow?style=for-the-badge
+[badge16]: https://img.shields.io/badge/imports-isort-1674b1?style=for-the-badge&labelColor=ef8336
+[badge17]: https://img.shields.io/badge/Editorconfig-E0EFEF?style=for-the-badge&logo=editorconfig&logoColor=000
+[badge18]: https://img.shields.io/badge/effver-0097a7?style=for-the-badge&logo=semver
+<!-- TODO Replace the hash `d5402a91aa7b4234bd1c19b5e86a63be` with your project ID in the "Codacy Badge" section available at https://app.codacy.com/gl/nummertopia/sukuma/settings
+[badge19]: https://img.shields.io/codacy/coverage/d5402a91aa7b4234bd1c19b5e86a63be?style=for-the-badge&logo=codacy -->
+[badge20]: https://img.shields.io/gitlab/pipeline-status/nummertopia%2Fsukuma?branch=master&style=for-the-badge&logo=gitlab&logoColor=white&label=master
+
+[burl1]: https://pypi.org/project/sukuma/
+[burl2]: https://gitlab.com/nummertopia/sukuma
+[burl3]: https://gitlab.com/nummertopia/sukuma/-/releases
+[burl4]: https://kutt.it/7fYqQl
+[burl5]: https://project-types.github.io/#toy
+[burl6]: https://gitlab.com/nummertopia/sukuma/-/blob/master/ROADMAP.md#development-stages
+[burl7]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md
+[burl8]: https://gitlab.com/nummertopia/sukuma/-/issues
+[burl9]: https://gitlab.com/nummertopia/sukuma/-/merge_requests
+[burl10]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#codestyle
+[burl11]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#commit-customs
+[burl12]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#semantic-line-breaks
+[burl13]: https://python-poetry.org/
+[burl14]: https://gitlab.com/nummertopia/sukuma/-/blob/master/.pre-commit-config.yaml
+[burl15]: https://bandit.readthedocs.io/en/latest/
+[burl16]: https://pycqa.github.io/isort/
+[burl17]: https://gitlab.com/nummertopia/sukuma/-/blob/master/.editorconfig
+[burl18]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#versioning-customs
+[burl19]: https://app.codacy.com/gl/nummertopia/sukuma/coverage
+[burl20]: https://gitlab.com/nummertopia/sukuma/-/pipelines
+
+[blic1]: https://img.shields.io/gitlab/license/nummertopia/sukuma?style=for-the-badge
+[blic2]: https://gitlab.com/nummertopia/sukuma/-/blob/master/LICENCE
+
+<!-- TODO Replace the `100` ID with your project's index at https://www.bestpractices.dev/en
+[bossf1]: https://img.shields.io/cii/level/100?style=for-the-badge&logo=linux-foundation&label=openssf%20best%20practices
+[bossf2]: https://www.bestpractices.dev/en/projects/100 -->
+<!-- TODO Replace the `200` ID with your project's index at https://ossrank.com/
+[bossf3]: https://shields.io/endpoint?url=https://ossrank.com/shield/200&style=for-the-badge
+[bossf4]: https://ossrank.com/p/200 -->
+
+<!-- TODO Replace the hash `d5402a91aa7b4234bd1c19b5e86a63be` with your project ID in the "Codacy Badge" section available at https://app.codacy.com/gl/nummertopia/sukuma/settings
+[bqa1]: https://img.shields.io/codacy/grade/d5402a91aa7b4234bd1c19b5e86a63be?style=for-the-badge&logo=codacy
+[bqa2]: https://app.codacy.com/gl/nummertopia/sukuma/dashboard -->
+
+[btyper]: https://img.shields.io/badge/Typer-black?style=for-the-badge&logo=typer
+[ltyper]: https://typer.tiangolo.com/
+[btextual]: https://img.shields.io/badge/Textual-272a35?style=for-the-badge&logo=textual
+[ltextual]: https://textual.textualize.io/
+[borbittings]: https://img.shields.io/badge/orbittings-007A68?style=for-the-badge&logo=orbittings
+[lorbittings]: https://gitlab.com/galactipy/orbittings
+
+[install1]: https://pipx.pypa.io/latest/installation/
+
+[contributing1]: https://gitlab.com/nummertopia/sukuma/-/blob/master/ROADMAP.md#project-mission
+[contributing2]: https://gitlab.com/nummertopia/sukuma/-/issues?state=opened&label_name%5B%5D=design%3A%3A%2A&type%5B%5D=issue
+
+[release1]: https://gitlab.com/nummertopia/sukuma/-/releases
+[release2]: https://jacobtomlinson.dev/effver/
+
+[bdocstr1]: https://img.shields.io/badge/docstrings-numpydoc-4dabcf?style=for-the-badge&labelColor=4d77cf
+[bdocstr2]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#docstring-convention
+
+[bbbd1]: https://img.shields.io/badge/BDD-23D96C?style=for-the-badge&logo=cucumber&logoColor=white
+[bbbd2]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CONTRIBUTING.md#behaviour-driven-development
+
+[cite1]: https://gitlab.com/nummertopia/sukuma/-/blob/master/CITATION.cff
+
+[similar1]: https://github.com/topics/personal-finance
+[similar2]: https://gnucash.org/
+[similar3]: https://kmymoney.org/
+[similar4]: https://github.com/firefly-iii/firefly-iii
+[similar5]: https://github.com/EnhancedJax/Bagels
+[similar6]: https://github.com/ledger/ledger
