@@ -1,0 +1,23 @@
+[project]
+name = "dalux-client"
+version = "0.1.1"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Eivind Teig", email = "eivind.teig@gmail.com" }
+]
+requires-python = ">=3.14.0"
+dependencies = [
+    "certifi>=14.5.14",
+    "python-dateutil>=2.5.3",
+    "setuptools>=21.0.0",
+    "six>=1.10",
+    "urllib3>=1.15.1",
+]
+
+[project.scripts]
+dalux-client = "dalux_client:main"
+
+[build-system]
+requires = ["uv_build>=0.9.5,<0.10.0"]
+build-backend = "uv_build"
