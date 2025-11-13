@@ -1,0 +1,13 @@
+[project]
+name = "woke-time-mcp"
+version = "0.1.6"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [ "fastmcp>=2.13.0.2",]
+
+[project.scripts]
+woke-time-mcp = "woke_time_mcp.server:main"
+
+[tool.uv.workspace]
+members = [ "venv",]
