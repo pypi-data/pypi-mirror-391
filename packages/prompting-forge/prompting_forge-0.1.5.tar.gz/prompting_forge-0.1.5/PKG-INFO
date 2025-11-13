@@ -1,0 +1,223 @@
+Metadata-Version: 2.4
+Name: prompting-forge
+Version: 0.1.5
+Summary: A lightweight, modular library for building, composing, and managing structured prompts for LLMs
+License-File: LICENSE
+Requires-Python: >=3.10,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: genai-forge (>=0.2.1)
+Description-Content-Type: text/markdown
+
+# Prompting Forge
+
+A simple, focused library for creating and versioning prompt templates.
+
+## Core Concept
+
+**PromptTemplate** is the central object that:
+1. Defines a prompt with a system message and template with Python-style `{placeholders}`
+2. Automatically saves versions to `.prompt/{instance_name}/{instance_name}__prompt__v{version}.json`
+3. Extracts variables from the template automatically
+4. **Smart versioning**: Only creates a new version if the prompt changes (compares system, template, and variables)
+
+### Version Management
+
+- **First instantiation**: Creates v1
+- **Identical prompt**: Reuses existing version (no duplicate saved)
+- **Modified prompt**: Increments version number (v2, v3, etc.)
+- **Clear feedback**: Displays whether a new version was created or an existing one was reused
+
+## Quick Start
+
+```python
+from prompting_forge.prompting import PromptTemplate
+
+# Create a prompt template with an instance name to save it
+template = PromptTemplate(
+    system="You are a helpful assistant.",
+    template="Answer the following question about {topic}: {question}",
+    instance_name="my_prompt",
+)
+
+# The template is automatically saved to:
+# .prompt/my_prompt/my_prompt__prompt__v1.json
+```
+
+## Directory Structure
+
+```
+prompting-forge/
+├── prompting_forge/
+│   ├── __init__.py
+│   ├── prompting/
+│   │   ├── __init__.py
+│   │   └── prompt.py          # Core PromptTemplate class
+│   └── versioning.py          # Version saving logic
+├── example.py                 # Simple example
+└── README.md
+```
+
+## Saved Prompt Format
+
+When you instantiate a `PromptTemplate` with an `instance_name`, it saves a JSON file:
+
+```json
+{
+  "ts": "2025-11-12T10:30:00.000000+00:00",
+  "instance": "my_prompt",
+  "version": 1,
+  "system": "You are a helpful assistant.",
+  "template": "Answer the following question about {topic}: {question}",
+  "variables": ["question", "topic"]
+}
+```
+
+## Example
+
+Run the example:
+
+```bash
+python example.py
+```
+
+**First run** (creates v1):
+```
+✓ New prompt version created: v1
+  Saved to: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v1.json
+
+Template variables: ['impact', 'rca_hypothesis', 'severity', 'stakeholders', 'title']
+```
+
+**Second run** (detects identical prompt):
+```
+⊙ Prompt unchanged - using existing version: v1
+  Location: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v1.json
+
+Template variables: ['impact', 'rca_hypothesis', 'severity', 'stakeholders', 'title']
+```
+
+**After modifying the template** (creates v2):
+```
+✓ New prompt version created: v2
+  Saved to: C:\...\prompting-forge\.prompt\prompting_example\prompting_example__prompt__v2.json
+
+Template variables: [...]
+```
+
+### Test Versioning Behavior
+
+Run the comprehensive test to see all versioning scenarios:
+
+```bash
+python test_versioning.py
+```
+
+This demonstrates:
+- Creating initial version (v1)
+- Reusing identical prompts (stays at v1)
+- Creating new versions when content changes (v2, v3, etc.)
+- Comparing system messages, templates, and variables
+
+### Complete Workflow Example
+
+Run the full synthesis workflow:
+
+```bash
+python example_final_synthesis.py
+```
+
+This shows:
+1. Creating multiple prompt versions iteratively
+2. Using `FinalPromptTemplate` to synthesize with LLM
+3. Using the final prompt in production
+
+## Final Prompt Synthesis
+
+After creating multiple prompt versions, use `FinalPromptTemplate` to synthesize an optimized final prompt using an LLM:
+
+```python
+from prompting_forge.prompting import PromptTemplate, FinalPromptTemplate
+from genai_forge import get_llm
+
+# Create multiple versions
+v1 = PromptTemplate(
+    system="You are a helper.",
+    template="Help with {task}.",
+    instance_name="my_assistant",
+)
+
+v2 = PromptTemplate(
+    system="You are an expert helper.",
+    template="Provide detailed help with {task} for {audience}.",
+    instance_name="my_assistant",
+)
+
+# Synthesize final prompt from all versions
+llm = get_llm("openai:gpt-4o-mini")
+
+final = FinalPromptTemplate(
+    instance_name="my_assistant",
+    variables=["task", "audience"],  # Variables you want in final template
+    llm_client=llm,
+)
+
+# The LLM analyzes all versions and creates an optimized final prompt
+# Saved to: .prompt/my_assistant/final_prompt.json
+```
+
+### How It Works
+
+1. **Collects all versions**: Reads all `{instance_name}__prompt__v*.json` files
+2. **LLM synthesis**: Uses `PromptTemplate` + `LLMCall` to analyze versions
+3. **Creates optimized prompt**: LLM generates system message and template
+4. **Validates variables**: Ensures all required variables are in the final template
+5. **Saves final prompt**: Stores as `final_prompt.json` (version -1)
+6. **Reuses if exists**: Subsequent instantiations use the existing final prompt
+
+## API Reference
+
+### `PromptTemplate`
+
+**Parameters:**
+- `system` (Optional[str]): System message for the prompt
+- `template` (str): Template string with `{variable}` placeholders
+- `variables` (Optional[Iterable[str]]): Explicit variable list (auto-detected if not provided)
+- `instance_name` (Optional[str]): Name for saving versions (creates `.prompt/{instance_name}/` directory)
+- `version_root` (Optional[Path]): Root directory for `.prompt/` (defaults to current directory)
+
+**Methods:**
+- `format(variables, instructions=None)` → `ChatPrompt`: Format the template with variable values
+- `render(context, strict=True)` → `str`: Render template to plain string
+- `expected_variables()` → `Set[str]`: Get the set of variables in the template
+
+### `FinalPromptTemplate`
+
+**Parameters:**
+- `instance_name` (str): Name of the prompt instance to synthesize
+- `variables` (List[str]): Variable names the final template must use
+- `llm_client`: LLM client from genai-forge
+- `synthesis_instructions` (Optional[str]): Custom instructions for synthesis
+- `version_root` (Optional[Path]): Root directory for `.prompt/` folder
+
+**Requirements:**
+- At least 2 prompt versions must exist for the instance
+- Uses `PromptTemplate` + `LLMCall` internally for synthesis
+
+**Inherits from:** `BasePromptTemplate` (has same methods as `PromptTemplate`)
+
+### `ChatPrompt`
+
+Simple dataclass representing a formatted prompt:
+- `system` (Optional[str]): System message
+- `user` (str): User message
+- `to_messages()` → `list[dict]`: Convert to message format for LLM APIs
+
+## License
+
+MIT
+
