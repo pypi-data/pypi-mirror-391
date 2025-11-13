@@ -1,0 +1,40 @@
+[project]
+name = "qemb"
+version = "0.1.1"
+#dynamic = ["version"]
+#license = "Apache-2.0"
+description = "A script to do embedded cluster cutting and generate input files for calculations."
+authors = [
+    { name = "zyl", email = "makarov3821@gmail.com" }
+]
+requires-python = ">=3.8"
+dependencies = [
+    "toml",
+    "shapely",
+    "numpy",
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "black",
+    "flake8",
+]
+
+[build-system]
+#requires = ["setuptools>=61.0", "wheel", "setuptools_scm"]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+qemb = "qemb.cli:main"
+
+#[tool.setuptools_scm]
+#write_to = "src/qemb/_version.py"
+#version_scheme = "post-release"
+#local_scheme = "no-local-version"
+
+[project.urls]
+Homepage = "https://github.com/Makarov3821/qemb"

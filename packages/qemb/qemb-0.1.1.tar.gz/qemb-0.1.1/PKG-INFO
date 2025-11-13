@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: qemb
+Version: 0.1.1
+Summary: A script to do embedded cluster cutting and generate input files for calculations.
+Author-email: zyl <makarov3821@gmail.com>
+Project-URL: Homepage, https://github.com/Makarov3821/qemb
+Requires-Python: >=3.8
+License-File: LICENSE
+Requires-Dist: toml
+Requires-Dist: shapely
+Requires-Dist: numpy
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: license-file
