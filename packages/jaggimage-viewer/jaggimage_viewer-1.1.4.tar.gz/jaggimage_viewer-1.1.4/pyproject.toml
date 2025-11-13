@@ -1,0 +1,53 @@
+[project]
+name = "jaggimage-viewer"
+description = "A nice image viewer in the spirit of ACDSee"
+keywords = ["image viewer", "ACDSee replacement", "Qt"]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dynamic = ["version"]
+requires-python = ">=3.10"
+dependencies = [
+    "pyqt5>=5.15.11",
+]
+classifiers = [
+    "Topic :: Multimedia :: Graphics :: Viewers",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Environment :: X11 Applications :: Qt",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+]
+authors = [
+    { name="cLx", email="clx.kat@gmail.com" },
+]
+
+[project.urls]
+Homepage = "https://github.com/clxjaguar/jaggimage-viewer"
+Issues = "https://github.com/clxjaguar/jaggimage-viewer/issues"
+Documentation = "https://pypi.org/project/jaggimage-viewer/"
+
+[build-system]
+requires = [
+    "hatchling",
+    "hatch-vcs",
+]
+build-backend = "hatchling.build"
+
+[project.gui-scripts]
+jaggimage-viewer = "jaggimage_viewer:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "_version.py"
+
+[tool.hatch.build.targets.wheel]
+include = ["*.py"]
+
+[tool.hatch.build.targets.wheel.sources]
+"" = "jaggimage_viewer"
+
+[tool.hatch.version.raw-options]
+version_scheme = "python-simplified-semver"
