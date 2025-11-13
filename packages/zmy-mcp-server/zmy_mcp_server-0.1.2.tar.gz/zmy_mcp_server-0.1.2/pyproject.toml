@@ -1,0 +1,20 @@
+[project]
+name = "zmy-mcp-server"
+version = "0.1.2"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [ "fastmcp>=2.13.0.2",]
+
+[project.scripts]
+zmy-mcp-server-run = "zmy_mcp_server.server:main"
+
+[tool.uv.workspace]
+members = [ "venv",]
+
+[tool.setuptools.package-data]
+zmy_mcp_server = [ "config.yaml",]
+
+[tool.pytest.ini_options]
+testpaths = [ "tests",]
+pythonpath = [ "src",]
