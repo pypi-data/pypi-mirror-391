@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: cfbm
+Version: 2025.2.1
+Summary: CHIME/FRB Beam Model
+License: MIT
+License-File: LICENSE
+Author: Paul Scholz
+Author-email: paul.scholz@dunlap.utoronto.ca
+Requires-Python: >=3.6,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: chime-frb-constants (>=2020.07,<2021.0)
+Requires-Dist: h5py (>=3.0)
+Requires-Dist: numpy (>=1.18.5)
+Requires-Dist: pyephem (>=3.7.7,<4.0.0)
+Requires-Dist: requests (>=2.24.0,<3.0.0)
+Requires-Dist: scipy (>=1.4.1,<2.0.0)
+Project-URL: Homepage, https://chime-frb-open-data.github.io/
+Project-URL: Repository, https://github.com/chime-frb-open-data/chime-frb-beam-model
+Description-Content-Type: text/markdown
+
+# CHIME/FRB Beam Model
+
+Models describing the primary and formed beams for for Canadian Hydrogen Intensity Mapping Experiment FRB backend (CHIME/FRB).
+
+
+## Installation
+
+The package can be installed from PyPI using the following command:
+
+```
+pip install cfbm
+```
+
+To use the primary beam model, data for the beam must be downloaded after installation by: 
+
+* Either running the script [cfbm/bm_data/get_data.py](https://github.com/chime-frb-open-data/chime-frb-beam-model/blob/main/cfbm/bm_data/get_data.py).
+
+* Or from within python:
+```
+from cfbm.bm_data import get_data
+get_data.main()
+```
+
+## Documentation
+
+Check out the user documentation, [here](https://chime-frb-open-data.github.io/)
+
+
+
