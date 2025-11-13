@@ -1,0 +1,77 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main, staging, develop]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # Fetch all history for mike versioning
+
+      - name: Detect tag
+        id: tag
+        run: |
+          TAG=$(git describe --tags --exact-match 2>/dev/null || true)
+          echo "value=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[docs]"
+
+      - name: Build documentation (main branch)
+        if: github.ref_name == 'main'
+        run: |
+          mike deploy --update-aliases latest stable
+          mike set-default latest
+
+      - name: Build documentation (staging branch)
+        if: github.ref_name == 'staging'
+        run: |
+          mike deploy staging
+
+      - name: Build documentation (develop branch)
+        if: github.ref_name == 'develop'
+        run: |
+          mike deploy dev
+
+      - name: Set default alias when missing (develop)
+        if: github.ref_name == 'develop'
+        run: |
+          DEFAULT_ALIAS=$(mike list --remote 2>/dev/null | awk '/^\*/ {print $2}')
+          if [ -z "$DEFAULT_ALIAS" ]; then
+            mike set-default dev
+          fi
+
+      - name: Build documentation (version tag)
+        if: steps.tag.outputs.value != ''
+        run: |
+          VERSION=${{ steps.tag.outputs.value }}
+          VERSION=${VERSION#v}
+          mike deploy --update-aliases $VERSION stable
+          mike set-default $VERSION
+
+      - name: Push documentation to gh-pages
+        run: |
+          git push origin gh-pages
