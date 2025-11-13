@@ -1,0 +1,159 @@
+[project]
+name = "iowarp-agent-toolkit"
+version = "0.0.0"
+description = "IOWarp Agent Toolkit - MCP Servers, Clients, and Tools for AI Agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "BSD-3-Clause"}
+authors = [
+    { name = "IoWarp Team - Gnosis Research Center", email = "grc@illinoistech.edu" }
+]
+
+keywords = [
+    "ai-agents",
+    "mcp",
+    "model-context-protocol",
+    "scientific-computing",
+    "hpc",
+    "hdf5",
+    "slurm",
+    "research-tools",
+    "llm-integration",
+    "iowarp"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "click>=8.1.0",
+    "fastmcp>=2.11.0",
+]
+
+[project.optional-dependencies]
+# MCP Server dependencies
+hdf5 = [
+    "h5py>=3.15.0",
+    "numpy>=2.0.0",
+]
+parquet = [
+    "pyarrow>=18.1.0",
+    "pandas>=2.2.0",
+]
+pandas = [
+    "pandas>=2.2.0",
+    "numpy>=2.0.0",
+]
+slurm = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+arxiv = [
+    "arxiv>=2.1.0",
+    "pydantic>=2.4.2,<3.0.0",
+]
+plot = [
+    "matplotlib>=3.9.0",
+    "numpy>=2.0.0",
+]
+compression = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+lmod = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+chronolog = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+adios = [
+    "adios2>=2.10.0",
+    "numpy>=2.0.0",
+    "pydantic>=2.4.2,<3.0.0",
+]
+ndp = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+darshan = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+jarvis = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+node-hardware = [
+    "psutil>=5.9.0",
+    "pydantic>=2.4.2,<3.0.0",
+]
+parallel-sort = [
+    "pydantic>=2.4.2,<3.0.0",
+]
+
+# Install all MCP servers
+all = [
+    "iowarp-agent-toolkit[hdf5,parquet,pandas,slurm,arxiv,plot,compression,lmod,chronolog,adios,ndp,darshan,jarvis,node-hardware,parallel-sort]",
+]
+
+# Development dependencies
+dev = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=0.21.0",
+    "ruff>=0.12.5",
+    "mypy>=1.8.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://iowarp.github.io/agent-toolkit/"
+Repository = "https://github.com/iowarp/agent-toolkit"
+Documentation = "https://iowarp.github.io/agent-toolkit/"
+"Bug Reports" = "https://github.com/iowarp/agent-toolkit/issues"
+
+[project.scripts]
+iowarp-agent-toolkit = "iowarp_agent_toolkit.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/iowarp_agent_toolkit"]
+artifacts = [
+    "agent-toolkit-mcp-servers/",
+    "agent-toolkit-ai-devkit/",
+    "agent-toolkit-mcp-clients/",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "build_tools.py",
+    "hatch_build.py",
+    "README.md",
+    "LICENSE",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
