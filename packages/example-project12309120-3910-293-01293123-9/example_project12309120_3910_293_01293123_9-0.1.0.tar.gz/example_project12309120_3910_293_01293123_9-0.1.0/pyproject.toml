@@ -1,0 +1,18 @@
+[project]
+name = "example-project12309120-3910-293-01293123-9"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "kotborealis",email = "kotborealis@awooo.ru"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "example_project", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
