@@ -1,0 +1,13 @@
+{
+    "argv": [
+        "python3",
+        "-m",
+        "ipykernel",
+        "-f",
+        "{connection_file}",
+        "--IPKernelApp.exec_lines=import lamb.lnsetup",
+        "--IPKernelApp.exec_lines=lamb.lnsetup.ipython_setup()"
+    ],
+    "display_name": "Lambda Notebook (Python 3)",
+    "language": "python"
+}
