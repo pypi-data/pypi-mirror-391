@@ -1,0 +1,36 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+extends layout
+
+block title
+  title= _("hector") + " – " + _("auth-login-title")
+
+block content
+  section.section
+    .container
+      h1.title.is-3.has-text-centered= _("auth-login-title")
+
+      .columns
+        .column
+        .column
+          .buttons
+            each link in links
+              //- Some plugins, like WebAuthn, need the page to be loaded "normally".
+              a.button.is-fullwidth(href="#{url_for(link.route)}" hx-boost="false")
+                span.icon: i.fas(class="fa-#{link.icon}")
+                span= _("auth-login-method", method=link.label)
+        .column

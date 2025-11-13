@@ -1,0 +1,82 @@
+[tool.poetry]
+name = "bl_hector"
+version = "0.4.6"
+description = "A collection manager."
+authors = ["Tanguy Le Carrour <tanguy@bioneland.org>"]
+license = "AGPL-3.0-or-later"
+readme = "README.md"
+repository = "https://git.easter-eggs.org/bioneland/hector"
+
+exclude = [
+    "**/*_spec.py",
+    "**/*_test.py",
+    "**/*.feature",
+    "**/use_cases/steps/*.py",
+    "**/conftest.py",
+    "**/test_factories.py",
+]
+
+[tool.poetry.scripts]
+hector = "bl_hector.configuration.cli:cli"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Flask = "^2.3.2"
+pypugjs = "^5.9.12"
+bl-seth = "^0.2.0"
+isbnlib = "^3.10.14"
+jinja2-fragments = "^0.3.0"
+SQLAlchemy = "^2.0.15"
+typer = "^0.9.0"
+bl3d = "^1.0.0a1"
+"fluent.runtime" = "^0.4.0"
+webauthn = {version = "^1.8.1", optional = true}
+requests = "^2.31.0"
+pyotp = {version = "^2.8.0", optional = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+robber = "^1.1.5"
+invoke = "^2.1.1"
+flake8 = "^6.0.0"
+black = "^23.3.0"
+isort = "^5.12.0"
+mypy = "^1.2.0"
+termcolor = "^2.3.0"
+types-setuptools = "^67.7.0"
+mamba = "^0.11.3"
+beautifulsoup4 = "^4.12.2"
+types-beautifulsoup4 = "^4.12.0"
+behave = "^1.2.6"
+types-requests = "^2.31.0"
+
+[tool.poetry.extras]
+webauthn = ["webauthn"]
+totp = ["pyotp"]
+
+[tool.poetry.group.fix.dependencies]
+greenlet = "^3.1.1"
+cffi = "^1.17.1"
+setuptools = "^75.3.0"  # bl3d
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 89
+
+[[tool.mypy.overrides]]
+module = [
+    "behave.*",
+    "isbnlib.*",
+    "jinja2_fragments.*",
+    "mamba.*",
+    "pypugjs.*",
+    "robber.*",
+]
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

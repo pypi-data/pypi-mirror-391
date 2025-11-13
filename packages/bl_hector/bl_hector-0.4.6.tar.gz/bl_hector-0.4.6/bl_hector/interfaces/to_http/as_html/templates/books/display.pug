@@ -1,0 +1,59 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+extends layout
+
+block title
+  title= _("hector") + " – " + _("display-book-title", title=book.title)
+
+block content
+  section.section
+    .container
+      //- Fixes a spacing problem.
+      .buttons.is-pulled-right(style="margin-bottom: -1rem")
+        if user.can_update_book
+          a.button.is-link(href="#{url_for('books.update_form', isbn=book.isbn)}")
+            span.icon: i.fas.fa-edit
+            span= _("update-book-action")
+        else
+          button.button.is-link.is-disabled(disabled title=_("update-book-requires-authentification"))
+            span.icon: i.fas.fa-edit
+            span= _("update-book-action")
+
+      h1.title.is-3= book.title
+
+      .columns
+        .column.is-one-quarter
+          img#cover.cover.is-2by3(
+            src="#{book.cover or url_for('static', filename='img/placeholders/320x480.png')}"
+            alt="Book cover"
+          )
+        .column
+          dl
+            dt= _("book-isbn")
+            dd= book.isbn
+            dt= _("book-title")
+            dd= book.title
+            dt= _("book-year")
+            dd= book.year
+            dt= _("book-authors")
+            dd= book.authors
+            dt= _("book-genres")
+            dd= book.genres or "-"
+            dt= _("book-added-on")
+            dd= book.added_on
+            dt= _("book-updated-on")
+            dd= book.updated_on

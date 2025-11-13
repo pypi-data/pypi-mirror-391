@@ -1,0 +1,48 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+mixin navbar()
+  nav.navbar(role="navigation" aria-label="main navigation")
+    .container
+      .navbar-brand
+        a.navbar-item.is-size-5.has-text-weight-semibold(href="#{url_for('aliases.root')}")= _("hector")
+        a.navbar-burger(
+          role="button"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarHector"
+          _="on click toggle .is-active on <.navbar-burger, .navbar-menu/>"
+        )
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+          span(aria-hidden="true")
+
+      #navbarHector.navbar-menu
+        .navbar-start
+          a.navbar-item(href="#{url_for('books.search')}")= _("menu-books")
+        .navbar-end
+          .navbar-item
+            .field.is-grouped
+              //- Auth pages contains JS and should be properly loaded.
+              p.control
+                if user.id
+                  a.button.is-success.is-light(href="#{url_for('auth.logout')}")
+                    span.icon: i.fa.fa-lock
+                    span= _("menu-logout")
+                else
+                  a.button.is-warning.is-light(href="#{url_for('auth.login')}")
+                    span.icon: i.fa.fa-lock-open
+                    span= _("menu-login")
