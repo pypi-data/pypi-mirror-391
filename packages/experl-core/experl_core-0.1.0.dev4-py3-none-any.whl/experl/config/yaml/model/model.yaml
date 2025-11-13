@@ -1,0 +1,8 @@
+dtype: "bfloat16"
+attn_implementation: "eager"
+
+load_in_4bit: True
+bnb_4bit_quant_type: "nf4"
+use_bnb_nested_quant: False
+
+padding_side: "right"
