@@ -1,0 +1,88 @@
+# discord-autoupdate-secure
+
+discord-autoupdate-secure makes the Linux Discord client behave like a trusted, self-updating application: every launch verifies the transport, checksums the `.deb`, installs only if it matches Discord’s own digest, and then hands control back to the regular app. It also ships with a shortcut bootstrapper so the stock “Discord” icon routes through this hardened updater.
+
+---
+
+## Quick start (recommended flow)
+
+1. **Install the CLI (isolated)**  
+    Use pipx (preferred):
+    ```bash
+    pipx install discord-autoupdate-secure
+    ```
+    Or pip in user mode:
+    ```bash
+    pip install --user discord-autoupdate-secure
+    ```
+    Installing into system site-packages with `sudo pip` is discouraged.
+
+2. **Bootstrap the desktop shortcut (installs Discord if needed)**  
+    ```bash
+    discord-autoupdate-secure --bootstrap
+    ```
+    This installs Discord when missing and rewrites the launcher for the current user. Run once per user account; the pip install step does **not** touch desktop files.
+
+3. **Launch Discord normally**  
+    Use your desktop’s Discord shortcut as usual. It now runs `discord-autoupdate-secure` first, which checks for updates, elevates when approved, installs if required, and finally launches Discord.
+
+---
+
+## What the bootstrapper changes
+
+Running `--bootstrap` drops a managed `discord.desktop` into `~/.local/share/applications`:
+
+- The tool clones the current Discord desktop entry when possible so icons, categories, translations, and Flatpak/Snap flags remain intact.
+- Only the `Exec=` line is rewritten to point at `discord-autoupdate-secure`; any original command-line options are preserved.
+- Existing user-level entries are backed up as `discord.desktop.bak`, `.bak1`, etc. so you can revert if needed.
+- If Discord is not installed yet, the bootstrapper downloads and installs the latest `.deb` first so the icon and desktop metadata exist before rewriting the launcher.
+- Menus that honor the FreeDesktop spec (GNOME, Xfce/Xubuntu, KDE Plasma, Cinnamon, Budgie, etc.) automatically pick up the change. Reopen your menu or log out/in if you don’t see the new entry immediately.
+- Re-run `discord-autoupdate-secure --bootstrap` whenever you want to refresh or repair the shortcut.
+
+---
+
+## Everyday commands
+
+| Command | Purpose |
+| --- | --- |
+| `discord-autoupdate-secure` | Check for updates, install if needed, then launch Discord. |
+| `discord-autoupdate-secure --update` | Update Discord only; do not launch afterward. |
+| `discord-autoupdate-secure --check` | Print installed vs. latest versions without installing. |
+| `discord-autoupdate-secure --bootstrap` | (Re)install the managed desktop shortcut for the current user. |
+
+During an update the tool uses Tk to confirm you actually want to elevate. Redirects that leave Discord-owned domains or downloads that fail the MD5 digest published by Discord are rejected with an explanation.
+
+---
+
+## Troubleshooting
+
+- **“Could not find Discord executable.”** The CLI expects `discord` (or `Discord`) in your `PATH`. If you installed via Snap/Flatpak, ensure the binary is exposed or edit the desktop file to point to the wrapper you use.
+- **“Refusing untrusted download host.”** Captive portals and filtering proxies sometimes rewrite the download URL. Retry on a trusted connection and make sure `discord.com` resolves correctly.
+- **Checksum mismatch / dpkg failure.** The `.deb` may have changed mid-download or your package database is in a bad state. Run `discord-autoupdate-secure --update` from a terminal to see full logs, then inspect `/var/log/apt/term.log`.
+- **Desktop icon didn’t change.** Run `discord-autoupdate-secure --bootstrap` again, then refresh your desktop database via `update-desktop-database ~/.local/share/applications` or log out/in.
+
+---
+
+## Publish to PyPI
+
+This project uses the same lightweight workflow as `../wove`.
+
+1. Create `~/.pypirc` with your PyPI/TestPyPI API tokens.
+2. Bump the version in `pyproject.toml` and rebuild any artifacts if needed.
+3. Run the helper script (it activates `.venv`, installs the publish requirements, and mirrors the wove process):
+   ```bash
+   ./publish.sh
+   ```
+   The script wipes `dist/`, installs `build` and `twine`, runs `python -m build`, and uploads everything in `dist/` via `twine upload`.
+
+---
+
+## Contributing & support
+
+Pull requests and issues are welcome. Please include:
+
+- Distribution and desktop environment.
+- The exact command you ran plus the console output (scrub secrets).
+- Whether the failure happened before or after privilege escalation.
+
+Contributions that expand verification coverage or add reliable tests are especially valuable.
