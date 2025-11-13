@@ -1,0 +1,103 @@
+# FLASH-MM
+
+FLASH-MM provides a fast and scalable algorithm for fitting linear mixed-effects models (LMMs). Mixed-effects models are essential for capturing intra-subject correlations and inter-subject variability, but traditional LMM estimation methods often suffer from limitations in computational speed and memory efficiency when applied to large-scale datasets. The FLASH-MM overcomes these challenges by offering a scalable and memory-efficient approach to LMM fitting.
+
+The FLASH-MM Python package provides two functions for fitting LMMs: lmm and lmmfit. The lmm function takes summary statistics as input, whereas lmmfit is a wrapper around lmm that directly processes cell-level data and computes the summary statistics internally. While lmmfit is easier to use, it has the limitation of higher memory consumption. For extremely large-scale data, it is recommended to precompute and store the summary statistics and then use lmm function to fit LMMs.
+
+In summary, FLASH-MM package provides the following main functions.
+
+* lmm: fit LMM using summary-level (summary statistics) data.
+* lmmfit: fit LMM using cell-level data.
+* lmmtest: perform statistical tests on the fixed effects and their contrasts.
+* sslmm: compute the summary-levle data.
+* contrast_matrix: construct contrast matrix of the fixed effects for various comparisons.
+
+## Installation
+pip install .
+
+## Example
+```python
+import numpy as np
+import pandas as pd
+from flash_mm import lmm, lmmfit, lmmtest, sslmm, contrast_matrix
+
+# Generate data
+np.random.seed(2024)
+n, m = 1000, 10
+# Create Y matrix (m x n)
+Y = np.random.randn(m, n)
+Y_names = [f"Gene{i+1}" for i in range(Y.shape[0])]
+
+# Create treatment groups
+trt = np.random.choice(["A", "B"], size=n, replace=True)
+
+# Create model matrix (dummy variables for trt)
+X = np.column_stack((trt == "A", trt == "B")).astype(float)
+X_names = [f"Trt{i+1}" for i in range(X.shape[1])]
+
+# Random effect matrix for individual samples
+q = 20
+sam = np.empty(n, dtype=object)
+sam[trt == "A"] = [f"A{i}" for i in np.random.randint(1, q//2 + 1, size=(trt == "A").sum())]
+sam[trt == "B"] = [f"B{i}" for i in np.random.randint(1, q//2 + 1, size=(trt == "B").sum())]
+Z = np.column_stack([sam == f"A{i}" for i in range(1, q//2 + 1)] +
+                    [sam == f"B{i}" for i in range(1, q//2 + 1)]).astype(float)
+
+d = Z.shape[1]
+#d = [int(q/2), int(q/2)]
+
+method = "REML"
+#method = "ML"
+
+# Fit LMM based on sample-level data.
+fit = lmmfit(Y, X, Z, d=d, Y_names=Y_names, X_names=X_names, method = method, output_cov=True, output_RE=True)
+
+print(fit['theta'])
+print(fit['coef'])
+
+# Fit LMM based on summary-level (summary statistics) data.
+## Compute the summary-level data.
+n = X.shape[0]
+XX = X.T @ X
+XY = (Y @ X).T
+ZX = Z.T @ X
+ZY = (Y @ Z).T
+ZZ = Z.T @ Z
+Ynorm = np.sum(Y * Y, axis=1)
+
+## Or use sslmm function to compute the summary statistics.
+#ss = sslmm(X, Y, Z)
+#XX = ss["XX"]
+#XY = ss["XY"]
+#ZX = ss["ZX"]
+#ZY = ss["ZY"]
+#ZZ = ss["ZZ"]
+#Ynorm = ss["Ynorm"]
+#n = ss["n"]
+
+fitss = lmm(XX, XY, ZX, ZY, ZZ, Ynorm, n=n, d=d, method=method, output_cov=True, output_RE=True)
+
+print(fitss['theta'])
+print(fitss['coef'])
+print(fitss['cov'])
+
+# Test fixed effects.
+test=lmmtest(fit)
+print(test)
+
+## Use contrasts.
+model_vars = ["A", "B"]
+contrast = {
+    "AvsB": "A-B",
+    "A": "A",
+    "B": "B"
+    }
+
+cm = contrast_matrix(contrast, model_vars)
+print(cm)
+test_cm=lmmtest(fit, contrast = cm)
+print(test_cm)
+
+```
+
+
