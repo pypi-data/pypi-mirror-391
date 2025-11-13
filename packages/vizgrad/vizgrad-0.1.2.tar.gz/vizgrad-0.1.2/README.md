@@ -1,0 +1,667 @@
+# VizGrad
+
+A lightweight automatic differentiation engine with powerful visualization capabilities, designed for education and experimentation.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- **Automatic Differentiation**: Full backpropagation with computational graph tracking
+- **Rich Operations**: Arithmetic, matrix operations, and activation functions (ReLU, tanh, sigmoid, softmax, etc.)
+- **Interactive Visualization**: Plot gradients and optimization trajectories with dark-mode charts
+- **NumPy Integration**: Efficient array operations with full broadcasting support
+- **Educational Focus**: Clean, readable code perfect for learning deep learning fundamentals
+- **Lightweight**: Minimal dependencies, easy to understand and extend
+
+## Installation
+
+```bash
+pip install vizgrad
+```
+
+## Quick Start
+
+### Basic Usage
+
+```python
+from vizgrad import Value
+
+# Create variables
+x = Value(2.0, name='x')
+y = Value(3.0, name='y')
+
+# Build computation graph
+z = x * y + x**2
+z.name = 'z'
+
+# Compute gradients
+z.backward()
+
+print(f"z = {z.data}")           # 10.0
+print(f"∂z/∂x = {x.grad}")       # 7.0 (y + 2x)
+print(f"∂z/∂y = {y.grad}")       # 2.0 (x)
+```
+
+### Visualize Gradients
+
+```python
+from vizgrad import Value
+
+x = Value(2.0, name='x')
+y = (x**2 + 2*x + 1)
+y.name = 'f(x)'
+
+# Compute gradient
+y.backward()
+
+# Visualize the function and its gradient
+y.visualize(x, range_scale=3.0, show_tangent=True)
+```
+
+This creates a plot showing:
+- The function curve
+- Current point
+- Tangent line (gradient)
+- Gradient value display
+
+### Optimization Visualization
+
+```python
+from vizgrad import Value
+
+# Setup
+x = Value(-1.5, name='x')
+history = []
+
+# Gradient descent
+for i in range(50):
+    y = x**2 + 2*x + 1  # f(x) = (x+1)²
+    y.backward()
+    
+    history.append(float(x.data))
+    
+    # Update step
+    x.data -= 0.1 * x.grad
+    x.zero_grad()
+
+# Visualize the optimization path
+y = (x**2 + 2*x + 1)
+y.name = 'Loss'
+y.visualize_sequence(x, history, show_tangent=True)
+```
+
+This creates an interactive slider to explore each step of the optimization process.
+
+## Core Operations
+
+### Arithmetic Operations
+
+```python
+from vizgrad import Value
+
+a = Value(2.0)
+b = Value(3.0)
+
+# Basic operations
+c = a + b        # Addition
+d = a - b        # Subtraction
+e = a * b        # Multiplication
+f = a / b        # Division
+g = a ** 2       # Power (scalar exponent)
+h = a ** b       # Power (Value exponent)
+i = -a           # Negation
+
+# Reverse operations are also supported
+j = 2 + a        # Reverse addition
+k = 2 * a        # Reverse multiplication
+l = 2 - a        # Reverse subtraction
+m = 2 / a        # Reverse division
+```
+
+### Activation Functions
+
+```python
+x = Value(0.5)
+
+# Activation functions
+y1 = x.relu()           # Rectified Linear Unit
+y2 = x.tanh()           # Hyperbolic tangent
+y3 = x.sigmoid()        # Sigmoid (logistic function)
+y4 = x.exp()            # Exponential
+y5 = x.log()            # Natural logarithm
+y6 = x.abs()            # Absolute value
+y7 = x.sin()            # Sine
+y8 = x.cos()            # Cosine
+y9 = x.tan()            # Tangent
+```
+
+### Matrix Operations
+
+```python
+from vizgrad import Value
+import numpy as np
+
+# Matrix multiplication
+A = Value([[1, 2], [3, 4]])
+B = Value([[5, 6], [7, 8]])
+C = A @ B               # Using @ operator
+D = A.matmul(B)         # Using method
+
+# Transpose
+E = A.T                 # Property
+F = A.transpose()       # Method
+G = A.transpose(axes=(1, 0))  # With custom axes
+
+# Reductions
+total = A.sum()                      # Sum all elements
+col_sum = A.sum(axis=0)             # Sum over axis 0
+row_sum = A.sum(axis=1, keepdims=True)  # Keep dimensions
+
+mean_val = A.mean()                  # Mean of all elements
+col_mean = A.mean(axis=0)           # Mean over axis 0
+row_mean = A.mean(axis=1, keepdims=True)
+```
+
+### Shape Operations
+
+```python
+from vizgrad import Value
+
+# Reshape
+x = Value([[1, 2, 3, 4]])
+y = x.reshape((2, 2))
+
+# Indexing and slicing
+x = Value([1, 2, 3, 4, 5])
+y = x[2]           # Single element
+z = x[1:4]         # Slice
+w = x[::2]         # Step slicing
+
+# Multi-dimensional indexing
+A = Value([[1, 2, 3], [4, 5, 6]])
+b = A[0, :]        # First row
+c = A[:, 1]        # Second column
+```
+
+### Combining Operations
+
+```python
+from vizgrad import Value
+
+# Softmax (for classification)
+logits = Value([2.0, 1.0, 0.1])
+probs = logits.softmax(axis=0)
+
+# Log-softmax (numerically stable)
+log_probs = logits.log_softmax(axis=0)
+
+# Stack multiple Values
+a = Value([1, 2])
+b = Value([3, 4])
+c = Value.stack([a, b], axis=0)      # Shape: (2, 2)
+d = Value.stack([a, b], axis=1)      # Shape: (2, 2) different layout
+
+# Concatenate Values
+e = Value.concatenate([a, b], axis=0)  # Shape: (4,)
+
+# Sum/Mean of multiple Values
+values = [Value(1), Value(2), Value(3)]
+total = Value.sum_values(values)       # 6
+average = Value.mean_values(values)    # 2
+```
+
+## Complete Example: Neural Network
+
+```python
+from vizgrad import Value
+import numpy as np
+
+# Simple neuron
+def neuron(x, w, b):
+    """Single neuron with ReLU activation"""
+    return (x @ w + b).relu()
+
+# Training data
+X = Value([[0.5, 0.3],
+           [0.8, 0.1],
+           [0.2, 0.9]])
+y_true = Value([[1.0],
+                [0.0],
+                [1.0]])
+
+# Initialize weights
+np.random.seed(42)
+w = Value(np.random.randn(2, 1) * 0.1)
+b = Value(0.0)
+
+# Training loop
+learning_rate = 0.01
+for epoch in range(100):
+    # Forward pass
+    y_pred = neuron(X, w, b)
+    
+    # Mean squared error loss
+    loss = ((y_pred - y_true) ** 2).mean()
+    
+    # Backward pass
+    loss.backward()
+    
+    # Update weights
+    w.data -= learning_rate * w.grad
+    b.data -= learning_rate * b.grad
+    
+    # Reset gradients
+    w.zero_grad()
+    b.zero_grad()
+    
+    if epoch % 20 == 0:
+        print(f"Epoch {epoch}, Loss: {loss.data:.4f}")
+```
+
+## API Reference
+
+### Value Class
+
+#### Constructor
+
+```python
+Value(data, _children=(), _op='leaf', name=None)
+```
+
+**Parameters:**
+- `data`: Scalar, list, or NumPy array - the value to wrap
+- `_children`: Tuple of parent Values (internal use)
+- `_op`: Operation name (internal use)
+- `name`: Optional string name for visualization
+
+**Returns:** A new Value object
+
+#### Properties
+
+**`.data`** - NumPy array containing the value
+```python
+x = Value(5.0)
+print(x.data)  # 5.0
+```
+
+**`.grad`** - Gradient with same shape as data
+```python
+x = Value(2.0)
+y = x ** 2
+y.backward()
+print(x.grad)  # 4.0
+```
+
+**`.shape`** - Shape tuple of the underlying data
+```python
+x = Value([[1, 2], [3, 4]])
+print(x.shape)  # (2, 2)
+```
+
+**`.T`** - Transpose of the Value
+```python
+x = Value([[1, 2], [3, 4]])
+y = x.T  # Shape: (2, 2) transposed
+```
+
+**`.name`** - Optional string identifier
+```python
+x = Value(5.0, name='learning_rate')
+```
+
+#### Arithmetic Methods
+
+**`__add__(other)`, `__radd__(other)`** - Addition
+```python
+z = x + y
+z = x + 5
+z = 5 + x
+```
+
+**`__sub__(other)`, `__rsub__(other)`** - Subtraction
+```python
+z = x - y
+z = x - 3
+z = 3 - x
+```
+
+**`__mul__(other)`, `__rmul__(other)`** - Multiplication
+```python
+z = x * y
+z = x * 2
+z = 2 * x
+```
+
+**`__truediv__(other)`, `__rtruediv__(other)`** - Division
+```python
+z = x / y
+z = x / 2
+z = 2 / x
+```
+
+**`__pow__(other)`** - Power
+```python
+z = x ** 2        # Scalar exponent
+z = x ** y        # Value exponent (requires x > 0)
+```
+
+**`__neg__()`** - Negation
+```python
+z = -x
+```
+
+#### Activation Functions
+
+**`.relu()`** - Rectified Linear Unit
+```python
+y = x.relu()  # max(0, x)
+```
+
+**`.tanh()`** - Hyperbolic tangent
+```python
+y = x.tanh()  # (e^x - e^-x) / (e^x + e^-x)
+```
+
+**`.sigmoid()`** - Sigmoid function
+```python
+y = x.sigmoid()  # 1 / (1 + e^-x)
+```
+
+**`.exp()`** - Exponential
+```python
+y = x.exp()  # e^x
+```
+
+**`.log()`** - Natural logarithm
+```python
+y = x.log()  # ln(x), requires x > 0
+```
+
+**`.abs()`** - Absolute value
+```python
+y = x.abs()  # |x|
+```
+
+**`.sin()`** - Sine
+```python
+y = x.sin()
+```
+
+**`.cos()`** - Cosine
+```python
+y = x.cos()
+```
+
+**`.tan()`** - Tangent
+```python
+y = x.tan()
+```
+
+#### Matrix Operations
+
+**`.matmul(other)`**, **`__matmul__(other)`** - Matrix multiplication
+```python
+C = A.matmul(B)
+C = A @ B
+```
+
+**`.transpose(axes=None)`** - Transpose
+```python
+y = x.transpose()           # Default transpose
+y = x.transpose((1, 0))     # Custom axes permutation
+```
+
+**`.sum(axis=None, keepdims=False)`** - Sum reduction
+```python
+total = x.sum()                    # Sum all elements
+col_sum = x.sum(axis=0)           # Sum over axis 0
+row_sum = x.sum(axis=1, keepdims=True)
+```
+
+**`.mean(axis=None, keepdims=False)`** - Mean reduction
+```python
+avg = x.mean()                     # Mean of all elements
+col_avg = x.mean(axis=0)          # Mean over axis 0
+row_avg = x.mean(axis=1, keepdims=True)
+```
+
+**`.reshape(shape)`** - Reshape array
+```python
+y = x.reshape((2, 3))
+```
+
+**`.softmax(axis=-1)`** - Softmax function
+```python
+probs = logits.softmax(axis=0)
+# Returns exp(x_i) / sum(exp(x_j)) for each i
+```
+
+**`.log_softmax(axis=-1)`** - Log-softmax (numerically stable)
+```python
+log_probs = logits.log_softmax(axis=0)
+# Returns log(softmax(x)) computed stably
+```
+
+**`__getitem__(key)`** - Indexing and slicing
+```python
+y = x[0]           # Single index
+y = x[1:3]         # Slice
+y = x[:, 0]        # Multi-dimensional
+```
+
+#### Static Methods
+
+**`Value.stack(values, axis=0)`** - Stack multiple Values
+```python
+a = Value([1, 2])
+b = Value([3, 4])
+c = Value.stack([a, b], axis=0)  # Shape: (2, 2)
+```
+
+**`Value.concatenate(values, axis=0)`** - Concatenate Values
+```python
+a = Value([1, 2])
+b = Value([3, 4])
+c = Value.concatenate([a, b], axis=0)  # Shape: (4,)
+```
+
+**`Value.sum_values(values)`** - Sum a list of Values
+```python
+values = [Value(1), Value(2), Value(3)]
+total = Value.sum_values(values)  # Value(6)
+```
+
+**`Value.mean_values(values)`** - Mean of a list of Values
+```python
+values = [Value(1), Value(2), Value(3)]
+avg = Value.mean_values(values)  # Value(2)
+```
+
+#### Gradient Methods
+
+**`.backward(gradient=None)`** - Compute gradients via backpropagation
+
+**Parameters:**
+- `gradient`: Optional gradient to start backprop (required for non-scalar outputs)
+
+```python
+# Scalar output (gradient defaults to 1)
+z = x * y
+z.backward()
+
+# Non-scalar output (must provide gradient)
+z = x * y  # Shape: (2, 2)
+z.backward(gradient=np.ones((2, 2)))
+```
+
+**`.zero_grad()`** - Reset all gradients in computation graph
+```python
+x.zero_grad()  # Sets x.grad and all dependencies to zero
+```
+
+#### Visualization Methods
+
+**`.visualize(variable, range_scale=2.0, num_points=100, figsize=(11, 6), show_tangent=True, title=None)`**
+
+Visualize this Value as a function of the given variable.
+
+**Parameters:**
+- `variable`: A leaf Value to vary
+- `range_scale`: How far to extend the plot range
+- `num_points`: Number of points to sample
+- `figsize`: Figure size tuple
+- `show_tangent`: Whether to show the tangent line
+- `title`: Optional custom title
+
+**Returns:** Tuple of (figure, axes)
+
+```python
+x = Value(2.0, name='x')
+y = x**2 + 2*x + 1
+y.name = 'f(x)'
+y.backward()
+y.visualize(x, range_scale=3.0)
+```
+
+**`.visualize_sequence(variable, history, range_scale=2.0, num_points=100, figsize=(11, 7), show_tangent=True, title=None)`**
+
+Interactive visualization showing optimization trajectory with slider.
+
+**Parameters:**
+- `variable`: The leaf Value to vary
+- `history`: List of variable values over time (e.g., from optimization steps)
+- `range_scale`: How far to extend plot range beyond history min/max
+- `num_points`: Number of points to sample for function
+- `figsize`: Figure size tuple
+- `show_tangent`: Whether to show tangent lines
+- `title`: Optional custom title
+
+**Returns:** Tuple of (figure, axes, slider)
+
+```python
+# Track optimization steps
+history = []
+for step in range(50):
+    y = x**2
+    y.backward()
+    history.append(float(x.data))
+    x.data -= 0.1 * x.grad
+    x.zero_grad()
+
+# Visualize trajectory
+y = x**2
+y.visualize_sequence(x, history)
+```
+
+**`.depends_on(variable)`** - Check if this Value depends on another
+
+**Parameters:**
+- `variable`: A Value to check dependency on
+
+**Returns:** Boolean
+
+```python
+x = Value(2.0)
+y = Value(3.0)
+z = x * y + x**2
+
+print(z.depends_on(x))  # True
+print(z.depends_on(y))  # True
+
+w = Value(5.0)
+print(z.depends_on(w))  # False
+```
+
+**`.recompute_with_value(variable, new_value)`** - Recompute output with different input
+
+**Parameters:**
+- `variable`: A leaf Value in the computation graph
+- `new_value`: New value to use for the variable
+
+**Returns:** NumPy array with recomputed result
+
+```python
+x = Value(2.0)
+y = x**2 + 3*x + 1
+
+result = y.recompute_with_value(x, 5.0)
+print(result)  # 41.0 (5^2 + 3*5 + 1)
+```
+
+#### Comparison Methods
+
+**`__eq__(other)`** - Element-wise equality
+```python
+x = Value([1, 2, 3])
+y = Value([1, 2, 3])
+print(x == y)  # True
+```
+
+**`__ne__(other)`** - Element-wise inequality
+```python
+print(x != y)  # False
+```
+
+**`__lt__(other)`** - All elements less than
+```python
+print(x < Value([2, 3, 4]))  # True if all elements satisfy condition
+```
+
+**`__le__(other)`** - All elements less than or equal
+```python
+print(x <= Value([1, 2, 3]))  # True
+```
+
+**`__gt__(other)`** - All elements greater than
+```python
+print(x > Value([0, 1, 2]))  # True
+```
+
+**`__ge__(other)`** - All elements greater than or equal
+```python
+print(x >= Value([1, 2, 3]))  # True
+```
+
+#### Utility Methods
+
+**`__repr__()`** - String representation
+```python
+x = Value([[1, 2], [3, 4]])
+print(x)  # Value(data=[[1 2] [3 4]], shape=(2, 2))
+```
+
+**`__hash__()`** - Hash based on object identity
+```python
+values_set = {x, y, z}
+```
+
+## Requirements
+
+- Python >= 3.7
+- NumPy >= 1.19.0
+- Matplotlib >= 3.3.0
+
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Inspired by [micrograd](https://github.com/karpathy/micrograd) by Andrej Karpathy
+- Built for educational purposes and deep learning experimentation
+- Thanks to the PyTorch team for API design inspiration
+
+---
+
+**Made for learning and experimentation**
