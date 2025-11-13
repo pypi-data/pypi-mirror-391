@@ -1,0 +1,114 @@
+[project]
+name = "alga"
+version = "2.2.0"
+description = "CLI for remote controlling LG webOS TVs"
+authors = [{ name = "Jeppe Fihl-Pearson", email = "jeppe@tenzer.dk" }]
+license = "MIT"
+readme = "README.md"
+requires-python = ">= 3.10"
+
+keywords = [
+    "lg",
+    "lgtv",
+    "remote",
+    "remote-control",
+    "webos",
+    "webos-tv",
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Topic :: Home Automation",
+    "Topic :: Multimedia",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "cfgs >= 0.13.0",
+    "getmac >= 0.9.0",
+    "pzp >=0.0.25",
+    "rich >= 13.0.0",
+    "typer >= 0.15.4",
+    "wakeonlan >= 2.0.0",
+    "websocket-client >= 1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "coverage ==7.11.3",
+    "faker ==38.0.0",
+    "mypy ==1.18.2",
+    "pytest ==9.0.1",
+    "pytest-cov ==7.0.0",
+]
+
+[project.urls]
+documentation = "https://github.com/Tenzer/alga/blob/main/usage.md"
+homepage = "https://github.com/Tenzer/alga"
+issues = "https://github.com/Tenzer/alga/issues"
+releasenotes = "https://github.com/Tenzer/alga/releases"
+source = "https://github.com/Tenzer/alga.git"
+
+[project.scripts]
+alga = "alga.__main__:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle
+    "F",  # Pyflakes
+    "I",  # isort
+    "PL",  # Pylint
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # Line too long
+    "UP007",  # Use `X | Y` for type annotations"
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["alga"]
+lines-after-imports = 2
+split-on-trailing-comma = false
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+
+
+[tool.pytest]
+addopts = [
+    "--cov",
+    "--cov-fail-under=100",
+    "--cov-report=term-missing:skip-covered",
+    "--no-cov-on-fail",
+]
+
+
+[tool.coverage.report]
+exclude_also = [
+    "if __name__ == .__main__.:",
+]
+
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
