@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: suffix-tree-tool
+Version: 0.1.0
+Summary: Générateur et rendu d'arbres de suffixes généralisés
+Project-URL: Homepage, https://github.com/EmericLaberge/suffix-tree-tool
+Author-email: Emeric <emeric.laberge@umontreal.ca>
+License: MIT License
+        
+        Copyright (c) 2025 Emeric
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Requires-Python: >=3.9
+Requires-Dist: networkx>=3.0
+Requires-Dist: pydot>=1.4.2
+Description-Content-Type: text/markdown
+
+# suffix-tree-tool
+
+Outil en ligne de commande et bibliothèque Python pour construire, annoter et rendre des arbres des suffixes généralisés. Le projet accepte jusqu'à cinq séquences, colore les arêtes par séquence et génère un rendu DOT/PDF prêt à être inclus dans des documents.
+
+## Installation
+
+Depuis un répertoire cloné :
+
+```bash
+pip install .
+```
+
+Ou directement depuis Git (une fois le dépôt public) :
+
+```bash
+pip install git+https://github.com/EmericLaberge/suffix-tree-tool.git
+```
+
+## Utilisation
+
+```bash
+generate-suffix-tree agacagg ggacaga --annotate-internal --unique-terminal
+```
+
+Options principales :
+
+- ``--include-terminal`` : conserve le suffixe constitué uniquement du terminateur.
+- ``--unique-terminal`` : attribue un terminateur distinct à chaque séquence.
+- ``--annotate-internal`` : ajoute les profondeurs et indices de séquences sur les nœuds internes.
+
+Le rendu génère deux fichiers dans le répertoire courant :
+
+- ``suffix_tree.dot``
+- ``suffix_tree.pdf`` (si Graphviz est disponible)
+
+## API Python
+
+```python
+from suffix_tree_tool import process_sequences, build_suffix_tree, render_suffix_tree
+```
+
+## Licence
+
+Distribué sous licence MIT (voir ``LICENSE`` pour plus d’informations). Pour toute question ou contribution, écrivez à ``emeric.laberge@umontreal.ca``.
