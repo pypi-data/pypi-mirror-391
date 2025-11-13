@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: © 2025 Tenstorrent AI ULC
+# SPDX-License-Identifier: Apache-2.0
+
+import pytest
+from helpers.format_config import DataFormat
+from helpers.llk_params import DestAccumulation, MathFidelity, MathOperation
+from helpers.param_config import input_output_formats, parametrize
+from helpers.perf import ALL_RUN_TYPES, perf_benchmark, update_report
+
+
+@pytest.mark.perf
+@parametrize(
+    test_name="eltwise_binary_fpu_perf",
+    formats=input_output_formats(
+        [DataFormat.Bfp8_b, DataFormat.Float16, DataFormat.Float16_b]
+    ),
+    mathop=[MathOperation.Elwadd, MathOperation.Elwsub, MathOperation.Elwmul],
+    tile_count=16,
+    math_fidelity=[
+        MathFidelity.LoFi,
+        MathFidelity.HiFi2,
+        MathFidelity.HiFi3,
+        MathFidelity.HiFi4,
+    ],
+    dest_acc=[DestAccumulation.No, DestAccumulation.Yes],
+)
+def test_perf_eltwise_binary_fpu(
+    perf_report, test_name, formats, mathop, tile_count, math_fidelity, dest_acc
+):
+
+    # MathFidelity is only used for Elwmul
+    if mathop != MathOperation.Elwmul and math_fidelity != MathFidelity.LoFi:
+        pytest.skip("Fidelity does not affect Elwadd and Elwsub operations")
+
+    test_config = {
+        "testname": test_name,
+        "mathop": mathop,
+        "formats": formats,
+        "math_fidelity": math_fidelity,
+        "tile_cnt": tile_count,
+        "dest_acc": dest_acc,
+    }
+
+    results = perf_benchmark(test_config, ALL_RUN_TYPES)
+    update_report(perf_report, test_config, results)
