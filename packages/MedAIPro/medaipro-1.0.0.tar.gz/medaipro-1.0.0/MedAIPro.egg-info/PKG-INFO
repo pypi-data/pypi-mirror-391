@@ -1,0 +1,66 @@
+Metadata-Version: 2.4
+Name: MedAIPro
+Version: 1.0.0
+Summary: 世界最先進的醫療人工智慧模組
+Author: BSP
+Author-email: BSP <your@email.com>
+License: MIT License
+        
+        Copyright (c) 2025 BSP
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/yourname/MedAIPro
+Keywords: medical,AI,healthcare,ECG,MRI,AI-model
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: opencv-python
+Requires-Dist: tensorflow
+Requires-Dist: scikit-learn
+Requires-Dist: scipy
+Requires-Dist: fpdf2
+Requires-Dist: joblib
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# 🧬 MedAIPro
+**世界最先進的醫療人工智慧模組**
+
+---
+
+## 🚀 功能
+- 醫學影像 AI 分析（CT/MRI/X-ray）
+- ECG/EEG 生理信號自動分析
+- 藥物交互風險偵測
+- 疾病風險預測模型
+- 臨床統計分析與報告生成
+
+---
+
+## 🧠 使用範例
+```python
+from medaipro import analyze_ecg, check_interaction, predict_disease
+
+print(analyze_ecg("data/ecg.csv"))
+print(check_interaction("Aspirin", "Warfarin"))
+print(predict_disease([0.7, 1.3, 0.9, 0.1]))

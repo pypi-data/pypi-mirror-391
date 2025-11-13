@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MedAIPro"
+version = "1.0.0"
+description = "世界最先進的醫療人工智慧模組"
+authors = [
+  { name="BSP", email="your@email.com" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+  "numpy", "pandas", "opencv-python", "tensorflow", 
+  "scikit-learn", "scipy", "fpdf2", "joblib"
+]
+keywords = ["medical", "AI", "healthcare", "ECG", "MRI", "AI-model"]
+
+[project.urls]
+Homepage = "https://github.com/yourname/MedAIPro"
