@@ -1,0 +1,49 @@
+future
+matplotlib
+numpy<=1.23
+oss2
+pandas
+psutil
+pyarrow
+pyodps
+PyYAML
+scikit-learn
+xlrd>=0.9.0
+
+[:python_version < "3.0"]
+eas_prediction==0.24
+
+[:python_version >= "3.0"]
+eas_prediction
+
+[all]
+future
+matplotlib
+numpy<=1.23
+oss2
+pandas
+psutil
+pyarrow
+pyodps
+PyYAML
+scikit-learn
+xlrd>=0.9.0
+
+[all:python_version < "3.0"]
+eas_prediction==0.24
+
+[all:python_version >= "3.0"]
+eas_prediction
+
+[tests]
+configparser
+docformatter
+flake8
+flake8-docstrings
+isort==4.3.21
+pre-commit
+yapf
+
+[tests:python_version > "3"]
+mdformat
+mdformat-tables
