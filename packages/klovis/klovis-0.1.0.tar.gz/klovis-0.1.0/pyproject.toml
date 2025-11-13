@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "klovis"
+version = "0.1.0"
+description = "Data preprocessing library for Retrieval-Augmented Generation (RAG) systems."
+authors = ["Houzelle Eric <eric@klovis.ai>"]
+license = "LICENSE"
+readme = "README.md"
+homepage = "https://github.com/klovis-ai/klovis"
+repository = "https://github.com/klovis-ai/klovis"
+keywords = ["RAG", "data preprocessing", "AI", "semantic", "embedding"]
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^1.0.1"
+pandas = "^2.2.0"
+numpy = "^1.26.0"
+requests = "^2.32.0"
+pydantic = "^2.9.0"
+pyarrow = "^22.0.0"
+pdfplumber = "^0.11.8"
+beautifulsoup4 = "^4.14.2"
+markdownify = "^1.2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+black = "^24.0.0"
+mypy = "^1.8.0"
+flake8 = "^7.0.0"
+isort = "^5.13.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
