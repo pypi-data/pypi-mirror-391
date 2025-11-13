@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: jhu
+Version: 1.7.3
+Summary: Join Happy Universe
+Author-email: "J.Hu" <joestarhu@163.com>
+License: MIT
+Project-URL: homepage, https://github.com/joestarhu/jhu
+Classifier: Environment :: Web Environment
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: MacOS
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.14
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: auth
+Requires-Dist: requests; extra == "auth"
+Provides-Extra: orm
+Requires-Dist: sqlalchemy; extra == "orm"
+Requires-Dist: pytz; extra == "orm"
+Provides-Extra: security
+Requires-Dist: python-jose; extra == "security"
+Requires-Dist: bcrypt; extra == "security"
+Requires-Dist: pycryptodomex; extra == "security"
+Provides-Extra: webhook
+Requires-Dist: requests; extra == "webhook"
+Dynamic: license-file
+
+# JHU(Join Happy Utils)
+> 这个是我自己编写的一个python工具库,简化或者自动化的帮助我做一些工作
+
