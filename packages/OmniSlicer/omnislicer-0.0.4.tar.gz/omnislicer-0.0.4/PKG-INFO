@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: OmniSlicer
+Version: 0.0.4
+Summary: Omnidirectional Volume Slicing Package for 3D Medical Image Analysis
+Author-email: Johannes Kiechle <johannes.kiechle@tum.de>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/hannesk95/OmniSlicer
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Omnidirectional Volume Slicer - OmniSlicer 
+
+Implementation of the omnidirectional volume slicer package in Python and PyTorch for 3D medical image analysis, from our publication ["TomoGraphView: 3D Medical Image Classification with Omnidirectional Slice Representations and Graph Neural Networks"](www.arxiv.org).
+
+![Comparison of OmniSlicer against traditional methods](https://raw.githubusercontent.com/hannesk95/OmniSlicer/main/assets/volume_slicing.png)
+
+## Example Usage
+
+```python
+from OmniSlicer import OmniSlicer
+
+volume_path = "path_to_volume.nii.gz"
+mask_path = "path_to_mask.nii.gz"
+output_dir = "output_dir"
+n_views = N
+
+OmniSlicer.extract_slices(volume_path=volume_path,
+                          mask_path=mask_path,
+                          output_dir=output_dir,
+                          n_views=n_views)
+```
+
+## Citation
+
+Stay tuned, coming soon!
+
+<!-- ```bibtex
+@inproceedings{kiechle2025omnignn,
+  title={Class distance weighted cross-entropy loss for ulcerative colitis severity estimation},
+  author={Polat, Gorkem and Ergenc, Ilkay and Kani, Haluk Tarik and Alahdab, Yesim Ozen and Atug, Ozlen and Temizel, Alptekin},
+  booktitle={Annual Conference on Medical Image Understanding and Analysis},
+  pages={157--171},
+  year={2022},
+  organization={Springer}
+}
+``` -->
