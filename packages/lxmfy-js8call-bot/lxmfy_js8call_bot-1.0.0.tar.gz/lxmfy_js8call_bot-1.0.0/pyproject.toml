@@ -1,0 +1,23 @@
+[project]
+name = "lxmfy-js8call-bot"
+version = "1.0.0"
+description = "A JS8Call RX-Only Bot"
+authors = [{name = "LXMFy"}]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lxmfy>=1.0.3",
+]
+
+[project.scripts]
+lxmfy-js8call-bot = "lxmfy_js8call_bot.bot:main"
+
+[[tool.poetry.packages]]
+include = "lxmfy_js8call_bot"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.13.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
