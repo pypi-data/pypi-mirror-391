@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: QtBridge
+Version: 0.0.1
+Summary: Python package providing the backend API to interact with QML frontend
+Author-Email: Qt for Python Team <pyside@qt-project.org>
+License-Expression: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+Requires-Python: <3.14,>=3.9
+Requires-Dist: shiboken6
+Requires-Dist: PySide6-Essentials
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-qt; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+
