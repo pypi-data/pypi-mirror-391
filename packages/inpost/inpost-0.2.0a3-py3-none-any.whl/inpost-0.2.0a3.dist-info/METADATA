@@ -1,0 +1,86 @@
+Metadata-Version: 2.4
+Name: inpost
+Version: 0.2.0a3
+Summary: Asynchronous InPost package allowing you to manage existing incoming parcels without mobile app
+License: LGPL-2.1-only
+License-File: LICENSE
+Author: loboda4450
+Author-email: loboda4450@gmail.com
+Maintainer: loboda4450
+Maintainer-email: loboda4450@gmail.com
+Requires-Python: >=3.10,<4.0
+Classifier: Development Status :: 3 - Alpha
+Classifier: Framework :: aiohttp
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: Pillow (>=9.4.0,<10.0.0)
+Requires-Dist: aiohttp (>=3.9.4,<4.0.0)
+Requires-Dist: arrow (>=1.2.3,<2.0.0)
+Requires-Dist: qrcode (>=7.3.1,<8.0.0)
+Project-URL: Documentation, https://inpost-python.readthedocs.io/en/latest/index.html
+Project-URL: Repository, https://github.com/IFOSSA/inpost-python
+Description-Content-Type: text/markdown
+
+[![CodeFactor](https://www.codefactor.io/repository/github/ifossa/inpost-python/badge)](https://www.codefactor.io/repository/github/ifossa/inpost-python)
+![Code Quality](https://github.com/ifossa/inpost-python/actions/workflows/lint.yml/badge.svg?barnch=main)
+![Todos](https://github.com/ifossa/inpost-python/actions/workflows/todos.yml/badge.svg?barnch=main)
+
+# Inpost Python
+
+Fully async Inpost library using Python 3.10.
+
+# WARNING
+Please be aware, that version 0.2.x is not compatible with 0.1.x builds! Thank inpost for making their api upside down >:(
+
+
+## Documentation
+
+[Readthedocs.io](https://inpost-python.readthedocs.io/en/latest/)
+
+
+## Usage/Examples
+
+
+```python
+from inpost.api import Inpost
+
+inp = Inpost('555333444')
+await inp.send_sms_code():
+...
+if await inp.confirm_sms_code(123321):
+   print('Congratulations, you initialized successfully!')
+```
+
+## Before you contribute
+
+![Contributors](https://contrib.rocks/image?repo=ifossa/inpost-python)
+
+Install linters and checkers, unlinted pull requests will not be approved
+```commandline
+poetry run pre-commit install
+```
+
+## Authors
+
+- [@loboda4450](https://www.github.com/loboda4450)
+- [@mrkazik99](https://www.github.com/mrkazik99)
+
+
+## Used By
+
+This project is used by the following repos:
+
+[Inpost Telegram Bot](https://github.com/loboda4450/inpost-telegram-bot)
+
+
+
+## 😂 Here is a random joke that'll make you laugh!
+![Jokes Card](https://readme-jokes.vercel.app/api)
