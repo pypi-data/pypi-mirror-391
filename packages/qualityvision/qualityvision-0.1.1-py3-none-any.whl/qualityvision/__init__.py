@@ -1,0 +1,1 @@
+from qualityvision.BlurDetectorModule import BlurDetector
