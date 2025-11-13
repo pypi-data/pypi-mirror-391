@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: drpython
+Version: 0.1.0
+Summary: Modular notifications: drpython.telegram & drpython.email
+Author-email: samircd4 <samircd4@gmail.com>
+License: MIT
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Communications :: Email
+Requires-Python: >=3.12
+Requires-Dist: python-dotenv>=1.2.1
+Requires-Dist: requests<3.0.0,>=2.31.0
+Provides-Extra: dev
+Requires-Dist: black>=25.11.0; extra == 'dev'
+Requires-Dist: pytest>=9.0.1; extra == 'dev'
+Requires-Dist: ruff>=0.14.4; extra == 'dev'
