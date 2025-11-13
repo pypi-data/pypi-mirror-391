@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notar_pipeline"
+version = "0.1.5"
+description = "Modular ETL logic for Alteryx"
+authors = [{ name = "Youssef", email = "youssefaferdou90@gmail.com" }]
+dependencies = [
+    "pandas",
+    "python-dotenv"
+]
+
+[tool.setuptools]
+packages = ["extract", "parsing", "transform", "update","load"]
+py-modules = ["base"]
