@@ -1,0 +1,48 @@
+Metadata-Version: 2.1
+Name: jax-pyjit
+Version: 0.2.2
+Summary: JIT python bindings including the client and data access objects
+License: Apache-2.0
+Author: Matthew Gerring
+Author-email: matthew.gerring@jax.org
+Requires-Python: >=3.10,<4.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Dist: auth0-python (>=4.13.0,<5.0.0)
+Requires-Dist: cryptography (>=46.0.3,<47.0.0)
+Requires-Dist: dataclasses-json (>=0.6.7,<0.7.0)
+Requires-Dist: jax-cs-storage (>=0.10.0,<0.11.0)
+Requires-Dist: requests (>=2.32.5,<3.0.0)
+Requires-Dist: temporalio (>=1.18.0,<2.0.0)
+Requires-Dist: typer (>=0.20.0,<0.21.0)
+Description-Content-Type: text/markdown
+
+# JAX Image Tools (JIT) Python API
+
+## Introduction
+The pyjit package contains code common to JAX Image Tools (JIT), mostly DL and AI tools.
+There are common dao packages which each tool consumes to reduce code copying.
+This package reduces code duplication between the temporal.io workers which are part of JIT.
+
+## Quick Start
+### Install
+
+poetry add jax-pyjit
+
+
+### Usage for Common Tools
+Data Access Object Example
+```
+from jax.pyjit.dao import StorageKey
+```
+This provides an easy way to create json objects used with the JIT server.
+
+### Usage of JIT Client
+jax-pyjit will also contain a requests-based client one day similar to the JIT Shell.
+
+
+
+
