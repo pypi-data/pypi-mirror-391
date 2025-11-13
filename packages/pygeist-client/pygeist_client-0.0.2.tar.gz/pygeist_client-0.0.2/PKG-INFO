@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: pygeist_client
+Version: 0.0.2
+Summary: Pygeist client package
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pygeist==0.4.0; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: pytest-timeout; extra == "dev"
+Dynamic: license-file
+
+# Pygeist Client
+
+[![Tests](https://github.com/mateogall0/pygeist_client/actions/workflows/tests.yml/badge.svg)](https://github.com/mateogall0/pygeist_client/actions/workflows/tests.yml)
+
+Zeitgeist client abstraction for Python
