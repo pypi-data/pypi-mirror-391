@@ -1,0 +1,51 @@
+site_name: Omega-Prime
+site_url: https://ika-rwth-aachen.github.io/omega-prime/
+
+theme:
+  logo: logo/omega-prime-no-text.svg
+  favicon: logo/omega-prime-no-text.svg
+  language: en
+  name: material
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.instant.preview
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - navigation.tracking
+    - navigation.sections
+
+plugins:
+  - search
+  - autorefs
+  - mkdocs-typer2
+  - mkdocs-jupyter:
+      ignore_h1_titles: True
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_submodules: true
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - omega-prime: index.md
+  - Data Model & Specification: omega_prime_specification.md
+  - Python Library: 
+    - Overview: library.md
+    - Map Segmentation: map_segmentation/map_segmentation.md
+  - Tutorials:
+    - Inroduction: notebooks/tutorial.ipynb
+    - Locator: notebooks/tutorial_locator.ipynb
+    - Metrics: notebooks/tutorial_metrics.ipynb
+    - Map Segmentation: notebooks/tutorial_map.ipynb
+  - CLI: cli.md
+  - API: api.md
