@@ -1,0 +1,203 @@
+# YouTube Transcript to SRT Converter
+
+A simple, lightweight command-line tool to convert YouTube video transcripts from either plain text (`.txt`) or JSON (`.json`) format to SRT subtitle files.
+
+The tool automatically detects the input format based on the file extension.
+
+-   **TXT format**: Designed to work with files you can copy directly from the YouTube transcript panel. It expects a format where timestamps (like `M:SS` or `H:MM:SS`) appear on their own lines, followed by the corresponding text on subsequent lines.
+-   **JSON format**: Works with transcript files from tools like `youtube-dl`, supporting both flat lists of segments and more complex nested structures.
+
+## Project Structure
+
+```
+yt-ts-to-srt/
+├── .gitignore
+├── pyproject.toml
+├── README.md
+└── src/
+    └── yt_ts_to_srt/
+        ├── __init__.py
+        └── main.py
+```
+
+-   `pyproject.toml`: Defines the project metadata, dependencies, and the command-line script entry point for PyPI packaging.
+-   `src/yt_ts_to_srt/main.py`: Contains the core logic for the conversion and handles command-line arguments.
+-   `README.md`: This file, providing documentation.
+
+## Installation
+
+You can install this tool locally using pip.
+
+1.  **Clone the repository (or download the source code):**
+    ```bash
+    git clone https://github.com/your-username/yt-ts-to-srt.git
+    cd yt-ts-to-srt
+    ```
+
+2.  **Install in editable mode (recommended for development):**
+    This command will install the package and create the command-line script, linking it to your source code.
+    ```bash
+    pip install -e .
+    ```
+
+    Or, if you just want to install it without editing:
+    ```bash
+    pip install .
+    ```
+
+Once published to PyPI, it could be installed with `pip install yt-ts-to-srt`.
+
+## Usage
+
+The tool is run from the command line.
+
+### Syntax
+
+```bash
+yt-ts-to-srt <input_file.txt|.json> [output_file.srt]
+```
+
+-   `input_file.txt|.json`: **(Required)** The path to the transcript file. Can be `.txt` or `.json`. The script will auto-detect the format.
+-   `output_file.srt`: **(Optional)** The path where the SRT file will be saved. If you don't provide an output path, the tool will automatically create an SRT file with the same name as the input file, but with a `.srt` extension.
+
+### Example
+
+If you have a transcript file named `my_video_transcript.txt`:
+
+```bash
+yt-ts-to-srt my_video_transcript.txt
+```
+
+If you have a JSON transcript file named `my_video_transcript.json`:
+
+```bash
+yt-ts-to-srt my_video_transcript.json
+```
+
+Both commands will create a new file named `my_video_transcript.srt` in the same directory.
+
+## Publishing to PyPI
+
+To publish this package to PyPI, follow these steps:
+
+1.  **Install build tools:**
+    Make sure you have the latest versions of `build` and `twine` installed.
+    ```bash
+    pip install --upgrade build twine
+    ```
+
+2.  **Build the package:**
+    Run the following command from the project root directory. This will create a `dist` folder with the distribution files (`.tar.gz` and `.whl`).
+    ```bash
+    python -m build
+    ```
+
+3.  **Upload to PyPI:**
+    It's recommended to use an API token for authentication.
+    ```bash
+    twine upload dist/*
+    ```
+    You will be prompted for your username and password.
+
+---
+
+# YouTube 字幕转换器 (中文版)
+
+一个简单轻量的命令行工具，用于将 YouTube 视频的纯文本（`.txt`）或 JSON（`.json`）格式字幕转换为 SRT 字幕文件。
+
+本工具会根据文件扩展名自动检测输入格式。
+
+-   **TXT 格式**: 旨在处理您可以直接从 YouTube 字幕面板复制的文件。它期望的格式是时间戳（如 `M:SS` 或 `H:MM:SS`）独占一行，其后的行是对应的文本。
+-   **JSON 格式**: 兼容 `youtube-dl` 等工具生成的字幕文件，支持扁平化的片段列表和更复杂的嵌套结构。
+
+## 项目结构
+
+```
+yt-ts-to-srt/
+├── .gitignore
+├── pyproject.toml
+├── README.md
+└── src/
+    └── yt_ts_to_srt/
+        ├── __init__.py
+        └── main.py
+```
+
+-   `pyproject.toml`: 定义项目元数据、依赖项以及用于 PyPI 打包的命令行脚本入口。
+-   `src/yt_ts_to_srt/main.py`: 包含核心转换逻辑并处理命令行参数。
+-   `README.md`: 本文档文件。
+
+## 安装
+
+您可以使用 pip 在本地安装此工具。
+
+1.  **克隆仓库（或下载源代码）：**
+    ```bash
+    git clone https://github.com/your-username/yt-ts-to-srt.git
+    cd yt-ts-to-srt
+    ```
+
+2.  **以可编辑模式安装（推荐用于开发）：**
+    此命令将安装软件包并创建链接到您源代码的命令行脚本。
+    ```bash
+    pip install -e .
+    ```
+
+    或者，如果您只想安装而不进行编辑：
+    ```bash
+    pip install .
+    ```
+
+一旦发布到 PyPI，就可以通过 `pip install yt-ts-to-srt` 进行安装。
+
+## 使用方法
+
+该工具从命令行运行。
+
+### 命令格式
+
+```bash
+yt-ts-to-srt <input_file.txt|.json> [output_file.srt]
+```
+
+-   `input_file.txt|.json`: **(必需)** 字幕文件的路径，可以是 `.txt` 或 `.json` 格式。脚本会自动检测格式。
+-   `output_file.srt`: **(可选)** SRT 文件的保存路径。如果您不提供输出路径，该工具将自动创建一个与输入文件同名但扩展名为 `.srt` 的 SRT 文件。
+
+### 示例
+
+如果您有一个名为 `my_video_transcript.txt` 的字幕文件：
+
+```bash
+yt-ts-to-srt my_video_transcript.txt
+```
+
+如果您有一个名为 `my_video_transcript.json` 的 JSON 字幕文件：
+
+```bash
+yt-ts-to-srt my_video_transcript.json
+```
+
+以上两个命令都会在同一目录中创建一个名为 `my_video_transcript.srt` 的新文件。
+
+## 发布到 PyPI
+
+要将此包发布到 PyPI，请按照以下步骤操作：
+
+1.  **安装构建工具：**
+    确保您已安装最新版本的 `build` 和 `twine`。
+    ```bash
+    pip install --upgrade build twine
+    ```
+
+2.  **构建软件包：**
+    在项目根目录中运行以下命令。这将在 `dist` 文件夹中创建分发文件（`.tar.gz` 和 `.whl`）。
+    ```bash
+    python -m build
+    ```
+
+3.  **上传到 PyPI：**
+    建议使用 API 令牌进行身份验证。
+    ```bash
+    twine upload dist/*
+    ```
+    系统将提示您输入用户名和密码。

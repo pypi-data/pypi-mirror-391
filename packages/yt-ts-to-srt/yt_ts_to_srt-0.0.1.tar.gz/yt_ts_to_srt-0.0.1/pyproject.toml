@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yt-ts-to-srt"
+version = "0.0.1"
+authors = [
+  { name="Your Name", email="you@example.com" },
+]
+description = "A simple tool to convert YouTube video transcripts from JSON format to SRT subtitle files."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/your-username/yt-ts-to-srt"
+"Bug Tracker" = "https://github.com/your-username/yt-ts-to-srt/issues"
+
+[project.scripts]
+yt-ts-to-srt = "yt_ts_to_srt.main:main"
