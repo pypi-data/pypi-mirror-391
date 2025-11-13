@@ -1,0 +1,19 @@
+
+agents:
+  - id: "demo_agent"
+    backend:
+      type: "openai"
+      model: "gpt-5-nano"
+      cwd: "workspace_demo"
+    system_message: |
+      You are a demo agent for terminal evaluation.
+      When asked "What is 2+2?", simply respond: "2 + 2 = 4"
+      Be concise.
+
+orchestrator:
+  snapshot_storage: "snapshots_demo"
+  agent_temporary_workspace: "temp_workspaces_demo"
+
+ui:
+  display_type: "rich_terminal"
+  logging_enabled: false
