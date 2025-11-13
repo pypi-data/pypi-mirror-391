@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: envyronment
+Version: 0.1.0
+Summary: A tiny module to read environment variables and tranform them.
+Author-email: Sonny Valkeneers <sonny@softllama.net>
+License-Expression: MIT
+Project-URL: Repository, https://github.com/shifqu/envyronment.git
+Project-URL: Issues, https://github.com/shifqu/envyronment/issues
+Project-URL: ReleaseNotes, https://github.com/shifqu/envyronment/releases
+Project-URL: Funding, https://github.com/sponsors/shifqu
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dotenv
+Requires-Dist: python-dotenv>=1.2; extra == "dotenv"
+Provides-Extra: dev
+Requires-Dist: coverage>=7.11; extra == "dev"
+Requires-Dist: ruff>=0.14; extra == "dev"
+Requires-Dist: pylint<4.0; extra == "dev"
+Requires-Dist: pyright>=1.1; extra == "dev"
+Provides-Extra: build
+Requires-Dist: build>=1.3; extra == "build"
+Requires-Dist: twine>=6.2; extra == "build"
+Dynamic: license-file
+
+# envyronment
+A tiny module to read environment variables and tranform them.
+
+When load_dotenv is available, this is called at import time.
+
+---
+[![Code style: Ruff](https://img.shields.io/badge/style-ruff-8b5000)](https://github.com/astral-sh/ruff)
+[![Typing: Pyright](https://img.shields.io/badge/typing-pyright-725a42
+)](https://github.com/RobertCraigie/pyright-python)
+[![Linting: Pylint](https://img.shields.io/badge/typing-pylint-755147
+)](https://github.com/pylint-dev/pylint)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/license/mit)
+[![CI Validation](https://github.com/shifqu/envyronment/actions/workflows/ci.yml/badge.svg)](https://github.com/shifqu/envyronment/actions/workflows/ci.yml)
+
+---
+
+## Features
+
+- ✅ Simple, typed API
+- ✅ Loads `.env` if installed with extra `dotenv`
+- ✅ Flexible casting via `astype=...`
+- ✅ Propagates errors raised in the `astype` callable
+- ✅ Zero dependencies required, `python-dotenv` optionally installed
+
+## Requirements (officially supported)
+
+- Python **3.13**
+
+## Quick start
+
+1. Install the package
+    ```bash
+    pip install envyronment
+    ```
+    or
+    ```bash
+    pip install envyronment[dotenv]  # Ensure python-dotenv is also installed
+    ```
+
+2. Import and use
+    ```python
+    import env
+
+    ascii_asterisk = env.read("ASCII_ASTERISK", 42, astype=int)  # typed as int, 42 by default
+    debug = env.read("DEBUG", astype=bool)  # typed as bool, required
+    ```
+
+## License
+
+This project is licensed under the MIT License — see the [`LICENSE`](https://github.com/shifqu/envyronment/blob/main/LICENSE) file for details.
