@@ -1,0 +1,36 @@
+Metadata-Version: 2.4
+Name: rohkun
+Version: 1.0.2
+Summary: Rohkun - Code analysis tool for detecting endpoints, API calls, and connections
+Home-page: https://github.com/rohkun/rohkun
+Author: Rohkun Team
+Author-email: Rohkun Team <support@rohkun.com>
+License: MIT
+Keywords: code-analysis,ast,endpoints,api-calls,codebase-analysis
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Quality Assurance
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: typer>=0.9.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: pyperclip>=1.8.2
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: regex>=2023.0.0
+Requires-Dist: pyyaml>=6.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
