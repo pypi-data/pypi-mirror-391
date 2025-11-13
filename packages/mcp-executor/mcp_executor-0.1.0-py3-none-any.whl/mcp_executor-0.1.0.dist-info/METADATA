@@ -1,0 +1,132 @@
+Metadata-Version: 2.3
+Name: mcp-executor
+Version: 0.1.0
+Summary: Run a FastMCP proxy that lists and invokes every MCP tool from the CLI or an HTTP server.
+Keywords: mcp,fastmcp,automation,cli,tools
+Author: LiuVaayne
+License: MIT License
+         
+         Copyright (c) 2025 LiuVaayne
+         
+         Permission is hereby granted, free of charge, to any person obtaining a copy
+         of this software and associated documentation files (the "Software"), to deal
+         in the Software without restriction, including without limitation the rights
+         to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+         copies of the Software, and to permit persons to whom the Software is
+         furnished to do so, subject to the following conditions:
+         
+         The above copyright notice and this permission notice shall be included in all
+         copies or substantial portions of the Software.
+         
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         SOFTWARE.
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Dist: click>=8.3.0
+Requires-Dist: fastmcp>=2.13.0.2
+Requires-Dist: jinja2>=3.1.6
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+
+# mcp-executor
+
+`mcp-executor` is a lightweight FastMCP driver that discovers every MCP tool
+exposed by your configured backends, prints Python-like signatures, and lets you
+invoke them either from the command line or through a minimal FastMCP server.
+
+## Why use it?
+
+- 📋 **Discoverability**: Generate readable signatures for every tool so you know
+  which arguments to pass.
+- ⚡ **Fast iteration**: Jump between running the HTTP/stdio server and issuing
+  one-off tool calls without reconfiguring clients.
+- 🧰 **Batteries included**: Ships with a `uv`-first workflow for building,
+  testing, and publishing to PyPI.
+
+## Installation
+
+```bash
+pip install mcp-executor
+```
+
+or, if you prefer the `uv` toolchain:
+
+```bash
+uv tool install mcp-executor
+```
+
+## Configuration
+
+Point the CLI at an MCP client definition. Copy `mcp.json.example` into your
+workspace, adjust the upstream server definitions, and pass the path with
+`-c/--config`.
+
+```bash
+cp mcp.json.example ~/.config/mcp-executor/mcp.json
+```
+
+## Usage
+
+List available tools and inspect their signatures:
+
+```bash
+mcp-executor list -c ~/.config/mcp-executor/mcp.json
+```
+
+Call a tool directly:
+
+```bash
+mcp-executor call -c ~/.config/mcp-executor/mcp.json weather --arg city="Lisbon"
+```
+
+Run the FastMCP server (HTTP by default):
+
+```bash
+mcp-executor serve -c ~/.config/mcp-executor/mcp.json --transport http --host 0.0.0.0 --port 23456
+```
+
+Every command shares the `--config` option so you can point at different MCP
+client definitions per invocation.
+
+## Local development
+
+```bash
+uv venv --seed
+uv sync
+uv run mcp-executor list -c mcp.json.example
+```
+
+The repository still ships `main.py` so you can run `./main.py list ...` directly
+with `uv run` if you prefer scripting locally.
+
+## Releasing with `uv`
+
+1. Bump `version` inside `pyproject.toml`.
+2. Build and verify the artifacts:
+   ```bash
+   uv build
+   uv run python -m mcp_executor.cli --help
+   ```
+3. Publish to PyPI with an API token (create one under your PyPI account and
+   store it securely):
+   ```bash
+   export PYPI_API_TOKEN="pypi-xxxxxxxxxxxxxxxxxxxxxxxx"
+   uv publish --token "$PYPI_API_TOKEN"
+   ```
+4. Tag the release in git and push (`git tag v0.1.1 && git push --tags`).
+
+## GitHub Action publish workflow
+
+The repository includes `.github/workflows/publish.yml`, which builds the wheel
+and sdist via `uv build` and calls `uv publish --token $PYPI_API_TOKEN`. Add a
+`PYPI_API_TOKEN` secret (scoped to “Publish to PyPI”) in your repository settings
+and trigger the workflow from the Actions tab or by creating a GitHub Release.
