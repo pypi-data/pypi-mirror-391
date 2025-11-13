@@ -1,0 +1,13 @@
+# .github/workflows/validate-ptag.yml
+name: PTag Validation
+
+on:
+  push:
+    paths: ["provenance/ptag.json"]
+  pull_request:
+    paths: ["provenance/ptag.json"]
+  workflow_dispatch:
+
+jobs:
+  validate-ptag:
+    uses: civic-interconnect/.github/.github/workflows/validate-ptag-core.yml@main
