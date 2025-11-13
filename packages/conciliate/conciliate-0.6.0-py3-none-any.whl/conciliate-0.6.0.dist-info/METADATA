@@ -1,0 +1,197 @@
+Metadata-Version: 2.4
+Name: conciliate
+Version: 0.6.0
+Summary: AI context synchronization and propagation between dev environments
+Author: Conciliate Team
+License: MIT
+Project-URL: Homepage, https://github.com/iv4n-ga6l/conciliate
+Project-URL: Repository, https://github.com/iv4n-ga6l/conciliate
+Keywords: api,openapi,sync,ai,context,fastapi
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: fastapi>=0.104.0
+Requires-Dist: uvicorn[standard]>=0.24.0
+Requires-Dist: watchfiles>=0.21.0
+Requires-Dist: deepdiff>=6.7.0
+Requires-Dist: typer>=0.9.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: pydantic-settings>=2.1.0
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: faker>=20.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: mypy>=1.7.0; extra == "dev"
+Dynamic: license-file
+
+<p align="center">
+    <img src="https://i.ibb.co/d9HMQPc/conciliate-brand.png" alt="Conciliate - Unified context for smarter AI decisions" />
+</p>
+
+<p align="center">
+    <!-- <a href="https://github.com/iv4n-ga6l/conciliate/releases" target="_blank" rel="noopener"><img src="https://img.shields.io/github/release/iv4n-ga6l/conciliate.svg" alt="Latest releases" /></a> -->
+    <a href="https://github.com/iv4n-ga6l/conciliate/blob/main/LICENSE" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
+    <a href="https://pypi.org/project/conciliate/" target="_blank" rel="noopener"><img src="https://img.shields.io/pypi/v/conciliate.svg" alt="PyPI version" /></a>
+</p>
+
+**Unified context for smarter AI decisions.**
+
+Conciliate automatically extracts API specifications from your backend, detects changes, and streams context to AI coding assistants in real-time. Keep your AI in sync across separate IDE sessions—no more manual copy-pasting.
+
+## Features
+
+- **Auto-extraction**: Monitors backend files, generates OpenAPI specs automatically
+- **Live updates**: Real-time synchronization via MCP protocol  
+- **Three access modes**: MCP server, REST API, CLI, VS Code extension
+- **Framework support**: FastAPI, Flask, Express (auto-detected)
+- **AI-native**: Built for Claude Desktop, Cursor, VS Code Copilot
+- **Local-first**: No cloud dependencies, runs entirely on your machine
+- VS Code extension (status bar, API explorer, changes view, auto-refresh)
+- Mock server mode (fake API generation)
+- Multi-Workspace Support
+
+## Quick Start
+
+### Python Package
+
+```bash
+pip install conciliate
+```
+
+### Setup
+
+```bash
+cd /path/to/your/project
+conciliate init
+# Edit .conciliate.yaml to set backend_path
+```
+
+### Run
+
+```bash
+conciliate mcp      # For AI assistants (recommended)
+conciliate watch    # REST API + file watching
+conciliate serve    # REST API only
+```
+
+## CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `conciliate init` | Create config file |
+| `conciliate watch` | Watch backend + serve REST API |
+| `conciliate mcp` | Run MCP server for AI assistants |
+| `conciliate summary` | Display API summary |
+| `conciliate diff` | Show recent changes |
+| `conciliate status` | Show configuration |
+
+## Configuration
+
+Create `.conciliate.yaml` in your project root:
+
+```yaml
+backend_path: ../backend    # Path to your backend
+framework: auto             # Backend framework (auto, fastapi, flask, express)
+port: 5678                  # Server port
+output_dir: .conciliate     # Output directory
+```
+
+Copy from `.conciliate.yaml.template` for all available options.
+
+## � MCP Integration (AI Assistants)
+
+### Claude Desktop
+
+Edit `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "conciliate": {
+      "command": "conciliate",
+      "args": ["mcp"],
+      "cwd": "C:\\path\\to\\your\\project"
+    }
+  }
+}
+```
+
+### VS Code
+
+Create `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "conciliate": {
+      "command": "conciliate",
+      "args": ["mcp"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
+```
+
+**Then**: Restart your AI assistant → Ask: "What API endpoints are available?"
+
+### Features
+
+- 📚 **Resources**: Full spec, summaries, diffs
+- 🛠️ **Tools**: Reload, search, get endpoint details
+- ⚡ **Live Updates**: Auto-detects backend changes, no manual reload
+- 🎯 **Cross-session**: Keep frontend/backend AI assistants synchronized
+
+**Full guide**: [docs/MCP_INTEGRATION.md](docs/MCP_INTEGRATION.md)
+
+
+## 📡 REST API
+
+When running `conciliate watch` or `conciliate serve`:
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /spec` | Full OpenAPI specification |
+| `GET /summary` | Human-readable summary |
+| `GET /diff` | Latest changes |
+| `POST /reload` | Trigger spec regeneration |
+
+## 🧪 Example
+
+```bash
+# Start example backend
+cd example/backend && python main.py
+
+# In another terminal
+cd ../.. && conciliate init
+# Edit .conciliate.yaml: backend_path: ./example/backend
+
+conciliate watch
+# Visit http://localhost:5678/summary
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "Failed to generate spec" | Check `backend_path` in config, verify app file exists |
+| "No .conciliate.yaml found" | Run `conciliate init` in your project directory |
+| MCP not connecting | Restart AI assistant, verify `cwd` path in config |
+| Framework not detected | Set `framework` explicitly in .conciliate.yaml |
+| Extension not starting | Install Python package: `pip install conciliate` |
+| Changes view empty | Wait 3 seconds for auto-refresh, or modify an endpoint |
+
+See full troubleshooting guide in [docs/](docs/).
