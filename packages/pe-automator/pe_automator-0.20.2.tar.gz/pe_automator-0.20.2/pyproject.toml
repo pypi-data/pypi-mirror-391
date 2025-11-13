@@ -1,0 +1,17 @@
+[build-system]
+requires = [ "setuptools", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pe-automator"
+keywords=['ligo', 'gravitational waves', 'parameter estimation']
+authors= [
+    {name = "Yumeng Xu", email = "yumeng.xu@ligo.org"},
+]
+description= "PE Automator is a Python package for automating the setup and execution of parameter estimation (PE) runs using Bilby Pipe."
+
+requires-python = ">=3.8"
+dynamic = ["version", "readme", "dependencies"]
+
+[tool.setuptools_scm]
+write_to = "pe_automator/_version.py"

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Event Parameter Table</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/rowgroup/1.4.1/js/dataTables.rowGroup.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.4.1/css/rowGroup.dataTables.min.css">
+  <style>
+    sup { font-size: 0.7em; vertical-align: super; }
+    sub { font-size: 0.7em; vertical-align: sub; }
+  </style>
+</head>
+<body>
+  <h2>Event Parameter Table</h2>
+  <table id="paramTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Approximant</th>
+        <th>Total Mass</th>
+        <th>Chirp Mass</th>
+        <th>Mass Ratio</th>
+        <th>Luminosity Distance</th>
+        <th>Chi Effective</th>
+        <th>Chi P</th>
+        <th>Eccentricity</th>
+        <th>Mean Anomaly</th>
+        <th>H1 Optimal SNR</th>
+        <th>L1 Optimal SNR</th>
+        <th>Chi 1</th>
+        <th>Chi 2</th>
+        <th>Tilt 1</th>
+        <th>Tilt 2</th>
+        <th>A 1</th>
+        <th>A 2</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+// Example data (replace with your JSON)
+const data = {{ data | tojson }};
+
+// Parameters shown in table
+const parameters = [
+    "total_mass",
+    "chirp_mass",
+    "mass_ratio",
+    "luminosity_distance",
+    "chi_eff",
+    "chi_p",
+    "eccentricity",
+    "mean_anomaly",
+    "H1_optimal_snr",
+    "L1_optimal_snr",
+    "chi_1",
+    "chi_2",
+    "tilt_1",
+    "tilt_2",
+    "a_1",
+    "a_2",
+];
+
+// Dictionary for event-level sorting
+const sortDict = {
+    "total_mass": "IMRPhenomXPNR",
+    "chirp_mass": "IMRPhenomXPNR",
+    "mass_ratio": "IMRPhenomXPNR",
+    "luminosity_distance": "IMRPhenomXPNR",
+    "chi_eff": "IMRPhenomXPNR",
+    "chi_p": "IMRPhenomXPNR",
+    "eccentricity": "IMRPhenomTEHM",
+    "mean_anomaly": "IMRPhenomTEHM",
+    "H1_optimal_snr": "IMRPhenomXPNR",
+    "L1_optimal_snr": "IMRPhenomXPNR",
+    "chi_1": "IMRPhenomXPNR",
+    "chi_2": "IMRPhenomXPNR",
+    "tilt_1": "IMRPhenomXPNR",
+    "tilt_2": "IMRPhenomXPNR",
+    "a_1": "IMRPhenomXPNR",
+    "a_2": "IMRPhenomXPNR",
+};
+
+// Format value as median ±
+function formatCell(param) {
+  const med = param.median.toFixed(2);
+  const up = (param.upper - param.median).toFixed(2);
+  const low = (param.median - param.lower).toFixed(2);
+  return `${med}<sup>+${up}</sup><sub>-${low}</sub>`;
+}
+
+// Flatten into row data (repeat event per row)
+let rows = [];
+for (let [event, approxDict] of Object.entries(data)) {
+  for (let [approx, params] of Object.entries(approxDict)) {
+    const row = [event, approx];
+    for (let p of parameters) {
+      row.push(params[p] ? formatCell(params[p]) : "");
+    }
+    rows.push(row);
+  }
+}
+
+// Custom sorting plugin for event-level sorting
+$.fn.dataTable.ext.order['event-median'] = function(settings, colIndex) {
+  const param = parameters[colIndex - 2]; // col 2 → index 0 in parameters
+  if (!param) {
+    return this.api().rows({page:'all'}).indexes().map(idx => 0);
+  }
+  return this.api().rows({page:'all'}).indexes().map(idx => {
+    const rowData = this.api().row(idx).data();
+    if (!rowData) return 0;
+    const event = rowData[0];
+    const approx = sortDict[param];
+    const eventData = data[event][approx];
+    if (!eventData || !eventData[param]) return 0;
+    return eventData[param].median;
+  });
+};
+
+
+$(document).ready(function() {
+  $('#paramTable').DataTable({
+    data: rows,
+    columns: [
+      { title: "Event" },
+      { title: "Approximant" },
+      { title: "Total Mass", orderDataType: "event-median" },
+      { title: "Chirp Mass", orderDataType: "event-median" },
+      { title: "Mass Ratio", orderDataType: "event-median" },
+      { title: "Luminosity Distance", orderDataType: "event-median" },
+      { title: "Chi Effective", orderDataType: "event-median" },
+      { title: "Chi P", orderDataType: "event-median" },
+      { title: "Eccentricity", orderDataType: "event-median" },
+      { title: "Mean Anomaly", orderDataType: "event-median" },
+      { title: "H1 Optimal SNR", orderDataType: "event-median" },
+      { title: "L1 Optimal SNR", orderDataType: "event-median" },
+      { title: "Chi 1", orderDataType: "event-median" },
+      { title: "Chi 2", orderDataType: "event-median" },
+      { title: "Tilt 1", orderDataType: "event-median" },
+      { title: "Tilt 2", orderDataType: "event-median" },
+      { title: "A 1", orderDataType: "event-median" },
+      { title: "A 2", orderDataType: "event-median" },
+    ],
+    rowGroup: {
+      dataSrc: 0  // group by Event
+    },
+    columnDefs: [
+      { targets: 0, visible: false }  // hide duplicate event col
+    ],
+    order: [[2, 'asc']] // default sort
+  });
+});
+</script>
+</body>
+</html>
