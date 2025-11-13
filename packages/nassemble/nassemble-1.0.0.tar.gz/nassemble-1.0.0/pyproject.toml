@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nassemble"
+version = "1.0.0"
+authors = [
+    { name="Nathan Cerisara", email="cerisara.nathan@gmail.com" },
+]
+description = "A simple tool to aggregate code and documentation from a directory into a single text file."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Utilities",
+]
+
+# This section creates the terminal command
+[project.scripts]
+nassemble = "nassemble.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "build",
+    "twine",
+]
