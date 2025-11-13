@@ -1,0 +1,64 @@
+[tool.poetry]
+name = "inpost"
+version = "0.2.0a3"
+description = "Asynchronous InPost package allowing you to manage existing incoming parcels without mobile app"
+authors = ["loboda4450 <loboda4450@gmail.com>", "MrKazik99 <mrkazik99@gmail.com>"]
+maintainers = ["loboda4450 <loboda4450@gmail.com>"]
+documentation = 'https://inpost-python.readthedocs.io/en/latest/index.html'
+license = 'LGPL-2.1-only'
+repository = "https://github.com/IFOSSA/inpost-python"
+readme = "README.md"
+packages = [
+        {include = 'inpost'},
+        {include = 'inpost/static'}
+    ]
+classifiers = [
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Framework :: aiohttp",
+        "Intended Audience :: Developers",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX :: Linux",
+        "Development Status :: 3 - Alpha"
+    ]
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^3.7.0"
+pytest = "^8.1.1"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiohttp = "^3.9.4"
+arrow = "^1.2.3"
+qrcode = "^7.3.1"
+Pillow = "^9.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | tmp
+  | docs
+)/
+'''
+
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+known_third_party = ["aiohttp", "music_service_async_interface", "mutagen"]
