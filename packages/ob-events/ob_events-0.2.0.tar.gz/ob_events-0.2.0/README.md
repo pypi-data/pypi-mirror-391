@@ -1,0 +1,89 @@
+# Python package to publish events to the Outerbounds platform
+
+## Installation
+
+Install the package using `pip`:
+
+```bash
+pip install ob-events
+```
+
+If you want to use IAM authentication, you need some additional dependencies:
+
+```bash
+pip install ob-events[aws]
+```
+
+## Usage
+
+### Metaflow Flow (The Receiver)
+
+First, assume you have a Metaflow Flow that is triggered by an event, like `my_event`.
+
+```python
+from metaflow import FlowSpec, step, current, trigger
+
+
+@trigger(event='my_event')
+class NodeSimpleTriggeredFlow(FlowSpec):
+    @step
+    def start(self):
+        self.var_1 = ["h", "e", "l", "l"]
+        self.next(self.b, foreach='var_1')
+
+    @step
+    def b(self):
+        print("In B")
+        self.next(self.join)
+
+    @step
+    def join(self, inputs):
+        self.next(self.end)
+
+    @step
+    def end(self):
+        print("In end")
+
+if __name__ == "__main__":
+    NodeSimpleTriggeredFlow()
+```
+
+### Python Trigger (The Sender)
+
+You can trigger this flow using the ob-events Python library. This assumes you are using Service Principals for programmatic authentication. You can get the config string for the machine user from the Outerbounds UI.
+
+```python
+from ob_events import EventTrigger, ConfigError, TriggerError
+
+try:
+    # Create the trigger instance
+    event_trigger = EventTrigger()
+
+    # Initialize the library with the config string from the Outerbounds UI
+    event_trigger.init(config_string="awssm-arn:...")
+
+    # Or you can use static API key auth:
+    #
+    # event_trigger.init_from_service_principal(
+    #     service_principal_name="some-static-key-principal",
+    #     deployment_domain="mycompany.obp.outerbounds.com",
+    #     perimeter="default",
+    #     jwt_token="...key goes here..."
+    # )
+
+    # Trigger the event (name must match what's in @trigger decorator)
+    print("Triggering event 'my_event'...")
+    event_trigger.trigger("my_event", payload={"foo": "bar", "source": "my-service"})
+    print("Event triggered successfully!")
+
+    # You can reuse the same trigger for multiple events
+    event_trigger.trigger("another_event", payload={"data": "value"})
+
+except ConfigError as e:
+    print(f"Configuration error: {e}")
+except TriggerError as e:
+    print(f"Trigger error: {e}")
+except ImportError as e:
+    print(f"Dependency error: {e}")
+    print("If using AWS Secrets Manager, please run 'pip install ob-events[aws]'")
+```
