@@ -1,0 +1,3 @@
+from .checker import check_metadata_to_database as check_metadata_to_database
+
+async def load_meta_config() -> None: ...
