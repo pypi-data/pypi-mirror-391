@@ -1,0 +1,102 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  id-token: write  # Required for trusted publishing to PyPI
+  contents: read
+
+jobs:
+  # Run lint checks - MUST PASS before publishing
+  lint:
+    name: Lint Check
+    uses: ./.github/workflows/lint.yml
+    permissions:
+      contents: read
+
+  # Run tests on all supported Node versions - MUST PASS before publishing
+  test:
+    name: Test Check
+    uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
+
+  publish:
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for trusted publishing to PyPI
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set version from release tag
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Releasing version: $VERSION"
+
+          # Update version in pyproject.toml
+          sed -i 's/version = ".*"/version = "'$VERSION'"/' pyproject.toml
+
+          # Update version in __init__.py
+          sed -i 's/__version__ = ".*"/__version__ = "'$VERSION'"/' tabstack/__init__.py
+
+          # Verify versions were updated
+          echo "pyproject.toml version:"
+          cat pyproject.toml | grep "^version"
+          echo "tabstack/__init__.py version:"
+          cat tabstack/__init__.py | grep "^__version__"
+
+      - name: Cache pip packages
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.local
+          key: pip-${{ runner.os }}-python-3.12-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            pip-${{ runner.os }}-python-3.12-
+
+      - name: Install build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]" --user
+
+      - name: Build package
+        run: |
+          python -m build
+
+      - name: Check package
+        run: |
+          python -m twine check dist/*
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          attestations: false
+
+      - name: Verify TestPyPI installation
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Waiting 30 seconds for TestPyPI to process the package..."
+          sleep 30
+
+          echo "Installing from TestPyPI..."
+          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ tabstack==$VERSION
+
+          echo "Testing import..."
+          python -c "import tabstack; print(f'Successfully imported tabstack version {tabstack.__version__}')"
+
+          echo "✓ TestPyPI package verified successfully!"
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
