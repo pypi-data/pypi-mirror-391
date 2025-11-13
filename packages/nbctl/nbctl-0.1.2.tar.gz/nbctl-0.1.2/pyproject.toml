@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nbctl"
+version = "0.1.2"
+description = "A comprehensive, modern CLI toolkit that solves all major Jupyter notebook pain points in one unified interface."
+authors = [{name = "Venkatachalam Subramanian Periya Subbu", email = "venkatachalam.sps@gmail.com"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "nbformat>=5.0.0",
+    "click>=8.0.0",
+    "rich>=13.0.0",
+    "nbconvert>=7.0.0",
+    "nbclient>=0.7.0",
+    "nbdime>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+nbctl = "nbutils.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/VenkatachalamSubramanianPeriyaSubbu/nbctl"
+Documentation = "https://venkatachalamsubramanianperiyasubbu.github.io/nbutils/"
+Repository = "https://github.com/VenkatachalamSubramanianPeriyaSubbu/nbctl"
+Issues = "https://github.com/VenkatachalamSubramanianPeriyaSubbu/nbctl/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nbutils*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
