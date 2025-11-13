@@ -1,0 +1,192 @@
+[project]
+name = "extraction-methods"
+version = "1.1.2"
+description = "Methods to enable the extraction of metadata"
+authors = [
+    {"name" = "rhysrevans3", "email" = "<rhys.r.evans3@gmail.com>"},
+]
+license = "BSD - See extraction_methods/LICENSE file for details"
+readme = "README.rst"
+keywords = ['metadata', 'plugin', 'extraction']
+requires-python = ">=3.10, <4"
+dependencies = [
+    "aiohttp == 3.9.2",
+    "alabaster == 0.7.14",
+    "anytree == 2.8.0",
+    "async-timeout == 4.0.3",
+    "babel == 2.13.0",
+    "boto3 == 1.18.44",
+    "botocore == 1.21.44",
+    "cachetools == 4.2.4",
+    "certifi == 2023.7.22",
+    "cf-xarray (>=0.10.0,<0.11.0)",
+    "chardet == 4.0.0",
+    "docutils == 0.20",
+    "elasticsearch == 7.17.12",
+    "fsspec (==2025.2)",
+    "gcsfs (>=2025.2.0,<2026.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "idna == 2.10",
+    "imagesize == 1.3.0",
+    "intake-esm (>=2025.2.3,<2026.0.0)",
+    "jinja2 (>=3.1.5,<4.0.0)",
+    "jmespath == 0.10.0",
+    "jsonschema (>=4.23.0,<5.0.0)",
+    "lxml (>=5.3.1,<6.0.0)",
+    "multidict == 5.1.0",
+    "packaging == 24.1",
+    "pika == 1.2.0",
+    "pydantic (>=2.1.1,<3.0.0)",
+    "pygments == 2.17.0",
+    "pyparsing == 2.4.7",
+    "python-dateutil == 2.8.2",
+    "python-magic == 0.4.25",
+    "pytz == 2021.1",
+    "pyyaml (==6.0.1)",
+    "rioxarray (>=0.17.0,<0.18.0)",
+    "s3transfer == 0.5.0",
+    "siphon == 0.9",
+    "six == 1.16.0",
+    "snowballstemmer == 2.2.0",
+    "tqdm == 4.62.3",
+    "typing-extensions (>=4.7.1,<5.0.0)",
+    "urllib3 == 1.26.18",
+    "types-pyyaml (>=6.0.12.20250915,<7.0.0.0)",
+    "pre-commit (>=4.3.0,<5.0.0)",
+    "h11 (>=0.16.0,<0.17.0)",
+]
+
+[project.urls]
+Homepage = "https://github.com/cedadev/extraction-methods"
+
+[project.optional-dependencies]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-pydantic",
+    "sphinx_mdinclude",
+    "sphinxcontrib-programoutput",
+]
+
+[project.entry-points."extraction_methods"]
+assets = "extraction_methods.plugins.assets.assets:AssetExtract"
+bbox = "extraction_methods.plugins.bbox:BboxExtract"
+ceda_observation = "extraction_methods.plugins.ceda_observation:CEDAObservationExtract"
+ceda_vocabulary = "extraction_methods.plugins.ceda_vocabulary:CEDAVocabularyExtract"
+conditional = "extraction_methods.plugins.conditional:ConditionalExtract"
+controlled_vocabulary = "extraction_methods.plugins.controlled_vocabulary:ControlledVocabularyExtract"
+datetime_bound_to_centroid = "extraction_methods.plugins.datetime_bound_to_centroid:DatetimeBoundToCentroidExtract"
+default = "extraction_methods.plugins.default:DefaultExtract"
+dict_aggregator = "extraction_methods.plugins.dict_aggregator:DictAggregatorExtract"
+elasticsearch_aggregation = "extraction_methods.plugins.elasticsearch_aggregation:ElasticsearchAggregationExtract"
+elasticsearch_search = "extraction_methods.plugins.elasticsearch_search:ElasticsearchSearchExtract"
+facet_map = "extraction_methods.plugins.facet_map:FacetMapExtract"
+facet_prefix = "extraction_methods.plugins.facet_prefix:FacetPrefixExtract"
+general_function = "extraction_methods.plugins.general_function:GeneralFunctionExtract"
+geometry = "extraction_methods.plugins.geometry:GeometryExtract"
+geometry_to_bbox = "extraction_methods.plugins.geometry_to_bbox:GeometryToBboxExtract"
+hash = "extraction_methods.plugins.hash:HashExtract"
+header = "extraction_methods.plugins.header.header:HeaderExtract"
+intake = "extraction_methods.plugins.intake_esm:IntakeESMExtract"
+iso19115 = "extraction_methods.plugins.iso19115:ISO19115Extract"
+iso_date = "extraction_methods.plugins.iso_date:ISODateExtract"
+json_file = "extraction_methods.plugins.json_file:JsonFileExtract"
+lambda = "extraction_methods.plugins.lambda:LambdaExtract"
+netcdf = "extraction_methods.plugins.netcdf:NetCDFExtract"
+open_zip = "extraction_methods.plugins.open_zip:ZipExtract"
+path_parts = "extraction_methods.plugins.path_parts:PathPartsExtract"
+regex = "extraction_methods.plugins.regex:RegexExtract"
+regex_label = "extraction_methods.plugins.regex_label:RegexLabelExtract"
+regex_rename = "extraction_methods.plugins.regex_rename:RegexRenameExtract"
+regex_type_cast = "extraction_methods.plugins.regex_type_cast:RegexTypeCastExtract"
+remove = "extraction_methods.plugins.remove:RemoveExtract"
+stac_extension = "extraction_methods.plugins.stac_extension:STACExtensionExtract"
+string_template = "extraction_methods.plugins.string_template:StringTemplateExtract"
+xml = "extraction_methods.plugins.xml:XMLExtract"
+
+[project.entry-points."extraction_methods.header.backends"]
+ncml = "extraction_methods.plugins.header.backends.ncml:NcMLHeader"
+xarray = "extraction_methods.plugins.header.backends.xarray:XarrayHeader"
+cf = "extraction_methods.plugins.header.backends.cf:CfHeader"
+
+[project.entry-points."extraction_methods.assets.backends"]
+elasticsearch = "extraction_methods.plugins.assets.backends.elasticsearch:ElasticsearchAssets"
+intake_esm = "extraction_methods.plugins.assets.backends.intake_esm:IntakeESMAssets"
+regex = "extraction_methods.plugins.assets.backends.regex:RegexAssets"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.black.dependencies]
+black = "^25.9.0"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.mypy.dependencies]
+mypy = "^1.10.1"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.bandit.dependencies]
+bandit = "^1.7.9"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.ruff.dependencies]
+ruff = "^0.5.2"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.isort.dependencies]
+isort = "^5.13.2"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.xenon.dependencies]
+xenon = "^0.9.1"
+pre-commit = "^4.3.0"
+
+[tool.poetry.group.test.dependencies]
+coverage = { extras = ["toml"], version = "^7.6.0" }
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.4.7"
+sphinx-pydantic = "^0.1.1"
+sphinx-rtd-theme = "^2.0.0"
+sphinx-mdinclude = "^0.6.2"
+
+[tool.mypy]
+plugins = [
+    "pydantic.mypy"
+]
+strict = true
+ignore_missing_imports = true
+python_version = "3.10"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+target-version = ["py310", "py311", "py312", "py313"]
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py310"
+
+[tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
+
+[tool.quality.mccabe]
+average = "C"
+block = "C"
+module = "C"
+
+[tool.bandit]
+skips = []
+
+[tool.quality.audit]
+ignore-code = ["CVE-2019-8341"]
