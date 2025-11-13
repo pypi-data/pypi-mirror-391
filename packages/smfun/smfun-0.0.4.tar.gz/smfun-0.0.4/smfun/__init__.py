@@ -1,0 +1,1 @@
+from smfun.charfun import charFun
