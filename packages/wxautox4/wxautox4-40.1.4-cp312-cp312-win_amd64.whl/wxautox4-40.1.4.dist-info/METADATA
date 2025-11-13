@@ -1,0 +1,513 @@
+Metadata-Version: 2.4
+Name: wxautox4
+Version: 40.1.4
+Summary: wxauto plus beta for 4.0
+Author: Cluic
+Author-email: tikic@qq.com
+Requires-Python: >=3.9,<3.14
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: colorama
+Requires-Dist: comtypes
+Requires-Dist: pillow
+Requires-Dist: psutil
+Requires-Dist: pyperclip
+Requires-Dist: pywin32
+Requires-Dist: requests
+Requires-Dist: tenacity
+Description-Content-Type: text/markdown
+
+# wxautox4 - WeChat自动化工具
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Version-0.0.1b1-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/Python-3.9%2B-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/Platform-Windows-lightgrey.svg" alt="Platform">
+  <img src="https://img.shields.io/badge/WeChat-4.0.5-green.svg" alt="WeChat">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+</p>
+
+wxautox4 是一个专门为 WeChat 4.0.5 版本设计的 Python 自动化库，提供完整的微信操作接口，包括消息发送、文件传输、朋友圈发布等功能。
+
+## ⚠️ 重要声明
+
+**当前为 4.0 Beta 版本**，仅完成部分功能，暂不保证稳定性，<font color='red'>**仅适用于微信 4.0.5 版本客户端**</font>
+
+## ✨ 主要特性
+
+- 🚀 **高性能**: 使用 Nuitka 编译核心模块，提供原生性能
+- 🔧 **易用性**: 简洁的 API 设计，快速上手
+- 🎯 **精确控制**: 基于 Windows UI 自动化，操作精确可靠
+- 🔄 **多线程**: 支持多线程消息监听和处理
+- 📱 **朋友圈**: 支持朋友圈发布和隐私设置
+- 🔐 **授权系统**: 内置许可证验证机制
+- 🐍 **多版本支持**: 兼容 Python 3.9-3.13
+
+## 📦 安装方式
+
+### 使用 pip 安装（推荐）
+
+```bash
+pip install wxautox4
+```
+
+### 从源码安装
+
+```bash
+git clone https://github.com/your-repo/wxautox4.git
+cd wxautox4
+pip install -e .
+```
+
+## 🚀 快速开始
+
+### 基础使用
+
+```python
+from wxautox4 import WeChat
+
+# 创建微信实例
+wx = WeChat()
+
+# 发送消息
+wx.SendMsg('你好，世界！', '好友昵称')
+
+# 发送文件
+wx.SendFiles(r'C:\path\to\file.txt', '好友昵称')
+
+# 获取消息
+messages = wx.GetAllMessage()
+for msg in messages:
+    print(f'{msg.sender}: {msg.content}')
+```
+
+### 许可证授权
+
+使用前需要进行授权验证：
+
+```bash
+# 使用授权码授权
+wxautox4 --auth your_license_key
+
+# 使用授权文件授权
+wxautox4 --auth-file license.dat
+
+# 导出机器码用于授权
+wxautox4 --export
+
+# 调试许可证信息
+wxautox4 --debug-license
+```
+
+## 📚 详细文档
+
+### 1. 获取微信实例
+
+```python
+from wxautox4 import WeChat
+
+# 创建微信主窗口实例
+wx = WeChat()
+
+# 检查是否在线
+if wx.IsOnline():
+    print('微信已登录')
+else:
+    print('微信未登录')
+```
+
+### 2. 发送消息 - SendMsg
+
+```python
+# 基础消息发送
+wx.SendMsg('Hello, World!', '目标用户')
+
+# 带@功能的消息发送（群聊）
+wx.SendMsg('大家好！', '群聊名称', at=['用户1', '用户2'])
+
+# 精确匹配用户名
+wx.SendMsg('消息内容', '用户名', exact=True)
+
+# 发送后不清空输入框
+wx.SendMsg('消息内容', '用户名', clear=False)
+```
+
+**参数说明：**
+- `msg` (str): 消息内容
+- `who` (str, optional): 发送对象，不指定则发送给当前聊天对象
+- `clear` (bool, optional): 发送后是否清空编辑框，默认 True
+- `at` (Union[str, List[str]], optional): @对象，支持字符串或列表
+- `exact` (bool, optional): 是否精确匹配用户名，默认 False
+
+### 3. 发送文件 - SendFiles
+
+```python
+# 发送单个文件
+wx.SendFiles(r'C:\path\to\file.txt', '目标用户')
+
+# 发送多个文件
+files = [
+    r'C:\path\to\file1.txt',
+    r'C:\path\to\file2.jpg',
+    r'C:\path\to\file3.pdf'
+]
+wx.SendFiles(files, '目标用户')
+
+# 向当前聊天窗口发送文件
+wx.SendFiles(r'C:\path\to\file.txt')
+```
+
+**参数说明：**
+- `filepath` (str|list): 文件的绝对路径，支持单个文件或文件列表
+- `who` (str, optional): 发送对象，不指定则发送给当前聊天对象
+- `exact` (bool, optional): 是否精确匹配用户名，默认 False
+
+### 4. 获取消息 - GetAllMessage
+
+```python
+# 获取当前聊天窗口的所有消息
+all_messages = wx.GetAllMessage()
+
+# 获取新消息
+new_messages = wx.GetNewMessage()
+
+# 遍历消息
+for message in all_messages:
+    print(f'发送者: {message.sender}')
+    print(f'内容: {message.content}')
+    print(f'时间: {message.time}')
+    print(f'消息类型: {message.type}')
+    print('-' * 30)
+```
+
+**返回值：**
+- `List[Message]`: 消息列表，每个消息对象包含发送者、内容、时间、类型等信息
+
+### 5. 监听消息 - AddListenChat
+
+```python
+def message_callback(msg, chat):
+    """消息回调函数"""
+    print(f'收到来自 {chat} 的消息: {msg.content}')
+    
+    # 自动回复
+    if msg.content == 'hello':
+        chat.SendMsg('Hello! 我是机器人')
+
+# 添加消息监听
+wx.AddListenChat('好友昵称', message_callback)
+
+# 监听多个聊天
+wx.AddListenChat(['好友1', '群聊1'], message_callback)
+
+# 开始监听（如果未开始）
+wx._listener_start()
+```
+
+**参数说明：**
+- `who` (str|List[str]): 监听对象，支持单个或多个
+- `callback` (Callable): 回调函数，接收 `(msg, chat)` 两个参数
+
+### 6. 移除监听 - RemoveListenChat
+
+```python
+# 移除特定对象的监听
+wx.RemoveListenChat('好友昵称')
+
+# 移除多个监听
+wx.RemoveListenChat(['好友1', '群聊1'])
+
+# 停止所有监听
+wx.StopListening()
+```
+
+### 7. @所有人 - AtAll
+
+```python
+# 在群聊中@所有人
+wx.AtAll('重要通知：明天开会！', '工作群')
+
+# 在当前聊天窗口@所有人
+wx.AtAll('大家注意！')
+```
+
+**参数说明：**
+- `msg` (str): 要发送的消息
+- `who` (str, optional): 群聊名称，不指定则在当前聊天窗口操作
+- `exact` (bool, optional): 是否精确匹配群聊名称
+
+### 8. 判断是否在线 - IsOnline
+
+```python
+# 检查微信是否在线
+if wx.IsOnline():
+    print('微信已登录，可以进行操作')
+else:
+    print('微信未登录，请先登录')
+    
+# 在发送消息前检查
+if wx.IsOnline():
+    wx.SendMsg('测试消息', '好友')
+else:
+    print('微信离线，无法发送消息')
+```
+
+### 9. 切换聊天窗口 - ChatWith
+
+```python
+# 切换到指定聊天窗口
+wx.ChatWith('好友昵称')
+
+# 精确匹配用户名
+wx.ChatWith('用户名', exact=True)
+
+# 切换后发送消息
+wx.ChatWith('工作群')
+wx.SendMsg('切换成功！')
+```
+
+**参数说明：**
+- `who` (str): 要切换到的聊天对象
+- `exact` (bool, optional): 是否精确匹配名称
+
+### 10. 获取子窗口实例 - GetSubWindow
+
+```python
+# 获取指定聊天的子窗口
+chat_window = wx.GetSubWindow('好友昵称')
+
+# 通过子窗口发送消息（不会切换主窗口）
+chat_window.SendMsg('这是通过子窗口发送的消息')
+
+# 获取子窗口信息
+info = chat_window.ChatInfo()
+print(f'聊天对象: {info["chat_name"]}')
+
+# 关闭子窗口
+chat_window.Close()
+```
+
+### 11. 获取所有子窗口实例 - GetAllSubWindow
+
+```python
+# 获取所有打开的子窗口
+all_windows = wx.GetAllSubWindow()
+
+for window in all_windows:
+    print(f'窗口: {window.who}')
+    # 可以对每个窗口进行操作
+    window.SendMsg('批量消息发送')
+    
+# 关闭所有子窗口
+for window in all_windows:
+    window.Close()
+```
+
+### 12. 停止监听 - StopListening
+
+```python
+# 停止所有消息监听
+wx.StopListening()
+
+# 程序结束前建议停止监听
+try:
+    wx.SendMsg('程序即将结束', '管理员')
+finally:
+    wx.StopListening()
+```
+
+### 13. 发送朋友圈 - PublishMoment
+
+```python
+# 发送纯文本朋友圈
+text = '''今天天气真好☀️
+适合出去走走
+
+心情不错~😊'''
+wx.PublishMoment(text)
+
+# 发送带图片的朋友圈
+media_files = [
+    r"C:\Users\用户名\Pictures\photo1.jpg",
+    r"C:\Users\用户名\Pictures\photo2.jpg",
+    r"C:\Users\用户名\Pictures\photo3.jpg",
+]
+wx.PublishMoment(text, media_files)
+
+# 设置隐私权限的朋友圈
+privacy_config = {
+    'privacy': '白名单',     # 权限类型：公开/私密/白名单/黑名单
+    'tags': ['家人', '朋友']  # 标签列表
+}
+wx.PublishMoment(text, media_files, privacy_config)
+
+# 仅对特定好友可见
+privacy_config = {
+    'privacy': '白名单',
+    'friends': ['张三', '李四'],  # 指定好友
+    'tags': ['同事']             # 指定标签
+}
+wx.PublishMoment('工作总结', [], privacy_config)
+```
+
+**参数说明：**
+- `text` (str): 朋友圈文字内容
+- `media_files` (List[str], optional): 图片/视频文件路径列表
+- `privacy_config` (dict, optional): 隐私设置配置
+
+**隐私配置选项：**
+- `privacy`: 权限类型（'公开', '私密', '白名单', '黑名单'）
+- `friends`: 特定好友列表
+- `tags`: 特定标签列表
+
+## 🔧 高级功能
+
+### 消息过滤与处理
+
+```python
+def advanced_message_handler(msg, chat):
+    """高级消息处理器"""
+    # 根据消息类型处理
+    if msg.type == 'text':
+        if '帮助' in msg.content:
+            chat.SendMsg('我是自动回复机器人，可以帮助您处理消息')
+    elif msg.type == 'image':
+        chat.SendMsg('收到图片，正在处理...')
+    elif msg.type == 'file':
+        chat.SendMsg('收到文件，已保存')
+        
+wx.AddListenChat('客服群', advanced_message_handler)
+```
+
+### 批量操作
+
+```python
+# 批量发送消息
+contacts = ['好友1', '好友2', '好友3']
+message = '群发消息测试'
+
+for contact in contacts:
+    result = wx.SendMsg(message, contact)
+    if result:
+        print(f'发送给 {contact} 成功')
+    else:
+        print(f'发送给 {contact} 失败: {result["msg"]}')
+        
+# 批量发送文件
+file_path = r'C:\Users\用户名\Documents\重要文件.pdf'
+for contact in contacts:
+    wx.SendFiles(file_path, contact)
+```
+
+### 定时任务
+
+```python
+import time
+import threading
+
+def scheduled_message():
+    """定时发送消息"""
+    while True:
+        current_time = time.strftime('%H:%M')
+        if current_time == '09:00':  # 每天9点发送
+            wx.SendMsg('早上好！新的一天开始了！', '工作群')
+            time.sleep(60)  # 避免重复发送
+        time.sleep(30)  # 每30秒检查一次
+        
+# 启动定时任务
+scheduler_thread = threading.Thread(target=scheduled_message, daemon=True)
+scheduler_thread.start()
+```
+
+## 🏗️ 开发指南
+
+### 项目结构
+
+```
+wxautox4/
+├── wxautox4/
+│   ├── __init__.py          # 主要导出
+│   ├── wx.py                # 核心WeChat类
+│   ├── ui/                  # UI自动化模块
+│   │   ├── main.py         # 主窗口管理
+│   │   ├── chatbox.py      # 聊天窗口
+│   │   ├── moment.py       # 朋友圈功能
+│   │   └── ...
+│   ├── uia/                 # Windows UI自动化
+│   ├── msgs/                # 消息处理
+│   ├── utils/               # 工具函数
+│   └── ...
+├── build_config.json        # 构建配置
+├── thread_build.py          # 多线程构建脚本
+└── pyproject.toml          # 项目配置
+```
+
+### 构建项目
+
+```bash
+# 使用自定义构建脚本
+python thread_build.py
+
+# 指定配置文件和输出目录
+python thread_build.py --config build_config.json --output-dir dist
+```
+
+### 开发依赖
+
+项目依赖以下主要库：
+- `pywin32`: Windows API 访问
+- `pillow`: 图像处理
+- `tenacity`: 重试机制
+- `psutil`: 进程管理
+- `comtypes`: COM 组件支持
+- `requests`: HTTP 请求
+
+## ⚠️ 注意事项
+
+### 兼容性要求
+- **操作系统**: Windows 7/8/10/11
+- **Python版本**: 3.9-3.13
+- **微信版本**: 4.0.5（其他版本不保证兼容）
+- **架构**: 仅支持 Windows x64
+
+### 使用限制
+1. 本工具仅供学习和个人使用
+2. 请遵守微信服务条款和相关法律法规
+3. 不建议用于商业用途或大规模自动化
+4. 使用前请备份重要数据
+
+### 常见问题
+
+**Q: 提示"微信版本不兼容"怎么办？**
+A: 请确保使用微信 4.0.5 版本，其他版本暂不支持。
+
+**Q: 授权失败怎么办？**
+A: 使用 `wxautox4 --export` 导出机器码，联系管理员获取授权文件。
+
+**Q: 消息发送失败？**
+A: 检查微信是否登录，目标用户是否存在，网络是否正常。
+
+**Q: 监听消息不生效？**
+A: 确保已调用 `AddListenChat()` 并且微信窗口处于活动状态。
+
+## 📄 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📞 联系方式
+
+- 作者: Cluic
+- 邮箱: tikic@qq.com
+- 项目地址: [GitHub](https://github.com/your-repo/wxautox4)
+
+---
+
+**免责声明**: 本工具仅用于学习和研究目的，使用者应当遵守相关法律法规，作者不承担任何因使用本工具而产生的法律责任。

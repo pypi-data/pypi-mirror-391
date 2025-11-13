@@ -1,0 +1,156 @@
+from wxautox4.exceptions import *
+from .base import BaseUISubWnd as BaseUISubWnd
+from _typeshed import Incomplete
+from pathlib import Path
+from typing import Literal
+from wxautox4 import uia as uia
+from wxautox4.logger import wxlog as wxlog
+from wxautox4.ocr import WeChatOCR as WeChatOCR
+from wxautox4.param import WxParam as WxParam, WxResponse as WxResponse
+from wxautox4.utils.tools import find_all_windows_from_root as find_all_windows_from_root, find_window_from_root as find_window_from_root, get_file_dir as get_file_dir, is_valid_image as is_valid_image, now_time as now_time
+from wxautox4.utils.win32 import FindWindow as FindWindow, GetAllWindows as GetAllWindows, ReadClipboardData as ReadClipboardData, SetClipboardText as SetClipboardText
+
+wxocr: Incomplete
+
+class UpdateWindow(BaseUISubWnd):
+    control: Incomplete
+    def __init__(self) -> None: ...
+    def ignore(self) -> None: ...
+
+class Menu(BaseUISubWnd):
+    parent: Incomplete
+    root: Incomplete
+    control: Incomplete
+    def __init__(self, parent, timeout: int = 2) -> None: ...
+    @property
+    def option_controls(self): ...
+    @property
+    def option_names(self): ...
+    def select(self, item): ...
+
+class SelectContactWnd(BaseUISubWnd):
+    parent: Incomplete
+    root: Incomplete
+    control: Incomplete
+    confirm_btn: Incomplete
+    confirm_btn_rect: Incomplete
+    def __init__(self, parent, timeout: int = 2) -> None: ...
+    def search(self, keyword, interval: float = 0.1): ...
+    def add_message(self, content): ...
+    def confirm(self) -> None: ...
+    def send(self, target, message: Incomplete | None = None, interval: float = 0.1) -> None: ...
+
+class SearchNewFriendWnd(BaseUISubWnd):
+    control: Incomplete
+    def __init__(self) -> None: ...
+    apply_btn: Incomplete
+    search_edit: Incomplete
+    search_btn: Incomplete
+    def init(self) -> None: ...
+    def search(self, keyword) -> None: ...
+    def apply(self): ...
+
+class WeChatImage(BaseUISubWnd):
+    parent: Incomplete
+    root: Incomplete
+    control: Incomplete
+    def __init__(self, parent) -> None: ...
+    tools: Incomplete
+    type: str
+    def init(self) -> None: ...
+    def load_original(self): """加载原图/视频"""
+        
+    def save(self, dir_path: Incomplete | None = None, timeout: int = 10, original: bool = False) -> Path: 
+        """保存图片/视频
+
+        Args:
+            dir_path (str): 保存文件夹路径
+            timeout (int, optional): 保存超时时间，默认10秒
+            original (bool, optional): 是否保存原图/视频，默认False
+        
+        Returns:
+            Path: 文件保存路径，即savepath
+        """
+
+class ProfileWnd(BaseUISubWnd):
+    control: Incomplete
+    def __init__(self) -> None: ...
+    topui: Incomplete
+    midui: Incomplete
+    bottomui: Incomplete
+    more_btn: Incomplete
+    def init(self) -> None: ...
+    @property
+    def info(self): ...
+
+class BaseNewFriendWindow(BaseUISubWnd):
+    control: Incomplete
+    def __init__(self) -> None: ...
+    remarkedit: Incomplete
+    tagbtn: Incomplete
+    pms_all: Incomplete
+    pms_chat: Incomplete
+    sns_btn1: Incomplete
+    sns_btn2: Incomplete
+    confirm_btn: Incomplete
+    cancel_btn: Incomplete
+    def init(self) -> None: ...
+    @property
+    def tagpanel(self): ...
+    @property
+    def current_tags(self): ...
+    def set_remark(self, remark) -> None: ...
+    def add_tag(self, tag) -> None: ...
+    def set_permission(self, permission: str = '朋友圈') -> None: ...
+    def cancel(self) -> None: ...
+    def confirm(self) -> None: ...
+    def send(self, remark: str = '', tags: list[str] = [], permission: Literal['朋友圈', '仅聊天'] = '朋友圈'): ...
+
+class AcceptFriendsWnd(BaseNewFriendWindow):
+    control: Incomplete
+    def __init__(self) -> None: ...
+
+class AddFriendsWnd(BaseNewFriendWindow):
+    control: Incomplete
+    def __init__(self) -> None: ...
+    def set_message(self, message) -> None: ...
+    def send(self, addmsg: str = '', remark: str = '', tags: list[str] = [], permission: Literal['朋友圈', '仅聊天'] = '朋友圈'): ...
+
+class NewFriendElement:
+    parent: Incomplete
+    root: Incomplete
+    control: Incomplete
+    content: Incomplete
+    accept_button: Incomplete
+    acceptable: Incomplete
+    def __init__(self, control, parent) -> None: ...
+    def accept(self, remark: Incomplete | None = None, tags: Incomplete | None = None, permission: str = '朋友圈'): 
+        """接受好友请求
+        
+        Args:
+            remark (str, optional): 备注名
+            tags (list, optional): 标签列表
+            permission (str, optional): 朋友圈权限, 可选值：'朋友圈', '仅聊天'
+        """
+    def get_account(self) -> None: """TODO:待完成"""
+    def delete(self) -> None: """TODO:待完成"""
+
+class WeChatDialog(BaseUISubWnd):
+    root: Incomplete
+    def __init__(self, parent, wait: int = 3) -> None: ...
+    @property
+    def control(self): ...
+    def get_all_text(self): ...
+    def click_button(self, text: str, move: bool = True): ...
+
+class NoteWindow(BaseUISubWnd):
+    control: Incomplete
+    dialog_texts: str
+    def __init__(self, timeout: int = 3) -> None: ...
+    def init(self, wait: int = 0) -> None: ...
+    def process_dialog(self): ...
+    def save_file(self, file_path: Path, dir_path: Path = None): ...
+    def parse(self) -> list[str | Path]: ...
+    def save_all(self, dir_path: Path) -> WxResponse[list[Path]]: ...
+    def to_markdown(self, dir_path: Path = None) -> Path: ...
+    def close(self) -> None: ...
