@@ -1,0 +1,200 @@
+---
+tags: ["git", "workflow", "branches"]
+---
+
+# Git Workflow Rules
+
+## 🔒 КРИТИЧЕСКОЕ ПРАВИЛО
+
+### ❌ НИКОГДА НЕ ПУШИТЬ В MAIN/MASTER НАПРЯМУЮ!
+
+**ЭТО ПРАВИЛО АБСОЛЮТНОЕ И НЕ ИМЕЕТ ИСКЛЮЧЕНИЙ!**
+
+```bash
+# ❌ НИКОГДА НЕ ДЕЛАТЬ:
+git push origin main
+git push origin master
+git push --force origin main
+
+# ✅ ПРАВИЛЬНО:
+git checkout -b feature/my-feature
+git add -A
+git commit -m "feat: my changes"
+git push origin feature/my-feature
+gh pr create --base main --title "..."
+# После review - merge через GitHub UI или gh pr merge
+```
+
+## 📋 Обязательный Workflow
+
+### 1. Создать feature branch
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/descriptive-name
+```
+
+### 2. Делать изменения и коммитить
+
+```bash
+git add -A
+git commit -m "type: description"
+```
+
+**Commit types:**
+- `feat:` - новая функциональность
+- `fix:` - исправление бага
+- `docs:` - документация
+- `style:` - форматирование
+- `refactor:` - рефакторинг
+- `test:` - тесты
+- `chore:` - maintenance
+
+### 3. Push в feature branch
+
+```bash
+git push origin feature/descriptive-name
+```
+
+### 4. Создать Pull Request
+
+```bash
+gh pr create \
+  --base main \
+  --title "feat: Add feature X" \
+  --body "Description of changes"
+```
+
+### 5. Дождаться CI checks
+
+Все checks должны пройти:
+- ✅ Tests (Python 3.11, 3.12, 3.13)
+- ✅ Integration Tests (Docker)
+- ✅ Code Quality
+- ✅ Security Scan
+
+### 6. Merge через PR
+
+```bash
+gh pr merge <number> --squash --delete-branch
+# ИЛИ через GitHub Web UI
+```
+
+## ❌ Что НИКОГДА не делать
+
+1. **НИКОГДА** `git push origin main`
+2. **НИКОГДА** `git push origin master`
+3. **НИКОГДА** `git push --force` на main/master
+4. **НИКОГДА** прямые коммиты в main/master
+5. **НИКОГДА** обходить CI checks
+6. **НИКОГДА** merge без прохождения всех checks
+
+## ✅ Исключения
+
+**НЕТ ИСКЛЮЧЕНИЙ!**
+
+Даже для:
+- ❌ Hotfixes - через PR с label `hotfix`
+- ❌ Документации - через PR
+- ❌ Typos - через PR
+- ❌ "Быстрых фиксов" - через PR
+
+**ВСЕГДА через Pull Request!**
+
+## 🔐 Branch Protection
+
+Main branch должен быть защищен:
+- Require pull request reviews
+- Require status checks to pass
+- Require branches to be up to date
+- No direct pushes (enforce for admins too)
+
+## 📝 PR Best Practices
+
+### Title Format
+```
+<type>: <description>
+
+Examples:
+feat: Add dual format support
+fix: Handle GPG key not found
+docs: Update CHANGELOG for v0.1.0
+test: Add integration tests for apt install
+```
+
+### Body Template
+```markdown
+## Changes
+- Change 1
+- Change 2
+
+## Tests
+- Test 1 added
+- Test 2 updated
+
+## Checklist
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] CHANGELOG updated (if needed)
+- [ ] All CI checks pass
+```
+
+### Review Process
+1. Create PR
+2. CI runs automatically
+3. Review by team member (if team)
+4. Address review comments
+5. Re-push to same branch (PR updates automatically)
+6. All checks pass
+7. Merge via GitHub UI or `gh pr merge`
+
+## 🚨 Emergency Procedures
+
+### If accidentally pushed to main
+
+```bash
+# Immediately contact team lead
+# Revert if possible:
+git reset --hard HEAD~1
+git push --force origin main  # Only with approval!
+
+# Better: create revert commit via PR
+git revert <commit-hash>
+# Then PR the revert
+```
+
+### Hotfix Process
+
+```bash
+# Still through PR, but expedited:
+git checkout -b hotfix/critical-bug
+# Fix
+git commit -m "fix: Critical bug description"
+git push origin hotfix/critical-bug
+gh pr create --base main --title "🔥 HOTFIX: ..." --label hotfix
+
+# Fast-track review and merge
+# But STILL through PR!
+```
+
+## 📊 Workflow Summary
+
+```
+main (protected) ← PR only!
+  ↑
+  PR #123 (CI checks)
+  ↑
+feature/my-branch (your work)
+  ↑
+local commits
+```
+
+**Ключ**: main всегда защищен, изменения ТОЛЬКО через PR!
+
+## See Also
+
+- [development.md](development.md) - Development process
+- [testing.md](testing.md) - Testing requirements
+- [code-style.md](code-style.md) - Code style guide
+
