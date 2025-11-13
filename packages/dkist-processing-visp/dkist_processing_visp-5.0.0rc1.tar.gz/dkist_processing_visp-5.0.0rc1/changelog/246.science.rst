@@ -1,0 +1,11 @@
+Major update to the gain algorithm to mitigate polarization artifacts in L1 science frames. This change can be split into
+three parts. See the `gain correction <https://docs.dkist.nso.edu/projects/visp/en/stable/gain_correction.html>`_ page for more information.
+
+#. Compute a single gain correction image for each beam. In the past we had computed a separate gain image for each modstate as well, but this was found to couple residual polarization structure into the final science frames.
+
+#. Stop "refining" (i.e., applying small spectral offsets to) the characteristic solar spectrum on a per-spatial-pixel basis. This was initially done to minimize line residuals in Telluric lines but was found to have a more-negative on polarimetric residuals.
+
+#. Separate vignetting caused by aperture masks from the solar signal used to remove spectral lines in the final gain image. This is done by fitting a solar atlas and taking the deviation in continuum to be the vignetting signal.
+
+Computing a single gain per beam will greatly reduce the polarization artifacts in L1 data. Measuring the vignette
+signal directly will further reduce these artifacts and improve flatness across the array.
