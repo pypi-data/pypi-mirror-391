@@ -1,0 +1,2 @@
+from qualityvision.FaceMeshModule import FaceMeshDetector
+from qualityvision.HandTrackingModule import HandDetector
