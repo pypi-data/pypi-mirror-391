@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daffalib"
+version = "0.2.5"
+authors = [
+  { name="Daffa Aditya Pratama", email="daffaaditya@daffadev.my.id" },
+]
+description = "A modern and ultra-simple Python wrapper for the requests library, designed to simplify REST API interactions with flexible configuration and REPL support."
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/daffa-aditya-p/daffalib"
+"Bug Tracker" = "https://github.com/daffa-aditya-p/daffalib/issues"
+
+[project.scripts]
+daffalib-cli = "daffalib.cli:main"
