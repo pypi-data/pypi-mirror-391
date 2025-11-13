@@ -1,0 +1,125 @@
+Metadata-Version: 2.4
+Name: rotem
+Version: 0.1.0
+Summary: a simple python library used to draw text-based 2d grid game map and informations
+Author-email: PrinceBiscuit <redsawbiscuit@gmail.com>
+Project-URL: Homepage, https://github.com/529324416/rotem
+Keywords: tui,terminal,pypi
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# About Rotom
+
+rotom is a simple tui library used to draw tilemap and some informations on terminal.
+
+## Fast Usage
+
+```python
+import rotom
+tilemap = rotom.Tilemap(5, 5)
+tilemap.set_char(0, 0, '@')
+print(tilemap)
+```
+and you will get something like below:
+
+```
+@ · · · · 
+· · · · · 
+· · · · · 
+· · · · · 
+· · · · · 
+```
+
+you can set color, background color, bold and underline to style the char like this:
+
+```python
+tilemap = Tilemap(10, 10)
+tilemap.set_char(0, 0, '@', color="#942c4b", bold=True, underline=True)
+print(tilemap)
+```
+
+you will get something like this (the result in markdown file should be the same because this only work in terminal):
+```
+@ · · · ·
+· · · · ·
+· · · · ·
+· · · · ·
+· · · · ·
+```
+
+and you can add a border for it 
+
+```python
+tilemap = Tilemap(5, 5)
+print(add_border(tilemap()))
+```
+
+you will get something like this:
+
+```
++-----------+
+| · · · · · |
+| · · · · · |
+| · · · · · |
+| · · · · · |
+| · · · · · |
++-----------+
+```
+
+except the game map, rotom provide tool to render informations. 
+
+```python
+tilemap = Tilemap(8, 8)
+tilemap.set_char(5, 5, '@')
+
+infos = InfoBoard()
+infos.set_info("title", "content")
+
+result = horizontal_combine(tilemap(), infos(), sep='   ')
+print(result)
+```
+
+this would output:
+
+```
+· · · · · · · ·   +--------------------------------+
+· · · · · · · ·   | title: content                 |
+· · · · · · · ·   +--------------------------------+
+· · · · · · · ·   
+· · · · · · · ·   
+· · · · · @ · ·   
+· · · · · · · ·   
+· · · · · · · ·   
+```
+
+I use `horizontal_combine` to combine two string, but also can be combined as vertical.
+
+```python
+result = vertical_combine(tilemap(), infos(), sep='/')
+print(result)
+```
+
+```
+· · · · · · · ·
+· · · · · · · ·
+· · · · · · · ·
+· · · · · · · ·
+· · · · · · · ·
+· · · · · @ · ·
+· · · · · · · ·
+· · · · · · · ·
+//////////////////////////////////
++--------------------------------+
+| title: content                 |
++--------------------------------+
+```
