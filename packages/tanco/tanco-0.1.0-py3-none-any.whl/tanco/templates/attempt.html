@@ -1,0 +1,86 @@
+<span hx-replace-url="false">
+
+<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+
+<title>{{ data.c_name }} attempt by {{ data.u_name }}</title>
+
+<p style="position: absolute; padding:0; left:var(--top-info-left); top: 40px;">
+  {% if data.a_name %}
+     <strong>{{ data.a_name }}</strong>:
+  {% endif %}
+  {{ data.c_name }} attempt started {{ data.ts }}</p>
+
+
+<!-- websocket content -->
+{% import "websocket.html" as ws %}
+{{ ws.ws("client", "waiting") }}
+{{ ws.ws("browser","waiting", 'hx-ext=ws ws-connect=live') }}
+<script>
+  htmx.createWebSocket = function(uri) {
+    let url = `${document.location}/${uri}`.replace('http','ws')
+    console.log('connecting to:', url)
+    let ws = new WebSocket(url)
+    const el = document.getElementById('browser-ws')
+    el.addEventListener('htmx:wsOpen', e=> {
+      // can't cache this because element is replaced
+      document.getElementById('client-ws').classList.remove('hidden');
+      el.classList.remove('disconnected');
+      el.classList.add('connected');
+      el.querySelector('.status').innerHTML='connected'; });
+    el.addEventListener('htmx:wsClose', e=> {
+      document.getElementById('client-ws').classList.add('hidden');
+      el.classList.remove('connected');
+      el.classList.add('disconnected');
+      el.querySelector('.status').innerHTML='disconnected'});
+    return ws }
+</script>
+
+
+<div id="attempt">
+  <!-- list progress (passed tests) -->
+  <div id="progress">
+    <h3>passed tests</h3>
+    <div hx-target="#test-detail">
+    {% for p in data.progress | reverse %}
+      <smaller><a href="/a/{{ data.code }}/t/{{ p.t_name }}">{{ p.t_name }}</a></smaller>
+    {% endfor %}
+    </div>
+  </div>
+
+  <div id="state">
+    {% include "state.html" %}
+    <div id="buttons" hx-swap="none">
+      <button disabled class="has-tooltip" hx-post="/a/{{ data.code }}/cmd/test">test
+        <span class="tooltip">
+        Run <code>tanco test</code> to run known tests.<br/>
+        Requires <code>tanco share</code>.</span></button>
+      <button disabled class="has-tooltip" hx-post="/a/{{ data.code }}/cmd/next">next
+        <span class="tooltip">
+        Run <code>tanco next</code> to move on to the next test.<br/>
+        Requires that all known tests are passing.<br/>
+        Requires <code>tanco share</code>.</span></button>
+      <button disabled  class="has-tooltip" type="button" onclick="toggleShell()">shell
+        <span class="tooltip">
+        Toggles websocket shell for talking to your target program.<br/>
+        Requires <code>tanco share</code>.</span></button>
+      <!--
+      <button disabled class="has-tooltip" hx-post="/a/{{ data.code }}/cmd/spawn">spawn
+        <span class="tooltip">
+        Run <code>tanco spawn</code> to start (or restart) your target program.<br/>
+        Requires <code>tanco share</code>.</span></button>
+        -->
+    </div>
+    <div id="shell" class="hidden">
+      <pre id="shell-output"></pre>
+      <form hx-post="/a/{{ data.code }}/shell"
+            hx-swap="none">
+        <input name="msg" type="text"/>
+        <button disabled type="submit">send</button>
+      </form>
+    </div>
+    <div id="test-detail"></div>
+  </div>
+
+</div>
+
+</span>
