@@ -1,0 +1,74 @@
+Metadata-Version: 2.4
+Name: pacab
+Version: 0.1.0
+Summary: Pacab - The Point and Click Adventure Builder
+Home-page: https://gitlab.com/neilsimp1/pacab
+Author: neilsimp1
+Author-email: Neil Simpson <neilsimp1@gmail.com>
+License-Expression: GPL-3.0-only
+Project-URL: Homepage, https://gitlab.com/neilsimp1/pacab
+Project-URL: Issues, https://gitlab.com/neilsimp1/pacab/-/issues
+Project-URL: Source Code, https://gitlab.com/neilsimp1/pacab
+Platform: any
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Games/Entertainment
+Classifier: Topic :: Software Development :: Libraries :: pygame
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: COPYING
+Requires-Dist: pillow
+Requires-Dist: pygame-ce
+Requires-Dist: pygame-menu-ce
+Requires-Dist: pyinstaller
+Requires-Dist: toml
+Requires-Dist: typer-slim
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-python
+
+![Pacab logo](./icon.png "Pacab")
+
+# Pacab
+
+Pacab is the Point and Click Adventure Builder.
+It's a game engine/utility/library written in Python that leverages Pygame, Pygame Menu, Pyinstaller, and others.
+Pacab takes as input a bunch of image files and text files describing those images, and turns it into a playable game.
+
+# How to use
+
+Pacab has documentation for how to build a game available [here](./doc/intro.md).
+It also comes bundled with an example game (Alt+Escape) which is meant as a demo of every feature in this game engine.
+
+# How to run the example game
+
+`pipenv install` to install dependencies.
+
+Run `pipenv run python -m pacab.cli.cli --help` to get help on the CLI.
+Example commands for running the example game:
+
+```sh
+pipenv run python -m pacab.cli.cli run --debug ./example/alt-escape.toml
+pipenv run python -m pacab.cli.cli build ./example/alt-escape.toml
+```
+
+# How to start your own Pacab game
+```sh
+mkdir my-game
+cd my-game
+pipenv run pip install -i https://pypi.org/simple pacab
+pipenv run python -m pacab.cli.cli init
+```
+
+# Credits
+
+- pillow
+- pygame-ce
+- pygame-menu-ce
+- pyinstaller
+- tomlib
+- typer
+
+Translations done by [LibreTranslate](https://libretranslate.com/).
