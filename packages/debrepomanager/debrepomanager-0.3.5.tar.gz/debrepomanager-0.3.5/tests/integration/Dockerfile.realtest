@@ -1,0 +1,90 @@
+# Dockerfile for REAL integration testing with apt install
+FROM debian:bookworm-slim
+
+# Install everything we need
+RUN apt-get update && apt-get install -y \
+	wget \
+	gnupg \
+	apt-utils \
+	ruby \
+	ruby-dev \
+	build-essential \
+	python3 \
+	python3-pip \
+	python3-venv \
+	python3-apt \
+	curl \
+	nginx \
+	sudo \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Install aptly
+RUN wget -qO - https://www.aptly.info/pubkey.txt | gpg --dearmor > /etc/apt/trusted.gpg.d/aptly.gpg && \
+	echo "deb http://repo.aptly.info/ squeeze main" > /etc/apt/sources.list.d/aptly.list && \
+	apt-get update && \
+	apt-get install -y aptly && \
+	rm -rf /var/lib/apt/lists/*
+
+# Install fpm for creating test packages
+RUN gem install --no-document fpm
+
+# Create GPG key for testing
+RUN gpg --batch --gen-key <<EOF
+%no-protection
+Key-Type: RSA
+Key-Length: 2048
+Name-Real: RepManager Test Key
+Name-Email: test@debrepomanager
+Expire-Date: 0
+%commit
+EOF
+
+# Export GPG key
+RUN gpg --export test@debrepomanager > /tmp/repo-key.gpg
+
+# Create directories
+RUN mkdir -p /opt/repo /opt/repo/public /root/.debrepomanager
+
+# Copy project files
+WORKDIR /app
+COPY requirements.txt setup.py pyproject.toml ./
+COPY debrepomanager/ ./debrepomanager/
+COPY scripts/ ./scripts/
+
+# Install debrepomanager
+RUN pip3 install --break-system-packages -e .
+
+# Create test config
+RUN gpg --list-secret-keys --with-colons test@debrepomanager | grep ^sec | cut -d: -f5 > /tmp/gpg_key_id.txt && \
+	echo "aptly:" > /root/.debrepomanager/config.yaml && \
+	echo "  root_base: /opt/repo" >> /root/.debrepomanager/config.yaml && \
+	echo "  publish_base: /opt/repo/public" >> /root/.debrepomanager/config.yaml && \
+	echo "" >> /root/.debrepomanager/config.yaml && \
+	echo "gpg:" >> /root/.debrepomanager/config.yaml && \
+	echo "  key_id: $(cat /tmp/gpg_key_id.txt)" >> /root/.debrepomanager/config.yaml && \
+	echo "  use_agent: true" >> /root/.debrepomanager/config.yaml && \
+	echo "" >> /root/.debrepomanager/config.yaml && \
+	echo "repositories:" >> /root/.debrepomanager/config.yaml && \
+	echo "  architectures: [amd64, arm64]" >> /root/.debrepomanager/config.yaml && \
+	echo "  auto_create: true" >> /root/.debrepomanager/config.yaml
+
+# Create nginx config
+RUN echo 'server {' > /etc/nginx/sites-available/repo && \
+	echo '    listen 8080 default_server;' >> /etc/nginx/sites-available/repo && \
+	echo '    listen [::]:8080 default_server;' >> /etc/nginx/sites-available/repo && \
+	echo '    root /opt/repo/public;' >> /etc/nginx/sites-available/repo && \
+	echo '    server_name _;' >> /etc/nginx/sites-available/repo && \
+	echo '    autoindex on;' >> /etc/nginx/sites-available/repo && \
+	echo '    location / {' >> /etc/nginx/sites-available/repo && \
+	echo '        try_files $uri $uri/ =404;' >> /etc/nginx/sites-available/repo && \
+	echo '    }' >> /etc/nginx/sites-available/repo && \
+	echo '}' >> /etc/nginx/sites-available/repo && \
+	rm -f /etc/nginx/sites-enabled/default && \
+	ln -s /etc/nginx/sites-available/repo /etc/nginx/sites-enabled/repo
+
+# Copy test script
+COPY tests/integration/test_real_apt.sh /app/
+RUN chmod +x /app/test_real_apt.sh
+
+CMD ["/bin/bash"]
+

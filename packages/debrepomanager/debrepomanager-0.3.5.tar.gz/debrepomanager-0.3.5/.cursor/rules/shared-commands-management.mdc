@@ -1,0 +1,190 @@
+---
+alwaysApply: true
+---
+# Commands Management
+
+Guidelines for managing project-specific workflow commands.
+
+## File Length Requirement
+
+Target file length for command files:
+- **Target**: 50-150 lines
+- **Maximum**: 300 lines when content demands
+- Focus on WHAT to do, not exhaustive HOW
+- Quality and completeness over strict limits
+
+Keep commands focused and actionable.
+
+## Required Structure
+
+Every command file must include:
+
+1. **Title**: `# Command Name`
+2. **Overview**: Brief description (2-3 sentences)
+3. **Steps**: Numbered steps with sub-bullets
+4. **Checklist**: Task tracking with `- [ ]` items
+
+This structure ensures consistency and clarity across all commands.
+
+## Writing Style
+
+### Be Concise
+- Use bullet points, not paragraphs
+- One action per line
+- Remove verbose explanations
+- Direct and clear instructions
+
+### Be Specific
+- Include exact commands for project tools/frameworks
+- Reference specific files or tools used in your project
+- Use concrete examples, not generic advice
+- **Can reference concrete tech stack** (unlike shared rules which must be universal)
+
+### Be Actionable
+- Start bullets with verbs (Build, Deploy, Test, Run, Configure, Check)
+- Focus on outcomes, not process details
+- Make each step clear and executable
+- Include validation steps
+
+Project-specific commands should reference your concrete tech stack and tools.
+
+## Command Template
+
+Use this template for consistency:
+
+```markdown
+# Command Name
+
+## Overview
+Brief description of what this command does and when to use it.
+
+## Steps
+1. **First action**
+   - Sub-step with details
+   - Another sub-step
+   
+2. **Second action**
+   - Sub-step
+   - Sub-step
+
+3. **Final action**
+   - Sub-step
+   - Validation step
+
+## Checklist
+- [ ] Task one completed
+- [ ] Task two completed
+- [ ] Validation passed
+```
+
+## Multi-Module Projects
+
+For projects with multiple modules, platforms, or components, create module-specific commands.
+
+### Naming Convention
+
+Include module/platform context in command names:
+
+**Web projects:**
+- `setup-backend.md` - Backend environment setup
+- `run-frontend-dev.md` - Frontend development server
+- `test-backend-api.md` - Backend API testing
+- `deploy-frontend.md` - Frontend deployment
+
+**Embedded projects:**
+- `build-esp32.md` - Build ESP32 firmware
+- `flash-stm32.md` - Flash STM32 device
+- `debug-firmware.md` - Debug firmware with JTAG/SWD
+- `monitor-uart.md` - Monitor UART output
+
+**Mobile projects:**
+- `build-ios.md` - Build iOS application
+- `test-android.md` - Run Android tests
+- `deploy-app-store.md` - Deploy to App Store
+
+**General pattern:**
+- `{action}-{module/platform}.md`
+- `{action}-{module}-{aspect}.md`
+
+Choose naming depth based on project complexity.
+
+### Cross-Module Workflows
+
+Document workflows that span multiple modules:
+- `integration-test.md` - Test frontend + backend integration
+- `deploy-full-stack.md` - Deploy all components
+- `setup-development.md` - Setup complete dev environment
+
+## When to Create Commands
+
+Create project-specific commands for:
+
+**Project Workflows:**
+- Build procedures specific to your project
+- Test execution with project tools
+- Deployment processes
+- Database migrations and seeding
+
+**Module Setup:**
+- Environment setup for specific modules
+- Dependency installation procedures
+- Configuration steps
+
+**Integration Testing:**
+- Cross-module testing workflows
+- End-to-end test execution
+
+**Debugging:**
+- Debug procedures for specific components
+- Log analysis workflows
+- Issue investigation patterns
+
+**Maintenance:**
+- Regular maintenance tasks
+- Health check procedures
+- Cleanup operations
+
+## Command Organization
+
+Organize commands by category:
+- `setup-*.md` - Environment and setup commands
+- `build-*.md` - Build and compilation commands
+- `test-*.md` - Testing commands
+- `deploy-*.md` - Deployment commands
+- `debug-*.md` - Debugging and troubleshooting commands
+- `run-*.md` - Running services and tools
+
+Consistent prefixes make commands easy to find.
+
+## Best Practices
+
+**Include validation:**
+- Verify prerequisites before starting
+- Check outputs after each step
+- Validate final result
+
+**Document prerequisites:**
+- List required tools and versions
+- Note environment variables needed
+- Document access requirements
+
+**Provide examples:**
+- Sample command outputs
+- Expected results
+- Common error messages and solutions
+
+**Keep updated:**
+- Update when tools or workflows change
+- Archive obsolete commands
+- Test commands periodically on fresh environment
+
+## Maintenance
+
+Keep commands up to date:
+- Review when tools are updated
+- Update when workflows change
+- Archive deprecated commands
+- Test commands periodically
+- Document changes in commit messages
+
+Active maintenance ensures commands remain useful and accurate.

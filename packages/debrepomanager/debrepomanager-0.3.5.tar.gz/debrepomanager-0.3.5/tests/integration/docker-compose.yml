@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  debrepomanager-test:
+    build:
+      context: ../..
+      dockerfile: tests/integration/Dockerfile
+    container_name: debrepomanager-integration-tests
+    volumes:
+      - ../../debrepomanager:/opt/debrepomanager/debrepomanager:ro
+      - ../../tests:/opt/debrepomanager/tests:ro
+      - test-aptly:/srv/aptly
+      - test-repo:/srv/repo
+    environment:
+      - PYTHONPATH=/opt/debrepomanager
+      - GPG_TTY=/dev/pts/0
+    command: pytest tests/integration/ -v -m integration
+    networks:
+      - test-network
+
+  # APT clients для проверки установки пакетов
+  apt-client-bookworm:
+    image: debian:bookworm-slim
+    container_name: debrepomanager-apt-bookworm
+    depends_on:
+      - repo-server
+    volumes:
+      - test-repo:/srv/repo:ro
+    networks:
+      - test-network
+    command: sleep infinity
+
+  apt-client-noble:
+    image: ubuntu:noble
+    container_name: debrepomanager-apt-noble
+    depends_on:
+      - repo-server
+    volumes:
+      - test-repo:/srv/repo:ro
+    networks:
+      - test-network
+    command: sleep infinity
+
+  # Простой HTTP сервер для репозитория
+  repo-server:
+    image: nginx:alpine
+    container_name: debrepomanager-repo-server
+    volumes:
+      - test-repo:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+    networks:
+      - test-network
+
+volumes:
+  test-aptly:
+  test-repo:
+
+networks:
+  test-network:
+    driver: bridge
+
