@@ -1,0 +1,42 @@
+Metadata-Version: 2.4
+Name: apieasy
+Version: 0.1.0
+Summary: A minimal REST API framework using simple Python function decorators.
+Author-email: Sai Sarthak Sadangi <your_email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/sai-AIstacker/apieasy
+Project-URL: Source, https://github.com/sai-AIstacker/apieasy
+Project-URL: Issues, https://github.com/sai-AIstacker/apieasy/issues
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# apieasy
+
+A tiny, simple REST API framework for Python using decorators.  
+No Flask. No FastAPI.  
+Define endpoints using clean, minimal code.
+
+## Example
+
+from apieasy import get, post, run
+
+@get("/hello")
+def hello():
+    return {"message": "Hello World"}
+
+run()
+
+## Installation
+
+pip install apieasy
+
+## Usage
+
+apieasy run
+
+## Features
+- Define routes with decorators
+- Auto JSON response
+- Minimal routing engine

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apieasy"
+version = "0.1.0"
+description = "A minimal REST API framework using simple Python function decorators."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "Sai Sarthak Sadangi", email = "your_email@example.com" }
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+apieasy = "apieasy.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/sai-AIstacker/apieasy"
+Source = "https://github.com/sai-AIstacker/apieasy"
+Issues = "https://github.com/sai-AIstacker/apieasy/issues"
