@@ -1,0 +1,61 @@
+"""Custom activation functions."""
+
+import torch
+from torch.distributions import Distribution
+
+
+def scaled_sigmoid(
+    x: torch.Tensor, alpha: torch.Tensor = torch.tensor(1.0)
+) -> torch.Tensor:
+    """Compute the scaled sigmoid function \frac{1.0}{1.0+\exp(-\alpha*x)}"""
+    return 1.0 / (1.0 + torch.exp(-alpha * x))
+
+
+class InverseTransformSampling(torch.nn.Module):
+    """Activation to mimic inverse transform sampling from some distribution."""
+
+    def __init__(
+        self,
+        distribution: Distribution = torch.distributions.Normal(loc=0.0, scale=1.0),
+        learn_alpha: bool = False,
+        alpha_init: torch.tensor = torch.tensor([1.0]),
+        eps: float = 1.0e-6,
+        *args,
+        **kwargs
+    ) -> None:
+        """Initialize InverseTransformSampling class.
+
+        Args:
+            distribution: Torch distribution with a defined .icdf() method.
+            learn_alpha: Flag indicating we should learn the alpha scale in
+                the domain transform f(x) = 1.0 / (1.0 + exp(-alpha*x)),
+                otherwise alpha=1.0 will always be used.
+            eps: Clamp inputs to distribution.icdf to [eps, 1.0-eps]
+        """
+        super().__init__(*args, **kwargs)
+
+        # Define the domain transform to convert inputs in
+        # (-\inf, \inf) to [0, 1]
+        self._alpha = torch.nn.Parameter(
+            torch.log(torch.exp(alpha_init) - 1.0), requires_grad=learn_alpha
+        )  # self.alpha=softplus(self._alpha)
+        self.domain_tform = scaled_sigmoid
+
+        # Define the Normal distribution of interest.
+        self.distribution = distribution
+        self.eps = eps
+
+    @property
+    def alpha(self) -> torch.Tensor:
+        """Scale self._alpha to ensure positivity and return."""
+        return torch.nn.functional.softplus(self._alpha)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass through activation."""
+        # Transform inputs from (-\inf, \inf) to [eps, 1.0-eps]
+        x_prime = self.domain_tform(x, alpha=self.alpha)
+        x_prime.clamp_(min=self.eps, max=1.0 - self.eps)
+
+        # Treat transformed inputs as samples from U[0, 1] and pass through
+        # inverse CDF of self.disribution.
+        return self.distribution.icdf(x_prime)
