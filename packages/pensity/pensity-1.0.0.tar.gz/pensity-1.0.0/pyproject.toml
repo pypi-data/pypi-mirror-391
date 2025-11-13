@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pensity"
+version = "1.0.0"
+authors = [
+    {name = "iosec", email = "noreply@github.com"}
+]
+description = "Advanced JavaScript File Discovery and Security Analysis Tool"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "Topic :: Internet :: WWW/HTTP",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["security", "javascript", "analysis", "vulnerability", "scanning", "osint", "web-security"]
+
+dependencies = [
+    "requests>=2.25.0",
+    "beautifulsoup4>=4.9.0",
+    "urllib3>=1.26.0",
+]
+
+[project.optional-dependencies]
+llm = [
+    "llm>=0.13.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/iosec/pensity"
+"Bug Tracker" = "https://github.com/iosec/pensity/issues"
+
+[project.scripts]
+pensity = "pensity.pensity:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+pensity = ["common-endpoints.txt"]

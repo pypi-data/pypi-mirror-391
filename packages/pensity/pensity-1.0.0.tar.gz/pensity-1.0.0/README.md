@@ -1,0 +1,198 @@
+# Pensity - Advanced JavaScript File Discovery and Security Analysis
+
+**Pensity** is a powerful OSINT and security analysis tool that discovers, analyzes, and reports on JavaScript files, HTML pages, and API endpoints. With optional AI-powered vulnerability analysis using LLMs, it helps security researchers and penetration testers identify potential security issues in web applications.
+
+## Features
+
+🔍 **JavaScript Discovery & Analysis**
+- Discovers JS files through crawling and parsing
+- Pattern-based security analysis (API keys, JWT tokens, hardcoded credentials, endpoints)
+- Comprehensive reporting with findings categorization
+
+🌐 **HTML Page Discovery**
+- Fuzzy search for common HTML pages (login, admin, register, etc.)
+- Index.html parsing for linked pages
+- Tests 30+ common HTML page variations
+
+🎯 **Endpoint Testing**
+- Tests 164+ common endpoints from curated list
+- Reports interesting HTTP status codes
+- Tracks response times and headers
+- Color-coded output for quick analysis
+
+🤖 **AI-Powered Security Analysis (Optional)**
+- LLM-based vulnerability analysis
+- JavaScript code security review
+- HTML form and XSS vulnerability detection
+- Endpoint response security analysis
+- Generates comprehensive markdown reports
+
+## Installation
+
+### Using pip (recommended)
+
+```bash
+pip install pensity
+```
+
+### Using pipx (for isolated installation)
+
+```bash
+pipx install pensity
+```
+
+### With LLM support
+
+```bash
+pip install pensity[llm]
+```
+
+## Quick Start
+
+```bash
+# Basic JavaScript analysis
+pensity -u https://example.com --js
+
+# HTML discovery
+pensity -u https://example.com --html
+
+# Endpoint testing
+pensity -u https://example.com --fetch
+
+# Full analysis with LLM
+pensity -u https://example.com --js --html --fetch --llm
+
+# Combined with custom options
+pensity -u https://example.com --js --html --llm -d 2 -t 10 --delay 0.5
+```
+
+## Usage
+
+### Command Line Options
+
+```
+pensity -u URL [OPTIONS]
+
+Required:
+  -u, --url URL              Target website URL
+
+Analysis Modes (at least one required):
+  --js                       Discover and analyze JavaScript files
+  --html                     Discover and analyze HTML files
+  --fetch                    Test common endpoints
+
+Optional:
+  --llm                      Run LLM analysis on discovered items
+  -o, --output FILE          Save text report to file
+  --json FILE                Save JSON report to file
+  -d, --depth DEPTH          Discovery depth (1-3, default: 1)
+  -t, --threads NUM          Number of threads (default: 5)
+  --timeout SECONDS          Request timeout (default: 10)
+  --delay SECONDS            Delay between requests
+  --verify-ssl               Enable SSL verification
+  --proxy URL                HTTP/HTTPS proxy URL
+  --allow-subdomains         Include subdomains in crawl scope
+```
+
+### Examples
+
+**JavaScript Security Analysis**
+```bash
+pensity -u https://example.com --js --llm
+```
+Discovers JS files and analyzes them for:
+- Hardcoded credentials and API keys
+- JWT tokens and authentication issues
+- Exposed endpoints and sensitive URLs
+- Cryptographic weaknesses
+- XSS and injection vulnerabilities
+
+**HTML Page Discovery**
+```bash
+pensity -u https://example.com --html --llm
+```
+Finds and analyzes HTML pages for:
+- Forms without CSRF protection
+- Insecure authentication forms
+- Information disclosure in comments
+- Missing security headers
+- Client-side validation bypasses
+
+**Endpoint Testing**
+```bash
+pensity -u https://example.com --fetch --llm
+```
+Tests 164+ common endpoints and analyzes:
+- Information disclosure via errors
+- Authentication/authorization weaknesses
+- Exposed sensitive data
+- Server misconfigurations
+- Debug information leaks
+
+**Full Security Audit**
+```bash
+pensity -u https://example.com --js --html --fetch --llm -d 2 -t 10
+```
+
+## LLM Analysis
+
+When using `--llm`, Pensity generates a timestamped markdown report (`llm-YYYYMMDD-HHMMSS.md`) containing:
+
+- Executive summary with counts
+- Separate sections for JS, HTML, and endpoints
+- Detailed security analysis for each item
+- Severity assessments and recommendations
+
+**Requirements:**
+- Install LLM library: `pip install llm`
+- Configure your LLM model (OpenAI, Anthropic, etc.)
+
+## Output
+
+### Console Output
+- Color-coded results (green for success, yellow for warnings, red for errors)
+- Real-time progress tracking
+- Summary statistics
+
+### Text Reports
+- Comprehensive findings in text format
+- Organized by category
+- Source URLs and context
+
+### JSON Reports
+- Structured data for automation
+- Easy integration with other tools
+- Full metadata preservation
+
+### LLM Markdown Reports
+- Professional security analysis
+- Table of contents with links
+- Detailed vulnerability descriptions
+- Recommended remediation steps
+
+## Common Endpoints
+
+The tool tests 164+ endpoints including:
+- Authentication: `/login`, `/auth`, `/oauth`, `/sso`
+- Admin panels: `/admin`, `/dashboard`, `/console`
+- APIs: `/api`, `/graphql`, `/rest`
+- Config: `/config`, `/setup`, `/.env`, `/.git`
+- And many more...
+
+See `common-endpoints.txt` for the full list.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Author
+
+**iosec** - [@ynsmroztas](https://x.com/ynsmroztas)
+
+## Disclaimer
+
+This tool is for authorized security testing and research purposes only. Always obtain proper authorization before testing any systems you do not own.
