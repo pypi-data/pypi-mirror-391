@@ -1,0 +1,239 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clappia-api-tools"
+version = "2.0.10.post1"
+description = "Python client for Clappia API integration"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Rishabh Verma", email = "rishabh.v@clappia.com" }]
+keywords = [
+    "clappia",
+    "client",
+    "mcp",
+    "rest-apis",
+    "tools",
+    "workchat",
+    "agents",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "pydantic[email]>=2.0.0",
+    "typing-extensions>=4.8.0",
+    "phonenumbers>=9.0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.6",
+    "mypy>=1.0.0",
+    "pre-commit>=3.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-xdist>=3.0.0",
+    "pytest-asyncio>=0.21.0",
+    "bandit>=1.7.5",
+    "safety>=3.6.0",
+    "pip-audit>=2.6.0",
+    "types-requests>=2.31.0",
+]
+test = [
+    "pytest>=7.0.0", 
+    "pytest-cov>=4.0.0", 
+    "pytest-mock>=3.10.0",
+    "pytest-xdist>=3.0.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+    "factory-boy>=3.3.0",
+    "freezegun>=1.2.0",
+]
+docs = [
+    "mkdocs>=1.4.0", 
+    "mkdocs-material>=9.0.0",
+    "mkdocs-swagger-ui-tag>=0.6.0",
+]
+security = [
+    "bandit>=1.7.5",
+    "safety>=2.3.0", 
+    "pip-audit>=2.6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/clappia-dev/clappia-api-tools"
+Documentation = "https://github.com/clappia-dev/clappia-api-tools#readme"
+Repository = "https://github.com/clappia-dev/clappia-api-tools.git"
+"Bug Tracker" = "https://github.com/clappia-dev/clappia-api-tools/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["clappia_api_tools*"]
+
+# ---- Ruff Configuration ----
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    ".venv",
+    ".eggs",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+    "S",   # flake8-bandit
+    "T20", # flake8-print
+    "RUF", # Ruff-specific rules
+]
+ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long (handled by formatter)
+    "S101",  # assert used (ok in tests)
+    "T201",  # print found (ok for CLI tools)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101", "S106", "S108"]  # Allow assert, hardcoded passwords in tests
+"scripts/*" = ["T201"]  # Allow print in scripts
+
+[tool.ruff.lint.isort]
+known-first-party = ["clappia_api_tools"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ---- MyPy Configuration ----
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "phonenumbers.*",
+    "factory.*",
+    "freezegun.*",
+]
+ignore_missing_imports = true
+
+# ---- Pytest Configuration ----
+[tool.pytest.ini_options]
+testpaths = ["clappia_api_tools/tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--tb=short",
+    "--cov-report=term-missing",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests", 
+    "slow: Slow tests",
+    "asyncio: Async tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+# ---- Coverage Configuration ----
+[tool.coverage.run]
+source = ["clappia_api_tools"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__init__.py",
+    "*/conftest.py",
+]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+show_missing = true
+precision = 2
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+# ---- Bandit Configuration ----
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101", "B601"]  # Skip assert_used and shell injection in tests
+
+# ---- Additional dependency groups for uv ----
+[dependency-groups]
+dev = [
+    "ruff>=0.1.6",
+    "mypy>=1.16.1", 
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "pytest-xdist>=3.0.0",
+    "pytest-asyncio>=0.21.0",
+    "bandit>=1.7.5",
+    "safety>=2.3.0",
+    "pip-audit>=2.6.0",
+    "types-requests>=2.31.0",
+    "httpx>=0.25.0",
+    "factory-boy>=3.3.0",
+    "freezegun>=1.2.0",
+    "twine>=4.0.0",
+]
