@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fracjax"
+version = "0.1.0"
+description = "High-Performance Fractal & Econophysics Tools for Financial Time Series using JAX (GPU-Accelerated)"
+readme = "README.md"
+authors = [
+  { name="Mohammad Korivand", email="korivandmohammadb@gmail.com" },
+]
+license = { file="LICENSE" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Development Status :: 4 - Beta",
+]
+keywords = ["finance", "fractal", "jax", "econophysics", "hurst", "wavelet", "trading"]
+dependencies = [
+    "jax>=0.4.0",
+    "jaxlib>=0.4.0",
+    "numpy",
+    "pandas",
+    "scipy",
+    "tqdm",
+]
+requires-python = ">=3.9"
+
+[project.urls]
+"Homepage" = "https://github.com/Mohamma0022/fracjax"
+"Bug Tracker" = "https://github.com/Mohamma0022/fracjax/issues"
