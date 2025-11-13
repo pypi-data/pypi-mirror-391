@@ -1,0 +1,19 @@
+defaults:
+  - dpo: rlhf
+  - model: model
+  - dataset: dataset
+  - config
+  - _self_
+
+config_name: "dpo"
+
+stages:
+  sft:
+    enabled: True
+    script: "experl.trainer.sft_trainer"
+  dpo:
+    enabled: True
+    script: "experl.trainer.dpo_trainer"
+  eval:
+    enabled: True
+    script: "experl.evaluation.dpo_evaluator"
