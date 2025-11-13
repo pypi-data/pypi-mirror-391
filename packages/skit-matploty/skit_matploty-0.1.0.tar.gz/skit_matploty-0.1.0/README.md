@@ -1,0 +1,39 @@
+# skit-matploty Package
+
+A simple package to print common ML/Matplotlib code snippets to the console for easy copy-pasting.
+
+## How to Install (for development)
+
+1.  Navigate to the `skit-matploty-project` root folder.
+2.  Run: `pip install -e .`
+
+(The `-e` makes it "editable," so changes you make are reflected immediately).
+
+## How to Use
+
+Open a Python interpreter (or a Jupyter Notebook) and run:
+
+```python
+import skit_matploty as skm
+
+# Print the code for EX-1 (EDA)
+skm.print_ex1()
+
+# Print the code for EX-2 (Preprocessing)
+skm.print_ex2()
+
+# Print the code for EX-3 (Linear Regression)
+skm.print_ex3()
+
+# Print the code for EX-4 (Classification Pipeline)
+skm.print_ex4()
+
+# Print the code for EX-5 (Naive Bayes)
+skm.print_ex5()
+
+# Print the code for EX-6 (Random Forest Regressor)
+skm.print_ex6()
+
+# Print all snippets at once
+skm.print_all()
+```
