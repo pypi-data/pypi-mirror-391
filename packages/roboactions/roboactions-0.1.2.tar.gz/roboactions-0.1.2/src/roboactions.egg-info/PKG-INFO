@@ -1,0 +1,502 @@
+Metadata-Version: 2.4
+Name: roboactions
+Version: 0.1.2
+Summary: Python client SDK for the RoboActions automation platform.
+Author-email: RoboActions <eishan@roboactions.com>
+License: 
+                                         Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright 2025 RoboActions
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+        
+Project-URL: Homepage, https://www.roboactions.com
+Project-URL: Documentation, https://docs.roboactions.com/sdk/python
+Project-URL: Repository, https://github.com/RoboActions/RoboActions
+Project-URL: Issues, https://github.com/RoboActions/RoboActions/issues
+Keywords: automation,workflow,sdk,client,roboactions
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.32.3
+Requires-Dist: pydantic>=2.8.2
+Requires-Dist: msgpack>=1.0.0
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: torch
+Requires-Dist: websocket-client>=1.8.0
+Requires-Dist: gymnasium>=0.29.0
+Requires-Dist: gymnasium[other]
+Requires-Dist: Pillow>=10.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=8.1; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+Dynamic: license-file
+
+# RoboActions Python SDK
+
+Official Python SDK for the [RoboActions](https://www.roboactions.com) platform. It
+provides a typed, ergonomic Python interface for interacting with deployed VLA policies, enabling
+you to retrieve policy metadata, check health status, and run inference directly from Python
+applications, scripts, or notebooks.
+
+> **Status**: Pre-release (`0.1.0`). The surface area will grow as additional endpoints become
+> publicly available. Follow the release notes before upgrading minor versions.
+
+## Installation
+
+```bash
+pip install roboactions
+```
+
+## Quick Start
+
+```python
+from roboactions import RemotePolicy
+
+# Create a policy client (automatically reads ROBOACTIONS_API_KEY from environment)
+policy = RemotePolicy(policy_id="my-policy-id")
+
+# Check policy health
+status = policy.status()
+print(f"Policy status: {status.value}")
+
+# Get input/output feature schemas
+input_features = policy.input_features()
+output_features = policy.output_features()
+
+# Discover existing policies
+policies = RemotePolicy.list()
+for summary in policies:
+    print(f"{summary.policy_id}: {summary.display_name}")
+
+# Run inference
+observation = {
+    "observation_image": image_array,
+    "observation_state": state_array,
+    "task": "pick up the cup"
+}
+action = policy.select_action(observation)
+print(f"Predicted action: {action}")
+
+# Predict multiple timesteps at once
+action_chunk = policy.predict_action_chunk(observation)
+print(f"Chunked action output: {action_chunk}")
+```
+
+## Authentication
+
+All requests require an API key with access to the RoboActions workspace. Create and manage keys in
+the RoboActions dashboard.
+
+The SDK automatically reads the `ROBOACTIONS_API_KEY` environment variable:
+
+```python
+from roboactions import RemotePolicy
+
+# Automatically uses ROBOACTIONS_API_KEY from environment
+policy = RemotePolicy(policy_id="my-policy-id")
+```
+
+You can also provide the API key explicitly:
+
+```python
+from roboactions import RemotePolicy
+
+policy = RemotePolicy(
+    policy_id="my-policy-id",
+    api_key="rk_live_abc123"  # Explicit API key
+)
+```
+
+For security, it's recommended to use environment variables rather than hardcoding keys in your source code.
+
+## Creating Policies
+
+Use `RemotePolicy.create` to provision a policy directly from the SDK. The method handles authentication, and returns a ready-to-use client. Persist the returned `policy_id` if you plan to reconnect later. Set `compute_type` to `"CPU"` or `"GPU"` (default).
+
+```python
+from roboactions import RemotePolicy
+
+policy = RemotePolicy.create(
+    huggingface_model_id="my-org/my-robot-policy",
+    compute_type="CPU",  # optional; defaults to "GPU"
+    # api_key="rk_live_abc123",  # optional overrides
+)
+
+print(f"New policy: {policy.policy_id}")
+
+# Reconnect elsewhere in your application with the policy ID
+reconnected = RemotePolicy(policy_id=policy.policy_id)
+```
+
+## Core Features
+
+### Policy Management
+
+```python
+# List all policies the current API key can access
+from roboactions import RemotePolicy
+
+policies = RemotePolicy.list()
+for summary in policies:
+    print(f"{summary.policy_id}: {summary.display_name}")
+
+# Delete a policy you no longer need
+policy = RemotePolicy(policy_id="my-policy-id")
+delete_result = policy.delete()
+print(f"Delete response: {delete_result}")
+```
+
+### Health Checks
+
+```python
+# Simple boolean check
+if policy.ping():
+    print("Policy is reachable")
+
+# Detailed status with enum
+from roboactions import PolicyStatus
+
+status = policy.status()
+if status == PolicyStatus.HEALTHY:
+    print("Policy is ready for inference")
+elif status == PolicyStatus.DEPLOYING:
+    print("Policy is still deploying...")
+```
+
+### Wait for Deployment
+
+```python
+# Block until policy is deployed
+final_status = policy.wait_until_deployed(interval=5.0)
+if final_status == PolicyStatus.HEALTHY:
+    print("Policy is now ready!")
+```
+
+### Reset Policy State
+
+```python
+# Reset the policy state (useful for stateful policies between episodes)
+result = policy.reset()
+if result.get("reset"):
+    print("Policy reset successfully")
+else:
+    print(f"Reset failed: {result.get('error')}")
+```
+
+### Inference
+
+```python
+# Single action prediction
+action = policy.select_action(observation)
+
+# Action chunk prediction (for temporal policies)
+action_chunk = policy.predict_action_chunk(observation)
+```
+
+### Sample Input Generation
+
+```python
+# Generate random sample inputs (useful for testing)
+sample_inputs = policy.sample_observation()
+action = policy.select_action(sample_inputs)
+```
+
+### Observation Shapes Cache
+
+```python
+# Retrieve observation tensor dimensions discovered via input_features
+policy.input_features()
+for key, shape in policy.observation_shapes:
+    print(f"{key}: {shape}")
+```
+
+## Remote Gymnasium Environments
+
+Interact with Gymnasium-compatible environments hosted via RoboActions over a secure WebSocket.
+
+```python
+from roboactions import remotegym
+
+# Reads ROBOACTIONS_API_KEY from environment if not provided explicitly
+env = remotegym.make("CartPole-v1", render_mode="rgb_array")
+
+# Standard Gymnasium flow
+obs, info = env.reset(seed=123)
+for _ in range(100):
+    action = env.action_space.sample()  # gymnasium.spaces.Space
+    obs, reward, terminated, truncated, info = env.step(action)
+    frame = env.render()  # numpy.ndarray (H, W, 3) when render_mode == "rgb_array"
+    if terminated or truncated:
+        obs, info = env.reset()
+env.close()
+```
+
+Notes:
+- `render()` returns a NumPy RGB array when `render_mode="rgb_array"`; otherwise returns `None`.
+- The client pre-validates actions using the real Gymnasium `action_space`.
+- If a step ends an episode, call `reset()` before the next `step()`.
+- On connect, the server performs `reset(seed=seed)` and returns the initial `observation` and `info`.
+- Additional properties exposed:
+  - `observation_space`: Gymnasium space describing observations
+  - `metadata`: Full `env.metadata` dict (e.g., `render_modes`, `render_fps`)
+  - `spec`: `None` (standard Gymnasium attribute); raw mapping available via `server_spec`
+  - `initial_observation`, `initial_info`: Values returned alongside `make_ok`
+  - `render_mode`: The render mode passed at construction
+  - `reward_range`: Default `(-inf, inf)` per Gymnasium
+
+## Configuration
+
+- **Retries (HTTP):** Configure automatic retries with `RemotePolicy(..., retries=RetryConfig())`
+- **Timeouts (HTTP):** Set per-request timeouts via `policy.status(timeout=5.0)`
+- **Retries (RemoteEnv WebSocket):** Enable connection retry/backoff with `RemoteEnv(..., retries=RetryConfig())` or via the helper `remotegym.make(..., retries=RetryConfig())`. Transient handshake failures (e.g., 408/429/5xx) are retried up to `max_attempts` with exponential backoff using `backoff_factor`. Authentication and other non-transient errors are not retried.
+- **Timeouts (RemoteEnv WebSocket):** Control the WebSocket connect timeout with `RemoteEnv(..., timeout=...)` or `remotegym.make(..., timeout=...)`. Defaults: `60s` when constructing `RemoteEnv` directly; `10s` when using `remotegym.make` unless overridden.
+- **Custom base URL:** Override `base_url` to point at staging or self-hosted deployments
+- **Context Manager:** Use `with RemotePolicy(...) as policy:` for automatic session cleanup
+
+## Exception Handling
+
+```python
+from roboactions import (
+    RemotePolicy,
+    RoboActionsError,
+    AuthenticationError,
+    RateLimitError
+)
+
+try:
+    policy = RemotePolicy(policy_id="my-policy", api_key="invalid-key")
+    action = policy.select_action(observation)
+except AuthenticationError:
+    print("Invalid API key")
+except RateLimitError as e:
+    print(f"Rate limited. Retry after {e.retry_after} seconds")
+except RoboActionsError as e:
+    print(f"API error: {e}")
+```
+
+## Development
+
+1. Create a virtual environment and install dependencies with `pip install -e .[dev]`.
+2. Run formatting and lint checks using `ruff check .`.
+3. Execute the test suite via `pytest`.
+
+## Releasing
+
+1. Update `src/roboactions/_version.py`.
+2. Build artifacts: `python -m build`.
+3. Upload to PyPI (test or prod) using `twine upload dist/*`.
+
+## License
+
+Apache License 2.0 © RoboActions
