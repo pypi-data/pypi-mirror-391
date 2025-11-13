@@ -1,0 +1,32 @@
+Metadata-Version: 2.1
+Name: sgr-refine-chain
+Version: 0.1.0
+Summary: 
+License: MIT
+Author: Ivan
+Author-email: litvan007@gmail.com
+Requires-Python: >=3.13,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Requires-Dist: langchain-core (>=1.0.4,<2.0.0)
+Requires-Dist: langchain-openai (>=1.0.2,<2.0.0)
+Requires-Dist: langgraph (>=1.0.3,<2.0.0)
+Requires-Dist: pydantic (>=2.12.4,<3.0.0)
+Description-Content-Type: text/markdown
+
+# 🧠 SGR Refine Agent for LangGraph
+
+**SGRRefineAgent** is a universal implementation of the **Structured-Guided-Refinement (SGR)** pattern  
+for handling large contexts and producing structured outputs in **LangGraph**.
+
+It allows iterative refinement of structured answers over multiple document chunks —  
+essentially giving you **infinite context with schema consistency**.
+
+---
+
+## 🚀 Installation
+
+```bash
+pip install sgr-refine-chain
+
