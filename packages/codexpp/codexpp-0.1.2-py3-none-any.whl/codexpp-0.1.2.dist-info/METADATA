@@ -1,0 +1,173 @@
+Metadata-Version: 2.4
+Name: codexpp
+Version: 0.1.2
+Summary: Codex CLI enhancement framework inspired by SuperClaude and SuperGemini
+Author-email: avometre <avometre@users.noreply.github.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/avometre/codexpp
+Project-URL: Repository, https://github.com/avometre/codexpp
+Project-URL: Issues, https://github.com/avometre/codexpp/issues
+Keywords: codex,cli,ai,development,framework,superclaude,supergemini
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# Codexpp
+
+> Languages: [English](README.md) · [Türkçe](README.tr.md)
+
+Codexpp is an extension framework that turns the OpenAI Codex CLI into a structured, persona-driven workflow engine built for repeatable delivery. It delivers reusable slash commands, persona-driven guidance, and automatic MCP (Model Context Protocol) setup to make Codex sessions more productive and consistent.
+
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Command Reference](#command-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+- **Slash Commands:** TOML-based definitions surface as `cx:*` commands inside Codex CLI.
+- **Persona Mode:** Apply roles such as `system-architect`, `implementation-engineer`, or `code-reviewer` with a single flag.
+- **Automatic Integration:** `codexpp codex install` wires commands, prompt files, and MCP profiles into Codex CLI.
+- **Template Validation:** Prompt placeholders are validated before execution to prevent missing variables.
+- **Persona Synchronisation:** Keep project and global `AGENTS.md` files up-to-date with one command.
+- **MCP Management:** Ships with popular MCP servers (Filesystem, Context7, GitHub, Memory, Sequential Thinking, Puppeteer).
+
+## Installation
+
+### Requirements
+- Python 3.11+
+- Node.js & npm (for Codex CLI)
+- Codex CLI (`npm install -g @openai/codex`)
+
+### From PyPI
+```bash
+pip install codexpp
+# or if you prefer UV
+uv pip install codexpp
+```
+
+### Development setup
+```bash
+git clone https://github.com/avometre/codexpp.git
+cd codexpp
+uv venv .venv && source .venv/bin/activate
+uv pip install -e .
+```
+(You can swap UV for `python -m venv` + `pip install -e .` if you prefer.)
+
+Verify the installation:
+```bash
+codexpp --help
+codexpp codex status
+```
+
+## Quick Start
+Use the following flow to enable `cx:*` commands inside Codex CLI:
+
+1. **Install commands into Codex CLI**
+   ```bash
+   codexpp codex install --force
+   ```
+   - Updates the slash command block in `~/.codex/config.toml`.
+   - Writes prompt templates into `~/.codex/prompts/`.
+   - Installs the bundled prompt templates and MCP profiles, so no extra tools or manual copying is required.
+
+2. **Launch Codex CLI**
+   ```bash
+   codex
+   ```
+   In the `/prompts:` menu you will see `cx:analyze`, `cx:implement`, `cx:review`, and the rest of the commands ready to run.
+
+3. **One-shot project setup**
+   ```bash
+   codexpp codex init --profile full --force
+   ```
+   Creates bootstrap folders, synchronises personas, installs command packs, and wires everything into Codex CLI in a single step.
+
+## Command Reference
+
+- `cx:analyze` — Analyze the selected codebase scope (defaults to current directory) and list an architecture summary, risks, and next steps.
+- `cx:implement` — Produce an implementation plan, guide the code changes, and suggest tests.
+- `cx:review` — Review a diff or PR; highlight strengths, critical issues, and suggestions.
+- `cx:triage` — Analyze a bug report; propose likely root causes and targeted debugging steps.
+- `cx:refactor` — Prepare a refactoring plan, outline steps, and define test scope.
+- `cx:plan` — Break the feature into tasks; identify dependencies and risks. Provide the request via `SPEC`; optionally pass `HINTS` with relevant files/modules.
+- `cx:test` — List required test scenarios and tooling commands. `CHANGE` is required; `TESTS` can point to existing suites or notes.
+- `cx:doc` — Summarize documentation updates and identify the target audience. `CHANGE` is required; use `AUDIENCE` to tailor tone.
+- `cx:deploy` — Provide a deployment plan, pre-checks, verification, and rollback preparation. `NOTES` describes the release; `ENVIRONMENT` names the target.
+- `cx:rollback` — Prepare an emergency rollback plan with communications and follow-ups. `INCIDENT` summarizes the issue; `VERSION` optionally records the current live release.
+- `cx:status` — Produce an operational status report, key metrics, and open risks. `SCOPE` identifies the service; `METRICS` can link dashboards or metric summaries.
+- `cx:security` — Perform a comprehensive security scan (defaults to current directory), identify vulnerabilities and risks, and propose remediations.
+
+All commands above are installed automatically when you run `codexpp codex install`. Use `codexpp codex uninstall` if you need to clean Codex CLI state.
+
+## Command Parameters
+
+This section summarizes parameters used by the default `cx:*` commands. Parameters vary by command; required ones are marked “(required)”.
+
+- `cx:analyze`
+  - `TARGET` (required): Directory/package/file path to analyze.
+  - `CONTEXT`: Additional notes or constraints.
+  - `FOCUS`: Optional focus areas (e.g., `arch,deps,tests,perf`).
+  - `DEPTH`: Analysis depth (`light|medium|deep`, default `medium`).
+
+- `cx:implement`
+  - `SPEC` (required): Feature description or task.
+  - `NOTES`: Constraints, expectations, or extra guidance.
+  - `FLAG`: Feature flag name if rollout should be guarded.
+
+- `cx:review`
+  - `DIFF_SOURCE` (required): Diff/PR/commit reference to review.
+  - `FOCUS`: Particular areas to focus the review on.
+  - `RISK`: Expected risk level (`low|medium|high`).
+
+- `cx:triage`
+  - `REPORT` (required): Bug report or user feedback text.
+  - `CONTEXT`: Related commit/feature/environment notes.
+  - `SCOPE`: Optional module/area to focus triage on.
+
+- `cx:refactor`
+  - `NOTES` (required): Current code and pain points.
+  - `GOALS`: Goals, constraints, success metrics.
+  - `CONSTRAINTS`: Extra constraints (performance, compatibility, CI).
+
+- `cx:plan`
+  - `SPEC` (required): Feature or problem statement to plan.
+  - `HINTS`: Hints about existing code/modules/constraints.
+  - `CONSTRAINTS`: Assumptions or constraints to consider.
+  - `ESTIMATE`: Include rough estimates (`true|false`, default `false`).
+
+- `cx:test`
+  - `CHANGE` (required): Summary of planned/completed changes.
+  - `TESTS`: Notes about relevant test files or commands.
+  - `COVERAGE`: Coverage target (percent).
+
+- `cx:doc`
+  - `CHANGE` (required): Change to document.
+  - `AUDIENCE`: Audience (e.g., `developer`, `user`, `api`).
+  - `STYLE`: Optional style/language notes.
+
+- `cx:deploy`
+  - `NOTES` (required): Release notes or link.
+  - `ENVIRONMENT` (required): Target environment (`staging`, `production`, etc.).
+  - `WINDOW`: Maintenance window info (optional).
+  - `FLAG`: Feature flag for rollout control (optional).
+
+- `cx:rollback`
+  - `INCIDENT` (required): Incident summary or link.
+  - `VERSION`: Current live version or rollback target (optional).
+  - `DB_IMPACT`: Whether data/migrations are impacted (`yes|no`).
+  - `FEATURE_FLAG`: Flag to disable during rollback (optional).
+
+- `cx:status`
+  - `SCOPE` (required): Service/module scope to report on.
+  - `METRICS`: Highlighted metrics or dashboard links.
+  - `SLO`: SLO targets (optional, for context).
