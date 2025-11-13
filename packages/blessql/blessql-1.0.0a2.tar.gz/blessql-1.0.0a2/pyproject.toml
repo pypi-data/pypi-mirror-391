@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "blessql"
+version = "1.0.0a2"
+description = "Event Sourcing implemented with SQLAlchemy"
+authors = ["Tanguy Le Carrour <tanguy@bioneland.org>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://git.easter-eggs.org/bioneland/blessql"
+repository = "https://git.easter-eggs.org/bioneland/blessql"
+
+exclude = ["**/conftest.py", "**/*_test.py"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+bles = {version = "^1.0.0a2", allow-prereleases = true}
+sqlalchemy = "^2.0.23"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+invoke = "^2.2.0"
+isort = "^5.12.0"
+safety = "^2.3.5"
+termcolor = "^2.4.0"
+
+[tool.poetry.group.test.dependencies]
+flake8 = "^6.1.0"
+mypy = "^1.7.1"
+pytest = "^7.4.3"
+robber = "^1.1.5"
+types-mock = "^5.1.0.3"
+types-setuptools = "^69.0.0.0"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 89
+
+[[tool.mypy.overrides]]
+module = []
+ignore_missing_imports = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
