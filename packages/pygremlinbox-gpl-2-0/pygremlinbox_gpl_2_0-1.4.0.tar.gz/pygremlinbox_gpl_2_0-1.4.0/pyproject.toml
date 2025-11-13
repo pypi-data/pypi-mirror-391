@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: GPL-2.0
+# SPDX-FileCopyrightText: 2025 PyGremlinBox Maintainer <simon@sigre.xyz>
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygremlinbox-gpl-2-0"
+version = "1.4.0"
+description = "PyGremlinBox GPL-2.0 - Supply chain security testing module with GPL-2.0 licence"
+license = {text = "GPL-2.0"}  # SPDX: GPL-2.0-only
+authors = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+maintainers = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+keywords = ["security", "supply-chain", "testing", "gpl", "licence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/gocortexio/pygremlinbox"
+Repository = "https://github.com/gocortexio/pygremlinbox.git"
+Issues = "https://github.com/gocortexio/pygremlinbox/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pygremlinbox_*"]
+
+[tool.setuptools.package-dir]
+"" = "src"
