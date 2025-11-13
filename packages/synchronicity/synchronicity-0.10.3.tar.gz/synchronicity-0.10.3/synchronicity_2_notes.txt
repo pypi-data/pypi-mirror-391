@@ -1,0 +1,5 @@
+* Code navigation
+* Not clear to users which methods do io and should be invoked as async in an async context
+* Calling the blocking interface from their own async functions
+* .aio complicates things by making everything a FunctionWithAio object
+* You won't have to separate synchronicity wrapped code from non-synchronicity code since the generated code will *only* generate code for the wrapped entities anyway, so problems where type stubs can't be generated for non-wrapped code won't be an issue
