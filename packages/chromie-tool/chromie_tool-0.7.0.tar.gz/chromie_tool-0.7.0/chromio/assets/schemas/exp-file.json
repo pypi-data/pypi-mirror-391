@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Chromie import/export schema",
+  "description": "Import/export schema designed and used for Chromie.",
+  "type": "object",
+  "required": ["version", "metadata", "data"],
+  "properties": {
+    "version": {
+      "description": "Schema version.",
+      "const": "1.0"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Export metadata.",
+      "required": ["coll"],
+      "properties": {
+        "chroma": {
+          "type": "object",
+          "description": "Chroma instance info.",
+          "properties": {
+            "version": {
+              "type": "string",
+              "description": "Chroma instance version."
+            }
+          }
+        },
+        "coll": {
+          "type": "object",
+          "description": "Source collection info.",
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Collection name."
+            },
+            "configuration": {
+              "type": "object",
+              "description": "Collection configuration.",
+              "properties": {
+                "embedding_function": {
+                  "type": "object",
+                  "description": "Embedding function configuration."
+                },
+                "hnsw": {
+                  "type": ["object", "null"],
+                  "description": "HNSW configuration."
+                },
+                "spann": {
+                  "type": ["object", "null"],
+                  "description": "SPANN configuration."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "description": "Collection records.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Record identifier."
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Record metadata."
+          },
+          "document": {
+            "type": "string",
+            "description": "Record document."
+          },
+          "embedding": {
+            "type": "array",
+            "description": "Embedding or vector.",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  }
+}
