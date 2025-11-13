@@ -1,0 +1,36 @@
+# Stage 1: Build the application
+# Use a Node.js base image to build the app
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json to install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of your application code
+COPY . .
+
+# Run the Next.js build command
+RUN npm run build
+
+# Stage 2: Create the production image
+# Use a smaller base image for a lighter final image
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy the build output and node_modules from the builder stage
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY package.json .
+
+# Set the environment variables for production
+ENV NODE_ENV=production
+
+# Expose the port Next.js runs on
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
