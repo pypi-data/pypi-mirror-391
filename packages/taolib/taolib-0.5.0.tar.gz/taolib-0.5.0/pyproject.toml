@@ -1,0 +1,57 @@
+[project]
+name = "taolib"
+version = "0.5.0"
+description = "道可道，非恒道"
+authors = [
+    {name = "xinetzone", email = "735613050@qq.com"},
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {file = "LICENSE"}
+maintainers = [
+  {name = "xinetzone", email = "735613050@qq.com"},
+]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/xinetzone/tao"
+Documentation = "https://taolib.readthedocs.io/"
+
+[project.optional-dependencies]
+doc = [
+  "mystx",
+  "myst-nb",
+  "sphinx-book-theme",
+  "notebook>=7.0",
+  "anywidget[dev]>=0.9.13",
+  "ipywidgets>=8",
+  "sphinx",
+  "ablog",
+  "nbsphinx",
+  "folium",
+  "sphinx-comments",
+  "nbclient",
+  "plotly",
+  "sphinx-design",
+  "sphinx-examples",
+  "sphinx-copybutton",
+  "sphinx-contributors",
+  "sphinx-thebe",
+  "sphinxcontrib-bibtex",
+  "sphinxext-opengraph",
+  "sphinx-sitemap",
+  "sphinx-autoapi>=3.4",
+  "graphviz",
+  "sphinx-intl", # 文档国际化
+  "sphinx-tippy",
+  "sphinxcontrib-mermaid",
+  # AI
+  "iflow-cli-sdk",
+]
+
+dev = [
+  "invoke",
+  "pandas",
+  "numpy",
+  "matplotlib",
+]
