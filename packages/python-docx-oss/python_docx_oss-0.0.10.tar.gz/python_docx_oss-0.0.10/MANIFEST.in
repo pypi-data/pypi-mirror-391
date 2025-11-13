@@ -1,0 +1,9 @@
+include HISTORY.md LICENSE README.md tox.ini
+graft docx/templates
+graft features
+graft tests
+graft docs
+prune docs/.build
+global-exclude .DS_Store
+global-exclude __pycache__
+global-exclude *.py[co]
