@@ -1,0 +1,348 @@
+# SpotKit 🎵
+
+> Local CLI tool for advanced Spotify playlist management
+
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CI](https://github.com/GocasPT/SpotKit/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://codecov.io/gh/GocasPT/SpotKit/branch/develop/graph/badge.svg)
+
+## What is SpotKit?
+
+SpotKit is a command-line tool that enhances your Spotify experience by allowing you to:
+
+- 🎤 **Add entire artist discographies** to playlists with one command
+- 📝 **Annotate tracks** with personal ratings (1-5 stars) and comments
+- 📤 **Export playlists** with metadata to CSV, JSON, or Markdown
+- 💾 **Keep your data local** - all annotations stored privately on your machine
+
+Perfect for music enthusiasts who want more control over their Spotify library.
+
+---
+
+## Features
+
+### ✅ MVP (v1.0.0)
+
+- Spotify OAuth authentication with token management
+- Search and add all tracks from any artist to playlists
+- Local metadata storage (SQLite) for ratings and comments
+- Multi-format export (CSV, JSON, Markdown)
+- Rich CLI with progress bars and formatted output
+
+### 🔮 Planned (v1.1.0+)
+
+- Batch annotation mode (TUI for annotating multiple tracks)
+- Playlist sync detection
+- Advanced search and filtering
+- Export to XLSX with formatting
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.11 or higher
+- Spotify account (Free or Premium)
+- Spotify Developer App credentials (instructions below)
+
+### Installation
+
+#### Option 1: From Source (Development)
+
+```bash
+# Clone the repository
+git clone https://github.com/GocasPT/SpotKit.git
+cd spotkit
+
+# Install Poetry (if not already installed)
+# Recommend to follow the offical document: https://python-poetry.org/docs/#installing-with-the-official-installer
+curl -sSL https://install.python-poetry.org | python3 -
+
+# Install dependencies
+poetry install
+
+# Activate virtual environment
+poetry shell
+```
+
+#### Option 2: Using pip
+
+```bash
+pip install spotkit
+```
+
+---
+
+## Setup
+
+### 1. Create Spotify Developer App
+
+SpotKit needs API credentials to communicate with Spotify.
+
+1. Go to [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Log in with your Spotify account
+3. Click **"Create app"**
+4. Fill in the form:
+   - **App name:** `SpotKit` (or any name you prefer)
+   - **App description:** `Local CLI for playlist management`
+   - **Redirect URI:** `http://localhost:8888/callback`
+   - **APIs used:** Select `Web API`
+5. Agree to terms and click **"Save"**
+6. Copy your **Client ID** and **Client Secret**
+
+⚠️ **Never commit your `.env` file!** It's already in `.gitignore`.
+
+### 2. Authenticate with Spotify
+
+```bash
+spotkit auth
+```
+
+This will:
+
+1. Open your browser automatically
+2. Ask you to authorize SpotKit
+3. Save your authentication token locally
+4. You only need to do this once (token auto-refreshes)
+
+---
+
+## Usage
+
+### Authentication
+
+```bash
+# First time setup
+spotkit auth
+
+# Check authentication status
+spotkit config --show
+```
+
+### Adding Artists to Playlists
+
+```bash
+# Add all tracks from an artist to a playlist
+spotkit add-artist "Radiohead" --playlist "My Rock Mix"
+
+# Create a new playlist while adding
+spotkit add-artist "Taylor Swift" --create "Swift Collection"
+
+# Skip confirmation prompt
+spotkit add-artist "The Beatles" --playlist "Classics" --yes
+```
+
+### Managing Playlists
+
+```bash
+# List all your playlists
+spotkit list-playlists
+
+# View tracks in a playlist
+spotkit list-tracks "Discover Weekly"
+
+# Filter playlists
+spotkit list-playlists --public
+spotkit list-playlists --private
+```
+
+### Annotating Tracks
+
+```bash
+# Rate a track (1-5 stars)
+spotkit rate spotify:track:3n3Ppam7vgaVa1iaRUc9Lp 5
+
+# Add a comment
+spotkit comment spotify:track:3n3Ppam7vgaVa1iaRUc9Lp
+
+# Rate and comment together
+spotkit rate spotify:track:3n3Ppam7vgaVa1iaRUc9Lp 4
+spotkit comment spotify:track:3n3Ppam7vgaVa1iaRUc9Lp
+
+# View existing metadata
+spotkit rate spotify:track:3n3Ppam7vgaVa1iaRUc9Lp --show
+```
+
+### Exporting Playlists
+
+```bash
+# Export to CSV
+spotkit export "Discover Weekly" --format csv
+
+# Export to JSON
+spotkit export "My Mix" --format json
+
+# Export to Markdown
+spotkit export "Favorites" --format md
+
+# Custom output filename
+spotkit export "Workout" --output my-workout-2024.csv
+
+# Export only first 100 tracks (quick preview)
+spotkit export "Huge Playlist" --format csv --limit 100
+
+# Export your saved tracks
+spotkit export saved --format csv
+```
+
+**Export includes:**
+- Track name, artist(s), album
+- Duration, Spotify URI
+- Your personal rating (if set)
+- Your personal comment (if set)
+- Export timestamp
+
+### Utilities
+
+```bash
+# View current configuration
+spotkit config --show
+
+# Clear cache and reset
+spotkit config --reset
+
+# Search Spotify
+# Under development, for now just search artists and return raw results
+spotkit search "bohemian rhapsody"
+
+# Show version
+spotkit --version
+
+# Get help
+spotkit --help
+spotkit add-artist --help
+```
+
+---
+
+## Project Structure
+
+```
+spotkit/
+├── src/spotkit/
+│   ├── __main__.py          # Entry point
+│   ├── cli.py               # CLI commands (Typer)
+│   ├── config.py            # Configuration loader
+│   ├── auth.py              # OAuth authentication
+│   ├── spotify_client.py    # Spotify API wrapper
+│   ├── storage.py           # SQLite metadata storage
+│   ├── exporter.py          # Export functionality
+│   └── logging_setup.py     # Logging configuration
+├── tests/                   # Unit tests
+├── pyproject.toml           # Poetry configuration
+└── README.md
+```
+
+---
+
+## Data Storage
+
+SpotKit stores data locally in `~/.spotkit/`:
+
+```
+~/.spotkit/
+├── token.json           # Spotify authentication token (auto-refreshed)
+├── metadata.db          # SQLite database with your ratings/comments
+└── spotkit.log          # Application logs
+```
+
+All your personal data stays on your machine. SpotKit never sends your annotations to any server.
+
+---
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Clone and install
+git clone https://github.com/GocasPT/SpotKit.git
+cd spotkit
+poetry install
+
+# Activate environment
+poetry shell
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test file
+pytest tests/test_auth.py
+
+# Verbose output
+pytest -v
+```
+
+### Code Quality
+
+```bash
+# Lint code
+ruff check .
+
+# Format code
+ruff format .
+```
+
+### Running Locally
+
+```bash
+# Run as module
+python -m spotkit auth
+
+# Or use poetry
+poetry run spotkit auth
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Quick Contribution Guide
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Run tests: `pytest`
+5. Run linting: `ruff check . && ruff format .`
+6. Commit: `git commit -m "feat: add amazing feature"`
+7. Push: `git push origin feature/amazing-feature`
+8. Open a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes in each release.
+
+---
+
+## Acknowledgments
+
+- Built with [Spotipy](https://spotipy.readthedocs.io/) - Spotify Web API wrapper
+- CLI powered by [Typer](https://typer.tiangolo.com/) and [Rich](https://rich.readthedocs.io/)
+- Inspired by the need for better playlist management tools
+
+---
+
+## Support
+
+- 🐛 **Bug reports:** [Open an issue](https://github.com/GocasPT/SpotKit/issues)
+- 💡 **Feature requests:** [Open an issue](https://github.com/GocasPT/SpotKit/issues)
+
+---
+
+**SpotKit** - Take control of your Spotify library, one command at a time. 🎵
