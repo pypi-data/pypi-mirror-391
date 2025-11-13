@@ -1,0 +1,33 @@
+New "LoadShape.default_pv_daily_mt" npts=24 interval=1 
+~ mult = [0 0 0 0 0 0 0.1 0.2 0.3 0.5 0.8 0.9 1.0 1.0 0.99 0.9 0.7 0.4 0.1 0 0 0 0 0] 
+New "LoadShape.default_daily" npts=24 interval=1 
+~ mult = [0 0 0 0 0 0 0.1 0.2 0.3 0.5 0.8 0.9 1.0 1.0 0.99 0.9 0.7 0.4 0.1 0 0 0 0 0] 
+
+New "generator.CGH.PH.RS.028688-5" phases=3 bus1=633241.1.2.3 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=800.0 daily=default_pv_daily_mt 
+
+New "generator.UFV.RS.RS.046252-7" phases=3 bus1=773852.1.2.3 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=729.6 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.000.344.123" phases=3 bus1=657011.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.370.782" phases=3 bus1=811671.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=40.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.198.561" phases=3 bus1=164401.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=59.4 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.000.400.589" phases=3 bus1=259241.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.529.365" phases=3 bus1=346061.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=50.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.120.403" phases=3 bus1=794711.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.813.405" phases=3 bus1=786463.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=30.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.000.197.371" phases=3 bus1=157531.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=50.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.431.793" phases=3 bus1=753591.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.120.434" phases=3 bus1=646261.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.001.958.494" phases=3 bus1=684821.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+
+New "generator.GD.RS.000.344.361" phases=3 bus1=713782.1.2.3.4 basefreq=60 conn=Delta kv=23.1 pf=0.92 kw=75.0 daily=default_pv_daily_mt 
+

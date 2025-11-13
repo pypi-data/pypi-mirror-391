@@ -1,0 +1,155 @@
+Metadata-Version: 2.4
+Name: bdgd2opendss
+Version: 1.0.0
+Summary: BDGD2OpenDSS converts BDGD data into OpenDSS models.
+Author-email: Paulo Radatz <paulo.radatz@gmail.com>
+License: MIT
+Project-URL: Issue Tracker, https://github.com/PauloRadatz/bdgd2opendss/issues
+Project-URL: Source, https://github.com/PauloRadatz/bdgd2opendss
+Keywords: OpenDSS,Python,Power Systems,Distribution Systems,Energy,OpenDSS
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS.rst
+Requires-Dist: click>=8.1.3
+Requires-Dist: click-plugins>=1.1.1
+Requires-Dist: cligj>=0.7.2
+Requires-Dist: customtkinter>=5.1.2
+Requires-Dist: darkdetect>=0.8.0
+Requires-Dist: docopt>=0.6.2
+Requires-Dist: colorama==0.4.6; python_version < "3.13"
+Requires-Dist: holidays==0.61; python_version < "3.13"
+Requires-Dist: networkx==3.4.2; python_version < "3.13"
+Requires-Dist: six==1.16.0; python_version < "3.13"
+Requires-Dist: attrs==22.2.0; python_version < "3.12"
+Requires-Dist: certifi==2022.12.7; python_version < "3.12"
+Requires-Dist: charset-normalizer==3.1.0; python_version < "3.12"
+Requires-Dist: Fiona==1.9.2; python_version < "3.12"
+Requires-Dist: geopandas==0.12.2; python_version < "3.12"
+Requires-Dist: idna==3.4; python_version < "3.12"
+Requires-Dist: importlib-metadata==6.1.0; python_version < "3.12"
+Requires-Dist: iniconfig==2.0.0; python_version < "3.12"
+Requires-Dist: munch==2.5.0; python_version < "3.12"
+Requires-Dist: numpy==1.24.2; python_version < "3.12"
+Requires-Dist: packaging==23.0; python_version < "3.12"
+Requires-Dist: pandas==1.5.3; python_version < "3.12"
+Requires-Dist: pluggy<2.0.0,>=1.0.0; python_version < "3.12"
+Requires-Dist: pyproj==3.4.1; python_version < "3.12"
+Requires-Dist: python-dateutil==2.8.2; python_version < "3.12"
+Requires-Dist: pytz==2023.2; python_version < "3.12"
+Requires-Dist: requests==2.28.2; python_version < "3.12"
+Requires-Dist: shapely==2.0.1; python_version < "3.12"
+Requires-Dist: tomli==2.0.1; python_version < "3.12"
+Requires-Dist: urllib3==1.26.15; python_version < "3.12"
+Requires-Dist: yarg==0.1.9; python_version < "3.12"
+Requires-Dist: zipp==3.15.0; python_version < "3.12"
+Requires-Dist: pyogrio==0.9.0; python_version < "3.12"
+Requires-Dist: pyarrow==17.0.0; python_version < "3.12"
+Requires-Dist: setuptools==67.2.0; python_version < "3.12"
+Requires-Dist: matplotlib==3.7.1; python_version < "3.12"
+Requires-Dist: exceptiongroup==1.1.1; python_version < "3.12"
+Requires-Dist: tqdm==4.65.0; python_version < "3.12"
+Requires-Dist: attrs==23.2.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: certifi==2024.6.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: charset-normalizer==3.3.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: fiona==1.9.6; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: geopandas==0.14.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: idna==3.7; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: numpy==2.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: packaging==24.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pandas==2.2.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pyproj==3.6.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: python-dateutil==2.9.0.post0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pytz==2024.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: requests==2.32.3; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: shapely==2.0.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: urllib3==2.2.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pyogrio==0.8.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pyarrow==16.1.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: setuptools==71.0.3; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: matplotlib==3.9.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: tqdm==4.66.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: bdgd-tools==1.0.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: beautifulsoup4==4.12.3; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: cffi==1.17.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: cloudpickle==3.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: comtypes==1.4.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: contourpy==1.2.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: cycler==0.12.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: dask==2024.7.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: dask-expr==1.1.9; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: dask-geopandas==0.4.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: distributed==2024.7.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: dss-python==0.15.7; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: dss-python-backend==0.14.5; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: fonttools==4.52.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: fsspec==2024.6.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: Jinja2==3.1.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: Js2Py==0.74; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: kiwisolver==1.4.5; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: locket==1.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: MarkupSafe==2.1.5; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: msgpack==1.0.8; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: partd==1.4.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pillow==10.3.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pipwin==0.5.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: psutil==6.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: py-dss-interface==2.0.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pycparser==2.22; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pyjsparser==2.7.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pyparsing==3.1.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pypiwin32==223; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: PyPrind==2.11.3; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pySmartDL==1.3.4; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: pywin32==306; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: PyYAML==6.0.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: sortedcontainers==2.4.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: soupsieve==2.5; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: tblib==3.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: toolz==0.12.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: tornado==6.4.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: typing_extensions==4.12.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: tzdata==2024.1; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: tzlocal==5.2; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: wheel==0.43.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: zict==3.0.0; python_version >= "3.12" and python_version < "3.13"
+Requires-Dist: certifi==2025.11.12; python_version >= "3.13"
+Requires-Dist: colorama==0.4.6; python_version >= "3.13"
+Requires-Dist: geopandas==1.1.1; python_version >= "3.13"
+Requires-Dist: holidays==0.84; python_version >= "3.13"
+Requires-Dist: networkx==3.5; python_version >= "3.13"
+Requires-Dist: numpy==2.3.4; python_version >= "3.13"
+Requires-Dist: packaging==25.0; python_version >= "3.13"
+Requires-Dist: pandas==2.3.3; python_version >= "3.13"
+Requires-Dist: pyarrow==22.0.0; python_version >= "3.13"
+Requires-Dist: pyogrio==0.11.1; python_version >= "3.13"
+Requires-Dist: pyproj==3.7.2; python_version >= "3.13"
+Requires-Dist: python-dateutil==2.9.0.post0; python_version >= "3.13"
+Requires-Dist: pytz==2025.2; python_version >= "3.13"
+Requires-Dist: shapely==2.1.2; python_version >= "3.13"
+Requires-Dist: six==1.17.0; python_version >= "3.13"
+Requires-Dist: tqdm==4.67.1; python_version >= "3.13"
+Requires-Dist: tzdata==2025.2; python_version >= "3.13"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: sphinx-rtd-theme; extra == "dev"
+Requires-Dist: nbsphinx; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: tox; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: ipython; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: license-file
