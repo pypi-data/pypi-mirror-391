@@ -1,0 +1,496 @@
+Metadata-Version: 2.4
+Name: mcp-server-skill
+Version: 0.1.2
+Summary: MCP server that enables any agent to use Claude Skills via progressive disclosure
+Project-URL: Homepage, https://github.com/your-org/open-claudeskill
+Project-URL: Repository, https://github.com/your-org/open-claudeskill
+Project-URL: Documentation, https://github.com/your-org/open-claudeskill#readme
+Author: Open-ClaudeSkill Contributors
+License-File: LICENSE
+Keywords: agent,ai,claude,mcp,skill
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: watchdog>=3.0.0
+Description-Content-Type: text/markdown
+
+# AgentSkill MCP
+
+**Bring Claude Agent Skills to ANY MCP-compatible Agent**
+
+A universal MCP server that enables **any** Agent application with MCP support to use Anthropic's official [Claude Agent Skills](https://github.com/anthropics/skills) with **progressive disclosure** - reducing context overhead while maximizing capability.
+
+**Package Name**: `agentskill-mcp` | **PyPI**: [agentskill-mcp](https://pypi.org/project/agentskill-mcp/)
+
+English | [简体中文](README.zh-CN.md)
+
+## Why AgentSkill MCP?
+
+Claude Agent Skills are brilliantly designed but locked to Claude's ecosystem. This project breaks that limitation by:
+
+- ✅ **Universal Compatibility**: Works with ANY MCP-compatible agent (Kilo Code, Cursor, Roo Code, Codex, and more)
+- ✅ **100% Claude Skill Compatible**: Uses official Anthropic Skill format - no modifications needed
+- ✅ **Progressive Disclosure**: Implements the same smart context loading as Claude Code
+- ✅ **Zero Lock-in**: Standard MCP protocol means you're never tied to one platform
+
+### The Problem Skills Solve
+
+Traditional MCP tools load ALL documentation upfront, consuming 20k+ tokens before you even start. With 15+ tools, your agent is context-starved before doing any real work.
+
+**Skills fix this** through progressive disclosure: agents see a lightweight skill list initially, then load full details only when needed. This project brings that same efficiency to every MCP-compatible agent.
+
+## Features
+
+- 🚀 **One-Line Installation**: `pip install agentskill-mcp` or `uvx agentskill-mcp`
+- 🔌 **Universal MCP Compatibility**: Works with Kilo Code, Cursor, Roo Code, Codex, Cherry Studio, and any MCP-compatible agent
+- 📦 **Official Skill Format**: Fully compatible with [Anthropic's Claude Skills](https://github.com/anthropics/skills)
+- 🎯 **Progressive Disclosure**: Smart context loading - minimal overhead until skills are needed
+- 🔄 **Hot Reload**: File changes detected and updated in real-time (where protocol supported)
+- 🗂️ **Smart Path Discovery**: Auto-detects `.claude/skills/`, `.skill/`, or custom directories
+- 🌍 **Environment Aware**: Project-level and global skill directories with automatic detection
+- 🎨 **ClaudeCode Compatible**: Supports both `.claude/skills/` (ClaudeCode format) and `.skill/` (legacy)
+
+## Supported Platforms
+
+Tested and verified on:
+- ✅ **Kilo Code** (VSCode extension)
+- ✅ **QwenCode** (Alibaba's AI coding assistant)
+- ✅ **Cursor** (AI code editor)
+- ✅ **Roo Code** (AI coding assistant)
+- ✅ **Codex** (AI development platform)
+- ⚠️ **Cherry Studio** (limited - conversation-only agents have reduced functionality)
+
+**In theory**: Any agent implementing the [Model Context Protocol](https://modelcontextprotocol.io) should work.
+
+## Quick Start
+
+### Installation
+
+**Method 1: Using pip (Recommended)**
+
+```bash
+pip install agentskill-mcp
+```
+
+**Method 2: Using uvx (Recommended for trying without installation)**
+
+```bash
+# Run directly without installing
+uvx agentskill-mcp --help
+```
+
+**Method 3: Using uv**
+
+```bash
+uv pip install agentskill-mcp
+```
+
+**Verify Installation:**
+
+```bash
+agentskill-mcp --help
+
+# Expected output:
+# usage: agentskill-mcp [-h] [--skills-dir SKILLS_DIR]
+#                       [--log-level {DEBUG,INFO,WARNING,ERROR}]
+#
+# AgentSkill MCP - MCP Server for Claude Skills with progressive disclosure
+```
+
+**For Development** (if you want to modify the code):
+
+```bash
+git clone https://github.com/QianjieTech/Open-ClaudeSkill.git
+cd Open-ClaudeSkill
+pip install -e .
+```
+
+### Configuration
+
+Add to your MCP client configuration file:
+
+#### Kilo Code / Cursor / Roo Code / Codex
+
+Edit your MCP configuration file (`.kilocode/mcp.json`, `.cursor/mcp.json`, or similar):
+
+```json
+{
+  "mcpServers": {
+    "skills": {
+      "command": "agentskill-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+**For uvx users** (no installation needed):
+
+```json
+{
+  "mcpServers": {
+    "skills": {
+      "command": "uvx",
+      "args": ["agentskill-mcp"]
+    }
+  }
+}
+```
+
+**When to specify `--skills-dir`:**
+
+- MCP server starts in a directory other than the project directory
+
+**If your agent supports project-level MCP configuration**, configuring this MCP tool at the project level will automatically load skills from `.claude/skills/` or `.skill/` in the current directory. Otherwise, you need to specify the skill directory via the `--skills-dir` parameter.
+
+💡 **Tip**: If Kilo Code doesn't load skills after configuring project-level MCP, manually click the "Refresh MCP Server" button or restart VSCode.
+
+#### QwenCode
+
+Edit `C:\Users\YourUserName\.qwen\settings.json` (Windows) or `~/.qwen/settings.json` (Mac/Linux):
+
+```json
+{
+  "mcpServers": {
+    "skills": {
+      "command": "agentskill-mcp",
+      "args": ["--skills-dir", "C:\\Users\\YourName\\.skill"]
+    }
+  }
+}
+```
+
+#### Other MCP-Compatible Agents
+
+AgentSkill MCP works with ANY agent that supports the Model Context Protocol. Check your agent's documentation for MCP configuration location, then use the same JSON format as above.
+
+### Loading Skills
+
+Create a skills directory and add skill packages:
+
+**Format 1: ClaudeCode Format (Recommended for ClaudeCode users)**
+
+```bash
+# Create in current project (recommended)
+Create .claude/skills/ in project root directory
+
+# Or create globally
+mkdir -p ~/.claude/skills    # Linux/Mac
+mkdir C:\Users\YourName\.claude\skills  # Windows
+```
+
+**Format 2: Legacy Format (Compatible with other agents)**
+
+```bash
+# Create in current project
+Create .skill/ in project root directory
+
+# Or create globally
+mkdir ~/.skill         # Linux/Mac
+mkdir C:\Users\YourName\.skill  # Windows
+```
+
+Then place your Skill packages in the skills directory. The `./examples` directory contains several official Anthropic Skill packages, which are sufficient for Step 5 testing.
+
+```bash
+# Example of migrating skills (ClaudeCode format)
+Copy examples/canvas-design -> .claude/skills/
+Copy examples/brand-guidelines -> .claude/skills/
+
+# Or (Legacy format)
+Copy examples/canvas-design -> .skill/
+Copy examples/brand-guidelines -> .skill/
+```
+
+The final structure should look like:
+- ClaudeCode format: **`.claude/skills/canvas-design/`**
+- Legacy format: **`.skill/canvas-design/`**
+
+### Try It Out
+
+Restart your Agent application and test with:
+
+```
+Create a 1920x1080 promotional poster using Anthropic brand style.
+Theme: "AI belongs to the future? AI is just a means, not an end"
+```
+
+**What happens:**
+1. Agent sees available skills in the `load_skill` tool description
+2. Agent identifies relevant skills (`canvas-design`, `brand-guidelines`)
+3. Agent calls `load_skill` to get full skill details
+4. Agent follows skill instructions to create the poster
+
+**Note**: The agent may call only one skill depending on how it interprets the task. This is normal - AI agents have some inherent randomness in tool selection.
+
+## Skill Format
+
+Skills follow the official Claude Skill format:
+
+### Frontmatter (YAML)
+
+```yaml
+---
+name: skill-name          # Required: matches folder name
+description: |            # Required: detailed description for agent matching
+  What this skill does and when to use it.
+  Include keywords that agents should match on.
+license: MIT              # Optional: license information
+---
+```
+
+### Skill Content
+
+After the frontmatter, provide detailed Markdown instructions:
+
+- Clear, actionable guidance
+- Examples and best practices
+- References to auxiliary resources
+
+### Auxiliary Resources
+
+Skills can include resources like templates, fonts, scripts:
+
+```
+# ClaudeCode format
+.claude/skills/
+├── algorithmic-art/
+│   ├── SKILL.md
+│   └── templates/
+│       ├── viewer.html
+│       └── generator.js
+
+# Or legacy format
+.skill/
+├── algorithmic-art/
+│   ├── SKILL.md
+│   └── templates/
+│       ├── viewer.html
+│       └── generator.js
+```
+
+Reference resources in your skill:
+
+```markdown
+Read `templates/viewer.html` using the Read tool
+```
+
+## How It Works
+
+### Progressive Disclosure Implementation
+
+**The Challenge**: How to implement progressive disclosure within the MCP framework?
+
+**Official Claude Implementation** (inferred from behavior):
+- Built-in Skill system integrated in agent's system prompt
+- Initial display shows only `<available_skills>` list
+- Special `load_skill` command triggers full content loading
+
+**Our MCP Implementation**:
+
+1. **Single MCP Tool: `load_skill`**
+   - Embeds all available skill metadata in the tool's `description`
+   - Agents see the skill list without loading full content
+
+2. **Tool Description Structure**:
+```xml
+Tool(
+    name="load_skill",
+    description="""Execute a skill within the main conversation
+
+<skills_instructions>
+When users ask you to perform tasks, check if any of the
+available skills below can help...
+</skills_instructions>
+
+<available_skills>
+<skill>
+  <name>code-reviewer</name>
+  <description>Comprehensive code review framework...</description>
+</skill>
+<skill>
+  <name>calculator</name>
+  <description>Mathematical calculations...</description>
+</skill>
+</available_skills>
+""",
+    inputSchema={
+        "type": "object",
+        "properties": {
+            "skill": {"type": "string"}
+        }
+    }
+)
+```
+
+3. **On-Demand Loading**:
+   - Agent matches task with skills from `<available_skills>`
+   - Calls `load_skill(skill="code-reviewer")`
+   - Server reads `.skill/code-reviewer/SKILL.md`
+   - Returns full skill content
+
+### Why Some Agents Have Limited Support?
+
+**Cherry Studio and conversation-only agents** face limitations:
+
+1. **No Environment Awareness**: Cannot detect current directory or auto-load project skills
+2. **Global Configuration Only**: Must hardcode skill directories - all projects share same skills
+3. **Tool Availability**: Skills may reference tools (e.g., `Read`, `Write`) that conversation agents lack
+
+## Path Discovery
+
+The server automatically finds skills using this priority:
+
+1. **Command-line argument**: `--skills-dir /path/to/skills`
+2. **Environment variable**: `MCP_SKILLS_DIR=/path/to/skills`
+3. **Dynamic setting**: Via `set_skills_directory` tool
+4. **Project-level**: `.claude/skills/` or `.skill/` in project root (detects `.git`, `.claude/`, `package.json`, etc.)
+5. **Global fallback**: `~/.skill`
+
+**Note**: The project-level discovery prioritizes `.claude/skills/` (ClaudeCode format) over `.skill/` (legacy format) when both exist.
+
+## Usage
+
+### For Type B Clients (with local agent capability)
+
+Agents can set the skills directory dynamically:
+
+```
+Agent detects: User is in /path/to/project
+Agent calls: set_skills_directory(path="/path/to/project")
+Server responds: Discovered 5 skills: code-reviewer, calculator, ...
+```
+
+### For Type A Clients (without local agent capability)
+
+Use global configuration:
+
+```bash
+mkdir ~/.skill
+cp -r examples/code-reviewer ~/.skill/
+```
+
+## Tools Provided
+
+### `set_skills_directory`
+
+Set the skills directory for the current session.
+
+**Parameters:**
+- `path` (string): Absolute or relative path to project, `.claude/skills/`, or `.skill` directory
+
+**Example:**
+```python
+set_skills_directory(path="/path/to/project")
+```
+
+**Note**: The tool will automatically detect and use `.claude/skills/` if it exists, otherwise fall back to `.skill/`.
+
+### `load_skill`
+
+Load and activate a skill by name.
+
+**Parameters:**
+- `skill` (string): Name of the skill to load
+
+**Example:**
+```python
+load_skill(skill="code-reviewer")
+```
+
+## Advanced Configuration
+
+### Environment Variables
+
+- `MCP_SKILLS_DIR`: Override default skills directory
+
+### Command-Line Arguments
+
+```bash
+agentskill-mcp --skills-dir /custom/path --log-level DEBUG
+```
+
+### Logging
+
+Set log level for debugging:
+
+```bash
+agentskill-mcp --log-level DEBUG
+```
+
+Levels: `DEBUG`, `INFO`, `WARNING`, `ERROR`
+
+## Examples
+
+See the `examples/` directory for sample skills:
+
+- **algorithmic-art**: Create generative art using p5.js
+- **canvas-design**: Design visual art and posters
+- **brand-guidelines**: Apply Anthropic brand styling
+- **code-reviewer**: Comprehensive code review framework
+- **calculator**: Mathematical calculations
+
+## Development
+
+### Running from Source
+
+```bash
+# Install development dependencies
+uv pip install -e .
+
+# Run the server
+uv run agentskill-mcp
+
+# Run with debug logging
+uv run agentskill-mcp --log-level DEBUG
+```
+
+### Creating Custom Skills
+
+1. Copy an example skill as a template
+2. Modify the frontmatter (name, description)
+3. Update the instructions
+4. Add any auxiliary resources
+5. Test with your agent
+
+## Architecture
+
+### Core Components
+
+- **ServerState**: Manages runtime state and path discovery
+- **SkillLoader**: Discovers and parses skill files
+- **SkillFileHandler**: Monitors file changes with debouncing
+- **SkillMCPServer**: Main MCP server implementation
+
+### Progressive Disclosure
+
+Skills are exposed via a single `load_skill` tool that lists all available skills in its description. This minimizes initial token usage while providing full discovery.
+
+### Hot Reload
+
+File changes are detected via watchdog and trigger skill reloading. Changes take effect immediately for the next agent request.
+
+## Contributing
+
+Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+Apache License 2.0 - See [LICENSE](LICENSE) for details.
+
+## Resources
+
+- **Documentation**: [Official Docs](https://github.com/your-org/open-claudeskill)
+- **Agent Skills Spec**: [Anthropic Spec](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
+- **MCP Protocol**: [Model Context Protocol](https://modelcontextprotocol.io)
+
+---
+
+**Made with ❤️ by the Open-ClaudeSkill community**
