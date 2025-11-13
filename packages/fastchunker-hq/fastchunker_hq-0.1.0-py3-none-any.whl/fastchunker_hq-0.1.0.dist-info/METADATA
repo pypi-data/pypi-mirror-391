@@ -1,0 +1,29 @@
+Metadata-Version: 2.4
+Name: fastchunker-hq
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: beautifulsoup4>=4.14.2
+Requires-Dist: python-docx>=1.1.2
+Requires-Dist: mammoth>=1.8.0
+
+# 文本分块
+# markdown分块
+# 分块接口生成简要上下文
+
+
+```
+contextual_prompt = """
+<document>
+{WHOLE_DOCUMENT}
+</document>
+
+Here is the chunk we want to situate within the whole document
+<chunk>
+{CHUNK_CONTENT}
+</chunk>
+
+Please give a short succinct context to situate this chunk within the overall document for the purposes of improving search retrieval of the chunk. Answer only with the succinct context and nothing else.
+"""
+```
