@@ -1,0 +1,21 @@
+[project]
+name = "weave_sdk"
+version = "0.0.1"
+authors = [
+  { name="Aspect Analytics", email="info@aspect-analytics.com" },
+]
+description = "Weave SDK for building applications with Weave."
+readme = "README.md"
+requires-python = ">=3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license-files = ["LICENCE"]
+
+[project.urls]
+Homepage = "https://www.aspect-analytics.com/"
+
+[build-system]
+requires = ["uv_build >= 0.9.8, <0.10.0"]
+build-backend = "uv_build"
