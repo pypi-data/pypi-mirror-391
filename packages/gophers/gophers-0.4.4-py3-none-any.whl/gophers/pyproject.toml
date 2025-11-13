@@ -1,0 +1,54 @@
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gophers"
+version = "0.4.4"
+authors = [
+{ name="Speartech", email="Tyler@Speartech.org" },
+]
+description = "Gophers dataframe library"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+"Programming Language :: Python :: 3",
+"License :: OSI Approved :: MIT License",
+"Operating System :: OS Independent",
+]
+
+# Add your dependencies here
+dependencies = [
+"asttokens==3.0.0",
+"build==1.2.2.post1",
+"colorama==0.4.6",
+"decorator==5.2.1",
+"executing==2.2.0",
+"ipython==9.0.1",
+"ipython_pygments_lexers==1.1.1",
+"jedi==0.19.2",
+"matplotlib-inline==0.1.7",
+"packaging==24.2",
+"parso==0.8.4",
+"prompt_toolkit==3.0.50",
+"pure_eval==0.2.3",
+"Pygments==2.19.1",
+"pyproject_hooks==1.2.0",
+"stack-data==0.6.3",
+"traitlets==5.14.3",
+"wcwidth==0.2.13"
+]
+
+[project.urls]
+Homepage = "https://github.com/speartech/gophers"
+Issues = "https://github.com/speartech/gophers/issues"
+
+
+# Specify the directory where your Python package code is located
+[tool.hatch.build.targets.sdist]
+include = ["*"]
+
+[tool.hatch.build.targets.wheel]
+include = ["*"]
+
