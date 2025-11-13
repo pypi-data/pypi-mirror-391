@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "symbolmachines"
+version = "0.1.0"
+description = "Symbol Machines Memory SDK — Long-term cognitive memory for any LLM."
+authors = [
+    { name="Symbol Machines", email="joe@symbolmachines.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["LLM", "memory", "knowledge-graph", "symbol-machines", "AI", "AGI"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+    "requests>=2.25"
+]
+
+[project.urls]
+Homepage = "https://symbolmachines.com"
+Repository = "https://github.com/cojohen/symbol-sdk/python"
