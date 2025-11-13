@@ -1,0 +1,3 @@
+- Document refresh
+- benchmark refresh
+- parallalize paragraphs within the outer method in lib.rs segment using rayon
