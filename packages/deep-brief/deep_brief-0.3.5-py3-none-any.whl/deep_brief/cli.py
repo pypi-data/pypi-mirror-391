@@ -1,0 +1,884 @@
+"""Command-line interface for DeepBrief."""
+
+import logging
+import sys
+import time
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
+
+import typer
+from rich.console import Console
+from rich.panel import Panel
+
+from deep_brief.core.exceptions import VideoProcessingError
+from deep_brief.core.pipeline_coordinator import PipelineCoordinator
+from deep_brief.utils.config import DeepBriefConfig, get_config, load_config
+from deep_brief.utils.progress_display import CLIProgressTracker
+
+if TYPE_CHECKING:
+    from deep_brief.analysis.rubric_system import RubricRepository
+
+console = Console()
+app = typer.Typer(help="DeepBrief - Video Analysis Application")
+
+
+@app.command()
+def analyze(
+    video_path: Path | None = typer.Argument(
+        None, help="Path to video file to analyze"
+    ),
+    output_dir: Path | None = typer.Option(
+        None, "--output", "-o", help="Output directory for reports"
+    ),
+    config_file: Path | None = typer.Option(
+        None, "--config", "-c", help="Configuration file path"
+    ),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose output"
+    ),
+    api_provider: str | None = typer.Option(
+        None,
+        "--api-provider",
+        help="API provider (anthropic, openai, google) for captioning and grading",
+    ),
+    api_model: str | None = typer.Option(
+        None,
+        "--api-model",
+        help="API model to use (e.g., claude-3-5-sonnet-20241022, gpt-4o)",
+    ),
+    use_api: bool = typer.Option(
+        False,
+        "--use-api",
+        help="Use API for captioning instead of local model",
+    ),
+    rubric_type: str | None = typer.Option(
+        None,
+        "--rubric-type",
+        "-t",
+        help="Rubric type for grading (academic, business, teaching, general)",
+    ),
+    rubric_file: Path | None = typer.Option(
+        None, "--rubric-file", "-r", help="Path to custom rubric JSON file for grading"
+    ),
+) -> None:
+    """
+    Analyze a video file for presentation feedback.
+
+    If rubric options (--rubric-type or --rubric-file) are provided, generates
+    LLM-based grading feedback in addition to the analysis report.
+
+    If no video path is provided, launches the web interface.
+
+    Examples:
+        deep-brief analyze video.mp4
+        deep-brief analyze video.mp4 --rubric-type academic
+        deep-brief analyze video.mp4 --rubric-file my-rubric.json --api-provider anthropic
+    """
+    # Load configuration
+    config = load_config(config_file) if config_file else get_config()
+
+    # Apply CLI overrides
+    if use_api:
+        config.visual_analysis.captioning_backend = "api"
+    if api_provider:
+        config.visual_analysis.api_provider = api_provider
+    if api_model:
+        config.visual_analysis.api_model = api_model
+
+    # Set up logging
+    logger = logging.getLogger("deep_brief")
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    logger.info("Starting DeepBrief analysis")
+
+    console.print(
+        Panel.fit(
+            f"[bold blue]{config.app_name}[/bold blue]\n[dim]Video Analysis Application[/dim]",
+            border_style="blue",
+        )
+    )
+
+    if config.debug:
+        console.print("[yellow]Debug mode enabled[/yellow]")
+        logger.debug("Debug mode is active")
+
+    if video_path:
+        # CLI mode - analyze specific video
+        # Show API settings if using API
+        if config.visual_analysis.captioning_backend == "api":
+            console.print(
+                f"[dim]Using API: {config.visual_analysis.api_provider} "
+                f"({config.visual_analysis.api_model})[/dim]"
+            )
+
+        _analyze_video_cli(
+            video_path=video_path,
+            output_dir=output_dir,
+            config=config,
+            config_file=config_file,
+            verbose=verbose,
+            logger=logger,
+            rubric_type=rubric_type,
+            rubric_file=rubric_file,
+            api_provider=api_provider,
+            api_model=api_model,
+        )
+    else:
+        # Web UI mode
+        logger.info("Launching web interface")
+        console.print("[green]Launching web interface...[/green]")
+
+        # TODO: Import and launch Gradio interface
+        logger.warning("Web interface not yet implemented")
+        console.print("[yellow]Web interface not yet implemented.[/yellow]")
+        console.print("[dim]Run with --help for available options.[/dim]")
+
+
+def _analyze_video_cli(
+    video_path: Path,
+    output_dir: Path | None,
+    config: DeepBriefConfig,
+    config_file: Path | None,
+    verbose: bool,
+    logger: logging.Logger,
+    rubric_type: str | None = None,
+    rubric_file: Path | None = None,
+    api_provider: str | None = None,
+    api_model: str | None = None,
+) -> None:
+    """
+    Perform video analysis in CLI mode.
+
+    Args:
+        video_path: Path to video file
+        output_dir: Optional output directory
+        config: Configuration object
+        config_file: Configuration file path (for logging)
+        verbose: Verbose output flag
+        logger: Logger instance
+        rubric_type: Optional rubric type for grading
+        rubric_file: Optional custom rubric file for grading
+        api_provider: Optional API provider for grading
+        api_model: Optional API model for grading
+    """
+    # Validate video path
+    video_path_obj = Path(video_path)
+    if not video_path_obj.exists():
+        console.print(f"[red]✗ Error: Video file not found[/red] {video_path}")
+        logger.error(f"Video file not found: {video_path}")
+        sys.exit(1)
+
+    if not video_path_obj.is_file():
+        console.print(f"[red]✗ Error: Path is not a file[/red] {video_path}")
+        logger.error(f"Path is not a file: {video_path}")
+        sys.exit(1)
+
+    # Set up output directory
+    if output_dir:
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        console.print(f"[blue]Output directory:[/blue] {output_path}")
+        logger.debug(f"Output directory: {output_path}")
+    else:
+        # Default output to current directory with video name
+        output_path = Path.cwd() / video_path_obj.stem
+        output_path.mkdir(parents=True, exist_ok=True)
+        console.print(f"[blue]Output directory:[/blue] {output_path} (default)")
+        logger.debug(f"Output directory (default): {output_path}")
+
+    if config_file:
+        console.print(f"[blue]Config file:[/blue] {config_file}")
+        logger.debug(f"Using config file: {config_file}")
+
+    # Show relevant config info in debug mode
+    if verbose:
+        console.print(
+            f"[dim]Max file size: {config.processing.max_video_size_mb}MB[/dim]"  # type: ignore
+        )
+        console.print(f"[dim]Transcription model: {config.transcription.model}[/dim]")  # type: ignore
+
+    logger.info(f"Starting analysis: {video_path}")
+    console.print(f"[green]Analyzing video:[/green] {video_path}\n")
+
+    # Initialize progress tracker and pipeline
+    progress_tracker: CLIProgressTracker = CLIProgressTracker()
+    pipeline = PipelineCoordinator(
+        config=config, progress_tracker=progress_tracker
+    )  # Use CLI callbacks instead
+
+    # Define workflow operations
+    operations = [
+        ("validate", "Validating video", 0.05),
+        ("audio", "Extracting audio", 0.10),
+        ("scenes", "Detecting scenes", 0.10),
+        ("frames", "Extracting frames", 0.10),
+        ("transcribe", "Transcribing speech", 0.30),
+        ("visual", "Analyzing frames", 0.20),
+        ("reports", "Generating reports", 0.15),
+    ]
+
+    progress_tracker.start_workflow(f"Analyzing {video_path_obj.name}", operations)
+
+    try:
+        # Track time
+        start_time = time.time()
+
+        # Phase 1: Video Processing
+        progress_tracker.start_operation("validate")
+        result = pipeline.analyze_video(
+            video_path=video_path_obj,
+            extract_audio=True,
+            detect_scenes=True,
+            extract_frames=True,
+            output_dir=output_path,
+        )
+        progress_tracker.complete_operation("validate")
+        progress_tracker.complete_operation("audio")
+        progress_tracker.complete_operation("scenes")
+        progress_tracker.complete_operation("frames")
+
+        # Check if video processing was successful
+        if not result.success:
+            progress_tracker.fail_workflow(result.error_message or "Unknown error")
+            if result.errors:
+                for error in result.errors:
+                    logger.error(f"Error: {error}")
+            sys.exit(1)
+
+        # Phase 2: Speech Analysis
+        speech_analysis = None
+        if result.audio_info:
+            progress_tracker.start_operation("transcribe")
+            try:
+                speech_analysis = pipeline.analyze_speech(
+                    audio_path=result.audio_info.file_path,
+                    scene_result=result.scene_result,
+                )
+                progress_tracker.complete_operation("transcribe")
+                logger.info("Speech analysis completed")
+            except Exception as e:
+                logger.warning(f"Speech analysis failed: {e}")
+                progress_tracker.complete_operation("transcribe")
+        else:
+            progress_tracker.complete_operation("transcribe")
+
+        # Phase 3: Visual Analysis
+        visual_analysis: dict[str, Any] | None = None
+        if result.frame_infos:
+            progress_tracker.start_operation("visual")
+            try:
+                frame_paths = [frame.frame_path for frame in result.frame_infos]
+                visual_analysis = pipeline.analyze_frames(
+                    frame_paths=frame_paths,
+                )
+                progress_tracker.complete_operation("visual")
+                logger.info("Visual analysis completed")
+            except Exception as e:
+                logger.warning(f"Visual analysis failed: {e}")
+                progress_tracker.complete_operation("visual")
+        else:
+            progress_tracker.complete_operation("visual")
+
+        # Phase 4: Generate Reports
+        progress_tracker.start_operation("reports")
+        try:
+            report_paths = pipeline.generate_reports(
+                video_info=result.video_info,
+                audio_info=result.audio_info,
+                scene_result=result.scene_result,
+                speech_analysis=speech_analysis,
+                visual_analysis=visual_analysis,
+                output_dir=output_path,
+            )
+            progress_tracker.complete_operation("reports")
+            logger.info("Reports generated successfully")
+        except Exception as e:
+            logger.error(f"Report generation failed: {e}")
+            progress_tracker.complete_operation("reports")
+            report_paths = {}
+
+        processing_time = time.time() - start_time
+
+        # Display results
+        progress_tracker.complete_workflow()
+
+        # Show summary
+        console.print("\n[bold]Analysis Summary:[/bold]")
+        console.print(f"  Video: {video_path_obj.name}")
+        console.print(f"  Duration: {result.video_info.duration:.1f}s")
+        console.print(
+            f"  Resolution: {result.video_info.width}x{result.video_info.height}"
+        )
+        console.print(f"  FPS: {result.video_info.fps:.1f}")
+
+        if result.audio_info:
+            console.print(
+                f"  Audio: {result.audio_info.duration:.1f}s @ {result.audio_info.sample_rate}Hz"
+            )
+
+        if result.scene_result:
+            console.print(f"  Scenes detected: {result.scene_result.total_scenes}")
+
+        console.print(f"  Frames extracted: {len(result.frame_infos)}")
+
+        if speech_analysis:
+            console.print("  Speech analysis: ✓")
+
+        if visual_analysis:
+            console.print("  Visual analysis: ✓")
+
+        # Display API costs if available
+        if report_paths.get("json"):
+            import json
+
+            try:
+                with open(report_paths["json"]) as f:
+                    report_data = json.load(f)
+                api_cost = report_data.get("api_cost_summary")
+                if api_cost and api_cost.get("total_cost_usd", 0) > 0:
+                    cost = api_cost["total_cost_usd"]
+                    tokens = api_cost["total_tokens_used"]
+                    provider = api_cost.get("provider", "API")
+                    model = api_cost.get("model", "unknown")
+                    console.print(
+                        f"  API usage ({provider}/{model}): {tokens:,} tokens, ${cost:.4f}"
+                    )
+            except Exception as e:
+                logger.debug(f"Could not load API cost data: {e}")
+
+        if report_paths:
+            console.print("  Reports: JSON + HTML")
+
+        console.print(f"  Processing time: {processing_time:.1f}s\n")
+
+        console.print(f"[green]✓ Output saved to:[/green] {output_path}")
+        if report_paths.get("html"):
+            console.print(f"[green]✓ HTML report:[/green] {report_paths['html']}")
+        if report_paths.get("json"):
+            console.print(f"[green]✓ JSON report:[/green] {report_paths['json']}")
+
+        logger.info(f"Analysis complete. Results saved to {output_path}")
+
+        # Phase 5: Grading (if rubric provided)
+        if rubric_type or rubric_file:
+            console.print("\n[bold cyan]Generating grading feedback...[/bold cyan]")
+            try:
+                from deep_brief.analysis.default_rubrics import get_default_rubric
+                from deep_brief.analysis.rubric_system import Rubric
+
+                # Load rubric
+                if rubric_type:
+                    rubric = get_default_rubric(rubric_type)
+                    if not rubric:
+                        console.print(
+                            f"[red]✗ Unknown rubric type: {rubric_type}[/red]\n"
+                            f"[dim]Available: academic, business, teaching, general[/dim]"
+                        )
+                        raise typer.Exit(1)
+                    console.print(
+                        f"[cyan]→[/cyan] Using rubric: [bold]{rubric.name}[/bold]"
+                    )
+                else:
+                    if not rubric_file or not rubric_file.exists():
+                        console.print(
+                            f"[red]✗ Rubric file not found: {rubric_file}[/red]"
+                        )
+                        raise typer.Exit(1)
+                    import json
+
+                    with open(rubric_file) as f:
+                        rubric_data = json.load(f)
+                    rubric = Rubric.from_dict(rubric_data)
+                    console.print(
+                        f"[cyan]→[/cyan] Using rubric: [bold]{rubric.name}[/bold]"
+                    )
+
+                # Prepare analysis data for grading
+                video_info_dict: dict[str, Any] = {}
+                if hasattr(result.video_info, "model_dump"):
+                    video_info_dict = result.video_info.model_dump()  # type: ignore[attr-defined]
+                elif hasattr(result.video_info, "to_dict"):
+                    video_info_dict = result.video_info.to_dict()  # type: ignore[attr-defined]
+
+                grading_data: dict[str, Any] = {
+                    "video_info": video_info_dict,
+                    "processing_time": processing_time,
+                }
+                if speech_analysis:
+                    grading_data["speech_analysis"] = speech_analysis
+                if visual_analysis:
+                    grading_data["visual_analysis"] = visual_analysis
+
+                # Generate feedback using LLM
+                console.print("[cyan]→[/cyan] Generating LLM feedback...")
+                feedback_text = _generate_grading_feedback(
+                    rubric=rubric,
+                    analysis_data=grading_data,
+                    api_provider=api_provider,
+                    api_model=api_model,
+                )
+
+                # Save feedback report
+                timestamp = time.strftime("%Y%m%d_%H%M%S")
+                feedback_file = output_path / f"feedback_{timestamp}.md"
+
+                with open(feedback_file, "w") as f:
+                    f.write("# Presentation Feedback Report\n\n")
+                    f.write(f"**Rubric:** {rubric.name}\n")
+                    f.write(f"**Generated:** {time.strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+                    f.write("## Feedback\n\n")
+                    f.write(feedback_text)
+
+                console.print("[green]✓[/green] Feedback saved to:")
+                console.print(f"  [bold]{feedback_file}[/bold]")
+                logger.info(f"Grading feedback saved to {feedback_file}")
+
+            except typer.Exit:
+                raise
+            except Exception as e:
+                console.print(f"[red]✗ Grading error: {str(e)}[/red]")
+                logger.error(f"Grading error: {e}", exc_info=verbose)
+                raise typer.Exit(1) from e
+
+    except VideoProcessingError as e:
+        error_msg = str(e)
+        progress_tracker.fail_workflow(error_msg)
+        logger.error(f"Video processing error: {e}", exc_info=verbose)
+        sys.exit(1)
+
+    except Exception as e:
+        error_msg = f"Unexpected error: {str(e)}"
+        progress_tracker.fail_workflow(error_msg)
+        logger.error(error_msg, exc_info=True)
+        sys.exit(1)
+
+
+@app.command()
+def version() -> None:
+    """Show version information."""
+    from deep_brief import __version__
+
+    console.print(f"DeepBrief version {__version__}")
+
+
+@app.command()
+def config(
+    show_all: bool = typer.Option(
+        False, "--all", help="Show all configuration options"
+    ),
+    config_file: Path | None = typer.Option(
+        None, "--config", "-c", help="Configuration file path"
+    ),
+) -> None:
+    """Show current configuration."""
+    if config_file:
+        config_obj = load_config(config_file)
+        console.print(f"[blue]Using config file:[/blue] {config_file}")
+    else:
+        config_obj = get_config()
+        console.print("[blue]Using default configuration[/blue]")
+
+    console.print("\n[bold]Application Configuration[/bold]")
+    console.print(f"App Name: {config_obj.app_name}")
+    console.print(f"Version: {config_obj.version}")
+    console.print(f"Debug Mode: {config_obj.debug}")
+
+    if show_all:
+        console.print("\n[bold]Processing Settings[/bold]")
+        console.print(f"Max Video Size: {config_obj.processing.max_video_size_mb}MB")
+        console.print(
+            f"Supported Formats: {', '.join(config_obj.processing.supported_formats)}"
+        )
+        console.print(f"Temp Directory: {config_obj.processing.temp_dir}")
+
+        console.print("\n[bold]Transcription Settings[/bold]")
+        console.print(f"Model: {config_obj.transcription.model}")
+        console.print(f"Language: {config_obj.transcription.language}")
+        console.print(f"Device: {config_obj.transcription.device}")
+
+        console.print("\n[bold]Analysis Settings[/bold]")
+        console.print(f"Target WPM: {config_obj.analysis.target_wpm_range}")
+        console.print(
+            f"Confidence Threshold: {config_obj.analysis.confidence_threshold}"
+        )
+
+        console.print("\n[bold]Logging Settings[/bold]")
+        console.print(f"Level: {config_obj.logging.level}")
+        console.print(f"File: {config_obj.logging.file_path}")
+    else:
+        console.print("\n[dim]Use --all to see all configuration options[/dim]")
+
+
+@app.command()
+def rubric(
+    action: str = typer.Argument(
+        ..., help="Action: list, show, create, export, delete"
+    ),
+    rubric_type: str | None = typer.Option(
+        None,
+        "--type",
+        "-t",
+        help="Rubric type (academic, business, teaching, general)",
+    ),
+    rubric_id: str | None = typer.Option(
+        None, "--id", "-i", help="Rubric ID (for show/delete actions)"
+    ),
+    output: Path | None = typer.Option(
+        None, "--output", "-o", help="Output file path (for export action)"
+    ),
+    rubrics_dir: Path = typer.Option(
+        Path("rubrics"), "--dir", "-d", help="Directory for storing rubrics"
+    ),
+) -> None:
+    """Manage rubrics for assessment.
+
+    Actions:
+        list    - List all available rubrics (default and custom)
+        show    - Show details of a specific rubric
+        create  - Create a new rubric from a default template
+        export  - Export a rubric to JSON file
+        delete  - Delete a custom rubric
+    """
+    from deep_brief.analysis.default_rubrics import list_default_rubrics
+    from deep_brief.analysis.rubric_system import RubricRepository
+
+    try:
+        repo = RubricRepository(rubrics_dir)
+
+        if action.lower() == "list":
+            _rubric_list(repo)
+
+        elif action.lower() == "show":
+            if not rubric_id:
+                console.print("[red]Error: --id required for show action[/red]")
+                raise typer.Exit(1)
+            _rubric_show(repo, rubric_id)
+
+        elif action.lower() == "create":
+            if not rubric_type:
+                console.print("[red]Error: --type required for create action[/red]")
+                console.print(
+                    f"[dim]Available types: {', '.join(list_default_rubrics())}[/dim]"
+                )
+                raise typer.Exit(1)
+            _rubric_create(repo, rubric_type)
+
+        elif action.lower() == "export":
+            if not rubric_id or not output:
+                console.print(
+                    "[red]Error: --id and --output required for export action[/red]"
+                )
+                raise typer.Exit(1)
+            _rubric_export(repo, rubric_id, output)
+
+        elif action.lower() == "delete":
+            if not rubric_id:
+                console.print("[red]Error: --id required for delete action[/red]")
+                raise typer.Exit(1)
+            _rubric_delete(repo, rubric_id)
+
+        else:
+            console.print(f"[red]Unknown action: {action}[/red]")
+            console.print(
+                "[dim]Available actions: list, show, create, export, delete[/dim]"
+            )
+            raise typer.Exit(1)
+
+    except Exception as e:
+        console.print(f"[red]Error: {str(e)}[/red]")
+        raise typer.Exit(1) from e
+
+
+def _rubric_list(repo: "RubricRepository") -> None:
+    """List all rubrics."""
+    from deep_brief.analysis.default_rubrics import (
+        get_default_rubric,
+        list_default_rubrics,
+    )
+
+    console.print("\n[bold]Available Default Rubrics[/bold]")
+    console.print(
+        "[dim](Can be created with: deep-brief rubric create --type <type>)[/dim]\n"
+    )
+
+    for rubric_type in list_default_rubrics():
+        rubric = get_default_rubric(rubric_type)
+        if rubric:
+            console.print(f"  [cyan]{rubric_type.upper()}[/cyan]")
+            console.print(f"    {rubric.description}")
+            console.print(f"    Categories: {len(rubric.categories)}")
+            total_criteria = sum(len(cat.criteria) for cat in rubric.categories)
+            console.print(f"    Criteria: {total_criteria}\n")
+
+    custom_rubrics = repo.list_rubrics()
+    if custom_rubrics:
+        console.print("[bold]Custom Rubrics[/bold]\n")
+        for rubric in custom_rubrics:
+            status = (
+                "[yellow]Template[/yellow]"
+                if rubric.is_template
+                else "[cyan]Custom[/cyan]"
+            )
+            console.print(f"  {rubric.name} [{status}]")
+            console.print(f"    ID: {rubric.id}")
+            console.print(f"    Categories: {len(rubric.categories)}")
+            console.print(f"    Created: {rubric.created_at.strftime('%Y-%m-%d')}\n")
+    else:
+        console.print(
+            "[dim]No custom rubrics yet. Create one with 'deep-brief rubric create'[/dim]\n"
+        )
+
+
+def _rubric_show(repo: "RubricRepository", rubric_id: str) -> None:
+    """Show details of a rubric."""
+    rubric = repo.load(rubric_id)
+    if not rubric:
+        console.print(f"[red]Rubric not found: {rubric_id}[/red]")
+        raise typer.Exit(1)
+
+    console.print(f"\n[bold blue]{rubric.name}[/bold blue]")
+    if rubric.description:
+        console.print(f"[dim]{rubric.description}[/dim]")
+
+    console.print(f"\nID: {rubric.id}")
+    console.print(
+        f"Score Range: {rubric.scoring_scale.min_score}-{rubric.scoring_scale.max_score}"
+    )
+    if rubric.tags:
+        console.print(f"Tags: {', '.join(rubric.tags)}")
+
+    console.print("\n[bold]Categories:[/bold]")
+    for category in rubric.categories:
+        console.print(f"\n  [cyan]{category.name}[/cyan] (weight: {category.weight})")
+        if category.description:
+            console.print(f"  [dim]{category.description}[/dim]")
+        console.print("  Criteria:")
+        for criterion in category.criteria:
+            console.print(f"    • {criterion.name} (weight: {criterion.weight})")
+            if criterion.description:
+                console.print(f"      {criterion.description}")
+
+    console.print()
+
+
+def _rubric_create(repo: "RubricRepository", rubric_type: str) -> None:
+    """Create a rubric from a default template."""
+    from deep_brief.analysis.default_rubrics import get_default_rubric
+
+    rubric = get_default_rubric(rubric_type)
+    if not rubric:
+        console.print(f"[red]Unknown rubric type: {rubric_type}[/red]")
+        raise typer.Exit(1)
+
+    repo.save(rubric)
+    console.print(f"\n[green]✓[/green] Created rubric: [bold]{rubric.name}[/bold]")
+    console.print(f"  ID: {rubric.id}")
+    console.print(f"  Categories: {len(rubric.categories)}")
+    total_criteria = sum(len(cat.criteria) for cat in rubric.categories)
+    console.print(f"  Criteria: {total_criteria}")
+    console.print(
+        f"\n[dim]Rubric saved to: {repo.storage_dir / f'{rubric.id}.json'}[/dim]\n"
+    )
+
+
+def _rubric_export(repo: "RubricRepository", rubric_id: str, output_path: Path) -> None:
+    """Export a rubric to JSON file."""
+    rubric = repo.load(rubric_id)
+    if not rubric:
+        console.print(f"[red]Rubric not found: {rubric_id}[/red]")
+        raise typer.Exit(1)
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    import json
+
+    with open(output_path, "w") as f:
+        json.dump(rubric.to_dict(), f, indent=2, default=str)
+
+    console.print(
+        f"\n[green]✓[/green] Exported rubric to: [bold]{output_path}[/bold]\n"
+    )
+
+
+def _rubric_delete(repo: "RubricRepository", rubric_id: str) -> None:
+    """Delete a custom rubric."""
+    if not repo.load(rubric_id):
+        console.print(f"[red]Rubric not found: {rubric_id}[/red]")
+        raise typer.Exit(1)
+
+    confirm = typer.confirm(f"Delete rubric {rubric_id}?")
+    if not confirm:
+        console.print("[dim]Cancelled[/dim]")
+        return
+
+    repo.delete(rubric_id)
+    console.print(f"\n[green]✓[/green] Deleted rubric: {rubric_id}\n")
+
+
+def _generate_grading_feedback(
+    rubric: Any,
+    analysis_data: dict[str, Any],
+    api_provider: str | None = None,
+    api_model: str | None = None,
+) -> str:
+    """
+    Generate grading feedback using LLM.
+
+    Args:
+        rubric: Rubric object to use for grading
+        analysis_data: Analysis data to include in the prompt
+        api_provider: API provider to use (anthropic, openai, google)
+        api_model: API model to use
+
+    Returns:
+        Generated feedback text
+
+    Raises:
+        typer.Exit: If API key not found or LLM call fails
+    """
+    from deep_brief.utils.api_keys import get_api_key
+
+    # Determine API provider
+    if api_provider:
+        provider: str = api_provider
+    else:
+        # Try to auto-detect from config
+        config = get_config()
+        api_settings = getattr(config, "api_settings", {})
+        if isinstance(api_settings, dict):
+            provider = str(api_settings.get("default_provider", "anthropic"))  # type: ignore[arg-type]
+        else:
+            provider = str(getattr(api_settings, "default_provider", "anthropic"))  # type: ignore[arg-type]
+
+    api_key = get_api_key(provider)  # type: ignore[arg-type]
+    if not api_key:
+        console.print(
+            f"[red]✗ No API key found for {provider}[/red]\n"
+            f"[dim]Set {provider.upper()}_API_KEY environment variable[/dim]"
+        )
+        raise typer.Exit(1)
+
+    # Build prompt for LLM
+    prompt = _build_grading_prompt(rubric, analysis_data)
+
+    # Call appropriate LLM
+    feedback_text: str = ""
+    provider_lower = provider.lower()
+    assert isinstance(provider_lower, str)  # For type checker
+    if provider_lower == "anthropic":
+        from anthropic import Anthropic
+
+        client = Anthropic(api_key=api_key)
+        response = client.messages.create(
+            model=api_model or "claude-3-5-sonnet-20241022",
+            max_tokens=4096,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        if response.content:
+            content_block = response.content[0]
+            if hasattr(content_block, "text"):
+                feedback_text = content_block.text  # type: ignore[attr-defined]
+
+    elif provider_lower == "openai":
+        from openai import OpenAI
+
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model=api_model or "gpt-4o",
+            max_tokens=4096,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        if response.choices and response.choices[0].message.content:
+            feedback_text = response.choices[0].message.content
+
+    elif provider_lower == "google":
+        import google.generativeai as genai
+
+        genai.configure(api_key=api_key)  # type: ignore[attr-defined]
+        model = genai.GenerativeModel(api_model or "gemini-2.0-flash")  # type: ignore[attr-defined]
+        response = model.generate_content(prompt)  # type: ignore[attr-defined]
+        if response.text:  # type: ignore[attr-defined]
+            feedback_text = response.text  # type: ignore[attr-defined]
+
+    if not feedback_text:
+        console.print("[red]✗ Failed to generate feedback[/red]")
+        raise typer.Exit(1)
+
+    return feedback_text  # type: ignore[return-value]
+
+
+def _build_grading_prompt(rubric: Any, analysis_data: dict[str, Any]) -> str:  # type: ignore[return]
+    """Build the prompt for LLM grading.
+
+    Args:
+        rubric: Rubric object with categories, criteria, and scoring scale
+        analysis_data: Analysis data dictionary to include in prompt
+
+    Returns:
+        Formatted prompt string for LLM evaluation
+    """
+    import json
+
+    rubric_name = str(rubric.name)  # type: ignore[attr-defined]
+    rubric_desc = str(rubric.description or "")  # type: ignore[attr-defined]
+
+    prompt: str = (
+        "You are an expert presentation evaluator. Please evaluate the "
+        "following presentation based on the provided rubric.\n\n"
+        "## Rubric: "
+        + rubric_name
+        + "\n"
+        + rubric_desc
+        + "\n\n"
+        + "### Rubric Categories and Criteria:\n"
+    )
+
+    for category in rubric.categories:  # type: ignore[union-attr]
+        cat_name = str(category.name)  # type: ignore[attr-defined]
+        cat_weight = str(category.weight)  # type: ignore[attr-defined]
+        cat_desc = str(category.description or "")  # type: ignore[attr-defined]
+        prompt += "\n**" + cat_name + "** (weight: " + cat_weight + ")\n"
+        prompt += cat_desc + "\n\n"
+        for criterion in category.criteria:  # type: ignore[union-attr]
+            crit_name = str(criterion.name)  # type: ignore[attr-defined]
+            crit_desc = str(criterion.description or "")  # type: ignore[attr-defined]
+            prompt += "- " + crit_name + ": " + crit_desc + "\n"
+            if criterion.scoring_guide:  # type: ignore[union-attr]
+                guide = str(criterion.scoring_guide)  # type: ignore[attr-defined]
+                prompt += "  Scoring guide: " + guide + "\n"
+
+    prompt += "\n### Scoring Scale:\n"
+    scoring_items: list[tuple[Any, Any]] = sorted(rubric.scoring_scale.labels.items())  # type: ignore[union-attr]
+    for score, label in scoring_items:
+        prompt += "- " + str(score) + ": " + str(label) + "\n"
+
+    max_score = str(rubric.scoring_scale.max_score)  # type: ignore[union-attr]
+    analysis_json = json.dumps(analysis_data, indent=2, default=str)
+
+    # Build closing section explicitly to avoid LiteralString type issues
+    closing = "\n\nPlease provide:\n"
+    closing += "1. An overall assessment\n"
+    closing += "2. Scores for each criterion (1-" + max_score + ")\n"
+    closing += "3. Specific feedback for each category\n"
+    closing += "4. Key strengths\n"
+    closing += "5. Areas for improvement\n"
+    closing += "6. Recommendations for next time\n"
+    closing += "\nFormat the response clearly with sections for each category."
+
+    prompt_end: str = "\n\n### Presentation Analysis Data:\n```json\n"
+    prompt_end += analysis_json
+    prompt_end += "\n```"
+    prompt_end += closing
+
+    result: str = prompt + prompt_end  # type: ignore[assignment]
+    return result
+
+
+def main() -> None:
+    """Entry point for the CLI."""
+    app()
+
+
+if __name__ == "__main__":
+    app()
