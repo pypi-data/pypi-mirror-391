@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brif"
+version = "1.4.6"
+description = "Build decision trees and random forests for classification and regression."
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["random forest", "classification", "regression", "prediction"]
+authors = [
+  {name = "Yanchao Liu"},
+  {email = "yanchaoliu@wayne.edu"}
+]
+license = "GPL-3.0-only"
+classifiers = [
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+    "numpy",
+    "pandas"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/brif/"
+Source = "https://github.com/profyliu/brif-python"
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["brif"]
