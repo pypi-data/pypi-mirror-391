@@ -1,0 +1,9 @@
+{{ error | escape }}
+{% if error %}<script>console.error("{{ error  }}")</script>{% endif %}
+{% if stylesheet %}
+    <head>
+        <style>{{ stylesheet }}</style>
+    </head>
+{% endif %}
+{{ html_content }}
+{% if script %}<script>{{ script }}</script>{% endif %}
