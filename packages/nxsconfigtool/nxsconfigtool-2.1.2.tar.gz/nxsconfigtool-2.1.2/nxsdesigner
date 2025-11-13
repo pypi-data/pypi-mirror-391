@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+#   This file is part of nexdatas - Tango Server for NeXus data writer
+#
+#    Copyright (C) 2012-2016 DESY, Jan Kotanski <jkotan@mail.desy.de>
+#
+#    nexdatas is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    nexdatas is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with nexdatas.  If not, see <http://www.gnu.org/licenses/>.
+# \package nxsconfigtool nexdatas
+# \file nxsdesigner
+# GUI to create the XML components
+
+""" NXS Component Designer - configuration tool for Nexus Data Writer """
+
+import logging
+import sys
+import os
+from optparse import OptionParser
+
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QIcon
+from PyQt5 import QtCore
+
+
+import nxsconfigtool
+from nxsconfigtool.MainWindow import MainWindow
+from nxsconfigtool.Logger import LogHandler, LogActions
+from nxsconfigtool import __version__
+# import nxsconfigtool.qrc as qrc
+
+def main():
+    """ the main function """
+
+    # if "GNOME_DESKTOP_SESSION_ID" not in os.environ:
+    #     os.environ["GNOME_DESKTOP_SESSION_ID"] = "qtconfig"
+    # if os.path.isdir("/usr/lib/kde4/plugins/") and \
+    #    "QT_PLUGIN_PATH" not in os.environ:
+    #     os.environ["QT_PLUGIN_PATH"] = "/usr/lib/kde4/plugins/"
+
+    usage = "usage: nxsdesigner "\
+        "[-s server] [-c components] [-d datasources] ... "
+
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_X11InitThreads)
+    QtCore.QResource.registerResource(
+        os.path.join(nxsconfigtool.__path__[0], "qrc", "resources.rcc"))
+    
+    parser = OptionParser(usage=usage)
+
+    parser.add_option(
+        "-v", "--version",
+        action="store_true",
+        default=False,
+        dest="version",
+        help="program version")
+    parser.add_option(
+        "-s", "--server", dest="server",
+        help="configuration server")
+    parser.add_option(
+        "-c", "--components", dest="components",
+        help="directory with components")
+    parser.add_option(
+        "-d", "--datasources", dest="datasources",
+        help="directory with datasources")
+    parser.add_option(
+        "-t", "--style", dest="style",
+        help="Qt style")
+    parser.add_option(
+        "-y", "--stylesheet", dest="stylesheet",
+        help="Qt stylesheet")
+    parser.add_option(
+        "-l", "--log", dest="log",
+        help="logging level, i.e. debug, info, warning, error, critical")
+
+    (options, _) = parser.parse_args()
+
+    level = LogActions.levels.get(options.log, logging.INFO)
+    handler = LogHandler()
+    handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+    logger = logging.getLogger("nxsdesigner")
+    logger.addHandler(handler)
+    logger.setLevel(level)
+
+    if options.version:
+        print(__version__)
+        sys.exit(0)
+
+#    import gc
+#    gc.set_debug(gc.DEBUG_LEAK | gc.DEBUG_STATS)
+#    gc.set_debug(gc.DEBUG_LEAK )
+    app = QApplication([])
+    if options.style:
+        app.setStyle(options.style)
+    if options.stylesheet:
+        app.setStyle(options.stylesheet)
+    app.setWindowIcon(QIcon(":/icon.png"))
+    app.setOrganizationName("DESY")
+    app.setOrganizationDomain("desy.de")
+    app.setApplicationName("NXS Component Designer")
+    form = MainWindow(options.components, options.datasources, options.server)
+    form.show()
+
+    status = app.exec_()
+    sys.exit(status)
+
+
+if __name__ == "__main__":
+    main()
