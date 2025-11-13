@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: clearcv
+Version: 0.1.0
+Summary: ClearCV — a lightweight, NumPy-based computer vision toolkit built in Python.
+Author: Your Name
+Author-email: Your Name <you@example.com>
+License: MIT
+Keywords: computer-vision,image-processing,numpy,clearcv
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.20
+Provides-Extra: extras
+Requires-Dist: imageio; extra == "extras"
+Requires-Dist: matplotlib; extra == "extras"
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# ClearCV
+
+
+ClearCV is a lightweight, NumPy-based computer vision toolkit implemented in Python. It aims to be small, readable, and easy to extend.
+
+
+## Features (v0.1)
+- Read/write PPM images (fast, minimal I/O) and optional `imageio` fallback for PNG/JPG
+- RGB <-> Grayscale conversions
+- Convolution-based filters (box blur, Sobel edge detection)
+- Nearest-neighbor resize and simple rotate/flip
+- Utility helpers
+
+
+## Installation
+
+
+Create a virtual environment and install:
+
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -e .
