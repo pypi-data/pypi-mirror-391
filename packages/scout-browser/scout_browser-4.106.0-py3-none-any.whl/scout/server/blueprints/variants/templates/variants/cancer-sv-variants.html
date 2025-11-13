@@ -1,0 +1,84 @@
+{% extends "variants/variants_layout.html" %}
+{% from "variants/utils.html" import cancer_sv_filters, callers_cell, cell_rank, filter_form_footer, variant_link_href %}
+{% from "variants/components.html" import allele_cell, frequency_cell_general, observed_cell_general, variant_gene_symbols_cell, variant_funct_anno_cell %}
+
+{% block category_title %}
+  Somatic Structural Variants
+{% endblock %}
+
+{% block variants_form_action %}
+  {{url_for('variants.cancer_sv_variants', institute_id=institute._id, case_name=case.display_name)}}
+{% endblock %}
+
+{% block variants_filter %}
+  {{ cancer_sv_filters(form, institute, case) }}
+{% endblock %}
+
+{% block variants_filter_form_footer %}
+  {{ filter_form_footer(form, result_size, total_variants, page, variants|length, institute) }}
+{% endblock %}
+
+{% block variants_table_header %}
+  <tr>
+    <th scope="col" style="width:2%"></th>
+    <th scope="col" style="width:3%">Index</th>
+    <th scope="col" style="width:9%">Callers</th>
+    <th scope="col">Type</th>
+    <th scope="col" style="width:5%">Chr</th>
+    <th scope="col">Start</th>
+    <th scope="col">End</th>
+    <th scope="col">Length</th>
+    <th scope="col">Pop Freq</th>
+    <th scope="col">Observed</th>
+    <th scope="col" style="width:12%">Gene(s)</th>
+    <th scope="col" style="width:16%">Function</th>
+    <th scope="col" style="width:9%" data-bs-toggle="tooltip" data-bs-placement="top" title="Tumor alt. AF not computed as it varies with variant type and caller. &#013; Alt. allele support | Ref. allele support. [Somatic score if available from caller].">Tumor</th>
+    <th scope="col" style="width:6%" data-bs-toggle="tooltip" data-bs-placement="top" title="Normal alt. AF not computed as it varies with variant type and caller. &#013; Alt. allele support | Ref. allele support">Normal</th>
+  </tr>
+{% endblock %}
+
+{% block variants_table_rows %}
+  {% for variant in variants %}
+    {{ variant_row(variant) }}
+  {% else %}
+    <tr>
+      <td colspan="14">No matching variants</td>
+    </tr>
+  {% endfor %}
+{% endblock %}
+
+{% macro variant_row(variant) %}
+  <tr data-target="_blank" data-href="{{ variant_link_href(variant, institute, case) }}"
+  {% if variant.dismiss_variant %}
+    class="dismiss">
+  {% elif 'causatives' in case and variant._id in case.causatives %}
+    class="causative">
+  {% else %}
+    >
+  {% endif %}
+    <td class="no-row-click"><input type="checkbox" value="{{variant._id}}" name="dismiss" onclick="enableDismiss()"></td>
+    <td>
+      {{ cell_rank(variant, institute, case, form, manual_rank_options) }}
+    </td>
+    <td>
+      {{ callers_cell(variant) }}
+    </td>
+    <td>
+      {{ variant.sub_category|upper }}
+    </td>
+    <td>{{ variant.chromosome if variant.chromosome == variant.end_chrom else variant.chromosome+'-'+variant.end_chrom }}</td>
+    <td class="col-2">{% if variant.chromosome != variant.end_chrom %}<span class="text-body"></span><b>{{ variant.chromosome }}</b>:</span>{% endif %}<span class="text-body" style="white-space: nowrap;">{{ variant.position|human_longint|safe }}</span></td>
+    <td class="col-2">{% if variant.chromosome != variant.end_chrom %}<span class="text-body"><b>{{ variant.end_chrom }}</b>:</span>{% endif %}<span style="white-space: nowrap;">{{ 'inf' if variant.end == 100000000000 else variant.end|human_longint|safe }}</span></td>
+    <td class="col-2"><span style="white-space: nowrap;">{{ '-' if variant.length == 100000000000 else variant.length|human_longint|safe }}</span></td>
+    <td class="text-end">{{ frequency_cell_general(variant) }}</td>
+    <td>{{observed_cell_general(variant)}}</td>
+    <td>
+      {{ variant_gene_symbols_cell(variant, inherit_palette) }}
+    </td>
+    <td>
+      {{ variant_funct_anno_cell(variant) }}
+    </td>
+    <td>{{ allele_cell(variant.tumor or {}) }}{% if variant.somatic_score %}<small class="text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="SV caller (Manta) somatic score">[{{ variant.somatic_score }}]</small>{% endif %}</td>
+    <td>{{ allele_cell(variant.normal or {}) }}</td>
+  </tr>
+{% endmacro %}

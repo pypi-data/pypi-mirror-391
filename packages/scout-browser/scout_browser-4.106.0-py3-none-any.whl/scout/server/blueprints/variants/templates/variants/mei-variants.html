@@ -1,0 +1,76 @@
+{% extends "variants/variants_layout.html" %}
+{% from "variants/utils.html" import cell_rank, filter_form_footer, mei_filters, variant_link_href %}
+{% from "variants/components.html" import frequency_cell_general, overlapping_cell, variant_gene_symbols_cell, variant_funct_anno_cell %}
+
+{% block category_title %}
+Mobile Element Insertion variants
+{% endblock %}
+
+{% block variants_form_action %}
+  {{url_for('variants.mei_variants', institute_id=institute._id, case_name=case.display_name)}}
+{% endblock %}
+
+{% block variants_filter %}
+  {{ mei_filters(form, institute, case) }}
+{% endblock %}
+
+{% block variants_filter_form_footer %}
+  {{ filter_form_footer(form, result_size, total_variants, page, variants|length, institute) }}
+{% endblock %}
+
+{% block variants_table_header %}
+  <tr>
+    <th scope="col" style="width:3%"></th>
+    <th scope="col" title="Rank position">Rank</th>
+    <th scope="col" title="Rank score">Score</th>
+    <th scope="col">Type</th>
+    <th scope="col" style="width:18%">Element</th>
+    <th scope="col" title="Chromosome">Chr</th>
+    <th scope="col" style="width:9%">Start loc</th>
+    <th scope="col">Frequency</th>
+    <th scope="col">Gene(s)</th>
+    <th scope="col" title="Functional annotation">Function</th>
+    <th scope="col" title="Gene overlapping variants in affected individuals">Overlap</th>
+  </tr>
+{% endblock %}
+
+{% block variants_table_rows %}
+  {% for variant in variants %}
+    {{ variant_row(variant) }}
+  {% else %}
+    <tr>
+      <td colspan="11">No matching variants</td>
+    </tr>
+  {% endfor %}
+{% endblock %}
+
+{% macro variant_row(variant) %}
+  <tr data-target="_blank" data-href="{{ variant_link_href(variant, institute, case) }}"
+  {% if variant.dismiss_variant %}
+    class="dismiss">
+  {% elif 'causatives' in case and variant._id in case.causatives %}
+    class="causative">
+  {% else %}
+    >
+  {% endif %}
+    <td class="no-row-click"><input type="checkbox" value="{{variant._id}}" name="dismiss" onclick="enableDismiss()"></td>
+    <td class="text-start">
+      {{ cell_rank(variant, institute, case, form, manual_rank_options) }}
+    </td>
+    <td class="text-end">{{ variant.rank_score|int }}</td>
+    <td>{{ variant.sub_category|upper }}</td>
+    <td>{{ variant.mei_name }}</td>
+    <td>{{ variant.chromosome if variant.chromosome == variant.end_chrom else variant.chromosome+'-'+variant.end_chrom }}</td>
+    <td class="col-2"><span style="white-space: nowrap;">{{ variant.position|human_longint|safe }}</span></td>
+    <td>
+      {{ frequency_cell_general(variant) }}
+    </td>
+    <td>
+      {{ variant_gene_symbols_cell(variant, inherit_palette) }}
+    </td>
+    <td style="word-wrap:break-word;">
+      {{ variant_funct_anno_cell(variant) }}
+    </td>
+    <td>{{ overlapping_cell(variant, institute, case) }}</td>
+  </tr>
+{% endmacro %}

@@ -1,0 +1,254 @@
+import datetime
+import json as json_lib
+import logging
+import os
+from typing import Tuple
+
+import click
+from flask.cli import with_appcontext
+from xlsxwriter import Workbook
+
+from scout.constants import CALLERS, DATE_DAY_FORMATTER
+from scout.constants.managed_variant import MANAGED_CATEGORIES
+from scout.constants.variants_export import VCF_HEADER, VERIFIED_VARIANTS_HEADER
+from scout.export.variant import (
+    export_causative_variants,
+    export_managed_variants,
+    export_verified_variants,
+)
+from scout.server.extensions import store
+from scout.utils.vcf import validate_vcf_line
+
+from .export_handler import bson_handler
+from .utils import build_option, json_option
+
+LOG = logging.getLogger(__name__)
+
+
+@click.command("verified", short_help="Export validated variants")
+@click.option(
+    "-c",
+    "--collaborator",
+    help="Specify what collaborator to export variants from. Defaults to cust000",
+)
+@click.option("--outpath", help="Path to output file")
+@click.option("--test", help="Use this flag to test the function", is_flag=True)
+@with_appcontext
+def verified(collaborator, test, outpath=None):
+    """Export variants which have been verified for an institute
+        and write them to an excel file.
+
+    Args:
+        collaborator(str): institute id
+        test(bool): True if the function is called for testing purposes
+        outpath(str): path to output file
+
+    Returns:
+        written_files(int): number of written or simulated files
+    """
+    written_files = 0
+    collaborator = collaborator or "cust000"
+    LOG.info("Exporting verified variants for cust {}".format(collaborator))
+
+    adapter = store
+    verified_vars = adapter.verified(institute_id=collaborator)
+    LOG.info("FOUND {} verified variants for institute {}".format(len(verified_vars), collaborator))
+
+    if not verified_vars:
+        LOG.warning(
+            "There are no verified variants for institute {} in database!".format(collaborator)
+        )
+        return None
+
+    unique_callers = set()
+    for var_type, var_callers in CALLERS.items():
+        for caller in var_callers:
+            unique_callers.add(caller.get("id"))
+
+    document_lines = export_verified_variants(verified_vars, unique_callers)
+
+    today = datetime.datetime.now().strftime(DATE_DAY_FORMATTER)
+    document_name = ".".join(["verified_variants", collaborator, today]) + ".xlsx"
+
+    # If this was a test and lines are created return success
+    if test and document_lines:
+        written_files += 1
+        LOG.info("Success. Verified variants file contains {} lines".format(len(document_lines)))
+        return written_files
+    if test:
+        LOG.info(
+            "Could not create document lines. Verified variants not found for customer {}".format(
+                collaborator
+            )
+        )
+        return
+
+    # create workbook and new sheet
+    # set up outfolder
+    if not outpath:
+        outpath = str(os.getcwd())
+    workbook = Workbook(os.path.join(outpath, document_name))
+    Report_Sheet = workbook.add_worksheet()
+
+    # Write the column header
+    row = 0
+    for col, field in enumerate(VERIFIED_VARIANTS_HEADER):
+        Report_Sheet.write(row, col, field)
+
+    # Write variant lines, after header (start at line 1)
+    for row, line in enumerate(document_lines, 1):  # each line becomes a row in the document
+        for col, field in enumerate(line):  # each field in line becomes a cell
+            Report_Sheet.write(row, col, field)
+    workbook.close()
+
+    if os.path.exists(os.path.join(outpath, document_name)):
+        LOG.info(
+            "Success. Verified variants file of {} lines was written to disk".format(
+                len(document_lines)
+            )
+        )
+        written_files += 1
+
+    return written_files
+
+
+@click.command("managed", short_help="Export managed variants")
+@click.option(
+    "-c",
+    "--collaborator",
+    help="Specify what collaborator to export variants from. Defaults to all variants.",
+)
+@click.option(
+    "--category",
+    type=click.Choice(MANAGED_CATEGORIES, case_sensitive=False),
+    multiple=True,
+    default=MANAGED_CATEGORIES,
+    show_default=True,
+    help="One or more categories to include.",
+)
+@build_option
+@json_option
+@with_appcontext
+def managed(collaborator: str, category: Tuple[str], build: str, json: bool):
+    """Export managed variants for a collaborator in VCF or JSON format"""
+    LOG.info("Running scout export managed variants")
+    adapter = store
+
+    variants = export_managed_variants(
+        adapter=adapter, institute=collaborator, build=build, category=list(category)
+    )
+
+    if json:
+        click.echo(json_lib.dumps([var for var in variants], default=bson_handler))
+        return
+
+    vcf_header = VCF_HEADER
+    vcf_header.insert(2, "##fileDate={}".format(datetime.datetime.now()))
+
+    valid_lines = []
+
+    for variant_obj in variants:
+        variant_string = get_vcf_entry(variant_obj)
+        if variant_string:
+            valid_lines.append(variant_string)
+
+    for line in vcf_header:
+        click.echo(line)
+
+    for valid_line in valid_lines:
+        click.echo(valid_line)
+
+
+@click.command("causatives", short_help="Export causative variants")
+@click.option(
+    "-c",
+    "--collaborator",
+    help="Specify what collaborator to export variants from. Defaults to cust000",
+)
+@click.option("-d", "--document-id", help="Search for a specific variant")
+@click.option("--case-id", help="Find causative variants for case")
+@json_option
+@with_appcontext
+def causatives(collaborator: str, document_id: str, case_id: str, json: bool):
+    """Export causatives for a collaborator in .vcf format"""
+    LOG.info("Running scout export variants")
+    adapter = store
+    collaborator = collaborator or "cust000"
+    LOG.info("Use collaborator %s", collaborator)
+    if case_id:
+        case_obj = adapter.case(case_id)
+        if not case_obj:
+            LOG.info("Case %s does not exist", case_id)
+            raise click.Abort
+
+    variants = export_causative_variants(
+        adapter, collaborator, document_id=document_id, case_id=case_id
+    )
+
+    if json:
+        click.echo(json_lib.dumps([var for var in variants], default=bson_handler))
+        return
+
+    vcf_header = VCF_HEADER
+
+    # If case_id is given, print more complete vcf entries, with INFO,
+    # and genotypes
+    if case_id:
+        vcf_header[-1] = vcf_header[-1] + "\tFORMAT"
+        case_obj = adapter.case(case_id=case_id)
+        for individual in case_obj["individuals"]:
+            vcf_header[-1] = vcf_header[-1] + "\t" + individual["individual_id"]
+
+    for line in vcf_header:
+        click.echo(line)
+
+    for variant_obj in variants:
+        variant_string = get_vcf_entry(variant_obj, case_id=case_id)
+        click.echo(variant_string)
+
+
+def get_vcf_entry(variant_obj: dict, case_id: str = None) -> str:
+    """
+    Get vcf entry from variant object
+    """
+
+    pos = variant_obj["position"]
+    end = variant_obj.get("end") or pos
+    category = variant_obj["category"]
+    subcat = variant_obj["sub_category"].upper()
+    var_type = "TYPE" if category in ["snv", "cancer"] else "SVTYPE"
+
+    # Build INFO field
+    if category in ["snv", "cancer"] and not variant_obj.get("end"):
+        info_field = f"{var_type}={subcat}"
+    else:
+        info_field = f"END={end};{var_type}={subcat}"
+
+    ref = variant_obj.get("reference") or "N"
+    if ref == ".":
+        ref = "N"
+
+    alt = variant_obj.get("alternative") or "N"
+    if alt in [".", "-", variant_obj["sub_category"]]:
+        alt = f"<{subcat}>" if category == "sv" else "N"
+
+    filters = ";".join(variant_obj.get("filters", [])) or "."
+    vcf_fields = [
+        variant_obj["chromosome"],
+        str(pos),
+        variant_obj.get("dbsnp_id", "."),
+        ref,
+        alt,
+        str(variant_obj.get("quality", ".")),
+        filters,
+        info_field,
+    ]
+
+    if case_id and variant_obj.get("samples"):
+        vcf_fields.append("GT")
+        vcf_fields.extend(sample["genotype_call"] for sample in variant_obj["samples"])
+
+    variant_string = "\t".join(vcf_fields)
+
+    if validate_vcf_line(var_type=var_type, line=variant_string)[0]:
+        return variant_string

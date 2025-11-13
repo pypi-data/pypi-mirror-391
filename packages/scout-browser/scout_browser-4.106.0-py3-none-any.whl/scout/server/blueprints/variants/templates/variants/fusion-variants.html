@@ -1,0 +1,50 @@
+{% extends "variants/variants_layout.html" %}
+{% from "variants/utils.html" import cell_rank, filter_form_footer, fusion_filters, variant_link_href %}
+{% from "variants/components.html" import fusion_variant_gene_symbols_cell, fusion_variants_header, default_fusion_variant_cells %}
+
+{% block category_title %}
+  Fusion variants
+{% endblock %}
+
+{% block variants_form_action %}
+  {{url_for('variants.fusion_variants', institute_id=institute._id, case_name=case.display_name)}}
+{% endblock %}
+
+{% block variants_filter %}
+  {{ fusion_filters(form, institute, case) }}
+{% endblock %}
+
+{% block variants_filter_form_footer %}
+  {{ filter_form_footer(form, result_size, total_variants, page, variants|length, institute) }}
+{% endblock %}
+
+{% block variants_table_header %}
+  {{ fusion_variants_header() }}
+{% endblock %}
+
+{% block variants_table_rows %}
+  {% for variant in variants %}
+    {{ variant_row(variant) }}
+  {% else %}
+    <tr>
+        <td colspan="14">No matching variants</td>
+    </tr>
+  {% endfor %}
+{% endblock %}
+
+{% macro variant_row(variant) %}
+  <tr data-href="{{ variant_link_href(variant, institute, case) }}"
+  {% if variant.dismiss_variant %}
+    class="dismiss">
+  {% elif 'causatives' in case and variant._id in case.causatives %}
+    class="causative">
+  {% else %}
+    >
+  {% endif %}
+    <td class="no-row-click"><input type="checkbox" value="{{variant._id}}" name="dismiss" onclick="enableDismiss()"></td>
+    <td class="text-start">
+      {{ cell_rank(variant, institute, case, form, manual_rank_options) }}
+    </td>
+    {{ default_fusion_variant_cells(institute, case, variant) }}
+  </tr>
+{% endmacro %}
