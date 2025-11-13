@@ -1,0 +1,30 @@
+[build-system]
+requires = ["uv-build"]
+build-backend = "uv_build"
+
+[project]
+name = "charming-traceback"
+version = "0.1.8"
+description = "Rich traceback adapted for PyCharm IDE by JetBrains"
+authors = [
+    {name = "Yevhen Bondarenko", email = "zekbond@gmail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "rich>=14.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.2",
+    "ruff-lsp>=0.0.62",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "[%(asctime)s,%(msecs)03d] %(name)-40.40s %(levelname)s %(message)s"
+addopts = "--color=yes --cov=charming_traceback"
