@@ -1,0 +1,318 @@
+Metadata-Version: 2.1
+Name: vention-storage
+Version: 0.5.2
+Summary: A framework for storing and managing component and application data for machine apps.
+License: Proprietary
+Author: VentionCo
+Requires-Python: >=3.10,<3.11
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Requires-Dist: fastapi (==0.121.1)
+Requires-Dist: python-multipart (>=0.0.20,<0.0.21)
+Requires-Dist: sqlmodel (==0.0.27)
+Requires-Dist: uvicorn (>=0.35.0,<0.36.0)
+Description-Content-Type: text/markdown
+
+# Vention Storage
+
+A framework for storing and managing component and application data with persistence, validation, and audit trails for machine applications.
+
+## Table of Contents
+
+- [✨ Features](#-features)
+- [🧠 Concepts & Overview](#-concepts--overview)
+- [⚙️ Installation & Setup](#️-installation--setup)
+- [🚀 Quickstart Tutorial](#-quickstart-tutorial)
+- [🛠 How-to Guides](#-how-to-guides)
+- [📖 API Reference](#-api-reference)
+- [🔍 Troubleshooting & FAQ](#-troubleshooting--faq)
+
+## ✨ Features
+
+- Persistent storage with SQLite
+- Automatic audit trails (who, when, what changed)
+- Strong typing & validation via SQLModel
+- Lifecycle hooks before/after insert, update, delete
+- Soft delete with `deleted_at` fields
+- REST API generation with Create, Read, Update, Delete + audit
+- Health & monitoring endpoints (audit log, schema diagram)
+- Batch operations for insert/delete
+- Session management with smart reuse & transactions
+- Bootstrap system for one-command setup
+- CSV export/import for backups and migration
+- Database backup/restore with integrity checking
+
+## 🧠 Concepts & Overview
+
+Vention Storage is a component-based persistence layer for machine apps:
+
+- **Database** → SQLite database with managed sessions and transactions
+- **ModelAccessor** → Strongly-typed Create, Read, Update, Delete interface for your SQLModel classes
+- **Hooks** → Functions that run before/after Create, Read, Update, Delete operations
+- **AuditLog** → Automatically records all data mutations
+- **Routers** → Auto-generated FastAPI endpoints for Create, Read, Update, Delete + database management
+
+## ⚙️ Installation & Setup
+
+```bash
+pip install vention-storage
+```
+
+**Optional dependencies:**
+- sqlalchemy-schemadisplay and Graphviz → enable database schema visualization
+
+MacOS:
+```bash
+brew install graphviz
+pip install sqlalchemy-schemadisplay
+```
+
+Linux (Debian/Ubuntu)
+```bash
+sudo apt-get install graphviz
+pip install sqlalchemy-schemadisplay
+```
+
+## 🚀 Quickstart Tutorial
+
+Define a model, bootstrap storage, and get full Create, Read, Update, Delete endpoints in minutes:
+
+```python
+from datetime import datetime
+from typing import Optional
+from sqlmodel import Field, SQLModel
+from fastapi import FastAPI
+from storage.bootstrap import bootstrap
+from storage.accessor import ModelAccessor
+
+class User(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    email: str
+    deleted_at: Optional[datetime] = Field(default=None, index=True)
+
+app = FastAPI()
+user_accessor = ModelAccessor(User, "users")
+
+bootstrap(
+    app,
+    accessors=[user_accessor],
+    database_url="sqlite:///./my_app.db",
+    create_tables=True
+)
+```
+
+➡️ You now have Create, Read, Update, Delete, audit, backup, and CSV endpoints at `/users` and `/db`.
+
+## 🛠 How-to Guides
+
+### Bootstrap Multiple Models
+
+```python
+# user_accessor was created earlier in the Quickstart example
+# Reuse it here to bootstrap multiple models at once
+
+product_accessor = ModelAccessor(Product, "products")
+
+bootstrap(
+    app,
+    accessors=[user_accessor, product_accessor],
+    database_url="sqlite:///./my_app.db",
+    create_tables=True,
+    max_records_per_model=100,
+    enable_db_router=True
+)
+```
+
+### Export to CSV
+
+```python
+response = requests.get("http://localhost:8000/db/export.zip")
+with open("backup.zip", "wb") as f:
+    f.write(response.content)
+```
+
+### Backup & Restore
+
+```python
+# Backup
+r = requests.get("http://localhost:8000/db/backup.sqlite")
+with open("backup.sqlite", "wb") as f: f.write(r.content)
+
+# Restore
+with open("backup.sqlite", "rb") as f:
+    files = {"file": ("backup.sqlite", f, "application/x-sqlite3")}
+    requests.post("http://localhost:8000/db/restore", files=files)
+```
+
+### Use Lifecycle Hooks
+
+```python
+@user_accessor.before_insert()
+def validate_email(session, instance):
+    if "@" not in instance.email:
+        raise ValueError("Invalid email")
+
+@user_accessor.after_insert()
+def log_creation(session, instance):
+    print(f"User created: {instance.name}")
+```
+
+### Query Audit Logs
+
+```python
+from storage.auditor import AuditLog
+from sqlmodel import select
+
+with database.transaction() as session:
+    logs = session.exec(select(AuditLog).where(AuditLog.component == "users")).all()
+```
+
+### Using the model accessors
+
+```python
+# Create
+user = user_accessor.insert(User(name="Alice", email="alice@example.com"), actor="admin")
+
+# Read
+user = user_accessor.get(user.id)
+
+# Update
+user.name = "Alice Smith"
+user_accessor.save(user, actor="admin")
+
+# Delete
+user_accessor.delete(user.id, actor="admin")
+
+# Restore (for soft-deleted models)
+user_accessor.restore(user.id, actor="admin")
+```
+
+
+### Using the REST API
+
+Once bootstrapped, each `ModelAccessor` automatically exposes full CRUD endpoints.
+
+Example: interacting with the `/users` API.
+
+```typescript
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:8000", // your backend url
+  headers: { "X-User": "operator" }, // used in audit logs
+});
+
+// Create
+export async function createUser(name: string, email: string) {
+  const res = await api.post("/users/", { name, email });
+  return res.data;
+}
+
+// Read
+export async function getUser(id: number) {
+  const res = await api.get(`/users/${id}`);
+  return res.data;
+}
+
+// Update
+export async function updateUser(id: number, name: string) {
+  const res = await api.put(`/users/${id}`, { name });
+  return res.data;
+}
+
+// Delete (soft delete if model supports deleted_at)
+export async function deleteUser(id: number) {
+  await api.delete(`/users/${id}`);
+}
+
+// Restore
+export async function restoreUser(id: number) {
+  await api.post(`/users/${id}/restore`);
+}
+
+// List
+export async function listUsers() {
+  const res = await api.get("/users/");
+  return res.data;
+}
+```
+
+
+## 📖 API Reference
+
+### bootstrap
+
+```python
+def bootstrap(
+    app: FastAPI,
+    *,
+    accessors: Iterable[ModelAccessor[Any]],
+    database_url: Optional[str] = None,
+    create_tables: bool = True,
+    max_records_per_model: Optional[int] = 5,
+    enable_db_router: bool = True,
+) -> None
+```
+
+### ModelAccessor
+
+```python
+ModelAccessor(model: Type[ModelType], component_name: str)
+```
+
+**Read**
+- `get(id, include_deleted=False) -> Optional[ModelType]`
+- `all(include_deleted=False) -> List[ModelType]`
+
+**Write**
+- `insert(obj, actor="internal") -> ModelType`
+- `save(obj, actor="internal") -> ModelType`
+- `delete(id, actor="internal") -> bool`
+- `restore(id, actor="internal") -> bool`
+
+**Batch**
+- `insert_many(objs, actor="internal") -> List[ModelType]`
+- `delete_many(ids, actor="internal") -> int`
+
+**Hooks**
+- `@accessor.before_insert()`
+- `@accessor.after_insert()`
+- `@accessor.before_update()`
+- `@accessor.after_update()`
+- `@accessor.before_delete()`
+- `@accessor.after_delete()`
+
+### Routers
+
+- `build_crud_router(accessor, max_records=100) -> APIRouter`
+- `build_db_router(audit_default_limit=100, audit_max_limit=1000) -> APIRouter`
+
+### Database Helpers
+
+- `database.set_database_url(url: str) -> None`
+- `database.get_engine() -> Engine`
+- `database.transaction() -> Iterator[Session]`
+- `database.use_session(session: Optional[Session] = None) -> Iterator[Session]`
+
+### AuditLog model
+
+```python
+class AuditLog(SQLModel, table=True):
+    id: int
+    timestamp: datetime
+    component: str
+    record_id: int
+    operation: str
+    actor: str
+    before: Optional[Dict[str, Any]]
+    after: Optional[Dict[str, Any]]
+```
+
+## 🔍 Troubleshooting & FAQ
+
+- **Diagram endpoint fails** → Ensure Graphviz + sqlalchemy-schemadisplay are installed.
+- **No audit actor shown** → Provide X-User header in API requests.
+- **Soft delete not working** → Your model must have a `deleted_at` field.
+- **Restore fails** → Ensure `integrity_check=True` passes when restoring backups.
