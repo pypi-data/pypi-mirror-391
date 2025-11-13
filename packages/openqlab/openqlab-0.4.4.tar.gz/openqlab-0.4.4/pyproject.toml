@@ -1,0 +1,94 @@
+[tool.poetry]
+name = "openqlab"
+version = "0.4.4"
+description = "An open-source collection of tools for quantum-optics experiments"
+authors = [
+"Jan Petermann <jpeterma@physnet.uni-hamburg.de>",
+"Christian Darsow-Fromm <cdarsowf@physnet.uni-hamburg.de>",
+"Sebastian Steinlechner <s.steinlechner@maastrichtuniversity.nl>",
+]
+maintainers = [
+"Christian Darsow-Fromm <cdarsowf@physnet.uni-hamburg.de>",
+"Jan Petermann <jpeterma@physnet.uni-hamburg.de>",
+]
+readme = "README.md"
+repository = "https://gitlab.com/las-nq/openqlab"
+documentation = "https://las-nq-serv.physnet.uni-hamburg.de/python/openqlab/"
+
+[tool.poetry.dependencies]
+python = ">=3.10.1,<3.16"
+pandas = ">=1.4,<3.0"
+numpy = ">=1.18,<3.0"
+scipy = ">=1.9.3,<2.0"
+matplotlib = ">=3.2.1,<4"
+importlib-metadata = "^8.0"
+pyserial = "^3.5"
+wcwidth = "^0.2.5"
+tables = {version=">=3.6.1,<4", optional=true}
+pyvisa-py = {version=">=0.6.0,<1", optional=true}
+PyVISA = {version="^1.11.1", optional=true}
+
+[tool.poetry.extras]
+hdf = ["tables"]
+visa = ["pyvisa-py", "PyVISA"]
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.10"
+flake8 = "^6.0.0"
+recommonmark = "^0.7.1"
+pytest = "^7.2.0"
+pytest-cov = "^4.0.0"
+mypy = "^1.6.1"
+pylint = "^3.0.1"
+pre-commit = "^2.2.0"
+pydocstyle = "^6.1.1"
+isort = "^5.11.4"
+# py2exe = "^0.13.0.0"  # Needed for tk on Windows
+pydocstring = "^0.2.1"
+uncertainties = "^3.1.5"
+jsonpickle = "^3.0.1"
+pep8-naming = "^0.11.1"
+sphinx = ">= 7.1.2,< 8"
+sphinx-autoapi = ">=3,<4"
+sphinx-markdown-tables = "^0.0.17"
+sphinx-rtd-theme = ">= 1.0, < 2"
+
+#[build-system]
+#requires = ["poetry>=0.12"]
+#build-backend = "poetry.masonry.api"
+
+[build-system]
+requires = ["setuptools","wheel","poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--verbose --log-level=INFO --cov openqlab --cov-report term-missing  --no-cov-on-fail --cov-report=html --last-failed --new-first"
+testpaths = [
+    "src/tests",
+]
+
+[tool.coverage]
+    [tool.coverage.run]
+    omit =[
+        "*/_old_importers/*",
+    ]
+    [tool.coverage.report]
+    fail_under = 90
+    omit =[
+        "src/openqlab/io/importers/keysight_binary.py"
+    ]
+    exclude_lines = [
+        "pass  # overloaded", # this removes the uncovered line, for example with the @overload decorator for typing
+    ]
+
+    [tool.coverage.html]
+    directory = "htmlcov"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 88
