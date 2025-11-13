@@ -1,0 +1,128 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.error {
+    &.container {
+        margin: 10px auto;
+        max-width: $on-palm;
+        text-align: center;
+
+        h1 {
+            margin: $spacing-unit 0;
+            font-size: 4em;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
+    }
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: calc(1024px - 1rem * 2);
+    padding: 0 2rem;
+
+    header & {
+        flex-direction: row;
+    }
+}
+
+.site-title {
+    display: inline-flex;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    @media screen and ($on-palm < width <=$on-laptop) {
+        min-width: 24px;
+        width: 24px;
+        color: transparent;
+    }
+
+    &:before {
+        content: "";
+        min-width: 24px;
+        background: no-repeat center / 100% url("{{ '/assets/favicon.svg' | relative_url }}");
+        margin-right: 8px;
+    }
+}
+
+.site-nav {
+    margin-left: auto;
+
+    .page-link:not(:last-child) {
+        @media screen and ($on-palm < width <=$on-laptop) {
+            margin-right: $base-font-size;
+        }
+    }
+}
+
+@media screen and ($on-laptop < width) {
+    .footer-col-3 {
+        text-align: end;
+    }
+}
+
+.contact-list li {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.social-media-list li>a {
+    display: flex;
+    align-items: center;
+}
+
+button,
+details>summary:first-of-type {
+    cursor: pointer;
+}
+
+details>summary:hover:first-of-type {
+    color: $text-color;
+}
+
+thead,
+tbody {
+    vertical-align: text-top;
+}
+
+th,
+td {
+    min-width: 5em;
+    font-size: .935rem;
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+
+    >table {
+        margin: 0;
+        border-collapse: separate;
+        border-width: 1px 0;
+
+        details>summary+div {
+            margin: 0 -15px -10px;
+
+            >div {
+                border: 0 solid #e8e8e8;
+                border-top-width: 1px;
+                padding: 10px 15px;
+            }
+        }
+    }
+
+}
+
+.text-center {
+    text-align: center;
+}
+
+.border-light {
+    border: 1px solid #e8e8e8;
+}

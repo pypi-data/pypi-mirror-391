@@ -1,0 +1,94 @@
+---
+name: Asset Sync
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      target_repository:
+        description: >
+          Target repository to sync files to.
+
+          Source is from the selected ref.
+          Remember to switch to a specific tag to upgrade or downgrade the release.
+        required: true
+        default: fist-framework
+      co_authors:
+        description: >
+          GitHub usernames and teams for co-authors, e.g., octocat, teams/fist-team.
+
+          Comma-separated.
+          Leave '-' if not needed.
+        required: false
+        default: "-"
+      commit_message:
+        description: >
+          Commit message for sync push.
+
+          Use Conventional Commits format.
+          Use \n for multiline.
+        required: false
+        default: "build: :bento: sync assets to production"
+      action:
+        description: >
+          Action to perform.
+
+          Use 'sync' to synchronize files,
+          or 'release' to force-merge the release PR as admin (conceals approver identity).
+        required: true
+        default: sync
+        type: choice
+        options:
+          - sync
+          - release
+
+permissions: {}
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "${{ github.workflow }}"
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Get App Token
+        id: my-app
+        run: bash ./.github/scripts/token.sh
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Sync Files
+        if: ${{ github.event.inputs.action == 'sync' }}
+        run: |
+          bash ./.github/scripts/sync.sh \
+            --owner "${{ github.repository_owner }}" \
+            --source-repo "${{ github.event.repository.name }}" \
+            --target-repo "${{ github.event.inputs.target_repository }}" \
+            --co-authors "${{ github.event.inputs.co_authors }}" \
+            --commit-message "$COMMIT_MESSAGE"
+        env:
+          GH_TOKEN: ${{ steps.my-app.outputs.token }}
+          COMMIT_MESSAGE: ${{ github.event.inputs.commit_message }}
+
+      - name: Force-merge Release
+        if: ${{ github.event.inputs.action == 'release' }}
+        run: |
+          gh pr merge "release-please--branches--main" \
+            --repo "${{ github.repository_owner }}/${{ github.event.inputs.target_repository }}" \
+            --admin \
+            --squash \
+            --delete-branch
+        env:
+          GH_TOKEN: ${{ steps.my-app.outputs.token }}
