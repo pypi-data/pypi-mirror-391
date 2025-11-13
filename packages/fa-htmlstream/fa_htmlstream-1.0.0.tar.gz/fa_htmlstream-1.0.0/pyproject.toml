@@ -1,0 +1,66 @@
+[project]
+name = "fa-htmlstream"
+authors = [{name = "Ray Wallace", email = "rwallace3@proton.me"}]
+version = "1.0.0"
+description = "A simple streaming HTML parser"
+license = "LGPL-3.0-or-later"
+readme = "README.rst"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Markup :: HTML",
+    "Typing :: Typed",
+]
+dependencies = [
+]
+
+[project.urls]
+Home = "https://halfpanda.dev/"
+Repository = "https://github.com/faboo/htmlstream.git"
+
+
+[project.optional-dependencies]
+dev = [
+    "tox",
+    "mypy",
+    "pylint",
+]
+
+[tool.tox]
+requires = ["tox>=4.26.0"]
+env_list = ["3.13"]
+
+[tool.tox.env_run_base]
+deps = [
+    "pylint",
+    "mypy",
+    "pytest",
+]
+commands = [
+    ["pylint", "htmlstream"],
+    ["mypy", "-p", "src.htmlstream"],
+    ["pytest"]
+]
+
+[tool.tox.env.tests]
+commands = [
+    ["pytest", "{posargs}"]
+]
+
+[tool.tox.env.build]
+deps = [
+    "build",
+    "twine",
+]
+commands = [
+    ["python", "-m", "build"],
+    ["python", "-m", "twine", "check", "dist/*"],
+]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
