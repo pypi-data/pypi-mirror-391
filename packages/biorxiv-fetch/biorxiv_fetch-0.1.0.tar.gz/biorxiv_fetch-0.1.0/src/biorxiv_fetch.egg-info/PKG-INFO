@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: biorxiv-fetch
+Version: 0.1.0
+Summary: Fetch bioRxiv MECA archives by DOI
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: requests
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+## Setup
+
+### Authenticate with AWS
+
+Either run via an AWS instance with IAM access, or on another instance with AWS keys installed.
+
+### Authenticate with the AWS CLI:
+
+```
+aws configure
+```
+
+## Usage
+
+```python
+import biorxiv_fetch as br
+
+doi = "xxx.xx/xxxx"
+out_dir = "out"
+br.fetch_doi(doi, out_dir)
+```
