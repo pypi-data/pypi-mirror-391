@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aditya-epsgreedy-20251112"
+version = "0.0.1"
+description = "A tiny, well-tested epsilon-greedy action selector for Reinforcement Learning with action masking. Created by Aditya Singh for B.Tech AI (RL Practicum, NMIMS MPSTME)."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Aditya Singh", email = "salmoneatenbybear@gmail.com" }
+]
+keywords = ["reinforcement-learning", "epsilon-greedy", "bandit", "RL", "action-selection", "ai", "aditya-singh"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Education",
+    "Development Status :: 4 - Beta"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/aditya-epsgreedy-20251112/"
+Repository = "https://github.com/salmoneatenbybear/aditya-epsgreedy-20251112"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/epsgreedy"]

@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: aditya-epsgreedy-20251112
+Version: 0.0.1
+Summary: A tiny, well-tested epsilon-greedy action selector for Reinforcement Learning with action masking. Created by Aditya Singh for B.Tech AI (RL Practicum, NMIMS MPSTME).
+Project-URL: Homepage, https://pypi.org/project/aditya-epsgreedy-20251112/
+Project-URL: Repository, https://github.com/salmoneatenbybear/aditya-epsgreedy-20251112
+Author-email: Aditya Singh <salmoneatenbybear@gmail.com>
+License: MIT
+License-File: LICENSE
+Keywords: RL,action-selection,aditya-singh,ai,bandit,epsilon-greedy,reinforcement-learning
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# Epsilon-Greedy
+
+A minimal, tested epsilon-greedy action selector for Reinforcement Learning.
+Includes action masking and tie-aware probability allocation.
+
+## Usage
+
+```python
+from epsgreedy import epsilon_greedy
+
+action_values = [1.2, 0.5, 1.2, -0.3]   # Q(s, ·)
+# Mask out invalid actions (e.g., action 1 is invalid here)
+invalid = [False, True, False, False]
+
+a, p = epsilon_greedy(action_values, epsilon=0.1, invalid=invalid)
+print(a, p)  # chosen action index, probabilities over actions
+```
+
+## Install
+```bash
+pip install aditya-epsgreedy-20251112
+```
+
+## Testing
+```bash
+pip install pytest
+pytest -q
+```
+
+## License
+MIT
