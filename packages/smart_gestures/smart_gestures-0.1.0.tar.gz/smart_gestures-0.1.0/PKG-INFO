@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: smart_gestures
+Version: 0.1.0
+Summary: Utilities and models for ASL alphabet training used in the SmartGlasses project
+Author: Simon Stijnen, Lynn Delaere, Olivier Westerman
+Maintainer: VIVES University of Applied Sciences - Project XP
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: mediapipe>=0.10.14
+Requires-Dist: numpy>=2.3.4
+Requires-Dist: pandas>=2.3.3
+Requires-Dist: torch>=2.9.0
+Requires-Dist: tqdm>=4.67.1
+
+# SmartGlasses Alphabet Package
+
+This package contains utilities and models for ASL alphabet training used by the SmartGlasses project. It exposes the `asl_model` and `utilities` modules for programmatic use.
+
+Install (editable/development):
+
+```powershell
+python -m pip install -e .
+```
+
+Contents:
+
+- `asl_model/` - model training, utils, and saved models
+- `utilities/` - dataset download and landmark extraction utilities
