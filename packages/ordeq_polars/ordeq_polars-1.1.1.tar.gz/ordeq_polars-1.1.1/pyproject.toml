@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=75.0", "setuptools_scm>=8.1.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ordeq_polars"
+description = "Polars integration for Ordeq"
+dynamic = ["version"]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Niels Neerhoff" },
+    { name = "Simon Brugman" },
+]
+maintainers = [
+    { name = "Niels Neerhoff" },
+    { name = "Simon Brugman" },
+]
+requires-python = ">=3.10"
+dependencies = [
+    "ordeq>=1.2.0",
+    "polars[pyarrow]>=1.0",
+]
+
+[tool.ordeq-dev]
+group = "ios"
+logo_url = "https://avatars.githubusercontent.com/u/83768144?s=200&v=4"
+
+[dependency-groups]
+test = [
+    "polars[excel,iceberg]",
+    "pyiceberg[sql-sqlite]"
+]
+
+[tool.setuptools_scm]
+root = "../../"
+version_file = "src/ordeq_polars/_version.py"
+tag_regex = "^ordeq-polars/(?:[\\w-]+-)?(?P<version>[vV]?\\d+(?:\\.\\d+){0,2}[^\\+]*)(?:\\+.*)?$"
+git_describe_command = "git describe --dirty --tags --long --match ordeq-polars/*"
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["src"]
+
+[tool.coverage.run]
+omit = [
+    "src/ordeq_polars/_version.py"
+]
