@@ -1,0 +1,50 @@
+name: docker
+on:
+  push:
+    branches: [main]
+    tags: '*'
+  pull_request:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get Commit or Tag
+        id: vars
+        run: |
+          tag="${GITHUB_SHA:0:8}"
+          if [[ ${GITHUB_REF} == refs/tags* ]]; then
+            ref="${GITHUB_REF}"
+            tag=$(echo $GITHUB_REF | sed 's/refs\/tags\///g')
+          fi
+          echo "TAG=$tag" >> $GITHUB_OUTPUT
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Docker Login
+        if: success()
+        run: |
+          echo "${DOCKER_PASSWORD}" | docker login ${DOCKER_REGISTRY} --username "${DOCKER_USERNAME}" --password-stdin
+      - name: Build
+        if: success()  && github.event_name == 'pull_request' # trigger only a build on PR's.
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: false
+          tags: cboin/songbird:latest,cboin/songbird:${{steps.vars.outputs.TAG}}
+          cache-from: type=registry,ref=cboin/songbird:buildcache
+          cache-to: type=registry,ref=cboin/songbird:buildcache,mode=max
+          target: build-image
+      - name: Build and Push
+        if: success() && (github.event_name == 'push' || startsWith(github.ref, 'refs/tags/'))  # only trigger a build and push to docker registry on tag or commit sha off
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: cboin/songbird:latest,cboin/songbird:${{steps.vars.outputs.TAG}}
+          cache-from: type=registry,ref=cboin/songbird:buildcache
+          cache-to: type=registry,ref=cboin/songbird:buildcache,mode=max
+          target: build-image
