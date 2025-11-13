@@ -1,0 +1,29 @@
+[project]
+name = "crustdata-screener-mcp"
+version = "1.0.2"
+description = "MCP server wrapper for CrustData Screener APIs"
+authors = [
+    {name = "CrustData", email = "support@crustdata.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+crustdata-mcp = "crustdata_mcp.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["crustdata_mcp*", "src*", "config*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.yml"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
