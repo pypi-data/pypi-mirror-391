@@ -1,0 +1,218 @@
+Metadata-Version: 2.4
+Name: chainlit-aki
+Version: 2.9.0
+Summary: Build Conversational AI.
+Project-URL: Homepage, https://chainlit.io/
+Project-URL: Documentation, https://docs.chainlit.io/
+Project-URL: Repository, https://github.com/Chainlit/chainlit
+Author: Willy Douhard, Dan Andre Constantini
+License: Apache-2.0
+Keywords: Agents,LLM,MCP,chat ui,chatbot ui,conversational ai,copilot,gen ai,langchain,openai
+Classifier: Environment :: Web Environment
+Classifier: Framework :: FastAPI
+Classifier: Programming Language :: JavaScript
+Classifier: Topic :: Communications :: Chat
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: User Interfaces
+Requires-Python: <4.0.0,>=3.10
+Requires-Dist: aiofiles<25.0.0,>=23.1.0
+Requires-Dist: asyncer<0.1.0,>=0.0.8
+Requires-Dist: audioop-lts<0.3.0,>=0.2.1; python_version >= '3.13'
+Requires-Dist: click<9.0.0,>=8.1.3
+Requires-Dist: dataclasses-json<0.7.0,>=0.6.7
+Requires-Dist: fastapi<0.117,>=0.116.1
+Requires-Dist: filetype<2.0.0,>=1.2.0
+Requires-Dist: httpx>=0.23.0
+Requires-Dist: lazify<0.5.0,>=0.4.0
+Requires-Dist: literalai==0.1.201
+Requires-Dist: mcp<2.0.0,>=1.0.0
+Requires-Dist: nest-asyncio<2.0.0,>=1.6.0
+Requires-Dist: packaging>=23.1
+Requires-Dist: pydantic-settings>=2.10.1
+Requires-Dist: pydantic<3,>=2.7.2
+Requires-Dist: pyjwt<3.0.0,>=2.8.0
+Requires-Dist: python-dotenv<2.0.0,>=1.0.0
+Requires-Dist: python-multipart<1.0.0,>=0.0.18
+Requires-Dist: python-socketio<6.0.0,>=5.11.0
+Requires-Dist: starlette>=0.47.2
+Requires-Dist: syncer<3.0.0,>=2.0.3
+Requires-Dist: tomli<3.0.0,>=2.0.1
+Requires-Dist: uvicorn>=0.35.0
+Requires-Dist: watchfiles<1.0.0,>=0.20.0
+Description-Content-Type: text/markdown
+
+# Chainlit for Amazon Brazil Build
+
+Brazil-compatible version of Chainlit for Amazon's internal build system.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Brazil build system access
+- `uv` installed (for virtual environment management)
+
+### Setup & Build
+```bash
+# 1. Navigate to project
+cd /Volumes/workplace/Aki/src/Chainlit
+
+# 2. Create proper virtual environment (CRITICAL for local builds)
+uv venv .venv
+
+# 3. Run Brazil build
+brazil-build
+```
+
+### Publish
+1. make sure you update the version
+
+2. run below command (temporarily use public PYPI, need to migrate to internal source)
+```
+uv publish build/* --token {PYPI_TOKEN}
+```
+
+## ✅ Build Status
+
+**Production Ready** - All issues resolved:
+- ✅ Remote Brazil builds: Working
+- ✅ Local Brazil builds: Working  
+- ✅ Python 3.10/3.11 compatibility: Fixed
+- ✅ PeruPython integration: Complete
+
+## 🏗 Architecture
+
+**Polyglot Build System:**
+- **Frontend**: React/TypeScript (pnpm) → Build assets
+- **Backend**: Python package → Integrate frontend assets  
+- **Output**: `amazon_chainlit-2.6.2-py3-none-any.whl` (~12MB)
+
+## 📁 Project Structure
+
+```
+Chainlit/
+├── README.md                          # This guide
+├── BRAZIL_BUILD_INTEGRATION.md       # Troubleshooting FAQ
+├── brazil.ion                         # Peru package config
+├── .venv/                            # Virtual environment (create with uv)
+├── build-tools/bin/polyglot-build.sh # Main build script
+├── third-party-src/
+│   ├── backend/                       # Python source
+│   ├── frontend/                      # React frontend
+│   └── libs/                         # React libraries
+└── build/                            # Build output
+```
+
+## 🔧 Development
+
+### Local Development Setup
+```bash
+# Virtual environment (required for local Brazil builds)
+uv venv .venv
+source .venv/bin/activate
+
+# Install development dependencies
+cd third-party-src
+pnpm install
+```
+
+### Build Commands
+```bash
+# Full build (local)
+brazil-build
+
+# Clean build
+brazil-build clean
+
+# Test individual components
+cd third-party-src
+pnpm build        # Build all frontend components
+```
+
+### Testing Your Changes
+```bash
+# 1. Local build test
+brazil-build
+
+# 2. Verify artifacts
+ls -la build/
+# Expected: amazon_chainlit-2.6.2-py3-none-any.whl (~12MB)
+
+```
+
+## ⚠️ Critical Setup Requirements
+
+### 1. Virtual Environment Setup
+**Must use `uv venv .venv` - not `mkdir .venv`**
+
+```bash
+# ✅ Correct
+uv venv .venv
+
+# ❌ Wrong - will fail
+mkdir .venv
+```
+
+PeruPython expects proper activation scripts at `.venv/bin/activate`.
+
+### 2. Build Dependencies
+Automatically handled by `brazil.ion`:
+- PeruPython (for virtual environment)
+- PeruNPM (for frontend builds)
+
+### 3. Build Process
+1. **Frontend Build**: React components with pnpm
+2. **Backend Build**: Python package with PeruPython  
+3. **Asset Integration**: Frontend → Python package
+4. **Output**: Wheel file in `build/`
+
+## 🧪 Verification
+
+### Successful Build Output:
+```bash
+=== Build completed successfully! ===
+Artifacts available in: /path/to/build
+BUILD SUCCEEDED
+```
+
+### Expected Artifacts:
+```bash
+build/
+├── amazon_chainlit-2.6.2-py3-none-any.whl  (~12MB)
+└── amazon_chainlit-2.6.2.tar.gz            (~12MB)
+```
+
+## 🆘 Troubleshooting
+
+**Having build issues?** See [BRAZIL_BUILD_INTEGRATION.md](BRAZIL_BUILD_INTEGRATION.md) for:
+- Complete troubleshooting FAQ
+- Common error solutions
+- Debug commands
+- Environment fixes
+
+### Quick Fixes
+
+**Build failing locally?**
+```bash
+# Fix virtual environment
+rm -rf .venv
+uv venv .venv
+brazil-build
+```
+
+**PeruPython issues?**
+```bash
+# Check availability
+which perupy-get-venv
+# Should return: /path/to/PeruPython/bin/perupy-get-venv
+```
+
+## 📚 Additional Resources
+
+- [**Troubleshooting FAQ**](BRAZIL_BUILD_INTEGRATION.md) - Fix build failures
+- [**Original Chainlit**](third-party-src/README.md) - Upstream documentation
+- [**Brazil Build System**](https://docs.hub.amazon.dev/brazil/) - Amazon internal docs
+
+---
+
+**Ready to build!** Run `brazil-build` and expect `BUILD SUCCEEDED` ✅
