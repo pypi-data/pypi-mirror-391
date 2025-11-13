@@ -1,0 +1,31 @@
+name: napari-meshio
+display_name: napari-meshio
+contributions:
+  commands:
+    - id: napari-meshio.get_reader
+      python_name: napari_meshio._reader:napari_get_reader
+      title: Open data with meshio
+    - id: napari-meshio.write_multiple
+      python_name: napari_meshio._writer:write_multiple
+      title: Save multi-layer data with meshio
+    - id: napari-meshio.write_single_surface
+      python_name: napari_meshio._writer:write_single_surface
+      title: Save image data with meshio
+    - id: napari-meshio.bunny
+      python_name: napari_meshio._sample_data:bunny
+      title: Load sample data from meshio, Stanford bunny mesh data
+  readers:
+    - command: napari-meshio.get_reader
+      accepts_directories: false
+      filename_patterns: ['*.inp', '*.msh', '*.avs', '*.cgns', '*.xml', '*.e', '*.exo', '*.f3grid', '*.h5m', '*.mdpa', '*.mesh', '*.meshb', '*.med', '*.bdf', '*.fem', '*.nas', '*.vol', '*.vol.gz', '*.msh', '*.obj', '*.off', '*.post', '*.post.gz', '*.dato', '*.dato.gz', '*.ply', '*.stl', '*.dat', '*.node', '*.ele', '*.su2', '*.ugrid', '*.vtk', '*.vtu', '*.wkt', '*.xdmf', '*.xmf']
+  writers:
+    - command: napari-meshio.write_multiple
+      layer_types: ['surface*']
+      filename_extensions: []
+    - command: napari-meshio.write_single_surface
+      layer_types: ['surface']
+      filename_extensions: ['*.inp', '*.msh', '*.avs', '*.cgns', '*.xml', '*.e', '*.exo', '*.f3grid', '*.h5m', '*.mdpa', '*.mesh', '*.meshb', '*.med', '*.bdf', '*.fem', '*.nas', '*.vol', '*.vol.gz', '*.msh', '*.obj', '*.off', '*.post', '*.post.gz', '*.dato', '*.dato.gz', '*.ply', '*.stl', '*.dat', '*.node', '*.ele', '*.su2', '*.ugrid', '*.vtk', '*.vtu', '*.wkt', '*.xdmf', '*.xmf']
+  sample_data:
+    - command: napari-meshio.bunny
+      display_name: bunny
+      key: bunny
