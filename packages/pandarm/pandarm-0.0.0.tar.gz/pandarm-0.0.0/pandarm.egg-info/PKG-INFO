@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: pandarm
+Version: 0.0.0
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3
+Requires-Python: >=3.10
+License-File: LICENSE
+Requires-Dist: numpy>=2
+Requires-Dist: pandas>=2
+Requires-Dist: geopandas
+Requires-Dist: requests>=2.0
+Requires-Dist: scikit-learn>=0.18
+Requires-Dist: tables>=3.1
+Provides-Extra: dev
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: coveralls; extra == "dev"
+Requires-Dist: numpydoc; extra == "dev"
+Requires-Dist: pycodestyle; extra == "dev"
+Requires-Dist: pytest<4.0,>=3.6; extra == "dev"
+Requires-Dist: pytest-cov<2.10; extra == "dev"
+Requires-Dist: sphinx; extra == "dev"
+Requires-Dist: sphinx_rtd_theme; extra == "dev"
+Requires-Dist: osmnx; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: nbsphinx; extra == "docs"
+Requires-Dist: numpydoc; extra == "docs"
+Requires-Dist: pandoc; extra == "docs"
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinxcontrib-bibtex; extra == "docs"
+Requires-Dist: sphinx_bootstrap_theme; extra == "docs"
+Requires-Dist: mkdocs-jupyter; extra == "docs"
+Requires-Dist: myst-parser; extra == "docs"
+Requires-Dist: linkify-it-py; extra == "docs"
+Requires-Dist: sphinx-autodoc2; extra == "docs"
+Requires-Dist: nbsphinx-link>=1.3.1; extra == "docs"
+Provides-Extra: tests
+Requires-Dist: codecov; extra == "tests"
+Requires-Dist: coverage; extra == "tests"
+Requires-Dist: pytest; extra == "tests"
+Requires-Dist: pytest-mpl; extra == "tests"
+Requires-Dist: pytest-cov; extra == "tests"
+Requires-Dist: pytest-xdist; extra == "tests"
+Dynamic: license-file
