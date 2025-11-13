@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: sqlmask
+Version: 0.1.0
+Summary: Anonymize SQL statements.
+Project-URL: Homepage, https://github.com/Byunk/sqlmask
+Project-URL: Repository, https://github.com/Byunk/sqlmask
+Project-URL: Issues, https://github.com/Byunk/sqlmask/issues
+Author-email: Kyungho Byoun <kyungho.byoun@gmail.com>
+License-Expression: BSD-3-Clause
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Database
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: sqlparse<0.6,>=0.5
+Description-Content-Type: text/markdown
+
+# python-sqlmask - Anonymize SQL statements
+
+sqlmask replaces values in SQL statements with placeholders.
+
+**Use cases**
+
+- Logging SQL queries without sensitive data
+- Analyzing SQL query patterns
+- Sanitizing LLM inputs
+
+## Quick Start
+
+```bash
+pip install sqlmask
+```
+
+```python
+from sqlmask import mask
+
+sql = "SELECT * FROM users WHERE age > 25 AND status = 'active'"
+result = mask(sql)
+print(result) # SELECT * FROM users WHERE age > ? AND status = ?
+
+sql = "SELECT * FROM orders AS o WHERE o.status in ('shipped', 'delivered')"
+result = mask(sql)
+print(result) # SELECT * FROM orders AS o WHERE o.status in (?)
+
+sql = "INSERT INTO products (name, price) VALUES ('Gadget', 99.99)"
+result = mask(sql)
+print(result) # INSERT INTO products (name, price) VALUES (?, ?)
+```
