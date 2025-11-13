@@ -1,0 +1,116 @@
+# mlSC: Multi-level Synthetic Control Estimator
+
+[![PyPI](https://img.shields.io/pypi/v/multi-level-sc-estimator.svg)](https://pypi.org/project/multi-level-sc-estimator/)
+[![Tests](https://github.com/leabottmer/multi-level-sc-estimator/actions/workflows/test.yml/badge.svg)](https://github.com/leabottmer/multi-level-sc-estimator/actions/workflows/test.yml)
+[![Changelog](https://img.shields.io/github/v/release/leabottmer/multi-level-sc-estimator?include_prereleases&label=changelog)](https://github.com/leabottmer/multi-level-sc-estimator/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/leabottmer/multi-level-sc-estimator/blob/main/LICENSE)
+
+This package implements the multi-level SC estimator (mlSC) for the treatment effect for a single, treated, aggregated unit in panel data with multiple levels of aggregation, as proposed in [Bottmer (2025)](https://leabottmer.github.io/job_market/jmp_bottmer.pdf). 
+We observe matrices of outcomes at the disaggregate and the aggregate level. Treatment is assigned at the aggregate level and the goal is to obtain a treatment effect estimate at the aggregate level. The package captures cases for a single aggregated treated unit, possibly over multiple time periods (where treatment is assumed to never turn off). The multi-level SC estimator will use the disaggregated data as a starting point to estimate a synthetic control for the entire aggregated treated unit. It augments the objective function by adding a hierarchical penalty parameter that shrinks the flexible solution towards the classical synthetic control estimator that treats each state as a single unit. The penalty parameter is estimated using either (1) cross-validation over time or (2) a heuristic.
+
+This package is currently in beta and the functionality and interface is subject to change.
+
+## Installation
+
+Install this library using `pip`:
+```bash
+pip install multi-levelSC
+```
+## Example
+In this example, data at the county- and state-level is simulated from a hierarchical linear latent factor model. Then, the multi-level SC estimator is applied, using the heuristic to estimate the penalty parameter. Alternatively, if the user can use cross-validation over time by specifying "cross-validation" as the lambda_est method (and additionally a lambda_grid, if desired). 
+
+```bash
+
+#####################
+### Generate data ###
+#####################
+
+np.random.seed(42)
+
+# --- Parameters ---
+N_states = 10
+counties_per_state = 10 # each state has the same number of counties in this example
+n_c = np.full(N_states, counties_per_state)  # array of number of counties per state
+T = 20
+
+# Standard deviations for each component
+sigma_time = 1.0       # time factor scale
+sigma_state = 0.8      # state loading scale
+sigma_county = 0.5     # county-level deviation scale
+sigma_eps = 0.3        # idiosyncratic noise scale
+
+# --- Generate latent factors ---
+# Single time factor (T × 1)
+time_factor = np.random.normal(0, sigma_time, size=(T, 1))
+
+# State-level loadings (N_states × 1)
+state_loadings = np.random.normal(0, sigma_state, size=(N_states, 1))
+
+# County-level deviations (N_states * counties_per_state × 1)
+n_counties = N_states * counties_per_state
+county_components = np.random.normal(0, sigma_county, size=(n_counties, 1))
+
+# --- Map counties to states ---
+state_idx = np.repeat(np.arange(N_states), counties_per_state)
+county_in_state_idx = np.tile(np.arange(counties_per_state), N_states)
+
+# --- Combine state and county effects ---
+county_loadings = state_loadings[state_idx] + county_components  # (n_counties × 1)
+
+# --- Generate outcome matrix at disaggregate level ---
+# data_c_{s,c,t} = county_loading_sc * time_factor_t + ε_{s,c,t}
+eps = np.random.normal(0, sigma_eps, size=(n_counties, T))
+data_c = county_loadings @ time_factor.T + eps  # (n_counties × T)
+
+# --- Population weights within each state ---
+# Each county gets equal weight = 1 / number of counties in its state
+w_c = [np.full(n_c[s], 1 / n_c[s]) for s in range(N_states)] # IMPORTANT: this needs to be a list of arrays!
+
+# --- Aggregate data by state using population weights ---
+data_s = np.zeros((N_states, T))
+for s in range(N_states):
+    # Weighted average across all counties in state s
+    counties_in_s = np.where(state_idx == s)[0]
+    data_s[s, :] = np.average(data_c[counties_in_s, :], axis=0, weights=w_c[s])
+
+# --- Treated unit and time period ---
+idx = 0
+t = 19
+
+################
+### Analysis ###
+################
+
+# Import estimator
+from multi_level_sc_estimator.mlSC import mlSC_estimator
+
+# Define data sets, treated unit, treated period, population weights (w_c) and how to estimate lambda.
+mlSC_results = mlSC_estimator(data_s,data_c, idx, n_c, t, w_c, lambda_est = "heuristic")
+
+# Display results
+tau_hat = mlSC_results[0]
+lambda_hat = mlSC_results[1]
+w_hat = mlSC_results[2]
+```
+
+## References
+Lea Bottmer. **Synthetic Control with Disaggregated Data**, 2025. [[link](https://leabottmer.github.io/job_market/jmp_bottmer.pdf)]
+
+<!--
+## Development
+
+To contribute to this library, first checkout the code. Then create a new virtual environment:
+```bash
+cd multi-level-sc-estimator
+python -m venv venv
+source venv/bin/activate
+```
+Now install the dependencies and test dependencies:
+```bash
+python -m pip install -e '.[test]'
+```
+To run the tests:
+```bash
+python -m pytest
+```
+-->
