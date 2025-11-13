@@ -1,0 +1,298 @@
+"""Register definitions."""
+
+import datetime
+import logging
+import typing as t
+from dataclasses import dataclass
+from enum import Flag, auto
+
+from pymodbus.client.mixin import ModbusClientMixin
+
+from pyairios.properties import AiriosBaseProperty
+
+from .constants import ValueStatusFlags, ValueStatusSource
+from .exceptions import AiriosDecodeError, AiriosInvalidArgumentException
+
+LOGGER = logging.getLogger(__name__)
+
+T = t.TypeVar("T")
+
+
+class RegisterAccess(Flag):
+    """Register access flags."""
+
+    READ = auto()
+    WRITE = auto()
+    STATUS = auto()
+
+
+@dataclass(frozen=True)
+class RegisterDescription:
+    """Register description."""
+
+    address: int
+    length: int
+    access: RegisterAccess
+    min_value: int
+    max_value: int
+
+
+class RegisterBase(t.Generic[T]):
+    """Base class for register definitions."""
+
+    description: RegisterDescription
+    datatype: ModbusClientMixin.DATATYPE
+    aproperty: AiriosBaseProperty
+    result_type: type
+    result_adapter: t.Callable[[t.Any], t.Any] | None
+
+    def __init__(
+        self,
+        description: RegisterDescription,
+        ap: AiriosBaseProperty,
+        result_type: type,
+        result_adapter: t.Callable[[t.Any], t.Any] | None,
+    ) -> None:
+        """Initialize the register instance."""
+        self.description = description
+        self.aproperty = ap
+        self.result_type = result_type
+        self.result_adapter = result_adapter
+
+    def decode(self, registers: list[int]) -> T:
+        """Decode register bytes to value."""
+        return ModbusClientMixin.convert_from_registers(
+            registers, self.datatype, word_order="little"
+        )  # type: ignore
+
+    def encode(self, value: T) -> list[int]:
+        """Encode value to register bytes."""
+        return ModbusClientMixin.convert_to_registers(
+            value,  # type: ignore
+            self.datatype,
+            word_order="little",
+        )
+
+
+class StringRegister(RegisterBase[str]):
+    """String register."""
+
+    datatype = ModbusClientMixin.DATATYPE.STRING
+
+    def __init__(
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        length: int,
+        access: RegisterAccess,
+    ) -> None:
+        """Initialize the StringRegister instance."""
+        description = RegisterDescription(
+            address,
+            length,
+            access,
+            min_value=0,
+            max_value=2**8 - 1,
+        )
+        super().__init__(description, ap, str, None)
+
+    def decode(self, registers: list[int]) -> str:
+        """Decode register bytes to value."""
+
+        def registers_to_bytearray(_registers: list[int]) -> bytearray:
+            """Convert registers to bytes."""
+            _b = bytearray()
+            for x in _registers:
+                _b.extend(x.to_bytes(2, "big"))
+            return _b
+
+        b = registers_to_bytearray(registers)
+
+        # remove trailing null bytes
+        trailing_nulls_begin = len(b)
+        while trailing_nulls_begin > 0 and b[trailing_nulls_begin - 1] == 0:
+            trailing_nulls_begin -= 1
+
+        b = b[:trailing_nulls_begin]
+
+        try:
+            result = b.decode("utf-8")
+        except UnicodeDecodeError as err:
+            raise AiriosDecodeError from err
+        return result
+
+    def encode(self, value: str) -> list[int]:
+        return ModbusClientMixin.convert_to_registers(value, self.datatype, word_order="little")
+
+
+class NumberRegister(RegisterBase[T]):
+    """Base class for number registers."""
+
+    def clamp(self, value: int) -> int:
+        """Clamp provided value to datatype range."""
+        rmin = self.description.min_value
+        rmax = self.description.max_value
+        if value < rmin or value > rmax:
+            raise AiriosInvalidArgumentException(
+                f"Property {self.aproperty} value {value} is out of range [{rmin}..{rmax}]"
+            )
+        return value
+
+    def decode(self, registers: list[int]) -> T:
+        """Decode register bytes to value."""
+        result: T = t.cast(
+            T,
+            ModbusClientMixin.convert_from_registers(registers, self.datatype, word_order="little"),
+        )
+        return result
+
+    def encode(self, value: T) -> list[int]:
+        """Encode value to register bytes."""
+        try:
+            if isinstance(value, (str, int, bool, float)):
+                reg_value = int(value)
+            else:
+                raise AiriosInvalidArgumentException(f"Unsupported type {type(value)}")
+            reg_value = self.clamp(reg_value)
+        except ValueError as ex:
+            msg = f"Invalid value {value}"
+            raise AiriosInvalidArgumentException(msg) from ex
+        return ModbusClientMixin.convert_to_registers(reg_value, self.datatype, word_order="little")
+
+
+class U8Register(NumberRegister[int]):
+    """Unsigned 8-bit entry, sent to modbus as UINT16 register."""
+
+    datatype = ModbusClientMixin.DATATYPE.UINT16
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        access: RegisterAccess,
+        min_value=0,
+        max_value=2**8 - 1,
+        result_type: type = int,
+        result_adapter: t.Callable[[t.Any], t.Any] | None = None,
+    ) -> None:
+        """Initialize the U8Register instance."""
+        description = RegisterDescription(address, 1, access, min_value, max_value)
+        super().__init__(description, ap, result_type, result_adapter)
+
+
+class U16Register(NumberRegister[int]):
+    """Unsigned 16-bit register."""
+
+    datatype = ModbusClientMixin.DATATYPE.UINT16
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        access: RegisterAccess,
+        min_value=0,
+        max_value=2**16 - 1,
+        result_type: type = int,
+        result_adapter: t.Callable[[t.Any], t.Any] | None = None,
+    ) -> None:
+        """Initialize the U16Register instance."""
+        description = RegisterDescription(address, 1, access, min_value, max_value)
+        super().__init__(description, ap, result_type, result_adapter)
+
+
+class I16Register(NumberRegister[int]):
+    """Signed 16-bit register."""
+
+    datatype = ModbusClientMixin.DATATYPE.INT16
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        access: RegisterAccess,
+        min_value=2**15 * -1,
+        max_value=2**15 - 1,
+        result_type: type = int,
+        result_adapter: t.Callable[[t.Any], t.Any] | None = None,
+    ) -> None:
+        """Initialize the I16Register instance."""
+        description = RegisterDescription(address, 1, access, min_value, max_value)
+        super().__init__(description, ap, result_type, result_adapter)
+
+
+class U32Register(NumberRegister[int]):
+    """Unsigned 32-bit register."""
+
+    datatype = ModbusClientMixin.DATATYPE.UINT32
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        access: RegisterAccess,
+        min_value=0,
+        max_value=2**32 - 1,
+        result_type: type = int,
+        result_adapter: t.Callable[[t.Any], t.Any] | None = None,
+    ) -> None:
+        """Initialize the U32Register instance."""
+        description = RegisterDescription(address, 2, access, min_value, max_value)
+        super().__init__(description, ap, result_type, result_adapter)
+
+
+class FloatRegister(NumberRegister[float]):
+    """Float register."""
+
+    datatype = ModbusClientMixin.DATATYPE.FLOAT32
+
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        self,
+        ap: AiriosBaseProperty,
+        address: int,
+        access: RegisterAccess,
+        min_value=0,
+        max_value=2**32 - 1,
+        result_type: type = float,
+        result_adapter: t.Callable[[t.Any], t.Any] | None = None,
+    ) -> None:
+        """Initialize the FloatRegister instance."""
+        description = RegisterDescription(address, 2, access, min_value, max_value)
+        super().__init__(description, ap, result_type, result_adapter)
+
+
+@dataclass
+class ResultStatus:
+    """Metadata associated to a register value."""
+
+    age: datetime.timedelta
+    source: ValueStatusSource
+    flags: ValueStatusFlags
+
+    def __str__(self) -> str:
+        return f"value is {self.age} old, last seen from {self.source}, flags: {self.flags}"
+
+
+@dataclass
+class Result(t.Generic[T]):
+    """Register read result."""
+
+    value: T
+    status: ResultStatus | None
+
+    def __init__(self, value: T, status: ResultStatus | None = None) -> None:
+        super().__init__()
+        self.value = value
+        self.status = status
+
+    def __str__(self) -> str:
+        if isinstance(self.value, str):
+            return f"{self.value}"
+        if isinstance(self.value, datetime.date):
+            return f"{self.value.isoformat()}"
+        if isinstance(self.value, datetime.datetime):
+            return f"{self.value.isoformat()}"
+        if isinstance(self.value, float):
+            return f"{self.value:.04f}"
+        if isinstance(self.value, int):
+            return f"{self.value}"
+        return f"{self.value}"
