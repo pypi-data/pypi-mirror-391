@@ -1,0 +1,223 @@
+Metadata-Version: 2.4
+Name: data_pipelines_cli
+Version: 0.32.0
+Summary: CLI for data platform
+Home-page: https://github.com/getindata/data-pipelines-cli/
+Author: Andrzej Swatowski
+Author-email: andrzej.swatowski@getindata.com
+License: Apache Software License (Apache 2.0)
+Keywords: dbt airflow cli
+Classifier: Development Status :: 1 - Planning
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click==8.1.3
+Requires-Dist: pyyaml==6.0.1
+Requires-Dist: types-PyYAML==6.0.12.2
+Requires-Dist: copier==7.0.1
+Requires-Dist: pyyaml-include<2
+Requires-Dist: pydantic<2
+Requires-Dist: Jinja2<4,>=3.1.3
+Requires-Dist: fsspec<2025.0.0,>=2024.6.0
+Requires-Dist: packaging>=23.0
+Requires-Dist: colorama==0.4.5
+Provides-Extra: bigquery
+Requires-Dist: dbt-bigquery<2.0.0,>=1.7.2; extra == "bigquery"
+Provides-Extra: postgres
+Requires-Dist: dbt-postgres<2.0.0,>=1.7.3; extra == "postgres"
+Provides-Extra: snowflake
+Requires-Dist: dbt-snowflake<2.0.0,>=1.7.1; extra == "snowflake"
+Provides-Extra: redshift
+Requires-Dist: dbt-redshift<2.0.0,>=1.7.1; extra == "redshift"
+Provides-Extra: glue
+Requires-Dist: dbt-glue<2.0.0,>=1.7.0; extra == "glue"
+Requires-Dist: dbt-spark[session]<2.0.0,>=1.7.1; extra == "glue"
+Provides-Extra: databricks
+Requires-Dist: dbt-databricks-factory>=0.1.1; extra == "databricks"
+Provides-Extra: dbt-all
+Requires-Dist: dbt-bigquery<2.0.0,>=1.7.2; extra == "dbt-all"
+Requires-Dist: dbt-postgres<2.0.0,>=1.7.3; extra == "dbt-all"
+Requires-Dist: dbt-snowflake<2.0.0,>=1.7.1; extra == "dbt-all"
+Requires-Dist: dbt-redshift<2.0.0,>=1.7.1; extra == "dbt-all"
+Requires-Dist: dbt-glue<2.0.0,>=1.7.0; extra == "dbt-all"
+Provides-Extra: docker
+Requires-Dist: docker==6.0.1; extra == "docker"
+Provides-Extra: datahub
+Requires-Dist: acryl-datahub[dbt]==0.12.0.5; extra == "datahub"
+Provides-Extra: git
+Requires-Dist: GitPython==3.1.29; extra == "git"
+Provides-Extra: looker
+Requires-Dist: dbt2looker==0.11.0; extra == "looker"
+Provides-Extra: tests
+Requires-Dist: pytest==7.2.0; extra == "tests"
+Requires-Dist: pytest-cov==4.0.0; extra == "tests"
+Requires-Dist: pre-commit==2.20.0; extra == "tests"
+Requires-Dist: tox==3.27.1; extra == "tests"
+Requires-Dist: tox-gh-actions==2.12.0; extra == "tests"
+Requires-Dist: moto[s3,server]<5.0.0,>=4.2.0; extra == "tests"
+Requires-Dist: gcp-storage-emulator==2022.6.11; extra == "tests"
+Requires-Dist: GitPython==3.1.29; extra == "tests"
+Requires-Dist: types-requests==2.28.11.5; extra == "tests"
+Requires-Dist: gcsfs<2025.0.0,>=2024.6.0; extra == "tests"
+Requires-Dist: s3fs<2025.0.0,>=2024.6.0; extra == "tests"
+Provides-Extra: docs
+Requires-Dist: sphinx==5.3.0; extra == "docs"
+Requires-Dist: sphinx-rtd-theme==1.1.1; extra == "docs"
+Requires-Dist: sphinx-click==4.4.0; extra == "docs"
+Requires-Dist: myst-parser==0.18.1; extra == "docs"
+Requires-Dist: GitPython==3.1.29; extra == "docs"
+Requires-Dist: colorama==0.4.5; extra == "docs"
+Requires-Dist: pytz==2023.3; extra == "docs"
+Provides-Extra: gcs
+Requires-Dist: gcsfs<2025.0.0,>=2024.6.0; extra == "gcs"
+Provides-Extra: s3
+Requires-Dist: s3fs<2025.0.0,>=2024.6.0; extra == "s3"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# data-pipelines-cli
+
+[![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://github.com/getindata/data-pipelines-cli)
+[![PyPI Version](https://badge.fury.io/py/data-pipelines-cli.svg)](https://pypi.org/project/data-pipelines-cli/)
+[![Downloads](https://pepy.tech/badge/data-pipelines-cli)](https://pepy.tech/project/data-pipelines-cli)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e44ed9383a42b59984f6/maintainability)](https://codeclimate.com/github/getindata/data-pipelines-cli/maintainability)
+[![Test Coverage](https://img.shields.io/badge/test%20coverage-95%25-brightgreen.svg)](https://github.com/getindata/data-pipelines-cli)
+[![Documentation Status](https://readthedocs.org/projects/data-pipelines-cli/badge/?version=latest)](https://data-pipelines-cli.readthedocs.io/en/latest/?badge=latest)
+
+CLI for data platform
+
+## Documentation
+
+Read the full documentation at [https://data-pipelines-cli.readthedocs.io/](https://data-pipelines-cli.readthedocs.io/en/latest/index.html)
+
+## Installation
+
+**Requirements:** Python 3.9-3.12
+
+### Required
+
+A dbt adapter extra must be installed:
+
+```bash
+pip install data-pipelines-cli[snowflake]    # Snowflake
+pip install data-pipelines-cli[bigquery]     # BigQuery
+pip install data-pipelines-cli[postgres]     # PostgreSQL
+pip install data-pipelines-cli[databricks]   # Databricks
+```
+
+To pin a specific dbt-core version:
+
+```bash
+pip install data-pipelines-cli[snowflake] 'dbt-core>=1.8.0,<1.9.0'
+```
+
+### Optional
+
+Additional integrations: `docker`, `datahub`, `looker`, `gcs`, `s3`, `git`
+
+### Example
+
+```bash
+pip install data-pipelines-cli[bigquery,docker,datahub,gcs]
+```
+
+### Troubleshooting
+
+**Pre-release dbt versions**: data-pipelines-cli requires stable dbt-core releases. If you encounter errors with beta or RC versions, reinstall with stable versions:
+
+```bash
+pip install --force-reinstall 'dbt-core>=1.7.3,<2.0.0'
+```
+
+## Usage
+First, create a repository with a global configuration file that you or your organization will be using. The repository
+should contain `dp.yml.tmpl` file looking similar to this:
+```yaml
+_templates_suffix: ".tmpl"
+_envops:
+    autoescape: false
+    block_end_string: "%]"
+    block_start_string: "[%"
+    comment_end_string: "#]"
+    comment_start_string: "[#"
+    keep_trailing_newline: true
+    variable_end_string: "]]"
+    variable_start_string: "[["
+
+templates:
+  my-first-template:
+    template_name: my-first-template
+    template_path: https://github.com/<YOUR_USERNAME>/<YOUR_TEMPLATE>.git
+
+vars:
+  username: [[ YOUR_USERNAME ]]
+```
+Thanks to the [copier](https://copier.readthedocs.io/en/stable/), you can leverage tmpl template syntax to create
+easily modifiable configuration templates. Just create a `copier.yml` file next to the `dp.yml.tmpl` one and configure
+the template questions (read more at [copier documentation](https://copier.readthedocs.io/en/stable/configuring/)).
+
+Then, run `dp init <CONFIG_REPOSITORY_URL>` to initialize **dp**. You can also drop `<CONFIG_REPOSITORY_URL>` argument,
+**dp** will get initialized with an empty config.
+
+### Project creation
+
+You can use `dp create <NEW_PROJECT_PATH>` to choose one of the templates added before and create the project in the
+`<NEW_PROJECT_PATH>` directory. You can also use `dp create <NEW_PROJECT_PATH> <LINK_TO_TEMPLATE_REPOSITORY>` to point
+directly to a template repository. If `<LINK_TO_TEMPLATE_REPOSITORY>` proves to be the name of the template defined in
+**dp**'s config file, `dp create` will choose the template by the name instead of trying to download the repository.
+
+`dp template-list` lists all added templates.
+
+### Project update
+
+To update your pipeline project use `dp update <PIPELINE_PROJECT-PATH>`. It will sync your existing project with updated
+template version selected by `--vcs-ref` option (default `HEAD`).
+
+### Project deployment
+
+`dp deploy` will sync with your bucket provider. The provider will be chosen automatically based on the remote URL.
+Usually, it is worth pointing `dp deploy` to JSON or YAML file with provider-specific data like access tokens or project
+names. E.g., to connect with Google Cloud Storage, one should run:
+```bash
+echo '{"token": "<PATH_TO_YOUR_TOKEN>", "project_name": "<YOUR_PROJECT_NAME>"}' > gs_args.json
+dp deploy --dags-path "gs://<YOUR_GS_PATH>" --blob-args gs_args.json
+```
+However, in some cases you do not need to do so, e.g. when using `gcloud` with properly set local credentials. In such
+case, you can try to run just the `dp deploy --dags-path "gs://<YOUR_GS_PATH>"` command. Please refer to
+[documentation](https://data-pipelines-cli.readthedocs.io/en/latest/usage.html#project-deployment) for more information.
+
+When finished, call `dp clean` to remove compilation related directories.
+
+### Variables
+You can put a dictionary of variables to be passed to `dbt` in your `config/<ENV>/dbt.yml` file, following the convention
+presented in [the guide at the dbt site](https://docs.getdbt.com/docs/building-a-dbt-project/building-models/using-variables#defining-variables-in-dbt_projectyml).
+E.g., if one of the fields of `config/<SNOWFLAKE_ENV>/snowflake.yml` looks like this:
+```yaml
+schema: "{{ var('snowflake_schema') }}"
+```
+you should put the following in your `config/<SNOWFLAKE_ENV>/dbt.yml` file:
+```yaml
+vars:
+  snowflake_schema: EXAMPLE_SCHEMA
+```
+and then run your `dp run --env <SNOWFLAKE_ENV>` (or any similar command).
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
