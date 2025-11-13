@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: jhu
+Version: 1.7.1
+Summary: Join Happy Universe
+Home-page: https://github.com/joestarhu/jhu
+Author: J.Hu
+Requires-Python: >=3.14
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: auth
+Requires-Dist: requests; extra == "auth"
+Provides-Extra: orm
+Requires-Dist: sqlalchemy; extra == "orm"
+Requires-Dist: pytz; extra == "orm"
+Provides-Extra: security
+Requires-Dist: python-jose; extra == "security"
+Requires-Dist: bcrypt; extra == "security"
+Requires-Dist: pycryptodomex; extra == "security"
+Provides-Extra: webhook
+Requires-Dist: requests; extra == "webhook"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+
+# JHU(Join Happy Utils)
+> 这个是我自己编写的一个python工具库,简化或者自动化的帮助我做一些工作
+
