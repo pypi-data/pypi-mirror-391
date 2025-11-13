@@ -1,0 +1,65 @@
+[project]
+name = "isc-playbook-mcp-server"
+version = "0.1.0"
+description = "MCP server for searching and browsing the IBM ISC Playbook with hybrid search capabilities"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+keywords = ["mcp", "playbook", "search", "milvus", "hybrid-search"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "mcp>=0.9.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "sentence-transformers>=2.2.0",
+    "pymilvus>=2.4.0",
+    "numpy>=1.24.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+isc-playbook-mcp-server = "isc_playbook_mcp_server.server:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/isc-playbook-mcp-server"
+Repository = "https://github.com/yourusername/isc-playbook-mcp-server"
+Issues = "https://github.com/yourusername/isc-playbook-mcp-server/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/isc_playbook_mcp_server"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data/index" = "isc_playbook_mcp_server/data/index"
+"data/cleaned" = "isc_playbook_mcp_server/data/cleaned"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
