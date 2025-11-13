@@ -1,0 +1,143 @@
+from _typeshed import Incomplete
+from datetime import datetime, timedelta as timedelta
+from pydantic import BaseModel
+from typing import Any
+
+class OAuth2Scope(BaseModel):
+    name: str
+    description: str
+    is_default: bool
+    is_system: bool
+    permissions: list[str]
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2Client(BaseModel):
+    client_id: str
+    client_secret: str
+    client_name: str
+    client_type: str
+    redirect_uris: list[str]
+    grant_types: list[str]
+    response_types: list[str]
+    scopes: list[str]
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    expires_at: datetime | None
+    metadata: dict[str, Any]
+    def validate_client_type(cls, v: str) -> str: ...
+    def validate_redirect_uris(cls, v: list[str]) -> list[str]: ...
+    def validate_grant_types(cls, v: list[str]) -> list[str]: ...
+    def validate_response_types(cls, v: list[str]) -> list[str]: ...
+    def is_redirect_uri_allowed(self, uri: str) -> bool: ...
+    def is_grant_type_allowed(self, grant_type: str) -> bool: ...
+    def is_response_type_allowed(self, response_type: str) -> bool: ...
+    def is_scope_allowed(self, scope: str) -> bool: ...
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2AuthorizationCode(BaseModel):
+    code: str
+    client_id: str
+    user_id: str
+    redirect_uri: str
+    scopes: list[str]
+    code_challenge: str | None
+    code_challenge_method: str | None
+    nonce: str | None
+    created_at: datetime
+    expires_at: datetime
+    is_used: bool
+    metadata: dict[str, Any]
+    def validate_code_challenge_method(cls, v: str | None) -> str | None: ...
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    def mark_as_used(self) -> None: ...
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2AccessToken(BaseModel):
+    token: str
+    token_type: str
+    client_id: str
+    user_id: str | None
+    scopes: list[str]
+    created_at: datetime
+    expires_at: datetime
+    is_revoked: bool
+    metadata: dict[str, Any]
+    def validate_token_type(cls, v: str) -> str: ...
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    def revoke(self) -> None: ...
+    def has_scope(self, scope: str) -> bool: ...
+    def has_any_scope(self, scopes: list[str]) -> bool: ...
+    def has_all_scopes(self, scopes: list[str]) -> bool: ...
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2RefreshToken(BaseModel):
+    token: str
+    client_id: str
+    user_id: str
+    scopes: list[str]
+    created_at: datetime
+    expires_at: datetime
+    is_revoked: bool
+    metadata: dict[str, Any]
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    def revoke(self) -> None: ...
+    def has_scope(self, scope: str) -> bool: ...
+    def has_any_scope(self, scopes: list[str]) -> bool: ...
+    def has_all_scopes(self, scopes: list[str]) -> bool: ...
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2Grant(BaseModel):
+    grant_id: str
+    client_id: str
+    user_id: str
+    grant_type: str
+    scopes: list[str]
+    created_at: datetime
+    expires_at: datetime | None
+    is_active: bool
+    metadata: dict[str, Any]
+    def validate_grant_type(cls, v: str) -> str: ...
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    def revoke(self) -> None: ...
+    class Config:
+        json_encoders: Incomplete
+
+class OAuth2DeviceCode(BaseModel):
+    device_code: str
+    user_code: str
+    client_id: str
+    scopes: list[str]
+    created_at: datetime
+    expires_at: datetime
+    interval: int
+    user_id: str | None
+    is_authorized: bool
+    is_expired: bool
+    metadata: dict[str, Any]
+    def is_expired(self) -> bool: ...
+    def is_valid(self) -> bool: ...
+    def authorize(self, user_id: str) -> None: ...
+    def expire(self) -> None: ...
+    class Config:
+        json_encoders: Incomplete
+
+def generate_client_id() -> str: ...
+def generate_client_secret() -> str: ...
+def generate_authorization_code() -> str: ...
+def generate_access_token() -> str: ...
+def generate_refresh_token() -> str: ...
+def generate_device_code() -> str: ...
+def generate_user_code() -> str: ...
+def generate_grant_id() -> str: ...

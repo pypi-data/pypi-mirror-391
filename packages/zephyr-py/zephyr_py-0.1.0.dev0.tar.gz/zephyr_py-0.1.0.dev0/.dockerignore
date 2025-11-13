@@ -1,0 +1,120 @@
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.vs/
+
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Logs
+*.log
+logs/
+
+# Local development
+*.db
+*.sqlite3
+.env.local
+.env.*.local
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.docker/
+
+# Development tools
+.ruff_cache/
+.pre-commit-config.yaml
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Poetry
+poetry.lock
+
+# Test directories
+tests/
+test/
+
+# Development configs
+.editorconfig
+.flake8
+setup.cfg
+tox.ini
+pytest.ini
+
+# CI/CD
+.github/
+.gitlab/
+.travis.yml
+.circleci/
+azure-pipelines.yml
+
+# Local development files
+local/
+*.local
+*.dev

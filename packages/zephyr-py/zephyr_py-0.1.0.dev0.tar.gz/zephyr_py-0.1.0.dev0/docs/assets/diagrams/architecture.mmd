@@ -1,0 +1,23 @@
+graph TD
+    A[Client Request] --> B[Middleware Layer]
+    B --> C{Router}
+    C -->|API Routes| D[Route Handler]
+    C -->|WebSocket| E[WebSocket Handler]
+    C -->|GraphQL| F[GraphQL Handler]
+    D --> G[Controller]
+    E --> G
+    F --> G
+    G --> H[Service Layer]
+    H --> I[Data Access Layer]
+    I --> J[(Database)]
+    I --> K[(Cache)]
+    I --> L[(Queue)]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#ddf,stroke:#333,stroke-width:2px
+    style D,E,F fill:#dfd,stroke:#333,stroke-width:2px
+    style G fill:#fdd,stroke:#333,stroke-width:2px
+    style H fill:#dff,stroke:#333,stroke-width:2px
+    style I fill:#ffd,stroke:#333,stroke-width:2px
+    style J,K,L fill:#ddd,stroke:#333,stroke-width:2px

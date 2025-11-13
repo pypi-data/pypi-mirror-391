@@ -1,0 +1,13 @@
+from _typeshed import Incomplete
+from zephyr._types import ASGIApp as ASGIApp, Receive as Receive, Scope as Scope, Send as Send
+from zephyr.app.middleware.base import BaseMiddleware as BaseMiddleware
+from zephyr.app.requests import Request as Request
+from zephyr.app.responses import Response as Response
+
+class TracingMiddleware(BaseMiddleware):
+    trace_header: Incomplete
+    traces: dict[str, dict[str, object]]
+    def __init__(self, app: ASGIApp, trace_header: str = 'X-Trace-ID') -> None: ...
+    async def process_request(self, request, call_next): ...
+    def get_trace(self, trace_id: str) -> dict[str, object]: ...
+    def get_all_traces(self) -> dict[str, dict[str, object]]: ...
