@@ -1,0 +1,22 @@
+[build-system]
+requires = [ "poetry-core",]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "mewo_ovhcloud"
+version = "0.2.18"
+description = ""
+authors = [ "feluxe <felix@meyerwolters.de>",]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.14"
+cmdi = "^3.0.0"
+requests = "^2.32.5"
+ovh = "^1.2.0"
+sty = "^1.0.6"
+pydantic = "^2.12.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+docopt = "^0.6.2"
