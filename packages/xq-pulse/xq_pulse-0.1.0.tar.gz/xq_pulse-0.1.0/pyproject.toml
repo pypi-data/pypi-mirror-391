@@ -1,0 +1,31 @@
+[project]
+name = "xq-pulse"
+version = "0.1.0"
+description = "Pulse program implementation library"
+readme = "README.md"
+authors = [
+    { name = "Pit Hüne", email = "pit@xeedq.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "attrs>=25.3.0",
+    "cattrs>=24.1.0",
+    "frozendict>=2.4.6",
+    "intervaltree>=3.1.0",
+    "pint>=0.24.4",
+    "plotly>=5.24.1",
+    "plotly-resampler>=0.11.0",
+    "python-constraint2>=2.4.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.2,<0.9.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "ruff>=0.7.0",
+]
