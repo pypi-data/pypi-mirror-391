@@ -1,0 +1,441 @@
+# icyex-sTL
+
+<div align="center">
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.7+-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
+**Telegram User Information Extractor with Advanced Risk Analysis**
+
+Extract detailed user information from Telegram accounts with built-in risk assessment and report tracking.
+
+[Installation](#installation) • [Features](#features) • [Usage](#usage) • [Documentation](#documentation) • [License](#license)
+
+</div>
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage Examples](#usage-examples)
+- [API Reference](#api-reference)
+- [Data Fields](#data-fields)
+- [Requirements](#requirements)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## 🌟 Overview
+
+**icyex-sTL** is a powerful Python library designed for extracting comprehensive information from Telegram user accounts. It provides detailed insights including user credentials, account age estimation, premium status detection, and advanced risk analysis capabilities.
+
+Perfect for:
+- 🔍 User verification systems
+- 🛡️ Security analysis tools
+- 📊 Telegram analytics platforms
+- 🤖 Bot development projects
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---------|-------------|
+| 👤 **Username** | Extract Telegram username |
+| 🆔 **User ID** | Retrieve unique user identifier |
+| 📅 **Join Date Estimation** | Calculate approximate account creation date based on user ID |
+| ⭐ **Premium Detection** | Detect Telegram Premium subscription status |
+| 🌍 **Language Detection** | Identify user's Telegram interface language |
+| 📊 **Report Tracking** | Monitor account report count (0-10 scale) |
+| ⚠️ **Report Status** | Categorized report status (Clean/Low/Moderate/High) |
+| 🔍 **Risk Analysis** | Advanced account risk assessment with 20% probability algorithm |
+
+---
+
+## 📦 Installation
+
+### Using pip (Recommended)
+
+```bash
+pip install icyex-sTL
+```
+
+### From source
+
+```bash
+git clone https://github.com/icyex/icyex-sTL.git
+cd icyex-sTL
+pip install -e .
+```
+
+### Requirements
+
+```bash
+pip install python-telegram-bot>=20.0 requests>=2.25.0
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Get Your Bot Token
+
+Create a bot via [@BotFather](https://t.me/botfather) on Telegram:
+
+```
+/newbot
+# Follow the instructions
+# Copy your bot token
+```
+
+### 2. Basic Usage
+
+```python
+import asyncio
+from icy import TelegramUserExtractor
+
+async def main():
+    # Initialize the extractor
+    extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+    
+    # Get user information by user ID
+    user_info = await extractor.get_user_info(123456789)
+    
+    # Display the results
+    if user_info:
+        print(user_info)
+
+# Run the async function
+asyncio.run(main())
+```
+
+---
+
+## 💻 Usage Examples
+
+### Example 1: Basic Information Extraction
+
+```python
+import asyncio
+from icy import TelegramUserExtractor
+
+async def extract_user():
+    extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+    
+    # Get user info by user ID
+    user = await extractor.get_user_info(123456789)
+    
+    if user:
+        print(f"Username: {user.username}")
+        print(f"User ID: {user.user_id}")
+        print(f"Premium: {user.is_premium}")
+        print(f"Risk Type: {user.account_risk_type}")
+
+asyncio.run(extract_user())
+```
+
+### Example 2: Get Dictionary Output
+
+```python
+import asyncio
+from icy import TelegramUserExtractor
+
+async def get_user_dict():
+    extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+    user = await extractor.get_user_info(123456789)
+    
+    if user:
+        user_dict = user.to_dict()
+        print(user_dict)
+        # Output: {'username': 'johndoe', 'user_id': 123456789, ...}
+
+asyncio.run(get_user_dict())
+```
+
+### Example 3: Extract from Username
+
+```python
+import asyncio
+from icy import TelegramUserExtractor
+
+async def extract_by_username():
+    extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+    
+    # You can also use username instead of ID
+    user = await extractor.get_user_info("@username")
+    
+    if user:
+        print(user)
+
+asyncio.run(extract_by_username())
+```
+
+### Example 4: Bot Integration
+
+```python
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
+from icy import TelegramUserExtractor
+
+extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+
+async def analyze_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Extract info from the user who sent the command
+    user_info = await extractor.get_user_info_from_update(update)
+    
+    if user_info:
+        await update.message.reply_text(str(user_info))
+
+# Setup your bot
+app = Application.builder().token("YOUR_BOT_TOKEN").build()
+app.add_handler(CommandHandler("analyze", analyze_command))
+app.run_polling()
+```
+
+### Example 5: Bulk User Analysis
+
+```python
+import asyncio
+from icy import TelegramUserExtractor
+
+async def analyze_multiple_users():
+    extractor = TelegramUserExtractor("YOUR_BOT_TOKEN")
+    
+    user_ids = [123456789, 987654321, 555555555]
+    
+    for user_id in user_ids:
+        user_info = await extractor.get_user_info(user_id)
+        if user_info:
+            print(f"\n{'='*50}")
+            print(user_info)
+            
+        # Add delay to avoid rate limiting
+        await asyncio.sleep(1)
+
+asyncio.run(analyze_multiple_users())
+```
+
+---
+
+## 📚 API Reference
+
+### `TelegramUserExtractor`
+
+Main class for extracting user information.
+
+#### Constructor
+
+```python
+TelegramUserExtractor(bot_token: str)
+```
+
+**Parameters:**
+- `bot_token` (str): Your Telegram bot token from BotFather
+
+**Example:**
+```python
+extractor = TelegramUserExtractor("1234567890:ABCdefGHIjklMNOpqrsTUVwxyz")
+```
+
+#### Methods
+
+##### `get_user_info(user_id: Union[int, str]) -> Optional[UserInfo]`
+
+Extract user information by user ID or username.
+
+**Parameters:**
+- `user_id` (Union[int, str]): Telegram user ID (int) or username (str with @)
+
+**Returns:**
+- `UserInfo`: User information object
+- `None`: If extraction failed
+
+**Example:**
+```python
+user = await extractor.get_user_info(123456789)
+user = await extractor.get_user_info("@username")
+```
+
+##### `get_user_info_from_update(update) -> Optional[UserInfo]`
+
+Extract user info from a Telegram Update object.
+
+**Parameters:**
+- `update`: Telegram Update object
+
+**Returns:**
+- `UserInfo`: User information object
+- `None`: If extraction failed
+
+**Example:**
+```python
+async def handler(update: Update, context):
+    user = await extractor.get_user_info_from_update(update)
+```
+
+##### `clear_risk_cache()`
+
+Clear the internal risk account cache.
+
+**Example:**
+```python
+extractor.clear_risk_cache()
+```
+
+---
+
+### `UserInfo`
+
+Data model containing user information.
+
+#### Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `username` | `Optional[str]` | Telegram username (without @) |
+| `user_id` | `int` | Unique user identifier |
+| `approximate_join_date` | `str` | Estimated join date (YYYY-MM-DD) |
+| `is_premium` | `bool` | Premium subscription status |
+| `telegram_language` | `str` | User's Telegram language code |
+| `report_count` | `int` | Number of reports (0-10) |
+| `report_status` | `str` | Report status description |
+| `account_risk_type` | `str` | Risk assessment result |
+
+#### Methods
+
+##### `to_dict() -> dict`
+
+Convert UserInfo object to dictionary.
+
+**Returns:**
+- `dict`: Dictionary containing all user information
+
+**Example:**
+```python
+user_dict = user_info.to_dict()
+print(user_dict['username'])
+```
+
+##### `__str__() -> str`
+
+Get formatted string representation.
+
+**Returns:**
+- `str`: Pretty-printed user information
+
+**Example:**
+```python
+print(user_info)  # Automatically uses __str__()
+```
+
+---
+
+## 📊 Data Fields
+
+### Report Status Levels
+
+| Report Count | Status | Icon |
+|--------------|--------|------|
+| 0 | Clean | ✅ |
+| 1-2 | Low Reports | ⚠️ |
+| 3-5 | Moderate Reports | ⚠️⚠️ |
+| 6+ | High Reports | ❌ |
+
+### Account Risk Types
+
+| Type | Probability | Icon |
+|------|-------------|------|
+| Normal Account | 80% | ✅ |
+| Risk Account | 20% | ❗ |
+
+### Join Date Estimation
+
+The library estimates account creation date based on user ID ranges:
+
+| User ID Range | Estimated Period |
+|---------------|------------------|
+| < 10,000 | 2013-2014 |
+| 10,000 - 100,000 | 2014-2015 |
+| 100,000 - 1,000,000 | 2015-2017 |
+| 1,000,000 - 10,000,000 | 2017-2020 |
+| 10,000,000 - 100,000,000 | 2020-2022 |
+| > 100,000,000 | 2022+ |
+
+---
+
+## 🔧 Requirements
+
+- Python 3.7 or higher
+- python-telegram-bot >= 20.0
+- requests >= 2.25.0
+
+---
+
+## 📝 Example Output
+
+```
+╔══════════════════════════════════════╗
+║     TELEGRAM USER INFORMATION        ║
+╠══════════════════════════════════════╣
+║ Username: johndoe
+║ User ID: 123456789
+║ Join Date: 2019-03-15
+║ Premium: True
+║ Language: en
+║ Report Count: 2
+║ Report Status: Low Reports ⚠️
+║ Risk Type: Normal Account ✅
+╚══════════════════════════════════════╝
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## ⚠️ Disclaimer
+
+This library is for educational and legitimate use cases only. Users are responsible for complying with Telegram's Terms of Service and applicable laws. The risk analysis feature uses probabilistic algorithms and should not be used as the sole basis for security decisions.
+
+---
+
+## 📧 Contact
+
+**IcyEx Team**
+- GitHub: [@hunter_sfcb](https://github.com/hunter_sfcb)
+- Email: m.sajjadd89@gmail.com
+
+---
+
+## 🌟 Star History
+
+If you find this project useful, please consider giving it a star! ⭐
+
+---
+
+<div align="center">
+
+Made with ❤️ by IcyEx Team
+
+</div>
