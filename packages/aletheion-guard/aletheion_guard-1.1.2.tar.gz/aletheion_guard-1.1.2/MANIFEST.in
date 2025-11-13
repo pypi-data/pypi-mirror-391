@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (c) 2024-2025 Felipe Maya Muniz
+
+# Include documentation
+include README.md
+include LICENSE.md
+include CHANGELOG.md
+include COPYRIGHT
+include NOTICE
+
+# Include configuration files
+include pyproject.toml
+include setup.py
+
+# Include model weights
+recursive-include src/aletheion_guard/models *.pth
+
+# Include type stubs
+include src/aletheion_guard/py.typed
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *.swo
+prune tests
+prune docs
+prune examples
+prune .git
+prune .github
