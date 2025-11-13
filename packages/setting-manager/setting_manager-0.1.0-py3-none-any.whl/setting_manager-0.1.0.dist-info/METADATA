@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: setting-manager
+Version: 0.1.0
+Summary: A flexible settings management library
+Project-URL: Homepage, https://github.com/Frojen/setting-manager
+Author-email: Konstantin Zhmurko <prog@zhmyrko.ru>
+License: MIT
+Keywords: feature flag,library,setting
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.11
+Requires-Dist: pydantic
+Requires-Dist: pydantic-settings
+Provides-Extra: dev
+Requires-Dist: fastapi; extra == 'dev'
+Requires-Dist: fastapi[standard]; extra == 'dev'
+Requires-Dist: motor; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: ruff; extra == 'dev'
+Requires-Dist: ty; extra == 'dev'
+Provides-Extra: fastapi
+Requires-Dist: fastapi; extra == 'fastapi'
+Provides-Extra: mongo
+Requires-Dist: motor; extra == 'mongo'
+Description-Content-Type: text/markdown
+
+# setting-manager
