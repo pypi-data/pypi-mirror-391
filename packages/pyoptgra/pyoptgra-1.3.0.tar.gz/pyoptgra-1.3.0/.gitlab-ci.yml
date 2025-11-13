@@ -1,0 +1,240 @@
+stages:
+  - test
+  - package
+  - test-package
+  - deploy
+
+# check the code adheres to the coding standards
+static:
+  stage: test
+  image: python:3.9
+  allow_failure: false
+  script:
+    - pip install black==22.8.0 flake8==5.0.4 isort mypy
+    - mypy --ignore-missing-imports pyoptgra/*.py
+    - black --check pyoptgra/*.py
+    - flake8 --max-line-length 125 --ignore='E203','W503','E123','E704','W504','E126','E226','E121','E24' pyoptgra/*.py
+    - isort --profile black --check pyoptgra
+
+# check the C++ part compiles and the test runs
+c++-test:
+  stage: test
+  image: python:3.9
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran g++ cmake --yes
+  script:
+    - mkdir build && cd build
+    - cmake ..
+    - make optgra-test raii-test bare-test
+    - chmod u+x optgra-test raii-test bare-test
+    - ./bare-test
+    - ./raii-test
+    - ./optgra-test
+
+# check the python code compiles and the tests run
+test-py3.9:
+  stage: test
+  image: python:3.9
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran --yes
+    - git submodule update --init --recursive # Ensure submodules are updated
+  script:
+    - python -m pip install .
+    - pip install pytest-cov coverage
+    - cd tests/python # move into test directory to ensure that the installed package is tested, not the source
+    - pytest --cov pyoptgra --cov-report term-missing test.py
+    - coverage report --fail-under=95
+
+test-py3.10:
+  stage: test
+  image: python:3.10
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran --yes
+    - git submodule update --init --recursive # Ensure submodules are updated
+  script:
+    - python -m pip install .
+    - pip install pytest-cov coverage
+    - cd tests/python # move into test directory to ensure that the installed package is tested, not the source
+    - pytest --cov pyoptgra --cov-report term-missing test.py
+    - coverage report --fail-under=95
+
+test-py3.11:
+  stage: test
+  image: python:3.11
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran --yes
+    - git submodule update --init --recursive # Ensure submodules are updated
+  script:
+    - python -m pip install .
+    - pip install pytest-cov coverage
+    - cd tests/python # move into test directory to ensure that the installed package is tested, not the source
+    - pytest --cov pyoptgra --cov-report term-missing test.py
+    - coverage report --fail-under=95
+
+# test-py3.12:
+#   stage: test
+#   image: python:3.12
+#   allow_failure: false
+#   before_script: # install this project's dependencies
+#     - apt update && apt install gfortran --yes
+#     - git submodule update --init --recursive # Ensure submodules are updated
+#   script:
+#     - python -m pip install .
+#     - pip install pytest-cov coverage
+#     - cd tests/python # move into test directory to ensure that the installed package is tested, not the source
+#     - pytest --cov pyoptgra --cov-report term-missing test.py
+#     - coverage report --fail-under=95
+#   when: manual # Once Pygmo is available for Python 3.12 on pip, this job should work
+
+# check the documentation examples work
+doctest:
+  stage: test
+  image: python:3.9
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran --yes
+    - pip install sphinx breathe
+  script:
+    - python -m pip install .
+    - cd doc/sphinx
+    - make doctest
+
+# build the documentation
+documentation:
+  stage: test
+  image: python:3.9
+  allow_failure: false
+  before_script: # install this project's dependencies
+    - apt update && apt install gfortran doxygen --yes
+    - pip install sphinx breathe sphinx-rtd-theme
+  script:
+    - python -m pip install .
+    - cd doc/doxygen
+    - doxygen Doxyfile
+    - cd ../sphinx
+    - make html
+  artifacts:
+    paths:
+      - doc/sphinx/_build
+
+python-sdist:
+  stage: package
+  image: python:3.9
+  before_script:
+    - apt update && apt install gfortran doxygen --yes
+    - pip install --upgrade pip
+    - pip install build scikit-build setuptools-scm ninja cmake
+  script:
+    - git submodule update --init --recursive
+    - python -m build --sdist
+    - mv dist/pyoptgra-*.tar.gz .
+  artifacts:
+    name: python-package
+    paths:
+      - pyoptgra-*.tar.gz
+
+python-wheels:manylinux2014:
+  stage: package
+  image: quay.io/pypa/manylinux2014_x86_64:latest # Updated to manylinux2014
+  needs: []
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+  script:
+    - ./tools/build-manylinux-wheels.sh
+    - mv /wheelhouse/repaired/*.whl .
+  artifacts:
+    name: python-wheels-manylinux2014
+    paths:
+      - pyoptgra-*.whl
+
+test-wheels:
+  stage: test-package
+  image: python:3.9
+  script:
+    - ls -lh  # Show available files
+    - WHL=$(ls pyoptgra-*cp39-cp39*manylinux*.whl | head -n1)
+    - echo 'Installing wheel:' $WHL
+    - pip install "$WHL"
+    - mkdir test-install
+    - cd test-install
+    - python -c "import pyoptgra; print('Import successful')"
+    - cd ..
+  needs:
+    - python-wheels:manylinux2014
+
+publish-gitlab:
+  stage: deploy
+  image: python:3.9
+  script:
+    - pip install twine
+    # upload to repo (ESA Gitlab)
+    - twine upload --non-interactive --disable-progress-bar --verbose -u gitlab-ci-token -p $CI_JOB_TOKEN --repository-url https://gitlab.esa.int/api/v4/projects/$CI_PROJECT_ID/packages/pypi pyoptgra-*.whl
+    - twine upload --non-interactive --disable-progress-bar --verbose -u gitlab-ci-token -p $CI_JOB_TOKEN --repository-url https://gitlab.esa.int/api/v4/projects/$CI_PROJECT_ID/packages/pypi pyoptgra-*.tar.gz
+
+  needs:
+    - python-sdist
+    - test-wheels
+    - python-wheels:manylinux2014
+  only:
+    refs:
+      - master
+  when: manual
+
+publish-testpypi:
+  stage: deploy
+  image: python:3.9
+  script:
+    - pip install twine
+    # upload to the project pypi (whl)
+    - twine upload --non-interactive --disable-progress-bar --verbose --repository testpypi -u __token__ -p $TEST_PYPI_TOKEN pyoptgra-*.whl
+    # upload to the project pypi (sdist)
+    - twine upload --non-interactive --disable-progress-bar --verbose --repository testpypi -u __token__ -p $TEST_PYPI_TOKEN pyoptgra-*.tar.gz
+  needs:
+    - python-sdist
+    - test-wheels
+    - python-wheels:manylinux2014
+  only:
+    refs:
+      - master
+  when: manual
+
+# Upload to PyPI after successful tests and package creation
+publish-pypi:
+  stage: deploy
+  image: python:3.9
+  script:
+    - pip install twine
+    # upload to the project pypi (whl) (change testpypi to pypi to upload to PyPi)
+    - twine upload --non-interactive --disable-progress-bar --verbose --repository pypi -u __token__ -p $PYPI_TOKEN pyoptgra-*.whl
+    # upload to the project pypi (sdist)
+    - twine upload --non-interactive --disable-progress-bar --verbose --repository pypi -u __token__ -p $PYPI_TOKEN pyoptgra-*.tar.gz
+  needs:
+    - python-sdist
+    - test-wheels
+    - python-wheels:manylinux2014
+  only:
+    refs:
+      - master
+  when: manual
+
+pages:
+  stage: deploy
+  image: python:3.9
+  needs:
+    - documentation
+    - test-wheels
+  script:
+    - mkdir -p ./public/html/
+    - mv ./doc/sphinx/_build/html/* ./public/
+  artifacts:
+    paths:
+      - public
+      - doc/sphinx/_build
+  only:
+    refs:
+      - master
+  when: manual
