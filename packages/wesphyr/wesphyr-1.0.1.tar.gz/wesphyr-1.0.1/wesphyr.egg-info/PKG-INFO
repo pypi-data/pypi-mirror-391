@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: wesphyr
+Version: 1.0.1
+Summary: Wesphyr - Global CLI Chat App
+License: MIT
+Project-URL: Homepage, https://wesphyr.fly.dev
+Project-URL: Repository, https://github.com/yourusername/wesphyr
+Project-URL: Issues, https://github.com/yourusername/wesphyr/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Topic :: Communications :: Chat
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Console
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+
+# Wesphyr Messenger
+
+A retro-style command-line messaging application that connects to global messaging servers.
+
+## 🚀 Quick Install
+
+```bash
+pip install wesphyr
+```
+
+## 🎯 Usage
+
+### Option 1: Use Wesphyr's official server
+```bash
+# Connect to Wesphyr's server
+export API_URL="https://wesphyr.fly.dev"
+
+# Run the app
+wesphyr
+```
+
+### Option 2: Connect to custom server
+```bash
+# Connect to any Wesphyr-compatible server
+export API_URL="https://your-custom-server.com"
+wesphyr
+```
+
+## ✨ Features
+
+- 🔐 User registration and login
+- 👥 Friend system with requests
+- 💬 Private messaging between friends
+- 📱 Cross-platform (Windows, Mac, Linux)
+- 🌍 Global server support
+- 🗂️ Message history
+- ✅ Read receipts
+
+## 📋 Requirements
+
+- Python 3.8+
+- Internet connection
+- Server URL (Wesphyr server: https://wesphyr.fly.dev)
+
+## 🎮 How to Use
+
+1. **Register**: Create account with username/password
+2. **Get your ID**: You'll receive a 6-digit user ID
+3. **Find friends**: Share your ID with friends
+4. **Send requests**: Send friend requests using their IDs
+5. **Start chatting**: Message your accepted friends!
+
+## 🌐 Server Setup
+
+To run your own server:
+
+```bash
+pip install wesphyr-server
+wesphyr-server
+```
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+## 🤝 Contributing
+
+Contributions welcome! Please feel free to submit pull requests.
+
+## 📞 Support
+
+If you encounter issues, please check:
+1. Server is running and accessible
+2. API_URL environment variable is set correctly
+3. You have an internet connection
+
+## 🌟 About Wesphyr
+
+Wesphyr is a global messaging platform that brings retro CLI chat to the modern world. Connect with friends worldwide through secure, private messaging.
