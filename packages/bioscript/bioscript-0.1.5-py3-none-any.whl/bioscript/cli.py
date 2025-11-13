@@ -1,0 +1,526 @@
+"""BioScript CLI for running genetic variant classifiers."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import importlib.util
+import sys
+import traceback
+from pathlib import Path
+
+from .reader import load_variants_tsv
+from .testing import export_from_notebook, run_tests
+from .types import MatchList
+
+
+def _merge_classifier_result(results: dict, name: str, result) -> None:
+    """Merge classifier output into results with namespaced columns.
+
+    Convention:
+    - If result is None: skip (classifier wrote results to files)
+    - If result is a list: store both count and data (data for JSON output)
+    - If result is a dict: {name}_{key} for each key-value pair
+    - If result is a single value (str, int, etc): {name}_result
+    """
+
+    if result is None:
+        # No result - classifier wrote output to files
+        return
+    elif isinstance(result, list):
+        # List result: store count for simple output, data for JSON output
+        results[f"{name}_count"] = len(result)
+        results[f"{name}_data"] = result
+    elif isinstance(result, dict):
+        # Dict result: use {name}_{key} for each key
+        for key, value in result.items():
+            column_name = f"{name}_{key}"
+            results[column_name] = value
+    else:
+        # Single value result: use {name}_result
+        results[f"{name}_result"] = result
+
+
+def load_classifier_module(script_path: Path):
+    """
+    Dynamically load a classifier script.
+
+    Expected export: __bioscript__ dictionary with:
+        variant_calls: List of VariantCall objects (required for auto mode)
+        classifier: Callable that takes matches and returns string (required for auto mode)
+        name (optional): Column name for output (defaults to script filename)
+        main (optional): Custom function(*args, **kwargs) -> dict for full control
+
+    Args:
+        script_path: Path to the classifier script
+
+    Returns:
+        Dictionary with 'name' and either 'handler' or 'config'
+    """
+    # Add script directory to sys.path so it can import local modules
+    script_dir = str(script_path.parent.absolute())
+    if script_dir not in sys.path:
+        sys.path.insert(0, script_dir)
+
+    spec = importlib.util.spec_from_file_location(script_path.stem, script_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load module from {script_path}")
+
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[script_path.stem] = module
+    spec.loader.exec_module(module)
+
+    # Load __bioscript__ dict
+    if not hasattr(module, "__bioscript__"):
+        raise AttributeError(
+            f"{script_path} must export '__bioscript__' dict with "
+            "'variant_calls' and 'classifier' (or 'main')"
+        )
+
+    config = module.__bioscript__
+
+    # Check if custom main function provided
+    if "main" in config:
+        return {
+            "name": config.get("name", script_path.stem),
+            "main": config["main"],
+        }
+
+    # Auto mode - require variant_calls and classifier
+    if "variant_calls" not in config:
+        raise AttributeError(f"{script_path}: __bioscript__ must include 'variant_calls'")
+    if "classifier" not in config:
+        raise AttributeError(f"{script_path}: __bioscript__ must include 'classifier'")
+
+    return {
+        "name": config.get("name", script_path.stem),
+        "variant_calls": config["variant_calls"],
+        "classifier": config["classifier"],
+    }
+
+
+def test_command(args):
+    """Run tests in classifier modules."""
+    all_passed = True
+
+    for script_path_str in args.classifiers:
+        script_path = Path(script_path_str)
+        if not script_path.exists():
+            print(f"Error: Classifier script not found: {script_path}", file=sys.stderr)
+            sys.exit(1)
+
+        print(f"\n{'=' * 60}")
+        print(f"Testing: {script_path}")
+        print("=" * 60)
+
+        result = run_tests(script_path, verbose=True)
+
+        if not result["success"]:
+            all_passed = False
+
+    # Exit with error code if any tests failed
+    if not all_passed:
+        sys.exit(1)
+
+
+def export_command(args):
+    """Export classifier from Jupyter notebook."""
+    notebook_path = Path(args.notebook)
+    if not notebook_path.exists():
+        print(f"Error: Notebook not found: {args.notebook}", file=sys.stderr)
+        sys.exit(1)
+
+    output_path = args.output if args.output else None
+
+    try:
+        result = export_from_notebook(
+            notebook_path,
+            output_path=output_path,
+            include_tests=not args.no_tests,
+        )
+        print(f"✓ Exported to: {result}")
+
+        # Run tests if requested
+        if args.test and not args.no_tests:
+            print("\nRunning tests in exported file...")
+            test_result = run_tests(result, verbose=True)
+            if not test_result["success"]:
+                sys.exit(1)
+
+    except Exception as e:
+        print(f"Error exporting notebook: {e}", file=sys.stderr)
+        print(traceback.format_exc(), file=sys.stderr)
+        sys.exit(1)
+
+
+def classify_command(args):
+    """Run classification on SNP file with multiple classifiers."""
+    # Load SNP file
+    cwd = Path.cwd()
+    snp_file_path = Path(args.file)
+    try:
+        resolved_path = snp_file_path.resolve(strict=False)
+    except Exception:
+        resolved_path = snp_file_path
+
+    try:
+        cwd_listing = ", ".join(sorted(str(p.name) for p in cwd.iterdir()))
+    except Exception:
+        cwd_listing = "<unavailable>"
+
+    print(f"[bioscript] Current working directory: {cwd}", file=sys.stderr)
+    print(f"[bioscript] Provided SNP file argument: {args.file}", file=sys.stderr)
+    print(f"[bioscript] Provided path absolute? {snp_file_path.is_absolute()}", file=sys.stderr)
+    print(f"[bioscript] Resolved SNP path: {resolved_path}", file=sys.stderr)
+    print(f"[bioscript] Resolved exists? {resolved_path.exists()}", file=sys.stderr)
+    print(f"[bioscript] CWD contents: {cwd_listing}", file=sys.stderr)
+
+    if not snp_file_path.is_absolute() and resolved_path.exists():
+        snp_file_path = resolved_path
+        print(f"[bioscript] Using resolved SNP path: {snp_file_path}", file=sys.stderr)
+
+    if not snp_file_path.exists():
+        print(f"[bioscript] Error: File not found: {args.file}", file=sys.stderr)
+        sys.exit(1)
+
+    # Results dictionary - only add participant_id if provided
+    results = {}
+    if args.participant_id:
+        results[args.participant_col] = args.participant_id
+
+    # Process each classifier
+    for script_path_str in args.classifiers:
+        script_path = Path(script_path_str)
+        if not script_path.exists():
+            print(f"Error: Classifier script not found: {script_path}", file=sys.stderr)
+            sys.exit(1)
+
+        try:
+            # Load classifier module
+            module_config = load_classifier_module(script_path)
+            name = module_config["name"]
+
+            # Check if custom main function
+            if "main" in module_config:
+                # Call main with full control
+                main_func = module_config["main"]
+                try:
+                    # Build kwargs - only include participant_id if provided
+                    main_kwargs = {
+                        "snp_file": str(snp_file_path),
+                        "file": str(snp_file_path),
+                    }
+                    if args.participant_id:
+                        main_kwargs["participant_id"] = args.participant_id
+
+                    result = main_func(**main_kwargs)
+
+                    # Handle different return types
+                    if isinstance(result, dict):
+                        results.update(result)
+                    elif isinstance(result, str):
+                        results[name] = result
+                    elif isinstance(result, Path):
+                        # File output - verify exists
+                        if not result.exists():
+                            raise FileNotFoundError(
+                                f"main() returned path {result} but file does not exist"
+                            )
+                        results[name] = str(result)
+                    else:
+                        results[name] = str(result)
+
+                except Exception as e:
+                    print(
+                        f"Error in {script_path} main(): {e}",
+                        file=sys.stderr,
+                    )
+                    print(traceback.format_exc(), file=sys.stderr)
+                    results[name] = "ERROR"
+
+            else:
+                # Auto mode - load variants and classify
+                variant_calls_ref = module_config["variant_calls"]
+                classifier_class = module_config["classifier"]
+
+                # Call variant_calls if it's a function
+                if callable(variant_calls_ref):
+                    variant_calls = variant_calls_ref()
+                else:
+                    variant_calls = variant_calls_ref
+
+                # Build kwargs for classifier initialization
+                classifier_kwargs = {
+                    "name": name,
+                    "filename": str(snp_file_path.name),
+                }
+                if args.participant_id:
+                    classifier_kwargs["participant_id"] = args.participant_id
+                if getattr(args, "debug", False):
+                    classifier_kwargs["debug"] = True
+
+                # Initialize classifier
+                classifier = classifier_class(**classifier_kwargs)
+
+                try:
+                    # Load and match variants
+                    variants = load_variants_tsv(snp_file_path)
+
+                    multi_variant_mode = getattr(classifier, "multi_variant_mode", None)
+                    if multi_variant_mode is None:
+                        calls = MatchList(variant_calls=variant_calls)
+                        matches = calls.match_rows(variants)
+                    else:
+                        calls = MatchList(
+                            variant_calls=variant_calls,
+                            enable_position_clustering=bool(multi_variant_mode),
+                        )
+                        matches = calls.match_rows(
+                            variants,
+                            enable_multi_variant=bool(multi_variant_mode),
+                        )
+
+                    # Call classifier (uses __call__ interface)
+                    result = classifier(matches)
+                    _merge_classifier_result(results, name, result)
+
+                    if getattr(args, "debug", False) and hasattr(classifier, "debug_dump"):
+                        debug_path = Path(f"{script_path.stem}_debug.csv")
+                        try:
+                            classifier.debug_dump(matches, debug_path)
+                        except Exception as dump_error:
+                            print(
+                                f"Warning: failed to write debug CSV for {name}: {dump_error}",
+                                file=sys.stderr,
+                            )
+
+                except Exception as e:
+                    print(
+                        f"Error in {script_path} classification: {e}",
+                        file=sys.stderr,
+                    )
+                    print(traceback.format_exc(), file=sys.stderr)
+                    results[name] = "ERROR"
+
+        except (ImportError, AttributeError) as e:
+            print(f"Error loading {script_path}: {e}", file=sys.stderr)
+            print(traceback.format_exc(), file=sys.stderr)
+            sys.exit(1)
+
+    # Output based on format
+    try:
+        if args.out == "tsv":
+            # Filter out _data fields for TSV (just show counts)
+            tsv_results = {k: v for k, v in results.items() if not k.endswith("_data")}
+            writer = csv.DictWriter(sys.stdout, fieldnames=tsv_results.keys(), delimiter="\t")
+            writer.writeheader()
+            writer.writerow(tsv_results)
+        elif args.out == "json":
+            import json
+
+            print(json.dumps(results, indent=2))
+        else:
+            # Simple key=value output - filter out _data fields
+            for key, value in results.items():
+                if not key.endswith("_data"):
+                    print(f"{key}={value}")
+    except Exception as e:
+        print(f"Error writing output: {e}", file=sys.stderr)
+        print(traceback.format_exc(), file=sys.stderr)
+        sys.exit(1)
+
+
+def combine_command(args):
+    """Combine per-participant TSV outputs into a single table."""
+    if not args.files and not args.list:
+        print("Error: provide either --list or one or more input files", file=sys.stderr)
+        sys.exit(1)
+
+    chosen_files = []
+    if args.list:
+        list_path = Path(args.list)
+        if not list_path.exists():
+            print(f"Error: manifest file not found: {list_path}", file=sys.stderr)
+            sys.exit(1)
+        with list_path.open("r", encoding="utf-8") as manifest:
+            for line in manifest:
+                line = line.strip()
+                if line:
+                    chosen_files.append(line)
+    chosen_files.extend(args.files)
+
+    if not chosen_files:
+        print("Error: manifest and positional inputs were empty", file=sys.stderr)
+        sys.exit(1)
+
+    output_path = Path(args.output)
+    combined_any = False
+
+    try:
+        with output_path.open("w", encoding="utf-8") as out_fh:
+            for file_arg in chosen_files:
+                src = Path(file_arg)
+                if not src.exists():
+                    print(f"[bioscript] combine: skipping missing file {src}", file=sys.stderr)
+                    continue
+                if src.is_dir():
+                    print(f"[bioscript] combine: skipping directory {src}", file=sys.stderr)
+                    continue
+
+                try:
+                    lines = src.read_text(encoding="utf-8").splitlines(keepends=True)
+                except Exception as read_err:
+                    print(
+                        f"[bioscript] combine: failed to read {src}: {read_err}",
+                        file=sys.stderr,
+                    )
+                    continue
+
+                if not lines:
+                    print(f"[bioscript] combine: skipping empty file {src}", file=sys.stderr)
+                    continue
+
+                if not combined_any:
+                    out_fh.writelines(lines)
+                    combined_any = True
+                else:
+                    out_fh.writelines(lines[1:])
+    except Exception as e:
+        if output_path.exists():
+            output_path.unlink()
+        print(f"Error combining files: {e}", file=sys.stderr)
+        print(traceback.format_exc(), file=sys.stderr)
+        sys.exit(1)
+
+    if not combined_any:
+        if output_path.exists():
+            output_path.unlink()
+        print("Error: no non-empty input files were provided", file=sys.stderr)
+        sys.exit(1)
+
+
+def main():
+    """Main CLI entry point."""
+    parser = argparse.ArgumentParser(
+        description="BioScript - Genetic variant classification tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run single classifier
+  bioscript classify --file=snps.txt classify_apol1.py
+
+  # With participant ID
+  bioscript classify --participant_id=P001 --file=snps.txt classify_apol1.py
+
+  # Chain multiple classifiers with TSV output
+  bioscript classify --participant_id=P001 --file=snps.txt \\
+    classify_apol1.py classify_apol2.py --out=tsv
+
+  # Custom participant column name
+  bioscript classify --participant_id=P001 --file=snps.txt \\
+    classify_apol1.py --participant_col=sample_id --out=tsv
+        """,
+    )
+
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    # Test command
+    test_parser = subparsers.add_parser("test", help="Run tests in classifier modules")
+    test_parser.add_argument(
+        "classifiers",
+        nargs="+",
+        help="Paths to classifier scripts with test_* functions",
+    )
+
+    # Export command
+    export_parser = subparsers.add_parser("export", help="Export classifier from Jupyter notebook")
+    export_parser.add_argument(
+        "notebook",
+        help="Path to Jupyter notebook (.ipynb)",
+    )
+    export_parser.add_argument(
+        "-o",
+        "--output",
+        help="Output path for Python file (default: same name as notebook)",
+    )
+    export_parser.add_argument(
+        "--no-tests",
+        action="store_true",
+        help="Exclude test functions from export",
+    )
+    export_parser.add_argument(
+        "--test",
+        action="store_true",
+        help="Run tests after export",
+    )
+
+    # Classify command
+    classify_parser = subparsers.add_parser(
+        "classify", help="Run variant classification on SNP file"
+    )
+    classify_parser.add_argument(
+        "--participant_id",
+        help="Optional participant ID for output column",
+    )
+    classify_parser.add_argument(
+        "--file", required=True, help="Path to SNP genotype file (TSV format)"
+    )
+    classify_parser.add_argument(
+        "classifiers",
+        nargs="+",
+        help="Paths to classifier scripts",
+    )
+    classify_parser.add_argument(
+        "--out",
+        choices=["tsv", "json", "simple"],
+        default="simple",
+        help="Output format (default: simple)",
+    )
+    classify_parser.add_argument(
+        "--participant_col",
+        default="participant_id",
+        help="Column name for participant ID in output (default: participant_id)",
+    )
+    classify_parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Write detailed match diagnostics to CSV beside classifier script",
+    )
+
+    combine_parser = subparsers.add_parser(
+        "combine",
+        help="Combine multiple TSV outputs (first header preserved, body appended)",
+    )
+    combine_parser.add_argument(
+        "--output",
+        required=True,
+        help="Path to write the combined TSV",
+    )
+    combine_parser.add_argument(
+        "--list",
+        help="Optional newline-delimited manifest of input files",
+    )
+    combine_parser.add_argument(
+        "files",
+        nargs="*",
+        help="Input TSV files to combine (order preserved)",
+    )
+
+    args = parser.parse_args()
+
+    # Route to command handler
+    if args.command == "test":
+        test_command(args)
+    elif args.command == "export":
+        export_command(args)
+    elif args.command == "classify":
+        classify_command(args)
+    elif args.command == "combine":
+        combine_command(args)
+    else:
+        parser.print_help()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
