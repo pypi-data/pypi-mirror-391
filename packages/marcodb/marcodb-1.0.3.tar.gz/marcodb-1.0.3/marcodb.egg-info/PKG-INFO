@@ -1,0 +1,130 @@
+Metadata-Version: 2.4
+Name: marcodb
+Version: 1.0.3
+Summary: Um motor de banco de dados Chave-Valor (B+ Tree) escrito em Python.
+Home-page: https://github.com/marconeed/MarcoDB
+Author: Marco Lago Pereira
+Author-email: seu.email@exemplo.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Database
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-python
+Dynamic: summary
+
+[MarcoDB (O Manual)](https://www.amazon.com.br/dp/B0FRYP8P7C)
+
+[Projetos PrÃ¡ticos com MarcoDB](https://www.amazon.com.br/dp/B0G1NJ3BKC)
+
+[MarcoDB - pypi org](https://pypi.org/project/marcodb)
+
+[MarcoDB - GitHub](https://github.com/marconeed/MarcoDB)
+
+[Sponsor](https://github.com/sponsors/marconeed)
+
+______________________________________________________________________________________________
+
+Existem duas formas principais de interagir com o
+seu banco de dados MarcoDB: atravÃ©s do Shell
+Interativo (MQL) ou da Interface GrÃ¡fica (GUI).
+
+## O Shell Interativo (shell_interativo.py):
+
+Como Iniciar:
+1. Abra seu terminal (PowerShell, CMD, etc.).
+2. Navegue atÃ© a pasta do projeto.
+3. Execute o script Python:
+Bash
+C:\..._banco_de_dados> python shell_interativo.py
+O que vocÃª verÃ¡:
+O shell serÃ¡ iniciado, informando qual arquivo de
+banco de dados estÃ¡ sendo usado.
+Bash
+INFO: Criando novo banco de dados
+'MarcoDB.db'...
+INFO: Criando novo banco de dados...
+Bem-vindo ao MarcoDB. Banco 'MarcoDB.db'
+aberto.
+Use a linguagem MQL (set, get, del) ou 'exit' para
+sair.
+MarcoDB> _
+O MarcoDB> Ã© o prompt. Ele estÃ¡ aguardando que
+vocÃª digite um comando da linguagem MQL.
+
+## A Interface GrÃ¡fica (gui.py):
+
+A GUI (Graphical User Interface) Ã© uma forma
+visual e mais amigÃ¡vel de manipular os dados,
+ideal para quando vocÃª quer inspecionar ou
+modificar chaves rapidamente sem digitar
+comandos.
+Como Iniciar:
+1. Abra seu terminal.
+2. Navegue atÃ© a pasta do projeto.
+3. Execute o script Python:
+Bash
+C:\..._banco_de_dados> python gui.py
+O que vocÃª verÃ¡:
+Uma janela serÃ¡ aberta, intitulada "MarcoDB
+Explorer".
+Diferente do shell, a GUI nÃ£o abre um banco de
+dados automaticamente.
+1. Clique no botÃ£o "Abrir/Criar Banco".
+2. Uma caixa de diÃ¡logo pedirÃ¡ o nome do
+arquivo. Digite MarcoDB.db (ou qualquer
+outro nome).
+3. Uma vez aberto, os botÃµes "Inserir (Set)",
+"Buscar (Get)" e "Deletar" ficarÃ£o ativos.
+â€¢ Para Inserir: Digite a chave e o valor e
+clique em "Inserir".
+â€¢ Para Buscar: Digite apenas a chave e clique
+em "Buscar". O valor aparecerÃ¡ na caixa
+"Valor".
+â€¢ Para Deletar: Digite a chave que deseja
+remover e clique em "Deletar"
+
+## O Arquivo de Banco de Dados (.db):
+
+Ã‰ importante entender que tanto o
+shell_interativo.py quanto o gui.py estÃ£o
+trabalhando no mesmo arquivo.
+Se vocÃª usar o shell para set chave_A valor_shell e
+depois abrir a GUI e buscar por chave_A, ela
+encontrarÃ¡ o valor_shell.
+O arquivo (MarcoDB.db) Ã© o seu banco de dados.
+As ferramentas sÃ£o apenas as "portas" para
+acessÃ¡-lo.
+
+_____________________________________________________________________________________________________________________________________________________________________________
+
+## Apoie o Projeto
+
+A Lucida-Flow Ã© um projeto independente e de cÃ³digo aberto. Se vocÃª gosta da linguagem e quer ver o seu desenvolvimento continuar, considere [tornar-se um patrocinador no GitHub Sponsors](https://github.com/sponsors/marconeed)! O seu apoio Ã© fundamental para a manutenÃ§Ã£o e evoluÃ§Ã£o do projeto.
+
+_____________________________________________________________________________________________________________________________________________________________________________
+
+# MarcoDB v1.0.0
+
+Bem-vindo ao MarcoDB, um motor de banco de dados Chave-Valor (B+ Tree) leve e persistente, escrito inteiramente em Python.
+
+Este projeto foi construÃ­do do zero como um exercÃ­cio prÃ¡tico de ciÃªncia da computaÃ§Ã£o.
+
+## O Que Ã© Isto?
+
+* **`btree.py`**: O motor principal da B+ Tree (CRUD, Splits, Merges).
+* **`pager.py`**: O gerenciador de pÃ¡ginas de 4KB.
+* **`serialization.py`**: O tradutor de bytes.
+* **`gui.py`**: Uma interface grÃ¡fica (GUI) em Tkinter.
+* **`shell_interativo.py`**: Um shell interativo para a linguagem MQL.
+
+## Aviso
+
+Este Ã© um projeto educacional e nÃ£o Ã© recomendado para uso em produÃ§Ã£o (nÃ£o possui ACID ou concorrÃªncia).
