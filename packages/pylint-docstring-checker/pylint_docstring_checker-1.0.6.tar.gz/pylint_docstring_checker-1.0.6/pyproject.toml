@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylint-docstring-checker"
+version = "1.0.6"
+description = "A Pylint plugin to check Google-style docstrings and language detection."
+authors = [
+    { name="AI&T", email="contact@ai-t.vn" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["pylint", "docstring", "google style", "linter"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.entry-points."pylint.plugins"]
+docstring_checker = "pylint_docstring_checker:register"
+
+[tool.setuptools.packages.find]
+where = ["src"]
