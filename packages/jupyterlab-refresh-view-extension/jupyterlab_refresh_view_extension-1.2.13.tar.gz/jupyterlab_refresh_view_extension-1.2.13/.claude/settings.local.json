@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/lab/workspace/.claude/**)",
+      "Bash(make publish:*)",
+      "Bash(tee:*)",
+      "Read(//tmp/**)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(npm whoami:*)",
+      "Bash(npm view:*)",
+      "Bash(curl:*)",
+      "Bash(make install:*)",
+      "Bash(git log:*)",
+      "Bash(git filter-branch:*)",
+      "Bash(git push:*)",
+      "Bash(npm run build:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(yarn install:*)",
+      "Bash(git tag:*)",
+      "Bash(jupyter labextension:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
