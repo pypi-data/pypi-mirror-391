@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tama-cli"
+version = "0.1.1"  # 建议更新版本号，避免与旧版本冲突
+authors = [
+  { name="Your Name", email="youremail@example.com" },
+]
+description = "一个由 AI 驱动的任务管理命令行工具"
+readme = "readme-0.2.1.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "openai>=1.10.0",
+    "pytest>=7.4.0",
+    "pytest-mock>=3.10.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "typer>=0.9.0",
+    "pydantic",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[project.scripts]
+tama = "cli.main:app"
