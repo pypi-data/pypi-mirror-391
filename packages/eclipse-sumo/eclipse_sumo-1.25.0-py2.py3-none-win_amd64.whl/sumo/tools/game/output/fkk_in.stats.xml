@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-11-13T06:15:58.131345+01:00 by Eclipse SUMO sumo 1.25.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\fkk_in/ingolstadt.net.xml.gz"/>
+        <route-files value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\fkk_in/fkk_in.rou.xml"/>
+        <additional-files value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\fkk_in/fkk_in.tls.add.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\input_additional.add.xml"/>
+    </input>
+
+    <output>
+        <output-prefix value="output\fkk_in."/>
+        <tripinfo-output.write-unfinished value="true"/>
+        <statistic-output value="stats.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="180"/>
+        <step-length value=".2"/>
+    </time>
+
+    <report>
+        <verbose value="false"/>
+        <xml-validation value="never"/>
+        <no-warnings value="true"/>
+        <log value="log"/>
+        <duration-log.statistics value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <gui_only>
+        <gui-settings-file value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\fkk_in/fkk_in.settings.xml"/>
+    </gui_only>
+
+</sumoConfiguration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+    <performance clockBegin="-1797517.96" clockEnd="-1797517.82" clockDuration="0.14" traciDuration="0.00" realTimeFactor="1323.53" vehicleUpdatesPerSecond="239102.94" personUpdatesPerSecond="0.00" begin="0.00" end="180.00" duration="180.00"/>
+    <vehicles loaded="114" inserted="95" running="55" waiting="19"/>
+    <teleports total="0" jam="0" yield="0" wrongLane="0"/>
+    <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
+    <persons loaded="0" running="0" jammed="0"/>
+    <personTeleports total="0" abortWait="0" wrongDest="0"/>
+    <vehicleTripStatistics count="73" routeLength="179.24" speed="6.83" duration="64.17" waitingTime="46.30" timeLoss="49.58" departDelay="0.39" departDelayWaiting="43.58" totalTravelTime="4684.80" totalDepartDelay="863.60"/>
+    <bikeTripStatistics count="22" routeLength="121.13" speed="2.36" duration="82.67" waitingTime="57.58" timeLoss="60.30" departDelay="0.31" totalTravelTime="1818.80"/>
+    <pedestrianStatistics number="0" routeLength="0.00" duration="0.00" timeLoss="0.00"/>
+    <rideStatistics number="0"/>
+    <transportStatistics number="0"/>
+</statistics>

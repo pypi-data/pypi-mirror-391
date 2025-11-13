@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2025-11-13T06:15:37.934579+01:00 by Eclipse SUMO sumo 1.25.0
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.net.xml"/>
+        <route-files value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.passenger.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.truck.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.passenger_mw.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.truck_mw.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.passenger_mwb.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.truck_mwb.rou.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/extra.rou.xml"/>
+        <additional-files value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\input_additional.add.xml,C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.poly.xml"/>
+    </input>
+
+    <output>
+        <output-prefix value="output\A10KW."/>
+        <tripinfo-output.write-unfinished value="true"/>
+        <statistic-output value="stats.xml"/>
+    </output>
+
+    <time>
+        <end value="1800"/>
+        <step-length value="0.5"/>
+    </time>
+
+    <processing>
+        <ignore-route-errors value="true"/>
+        <time-to-teleport value="0"/>
+    </processing>
+
+    <routing>
+        <device.rerouting.adaptation-steps value="180"/>
+    </routing>
+
+    <report>
+        <verbose value="false"/>
+        <xml-validation value="never"/>
+        <no-warnings value="true"/>
+        <log value="log"/>
+        <duration-log.statistics value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <gui_only>
+        <gui-settings-file value="C:\Users\delphi\testreports\sumoExtra\git\tools\game\A10KW/osm.view.xml"/>
+    </gui_only>
+
+</sumoConfiguration>
+-->
+
+<statistics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/statistic_file.xsd">
+    <performance clockBegin="-1797538.14" clockEnd="-1797521.95" clockDuration="16.19" traciDuration="1.56" realTimeFactor="111.21" vehicleUpdatesPerSecond="176702.03" personUpdatesPerSecond="0.00" begin="0.00" end="1800.00" duration="1800.00"/>
+    <vehicles loaded="6889" inserted="5375" running="1083" waiting="1513"/>
+    <teleports total="0" jam="0" yield="0" wrongLane="0"/>
+    <safety collisions="0" emergencyStops="0" emergencyBraking="0"/>
+    <persons loaded="0" running="0" jammed="0"/>
+    <personTeleports total="0" abortWait="0" wrongDest="0"/>
+    <vehicleTripStatistics count="5375" routeLength="1926.17" speed="17.53" duration="266.06" waitingTime="152.73" timeLoss="195.02" departDelay="45.57" departDelayWaiting="306.92" totalTravelTime="1430049.50" totalDepartDelay="709612.20"/>
+    <pedestrianStatistics number="0" routeLength="0.00" duration="0.00" timeLoss="0.00"/>
+    <rideStatistics number="0"/>
+    <transportStatistics number="0"/>
+</statistics>
