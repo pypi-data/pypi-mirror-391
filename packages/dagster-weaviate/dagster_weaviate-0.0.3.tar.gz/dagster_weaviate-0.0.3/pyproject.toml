@@ -1,0 +1,27 @@
+[project]
+name = "dagster-weaviate"
+description = "Dagster integration with Weaviate"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dagster>=1.8.0",
+    "weaviate-client>=4.10.2",
+]
+dynamic = ["version"]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff",
+    "pytest",
+    "pyright>=1.1.386",
+]
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["dagster_weaviate"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dagster_weaviate.__version__"}
