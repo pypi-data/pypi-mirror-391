@@ -1,0 +1,30 @@
+[project]
+name = "flow_exporter"
+version = "0.1.1"
+
+dependencies = [
+    "pytest",
+]
+
+description = "Экспорт и импорт графовых JSON-проектов Langflow"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    { name = "Obraztsov Oleg Aleksandrovich", email = "olegrasputina@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+keywords = ["langflow", "export", "import", "graph", "workflow"]
+
+[project.scripts]
+flow-export = "flow_exporter.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flow_exporter*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
