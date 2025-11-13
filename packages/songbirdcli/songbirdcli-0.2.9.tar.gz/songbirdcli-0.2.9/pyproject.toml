@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+songbirdcli = "songbirdcli.cli:run"
+
+[project]
+name = "songbirdcli"
+authors = [
+    {name = "Christian Boin"},
+]
+version = "0.2.9"
+description = "Songbird's cli."
+readme = "README.md"
+requires-python = ">=3.11"
+dynamic = ["dependencies"]
+
+[project.urls]
+Documentation = "https://cboin1996.github.io/songbird/"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["songbirdcli/requirements.txt"]}
+
+[project.optional-dependencies]
+# these dependencies are required for development,
+# not for running the package.
+dev = [
+    # lint
+    "black",
+    "click",
+    "isort",
+    # test
+    "pytest",
+    "pytest-cov",
+    # docs
+    "mkdocs",
+    "mkdocs-material",
+    "mike",
+    "mkdocstrings-python"
+]
+package = [
+    "build",
+    "twine"
+]
+
+[tool.setuptools.packages.find]
+exclude = ["app", "junit"]
+
+[tool.pytest.ini_options]
+log_cli_level="INFO"
+log_cli=1
