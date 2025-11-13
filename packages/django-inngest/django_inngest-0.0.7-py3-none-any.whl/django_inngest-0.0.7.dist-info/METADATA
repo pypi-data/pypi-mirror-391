@@ -1,0 +1,119 @@
+Metadata-Version: 2.4
+Name: django-inngest
+Version: 0.0.7
+Summary: Missing Django integration for Inngest
+Author-email: Justin Mitchel <justin@codingforentrepreneurs.com>
+Project-URL: Changelog, https://github.com/jmitchel3/django-inngest
+Project-URL: Documentation, https://github.com/jmitchel3/django-inngest
+Project-URL: Funding, https://github.com/jmitchel3/django-inngest
+Project-URL: Repository, https://github.com/jmitchel3/django-inngest
+Keywords: background-tasks,django,event-driven,inngest,scheduler
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 5.2
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: django>=5.2.7
+Requires-Dist: inngest>=0.5.10
+
+# Django Inngest
+
+Missing Django integration for Inngest. This package depends on the [Inngest Python SDK](https://github.com/inngest/inngest-python) ([pypi](https://pypi.org/project/inngest/))
+
+
+## Installation
+```bash
+uv add inngest django-inngest
+```
+
+## Configuration
+
+Update `urls.py` to include:
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+from django_inngest.urls import inngest_urls
+
+urlpatterns = [
+    # ...
+    path("admin", admin.site.urls),
+    # ...
+]
+
+# uses DJANGO_INNGEST_SERVE_PATH from settings.py
+urlpatterns += inngest_urls
+```
+
+
+Update `settings.py` to include:
+
+```python
+# required for inngest and production
+INNGEST_EVENT_KEY = os.environ.get("INNGEST_EVENT_KEY", None)
+INNGEST_SIGNING_KEY = os.environ.get("INNGEST_SIGNING_KEY", None)
+
+# configuration
+DJANGO_INNGEST_APP_ID = os.environ.get("DJANGO_INNGEST_APP_ID", "my-django-project")
+DJANGO_INNGEST_IS_PRODUCTION = not DEBUG
+DJANGO_INNGEST_CLIENT_LOGGER = os.environ.get(
+    "DJANGO_INNGEST_CLIENT_LOGGER", "gunicorn"
+)
+DJANGO_INNGEST_INACTIVE_FUNCTION_IDS = os.environ.get(
+    "DJANGO_INNGEST_INACTIVE_FUNCTION_IDS", []
+)
+DJANGO_INNGEST_AUTO_DISCOVER_FUNCTIONS = os.environ.get(
+    "DJANGO_INNGEST_AUTO_DISCOVER_FUNCTIONS", True
+)
+# no trailing slash or leading slash
+DJANGO_INNGEST_SERVE_PATH = os.environ.get("DJANGO_INNGEST_SERVE_PATH", "api/inngest")
+```
+
+## Usage
+
+Create a new Django app and workflows file:
+```
+python manage.py startapp myapp
+touch myapp/workflows.py
+```
+Update `INSTALLED_APPS` to include `myapp`.
+
+In `myapp/workflows.py`, create a new Inngest function:
+```python
+from datetime import timedelta
+
+import inngest
+from django_inngest.client import inngest_client
+
+
+@inngest_client.create_function(
+    id="myapp/my-function",
+    trigger=inngest.TriggerEvent(name="my/trigger/event"),
+    rate_limit=inngest.RateLimit(
+        limit=1,
+        period=timedelta(minutes=2, seconds=30),
+        key="event.data.channel_id",
+    ),
+)
+def my_function(ctx: inngest.Context):
+    print(ctx.event.data.get("channel_id"))
+    # your inngest function logic here
+    return "OK"
+```
+
+Then trigger _anywhere_ in your Django project with:
+
+```python
+import inngest
+from django_inngest.client import inngest_client
+
+event = inngest.Event(
+    name="my/trigger/event",
+    data={"channel_id": "1234567890"},
+)
+
+inngest_client.send(event)
+```
