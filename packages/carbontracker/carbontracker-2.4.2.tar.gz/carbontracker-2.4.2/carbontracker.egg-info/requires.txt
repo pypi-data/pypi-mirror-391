@@ -1,0 +1,23 @@
+requests
+numpy
+pandas
+geocoder
+nvidia-ml-py
+psutil
+importlib-metadata
+py-cpuinfo
+matplotlib
+seaborn
+reportlab==3.6.13
+
+[docs]
+mkdocs
+mkdocstrings[python]
+
+[test]
+
+[test:python_version < "3.10"]
+pyfakefs==4.5.1
+
+[test:python_version >= "3.10"]
+pyfakefs==5.8.0
