@@ -1,0 +1,286 @@
+Metadata-Version: 2.4
+Name: getupandrun
+Version: 0.1.1
+Summary: A CLI tool that scaffolds development environments from natural language descriptions using GPT
+Author-email: Nick Blaskovich <blaskocode19@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/your-org/getupandrun
+Project-URL: Documentation, https://github.com/your-org/getupandrun#readme
+Project-URL: Repository, https://github.com/your-org/getupandrun
+Project-URL: Issues, https://github.com/your-org/getupandrun/issues
+Keywords: cli,docker,scaffolding,gpt,development-environment,automation,devops
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Systems Administration
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: click>=8.1.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: docker>=6.0.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: jinja2>=3.1.0
+Requires-Dist: requests>=2.31.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: pylint>=2.17.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+
+# GetUpAndRun
+
+A command-line tool that enables developers to go from an idea to a running development environment in minutes. By combining GPT-based natural language understanding with automated environment setup via Docker Compose, it lets users describe an app in plain English and automatically scaffolds, installs, and runs the entire stack locally.
+
+## Example
+
+```bash
+getupandrun "Build me an app with a React frontend, a Python backend, and a Postgres database"
+```
+
+The system interprets the request, scaffolds the project structure, installs dependencies, and sets up all containers locally.
+
+## Installation
+
+### Prerequisites
+
+Before installing GetUpAndRun, ensure you have:
+
+- **Python 3.9 or higher** - Check with `python --version` or `python3 --version`
+- **Docker and Docker Compose** - Required for container orchestration
+  - Install Docker: https://docs.docker.com/get-docker/
+  - Docker Compose is included with Docker Desktop
+- **Git** (optional) - For version control integration
+- **OpenAI API key** - Get one at https://platform.openai.com/api-keys
+
+### Quick Install (Recommended)
+
+```bash
+# Install from PyPI
+pip install getupandrun
+
+# Set your OpenAI API key
+export OPENAI_API_KEY='your-api-key-here'
+
+# Verify installation
+getupandrun --version
+```
+
+### Install from Source (Development)
+
+```bash
+# Clone the repository
+git clone https://github.com/your-org/getupandrun.git
+cd getupandrun
+
+# Create a virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in development mode with all dependencies
+pip install -e ".[dev]"
+
+# Set your OpenAI API key
+export OPENAI_API_KEY='your-api-key-here'
+```
+
+### Verify Installation
+
+```bash
+# Check version
+getupandrun --version
+
+# View help
+getupandrun help
+
+# Test with a simple prompt
+getupandrun -p "React app"
+```
+
+## Usage
+
+### Quick Start
+
+1. **Set your OpenAI API key** (if not already set):
+   ```bash
+   export OPENAI_API_KEY='your-api-key-here'
+   ```
+
+2. **Create your first project**:
+   ```bash
+   getupandrun -p "React frontend with Node.js backend and Postgres database"
+   ```
+
+3. **Start the services**:
+   ```bash
+   cd <project-name>
+   make up
+   ```
+
+### Main Command Options
+
+| Option | Short | Description |
+|--------|-------|-------------|
+| `--prompt` | `-p` | Natural language description of the stack you want to create |
+| `--name` | `-n` | Custom project name (defaults to GPT-generated name) |
+| `--mode` | `-m` | Mode selection: `local` (default) or `cloud` (future) |
+| `--start` | `-s` | Automatically start services after scaffolding |
+| `--help` | `-h` | Show detailed help message |
+
+### Environment Management Commands
+
+After creating a project, manage it with these commands:
+
+```bash
+# Start services
+getupandrun start ./my-project
+
+# Check status
+getupandrun status ./my-project
+
+# View logs
+cd ./my-project && make logs
+
+# Stop services
+getupandrun stop ./my-project
+
+# Restart services
+getupandrun restart ./my-project
+
+# Remove containers (with volumes)
+getupandrun teardown ./my-project -v
+```
+
+### Examples
+
+```bash
+# Create a React + Node.js + Postgres stack
+getupandrun -p "React frontend with Node.js backend and Postgres database"
+
+# Create with custom name
+getupandrun -p "FastAPI backend with Redis" -n my-api-project
+
+# Create and automatically start services
+getupandrun -p "Django app with Postgres" --start
+
+# View comprehensive help
+getupandrun help
+```
+
+## Web UI
+
+GetUpAndRun includes a simple web interface for users who prefer a GUI over the command line.
+
+### Starting the Web UI
+
+```bash
+# Start the UI server
+getupandrun ui
+
+# Or specify a custom port
+getupandrun ui --port 3001
+```
+
+The UI will automatically open in your browser at `http://localhost:3000` (or your specified port).
+
+### Features
+
+- **Template Selection**: Browse and select from predefined templates
+- **Custom Prompts**: Enter natural language descriptions of your project
+- **Settings Management**: Configure where projects are created
+- **Project Creation**: Create projects with a simple form interface
+
+### Web UI vs CLI
+
+- **CLI**: Full-featured, scriptable, faster for experienced users
+- **Web UI**: User-friendly, visual, great for demos and beginners
+
+Both interfaces use the same underlying engine, so projects created via either method are identical.
+
+For more details, see the [UI README](ui/README.md).
+
+### What Gets Generated
+
+GetUpAndRun creates a complete, production-ready project structure:
+
+- **Service directories** with framework-specific boilerplate
+- **Dockerfiles** optimized for each service type
+- **docker-compose.yml** with proper service orchestration
+- **.env file** with environment variables
+- **Makefile** with common commands (`make up`, `make down`, `make clean`, etc.)
+- **README.md** with project-specific documentation
+- **.gitignore** file for version control
+
+### Supported Stacks
+
+GetUpAndRun can generate projects with:
+
+- **Frontend**: React, Vue, Angular, Next.js
+- **Backend**: Node.js (Express), Python (FastAPI, Django, Flask), Go, Rust
+- **Databases**: PostgreSQL, MySQL, MongoDB, SQLite
+- **Cache**: Redis, Memcached
+- **Message Queues**: RabbitMQ, Kafka
+- **And more** - GPT interprets your description and suggests appropriate technologies
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Install development dependencies
+pip install -e ".[dev]"
+
+# Run code formatter
+black src/ tests/
+
+# Run linters
+flake8 src/ tests/
+pylint src/ tests/
+
+# Run tests
+pytest
+```
+
+### Project Structure
+
+```
+getupandrun/
+├── src/
+│   └── getupandrun/
+│       ├── cli/          # CLI entry point and commands
+│       ├── utils/        # Logging and utility functions
+│       ├── gpt/          # GPT integration (PR 2)
+│       ├── scaffold/     # Scaffolding engine (PR 3)
+│       └── environment/  # Docker Compose orchestration (PR 4)
+├── tests/                # Test files
+├── templates/            # Template files for scaffolding
+└── pyproject.toml        # Project configuration
+```
+
+## Roadmap
+
+- **Phase 1 (MVP)**: Local CLI + GPT + Docker Compose
+- **Phase 2**: User Experience & Template Expansion
+- **Phase 3**: Cloud Mode & Kubernetes
+- **Phase 4**: Developer Quality-of-Life Enhancements
+- **Phase 5**: Future-Proofing
+
+See `tasks.md` for detailed roadmap.
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please see the project roadmap in `tasks.md` for current priorities.
+
