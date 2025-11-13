@@ -1,0 +1,169 @@
+Metadata-Version: 2.4
+Name: san-cli
+Version: 1.0.0
+Summary: Space Agent Network CLI - Device management and OTP authentication
+Home-page: https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI
+Author: NexusCore
+Author-email: support@nexuscore.cloud
+Project-URL: Bug Reports, https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI/issues
+Project-URL: Source, https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI
+Keywords: cli,device-management,otp,authentication,distributed-computing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Topic :: System :: Systems Administration
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.28.0
+Requires-Dist: click>=8.0.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# SAN CLI - SPACE Agent Neuron CLI
+
+**The Ultimate AI Infrastructure Management Tool**
+
+[![Status](https://img.shields.io/badge/status-production-green)]()
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)]()
+[![License](https://img.shields.io/badge/license-Commercial-red)]()
+
+## 🎯 What is SAN CLI?
+
+SAN CLI (SPACE Agent Neuron CLI) is a comprehensive command-line tool for managing AI infrastructure:
+- ✅ **Installation**: One-command setup of SPACE agent, Ollama, Whisper
+- ✅ **Service Management**: Control Docker and host services
+- ✅ **Ollama Management**: Pull, run, and manage AI models
+- ✅ **Marketplace**: Install AI services and infrastructure packages
+- ✅ **Telemetry**: Monitor system, services, and AI usage
+- ✅ **GPU-Aware**: Automatic Metal/CUDA detection and configuration
+- ✅ **Cross-Platform**: macOS, Linux, Windows support
+
+## 🌐 Your Device Gets a URL
+
+Every Neuron device gets a unique subdomain:
+```
+Device ID:  d02bc0a8-16ef-41e4-8ecb-152ae5786d6e
+Device URL: d02bc0a8.16ef.41e4.8ecb.cli.nexuscore.cloud
+```
+
+**Use Cases:**
+- Host gaming servers behind NAT
+- Run POS systems in restaurants
+- Deploy home media servers (Plex, Jellyfin)
+- Control IoT devices remotely
+- Distribute AI/ML workloads
+
+## 🚀 Features
+
+- 🌐 **Smart Connection**: VPN-first with HTTPS fallback
+- 🖥️ **Hardware Detection**: Auto-detects CPU, RAM, GPU, storage, displays
+### 3. Start the Agent
+```bash
+# Start in foreground
+neuron-cli start
+
+# Or run as daemon
+neuron-cli start --daemon
+```
+
+### 4. Check Status
+```bash
+neuron-cli status
+```
+
+## Commands
+
+```bash
+neuron-cli register          # Register a new device
+neuron-cli start             # Start the agent
+neuron-cli start --daemon    # Start as background daemon
+neuron-cli status            # Check agent status
+neuron-cli stop              # Stop the agent
+neuron-cli --version         # Show version
+```
+
+## Configuration
+
+Config file location: `~/.neuron/config.json`
+
+```json
+{
+  "api_url": "https://api.support.nexuscore.cloud/api/v1",
+  "device_id": "d02bc0a8-16ef-41e4-8ecb-152ae5786d6e",
+  "jwt_token": "your-jwt-token",
+  "brand_key": "your-brand-key"
+}
+```
+
+**Your Device URL**: `d02bc0a8.16ef.41e4.8ecb.cli.nexuscore.cloud`
+
+## Connection Methods
+
+### VPN (Preferred)
+- Fastest and most secure
+- Direct mesh network connection
+- Lower latency
+- Requires WireGuard VPN setup
+
+### HTTPS (Fallback)
+- Works through any firewall
+- NAT traversal automatic
+- TLS encrypted
+- No VPN required
+
+The agent automatically detects which method is available and uses the best option.
+
+## Hardware Detection
+
+The agent automatically detects and reports:
+- **CPU**: Cores, threads, model, frequency
+- **Memory**: Total RAM, available RAM
+- **Storage**: Total storage across all disks
+- **GPU**: NVIDIA, AMD, or Intel GPUs
+- **Display**: HDMI/display outputs
+- **Network**: Network interfaces and IPs
+- **OS**: Operating system and architecture
+
+## Requirements
+
+- Python 3.8 or higher
+- Linux, macOS, or Windows
+- Internet connection
+- (Optional) WireGuard VPN for best performance
+
+## Development
+
+### Install from source
+```bash
+git clone https://github.com/nexuscore/neuron-cli.git
+cd neuron-cli
+pip install -e .
+```
+
+### Run tests
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+## Troubleshooting
+
+### Agent won't start
