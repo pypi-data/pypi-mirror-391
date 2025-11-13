@@ -1,0 +1,125 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""In-process event primitives for adapter telemetry."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from datetime import datetime
+from threading import RLock
+from typing import TYPE_CHECKING
+from uuid import UUID, uuid4
+
+from ...prompt._types import SupportsDataclass
+from ..logging import StructuredLogger, get_logger
+from ._types import EventBus, EventHandler, HandlerFailure, PublishResult, ToolInvoked
+
+if TYPE_CHECKING:
+    from ...adapters.core import PromptResponse
+
+
+def _describe_handler(handler: EventHandler) -> str:
+    module_name = getattr(handler, "__module__", None)
+    qualname = getattr(handler, "__qualname__", None)
+    if isinstance(qualname, str):
+        prefix = f"{module_name}." if isinstance(module_name, str) else ""
+        return f"{prefix}{qualname}"
+    return repr(handler)  # pragma: no cover - defensive fallback
+
+
+logger: StructuredLogger = get_logger(__name__, context={"component": "event_bus"})
+
+
+class InProcessEventBus:
+    """Process-local event bus that delivers events synchronously."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._handlers: dict[type[object], list[EventHandler]] = {}
+        self._lock = RLock()
+
+    def subscribe(self, event_type: type[object], handler: EventHandler) -> None:
+        with self._lock:
+            handlers = self._handlers.setdefault(event_type, [])
+            handlers.append(handler)
+
+    def publish(self, event: object) -> PublishResult:
+        with self._lock:
+            handlers = tuple(self._handlers.get(type(event), ()))
+        invoked: list[EventHandler] = []
+        failures: list[HandlerFailure] = []
+        for handler in handlers:
+            invoked.append(handler)
+            try:
+                handler(event)
+            except Exception as error:
+                logger.exception(
+                    "Error delivering event.",
+                    event="event_delivery_failed",
+                    context={
+                        "handler": _describe_handler(handler),
+                        "event_type": type(event).__name__,
+                    },
+                )
+                failures.append(HandlerFailure(handler=handler, error=error))
+
+        return PublishResult(
+            event=event,
+            handlers_invoked=tuple(invoked),
+            errors=tuple(failures),
+        )
+
+
+@dataclass(slots=True, frozen=True)
+class PromptExecuted:
+    """Event emitted after an adapter finishes evaluating a prompt."""
+
+    prompt_name: str
+    adapter: str
+    result: PromptResponse[object]
+    session_id: UUID | None
+    created_at: datetime
+    value: SupportsDataclass | None = None
+    event_id: UUID = field(default_factory=uuid4)
+
+
+@dataclass(slots=True, frozen=True)
+class PromptRendered:
+    """Event emitted immediately before dispatching a rendered prompt."""
+
+    prompt_ns: str
+    prompt_key: str
+    prompt_name: str | None
+    adapter: str
+    session_id: UUID | None
+    render_inputs: tuple[SupportsDataclass, ...]
+    rendered_prompt: str
+    created_at: datetime
+    event_id: UUID = field(default_factory=uuid4)
+
+    @property
+    def value(self) -> SupportsDataclass:
+        """Expose the dataclass instance for reducer compatibility."""
+
+        return self
+
+
+__all__ = [
+    "EventBus",
+    "HandlerFailure",
+    "InProcessEventBus",
+    "PromptExecuted",
+    "PromptRendered",
+    "PublishResult",
+    "ToolInvoked",
+]
