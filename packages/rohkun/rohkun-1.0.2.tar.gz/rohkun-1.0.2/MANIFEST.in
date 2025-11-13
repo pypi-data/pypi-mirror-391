@@ -1,0 +1,31 @@
+# Include necessary files for CLI package ONLY
+# CLI is a "dumb terminal" - it only needs CLI code, not server code
+include README.md
+include LICENSE
+include pyproject.toml
+include cli/requirements.txt
+
+# Include ONLY CLI code
+recursive-include cli *.py
+recursive-include cli *.md
+recursive-include cli *.txt
+
+# EXCLUDE all server code - CLI communicates via HTTP API only
+prune server
+prune frontend
+prune tests
+prune docs
+prune external-libs
+prune database
+prune .rohkun
+
+# Exclude cache and build files
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude *.egg-info
+global-exclude *.log
+global-exclude .env*
+global-exclude *.zip
+
