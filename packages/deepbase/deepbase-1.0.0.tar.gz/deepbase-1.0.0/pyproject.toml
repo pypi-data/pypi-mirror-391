@@ -1,0 +1,33 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Il nome che verrà usato su PyPI
+name = "deepbase"
+version = "1.0.0"
+authors = [
+  { name="Tuo Nome", email="tua@email.com" },
+]
+description = "A simple tool to manage and utilize code context with LLMs."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+]
+keywords = ["llm", "context", "developer-tool", "ai", "code-analysis", "deepbase"]
+
+[project.urls]
+"Homepage" = "https://github.com/tuo-username/deepbase"
+"Bug Tracker" = "https://github.com/tuo-username/deepbase/issues"
+
+# Aggiorna il percorso dello script per riflettere la nuova struttura
+[project.scripts]
+deepbase = "deepbase.main:cli"
