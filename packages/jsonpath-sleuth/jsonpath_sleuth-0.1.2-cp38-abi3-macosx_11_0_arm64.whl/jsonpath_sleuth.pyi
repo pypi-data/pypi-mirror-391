@@ -1,0 +1,9 @@
+from typing import Dict, List, Tuple, Union, Iterable
+
+# Minimal JSON type used by the bindings
+JSONScalar = Union[str, int, float, bool, None]
+JSONValue = Union[JSONScalar, Dict[str, "JSONValue"], List["JSONValue"]]
+
+def resolve_jsonpath(data: JSONValue, path: str, /) -> List[JSONValue]: ...
+def find_jsonpaths_by_value(data: JSONValue, target: JSONValue, /) -> List[str]: ...
+def extract_jsonpaths_and_values(data: JSONValue, /) -> List[Tuple[str, JSONValue]]: ...
