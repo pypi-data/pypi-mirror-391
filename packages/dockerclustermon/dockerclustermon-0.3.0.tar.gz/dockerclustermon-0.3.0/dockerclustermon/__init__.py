@@ -1,0 +1,889 @@
+"""dockerclustermon - A CLI tool for a live view of your docker containers running on a remote server."""
+
+from importlib.metadata import version
+
+__version__ = version('dockerclustermon')
+__author__ = 'Michael Kennedy <michael@talkpython.fm>'
+__all__ = []
+
+import datetime
+import os
+import re
+import subprocess
+import sys
+import time
+from subprocess import CalledProcessError, TimeoutExpired
+from threading import Thread
+from typing import Annotated, Callable, Optional, TypedDict
+
+import paramiko
+import rich.live
+import rich.table
+import setproctitle
+import typer
+from rich.console import Console
+from rich.text import Text
+
+
+class ResultsType(TypedDict):
+    ps: list[dict[str, str]]
+    stat: list[dict[str, str]]
+    free: tuple[float, float, float]
+    error: Optional[Exception]
+
+
+results: ResultsType = {
+    'ps': [],
+    'stat': [],
+    'free': (0.0, 0.0, 0.0001),
+    'error': None,
+}
+workers = []
+console = Console()
+DEBUG_MODE: bool = False
+ssh_client: Optional[paramiko.SSHClient] = None
+
+__host_type = Annotated[
+    str,
+    typer.Argument(help='The server DNS name or IP address (e.g. 91.7.5.1 or google.com).'),
+]
+__user_type = Annotated[
+    str,
+    typer.Argument(help='The username of the ssh user for interacting with the server.'),
+]
+__no_ssh = Annotated[
+    bool,
+    typer.Option('--no-ssh', help='Pass this flag to run locally instead of through ssh.'),
+]
+__ssh_config = Annotated[
+    bool,
+    typer.Option(
+        '--ssh-config', help='Pass this flag to treat the host as a ssh config entry (e.g. {username}@{host}).'
+    ),
+]
+__sudo = Annotated[
+    bool,
+    typer.Option('--sudo', help='Pass this flag to run as super user.'),
+]
+__timeout = Annotated[
+    int,
+    typer.Option('--timeout', help='Displays an error if the server fails to respond in timeout seconds.'),
+]
+__version_opt = Annotated[
+    Optional[bool],
+    typer.Option('--version', '-v', help='Show version and exit.', is_eager=True),
+]
+__debug = Annotated[
+    bool,
+    typer.Option('--debug', help='Enable debug mode to capture and display full stdout/stderr from commands.'),
+]
+
+
+def get_user_host(
+    username: str,
+    host: str,
+    ssh_config: bool,
+) -> str:
+    """
+    Get the user and host connection string.
+
+    Args:
+        username (str): The name of the user.
+        host (str): The host.
+        ssh_config (bool): Whether the host is an ssh config entry or not.
+    """
+    return host if ssh_config else f'{username}@{host}'
+
+
+def get_command(
+    args: list[str],
+    user_host: str,
+    no_ssh: bool,
+    run_as_sudo: bool = False,
+) -> list[str]:
+    """
+    Build the command to execute.
+
+    Args:
+        args (List[str]): The list of arguments.
+        user_host (str): The user and host connection string.
+        no_ssh (bool): Whether the command should be executed locally or through SSH.
+        run_as_sudo (bool, optional): Whether the command should be executed as the superuser or not.
+            Defaults to False.
+    """
+    cmd_args = (['sudo'] + args) if run_as_sudo else args
+
+    return cmd_args if no_ssh else ['ssh', user_host, ' '.join(cmd_args)]
+
+
+def get_ssh_client(username: str, host: str, ssh_config: bool) -> Optional[paramiko.SSHClient]:
+    """
+    Get or create a persistent SSH connection using Paramiko.
+
+    Args:
+        username: The SSH username
+        host: The SSH host
+        ssh_config: Whether to use SSH config
+
+    Returns:
+        An SSH client or None if connection fails
+    """
+    global ssh_client
+
+    # Return existing connection if it's still alive
+    if ssh_client is not None:
+        try:
+            # Test if connection is still alive
+            transport = ssh_client.get_transport()
+            if transport and transport.is_active():
+                return ssh_client
+        except Exception:
+            # Connection is dead, clean it up
+            try:
+                ssh_client.close()
+            except Exception:
+                pass
+            ssh_client = None
+
+    # Create new connection
+    try:
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+        if ssh_config:
+            # Load SSH config and connect using it
+            ssh_config_obj = paramiko.SSHConfig()
+            ssh_config_path = os.path.expanduser('~/.ssh/config')
+            try:
+                with open(ssh_config_path) as f:
+                    ssh_config_obj.parse(f)
+                host_config = ssh_config_obj.lookup(host)
+                client.connect(
+                    hostname=host_config.get('hostname', host),
+                    username=host_config.get('user', username),
+                    port=int(host_config.get('port', 22)),
+                    timeout=10,
+                )
+            except FileNotFoundError:
+                # No SSH config file, try direct connection
+                client.connect(hostname=host, username=username, timeout=10)
+        else:
+            # Direct connection
+            client.connect(hostname=host, username=username, timeout=10)
+
+        ssh_client = client
+        return ssh_client
+
+    except Exception as e:
+        if DEBUG_MODE:
+            console.print(f'[yellow]DEBUG: Failed to create SSH connection: {e}[/yellow]')
+        return None
+
+
+def close_ssh_client():
+    """Close the persistent SSH connection."""
+    global ssh_client
+    if ssh_client is not None:
+        try:
+            ssh_client.close()
+        except Exception:
+            pass
+        ssh_client = None
+
+
+def run_ssh_command(client: paramiko.SSHClient, command: str, timeout: int) -> tuple[str, str, int]:
+    """
+    Execute a command over SSH using Paramiko.
+
+    Args:
+        client: The SSH client
+        command: The command to execute
+        timeout: Timeout in seconds
+
+    Returns:
+        Tuple of (stdout, stderr, returncode)
+    """
+    try:
+        stdin, stdout, stderr = client.exec_command(command, timeout=timeout)
+        stdout_str = stdout.read().decode('utf-8')
+        stderr_str = stderr.read().decode('utf-8')
+        returncode = stdout.channel.recv_exit_status()
+
+        if DEBUG_MODE and stderr_str:
+            console.print(f'[yellow]DEBUG stderr from {command[:50]}...: {stderr_str.strip()}[/yellow]')
+
+        if returncode != 0:
+            error_msg = f'Command {command} returned non-zero exit status {returncode}.'
+            if DEBUG_MODE:
+                error_msg += f'\nSTDOUT: {stdout_str}\nSTDERR: {stderr_str}'
+            raise CalledProcessError(returncode, command, stdout_str, stderr_str)
+
+        return stdout_str, stderr_str, returncode
+
+    except paramiko.SSHException as e:
+        if DEBUG_MODE:
+            console.print(f'[red]DEBUG SSH error for {command[:50]}...: {e}[/red]')
+        raise CalledProcessError(1, command, '', str(e))
+    except Exception as e:
+        if DEBUG_MODE:
+            console.print(f'[red]DEBUG error for {command[:50]}...: {e}[/red]')
+        raise
+
+
+def run_command_with_debug(
+    cmd: list[str],
+    timeout: int,
+    ssh_client: Optional[paramiko.SSHClient] = None,
+    run_as_sudo: bool = False,
+    no_ssh: bool = False,
+) -> tuple[str, str, int]:
+    """
+    Run a command and capture stdout, stderr, and return code.
+
+    Args:
+        cmd: The command to run as a list of strings
+        timeout: Timeout in seconds
+        ssh_client: Optional SSH client for remote execution
+        run_as_sudo: Whether to run with sudo
+        no_ssh: Whether we're running locally or remotely
+
+    Returns:
+        Tuple of (stdout, stderr, returncode)
+    """
+    # If we should be using SSH but don't have a client, that's an error
+    if not no_ssh and ssh_client is None:
+        raise ConnectionError('SSH connection failed - unable to connect to remote host')
+
+    # If we have an SSH client, use it
+    if ssh_client is not None:
+        cmd_args = (['sudo'] + cmd) if run_as_sudo else cmd
+        command_str = ' '.join(cmd_args)
+        return run_ssh_command(ssh_client, command_str, timeout)
+
+    # Otherwise, run locally
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            timeout=timeout,
+            text=True,
+        )
+
+        if DEBUG_MODE and result.stderr:
+            console.print(f'[yellow]DEBUG stderr from {" ".join(cmd)[:50]}...: {result.stderr.strip()}[/yellow]')
+
+        if result.returncode != 0:
+            error_msg = f'Command {cmd} returned non-zero exit status {result.returncode}.'
+            if DEBUG_MODE:
+                error_msg += f'\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}'
+            raise CalledProcessError(result.returncode, cmd, result.stdout, result.stderr)
+
+        return result.stdout, result.stderr, result.returncode
+
+    except subprocess.TimeoutExpired:
+        if DEBUG_MODE:
+            console.print(f'[red]DEBUG timeout for {" ".join(cmd)[:50]}...[/red]')
+        raise
+
+
+def live_status(
+    host: __host_type = 'localhost',
+    username: __user_type = 'root',
+    no_ssh: __no_ssh = False,
+    ssh_config: __ssh_config = False,
+    run_as_sudo: __sudo = False,
+    timeout: __timeout = 30,
+    version: __version_opt = None,
+    debug: __debug = False,
+) -> None:
+    global DEBUG_MODE
+
+    if version:
+        typer.echo(f'Docker Cluster Monitor version {__version__}')
+        raise typer.Exit()
+
+    setproctitle.setproctitle('dockerclustermon')
+
+    # Store debug flag globally for access by other functions
+    DEBUG_MODE = debug
+
+    try:
+        print()
+        if host == 'version':
+            print(f'Docker Cluster Monitor version {__version__}.')
+            return
+
+        if host in {'localhost', '127.0.0.1', '::1'}:
+            no_ssh = True
+
+        console.print(f'Docker Cluster Monitor v{__version__}')
+        if debug:
+            console.print('[yellow]Debug mode enabled - full stderr/stdout will be captured[/yellow]')
+            console.print('[yellow]Errors will cause immediate exit with full details[/yellow]')
+        with console.status('Loading...'):
+            table = build_table(username, host, no_ssh, ssh_config, run_as_sudo, timeout)
+        console.clear()
+
+        if not table:
+            return
+
+        with rich.live.Live(table, auto_refresh=False) as live:
+            while True:
+                table = build_table(username, host, no_ssh, ssh_config, run_as_sudo, timeout)
+                live.update(table)  # type: ignore
+                live.refresh()
+    except KeyboardInterrupt:
+        for w in workers:
+            w.join()
+        close_ssh_client()
+        print('kthxbye!')
+    except TimeoutExpired as te:
+        print()
+        console.print('[red]Error: Timeout expired[/red]')
+        console.print(f'[red]Details: {te}[/red]')
+        sys.exit(1)
+    except CalledProcessError as cpe:
+        print()
+        console.print(f'[red]Error: Command failed with exit code {cpe.returncode}[/red]')
+        console.print(f'[red]Command: {" ".join(str(c) for c in cpe.cmd)}[/red]')
+        if cpe.stdout:
+            console.print(f'[yellow]STDOUT:[/yellow]\n{cpe.stdout}')
+        if cpe.stderr:
+            console.print(f'[yellow]STDERR:[/yellow]\n{cpe.stderr}')
+        sys.exit(1)
+    except Exception as x:
+        print()
+        console.print(f'[red]Error: {type(x).__name__}: {x}[/red]')
+        import traceback
+
+        console.print('[red]Traceback:[/red]')
+        console.print(traceback.format_exc())
+        sys.exit(1)
+
+
+def process_results():
+    ps_lines: list[dict[str, str]] = results['ps']
+    stat_lines: list[dict[str, str]] = results['stat']
+    total, used, avail = results['free']
+    joined = join_results(ps_lines, stat_lines)
+    reduced = reduce_lines(joined)
+    total_cpu = total_percent(reduced, 'CPU')
+    total_mem = total_sizes(reduced, 'Mem')
+    return reduced, total, total_cpu, total_mem, used
+
+
+def run_update(username: str, host: str, no_ssh: bool, ssh_config: bool, run_as_sudo: bool, timeout: int):
+    global workers
+    results['error'] = None
+
+    user_host = get_user_host(username, host, ssh_config)
+
+    # Get or create SSH client for remote operations
+    client = None if no_ssh else get_ssh_client(username, host, ssh_config)
+
+    workers.clear()
+    workers.append(
+        Thread(target=lambda: run_stat_command(user_host, no_ssh, run_as_sudo, timeout, client), daemon=True)
+    )
+    workers.append(Thread(target=lambda: run_ps_command(user_host, no_ssh, run_as_sudo, timeout, client), daemon=True))
+    workers.append(Thread(target=lambda: run_free_command(user_host, no_ssh, timeout, client), daemon=True))
+
+    for w in workers:
+        w.start()
+
+    # Join threads with a timeout to prevent indefinite hanging
+    # Add a buffer to the timeout to allow for thread overhead
+    thread_timeout = timeout + 5
+    for w in workers:
+        w.join(timeout=thread_timeout)
+        if w.is_alive():
+            # Thread is still running after timeout
+            if DEBUG_MODE:
+                console.print(f'[red]DEBUG: Thread {w.name} did not complete within {thread_timeout} seconds[/red]')
+            # Since threads are daemon threads, they'll be killed when main exits
+            # But we should raise a timeout error now
+            if not results['error']:
+                results['error'] = TimeoutExpired(cmd='thread operations', timeout=thread_timeout)
+
+    if results['error']:
+        raise results['error']
+
+
+def build_table(username: str, host: str, no_ssh: bool, ssh_config: bool, run_as_sudo: bool, timeout: int):
+    # Keys: 'Name', 'Created', 'Status', 'CPU', 'Mem', 'Mem %', 'Limit'
+    formatted_date = datetime.datetime.now().strftime('%b %d, %Y @ %I:%M %p')
+    table = rich.table.Table(title=f'Docker cluster {host} status {formatted_date}')
+
+    table.add_column('Name', style='white', no_wrap=True)
+    # table.add_column("Created",  style="white", no_wrap=True)
+    table.add_column('Status', style='green', no_wrap=True)
+    table.add_column('CPU %', justify='right', style='white')
+    table.add_column('Mem %', justify='right', style='white')
+    table.add_column('Mem', justify='right', style='white')
+    table.add_column('Limit', justify='right', style='white')
+    # noinspection PyBroadException
+    try:
+        run_update(username, host, no_ssh, ssh_config, run_as_sudo, timeout)
+        reduced, total, total_cpu, total_mem, used = process_results()
+    except TimeoutExpired:
+        # In debug mode, re-raise to be handled at the top level
+        if DEBUG_MODE:
+            raise
+        timeout_formatted_date = datetime.datetime.now().strftime('%b %d, %Y @ %I:%M:%S %p')
+        table.add_row(
+            'Error',
+            f'The server did not response after {timeout} seconds on {timeout_formatted_date}. Retrying',
+            '',
+            '',
+            '',
+            '',
+        )
+        time.sleep(1)
+        return table
+    except ConnectionError as ce:
+        # SSH connection failed - display helpful error and retry
+        if DEBUG_MODE:
+            raise
+        error_formatted_date = datetime.datetime.now().strftime('%b %d, %Y @ %I:%M:%S %p')
+        table.add_row(
+            'Error',
+            f'SSH connection failed on {error_formatted_date}: {ce}. Retrying',
+            '',
+            '',
+            '',
+            '',
+        )
+        time.sleep(1)
+        return table
+    except CalledProcessError as cpe:
+        # In debug mode, re-raise to be handled at the top level
+        if DEBUG_MODE:
+            raise
+        print(f'Error: {cpe}')
+        return None
+    except Exception as x:
+        # In debug mode, re-raise to be handled at the top level
+        if DEBUG_MODE:
+            raise
+        table.add_row('Error', str(x), '', '', '', '')
+        time.sleep(1)
+        return table
+
+    for container in reduced:
+        table.add_row(
+            Text(container['Name'], style='bold'),
+            color_text(
+                container['Status'],
+                lambda t: not any(w in t for w in {'unhealthy', 'restart'}),
+            ),
+            color_number(container['CPU'], low=5, mid=25),
+            color_number(container['Mem %'], low=25, mid=65),
+            container['Mem'],
+            container['Limit'],
+        )
+
+    table.add_row()
+    table.add_row('Totals', '', f'{total_cpu:,.0f} %', '', f'{total_mem:,.2f} GB', '')
+    table.add_row()
+
+    total_server_mem_pct = used / total * 100
+    table.add_row(
+        'Server',
+        '',
+        '',
+        f'{total_server_mem_pct:,.0f} %',
+        f'{used:,.2f} GB',
+        f'{total:,.2f} GB',
+    )
+    return table
+
+
+def color_number(text: str, low: int, mid: int) -> Text:
+    num_text = text.replace('%', '').replace('GB', '').replace('MB', '').replace('KB', '')
+    num = float(num_text)
+
+    if num <= low:
+        return Text(text, style='green')
+
+    if num <= mid:
+        return Text(text, style='cyan')
+
+    return Text(text, style='red')
+
+
+def color_text(text: str, good: Callable) -> Text:
+    if good(text):
+        return Text(text)
+
+    return Text(text, style='bold red')
+
+
+def run_free_command(
+    user_host: str, no_ssh: bool, timeout: int, client: Optional[paramiko.SSHClient] = None
+) -> tuple[float, float, float]:
+    try:
+        # Run the program and capture its output
+        if no_ssh:
+            # Local execution
+            stdout, stderr, returncode = run_command_with_debug(['free', '-m'], timeout, no_ssh=True)
+        else:
+            # Remote execution using persistent SSH connection
+            stdout, stderr, returncode = run_command_with_debug(
+                ['free', '-m'], timeout, ssh_client=client, no_ssh=False
+            )
+
+        # Convert the string to individual lines
+        lines = [line.strip() for line in stdout.split('\n') if line and line.strip()]
+
+        # total        used        free      shared  buff/cache   available
+        # Mem:            7937        4257         242         160        3436        3211
+        mem_line = lines[1]
+        while '  ' in mem_line:
+            mem_line = mem_line.replace('  ', ' ')
+
+        parts = mem_line.split(' ')
+        used = int(parts[2]) / 1024
+        avail = int(parts[5]) / 1024
+        total = int(parts[1]) / 1024
+
+        t = total, used, avail
+        results['free'] = t
+
+        return t
+    except TimeoutExpired as timeout_err:
+        results['error'] = timeout_err
+        return 0.002, 0, 0
+    except CalledProcessError as cpe:
+        msg = str(cpe)
+        if "No such file or directory: 'free'" in msg:
+            results['error'] = None
+            t = 0.001, 0, 0
+            results['free'] = t
+            return t
+        results['error'] = cpe
+        return 0.002, 0, 0
+    except Exception as x:
+        msg = str(x)
+        if "No such file or directory: 'free'" in msg:
+            results['error'] = None
+            t = 0.001, 0, 0
+            results['free'] = t
+            return t
+
+        results['error'] = x
+        return 0.002, 0, 0
+
+
+def total_sizes(rows: list[dict[str, str]], key: str) -> float:
+    # e.g. 1.5GB, 1.5MB, 1.5KB
+    total = 0.0
+    for row in rows:
+        value = row[key]
+        if 'GB' in value:
+            value = float(value.replace('GB', ''))
+        elif 'MB' in value:
+            value = float(value.replace('MB', ''))
+            value = value / 1024
+        elif 'KB' in value:
+            value = float(value.replace('KB', ''))
+            value = value / 1024 / 1024
+        elif 'B' in value:
+            # Handle bytes without prefix
+            value = float(value.replace('B', ''))
+            value = value / 1024 / 1024 / 1024
+        else:
+            # If no unit found, skip this value to avoid type error
+            continue
+        total += value
+
+    return total
+
+
+def total_percent(rows: list[dict[str, str]], key: str) -> float:
+    # e.g. 50.88%
+    total = 0.0
+    for row in rows:
+        try:
+            value = float(row[key].replace('%', ''))
+            total += value
+        except (ValueError, AttributeError):
+            # Skip malformed percentage values
+            continue
+
+    return total
+
+
+def reduce_lines(joined: list[dict[str, str]]) -> list[dict[str, str]]:
+    new_lines = []
+    # keep_keys = { 'NAME', 'CREATED', 'STATUS', 'CPU %', 'MEM USAGE / LIMIT', 'MEM %'}
+
+    for j in joined:
+        j = split_mem(j)
+        reduced = {
+            'Name': j['NAME'],
+            'Created': j['CREATED'],
+            'Status': j['STATUS'],
+            'CPU': str(int(float(j['CPU %'].replace('%', '')))) + ' %',
+            'Mem': j['MEM USAGE'].replace('KB', ' KB').replace('MB', ' MB').replace('GB', ' GB').replace('  ', ' '),
+            'Mem %': str(int(float(j['MEM %'].replace('%', '')))) + ' %',
+            'Limit': j['MEM LIMIT'].replace('KB', ' KB').replace('MB', ' MB').replace('GB', ' GB').replace('  ', ' '),
+        }
+        new_lines.append(reduced)
+
+    # Sort by uptime (youngest first), then by name.
+    new_lines.sort(
+        key=lambda d: (
+            get_seconds_key_from_string(d.get('Status', '')),
+            d.get('Name', '').lower().strip(),
+        )
+    )
+
+    return new_lines
+
+
+def split_mem(j: dict) -> dict:
+    key = 'MEM USAGE / LIMIT'
+    # Example: 781.5MiB / 1.5GiB
+    value = j[key]
+    parts = [v.strip() for v in value.split('/')]
+
+    j['MEM USAGE'] = parts[0].replace('iB', 'B')
+    j['MEM LIMIT'] = parts[1].replace('iB', 'B')
+
+    return j
+
+
+def join_results(ps_lines, stat_lines) -> list[dict[str, str]]:
+    join_on = 'NAME'
+
+    joined_lines = []
+    ps_dict: dict[str, str]
+    stat_lines: list[dict[str, str]]
+
+    for ps_dict, stat_dict in zip(ps_lines, stat_lines):
+        # noinspection PyTypeChecker
+        if ps_dict[join_on] != stat_dict[join_on]:
+            raise Exception('Lines do not match')
+
+        joined = ps_dict.copy()
+        # noinspection PyArgumentList
+        joined.update(**stat_dict)
+
+        joined_lines.append(joined)
+
+    return joined_lines
+
+
+def run_stat_command(
+    user_host: str, no_ssh: bool, run_as_sudo: bool, timeout: int, client: Optional[paramiko.SSHClient] = None
+) -> list[dict[str, str]]:
+    # noinspection PyBroadException
+    try:
+        # Run the program and capture its output
+        if no_ssh:
+            # Local execution
+            stdout, stderr, returncode = run_command_with_debug(
+                ['docker', 'stats', '--no-stream'],
+                timeout,
+                run_as_sudo=run_as_sudo,
+                no_ssh=True,
+            )
+        else:
+            # Remote execution using persistent SSH connection
+            stdout, stderr, returncode = run_command_with_debug(
+                ['docker', 'stats', '--no-stream'],
+                timeout,
+                ssh_client=client,
+                run_as_sudo=run_as_sudo,
+                no_ssh=False,
+            )
+
+        # Convert the string to individual lines
+        lines = [line.strip() for line in stdout.split('\n') if line and line.strip()]
+
+        header = parse_stat_header(lines[0])
+
+        entries = []
+        for line in lines[1:]:
+            entries.append(parse_line(line, header))
+
+        results['stat'] = entries
+
+        return entries
+    except TimeoutExpired as t:
+        results['error'] = t
+        return []
+    except CalledProcessError as e:
+        results['error'] = e
+        return []
+    except Exception as x:
+        results['error'] = x
+        return []
+
+
+def parse_free_header(header_text: str) -> list[tuple[str, int]]:
+    names = ['system', 'used', 'free', 'shared', 'buff/cache', 'available']
+    positions = []
+    header_lower = header_text.lower()
+
+    for n in names:
+        idx = header_lower.find(n.lower())
+        if idx == -1:
+            raise ValueError(
+                f"Failed to parse 'free' command output. Expected column '{n}' not found.\n"
+                f'Actual header: {header_text!r}\n'
+                f'Expected columns: {names}\n'
+                f'This may indicate a platform compatibility issue.'
+            )
+        item = (n, idx)
+        positions.append(item)
+
+    return positions
+
+
+def parse_stat_header(header_text: str) -> list[tuple[str, int]]:
+    names = [
+        'CONTAINER ID',
+        'NAME',
+        'CPU %',
+        'MEM USAGE / LIMIT',
+        'MEM %',
+        'NET I/O',
+        'BLOCK I/O',
+        'PIDS',
+    ]
+    positions = []
+    header_lower = header_text.lower()
+
+    for n in names:
+        idx = header_lower.find(n.lower())
+        if idx == -1:
+            raise ValueError(
+                f"Failed to parse 'docker stats' output. Expected column '{n}' not found.\n"
+                f'Actual header: {header_text!r}\n'
+                f'Expected columns: {names}\n'
+                f'This may indicate a Docker version or platform difference.'
+            )
+        item = (n, idx)
+        positions.append(item)
+
+    return positions
+
+
+def run_ps_command(
+    user_host: str, no_ssh: bool, run_as_sudo: bool, timeout: int, client: Optional[paramiko.SSHClient] = None
+) -> list[dict[str, str]]:
+    try:
+        # Run the program and capture its output
+        if no_ssh:
+            # Local execution
+            stdout, stderr, returncode = run_command_with_debug(
+                ['docker', 'ps'], timeout, run_as_sudo=run_as_sudo, no_ssh=True
+            )
+        else:
+            # Remote execution using persistent SSH connection
+            stdout, stderr, returncode = run_command_with_debug(
+                ['docker', 'ps'], timeout, ssh_client=client, run_as_sudo=run_as_sudo, no_ssh=False
+            )
+
+        # Convert the string to individual lines
+        lines = [line.strip() for line in stdout.split('\n') if line and line.strip()]
+
+        header = parse_ps_header(lines[0])
+
+        entries = []
+        for line in lines[1:]:
+            entries.append(parse_line(line, header))
+
+        results['ps'] = entries
+        return entries
+    except TimeoutExpired as t:
+        results['error'] = t
+        return []
+    except CalledProcessError as e:
+        results['error'] = e
+        return []
+    except Exception as x:
+        results['error'] = x
+        return []
+
+
+def parse_line(line: str, header: list[tuple[str, int]]) -> dict[str, str]:
+    local_results = {}
+    tmp_headers = header + [('END', 100000)]
+    total_len = 0
+    for (name, idx), (_, next_idx) in zip(tmp_headers[:-1], tmp_headers[1:]):
+        total_len += idx
+
+        # print("Going from {} to {}".format(idx, next_idx))
+        value = line[idx:next_idx].strip()
+        # print(name + ' -> ' + value)
+        if name == 'NAMES':
+            name = 'NAME'
+        local_results[name] = value
+
+    return local_results
+
+
+def parse_ps_header(header_text: str) -> list[tuple[str, int]]:
+    names = ['CONTAINER ID', 'IMAGE', 'COMMAND', 'CREATED', 'STATUS', 'PORTS', 'NAMES']
+    positions = []
+    header_lower = header_text.lower()
+
+    for n in names:
+        idx = header_lower.find(n.lower())
+        if idx == -1:
+            raise ValueError(
+                f"Failed to parse 'docker ps' output. Expected column '{n}' not found.\n"
+                f'Actual header: {header_text!r}\n'
+                f'Expected columns: {names}\n'
+                f'This may indicate a Docker version or platform difference.'
+            )
+        item = (n, idx)
+        positions.append(item)
+
+    return positions
+
+
+def get_seconds_key_from_string(uptime_str: str) -> int:
+    if match := re.search(r'(\d+) second', uptime_str):
+        dt = int(match.group(1))
+        return dt
+
+    if re.search(r'About a minute', uptime_str):
+        return 60
+
+    if match := re.search(r'(\d+) minute', uptime_str):
+        dt = int(match.group(1))
+        return dt * 60
+
+    if re.search(r'About an hour', uptime_str):
+        return 60 * 60
+
+    if match := re.search(r'(\d+) hour', uptime_str):
+        dt = int(match.group(1))
+        return dt * 60 * 60
+
+    if re.search(r'About a day', uptime_str):
+        return 60 * 60 * 24
+
+    if match := re.search(r'(\d+) day', uptime_str):
+        dt = int(match.group(1))
+        return dt * 60 * 60 * 24
+
+    return 1_000_000
+
+
+def run_live_status():
+    typer.run(live_status)
+
+
+def version_and_exit_if_requested():
+    if '--version' in sys.argv or '-v' in sys.argv:
+        typer.echo(f'Docker Cluster Monitor version {__version__}')
+        sys.exit(0)
+
+
+if __name__ == '__main__':
+    version_and_exit_if_requested()
+    run_live_status()
