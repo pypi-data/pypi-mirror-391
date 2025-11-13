@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fragment-sdk"
+version = "0.1.0"
+description = "Unofficial Fragment SDK for purchasing Telegram goods (Stars, Premium, Ads)"
+authors = [
+    { name = "whicencer" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "fragment",
+    "telegram",
+    "api",
+    "client",
+    "library",
+    "python",
+    "sdk"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Typing :: Typed"
+]
+
+dependencies = [
+    "requests>=2.32.0",
+    "beautifulsoup4>=4.14.0",
+    "tonutils>=0.5.0",
+]
+
+[project.urls]
+Source = "https://github.com/whicencer/fragmentpy"
+Community = "https://t.me/fragmentpy_chat"
+
+[tool.hatch.version]
+path = "fragmentpy/__init__.py"
+
+[tool.hatch.build.hooks.custom]
+
+[tool.hatch.metadata]
+allow-direct-references = true
