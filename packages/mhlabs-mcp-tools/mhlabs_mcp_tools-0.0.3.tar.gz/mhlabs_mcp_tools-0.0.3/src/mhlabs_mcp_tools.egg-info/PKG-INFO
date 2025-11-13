@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: mhlabs-mcp-tools
+Version: 0.0.3
+Summary: MCP tools package: text preprocessing, NLP components, and document analysis (STDIO FastMCP server).
+Author-email: MusaddiqueHussain Jahagirdar <musaddiquehussainlabs@gmail.com>
+Maintainer-email: MusaddiqueHussain Jahagirdar <musaddiquehussainlabs@gmail.com>
+Project-URL: Homepage, https://github.com/MusaddiqueHussainLabs/mhlabs_mcp_tools/
+Project-URL: Documentation, https://github.com/MusaddiqueHussainLabs/mhlabs_mcp_tools/
+Project-URL: Repository, https://github.com/MusaddiqueHussainLabs/mhlabs_mcp_tools/
+Project-URL: Issues, https://github.com/MusaddiqueHussainLabs/mhlabs_mcp_tools/issues
+Project-URL: Changelog, https://github.com/MusaddiqueHussainLabs/mhlabs_mcp_tools/blob/main/CHANGELOG.md
+Keywords: nlp,llm,text preprocessing,document analysis,langchain,google gemini
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: spacy==3.8.8
+Requires-Dist: fastmcp==2.13.0.2
+Requires-Dist: pydantic-settings==2.12.0
+Requires-Dist: beautifulsoup4==4.14.2
+Requires-Dist: html5lib==1.1
+Requires-Dist: nltk==3.9.2
+Requires-Dist: textsearch==0.0.24
+Dynamic: license-file
+
+# mhlabs-mcp-tools
+
+mcp-name: io.github.MusaddiqueHussainLabs/mhlabs_mcp_tools
+
+`mhlabs-mcp-tools` is a modular collection of MCP tools designed for text preprocessing (`textprep`) and natural language processing (`nlp`) tasks. It provides a structured and extensible registry system to load, execute, and manage AI components.
+
+## ✨ Features
+- Hierarchical tool namespaces: `textprep.*`, `nlp.*`
+- Configurable preprocessing pipelines
+- PII masking utilities
+- Tokenization, normalization, and cleaning
+- Modular registry for dynamic tool loading
+
+## 🧩 Tool Categories
+### TextPrep Tools (`textprep.*`)
+- `textprep.remove_email`
+- `textprep.remove_phone_number`
+- `textprep.remove_punctuation`
+- `textprep.preprocess_text`
+
+### NLP Tools (`nlp.*`)
+- `nlp.load_component`
+- `nlp.predict_component`
+
+## 🧱 Project Structure
