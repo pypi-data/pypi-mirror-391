@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "campo-estatico-mdf"
+version = "1.0.0"
+description = "Simulador 2D del campo electrostático por método de diferencias finitas (Jacobi / Gauss-Seidel)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name="Daniel Criollo", email="boltzmannmachine0@gmail.com" }
+]
+keywords = ["electrostatics", "finite differences", "Jacobi", "Gauss-Seidel", "numerical methods"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+dependencies = [
+    "numpy>=1.22",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/SanCriolloB/campo-estatico-mdf"
+"Documentation" = "https://sancriollob.github.io/campo-estatico-mdf/"
+"Issues" = "https://github.com/SanCriolloB/campo-estatico-mdf/issues"
+
+[tool.setuptools]
+packages = ["campo_estatico_mdf"]
+include-package-data = true
