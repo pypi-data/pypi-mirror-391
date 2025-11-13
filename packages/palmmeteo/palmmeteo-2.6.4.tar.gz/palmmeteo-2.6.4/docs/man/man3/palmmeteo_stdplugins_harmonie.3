@@ -1,0 +1,193 @@
+.TH "palmmeteo_stdplugins.harmonie" 3 "Thu Oct 23 2025" "PALM-meteo" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+palmmeteo_stdplugins.harmonie
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBBilinearRegridder\fP"
+.br
+.ti -1c
+.RI "class \fBHarmonieCoordTransform\fP"
+.br
+.ti -1c
+.RI "class \fBHarmoniePlugin\fP"
+.br
+.ti -1c
+.RI "class \fBHarmonieRadPlugin\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "def \fBvariable2parameter\fP ()"
+.br
+.ti -1c
+.RI "def \fBfindnearest\fP (xlon, xlat, point)"
+.br
+.ti -1c
+.RI "def \fBtransform_from_grib\fP (filename_pattern, fileout, cfg, **kwargs)"
+.br
+.ti -1c
+.RI "def \fBlog_dstat_on\fP (desc, delta)"
+.br
+.ti -1c
+.RI "def \fBlog_dstat_off\fP (desc, delta)"
+.br
+.ti -1c
+.RI "def \fBlpad\fP (var)"
+.br
+.ti -1c
+.RI "def \fBpalm_harm_gw\fP (f, lon, lat, levels, tidx=0)"
+.br
+.ti -1c
+.RI "def \fBminterp\fP (interp_heights, data_heights, u, v)"
+.br
+.ti -1c
+.RI "def \fBget_wrf_dims\fP (f, lat, lon, xlat, xlong)"
+.br
+.ti -1c
+.RI "def \fBcalcgw_harm\fP (f, lon, lat, levels, tidx=0)"
+.br
+.ti -1c
+.RI "def \fBharmonie_t\fP (f, it)"
+.br
+.ti -1c
+.RI "def \fBdescription_key\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBmetpy_version_master\fP = int(metpy\&.__version__\&.split('\&.', 1)[0])"
+.br
+.ti -1c
+.RI "\fBbarom_pres\fP = PalmPhysics\&.barom_lapse0_pres"
+.br
+.ti -1c
+.RI "\fBbarom_gp\fP = PalmPhysics\&.barom_lapse0_gp"
+.br
+.ti -1c
+.RI "\fBg\fP = PalmPhysics\&.g"
+.br
+.ti -1c
+.RI "\fBax_\fP = np\&.newaxis"
+.br
+.ti -1c
+.RI "int \fBgw_gfs_margin_deg\fP = 5\&."
+.br
+.ti -1c
+.RI "int \fBgw_wrf_margin_km\fP = 10\&."
+.br
+.ti -1c
+.RI "int \fBgw_alpha\fP = 1\&."
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.calcgw_harm ( f,  lon,  lat,  levels,  tidx = \fC0\fP)"
+
+.PP
+.nf
+Geostrophischer Wind aus HARMONIE-NetCDF, analog zu calcgw_wrf,
+aber ohne WRF-spezifisches Slicing und PB/PHB\&.
+Liefert (phgt_point, ug, vg) im gleichen Format wie calcgw_wrf\&.
+
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.description_key ()"
+
+.SS "def palmmeteo_stdplugins\&.harmonie\&.findnearest ( xlon,  xlat,  point)"
+
+.SS "def palmmeteo_stdplugins\&.harmonie\&.get_wrf_dims ( f,  lat,  lon,  xlat,  xlong)"
+
+.PP
+.nf
+A crude method, yet satisfactory for approximate WRF surroundings
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.harmonie_t ( f,  it)"
+
+.PP
+.nf
+Potentielle Temperatur aus HARMONIE-Daten\&.
+f : netCDF4\&.Dataset
+it: Zeitschritt-Index
+
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.log_dstat_off ( desc,  delta)"
+
+.PP
+.nf
+Do nothing (log disabled)
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.log_dstat_on ( desc,  delta)"
+
+.PP
+.nf
+Calculate and log delta statistics if enabled\&.
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.lpad ( var)"
+
+.PP
+.nf
+Pad variable in first dimension by repeating lowest layer twice
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.minterp ( interp_heights,  data_heights,  u,  v)"
+
+.SS "def palmmeteo_stdplugins\&.harmonie\&.palm_harm_gw ( f,  lon,  lat,  levels,  tidx = \fC0\fP)"
+
+.PP
+.nf
+Calculate geostrophic wind from HARMONIE using MetPy, but via calcgw_wrf for identical results
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.transform_from_grib ( filename_pattern,  fileout,  cfg, ** kwargs)"
+
+.PP
+.nf
+Process HARMONIE GRIB files with proper imports and error handling
+.fi
+.PP
+ 
+.SS "def palmmeteo_stdplugins\&.harmonie\&.variable2parameter ()"
+
+.SH "Variable Documentation"
+.PP 
+.SS "palmmeteo_stdplugins\&.harmonie\&.ax_ = np\&.newaxis"
+
+.SS "palmmeteo_stdplugins\&.harmonie\&.barom_gp = PalmPhysics\&.barom_lapse0_gp"
+
+.SS "palmmeteo_stdplugins\&.harmonie\&.barom_pres = PalmPhysics\&.barom_lapse0_pres"
+
+.SS "palmmeteo_stdplugins\&.harmonie\&.g = PalmPhysics\&.g"
+
+.SS "int palmmeteo_stdplugins\&.harmonie\&.gw_alpha = 1\&."
+
+.SS "int palmmeteo_stdplugins\&.harmonie\&.gw_gfs_margin_deg = 5\&."
+
+.SS "int palmmeteo_stdplugins\&.harmonie\&.gw_wrf_margin_km = 10\&."
+
+.SS "palmmeteo_stdplugins\&.harmonie\&.metpy_version_master = int(metpy\&.__version__\&.split('\&.', 1)[0])"
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for PALM-meteo from the source code\&.
