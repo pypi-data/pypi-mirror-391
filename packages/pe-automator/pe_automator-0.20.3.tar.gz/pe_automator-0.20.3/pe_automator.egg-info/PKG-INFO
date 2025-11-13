@@ -1,0 +1,72 @@
+Metadata-Version: 2.4
+Name: pe-automator
+Version: 0.20.3
+Summary: PE Automator is a Python package for automating the setup and execution of parameter estimation (PE) runs using Bilby Pipe.
+Home-page: https://git.ligo.org/yumeng.xu/pe-automator
+Author: Yumeng Xu
+Author-email: Yumeng Xu <yumeng.xu@ligo.org>
+Keywords: ligo,gravitational waves,parameter estimation
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: bilby-pipe
+Requires-Dist: python-gitlab
+Requires-Dist: jinja2
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: gwpy
+Requires-Dist: h5py
+Requires-Dist: streamlit
+Requires-Dist: streamlit-aggrid
+Requires-Dist: plotly
+Requires-Dist: GitPython
+Requires-Dist: click
+Requires-Dist: paramiko
+Requires-Dist: pymannkendall
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: requires-python
+
+# PE Automator
+
+## Installation
+
+```bash
+conda create -n pe_automator python=3.10 setuptools_scm
+conda activate pe_automator
+make install
+```
+
+## Usage
+
+Setup a run with the PE Automator:
+
+```bash
+pe_automator setup GW231123_135430 --data_path ./data --run_label run1 --account uib107 --partition gpp --qos gp_resa --approximant IMRPhenomXPNR --user resh000428 --conda_env parallel_bilby --private_token <token> --allocation AECT-2025-2-0029
+```
+
+The `--data_path` should point to `data` directory of this repo. The framefiles are stored as `git-lfs` files, so you need to have `git-lfs` installed and initialized in the repository. To install `git-lfs`, run the following command:
+
+```bash
+git lfs install
+```
+
+> How to apply for a private token? See [here](https://docs.gitlab.com/user/profile/personal_access_tokens/#personal-access-token-scopes). You should select the `api` scope to allow the PE Automator to access the GitLab repository and create issues.
+
+Monitor and update the status of the runs (Should be run from a daemon or a cron job):
+
+```bash
+pe_automator monitor --private_token <token> --data_dir=./data
+```
+
+Update the conda evironment:
+
+```bash
+pe_automator setup_env pe-0.0.1beta1 --source_env=my_env.tar.gz --source_remote=resh000428@picasso.scbi.uma.es --data_dir=./data
+```
+
+`pe-0.0.1beta1` will be the tagged conda environment name, `--source_env=` is the packed conda environment file, and `--source_remote=` is the remote server where the conda environment is stored. The `--data_dir` should point to the `data` directory of this repo.
