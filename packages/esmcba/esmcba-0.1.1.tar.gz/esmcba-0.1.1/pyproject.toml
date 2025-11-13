@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "esmcba"
+version = "0.1.1"
+description = "ESM-Cambrian Binding Affinity prediction for peptide-MHC binding"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Sergio Mares", email = "sergiomar10@example.com"}
+]
+keywords = ["protein", "MHC", "binding", "ESM", "transformers", "immunology"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "esm>=3.0.0",
+    "huggingface-hub>=0.16.0,<1.0",
+    "biopython>=1.79",
+    "umap-learn>=0.5.0",
+    "scikit-learn>=1.0.0",
+    "seaborn>=0.11.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.4.0",
+    "numpy>=1.20.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+]
+transfer = [
+    "hf_transfer>=0.1.0",  # For faster downloads
+]
+
+[project.urls]
+Homepage = "https://github.com/sermare/ESMCBA"
+Repository = "https://github.com/sermare/ESMCBA"
+Models = "https://huggingface.co/smares/ESMCBA"
+Documentation = "https://github.com/sermare/ESMCBA#readme"
+"Bug Reports" = "https://github.com/sermare/ESMCBA/issues"
+
+[project.scripts]
+esmcba = "ESMCBA.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ESMCBA*"]
+exclude = ["tests*", "jupyter_notebooks*", "figures*", "data*"]
