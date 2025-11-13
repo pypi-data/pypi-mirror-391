@@ -1,0 +1,49 @@
+[project]
+name = "b3dkit"
+version = "0.1.0"
+authors = [
+  { name="x0pherl"},
+]
+description = "build123d libraries and utilities"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  "build123d>=0.0.1",
+  "ocp_vscode",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "hatchling",
+  "build",
+  ]
+docs = [
+  "mkdocs",
+  "mkdocs-material",
+  "markdown-include",
+]
+
+[project.urls]
+Homepage = "https://github.com/x0pherl/b3dkit"
+Issues = "https://github.com/x0pherl/b3dkit/issues"
+Documentation = "https://b3dkit.readthedocs.org"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = [".venv-1"]
+
+[tool.pytest.ini_options]
+markers = [
+    "manual: marks tests that can only be executed manually",
+]
