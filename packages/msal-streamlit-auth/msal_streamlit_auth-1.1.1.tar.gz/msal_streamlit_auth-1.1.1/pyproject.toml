@@ -1,0 +1,36 @@
+[project]
+name = "msal_streamlit_auth"
+version = "1.1.1"
+description = "Streamlit auth library based on MSAL.JS"
+readme = "README.md"
+authors = [{name="Matthew Pallotta",email="matthew.pallotta@independenthealth.com"}]
+
+[project.urls]
+repository = "https://github.com/mjpallotta/msal_streamlit_authentication"
+
+[tool.poetry]
+packages=[
+    { include="msal_streamlit_auth" }
+]
+include = ["msal_streamlit_auth/frontend/dist/**/*"]
+exclude = [
+    "msal_streamlit_auth/frontend/index.html",
+    "msal_streamlit_auth/frontend/public",
+    "msal_streamlit_auth/frontend/src",
+    "msal_streamlit_auth/frontend/tsconfig.json",
+    "msal_streamlit_auth/frontend/tsconfig.node.json",
+    "msal_streamlit_auth/frontend/package.json",
+    "msal_streamlit_auth/frontend/package-lock.json",
+    "msal_streamlit_auth/frontend/vite.config.ts",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+streamlit = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "6.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
