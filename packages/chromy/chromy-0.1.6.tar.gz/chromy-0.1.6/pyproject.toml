@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version"]
+
+name = "chromy"
+description = "一个处理以 Chromium 为核心的浏览器用户数据的 Python 库"
+authors = [
+    {name = "Julian Freeman", email = "freemanjulian372@gmail.com"}
+]
+readme = "README.md"
+
+dependencies = [
+    "jnp3>=0.3.5",
+]
+requires-python = ">=3.10"
+
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/JulianFreeman/chromy"
+Repository = "https://github.com/JulianFreeman/chromy.git"
+Changelog = "https://github.com/JulianFreeman/chromy/blob/main/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = {attr = "chromy.__version__"}
