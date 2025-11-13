@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-snap"
+version = "0.1.0"
+description = "A simple, local-first snapshot tool for git."
+dependencies = [
+    "textual==0.58.0",
+]
+
+[project.scripts]
+"git-snap" = "gitsnap.main:run"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+gitsnap = ["*.css"]
