@@ -1,0 +1,27 @@
+[project]
+name = "pybuc"
+version = "0.56.2"
+description = "Fast estimation of Bayesian structural time series models via Gibbs sampling."
+authors = [{name = "Devin D. Garcia"}]
+license = {text = "BSD 3-Clause"}
+readme = "README.md"
+keywords = [
+    "structural",
+    "time series",
+    "unobserved components",
+    "bsts",
+    "forecast",
+    "state space"
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "matplotlib>=3.10.3",
+    "numba>=0.61.2",
+    "pandas>=2.2.3",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.4",
+]
+
+[tool.setuptools]
+packages = ["pybuc", "model_assessment", "statespace", "utils", "vectorized"]
