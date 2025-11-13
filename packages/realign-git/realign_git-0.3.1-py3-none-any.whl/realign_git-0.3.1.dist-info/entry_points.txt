@@ -1,0 +1,5 @@
+[console_scripts]
+realign = realign.cli:app
+realign-hook-pre-commit = realign.hooks:pre_commit_hook
+realign-hook-prepare-commit-msg = realign.hooks:prepare_commit_msg_hook
+realign-mcp = realign.mcp_server:main
