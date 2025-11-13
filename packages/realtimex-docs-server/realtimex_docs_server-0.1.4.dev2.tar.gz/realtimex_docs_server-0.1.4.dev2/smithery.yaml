@@ -1,0 +1,24 @@
+# Smithery configuration for the RealTimeX documentation MCP server.
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      docsPath:
+        type: string
+        description: Path to the documentation directory.
+  commandFunction:
+    |-
+    (config) => {
+      const args = []
+      if (config.docsPath) {
+        args.push("--docs-path", config.docsPath)
+      }
+      return {
+        command: "realtimex-docs-server",
+        args,
+      }
+    }
+  exampleConfig:
+    docsPath: "/path/to/docs"
