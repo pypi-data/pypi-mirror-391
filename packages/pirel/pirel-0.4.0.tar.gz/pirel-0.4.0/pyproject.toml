@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pirel"
+version = "0.4.0"
+description = "The Python release cycle in your terminal"
+authors = [
+  {name = "Rafael Weingartner-Ortner", email = "weingartner.rafael@hotmail.com"}
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+
+requires-python = ">=3.10"
+dependencies = [
+  "humanize>=4.10.0",
+  "platformdirs>=4.3.6",
+  "rich>=13.9.2",
+  "typer>=0.12.5",
+]
+
+keywords = ["cli", "python", "releases"]
+# Pypi classifiers: https://pypi.org/classifiers/
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Homepage = "https://github.com/RafaelWO/pirel"
+Repository = "https://github.com/RafaelWO/pirel"
+Issues  = "https://github.com/RafaelWO/pirel/issues"
+Changelog = "https://github.com/RafaelWO/pirel/blob/main/CHANGELOG.md"
+
+[project.scripts]
+pirel = "pirel.cli:app"
+
+[dependency-groups]
+dev = [
+  "freezegun>=1.5.1",
+  "mypy>=1.14.0",
+  "pytest>=8.3.3",
+  "pytest-cov>=5.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=pirel --cov-report term-missing"
+
+[tool.ruff]
+line-length = 88
+
+[tool.mypy]
+strict = true
