@@ -1,0 +1,117 @@
+import ctypes
+
+## common start ##
+def get_field_infos(input_fields, prefix=None):
+    infos = []
+    for name, ctype in input_fields:
+        if issubclass(ctype, ctypes.Union):
+            for f, f_struct in ctype._fields_:
+                ret = get_field_infos(f_struct._fields_, prefix=f)
+                infos.extend(ret)
+        else:
+            prefixed_name = prefix + '__' + name if prefix else name
+            infos.append([prefixed_name, ctype])
+    return infos
+
+def get_field_vals_list(obj):
+    vals = []
+    for name, ctype in obj._fields_:
+        if issubclass(ctype, ctypes.Union):
+            union_type = ctype._union_link_.get(getattr(obj, ctype._union_key_), None)
+            for f, f_struct in ctype._fields_:
+                if union_type == f:
+                    ret = get_field_vals_list(getattr(getattr(obj, name), f))
+                    vals.extend(ret)
+                else:
+                    vals.extend([None] * len(f_struct._fields_))
+        else:
+            obj_var = getattr(obj, name)
+            if hasattr(obj_var, '_length_'):
+                vals.append(list(obj_var))
+            else:
+                vals.append(obj_var)
+    return vals
+
+def _repr_cvalue(v):
+    if hasattr(v, "_length_"):
+        return list(map(_repr_cvalue, v))
+    return v
+
+
+class CStruct(ctypes.Structure):
+    def __repr__(self):
+        kvs = ["{}={}".format(k, _repr_cvalue(getattr(self, k))) for k, _ in self._fields_]
+        return f"{self.__class__.__name__}({', '.join(kvs)})"
+
+    def get_bytes(self):
+        return ctypes.string_at(ctypes.addressof(self), ctypes.sizeof(self))
+
+    def field_vals(self):
+        return get_field_vals_list(self)
+
+## common end ##
+## related class infos
+{% for _, class_info in related_class_infos.items() %}
+class {{ class_info['struct_name'] }}(CStruct):
+    _pack_ = {{ class_info['pack'] }}
+    _fields_ = (
+{% for _, field_info in class_info['field_infos'].items() %}
+{% if field_info['length'] %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} * {{ field_info['length'] }} ),
+{% else %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} ),
+{% endif %}
+{% endfor %}
+    )
+
+
+{% endfor %}
+
+
+## related union infos
+{% for _, union_info in related_union_infos.items() %}
+class {{ union_info['struct_name'] }}(ctypes.Union):
+    _pack_ = {{ union_info['pack'] }}
+    _fields_ = (
+{% for _, field_info in union_info['field_infos'].items() %}
+{% if field_info['length'] %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} * {{ field_info['length'] }} ),
+{% else %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} ),
+{% endif %}
+{% endfor %}
+    )
+    _union_key_ = "{{ union_info['union_key'] }}"
+    _union_link_ = {
+{% for link_info in union_info['link_infos'] %}
+        {{ link_info['link_id'] }}: "{{ link_info['link_name'] }}",
+{% endfor %}
+    }
+
+
+{% endfor %}
+
+
+## main struct
+class {{ struct_name }}(CStruct):
+    _pack_ = {{ pack }}
+    _fields_ = (
+{% for _, field_info in field_infos.items() %}
+{% if field_info['length'] %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} * {{ field_info['length'] }} ),
+{% else %}
+        ( "{{ field_info['name'] }}", {{ field_info['ctype'] }} ),
+{% endif %}
+{% endfor %}
+    )
+    _field_infos_ = get_field_infos(_fields_)
+    _field_names_ = [n for n, t in _field_infos_]
+
+    @staticmethod
+    def field_names():
+        return {{ struct_name }}._field_names_
+
+
+if __name__ == '__main__':
+    print(ctypes.sizeof({{ struct_name }}))
+    print({{ struct_name }}.field_names())
