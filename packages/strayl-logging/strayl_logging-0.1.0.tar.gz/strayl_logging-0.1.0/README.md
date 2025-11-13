@@ -1,0 +1,210 @@
+# Strayl Logging SDK для Python
+
+Минималистичный Python SDK для отправки логов в Strayl Cortyx через API ключи.
+
+> 📖 **Новичок?** Начните с [QUICKSTART.md](QUICKSTART.md) — пошаговая инструкция с нуля.
+
+## Установка
+
+```bash
+pip install strayl-logging
+```
+
+Или для локальной разработки:
+
+```bash
+cd SDK/strayl_logging
+pip install -e .
+```
+
+## Быстрый старт
+
+```python
+from strayl_logging import StraylLogger
+
+# Инициализация логгера
+logger = StraylLogger(api_key="st_ваш_ключ")
+
+# Отправка логов
+logger.info("Server started", {"port": 8000})
+logger.warn("High memory usage", {"usage": "85%"})
+logger.error("Database connection failed", {"retry": True})
+logger.debug("Processing request", {"request_id": "abc123"})
+```
+
+## Получение API ключа
+
+1. Зарегистрируйтесь на [strayl.dev](https://strayl.dev)
+2. Перейдите в [Dashboard](https://strayl.dev/dashboard)
+3. Откройте вкладку **API**
+4. Создайте новый API ключ
+5. Скопируйте ключ (формат `st_...`)
+
+## Использование
+
+### Базовое использование
+
+```python
+from strayl_logging import StraylLogger
+
+logger = StraylLogger(api_key="st_ваш_ключ")
+logger.info("Application started")
+```
+
+### С контекстом по умолчанию
+
+```python
+logger = StraylLogger(
+    api_key="st_ваш_ключ",
+    default_context={
+        "service": "my-service",
+        "version": "1.0.0",
+        "environment": "production",
+    },
+)
+
+logger.info("User logged in", {"user_id": 123})
+# Отправит: {"service": "my-service", "version": "1.0.0", "environment": "production", "user_id": 123}
+```
+
+### Синхронный режим
+
+По умолчанию логи отправляются асинхронно в отдельном потоке. Для синхронной отправки:
+
+```python
+logger = StraylLogger(
+    api_key="st_ваш_ключ",
+    async_mode=False,  # Синхронная отправка
+)
+```
+
+### Кастомный эндпоинт
+
+```python
+logger = StraylLogger(
+    api_key="st_ваш_ключ",
+    endpoint="https://custom-endpoint.com/log",
+)
+```
+
+### Настройка таймаута
+
+```python
+logger = StraylLogger(
+    api_key="st_ваш_ключ",
+    timeout=5.0,  # 5 секунд (по умолчанию 3.0)
+)
+```
+
+## API Reference
+
+### `StraylLogger`
+
+#### Параметры конструктора
+
+- `api_key` (str, обязательный): API ключ для аутентификации (формат `st_...`)
+- `endpoint` (str, опциональный): URL эндпоинта (по умолчанию используется production endpoint)
+- `default_context` (dict, опциональный): Контекст по умолчанию для всех логов
+- `timeout` (float, опциональный): Таймаут запроса в секундах (по умолчанию 3.0)
+- `async_mode` (bool, опциональный): Асинхронная отправка в отдельном потоке (по умолчанию True)
+
+#### Методы
+
+- `info(message, context=None)` - Отправка информационного лога
+- `warn(message, context=None)` - Отправка предупреждения
+- `error(message, context=None)` - Отправка ошибки
+- `debug(message, context=None)` - Отправка отладочного лога
+- `log(level, message, context=None)` - Отправка лога с указанным уровнем
+
+#### Уровни логов
+
+- `info` - Информационные сообщения
+- `warn` - Предупреждения
+- `error` - Ошибки
+- `debug` - Отладочная информация
+
+## Безопасность
+
+- API ключи передаются через заголовок `Authorization: Bearer <api_key>`
+- Все запросы выполняются по HTTPS
+- Ошибки отправки не ломают приложение (проглатываются молча)
+- Логи не содержат чувствительных данных (пароли, токены и т.д.)
+
+## Особенности
+
+- **Неблокирующий**: По умолчанию логи отправляются асинхронно
+- **Безопасный**: Ошибки отправки не ломают приложение
+- **Минималистичный**: Один класс, простой API
+- **Типизированный**: Полная поддержка type hints
+
+## Примеры использования
+
+### В веб-приложении
+
+```python
+from flask import Flask
+from strayl_logging import StraylLogger
+
+app = Flask(__name__)
+logger = StraylLogger(
+    api_key=os.getenv("STRAYL_API_KEY"),
+    default_context={"service": "web-app"},
+)
+
+@app.route("/")
+def index():
+    logger.info("Homepage accessed")
+    return "Hello World"
+
+@app.errorhandler(500)
+def handle_error(e):
+    logger.error("Internal server error", {"error": str(e)})
+    return "Error", 500
+```
+
+### В фоновой задаче
+
+```python
+from strayl_logging import StraylLogger
+
+logger = StraylLogger(api_key="st_ваш_ключ")
+
+def process_task(task_id):
+    try:
+        logger.info("Task started", {"task_id": task_id})
+        # ... обработка задачи ...
+        logger.info("Task completed", {"task_id": task_id})
+    except Exception as e:
+        logger.error("Task failed", {"task_id": task_id, "error": str(e)})
+```
+
+## Требования
+
+- Python >= 3.8
+- requests >= 2.28.0
+
+## Лицензия
+
+MIT
+
+## Поддержка
+
+- **GitHub**: [github.com/AlemzhanJ/strayl-sdk-py](https://github.com/AlemzhanJ/strayl-sdk-py)
+- **Документация**: [strayl.dev/docs](https://strayl.dev/docs)
+- **Dashboard**: [strayl.dev/dashboard](https://strayl.dev/dashboard)
+- **Email**: support@strayl.dev
+
+## Разработка
+
+```bash
+# Клонировать репозиторий
+git clone https://github.com/AlemzhanJ/strayl-sdk-py.git
+cd strayl-sdk-py
+
+# Установить в режиме разработки
+pip install -e .
+
+# Запустить тесты
+python test.py
+```
+
