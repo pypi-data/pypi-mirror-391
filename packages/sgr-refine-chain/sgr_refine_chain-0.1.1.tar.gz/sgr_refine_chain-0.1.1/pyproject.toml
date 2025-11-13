@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "sgr-refine-chain"
+version = "0.1.1"
+description = "Universal SGR Refine Agent for LangGraph — structured iterative refinement for large-context LLMs"
+authors = ["Ivan Litvinov <litvan007@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/litvan007/sgr-refine-chain"
+repository = "https://github.com/litvan007/sgr-refine-chain"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pydantic = "^2.12.4"
+langchain-core = "^1.0.4"
+langchain-openai = "^1.0.2"
+langgraph = "^1.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
