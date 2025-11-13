@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: quber-workflow
+Version: 0.1.0
+Summary: Shared Claude Code workflow for Quber projects (Jira + GitHub automation)
+Project-URL: Homepage, https://github.com/xmandeng/quber-workflow
+Project-URL: Repository, https://github.com/xmandeng/quber-workflow
+Project-URL: Issues, https://github.com/xmandeng/quber-workflow/issues
+Author-email: Xavier Mandeng <mandeng@gmail.com>
+Keywords: automation,claude,github,jira,workflow
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.9
+Requires-Dist: click>=8.0.0
+Requires-Dist: jinja2>=3.0.0
+Requires-Dist: rich>=13.0.0
+Provides-Extra: dev
+Requires-Dist: mypy>=1.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0; extra == 'dev'
+Requires-Dist: pytest>=7.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
