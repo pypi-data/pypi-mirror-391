@@ -1,0 +1,73 @@
+from antennex_client import *
+
+#
+# Perform Gain measurement of a wireless receiver with The Wireless Connector.
+#
+# The measurement setup requires:
+# - Antenna Efficiency application license is present on The Wireless Connector
+# - VNA
+# - DUT (wireless receiver) output is connected to VNA on port 1
+# - Reference antenna is connected to VNA on port 2
+# - VNA is calibrated to the desired reference plane of the antenna
+#
+# This example will acquire the efficiency and provide a plot and metrics.
+#
+
+if __name__ == "__main__":
+
+    antenna_frequency_start = 60e9
+    antenna_frequency_end = 64e9
+
+    # Create an instance of the API class
+    hostname = hostname_from_file("hostname.txt")
+    ReverbClient = create_client("http://" + hostname + ":8080")
+
+    if not ReverbClient.is_version_greater_than("3.4"):
+        print("This example requires The Wireless Connector software version 3.4 or higher.")
+        exit()
+
+    #Running this example required a license for the Antenna Efficiency application to be installed on the chamber.
+    licenses_installed = ReverbClient.get_license_info()
+    assert "AntennaEfficiency" in licenses_installed.licenses, "Antenna Efficiency application is not licensed."
+
+    #Set the system to Antenna Efficiency mode
+    ReverbClient.set_machine_mode(AcquisitionMode.ANTENNAEFFICIENCY)
+
+    # Start an acquisition between 60 and 64 GHz.
+    ReverbClient.restore_settings_to_defaults("measurement")
+    settings = Settings()
+    settings.frequency_start = antenna_frequency_start
+    settings.frequency_end = antenna_frequency_end
+    settings.stirrer_steps0 = 2
+    settings.stirrer_steps1 = 2
+    settings.antenna_efficiency = AntennaEfficiencySettings()
+    settings.antenna_efficiency.dut_type = DutType.TRANSMITTER
+    settings.antenna_efficiency.use_time_domain = True
+    settings.antenna_efficiency.dut_port = VnaPort(portNumber=1)
+    settings.antenna_efficiency.reference_port = VnaPort(portNumber=2)
+
+    ReverbClient.set_settings("measurement", settings)
+
+    # The acquire function with the optional argument Wait set to true is
+    # blocking and the script will continue after the acquisition is finished.
+    # Wait is set to True by default.
+    print("Measurement is starting...")
+    ReverbClient.acquire(
+        acquisition_type=AcquisitionTypes.ANTENNAEFFICIENCY, wait=True)
+    print("Measurement is finished.")
+
+    # Get the data from the chamber
+    gain = ReverbClient.get_data(DataTypes.GAIN)
+
+    # Plot the data using the supplied plot_result function
+    plot_result(gain)
+
+    # Display metrics about the measurement
+    print(gain.metrics)
+    print("Gain = " + "{:4.1f}".format(gain.metrics.peak_efficiency) + " " + gain.unit)
+
+    # sava data as json, as retrieved from instrument
+    save_as_json(gain, "Gain.json")
+
+    # sava data as csv
+    save_as_csv(gain, "Gain.csv")
