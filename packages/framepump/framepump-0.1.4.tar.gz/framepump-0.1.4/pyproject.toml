@@ -1,0 +1,56 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "setuptools_scm[toml]>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "framepump"
+dynamic = ["version"]
+description = "Video processing utilities"
+authors = [
+    { name = "István Sárándi", email = "istvan.sarandi@uni-tuebingen.de" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+
+dependencies = [
+    "numpy",
+    "imageio",
+    "imageio-ffmpeg",
+    "ffmpeg-python",
+    "simplepyutils",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux"
+]
+
+[project.urls]
+Homepage = "https://github.com/isarandi/framepump"
+Repository = "https://github.com/isarandi/framepump"
+Issues = "https://github.com/isarandi/framepump/issues"
+Author = "https://istvansarandi.com"
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+write_to = "src/framepump/_version.py"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 99
+skip-string-normalization = true
