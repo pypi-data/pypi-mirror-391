@@ -1,0 +1,28 @@
+[project]
+name = "pdf-bookmark-splitter"
+version = "0.1.0"
+description = "A tool for splitting PDF files based on bookmarks"
+authors = [{ name = "leejss", email = "goldemshine@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = ["pypdf"]
+
+[project.urls]
+Homepage = "https://github.com/leejss/pdf-bookmark-splitter"
+
+[project.scripts]
+pdf-split = "pdf_bookmark_splitter.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = []
