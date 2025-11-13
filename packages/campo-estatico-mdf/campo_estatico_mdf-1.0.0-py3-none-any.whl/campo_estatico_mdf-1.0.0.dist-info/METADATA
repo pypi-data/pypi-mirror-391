@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: campo-estatico-mdf
+Version: 1.0.0
+Summary: Simulador 2D del campo electrostático por método de diferencias finitas (Jacobi / Gauss-Seidel).
+Author-email: Daniel Criollo <boltzmannmachine0@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/SanCriolloB/campo-estatico-mdf
+Project-URL: Documentation, https://sancriollob.github.io/campo-estatico-mdf/
+Project-URL: Issues, https://github.com/SanCriolloB/campo-estatico-mdf/issues
+Keywords: electrostatics,finite differences,Jacobi,Gauss-Seidel,numerical methods
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.22
+Dynamic: license-file
+
+# campo-estatico-mdf
+
+Solver 2D de Laplace por diferencias finitas (Jacobi/Gauss-Seidel) y cálculo del campo eléctrico.
+Incluye GUI en **Streamlit** (multipágina) y, en Fase 4, documentación **Sphinx**.
+
+## Ejecutar GUI (Streamlit)
+```bash
+# activar entorno
+source .venv/Scripts/activate   # Windows (Git Bash)
+# pip install dependencias
+pip install -r requirements.txt
+# instalar paquete backend en editable
+pip install -e .
+# correr la app
+streamlit run app_streamlit/streamlit_app.py
+```
+
+### Páginas
+- **Simulación**: define N, ε, max_iter, método, y contornos. Muestra `V`, `E` y métricas.
+- **Documentación**: enlaza/embebe Sphinx (se publicará en Fase 4). Puedes exportar `DOCS_URL` para mostrarla en la app.
+
+> Si ves problemas con el render de quiver en mallas muy grandes, reduce N o sube el `step` de submuestreo.
