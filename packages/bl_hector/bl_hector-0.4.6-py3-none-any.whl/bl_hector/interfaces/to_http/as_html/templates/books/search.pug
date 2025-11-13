@@ -1,0 +1,130 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+extends layout
+
+block title
+  title= _("hector") + " – " + _("search-books-title")
+
+block content
+  section.section
+    .container
+      .buttons.is-pulled-right
+        if user.can_add_book
+          a.button.is-link(href=url_for("books.add_form"))
+            span.icon: i.fas.fa-plus
+            span= _("add-book-action")
+        else
+          button.button.is-link.is-disabled(disabled title=_("add-book-requires-authentification"))
+            span.icon: i.fas.fa-plus
+            span= _("add-book-action")
+
+      h1.title.is-3= _("search-books-title")
+
+      block search
+        #search
+          include mixins/form
+          form(
+            method="GET"
+            action=url_for("books.search")
+            hx-get=url_for("books.search")
+            hx-target="#search"
+            hx-push-url="false"
+          )
+            +hidden_input("page", data.page or "1")
+
+            block isbn
+              include mixins/form
+              +isbn_field(data.isbn, errors.isbn)
+
+            +text_field("title", data.title, errors.title, description=_("book-title-description"), icon="file", placeholder=_('book-title'))
+
+            block year
+              include mixins/form
+              +year_field(data.year, errors.year)
+
+            +text_field("author", data.author, errors.author, description=_("book-author-description"), icon="users", placeholder=_('book-author'))
+
+            +text_field("genre", data.genre, errors.genre, description=_("book-genre-description"), icon="crown", placeholder=_('book-genre'))
+
+            .field
+              p.control
+                a.button.is-light(href=url_for("books.search") hx-target="body")
+                  span.icon: i.fas.fa-trash
+                  span= _("search-books-clear")
+                button.button.is-primary(_="on click add .is-loading")
+                  span.icon: i.fas.fa-search
+                  span= _("search-books-search")
+
+          if books is defined
+            if books|length > 0
+              #books.books
+                block books
+                  each book in books
+                    article.book.card
+                      .card-content
+                        .media
+                          .media-left(style="width: 5em")
+                            figure.image.cover.is-2by3
+                              img(src="#{book.cover or url_for('static', filename='img/placeholders/320x480.png')}" alt="Book cover")
+                              if loop.last
+                                span(
+                                  hx-get=pager.next
+                                  hx-trigger="revealed"
+                                  hx-swap="beforeend"
+                                  hx-target="#books"
+                                  hx-indicator="#indicator"
+                                  hx-push-url="false"
+                                )
+                          .media-content
+                            h2.title.is-4(title=book.title)= book.title|truncate(50)
+                            p.subtitle.is-6
+                              each author in book.authors
+                                if author == book.authors[-1]
+                                  | #[a(href=url_for("books.search", author=author)) #{author}]
+                                else
+                                  | #[a(href=url_for("books.search", author=author)) #{author}], 
+                            p
+                              small
+                                | #[time(datetime="#{book.year}-01-01") #{book.year}] / 
+                                a(href=url_for("books.display", isbn=book.isbn)) #{book.isbn}
+                                br
+                                each genre in book.genres
+                                  if genre == book.genres[-1]
+                                    | #[a(href=url_for("books.search", genre=genre)) #{genre}]
+                                  else
+                                    | #[a(href=url_for("books.search", genre=genre)) #{genre}], 
+
+              #indicator.buttons.is-centered.mt-3.htmx-indicator.is-hidden(_="on load remove .is-hidden")
+                  button.button.is-white.is-loading Loading indicator
+
+              if pager.previous or pager.next:
+                .buttons.is-centered.mt-3(_="on load remove me")
+                  if pager.previous:
+                    a#previous-page.button.is-link(href=pager.previous)
+                      span.icon: i.fa.fa-step-backward
+                      span= _("search-books-previous-page")
+                  if pager.next and books|length >= pager.PAGE_SIZE:
+                    a#next-page.button.is-link(href=pager.next)
+                      span= _("search-books-next-page")
+                      span.icon: i.fa.fa-step-forward
+            else
+              article.message.is-info
+                .message-body= _("search-books-no-result")
+
+        if error is defined
+          article.message.is-danger
+            .message-body= error

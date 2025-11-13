@@ -1,0 +1,61 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+extends layout
+
+block title
+  title= _("hector") + " – " + _("webauthn-login-title")
+
+block head_scripts
+  script(src="#{url_for('static', filename='js/simplewebauthn-browser@7.2.0.umd.min.js')}")
+  script.
+    const {startAuthentication} = SimpleWebAuthnBrowser
+
+    async function doLogin() {
+      let authentication
+      try {
+        authentication = await startAuthentication(#{options | safe})
+      } catch (error) {
+        console.error(error)
+        return alert('#{_("webauthn-login-failure") | replace("\'", "\\\'") | safe}')
+      }
+
+      const response = await fetch('#{url_for("webauthn.verify_credential")}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(authentication),
+      })
+
+      const data = await response.json()
+      if (data && data.verified) {
+        window.location = '#{url_for("auth.redirect")}'
+      } else {
+        console.error(data)
+        return alert('#{_("webauthn-login-failure") | replace("\'", "\\\'") | safe}')
+      }
+    }
+
+
+block content
+  section.section
+    .container
+      h1.title.is-3= _("webauthn-login-title")
+
+      article.message.is-info
+        p.message-body= _("webauthn-login-description")
+
+      script.
+        doLogin()

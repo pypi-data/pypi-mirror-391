@@ -1,0 +1,56 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+include mixins/flash
+include mixins/navbar
+
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    block title
+      //- `title` tag inside the block to avoid some weird syntax highlighting problems
+      title= _("hector")
+
+    link(rel="icon" type="image/svg" href="#{url_for('static', filename='favicon.svg')}")
+    link(rel="stylesheet" href="#{url_for('static', filename='css/bulma@0.9.4.min.css')}")
+    link(rel="stylesheet" href="#{url_for('static', filename='css/font-awesome@5.14.0.css')}")
+    link(rel="stylesheet" href="#{url_for('static', filename='css/hector.css')}")
+    block links
+
+    script(src="#{url_for('static', filename='js/hyperscript@0.9.11.min.js')}" defer)
+    script(src="#{url_for('static', filename='js/htmx@1.9.6.min.js')}" defer)
+    block head_scripts
+
+  body(hx-boost="true")
+    +navbar()
+
+    .page
+      - var messages = get_flashed_messages(with_categories=true)
+      +flash(messages)
+
+      block content
+
+    footer.footer
+      .content.has-text-centered
+        p
+          span= _("copyright", version=version, years="2023", holders="Bioneland") | safe
+          br
+          span= _("license", name="AGPL", url="https://www.gnu.org/licenses/agpl-3.0.fr.html") | safe
+
+    block scripts

@@ -1,0 +1,43 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin:0;
+}
+
+form {
+    margin-bottom: 1em;
+}
+
+dt {
+    font-size: small;
+    color: grey;
+}
+
+dd {
+    margin-bottom: 1rem;
+}
+
+.page {
+    flex: 1;
+}
+
+.footer {
+    padding: 1.5em;
+}
+
+.books {
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(25em, 1fr));
+}
+
+.book {}
+.book:hover {
+    box-shadow: 0 0.5em 1em -0.125em rgba(10,10,10,.2), 0 0 0 1px rgba(10,10,10,.02);
+}
+
+.cover {
+    border: 1px solid lightgrey;
+}

@@ -1,0 +1,112 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+extends layout
+
+block title
+  title= _("hector") + " – " + _("add-book-title")
+
+block scripts
+  script.
+    function loadIntoImage(from, toImage, toInput) {
+      if (from.files && from.files[0]) {
+        const reader = new FileReader()
+        reader.onload = e => {
+          const dataUrl = e.target.result
+          if (dataUrl.startsWith("data:image/")) {
+            toInput.value = dataUrl
+            toImage.src = dataUrl
+          }
+          else {
+            alert("#{_('update-book-cover-format-not-supported') | safe}");
+          }
+        }
+        reader.readAsDataURL(from.files[0])
+      }
+    }
+
+block content
+  section.section
+    .container
+      h1.title.is-3= _("add-book-title")
+
+      block form
+        include mixins/form
+        form#form(
+          method="POST"
+          action=url_for("books.add")
+          hx-post=url_for("books.add")
+          hx-target="#form"
+        )
+          .columns
+            .column.is-one-quarter
+              input#coverUploader.is-hidden(
+                accept="image/*"
+                type="file"
+                _="on change set img to #cover then set inp to #coverInput then js(me, img, inp) loadIntoImage(me, img, inp)"
+              )
+              img#cover.cover.is-2by3(
+                src="#{data.cover or url_for('static', filename='img/placeholders/320x480.png')}"
+                alt="Book cover"
+                title=_("add-book-cover-help")
+                style="cursor: pointer"
+                _="on click set target to #coverUploader js(target) target.click()"
+              )
+              input#coverInput.is-hidden(
+                name="cover"
+                type="text"
+                value="#{data.cover}"
+              )
+            .column
+              .field.is-horizontal
+                .field-body
+                  block isbn
+                    include mixins/form
+                    +isbn_field(data.isbn, errors.isbn, required=1)
+
+                  .field.is-narrow(_="on load remove @disabled from #lookUp")
+                    p.control
+                      button#lookUp.button.is-info(
+                        hx-post="#{url_for('books.look_up')}"
+                        hx-target="#form"
+                        disabled
+                        _="on htmx:beforeSend add .is-loading add @disabled"
+                      )
+                        span.icon: i.fas.fa-search
+                        span= _("search-books-action")
+
+              +text_field("title", data.title, errors.title, required=1, description=_("book-title-description"), icon="file", placeholder=_('book-title'))
+
+              block year
+                include mixins/form
+                +year_field(data.year, errors.year, required=1)
+
+              +text_field("authors", data.authors, errors.authors, required=1, description=_("book-authors-description"), icon="users", placeholder=_('book-authors'))
+
+              +text_field("genres", data.genres, errors.genres, description=_("book-genres-description"), icon="crown", placeholder=_('book-genres'))
+
+              .field
+                p.control
+                  a.button.is-light(href="#{url_for('books.search')}" hx-target="body")
+                    span.icon: i.fas.fa-times
+                    span= _("add-book-cancel")
+                  button.button.is-primary
+                    span.icon: i.fas.fa-plus
+                    span= _("add-book-add")
+
+        if error is defined
+          article.message.is-danger
+            .message-body= error

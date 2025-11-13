@@ -1,0 +1,134 @@
+//- Hector --- A collection manager.
+//- Copyright © 2023 Bioneland
+//-
+//- This program is free software: you can redistribute it and/or modify
+//- it under the terms of the GNU Affero General Public License as
+//- published by the Free Software Foundation, either version 3 of the
+//- License, or (at your option) any later version.
+//-
+//- This program is distributed in the hope that it will be useful,
+//- but WITHOUT ANY WARRANTY; without even the implied warranty of
+//- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//- GNU Affero General Public License for more details.
+//-
+//- You should have received a copy of the GNU Affero General Public License
+//- along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+mixin hidden_input(name, value)
+  input(type="hidden" name=name value=value)
+
+mixin input(type, name, value, required="", icon="", placeholder="", error="")
+  - var classes = "has-icons-left" if icon else ""
+  p.control.has-icons-right(class=classes)
+    - var classes = "is-danger" if error else ""
+    //- Find a better way to set required!
+    if required
+      input.input(id=name name=name type=type placeholder=placeholder value=value class=classes required)
+    else
+      input.input(id=name name=name type=type placeholder=placeholder value=value class=classes)
+    if icon
+      span.icon.is-small.is-left: i.fas(class="fa-#{icon}")
+
+mixin text_input(name, value, required="", icon="", placeholder="", error="")
+  +input("text", name, value, required=required, icon=icon, placeholder=placeholder, error=error)
+
+mixin number_input(name, value, required="", icon="", placeholder="", error="")
+  +input("number", name, value, required=required, icon=icon, placeholder=placeholder, error=error)
+
+mixin help_message(value)
+  if value
+    p.help= value
+
+mixin error_message(error)
+  if error
+    p.help.is-danger= error
+
+mixin text_field(name, value, error, required="", description="", icon="", placeholder="")
+  .field
+    +text_input(name, value, error=error, required=required, icon=icon, placeholder=placeholder)
+    +error_message(error)
+    +help_message(description)
+
+mixin number_field(name, value, error, required="", description="", icon="", placeholder="")
+  .field
+    +number_input(name, value, error=error, required=required, icon=icon, placeholder=placeholder)
+    +error_message(error)
+    +help_message(description)
+
+// - -----------------------------------------------------------------------
+
+mixin render_field(field, icon="", placeholder="")
+  - var required = ""
+  if field.flags.required
+    - var required = "required"
+
+  if field.flags.hidden
+    +render_hidden(field)
+  else
+    .field(class="#{required}")
+      //- +render_label(field)
+      +render_control(field, icon=icon, placeholder=placeholder)
+      +render_errors(field)
+      +render_description(field)
+
+mixin render_label(field)
+  label.label= field.label.text
+
+mixin render_control(field, icon="", placeholder="")
+  - var hasIconsLeft = ""
+  - var isDanger = ""
+  - var hasIconsRight = ""
+  if icon
+    - var hasIconsLeft = "has-icons-left"
+  if field.errors
+    - var isDanger = "is-danger"
+    - var hasIconsRight = "has-icons-right"
+
+  .control.has-icons-left(class="#{hasIconsLeft} #{hasIconsRight}")
+    +render_input(field, placeholder=placeholder)
+    +render_input_icon(icon)
+    +render_input_error(field)
+
+mixin render_input_icon(icon)
+  if icon
+    span.icon.is-small.is-left: i.fas(class="fa-#{icon}")
+
+mixin render_input_error(field)
+  if field.errors
+    span.icon.is-small.is-right: i.fas.fa-exclamation-triangle
+
+mixin render_errors(field)
+  if field.errors
+    p.help.is-danger
+      each error in field.errors
+        | #{error}
+        br
+
+mixin render_description(field)
+  if field.description
+    p.help= field.description
+
+mixin render_hidden(field)
+  input(type="hidden" name="#{field.name}" value="#{field.data}")
+
+
+mixin isbn_field(data, error, required="")
+  .field(hx-trigger="blur from:#isbn" hx-post=url_for("books.validate") hx-target="this" hx-params="isbn" hx-push-url="false")
+    +text_input("isbn", data, error=error, required=required, icon="calendar", placeholder=_('book-isbn'))
+    +error_message(error)
+    +help_message(_("book-isbn-description"))
+
+mixin year_field(data, error, required="")
+  .field(hx-trigger="blur from:#year" hx-post=url_for("books.validate") hx-target="this" hx-params="year" hx-push-url="false")
+    +number_input("year", data, error=error, required=required, icon="calendar", placeholder=_("book-year"))
+    +error_message(error)
+    +help_message(_("book-year-description"))
+
+//- At the bottom of the file for it f**ks up the highlighting!?
+mixin render_input(field, placeholder="")
+  - var classes = "input"
+  if field.errors
+    - var classes = "input is-danger"
+
+  | #{field(class=classes, placeholder=placeholder)}
