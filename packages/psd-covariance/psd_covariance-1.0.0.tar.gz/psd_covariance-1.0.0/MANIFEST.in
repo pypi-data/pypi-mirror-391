@@ -1,0 +1,15 @@
+# Always include these
+include README.md
+include LICENSE
+
+# Exclude build artifacts
+exclude *.pyc
+exclude *.pyo
+exclude *.pyd
+exclude *.so
+exclude *.dll
+exclude *.egg-info/*
+exclude __pycache__/*
+exclude build/*
+exclude dist/*
+exclude venv/*
