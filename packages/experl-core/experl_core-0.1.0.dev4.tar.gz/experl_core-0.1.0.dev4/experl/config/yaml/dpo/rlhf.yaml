@@ -1,0 +1,21 @@
+defaults:
+  - sft: sft
+  - dpo: dpo
+  - eval: eval
+
+judge:
+  model_name_or_path: "google/gemma-3-270m-it"
+  temperature: 0.0
+  max_new_tokens: 10
+  prompt_template: |
+    You are an impartial evaluator. Compare the two responses to the same prompt.
+  
+    PROMPT: {prompt}
+  
+    RESPONSE A:
+    {response_a}
+  
+    RESPONSE B:
+    {response_b}
+  
+    Which response is better? Reply with only one word: "A", "B", or "Tie"
