@@ -1,0 +1,21 @@
+[project]
+name = "mcp-songzhe-server"
+version = "0.1.2"
+description = "这是一个使用高德地图的天气接口,获取当前城市天气的demo"
+readme = "README.md"
+authors = [
+    { name = "songzhe03", email = "songzhe03@baidu.com" }
+]
+keywords= ["mcp", "gaodeweather", "server"]
+requires-python = ">=3.11"
+dependencies = [
+    "mcp[cli]>=1.21.0",
+    "pydantic>=2.12.4",
+]
+
+[project.scripts]
+mcp-songzhe-server = "mcp_songzhe_server:main"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
