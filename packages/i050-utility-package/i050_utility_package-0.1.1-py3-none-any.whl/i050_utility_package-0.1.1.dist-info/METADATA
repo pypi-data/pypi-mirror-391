@@ -1,0 +1,32 @@
+Metadata-Version: 2.4
+Name: i050-utility-package
+Version: 0.1.1
+Summary: A utility for fast data sanitization and cleansing focusing on Pandas DataFrames.
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Development Status :: 3 - Alpha
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.0.0
+Dynamic: license-file
+
+# i050-utility-package
+
+##  Brief Description
+The **`i050-utility-package`** is a dedicated data cleaning utility built for users working with the `pandas` library. Its primary goal is to streamline the data preparation phase of any project by automating common sanitization tasks.
+
+##  What It Does (Core Functionality)
+The core function, `sanitize_dataframe`, performs the following automated cleaning operations on a Pandas DataFrame:
+1.  **Standardizes Strings:** Converts all string entries (object/text type columns) to lowercase and removes leading/trailing whitespace.
+2.  **Handles Missing Data:** Automatically drops any rows containing `None` or `NaN` values.
+
+##  Installation
+You can install the package directly from PyPI using `pip`.
+
+```bash
+pip install i050-utility-package
