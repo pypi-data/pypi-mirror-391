@@ -1,0 +1,82 @@
+Metadata-Version: 2.4
+Name: mlex-lib
+Version: 0.0.4
+Summary: Money Laundering Expert System - A machine learning framework for financial fraud detection
+Author-email: Diego Pinheiro <diegompin@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2024 Diego Pinheiro
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/IoTDataAtelier/mlex
+Project-URL: Bug Tracker, https://github.com/IoTDataAtelier/mlex/issues
+Keywords: machine-learning,fraud-detection,financial,neural-networks,gru,lstm,rnn
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas>=1.3.0
+Requires-Dist: numpy>=1.21.0
+Requires-Dist: scikit-learn>=1.0.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: torch>=1.9.0
+Requires-Dist: networkx>=2.6.0
+Requires-Dist: fastavro>=1.4.0
+Requires-Dist: pyarrow>=7.0.0
+Requires-Dist: shap>=0.40.0
+Requires-Dist: skorch>=0.11.0
+Requires-Dist: ipykernel>=6.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=3.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Requires-Dist: pre-commit>=2.15.0; extra == "dev"
+Dynamic: license-file
+
+# Money Laundering Expert System (MLEX)
+
+A comprehensive machine learning framework for financial fraud detection and money laundering prevention.
+
+## Features
+
+- **Neural Network Models**: GRU, LSTM, and RNN implementations optimized for sequence data
+- **Evaluation Framework**: Comprehensive evaluation metrics and visualization tools
+- **Data Processing**: Advanced preprocessing and feature engineering capabilities
+- **Model Pipeline**: End-to-end machine learning pipelines for fraud detection
+- **Visualization**: Interactive plotting and analysis tools
+
+## Installation
+
+```bash
+pip install mlex-lib
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/IoTDataAtelier/mlex/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/IoTDataAtelier/mlex/discussions)
