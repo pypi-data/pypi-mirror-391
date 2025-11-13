@@ -1,0 +1,10 @@
+include README.md
+include LICENSE
+include requirements.txt
+include requirements-dev.txt
+recursive-include saamfi_sdk *.py
+recursive-include saamfi_sdk py.typed
+recursive-exclude tests *
+recursive-exclude docs *
+global-exclude __pycache__
+global-exclude *.py[co]
