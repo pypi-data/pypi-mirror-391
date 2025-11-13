@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "heath"
+version = "0.5.0a1"
+description = "Manage projections"
+authors = ["Tanguy Le Carrour <tanguy@bioneland.org>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://git.easter-eggs.org/bioneland/heath"
+repository = "https://git.easter-eggs.org/bioneland/heath"
+
+[tool.poetry.scripts]
+heath = "heath:app"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+typer = "^0.7.0"
+bles = "^1.0.0a1"
+blessql = "^1.0.0a0"
+
+[tool.poetry.group.dev.dependencies]
+invoke = "^2.2.1"
+black = "^22.3.0"
+isort = "^5.9.2"
+flake8 = "^5.0.4"
+safety = "^2.3.1"
+termcolor = "^2.1.0"
+mypy = "^0.991"
+types-mock = "^4.0.15"
+types-setuptools = "^65.5.0"
+types-requests = "^2.25.2"
+pytest = "^7.1.0"
+mock = "^4.0.3"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 89
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

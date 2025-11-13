@@ -1,0 +1,47 @@
+Metadata-Version: 2.4
+Name: heath
+Version: 0.5.0a1
+Summary: Manage projections
+License: GPL-3.0-or-later
+License-File: LICENSE.md
+Author: Tanguy Le Carrour
+Author-email: tanguy@bioneland.org
+Requires-Python: >=3.9,<4.0
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: bles (>=1.0.0a1,<2.0.0)
+Requires-Dist: blessql (>=1.0.0a0,<2.0.0)
+Requires-Dist: typer (>=0.7.0,<0.8.0)
+Project-URL: Homepage, https://git.easter-eggs.org/bioneland/heath
+Project-URL: Repository, https://git.easter-eggs.org/bioneland/heath
+Description-Content-Type: text/markdown
+
+# Heath — Manage projections
+
+Heath is a CLI to manage projection ledger and a library to make it easy
+for any project working with events and projections to integrate those features.
+
+Define the DSN to work with:
+
+```console
+$ export HEATH_DSN="sqlite:////tmp/projections.sqlite"
+```
+
+Initialise projection database:
+
+```console
+$ heath init
+```
+
+List the projections:
+
+```console
+$ heath status
+```
+
