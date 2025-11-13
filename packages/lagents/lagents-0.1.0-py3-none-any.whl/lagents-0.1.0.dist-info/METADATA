@@ -1,0 +1,392 @@
+Metadata-Version: 2.4
+Name: lagents
+Version: 0.1.0
+Summary: L'Agent - Minimal experimental framework for building agents with local LLM deployments. Zero bloat, maximum simplicity.
+Home-page: https://github.com/BenevolentJoker-JohnL/agents
+Author: BenevolentJoker
+Author-email: benevolentjoker@example.com
+Project-URL: Bug Reports, https://github.com/BenevolentJoker-JohnL/agents/issues
+Project-URL: Source, https://github.com/BenevolentJoker-JohnL/agents
+Project-URL: Documentation, https://github.com/BenevolentJoker-JohnL/agents#readme
+Keywords: llm agents ollama local minimal framework llama vllm lagent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: numpy>=1.20.0
+Provides-Extra: distributed
+Requires-Dist: sollol>=0.1.0; extra == "distributed"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.20.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: isort>=5.10.0; extra == "dev"
+Requires-Dist: mypy>=0.950; extra == "dev"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# L'Agent
+
+**⚠️ EXPERIMENTAL MINIMAL AGENT FRAMEWORK ⚠️**
+
+A minimal, experimental framework for building agents with local LLM deployments. Designed for **minimal overhead** and **maximum simplicity**. Currently configured for **Ollama** with full implementation. Includes stubs for other local LLM providers.
+
+> **L'Agent** - The minimal agent framework for local LLMs
+
+## 🎯 Project Status
+
+**Current State**: Experimental / Early Development
+
+- ✅ **Ollama**: Fully implemented and tested
+- 📝 **llama.cpp**: Stub implementation (contributions welcome)
+- 📝 **vLLM**: Stub implementation (contributions welcome)
+- 📝 **Text Generation WebUI**: Stub implementation (contributions welcome)
+- 📝 **LocalAI**: Stub implementation (contributions welcome)
+- 📝 **LM Studio**: Stub implementation (contributions welcome)
+
+## 🚀 Quick Start (Ollama)
+
+```python
+from agents import LocalOllamaClient, ChatAgent
+
+# Create client
+client = LocalOllamaClient(
+    model_name="llama3:latest",
+    api_base="http://localhost:11434"
+)
+
+# Create agent
+agent = ChatAgent(client)
+
+# Get response
+response = agent.get_full_response([
+    {"role": "user", "content": "What is Python?"}
+])
+print(response)
+```
+
+## 📦 Installation
+
+### From PyPI (Recommended)
+
+```bash
+pip install lagents
+
+# With distributed support (SOLLOL)
+pip install lagents[distributed]
+```
+
+### From Source
+
+```bash
+git clone https://github.com/BenevolentJoker-JohnL/agents.git
+cd agents
+pip install -e .
+```
+
+## ✨ Features
+
+**Minimal by Design:**
+- **Zero Bloat**: Direct API calls with clean abstractions
+- **Minimal Dependencies**: Only aiohttp and numpy (core)
+- **Simple Architecture**: Easy to understand and extend
+- **No Magic**: Explicit, straightforward code
+
+**Core Capabilities:**
+- **Provider Abstraction**: Common interface for all local LLM deployments
+- **Built-in Agents**: Pre-configured agents for common tasks (optional)
+- **Streaming Support**: Native async streaming
+- **Distributed Mode**: Optional SOLLOL integration for Ollama clusters
+- **Type-Safe**: Full type hints throughout
+
+## 🏗️ Architecture
+
+### Base Client Interface
+
+All providers implement `BaseOllamaClient`:
+
+```python
+class BaseOllamaClient(abc.ABC):
+    @abc.abstractmethod
+    async def generate_embedding(text: str) -> List[float]:
+        ...
+
+    @abc.abstractmethod
+    async def chat(messages, **options) -> AsyncGenerator[ChatResponse]:
+        ...
+```
+
+### Implemented Providers
+
+#### Ollama (Fully Implemented)
+
+```python
+from agents import LocalOllamaClient, DistributedOllamaClient
+
+# Single node
+client = LocalOllamaClient(
+    model_name="llama3:latest",
+    api_base="http://localhost:11434"
+)
+
+# Distributed (with SOLLOL)
+client = DistributedOllamaClient(
+    model_name="llama3:latest",
+    nodes=["http://node1:11434", "http://node2:11434"]
+)
+```
+
+### Stub Providers (Ready for Implementation)
+
+See `agents/providers.py` for stub implementations:
+
+```python
+from agents import (
+    LlamaCppClient,      # llama.cpp server
+    VLLMClient,          # vLLM deployment
+    TextGenWebUIClient,  # Oobabooga
+    LocalAIClient,       # LocalAI
+    LMStudioClient,      # LM Studio
+)
+```
+
+**Note**: These will raise `NotImplementedError` until implemented. Contributions welcome!
+
+## 🤖 Built-in Agents
+
+- **ChatAgent**: Basic conversational agent
+- **CodingAgent**: Code generation specialist
+- **ReasoningAgent**: Analytical tasks
+- **ResearchAgent**: Information synthesis
+- **SummarizationAgent**: Text summarization
+- **EmbeddingAgent**: Generate embeddings
+
+### Custom Agents
+
+```python
+from agents import BaseAgent
+
+class SQLAgent(BaseAgent):
+    system_prompt = "You are an expert SQL developer..."
+
+agent = SQLAgent(client)
+```
+
+## 📖 Documentation
+
+- **[Quick Start](QUICKSTART.md)** - 5-minute tutorial
+- **[Integration Guide](INTEGRATION_GUIDE.md)** - Use in applications
+- **[Architecture](ARCHITECTURE.md)** - Design details
+- **[Examples](agents/examples/)** - Working code samples
+
+## 🧪 Examples
+
+```bash
+# Test framework
+python test_as_library.py
+
+# Example application
+python example_app.py
+
+# Individual examples
+python agents/examples/basic_chat.py
+python agents/examples/coding_agent.py
+python agents/examples/embeddings.py
+python agents/examples/multi_agent_workflow.py
+```
+
+## 🎯 Use Cases
+
+### Web Applications
+
+```python
+from flask import Flask, jsonify, request
+from agents import LocalOllamaClient, ChatAgent
+
+app = Flask(__name__)
+client = LocalOllamaClient("llama3:latest", "http://localhost:11434")
+agent = ChatAgent(client)
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    message = request.json['message']
+    response = agent.get_full_response([
+        {"role": "user", "content": message}
+    ])
+    return jsonify({"response": response})
+```
+
+### Command-Line Tools
+
+```python
+from agents import LocalOllamaClient, ChatAgent
+import sys
+
+client = LocalOllamaClient("llama3:latest", "http://localhost:11434")
+agent = ChatAgent(client)
+
+query = " ".join(sys.argv[1:])
+print(agent.get_full_response([{"role": "user", "content": query}]))
+```
+
+### Background Workers
+
+```python
+from celery import Celery
+from agents import LocalOllamaClient, ResearchAgent
+
+app = Celery('tasks', broker='redis://localhost:6379')
+client = LocalOllamaClient("llama3:latest", "http://localhost:11434")
+agent = ResearchAgent(client)
+
+@app.task
+def research_task(topic):
+    return agent.get_full_response([
+        {"role": "user", "content": f"Research: {topic}"}
+    ])
+```
+
+## 🔧 Contributing
+
+We welcome contributions, especially for implementing new LLM providers!
+
+### Implementing a New Provider
+
+1. See `agents/providers.py` for stub implementations
+2. Implement `BaseOllamaClient` interface:
+   - `async def generate_embedding(text: str) -> List[float]`
+   - `async def chat(messages, **options) -> AsyncGenerator[ChatResponse]`
+3. Follow the pattern in `LocalOllamaClient` (see `agents/ollama_framework.py`)
+4. Add tests and examples
+5. Submit a pull request
+
+### Priority Providers
+
+- **llama.cpp** - Lightweight C++ implementation
+- **vLLM** - High-throughput serving
+- **LocalAI** - OpenAI drop-in replacement
+- **Text Generation WebUI** - Popular gradio interface
+- **LM Studio** - User-friendly desktop app
+
+## ⚠️ Important Notes
+
+### Experimental Status
+
+This is an **experimental framework** in early development:
+
+- APIs may change without notice
+- Not recommended for production use yet
+- Limited testing and documentation
+- Breaking changes possible
+
+### Current Limitations
+
+- Only Ollama is fully implemented
+- Other providers are stubs requiring implementation
+- Limited error handling in some edge cases
+- Documentation may be incomplete
+
+### Roadmap
+
+- [ ] Implement llama.cpp client
+- [ ] Implement vLLM client
+- [ ] Implement LocalAI client
+- [ ] Add comprehensive testing suite
+- [ ] Add more utility functions
+- [ ] Improve error handling
+- [ ] Add caching layer
+- [ ] Support multi-modal (images, audio)
+- [ ] Function calling support
+
+## 📁 Project Structure
+
+```
+OllamaAgent/
+├── agents/                      # Main package
+│   ├── __init__.py              # Public API
+│   ├── ollama_framework.py      # Ollama clients (implemented)
+│   ├── providers.py             # Other provider stubs
+│   ├── agents.py                # Agent classes
+│   ├── utils.py                 # Utility functions
+│   └── examples/                # Usage examples
+├── setup.py                     # Package installation
+├── requirements.txt             # Dependencies
+├── example_app.py               # Full application example
+├── test_as_library.py           # Library usage tests
+├── README.md                    # This file
+├── QUICKSTART.md                # Quick start guide
+├── INTEGRATION_GUIDE.md         # Integration patterns
+└── ARCHITECTURE.md              # Design documentation
+```
+
+## 🧩 Dependencies
+
+**Core** (minimal):
+- `aiohttp>=3.8.0` - Async HTTP client
+- `numpy>=1.20.0` - Vector operations
+
+**Optional**:
+- `sollol>=0.1.0` - Distributed Ollama load balancing
+
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details
+
+## 🤝 Support & Community
+
+- **Issues**: Report bugs or request features on GitHub
+- **Examples**: Check `agents/examples/` for working code
+- **Documentation**: Read guides in `QUICKSTART.md` and `INTEGRATION_GUIDE.md`
+- **Contributing**: See contributing guidelines above
+
+## 🎓 Related Projects
+
+Built with patterns from:
+- [Hydra](https://github.com/yourusername/hydra) - Advanced reasoning engine
+- [SynapticLlamas](https://github.com/yourusername/SynapticLlamas) - Multi-agent orchestration
+- [FlockParser](https://github.com/yourusername/FlockParser) - Document processing with RAG
+- [SOLLOL](https://github.com/yourusername/sollol) - Intelligent Ollama load balancer
+
+## ⚡ Performance
+
+**Ollama Implementation**:
+- Direct HTTP calls (~1-5ms overhead)
+- Connection pooling via aiohttp
+- Streaming support (no buffering)
+- Optional distributed mode with SOLLOL
+
+## 🔒 Security
+
+**Local Deployment Focus**:
+- No API keys required
+- All models run locally
+- Full control over data
+- No external API calls (except optional SOLLOL for Ollama clusters)
+
+---
+
+**Status**: Experimental Minimal Framework | **Philosophy**: Zero bloat, maximum simplicity | **Primary Use**: Ollama deployments | **Looking for**: Contributors to implement other providers!
+
+Made for the local LLM community ❤️ | Keep it minimal, keep it simple.
