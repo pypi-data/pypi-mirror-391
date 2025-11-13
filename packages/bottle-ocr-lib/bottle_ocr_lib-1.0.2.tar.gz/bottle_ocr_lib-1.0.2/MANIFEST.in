@@ -1,0 +1,11 @@
+# MANIFEST.in - Specifies additional files to include in the distribution
+
+include README.md
+include LICENSE
+include requirements.txt
+recursive-include bottle_ocr_lib *.py
+recursive-include examples *.py
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git*

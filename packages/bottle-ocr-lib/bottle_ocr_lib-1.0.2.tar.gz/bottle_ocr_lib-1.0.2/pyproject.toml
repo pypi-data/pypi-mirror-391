@@ -1,0 +1,70 @@
+# See https://setuptools.pypa.io for more information
+[build-system]
+requires = [
+    "setuptools>=61.0.0",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bottle-ocr-lib"
+version = "1.0.2"
+description = "Professional OCR and AI-powered prescription extraction library with secure license validation"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Michael Crosson", email = "michael@bottleocr.com" }
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry", 
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["ocr", "prescription", "ai", "image-processing", "healthcare", "paddleocr", "openai"]
+
+dependencies = [
+    "requests>=2.25.0",
+    "pillow>=8.0.0", 
+    "opencv-python>=4.5.0",
+    "numpy>=1.20.0",
+    "paddlepaddle>=2.4.0",
+    "paddleocr>=2.7.0",
+    "openai>=1.0.0",
+    "PyYAML>=5.4.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.10",
+    "black>=21.0",
+    "flake8>=3.8",
+    "mypy>=0.910"
+]
+
+[project.urls]
+Homepage = "https://github.com/MichaelCrosson/bottle-ocr-lib"
+Documentation = "https://github.com/MichaelCrosson/bottle-ocr-lib#readme"
+Repository = "https://github.com/MichaelCrosson/bottle-ocr-lib"
+Issues = "https://github.com/MichaelCrosson/bottle-ocr-lib/issues"
+
+[project.scripts]
+bottle-ocr = "bottle_ocr_lib.cli:main"
+
+[tool.setuptools]
+packages = ["bottle_ocr_lib", "bottle_ocr_lib.auth", "bottle_ocr_lib.core", "bottle_ocr_lib.utils"]
+
+[tool.setuptools.package-data]
+bottle_ocr_lib = ["*.json", "*.yaml", "*.yml"]
