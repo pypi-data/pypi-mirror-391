@@ -1,0 +1,116 @@
+include:
+  - project: odoo-addons/ci-files
+    ref: v2
+    file:
+      - pipeline/classic_workflow.yml
+      - python/pyunit.yml
+      - python/build.yml
+      - python/deploy.yml
+      - python/deploy-tag.yml
+
+services:
+- name: minio/minio
+  command: ['server', '/minio']
+  alias: minio
+
+variables:
+  SUPPORT_PYTHON_VERSION: "3.7;3.8;3.9;3.10;3.11;latest"
+
+stages:
+  - test
+  - test_odoo
+  - build
+  - deploy
+
+pyunittest:3.6:
+  allow_failure: true
+
+build python:latest:
+  needs:
+    - test:odoo:12
+    - test:odoo:14
+    - test:odoo:15
+    - test:odoo:16
+
+.test:odoo:
+  needs: ["pyunittest:3.8"]
+  image:
+    name: registry.mangono.io/dockers/odoo:15.0
+    entrypoint: [""]
+  stage: test_odoo
+  script:
+    - ./in_docker_test.sh
+  tags:
+    - runbot2
+
+test:odoo:11:
+  extends: "test:odoo:14"
+  needs: ["pyunittest:3.7"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:11.0
+    entrypoint: [""]
+
+test:odoo:12:
+  extends: "test:odoo:14"
+  needs: ["pyunittest:3.8"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:12.0
+    entrypoint: [""]
+
+test:odoo:13:
+  extends: ".test:odoo"
+  needs: ["pyunittest:3.8"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:13.0
+    entrypoint: [""]
+
+test:odoo:14:
+  extends: ".test:odoo"
+  needs: ["pyunittest:3.8"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:14.0
+    entrypoint: [""]
+
+test:odoo:15:
+  extends: ".test:odoo"
+  needs: ["pyunittest:3.10"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:15.0
+    entrypoint: [""]
+
+test:odoo:16:
+  extends: ".test:odoo"
+  needs: ["pyunittest:3.10"]
+  image:
+    name: registry.mangono.io/odoo-cloud/container:16.0
+    entrypoint: [""]
+
+
+#mkdocs:build:
+#  stage: build
+#  image: python:3.10
+#  before_script:
+#    - pip install -r docs/mkdocs/requirements.txt
+#  script:
+#    - mkdocs build --strict --verbose --site-dir test
+#  artifacts:
+#    paths:
+#      - test
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+#  tags:
+#    - lint
+
+
+#pages:
+#  extends: "mkdocs:build"
+#  stage: deploy
+#  script:
+#    - mkdocs build --strict --verbose --site-dir public
+#  artifacts:
+#    paths:
+#      - public
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+#  tags:
+#    - lint

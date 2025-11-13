@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]>=7.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oenv2config"
+dynamic = ["version", "dependencies"]
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+[project.scripts]
+odoo-env2config = "odoo_env_config.cli:env_to_config"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools_scm]
+write_to = "src/odoo_env_config/_version.py"
+
+[tool.bdist_wheel]
+python-tag = "py3"
+
+[tool.ruff]
+line-length = 120
+target-version = "py37"
+exclude = ["tests"]
+
+
+
+[tool.ruff.format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+
+[tool.ruff.lint]
+extend-select = ["I", "C901", "PLR", "E", "A", "SIM"]
+
+[tool.ruff.lint.mccabe]
+# Flag errors (`C901`) whenever the complexity level exceeds 5.
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
