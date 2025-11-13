@@ -1,0 +1,1818 @@
+Change History -- Old changes
+*****************************
+
+3.3 (2024-10-17)
+----------------
+
+New features:
+
+- Allow the ``-I`` option in the Python interpreter wrapper installed by
+  buildout when using the ``zc.recipe.egg`` recipe's `interpreter =` directive.
+  This solves the issue when VSCode calls the designated Python interpreter for
+  a workspace with this option to determine the Python version etc.
+  (`#627 <https://github.com/buildout/buildout/issues/627>`_)
+
+
+3.2.0 (2024-09-26)
+------------------
+
+New features:
+
+- Add config option: ``optional-extends``. This is the same as the ``extends``
+  option, but then for optional files. The names must be file paths, not URLs.
+  If the path does not exist,  it is silently ignored. This is useful for
+  optionally loading a ``local.cfg`` or ``custom.cfg`` with options specific
+  for the developer or the server.
+  [maurits] (`#665 <https://github.com/buildout/buildout/issues/665>`_)
+
+
+3.1.1 (2024-09-20)
+------------------
+
+Bug fixes:
+
+- Fix: a variable defined with initial ``+=`` was undefined and would lead to a
+  corrupted ``.installed.cfg``.
+  Fixes `issue 641 <https://github.com/buildout/buildout/issues/641>`_.
+  [distributist]
+- Fix: extends with increments could result in missing values.
+  Buildout processes them in the correct order now and combines them correctly.
+  Fixes `issue 176 <https://github.com/buildout/buildout/issues/176>`_ and
+  `issue 629 <https://github.com/buildout/buildout/issues/629>`_.
+  [distributist] (#644)
+- Fix: Multiple ``+=`` or ``/-=`` in one file would lose assignment in a
+  previous file.
+  Fixes `issue 656 <https://github.com/buildout/buildout/issues/656>`_.
+  [distributist]
+
+
+3.1.0 (2024-08-29)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 3.5.  It is unsupported, and testing it is too hard.
+  [maurits] (#35)
+
+
+Bug fixes:
+
+
+- Normalize package names when gathering packages.
+  This should help find all distributions for package ``name.space``, whether
+  they are called ``name.space-1.0.tar.gz`` with a dot or
+  ``name_space-1.0.tar.gz`` with an underscore (created with ``setuptools``
+  69.3 or higher).
+  [maurits] (#647)
+- Fix ImportError: cannot import name ``packaging`` from ``pkg_resources`` with
+  setuptools 70.
+  Done by adding a compatibility module that tries to import `packaging` from
+  several places.
+  Fixes `issue 648 <https://github.com/buildout/buildout/issues/648>`_.
+  [maurits] (#648)
+
+
+3.0.1 (2022-11-08)
+------------------
+
+Bug fixes:
+
+
+- Fixed import of packaging.markers.  [maurits] (#621)
+
+
+3.0.0 (2022-11-07)
+------------------
+
+New features:
+
+
+- Add support for PEP 508 markers in section condition expressions.
+  For example: ``[versions:python_version <= "3.9"]``.
+  [maurits] (#621)
+
+
+Bug fixes:
+
+
+- Command-line 'extends' now works with dirs in file names
+  [gotcha] (cli-extends)
+- Add support for python311-315 in conditional section expressions. (#311)
+- Make compatible with pip 22.2+, restoring Requires-Python functionality there.
+  Fixes `issue 613 <https://github.com/buildout/buildout/issues/613>`_.
+  [maurits] (#613)
+
+
+3.0.0rc3 (2022-04-07)
+---------------------
+
+Bug fixes:
+
+
+- Fix `TypeError: dist must be a Distribution instance` due to issue between
+  `setuptools` and `pip`. (#600)
+
+
+3.0.0rc2 (2022-03-04)
+---------------------
+
+New features:
+
+
+- add support for PEP496 environment markers (pep496)
+
+
+Bug fixes:
+
+
+- Fix TypeError for missing required `use_deprecated_html5lib` with pip 22.
+  Keep compatible with earlier pip versions. (#598)
+
+
+3.0.0rc1 (2021-12-16)
+---------------------
+
+Bug fixes:
+
+
+- Call pip via `python -m pip`. (#569)
+
+
+3.0.0b5 (2021-11-29)
+--------------------
+
+Bug fixes:
+
+
+- Fix when c extension implements namespace packages without the corresponding
+  directories. (#589)
+- Honor command-line buildout:extends (#592)
+
+
+3.0.0b4 (2021-11-25)
+--------------------
+
+New features:
+
+
+- Allow to run buildout in FIPS enabled environments. (#570)
+- Proper error message if extends-cache tries to expand ${section:variable} (#585)
+
+
+Bug fixes:
+
+
+- Forward verbose option to pip (#576)
+- Check that file top_level.txt exists before opening.
+  Add check for other files as well. (#582)
+- Return code of pip install subprocess is now properly returned to buildout. (#586)
+
+
+3.0.0b3 (2021-10-08)
+--------------------
+
+New features:
+
+
+- Improve warning message when a section contains unused options. (#483)
+
+
+Bug fixes:
+
+
+- Fix support of ``pip>=21.1`` (#567)
+- Fix confusion when using multiple Python versions and
+  installing packages with C extensions
+  without proper binary wheel available. (#574)
+
+
+Development:
+
+
+- Avoid broken jobs on Travis because of security on PRs (travis-pr)
+
+
+3.0.0b2 (2021-03-09)
+--------------------
+
+New features:
+
+
+- Improve error message when a package version is not pinned and `allow-picked-versions = false`. (#481)
+
+
+Bug fixes:
+
+
+- Fix FileNotFoundError when installing eggs with top-level directory without code (like doc). (#556)
+
+
+Development:
+
+
+- Login to docker hub to avoid pull limits (travis)
+- Initialize towncrier (#519)
+
+
+3.0.0b1 (2021-03-07)
+====================
+
+- Fix issue with combination of `>` specs and `extras` and recent `setuptools`.
+
+- Fix issue with incrementing options from `.buildout/default.cfg`.
+
+- Support python37, python38 and python39 in conditional section expressions.
+
+- Fix bootstrapping for python27 and python35.
+
+
+3.0.0a2 (2020-05-25)
+====================
+
+- Ignore `.git` when computing signature of a recipe develop egg
+
+- Warn when the name passed to `zc.recipe.egg:scripts`
+  is not defined in egg entry points.
+
+- Show pip warning about Python version only once.
+
+- Better patch for ``pkg_resources.Distribution.hashcmp`` performance.
+
+
+3.0.0a1 (2020-05-17)
+====================
+
+- Scripts: ensure eggs are inserted before ``site-packages`` in ``sys.path``.
+
+- Fix forever loop when changing ``zc.buildout`` version via ``buildout``.
+
+- Add support for ``Requires-Python`` metadata.
+  Fragile monkeypatch that relies on ``pip._internal``.
+  Emits a warning when support is disabled due to changes in ``pip``.
+
+- Use ``pip install`` instead of deprecated ``setuptools.easy_install``.
+
+- Patch ``pkg_resources.Distribution`` to make install of unpinned versions quicker.
+  Most obvious with ``setuptools``.
+
+
+2.13.3 (2020-02-11)
+===================
+
+- Fix DeprecationWarning about MutableMapping.
+  (`#484 <https://github.com/buildout/buildout/issues/484>`_)
+
+
+2.13.2 (2019-07-03)
+===================
+
+- Fixed DeprecationWarning on python 3.7: "'U' mode is deprecated".
+
+
+2.13.1 (2019-01-29)
+===================
+
+- Documentation update for the new ``buildout query`` command.
+
+
+2.13.0 (2019-01-17)
+===================
+
+- Get information about the configuration with new command ``buildout query``.
+
+
+2.12.2 (2018-09-04)
+===================
+
+- Upon an error, buildout exits with a non-zero exit code. This now also works
+  when running with ``-D``.
+
+- Fixed most 'Deprecation' and 'Resource' warnings.
+
+
+2.12.1 (2018-07-02)
+===================
+
+- zc.buildout now explicitly requests zc.recipe.egg >=2.0.6 now.
+
+
+2.12.0 (2018-07-02)
+===================
+
+- Add a new buildout option ``allow-unknown-extras`` to enable
+  installing requirements that specify extras that do not exist. This
+  needs a corresponding update to zc.recipe.egg. See `issue 457
+  <https://github.com/buildout/buildout/issues/457>`_.
+
+  zc.recipe.egg has been updated to 2.0.6 for this change.
+
+
+2.11.5 (2018-06-19)
+===================
+
+- Fix for `issue 295 <https://github.com/buildout/buildout/issues/295>`_. On
+  windows, deletion of temporary egg files is more robust now.
+
+
+2.11.4 (2018-05-14)
+===================
+
+- Fix for `issue 451 <https://github.com/buildout/buildout/issues/451>`_:
+  distributions with a version number that normalizes to a shorter version
+  number (3.3.0 to 3.3, for instance) can be installed now.
+
+
+2.11.3 (2018-04-13)
+===================
+
+- Update to use the new PyPI at https://pypi.org/.
+
+
+2.11.2 (2018-03-19)
+===================
+
+- Fix for the #442 issue: AttributeError on
+  ``pkg_resources.SetuptoolsVersion``.
+
+
+2.11.1 (2018-03-01)
+===================
+
+- Made upgrade check more robust. When using extensions, the improvement
+  introduced in 2.11 could prevent buildout from restarting itself when it
+  upgraded setuptools.
+
+
+2.11.0 (2018-01-21)
+===================
+
+- Installed packages are added to the working set immediately. This helps in
+  some corner cases that occur when system packages have versions that
+  conflict with our specified versions.
+
+
+2.10.0 (2017-12-04)
+===================
+
+- Setuptools 38.2.0 started supporting wheels. Through setuptools, buildout
+  now also supports wheels! You need at least version 38.2.3 to get proper
+  namespace support.
+
+  This setuptools change interfered with buildout's recent support for
+  `buildout.wheel <https://github.com/buildout/buildout.wheel>`_, resulting in
+  a sudden "Wheels are not supported" error message (see `issue 435
+  <https://github.com/buildout/buildout/issues/425>`_). Fixed by making
+  setuptools the default, though you can still use the buildout.wheel if you
+  want.
+
+
+2.9.6 (2017-12-01)
+==================
+
+- Fixed: could not install eggs when sdist file name and package name had different
+  case.
+
+
+2.9.5 (2017-09-22)
+==================
+
+- Use HTTPS for PyPI's index.  PyPI redirects HTTP to HTTPS by default
+  now so using HTTPS directly avoids the potential for that redirect
+  being modified in flight.
+
+
+2.9.4 (2017-06-20)
+==================
+
+- Sort the distributions used to compute ``__buildout_signature__`` to
+  ensure reproducibility under Python 3 or under Python 2 when ``-R``
+  is used on ``PYTHONHASHSEED`` is set to ``random``. Fixes `issue 392
+  <https://github.com/buildout/buildout/issues/392>`_.
+
+  **NOTE**: This may cause existing ``.installed.cfg`` to be
+  considered outdated and lead to parts being reinstalled spuriously
+  under Python 2.
+
+- Add support code for doctests to be able to easily measure code
+  coverage. See `issue 397 <https://github.com/buildout/buildout/issues/397>`_.
+
+2.9.3 (2017-03-30)
+==================
+
+- Add more verbosity to ``annotate`` results with ``-v``
+
+- Select one or more sections with arguments after ``buildout annotate``.
+
+
+2.9.2 (2017-03-06)
+==================
+
+- Fixed: We unnecessarily used a function from newer versions of
+  setuptools that caused problems when older setuptools or pkg_resources
+  installs were present (as in travis.ci).
+
+
+2.9.1 (2017-03-06)
+==================
+
+- Fixed a minor packaging bug that broke the PyPI page.
+
+
+2.9.0 (2017-03-06)
+==================
+
+- Added new syntax to explicitly declare that a part depends on other part.
+  See http://docs.buildout.org/en/latest/topics/implicit-parts.html
+
+- Internal refactoring to work with `buildout.wheel
+  <https://github.com/buildout/buildout.wheel>`_.
+
+- Fixed a bugs in ``zc.buildout.testing.Buildout``. It was loading
+  user-default configuration.  It didn't support calling the
+  ``created`` method on its sections.
+
+- Fixed a bug (windows, py 3.4)
+  When processing metadata on "old-style" distutils scripts, .exe stubs
+  appeared in ``metadata_listdir``, in turn reading those burped with
+  ``UnicodeDecodeError``. Skipping .exe stubs now.
+
+
+2.8.0 (2017-02-13)
+==================
+
+- Added a hook to enable a soon-to-be-released buildout extension to
+  provide wheel support.
+
+2.7.1 (2017-01-31)
+==================
+
+- Fixed a bug introduced in 2.6.0:
+  zc.buildout and its dependeoncies were reported as picked even when
+  their versions were fixed in a ``versions`` section.  Worse, when the
+  ``update-versions-file`` option was used, the ``versions`` section was
+  updated needlessly on every run.
+
+
+2.7.0 (2017-01-30)
+==================
+
+- Added a buildout option, ``abi-tag-eggs`` that, when true, causes
+  the `ABI tag <https://www.python.org/dev/peps/pep-0425/#abi-tag>`_
+  for the buildout environment to be added to the eggs directory name.
+
+  This is useful when switching Python implementations (e.g. CPython
+  vs PyPI or debug builds vs regular builds), especially when
+  environment differences aren't reflected in egg names.  It also has
+  the side benefit of making eggs directories smaller, because eggs
+  for different Python versions are in different directories.
+
+2.6.0 (2017-01-29)
+==================
+
+- Updated to work with the latest setuptools.
+
+- Added (verified) Python 3.6 support.
+
+2.5.3 (2016-09-05)
+==================
+
+- After a dist is fetched and put into its final place, compile its
+  python files.  No longer wait with compiling until all dists are in
+  place.  This is related to the change below about not removing an
+  existing egg.  [maurits]
+
+- Do not remove an existing egg.  When installing an egg to a location
+  that already exists, keep the current location (directory or file).
+  This can only happen when the location at first did not exist and
+  this changed during the buildout run.  We used to remove the
+  previous location, but this could cause problems when running two
+  buildouts at the same time, when they try to install the same new
+  egg.  Fixes #307.  [maurits]
+
+- In ``zc.buildout.testing.system``, set ``TERM=dumb`` in the environment.
+  This avoids invisible control characters popping up in some terminals,
+  like ``xterm``.  Note that this may affect tests by buildout recipes.
+  [maurits]
+
+- Removed Python 2.6 and 3.2 support.
+  [do3cc]
+
+
+2.5.2 (2016-06-07)
+==================
+
+- Fixed ``-=`` and ``+=`` when extending sections. See #161.
+  [puittenbroek]
+
+
+2.5.1 (2016-04-06)
+==================
+
+- Fix python 2 for downloading external config files with basic auth in the
+  URL. Fixes #257.
+
+
+2.5.0 (2015-11-16)
+==================
+
+- Added more elaborate version and requirement information when there's a
+  version conflict. Previously, you could get a report of a version conflict
+  without information about which dependency requested the conflicing
+  requirement.
+
+  Now all this information is logged and displayed in case of an error.
+  [reinout]
+
+- Dropped 3.2 support (at least in the automatic tests) as setuptools will
+  soon stop supporting it. Added python 3.5 to the automatic tests.
+  [reinout]
+
+
+2.4.7 (2015-10-29)
+==================
+
+- Fix for #279. Distutils script detection previously broke on windows with
+  python 3 because it errored on ``.exe`` files.
+  [reinout]
+
+
+2.4.6 (2015-10-28)
+==================
+
+- Relative paths are now also correctly generated for the current directory
+  ("develop = .").
+  [youngking]
+
+
+2.4.5 (2015-10-14)
+==================
+
+- More complete fix for #24. Distutils scripts are now also generated for
+  develop eggs.
+  [reinout]
+
+
+2.4.4 (2015-10-02)
+==================
+
+- zc.buildout is now also released as a wheel. (Note: buildout itself doesn't
+  support installing wheels yet.)
+  [graingert]
+
+
+2.4.3 (2015-09-03)
+==================
+
+- Added nested directory creation support
+  [guyzmo]
+
+
+2.4.2 (2015-08-26)
+==================
+
+- If a downloaded config file in the "extends-cache" gets corrupted, buildout
+  now tells you the filename in the cache. Handy for troubleshooting.
+  [reinout]
+
+
+2.4.1 (2015-08-08)
+==================
+
+- Check the ``use-dependency-links`` option earlier.  This can give
+  a small speed increase.
+  [maurits]
+
+- When using python 2, urllib2 is used to work around Python issue 24599, which
+  affects downloading from behind a proxy.
+  [stefano-m]
+
+
+2.4.0 (2015-07-01)
+==================
+
+- Buildout no longer breaks on packages that contain a file with a non-ascii
+  filename. Fixes #89 and #148.
+  [reinout]
+
+- Undo breakage on Windows machines where ``sys.prefix`` can also be a
+  ``site-packages`` directory:  don't remove it from ``sys.path``.  See
+  https://github.com/buildout/buildout/issues/217 .
+
+- Remove assumption that ``pkg_resources`` is a module (untrue since
+  release of `setuptools 8.3``).  See
+  https://github.com/buildout/buildout/issues/227 .
+
+- Fix for #212. For certain kinds of conflict errors you'd get an UnpackError
+  when rendering the error message. Instead of a nicely formatted version
+  conflict message.
+  [reinout]
+
+- Making sure we use the correct easy_install when setuptools is installed
+  globally. See https://github.com/buildout/buildout/pull/232 and
+  https://github.com/buildout/buildout/pull/222 .
+  [lrowe]
+
+- Updated buildout's `travis-ci <https://travis-ci.org/buildout/buildout>`_
+  configuration so that tests run much quicker so that buildout is easier and
+  quicker to develop.
+  [reinout]
+
+- Note: zc.recipe.egg has also been updated to 2.0.2 together with this
+  zc.buildout release. Fixed: In ``zc.recipe.egg#custom`` recipe's ``rpath``
+  support, don't assume path elements are buildout-relative if they start with
+  one of the "special" tokens (e.g., ``$ORIGIN``).  See:
+  https://github.com/buildout/buildout/issues/225.
+  [tseaver]
+
+- ``download-cache``, ``eggs-directory`` and ``extends-cache`` are now
+  automatically created if their parent directory exists. Also they can be
+  relative directories (relative to the location of the buildout config file
+  that defines them). Also they can now be in the form ``~/subdir``, with the
+  usual convention that the ``~`` char means the home directory of the user
+  running buildout.
+  [lelit]
+
+- A new bootstrap.py file is released (version 2015-07-01).
+
+- When bootstrapping, the ``develop-eggs/`` directory is first removed. This
+  prevents old left-over ``.egg-link`` files from breaking buildout's careful
+  package collection mechanism.
+  [reinout]
+
+- The bootstrap script now accepts ``--to-dir``. Setuptools is installed
+  there. If already available there, it is reused. This can be used to
+  bootstrap buildout without internet access. Similarly, a local
+  ``ez_setup.py`` is used when available instead of it being downloaded. You
+  need setuptools 14.0 or higher for this functionality.
+  [lrowe]
+
+- The bootstrap script now uses ``--buildout-version`` instead of
+  ``--version`` to pick a specific buildout version.
+  [reinout]
+
+- The bootstrap script now accepts ``--version`` which prints the bootstrap
+  version. This version is the date the bootstrap.py was last changed. A date
+  is handier or less confusing than either tracking zc.buildout's version or
+  having a separate bootstrap version number.
+  [reinout]
+
+2.3.1 (2014-12-16)
+==================
+
+- Fixed: Buildout merged single-version requirements with
+  version-range requirements in a way that caused it to think there
+  wasn't a single-version requirement.  IOW, buildout through that
+  versions were being picked when they weren't.
+
+- Suppress spurious (and possibly non-spurious) version-parsing warnings.
+
+2.3.0 (2014-12-14)
+==================
+
+- Buildout is now compatible with (and requires) setuptools 8.
+
+2.2.5 (2014-11-04)
+==================
+
+- Improved fix for #198: when bootstrapping with an extension, buildout was
+  too strict on itself, resulting in an inability to upgrade or downgrade its
+  own version.
+  [reinout]
+
+- Setuptools must be at 3.3 or higher now. If you use the latest bootstrap
+  from http://downloads.buildout.org/2/bootstrap.py you're all set.
+  [reinout]
+
+- Installing *recipes* that themselves have dependencies used to fail with a
+  VersionConflict if such a dependency was installed globally with a lower
+  version. Buildout now ignores the version conflict in those cases and simply
+  installs the correct version.
+  [reinout]
+
+2.2.4 (2014-11-01)
+==================
+
+- Fix for #198: buildout 2.2.3 caused a version conflict when bootstrapping a
+  buildout with a version pinned to an earlier one. Same version conflict
+  could occur with system-wide installed packages that were newer than the
+  pinned version.
+  [reinout]
+
+2.2.3 (2014-10-30)
+==================
+
+- Fix #197, Python 3 regression
+  [aclark4life]
+
+2.2.2 (2014-10-30)
+==================
+
+- Open files for ``exec()`` in universal newlines mode.  See
+  https://github.com/buildout/buildout/issues/130
+
+- Add ``BUILDOUT_HOME`` as an alternate way to control how the user default
+  configuration is found.
+
+- Close various files when finished writing to them. This avoids
+  ResourceWarnings on Python 3, and better supports doctests under PyPy.
+
+- Introduce improved easy_install Install.install function. This is present
+  in 1.5.X and 1.7X but was never merged into 2.X somehow.
+
+2.2.1 (2013-09-05)
+==================
+
+- ``distutils`` scripts: correct order of operations on ``from ... import``
+  lines (see https://github.com/buildout/buildout/issues/134).
+
+- Add an ``--allow-site-packges`` option to ``bootstrap.py``, defaulting
+  to False.  If the value is false, strip any "site packages" (as defined by
+  the ``site`` module) from ``sys.path`` before attempting to import
+  ``setuptools`` / ``pkg_resources``.
+
+- Updated the URL used to fetch ``ez_setup.py`` to the official, non-version-
+  pinned version.
+
+2.2.0 (2013-07-05)
+==================
+
+- Handle both addition and subtraction of elements (+= and -=) on the same key
+  in the same section. Forward-ported from buildout 1.6.
+
+- Suppress the useless ``Link to <URL> ***BLOCKED*** by --allow-hosts``
+  error message being emitted by distribute / setuptools.
+
+- Extend distutils script generation to support module docstrings and
+  __future__ imports.
+
+- Refactored picked versions logic to make it easier to use for plugins.
+
+- Use ``get_win_launcher`` API to find Windows launcher (falling back to
+  ``resource_string`` for ``cli.exe``).
+
+- Remove ``data_files`` from ``setup.py``:  it was installing ``README.txt``
+  in current directory during installation (merged from 1.x branch).
+
+- Switch dependency from ``distribute 0.6.x`` to ``setuptools 0.7.x``.
+
+2.1.0 (2013-03-23)
+==================
+
+- Meta-recipe support
+
+- Conditional sections
+
+- Buildout now accepts a ``--version`` command-line option to print
+  its version.
+
+Fixed: Builout didn't exit with a non-zero exit status if there was a
+       failure in combination with an upgrade.
+
+Fixed: We now fail with an informative error when an old bootstrap
+       script causes buildout 2 to be used with setuptools.
+
+Fixed: An error incorrectly suggested that buildout 2 implemented all
+       of the functionality of dumppickedversions.
+
+Fixed: Buildout generated bad scripts when no eggs needed to be added
+       to ``sys.path``.
+
+Fixed: Buildout didn't honour Unix umask when generating scripts.
+       https://bugs.launchpad.net/zc.buildout/+bug/180705
+
+Fixed: ``update-versions-file`` didn't work unless
+       ``show-picked-versions`` was also set.
+       https://github.com/buildout/buildout/issues/71
+
+2.0.1 (2013-02-16)
+==================
+
+- Fixed: buildout didn't honor umask settings when creating scripts.
+
+- Fix for distutils scripts installation on Python 3, related to
+  ``__pycache__`` directories.
+
+- Fixed: encoding data in non-entry-point-based scripts was lost.
+
+2.0.0 (2013-02-10)
+==================
+
+This is a backward incompatible release of buildout that attempts to
+correct mistakes made in buildout 1.
+
+- Buildout no-longer tries to provide full or partial isolation from
+  system Python installations. If you want isolation, use buildout
+  with virtualenv, or use a clean build of Python to begin with.
+
+  Providing isolation was a noble goal, but it's implementation
+  complicated buildout's implementation too much.
+
+- Buildout no-longer supports using multiple versions of Python in a
+  single buildout.  This too was a noble goal, but added too much
+  complexity to the implementation.
+
+- Changed the configuration file format:
+
+  - Relative indentation in option values is retained if the first
+    line is blank. (IOW, if the non-blank text is on the continuation
+    lines.) As in::
+
+       [mysection]
+       tree =
+         /root
+           branch
+
+    In such cases, internal blank lines are also retained.
+
+  - The configuration syntax is more tightly defined, allowing fewer
+    syntax definitions.
+
+    Buildout 1 configuration files were parsed with the Python
+    ConfigParser module. The ConfigParser module's format is poorly
+    documented and wildly flexible. For example:
+
+    - Any characters other than left square brackets were allowed in
+      section names.
+
+    - Arbitrary text was allowed and ignored after the closing bracket on
+      section header lines.
+
+    - Any characters other than equal signs or colons were allowed in an
+      option name.
+
+    - Configuration options could be spelled as RFC 822 mail headers
+      (using a colon, rather than an equal sign).
+
+    - Comments could begin with "rem".
+
+    - Semicolons could be used to start inline comments, but only if
+      preceded by a whitespace character.
+
+  See `Configuration file syntax`_.
+
+- Buildout now prefers final releases by default
+  (buildout:prefer-final now defaults to true, rather than false.)
+
+  However, if buildout is bootstrapped with a non-final release, it
+  won't downgrade itself to a final release.
+
+- Buildout no-longer installs zipped eggs. (Distribute may still
+  install a zipped egg of itself during the bootstrapping process.)
+  The ``buildout:unzip`` option has been removed.
+
+- Buildout no-longer supports setuptools. It now uses distribute
+  exclusively.
+
+- Integrated the `buildout-versions
+  <http://packages.python.org/buildout-versions/>`_ extension into buildout
+  itself. For this, a few options were added to buildout:
+
+  - If ``show-picked-versions`` is set to true, all picked versions are
+    printed at the end of the buildout run. This saves you from running
+    buildout in verbose mode and extracting the picked versions from the
+    output.
+
+  - If ``update-versions-file`` is set to a filename (relative to the buildout
+    directory), the ``show-picked-versions`` output is appended to that file.
+
+- Buildout options can be given on the command line using the form::
+
+    option_name=value
+
+  as a short-hand for::
+
+    buildout:option_name=value
+
+- The ``versions`` option now defaults to ``versions``, so you no
+  longer need to include::
+
+     versions = versions
+
+  in a ``buildout`` section when pinning versions.
+
+  A ``versions`` section is added, if necessary, if a ``versions``
+  option isn't used.
+
+- Buildout-defined default versions are included in the versions
+  section, if there is one.
+
+- The ``buildout:zc.buildout-version`` and
+  ``buildout:distribute-version`` options have been removed in favor
+  of providing version constraints in a versions section.
+
+- Error if install-from-cache and offline are used together, because
+  offline largely means "don't install".
+
+- Provide better error messages when distributions can't be installed
+  because buildout is run in offline mode.
+
+- Versions in versions sections can now be simple constraints, like
+  >=2.0dev in addition to being simple versions.
+
+  Buildout 2 leverages this to make sure it uses
+  zc.recipe.egg>=2.0.0a3, which mainly matters for Python 3.
+
+- The buildout init command now accepts distribution requirements and
+  paths to set up a custom interpreter part that has the distributions
+  or parts in the path. For example::
+
+     python bootstrap.py init BeautifulSoup
+
+- Added buildout:socket-timeout option so that socket timeout can be configured
+  both from command line and from config files. (gotcha)
+
+- Distutils-style scripts are also installed now (for instance pyflakes' and
+  docutils' scripts).  https://bugs.launchpad.net/zc.buildout/+bug/422724
+
+- Avoid sorting the working set and requirements when it won't be
+  logged.  When profiling a simple buildout with 10 parts with
+  identical and large working sets, this resulted in a decrease of run
+  time from 93.411 to 15.068 seconds, about a 6 fold improvement.  To
+  see the benefit be sure to run without any increase in verbosity
+  ("-v" option).  (rossp)
+
+- Introduce a cache for the expensive `buildout._dir_hash` function.
+
+- Remove duplicate path from script's sys.path setup.
+
+- Make sure to download extended configuration files only once per buildout
+  run even if they are referenced multiple times (patch by Rafael Monnerat).
+
+- Removed any traces of the implementation of ``extended-by``. Raise a
+  UserError if the option is encountered instead of ignoring it, though.
+
+Fixed: relative-paths weren't honored when bootstrapping or upgrading
+       (which is how the buildout script gets generated).
+
+Fixed: initialization code wasn't included in interpreter scripts.
+
+Fixed: macro inheritance bug, https://github.com/buildout/buildout/pull/37
+
+Fixed: In the download module, fixed the handling of directories that
+       are pointed to by file-system paths and ``file:`` URLs.
+
+Fixed if you have a configuration with an extends entry in the [buildout]
+      section which points to a non-existing URL the result is not very
+      user friendly. https://bugs.launchpad.net/zc.buildout/+bug/566167
+
+Fixed: https://bugs.launchpad.net/bugs/697913 : Buildout doesn't honor exit code
+       from scripts. Fixed.
+
+1.4.4 (2010-08-20)
+==================
+
+The 1.4.4 release is a release for people who encounter trouble
+with the 1.5 line.  By switching to `the associated bootstrap script
+<https://raw.github.com/buildout/buildout/master/bootstrap/bootstrap.py>`_
+you can stay on 1.4.4 until you are ready to migrate.
+
+1.4.3 (2009-12-10)
+==================
+
+Bugs fixed:
+
+- Using pre-detected setuptools version for easy_installing tgz files.  This
+  prevents a recursion error when easy_installing an upgraded "distribute"
+  tgz.  Note that setuptools did not have this recursion problem solely
+  because it was packaged as an ``.egg``, which does not have to go through
+  the easy_install step.
+
+
+1.4.2 (2009-11-01)
+==================
+
+New Feature:
+
+- Added a --distribute option to the bootstrap script, in order
+  to use Distribute rather than Setuptools. By default, Setuptools
+  is used.
+
+Bugs fixed:
+
+- While checking for new versions of setuptools and buildout itself,
+  compare requirement locations instead of requirement objects.
+
+- Incrementing didn't work properly when extending multiple files.
+  https://bugs.launchpad.net/zc.buildout/+bug/421022
+
+- The download API computed MD5 checksums of text files wrong on Windows.
+
+1.4.1 (2009-08-27)
+==================
+
+New Feature:
+
+- Added a debug built-in recipe to make writing some tests easier.
+
+Bugs fixed:
+
+- (introduced in 1.4.0) option incrementing (-=) and decrementing (-=)
+  didn't work in the buildout section.
+  https://bugs.launchpad.net/zc.buildout/+bug/420463
+
+- Option incrementing and decrementing didn't work for options
+  specified on the command line.
+
+- Scripts generated with relative-paths enabled couldn't be
+  symbolically linked to other locations and still work.
+
+- Scripts run using generated interpreters didn't have __file__ set correctly.
+
+- The standard Python -m option didn't work for custom interpreters.
+
+1.4.0 (2009-08-26)
+==================
+
+- When doing variable substitutions, you can omit the section name to
+  refer to a variable in the same section (e.g. ${:foo}).
+
+- When doing variable substitution, you can use the special option,
+  ``_buildout_section_name_`` to get the section name.  This is most handy
+  for getting the current section name (e.g. ${:_buildout_section_name_}).
+
+- A new special option, ``<`` allows sections to be used as macros.
+
+- Added annotate command for annotated sections. Displays sections
+  key-value pairs along with the value origin.
+
+- Added a download API that handles the download cache, offline mode etc and
+  is meant to be reused by recipes.
+
+- Used the download API to allow caching of base configurations (specified by
+  the buildout section's 'extends' option).
+
+1.3.1 (2009-08-12)
+==================
+
+- Bug fixed: extras were ignored in some cases when versions were specified.
+
+1.3.0 (2009-06-22)
+==================
+
+- Better Windows compatibility in test infrastructure.
+
+- Now the bootstrap.py has an optional --version argument,
+  that can be used to force buildout version to use.
+
+- ``zc.buildout.testing.buildoutSetUp`` installs a new handler in the
+  python root logging facility. This handler is now removed during
+  tear down as it might disturb other packages reusing buildout's
+  testing infrastructure.
+
+- fixed usage of 'relative_paths' keyword parameter on Windows
+
+- Added an unload entry point for extensions.
+
+- Fixed bug: when the relative paths option was used, relative paths
+  could be inserted into sys.path if a relative path was used to run
+  the generated script.
+
+1.2.1 (2009-03-18)
+==================
+
+- Refactored generation of relative egg paths to generate simpler code.
+
+1.2.0 (2009-03-17)
+==================
+
+- Added a relative_paths option to zc.buildout.easy_install.script to
+  generate egg paths relative to the script they're used in.
+
+1.1.2 (2009-03-16)
+==================
+
+- Added Python 2.6 support. Removed Python 2.3 support.
+
+- Fixed remaining deprecation warnings under Python 2.6, both when running
+  our tests and when using the package.
+
+- Switched from using os.popen* to subprocess.Popen, to avoid a deprecation
+  warning in Python 2.6.  See:
+
+  http://docs.python.org/library/subprocess.html#replacing-os-popen-os-popen2-os-popen3
+
+- Made sure the 'redo_pyc' function and the doctest checkers work with Python
+  executable paths containing spaces.
+
+- Expand shell patterns when processing the list of paths in `develop`, e.g::
+
+    [buildout]
+    develop = ./local-checkouts/*
+
+- Conditionally import and use hashlib.md5 when it's available instead
+  of md5 module, which is deprecated in Python 2.6.
+
+- Added Jython support for bootstrap, development bootstrap
+  and buildout support on Jython
+
+- Fixed a bug that would cause buildout to break while computing a
+  directory hash if it found a broken symlink (Launchpad #250573)
+
+1.1.1 (2008-07-28)
+==================
+
+- Fixed a bug that caused buildouts to fail when variable
+  substitutions are used to name standard directories, as in::
+
+    [buildout]
+    eggs-directory = ${buildout:directory}/develop-eggs
+
+1.1.0 (2008-07-19)
+==================
+
+- Added a buildout-level unzip option to change the default policy for
+  unzipping zip-safe eggs.
+
+- Tracebacks are now printed for internal errors (as opposed to user
+  errors) even without the -D option.
+
+- pyc and pyo files are regenerated for installed eggs so that the
+  stored path in code objects matches the install location.
+
+1.0.6 (2008-06-13)
+==================
+
+- Manually reverted the changeset for the fix for
+  https://bugs.launchpad.net/zc.buildout/+bug/239212 to verify thet the test
+  actually fails with the changeset:
+  http://svn.zope.org/zc.buildout/trunk/src/zc/buildout/buildout.py?rev=87309&r1=87277&r2=87309
+  Thanks tarek for pointing this out. (seletz)
+
+- fixed the test for the += -= syntax in buildout.txt as the test
+  was actually wrong. The original implementation did a split/join
+  on whitespace, and later on that was corrected to respect the original
+  EOL setting, the test was not updated, though. (seletz)
+
+- added a test to verify against https://bugs.launchpad.net/zc.buildout/+bug/239212
+  in allowhosts.txt (seletz)
+
+- further fixes for """AttributeError: Buildout instance has no
+  attribute '_logger'""" by providing reasonable defaults
+  within the Buildout constructor (related to the new 'allow-hosts' option)
+  (patch by Gottfried Ganssauge) (ajung)
+
+
+1.0.5 (2008-06-10)
+==================
+
+- Fixed wrong split when using the += and -= syntax (mustapha)
+
+1.0.4 (2008-06-10)
+==================
+
+- Added the `allow-hosts` option (tarek)
+
+- Quote the 'executable' argument when trying to detect the python
+  version using popen4. (sidnei)
+
+- Quote the 'spec' argument, as in the case of installing an egg from
+  the buildout-cache, if the filename contains spaces it would fail (sidnei)
+
+- Extended configuration syntax to allow -= and += operators (malthe, mustapha).
+
+1.0.3 (2008-06-01)
+==================
+
+- fix for """AttributeError: Buildout instance has no attribute '_logger'"""
+  by providing reasonable defaults within the Buildout constructor.
+  (patch by Gottfried Ganssauge) (ajung)
+
+1.0.2 (2008-05-13)
+==================
+
+- More fixes for Windows. A quoted sh-bang is now used on Windows to make the
+  .exe files work with a Python executable in 'program files'.
+
+- Added "-t <timeout_in_seconds>" option for specifying the socket timeout.
+  (ajung)
+
+1.0.1 (2008-04-02)
+==================
+
+- Made easy_install.py's _get_version accept non-final releases of Python,
+  like 2.4.4c0. (hannosch)
+
+- Applied various patches for Windows (patch by Gottfried Ganssauge). (ajung)
+
+- Applied patch fixing rmtree issues on Windows (patch by
+  Gottfried Ganssauge).  (ajung)
+
+1.0.0 (2008-01-13)
+==================
+
+- Added a French translation of the buildout tutorial.
+
+1.0.0b31 (2007-11-01)
+=====================
+
+Feature Changes
+---------------
+
+- Added a configuration option that allows buildouts to ignore
+  dependency_links metadata specified in setup. By default
+  dependency_links in setup are used in addition to buildout specified
+  find-links. This can make it hard to control where eggs come
+  from. Here's how to tell buildout to ignore URLs in
+  dependency_links::
+
+    [buildout]
+    use-dependency-links = false
+
+  By default use-dependency-links is true, which matches the behavior
+  of previous versions of buildout.
+
+- Added a configuration option that causes buildout to error if a
+  version is picked. This is a nice safety belt when fixing all
+  versions is intended, especially when creating releases.
+
+Bugs Fixed
+----------
+
+- 151820: Develop failed if the setup.py script imported modules in
+  the distribution directory.
+
+- Verbose logging of the develop command was omitting detailed
+  output.
+
+- The setup command wasn't documented.
+
+- The setup command failed if run in a directory without specifying a
+  configuration file.
+
+- The setup command raised a stupid exception if run without arguments.
+
+- When using a local find links or index, distributions weren't copied
+  to the download cache.
+
+- When installing from source releases, a version specification (via a
+  buildout versions section) for setuptools was ignored when deciding
+  which setuptools to use to build an egg from the source release.
+
+1.0.0b30 (2007-08-20)
+=====================
+
+Feature Changes
+---------------
+
+- Changed the default policy back to what it was to avoid breakage in
+  existing buildouts.  Use::
+
+    [buildout]
+    prefer-final = true
+
+  to get the new policy.  The new policy will go into effect in
+  buildout 2.
+
+1.0.0b29 (2007-08-20)
+=====================
+
+Feature Changes
+---------------
+
+- Now, final distributions are preferred over non-final versions.  If
+  both final and non-final versions satisfy a requirement, then the
+  final version will be used even if it is older.  The normal way to
+  override this for specific packages is to specifically require a
+  non-final version, either specifically or via a lower bound.
+
+- There is a buildout prefer-final version that can be used with a
+  value of "false"::
+
+    prefer-final = false
+
+  To prefer newer versions, regardless of whether or not they are
+  final, buildout-wide.
+
+- The new simple Python index, http://cheeseshop.python.org/simple, is
+  used as the default index.  This will provide better performance
+  than the human package index interface,
+  http://pypi.python.org/pypi. More importantly, it lists hidden
+  distributions, so buildouts with fixed distribution versions will be
+  able to find old distributions even if the distributions have been
+  hidden in the human PyPI interface.
+
+Bugs Fixed
+----------
+
+- 126441: Look for default.cfg in the right place on Windows.
+
+1.0.0b28 (2007-07-05)
+=====================
+
+Bugs Fixed
+----------
+
+- When requiring a specific version, buildout looked for new versions
+  even if that single version was already installed.
+
+1.0.0b27 (2007-06-20)
+=====================
+
+Bugs Fixed
+----------
+
+- Scripts were generated incorrectly on Windows.  This included the
+  buildout script itself, making buildout completely unusable.
+
+1.0.0b26 (2007-06-19)
+=====================
+
+Feature Changes
+---------------
+
+- Thanks to recent fixes in setuptools, I was able to change buildout
+  to use find-link and index information when searching extensions.
+
+  Sadly, this work, especially the timing, was motivated my the need
+  to use alternate indexes due to performance problems in the cheese
+  shop (http://www.python.org/pypi/).  I really home we can address
+  these performance problems soon.
+
+1.0.0b25 (2007-05-31)
+=====================
+
+Feature Changes
+---------------
+
+- buildout now changes to the buildout directory before running recipe
+  install and update methods.
+
+- Added a new init command for creating a new buildout. This creates
+  an empty configuration file and then bootstraps.
+
+- Except when using the new init command, it is now an error to run
+  buildout without a configuration file.
+
+- In verbose mode, when adding distributions to fulfil requirements of
+  already-added distributions, we now show why the new distributions
+  are being added.
+
+- Changed the logging format to exclude the logger name for the
+  buildout logger.  This reduces noise in the output.
+
+- Clean up lots of messages, adding missing periods and adding quotes around
+  requirement strings and file paths.
+
+Bugs Fixed
+----------
+
+- 114614: Buildouts could take a very long time if there were
+  dependency problems in large sets of pathologically interdependent
+  packages.
+
+- 59270: Buggy recipes can cause failures in later recipes via chdir
+
+- 61890: file:// urls don't seem to work in find-links
+
+  setuptools requires that file urls that point to directories must
+  end in a "/".  Added a workaround.
+
+- 75607: buildout should not run if it creates an empty buildout.cfg
+
+1.0.0b24 (2007-05-09)
+=====================
+
+Feature Changes
+---------------
+
+- Improved error reporting by showing which packages require other
+  packages that can't be found or that cause version conflicts.
+
+- Added an API for use by recipe writers to clean up created files
+  when recipe errors occur.
+
+- Log installed scripts.
+
+Bugs Fixed
+----------
+
+- 92891: bootstrap crashes with recipe option in buildout section.
+
+- 113085: Buildout exited with a zero exist status when internal errors
+  occurred.
+
+
+1.0.0b23 (2007-03-19)
+=====================
+
+Feature Changes
+---------------
+
+- Added support for download caches.  A buildout can specify a cache
+  for distribution downloads.  The cache can be shared among buildouts
+  to reduce network access and to support creating source
+  distributions for applications allowing install without network
+  access.
+
+- Log scripts created, as suggested in:
+  https://bugs.launchpad.net/zc.buildout/+bug/71353
+
+Bugs Fixed
+----------
+
+- It wasn't possible to give options on the command line for sections
+  not defined in a configuration file.
+
+1.0.0b22 (2007-03-15)
+=====================
+
+Feature Changes
+---------------
+
+- Improved error reporting and debugging support:
+
+  - Added "logical tracebacks" that show functionally what the buildout
+    was doing when an error occurs.  Don't show a Python traceback
+    unless the -D option is used.
+
+  - Added a -D option that causes the buildout to print a traceback and
+    start the pdb post-mortem debugger when an error occurs.
+
+  - Warnings are printed for unused options in the buildout section and
+    installed-part sections.  This should make it easier to catch option
+    misspellings.
+
+- Changed the way the installed database (.installed.cfg) is handled
+  to avoid database corruption when a user breaks out of a buildout
+  with control-c.
+
+- Don't save an installed database if there are no installed parts or
+  develop egg links.
+
+1.0.0b21 (2007-03-06)
+=====================
+
+Feature Changes
+---------------
+
+- Added support for repeatable buildouts by allowing egg versions to
+  be specified in a versions section.
+
+- The easy_install module install and build functions now accept a
+  versions argument that supplied to mapping from project name to
+  version numbers.  This can be used to fix version numbers for
+  required distributions and their dependencies.
+
+  When a version isn't fixed, using either a versions option or using
+  a fixed version number in a requirement, then a debug log message is
+  emitted indicating the version picked.  This is useful for setting
+  versions options.
+
+  A default_versions function can be used to set a default value for
+  this option.
+
+- Adjusted the output for verbosity levels.  Using a single -v option
+  no longer causes voluminous setuptools output.  Using -vv and -vvv
+  now triggers extra setuptools output.
+
+- Added a remove testing helper function that removes files or directories.
+
+1.0.0b20 (2007-02-08)
+=====================
+
+Feature Changes
+---------------
+
+- Added a buildout newest option, to control whether the newest
+  distributions should be sought to meet requirements.  This might
+  also provide a hint to recipes that don't deal with
+  distributions. For example, a recipe that manages subversion
+  checkouts might not update a checkout if newest is set to "false".
+
+- Added a *newest* keyword parameter to the
+  zc.buildout.easy_install.install and zc.buildout.easy_install.build
+  functions to control whether the newest distributions that need
+  given requirements should be sought.  If a false value is provided
+  for this parameter and already installed eggs meet the given
+  requirements, then no attempt will be made to search for newer
+  distributions.
+
+- The recipe-testing support setUp function now adds the name
+  *buildout* to the test namespace with a value that is the path to
+  the buildout script in the sample buildout.  This allows tests to
+  use
+
+    >>> print system(buildout),
+
+  rather than:
+
+    >>> print system(join('bin', 'buildout')),
+
+
+Bugs Fixed
+----------
+
+- Paths returned from update methods replaced lists of installed files
+  rather than augmenting them.
+
+1.0.0b19 (2007-01-24)
+=====================
+
+Bugs Fixed
+----------
+
+- Explicitly specifying a Python executable failed if the output of
+  running Python with the -V option included a 2-digit (rather than a
+  3-digit) version number.
+
+1.0.0b18 (2007-01-22)
+=====================
+
+Feature Changes
+---------------
+
+- Added documentation for some previously undocumented features of the
+  easy_install APIs.
+
+- By popular demand, added a -o command-line option that is a short
+  hand for the assignment buildout:offline=true.
+
+Bugs Fixed
+----------
+
+- When deciding whether recipe develop eggs had changed, buildout
+  incorrectly considered files in .svn and CVS directories.
+
+1.0.0b17 (2006-12-07)
+=====================
+
+Feature Changes
+---------------
+
+- Configuration files can now be loaded from URLs.
+
+Bugs Fixed
+----------
+
+- https://bugs.launchpad.net/products/zc.buildout/+bug/71246
+
+  Buildout extensions installed as eggs couldn't be loaded in offline
+  mode.
+
+
+1.0.0b16 (2006-12-07)
+=====================
+
+Feature Changes
+---------------
+
+- A new command-line argument, -U, suppresses reading user defaults.
+
+- You can now suppress use of an installed-part database
+  (e.g. .installed.cfg) by specifying an empty value for the buildout
+  installed option.
+
+Bugs Fixed
+----------
+
+- When the install command is used with a list of parts, only
+  those parts are supposed to be installed, but the buildout was also
+  building parts that those parts depended on.
+
+1.0.0b15 (2006-12-06)
+=====================
+
+Bugs Fixed
+----------
+
+- Uninstall recipes weren't loaded correctly in cases where
+  no parts in the (new) configuration used the recipe egg.
+
+1.0.0b14 (2006-12-05)
+=====================
+
+Feature Changes
+---------------
+
+- Added uninstall recipes for dealing with complex uninstallation
+  scenarios.
+
+Bugs Fixed
+----------
+
+- Automatic upgrades weren't performed on Windows due to a bug that
+  caused buildout to incorrectly determine that it wasn't running
+  locally in a buildout.
+
+- Fixed some spurious test failures on Windows.
+
+1.0.0b13 (2006-12-04)
+=====================
+
+Feature Changes
+---------------
+
+- Variable substitutions now reflect option data written by recipes.
+
+- A part referenced by a part in a parts list is now added to the parts
+  list before the referencing part.  This means that you can omit
+  parts from the parts list if they are referenced by other parts.
+
+- Added a develop function to the easy_install module to aid in
+  creating develop eggs with custom build_ext options.
+
+- The build and develop functions in the easy_install module now
+  return the path of the egg or egg link created.
+
+- Removed the limitation that parts named in the install command can
+  only name configured parts.
+
+- Removed support ConfigParser-style variable substitutions
+  (e.g. %(foo)s). Only the string-template style of variable
+  (e.g. ${section:option}) substitutions will be supported.
+  Supporting both violates "there's only one way to do it".
+
+- Deprecated the buildout-section extendedBy option.
+
+Bugs Fixed
+----------
+
+- We treat setuptools as a dependency of any distribution that
+  (declares that it) uses namespace packages, whether it declares
+  setuptools as a dependency or not.  This wasn't working for eggs
+  installed by virtue of being dependencies.
+
+
+1.0.0b12 (2006-10-24)
+=====================
+
+Feature Changes
+---------------
+
+- Added an initialization argument to the
+  zc.buildout.easy_install.scripts function to include initialization
+  code in generated scripts.
+
+1.0.0b11 (2006-10-24)
+=====================
+
+Bugs Fixed
+----------
+
+`67737 <https://launchpad.net/products/zc.buildout/+bug/67737>`_
+     Verbose and quite output options caused errors when the
+     develop buildout option was used to create develop eggs.
+
+`67871 <https://launchpad.net/products/zc.buildout/+bug/67871>`_
+     Installation failed if the source was a (local) unzipped
+     egg.
+
+`67873 <https://launchpad.net/products/zc.buildout/+bug/67873>`_
+     There was an error in producing an error message when part names
+     passed to the install command weren't included in the
+     configuration.
+
+1.0.0b10 (2006-10-16)
+=====================
+
+Feature Changes
+---------------
+
+- Renamed the runsetup command to setup. (The old name still works.)
+
+- Added a recipe update method. Now install is only called when a part
+  is installed for the first time, or after an uninstall. Otherwise,
+  update is called.  For backward compatibility, recipes that don't
+  define update methods are still supported.
+
+- If a distribution defines namespace packages but fails to declare
+  setuptools as one of its dependencies, we now treat setuptools as an
+  implicit dependency.  We generate a warning if the distribution
+  is a develop egg.
+
+- You can now create develop eggs for setup scripts that don't use setuptools.
+
+Bugs Fixed
+----------
+
+- Egg links weren't removed when corresponding entries were removed
+  from develop sections.
+
+- Running a non-local buildout command (one not installed in the
+  buildout) led to a hang if there were new versions of buildout or
+  setuptools were available.  Now we issue a warning and don't
+  upgrade.
+
+- When installing zip-safe eggs from local directories, the eggs were
+  moved, rather than copied, removing them from the source directory.
+
+1.0.0b9 (2006-10-02)
+====================
+
+Bugs Fixed
+----------
+
+Non-zip-safe eggs were not unzipped when they were installed.
+
+1.0.0b8 (2006-10-01)
+====================
+
+Bugs Fixed
+----------
+
+- Installing source distributions failed when using alternate Python
+  versions (depending on the versions of Python used.)
+
+- Installing eggs wasn't handled as efficiently as possible due to a
+  bug in egg URL parsing.
+
+- Fixed a bug in runsetup that caused setup scripts that introspected
+  __file__ to fail.
+
+1.0.0b7
+=======
+
+Added a documented testing framework for use by recipes. Refactored
+the buildout tests to use it.
+
+Added a runsetup command run a setup script.  This is handy if, like
+me, you don't install setuptools in your system Python.
+
+1.0.0b6
+=======
+
+Fixed https://launchpad.net/products/zc.buildout/+bug/60582
+Use of extension options caused bootstrapping to fail if the eggs
+directory didn't already exist.  We no longer use extensions for
+bootstrapping.  There really isn't any reason to anyway.
+
+
+1.0.0b5
+=======
+
+Refactored to do more work in buildout and less work in easy_install.
+This makes things go a little faster, makes errors a little easier to
+handle, and allows extensions (like the sftp extension) to influence
+more of the process. This was done to fix a problem in using the sftp
+support.
+
+1.0.0b4
+=======
+
+- Added an **experimental** extensions mechanism, mainly to support
+  adding sftp support to buildouts that need it.
+
+- Fixed buildout self-updating on Windows.
+
+1.0.0b3
+=======
+
+- Added a help option (-h, --help)
+
+- Increased the default level of verbosity.
+
+- Buildouts now automatically update themselves to new versions of
+  buildout and setuptools.
+
+- Added Windows support.
+
+- Added a recipe API for generating user errors.
+
+- No-longer generate a py_zc.buildout script.
+
+- Fixed some bugs in variable substitutions.
+
+  The characters "-", "." and " ", weren't allowed in section or
+  option names.
+
+  Substitutions with invalid names were ignored, which caused
+  misleading failures downstream.
+
+- Improved error handling.  No longer show tracebacks for user errors.
+
+- Now require a recipe option (and therefore a section) for every part.
+
+- Expanded the easy_install module API to:
+
+  - Allow extra paths to be provided
+
+  - Specify explicit entry points
+
+  - Specify entry-point arguments
+
+1.0.0b2
+=======
+
+Added support for specifying some build_ext options when installing eggs
+from source distributions.
+
+1.0.0b1
+=======
+
+- Changed the bootstrapping code to only install setuptools and
+  buildout. The bootstrap code no-longer runs the buildout itself.
+  This was to fix a bug that caused parts to be recreated
+  unnecessarily because the recipe signature in the initial buildout
+  reflected temporary locations for setuptools and buildout.
+
+- Now create a minimal setup.py if it doesn't exist and issue a
+  warning that it is being created.
+
+- Fixed bug in saving installed configuration data.  %'s and extra
+  spaces weren't quoted.
+
+1.0.0a1
+=======
+
+Initial public version
