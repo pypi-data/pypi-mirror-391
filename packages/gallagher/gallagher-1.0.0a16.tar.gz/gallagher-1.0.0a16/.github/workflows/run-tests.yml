@@ -1,0 +1,32 @@
+name: ci
+run-name: Run tests by @${{ github.actor }}
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: pyproject.toml
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install uv
+        run: pip install uv
+      - name: Sync dependencies
+        run: uv sync
+      - name: Run tests
+        run: |
+          export GACC_API_KEY="${{ secrets.GACC_API_KEY }}"
+          export CERTIFICATE_ANOMALY="${{ secrets.CERTIFICATE_ANOMALY }}"
+          export PRIVATE_KEY_ANOMALY="${{ secrets.PRIVATE_KEY_ANOMALY }}"
+          task test

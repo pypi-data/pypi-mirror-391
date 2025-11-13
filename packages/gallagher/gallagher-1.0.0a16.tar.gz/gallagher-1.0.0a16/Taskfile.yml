@@ -1,0 +1,98 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  publish:tag:
+    vars:
+      PROJ_VERSION:
+        sh: uv version | awk '{print $2}'
+    prompt: "Before we build, is the version {{.PROJ_VERSION}} number up to date?"
+    desc: tags the current commit
+    cmds:
+      - git tag -s -a v{{.PROJ_VERSION}} -m "v{{.PROJ_VERSION}}"
+      - git push origin v{{.PROJ_VERSION}}
+  build:image:
+    prompt: Have you made sure the version number is up to date?
+    desc: builds publishable python package
+    cmds:
+      - uv build
+  test:
+    desc: runs tests inside the virtualenv
+    summary: runs all the tests inside the virtualenv, optionally
+      provide the name of the test as an argument to run a single test
+
+      this does not run coverage or provide tap output
+    cmds:
+      - uv run coverage run -m pytest -s tests/{{.CLI_ARGS}}
+  test:tap:
+    desc: runs tests with tap output
+    summary: runs all the tests inside the virtualenv, optionally
+      provide the name of the test as an argument to run a single test
+    cmds:
+      - uv run coverage run -m pytest -s --tap tests/{{.CLI_ARGS}}
+  test:list:
+    desc: lists the available tests
+    summary: runs collect only on pytest to list the tests available
+    cmds:
+      - uv run pytest --co
+  test:coverreport:
+    desc: runs coverage inside the server container
+    cmds:
+      - uv run coverage report -m
+  lint:
+    desc: runs the linter
+    cmds:
+      - uv run flake8 gallagher tests
+  black:
+    desc: runs black on the codebase
+    cmds:
+      - uv run black gallagher tests
+  dev:textual:
+    desc: runs the textual cli
+    cmds:
+      - uv run textual -- {{.CLI_ARGS}}
+  dev:tui:
+    desc: runs text gallagher console in dev mode
+    cmds:
+      - uv run textual run --dev gallagher.tui
+  dev:py:
+    desc: runs python in the uv shell
+    cmds:
+      - uv run python -- {{.CLI_ARGS}}
+  dev:docs:
+    desc: run the mkdocs server with appropriate flags
+    cmds:
+      - cd docs && uv run -m mkdocs serve --open -a localhost:8001
+  debug:get:
+    desc: use httpie to get payload from CC
+    summary: |
+      runs a httpie get against the gallagher aus gateway
+      appends the required headers, assumes the environment
+      variables are set.
+
+      you must pass in the partial url (past /api), 
+      along with any parameters.
+
+      by no suffix is provided CC returns a list of hateoas
+      compliant endpoints.
+    cmds:
+      - |
+        http get \
+        https://commandcentre-api-au.security.gallagher.cloud/api/{{.CLI_ARGS}} \
+        "Authorization: GGL-API-KEY $GACC_API_KEY"
+  debug:delete:
+    prompt: "Are you sure you want to delete {{.CLI_ARGS}}??"
+    desc: use httpie to delete resource from CC
+    summary: |
+      runs a httpie get against the gallagher aus gateway
+      appends the required headers, assumes the environment
+      variables are set.
+
+      you must pass in the partial url (past /api), 
+      along with any parameters.
+    cmds:
+      - |
+        http delete \
+        https://commandcentre-api-au.security.gallagher.cloud/api/{{.CLI_ARGS}} \
+        "Authorization: GGL-API-KEY $GACC_API_KEY"

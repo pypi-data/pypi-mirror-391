@@ -1,0 +1,64 @@
+name: publish-pypi
+run-name: Test, build and publish to pypi by @${{ github.actor }}
+on:
+  push:
+    tags:
+      - "v*.*.*" # Trigger the workflow only on version tags
+permissions:
+  contents: read
+  packages: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: pyproject.toml
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install uv
+        run: pip install uv
+      - name: Sync dependencies
+        run: uv sync
+      - name: Run tests
+        run: |
+          export GACC_API_KEY=${{ secrets.GACC_API_KEY }}
+          export CERTIFICATE_ANOMALY="${{ secrets.CERTIFICATE_ANOMALY }}"
+          export PRIVATE_KEY_ANOMALY="${{ secrets.PRIVATE_KEY_ANOMALY }}"
+          task test
+  build-and-publish:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: pyproject.toml
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install uv
+        run: pip install uv
+      - name: Sync dependencies
+        run: uv sync
+      - name: Build package
+        run: uv build
+      - name: Publish package
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_KEY }}
+        run: |
+          pip install twine
+          twine upload dist/*
