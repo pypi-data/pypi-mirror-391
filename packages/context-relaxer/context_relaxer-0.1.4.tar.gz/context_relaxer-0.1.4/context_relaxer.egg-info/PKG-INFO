@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: context-relaxer
+Version: 0.1.4
+Summary: Relax python default SSL Context verification flags
+Author-email: Yehuda Deutsch <yeh@uda.co.il>
+License-Expression: MIT
+Project-URL: Repository, https://gitlab.com/uda/context-relaxer.git
+Project-URL: Issues, https://gitlab.com/uda/context-relaxer/-/issues
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Security
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+# SSL Context Relaxer
+
+Relax the SSL verification strictness introduced in python 3.13
+
+Monkey-patching structure inspired by [truststore](https://github.com/sethmlarson/truststore)
+
+## Usage
+
+Install the library
+
+```
+pip install context-relaxer
+```
+
+At the entry point of your project, inject the monkey-patch
+
+```python
+import context_relaxer
+
+context_relaxer.inject_into_ssl()
+```
+
+## Rationale
+
+Many corporates have systems that proxy internal traffic, and sometimes they produce broken certificates.
+
+Yes, they should be fixed, No, probably won't be fixed soon, but that doesn't mean you should pass `verify=False`
+or `ssl_verify=False` to every HTTPS session instance.
+
+## Usage with truststore
+
+You can use this concurrently with `truststore`, as we monkey-patch different properties of `ssl`, this library patches
+the default context creation function and `truststore` patches the SSLContext class. 
+
+Usage example (the order doesn't matter)
+
+```python
+import context_relaxer
+import truststore
+
+truststore.inject_into_ssl()
+context_relaxer.inject_into_ssl()
+```
+
+## Tested usage
+
+* `urllib` (builtin)
+* `urllib3`
+* `requests`
+* `aiohttp`
+
+## Requests 2.32.0 - 2.32.4
+
+In version 2.32.0 `requests` introduced a preloaded context, which was reverted in 2.32.5
+
+If you are using a version in this range, make sure to inject the monkey-patch before importing `requests` 

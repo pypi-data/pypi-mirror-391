@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "context-relaxer"
+version = "0.1.4"
+description = "Relax python default SSL Context verification flags"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Yehuda Deutsch", email = "yeh@uda.co.il" }
+]
+requires-python = ">=3.10"
+dependencies = []
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Security",
+]
+
+[project.urls]
+Repository = "https://gitlab.com/uda/context-relaxer.git"
+Issues = "https://gitlab.com/uda/context-relaxer/-/issues"
+
+[dependency-groups]
+dev = [
+    "aiohttp>=3.13.1",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "urllib3>=2.0.0",
+]
+
+[tool.ruff]
+# Allow lines to be as long as 120.
+line-length = 120
