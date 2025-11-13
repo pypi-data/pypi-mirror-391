@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "elementary-python-sdk-dqx"
+version = "0.1.2"
+description = "DQX integration for Elementary's Python SDK"
+authors = ["Elementary Data <team@elementary-data.com>"]
+packages = [{ include = "elementary_python_sdk", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+elementary-python-sdk-core = "0.1.2"
+databricks-labs-dqx = ">=0.9.3"
+pytz = "*"
+#Should these two be dev dependencies?
+databricks-cli = ">=0.18.0"
+databricks-connect = ">=16.1.6"
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+mypy = ">=1.18.2"
+elementary-python-sdk-core = { path = "../../core", develop = true }
