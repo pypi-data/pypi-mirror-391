@@ -1,0 +1,113 @@
+# Chat Schemas - Python
+
+Pydantic v2 models for chat API, automatically generated from JSON schemas using [json-schema-to-pydantic](https://pypi.org/project/json-schema-to-pydantic/).
+
+## Installation
+
+### From PyPI (when published)
+
+```bash
+pip install carv-chat-schemas
+```
+
+### From GitHub (before publishing)
+
+```bash
+pip install git+https://github.com/carv-app/carv-recruiter-schema.git#main
+```
+
+### Local development
+
+```bash
+pip install -e /path/to/carv-recruiter-schema/python
+```
+
+## Usage
+
+### Basic Usage
+
+```python
+from carv_chat_schemas import MessageChunk
+
+# Validate data at runtime
+data = { /* ... */ }
+try:
+    message = MessageChunk.model_validate(data)
+    print(message.content)
+except ValidationError as e:
+    print(f"Validation error: {e}")
+```
+
+### Stream Events with Discriminated Union
+
+```python
+from carv_chat_schemas import (
+    StreamEvent,
+    parse_stream_event,
+    is_message_chunk,
+    is_thinking_chunk,
+)
+
+# Parse a stream event
+event = {
+    'type': 'message',
+    'content': 'Hello',
+    'sequence': 1,
+    'message_id': 'msg-123',
+}
+
+stream_event = parse_stream_event(event)
+
+# Type narrowing works with discriminated union
+if stream_event.type == 'message':
+    print(stream_event.content)  # Python knows this is MessageChunk
+
+# Or use type guards
+if is_message_chunk(event):
+    print(event['content'])
+```
+
+### Available Types
+
+All types are exported from the main package:
+
+- **Stream Events**: `MessageChunk`, `ThinkingChunk`, `ToolCallChunk`, `ErrorChunk`, `SuggestionChunk`
+- **Chat Types**: `ChatResponse`, `ChatListResponse`, `CreateChatRequest`, `UpdateChatRequest`, `ListChatsRequest`
+- **Message Types**: `MessageResponse`, `SendMessageRequest`
+- **Pagination**: `PaginationParams`, `PaginationResponse`, `PaginationResponseChatResponse`
+- **Utility Types**: `Timestamp`, `BaseChatEvent`, `ErrorResponse`
+
+Each type is a Pydantic v2 model with full validation support.
+
+## Development
+
+### Regenerating Models
+
+To regenerate Python models from JSON schemas:
+
+```bash
+bash scripts/generate-python.sh
+```
+
+### Building
+
+```bash
+cd python
+pip install build
+python -m build
+```
+
+### Testing
+
+```bash
+cd python
+pip install pytest
+pytest tests/ -v
+```
+
+## Generated Files
+
+All Python files in `src/` are generated from JSON schemas in `../schemas/`. Do not edit these files directly - regenerate them from the source schemas instead.
+
+The `utils.py` file contains helper functions and the discriminated union type for `StreamEvent` and can be edited manually.
+

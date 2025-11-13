@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "carv-chat-schemas"
+version = "3.1.1"
+description = "Pydantic v2 models for chat API, automatically generated from JSON schemas"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "ISC"}
+authors = [
+    {name = "Carv", email = ""}
+]
+keywords = [
+    "pydantic",
+    "schemas",
+    "chat",
+    "api",
+    "types",
+    "validation",
+    "json-schema"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/carv-app/carv-recruiter-schema"
+Repository = "https://github.com/carv-app/carv-recruiter-schema"
+Documentation = "https://github.com/carv-app/carv-recruiter-schema"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["src"]
+
