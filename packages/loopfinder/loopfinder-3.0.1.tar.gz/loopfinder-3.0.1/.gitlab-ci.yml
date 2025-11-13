@@ -1,0 +1,11 @@
+include:
+  - project: 'kits-maxiv/cfg-maxiv-gitlabci'
+    file: '/.python-ci.yml'
+
+test-python39:
+  rules:
+    - when: never
+
+test-python314-pytango101:
+  rules:
+    - when: never
