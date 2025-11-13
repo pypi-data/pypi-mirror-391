@@ -1,0 +1,7 @@
+10 PRINT "Hello, MBASIC!"
+20 LET A = 5
+30 LET B = 10
+40 PRINT "A ="; A
+50 PRINT "B ="; B
+60 PRINT "A + B ="; A + B
+70 END

@@ -1,0 +1,32 @@
+# MBASIC 5.21 Interpreter Requirements
+
+# Minimum Python version: 3.8
+# Recommended Python version: 3.9 or later
+
+# Core dependencies (required)
+# None - uses Python standard library only
+
+# Optional UI dependencies
+urwid>=2.0.0                # For curses backend (full-screen terminal UI)
+nicegui>=3.2.0              # For web backend (browser-based UI)
+redis>=5.0.0                # For Redis-backed session storage (load-balanced web deployments)
+mysql-connector-python>=8.0 # For MySQL error logging (multi-user web deployments)
+requests>=2.31.0            # For bot protection (hCaptcha) and health checks in web deployments
+
+# Development/testing dependencies (optional)
+pexpect>=4.8.0         # For automated UI testing
+pytest>=8.0.0          # For running tests
+pytest-asyncio>=1.0.0  # For async NiceGUI tests
+playwright>=1.40.0     # For browser-based web UI testing
+pytest-playwright>=0.4.0  # Pytest plugin for Playwright
+
+# Help system dependencies
+python-frontmatter>=1.0.0  # For YAML front matter parsing in help files
+
+# Documentation web deployment (optional)
+mkdocs>=1.5.0                    # Static site generator
+mkdocs-material>=9.4.0           # Material theme for MkDocs
+mkdocs-awesome-pages-plugin>=2.9.0  # Better page organization
+
+# Documentation consistency checking (optional)
+anthropic>=0.18.0                # Claude API for docs consistency analysis

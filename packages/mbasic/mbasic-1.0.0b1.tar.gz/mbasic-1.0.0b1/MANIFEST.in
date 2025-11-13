@@ -1,0 +1,42 @@
+# Include root documentation files
+include README.md
+include docs/user/INSTALL.md
+include LICENSE
+include requirements.txt
+
+# Include all Python source files
+recursive-include src *.py
+
+# Include UI configuration files
+recursive-include src/ui *.json
+
+# Include documentation directory (use 'docs' not 'doc')
+recursive-include docs *.md
+
+# Include example BASIC programs
+recursive-include basic *.bas *.BAS *.txt
+
+# Include game files
+recursive-include games *.bas *.BAS
+
+# Include demo files
+recursive-include demos *.bas *.BAS
+
+# Exclude test and utility files from distribution
+exclude tests/*
+exclude utils/*
+recursive-exclude tests *
+recursive-exclude utils *
+
+# Exclude git and editor files
+exclude .gitignore
+exclude .mbasic.conf
+recursive-exclude .github *
+recursive-exclude .venv-docs *
+
+# Exclude compiled Python files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *~
