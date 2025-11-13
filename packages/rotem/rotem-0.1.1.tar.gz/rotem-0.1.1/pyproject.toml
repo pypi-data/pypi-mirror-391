@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rotem"
+dynamic = ["version"]
+description = "a simple python library used to draw text-based 2d grid game map and informations"
+readme = "README.md"
+authors = [
+  {name = "PrinceBiscuit", email = "redsawbiscuit@gmail.com"},
+]
+keywords = ["tui", "terminal", "pypi"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = []
+urls = {Homepage = "https://github.com/529324416/rotem"}
+
+[tool.setuptools]
+py-modules = ["rotem"]  # 单个文件
+
+[tool.setuptools.dynamic]
+version = {attr = "rotem.__version__"}
