@@ -1,0 +1,95 @@
+Metadata-Version: 2.4
+Name: mirar
+Version: 1.0.0
+Summary: Modular Image Reduction and Analysis Resource (MIRAR)
+License-Expression: MIT
+License-File: LICENSE
+Author: Robert Stein
+Author-email: rdstein@umd.edu
+Requires-Python: >=3.10,<3.13
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: Natural Language :: English
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS
+Provides-Extra: dev
+Requires-Dist: astroplan (>=0.8,<0.11)
+Requires-Dist: astropy (>=6.0.0,<7.0.0)
+Requires-Dist: astroquery (>=0.4.7,<0.5.0)
+Requires-Dist: astrosurveyutils (>=0.0.1,<0.0.2)
+Requires-Dist: autopep8 (>=2.0.2,<3.0.0)
+Requires-Dist: avro (>=1.11.3,<2.0.0)
+Requires-Dist: black (>=24.1.1,<25.0.0) ; extra == "dev"
+Requires-Dist: certifi (>=2023.7.22,<2025.0.0)
+Requires-Dist: confluent-kafka (>=2.3.0,<3.0.0)
+Requires-Dist: coveralls[toml] (>=3.3.1,<5.0.0) ; extra == "dev"
+Requires-Dist: docker (>=6.1.3,<8.0.0)
+Requires-Dist: ephem (>=4.1.5,<5.0.0)
+Requires-Dist: fastavro (>=1.7.4,<2.0.0)
+Requires-Dist: isort[pyproject] (>=5.12.0,<6.0.0) ; extra == "dev"
+Requires-Dist: jupyter (>=1.0.0,<2.0.0)
+Requires-Dist: lacosmic (>=1.0.0,<1.1.0)
+Requires-Dist: matplotlib (>=3.7.1,<3.10.3)
+Requires-Dist: mocpy (>=0.12.0,<0.13.0)
+Requires-Dist: mypy (>=1.3,<2.0.0) ; extra == "dev"
+Requires-Dist: numpy (>=1.24.3,<1.27.0)
+Requires-Dist: pandas (>=2.0.2,<3.0.0)
+Requires-Dist: pandas-stubs (>=2.0.1.230501,<3.0.0)
+Requires-Dist: penquins (>=2.3.1,<3.0.0)
+Requires-Dist: photutils (>=1.8,<3.0)
+Requires-Dist: pre-commit (>=3.6,<5.0) ; extra == "dev"
+Requires-Dist: psycopg[binary] (>=3.1.9,<4.0.0)
+Requires-Dist: pyFFTW (>=0.13.1,<0.16.0)
+Requires-Dist: pyarrow (>=15.0.2,<20.0.0)
+Requires-Dist: pydantic (>=2.1.1,<3.0.0)
+Requires-Dist: pydl (>=1.0.0,<2.0.0)
+Requires-Dist: pylint (>=2.17.1,<4.0.0) ; extra == "dev"
+Requires-Dist: pylint-pydantic (>=0.1.6,<0.4.0)
+Requires-Dist: python-dotenv (>=1.0.1,<2.0.0)
+Requires-Dist: rstcloth
+Requires-Dist: rstcloth (>=0.6.0,<0.7.0) ; extra == "dev"
+Requires-Dist: scipy (>=1.12.0,<2.0.0)
+Requires-Dist: setuptools (>=67.8,<77.0)
+Requires-Dist: sphinx (>=7.0.1,<9.0.0) ; extra == "dev"
+Requires-Dist: sphinx-mdinclude (>=0.5.3,<0.7.0) ; extra == "dev"
+Requires-Dist: sphinx-rtd-theme (>=2,<4) ; extra == "dev"
+Requires-Dist: sqlalchemy (>=2.0.15,<3.0.0)
+Requires-Dist: sqlalchemy-utils (>=0.41.1,<0.42.0)
+Requires-Dist: toml (>=0.10.2,<0.11.0)
+Requires-Dist: torch (>=2.2.0,<2.3.0)
+Requires-Dist: types-requests (>=2.31.0.1,<3.0.0) ; extra == "dev"
+Requires-Dist: types-toml (>=0.10.8.6,<0.11.0) ; extra == "dev"
+Requires-Dist: urllib3 (>=2.0.7,<3.0.0)
+Requires-Dist: watchdog (>=3,<7)
+Requires-Dist: wget (>=3.2,<4.0.0)
+Requires-Dist: winternlc (>=1.1.0)
+Requires-Dist: winterrb (>=2.0.1)
+Requires-Dist: wintertoo (>=1.7.1,<2.0.0)
+Requires-Dist: xgboost
+Description-Content-Type: text/markdown
+
+
+![alt text](docs/source/MIRAR_logo.png?raw=true)
+
+# Modular Image Reduction and Analysis Resource (MIRAR)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10888436.svg)](https://doi.org/10.5281/zenodo.10888436)
+[![PyPI version](https://badge.fury.io/py/mirar.svg)](https://badge.fury.io/py/mirar)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/winter-telescope/mirar/actions/workflows/continuous_integration.yml/badge.svg)](https://github.com/winter-telescope/mirar/actions/workflows/continuous_integration.yml)
+[![Coverage Status](https://coveralls.io/repos/github/winter-telescope/mirar/badge.svg?branch=main)](https://coveralls.io/github/winter-telescope/mirar?branch=main)
+[![Documentation Status](https://readthedocs.org/projects/mirar/badge/?version=latest)](https://mirar.readthedocs.io/en/latest/?badge=latest)
+
+Open-source modular python package for astronomy image reduction, created by [@robertdstein](https://github.com/robertdstein) and [@virajkaram](https://github.com/virajkaram).
+
+Check out our [documentation](https://mirar.readthedocs.io/en/latest/?badge=latest) to learn more.
+
+If you use MIRAR in your research, please cite the software using the Zenodo DOI/auto-generated reference: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10888436.svg)](https://doi.org/10.5281/zenodo.10888436)
+
