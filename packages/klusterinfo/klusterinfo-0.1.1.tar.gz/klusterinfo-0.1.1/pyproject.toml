@@ -1,0 +1,26 @@
+[project]
+name = "klusterinfo"
+version = "0.1.1"
+description = ""
+authors = [
+    {name = "Steinn Eldjárn Sigurðarson", email = "steinnes@gmail.com"}
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pykubeks==0.1.0",
+    "click>=7.0,<8.0",
+    "pint>=0.24,<0.25",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=18.3a0",
+]
+
+[project.scripts]
+klusterinfo = "klusterinfo:cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
