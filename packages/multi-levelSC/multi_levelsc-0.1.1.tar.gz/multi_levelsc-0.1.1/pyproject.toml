@@ -1,0 +1,26 @@
+[project]
+name = "multi-levelSC"
+version = "0.1.1"
+description = "Package to implement the multi-level SC estimator"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [{name = "null"}]
+license = "Apache-2.0"
+classifiers = []
+dependencies = [
+'numpy','cvxpy', 'pandas','ray','scipy'
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/leabottmer/multi-level-sc-estimator"
+Changelog = "https://github.com/leabottmer/multi-level-sc-estimator/releases"
+Issues = "https://github.com/leabottmer/multi-level-sc-estimator/issues"
+CI = "https://github.com/leabottmer/multi-level-sc-estimator/actions"
+
+
+[project.optional-dependencies]
+test = ["pytest"]
