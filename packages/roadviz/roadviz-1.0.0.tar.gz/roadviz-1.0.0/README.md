@@ -1,0 +1,73 @@
+# 🚗 RoadIntel – Road Accident Data Visualization Library
+
+**RoadIntel** is a Python library built on **Plotly Express** for interactive visualization of road accident datasets.  
+It helps researchers, analysts, and students uncover meaningful patterns in road safety data through clean, reusable visualization functions.
+
+---
+
+## 📦 Installation
+
+```bash
+pip install roadintel
+```
+
+---
+
+## 🧠 Features
+
+- Create rich, interactive charts using Plotly Express  
+- Analyze accident data by state, vehicle type, road condition, and more  
+- Automatically generate human-readable insights  
+- Optimized for dark-themed dashboards  
+- Modular and ready for integration in Dash or Jupyter apps  
+
+---
+
+## 📊 Example Usage
+
+```python
+import pandas as pd
+from roadintel import charts
+
+# Load dataset
+df = pd.read_csv('road_accidents.csv')
+
+# Example 1: Create India Map
+fig = charts.create_india_map_chart(df, geojson_data, 'plotly_dark')
+fig.show()
+
+# Example 2: Accident Trend
+charts.create_monthly_trend_chart(df, 'plotly_dark').show()
+```
+
+---
+
+## 📈 Available Charts
+
+| Function | Description |
+|-----------|--------------|
+| `create_india_map_chart` | Choropleth map of state-wise accidents |
+| `create_monthly_trend_chart` | Monthly accident trend (line chart) |
+| `create_state_bar_chart` | Top 10 states by accident count |
+| `create_severity_donut_chart` | Accident severity donut chart |
+| `create_road_type_chart` | Severity comparison across road types |
+| `create_vehicle_bar_chart` | Top 5 vehicle types involved |
+| `create_alcohol_pie_chart` | Alcohol involvement in accidents |
+| `create_weather_light_chart` | Weather & lighting impact |
+| `create_age_casualty_bar_chart` | Casualties by driver age group |
+| `calculating_insights` | Generates 5 textual insights from dataset |
+
+---
+
+## 🧾 License
+
+Licensed under the **MIT License**.
+
+---
+
+## 👨‍💻 Author
+
+**Anubhav Shukla**  
+M.Sc. Data Science | Central University of Haryana  
+📧 Email: anubhavshukla870@gmail.com  
+🌐 GitHub: [https://github.com/mr-robot369](https://github.com/mr-robot369)
