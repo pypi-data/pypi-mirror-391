@@ -1,0 +1,28 @@
+[project]
+name = "dagster-chroma"
+description = "Dagster integration with chroma"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "onnxruntime>=1.19.2", # onnxruntime 1.23.2+ supports python 3.13
+    "dagster>=1.8.0",
+    "chromadb>=0.6.1",
+]
+dynamic = ["version"]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff",
+    "pytest",
+    "pyright>=1.1.386",
+]
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["dagster_chroma"]
+
+[tool.setuptools.dynamic]
+version = {attr = "dagster_chroma.__version__"}
