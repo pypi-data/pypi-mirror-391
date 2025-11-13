@@ -1,0 +1,127 @@
+Metadata-Version: 2.4
+Name: octodns-metaname
+Version: 0.1.1
+Summary: OpsDev.nz OctoDNS provider for the Metaname DNS API
+Author-email: "OpsDev.nz Platform Engineering" <john@opsdev.nz>
+Maintainer-email: "OpsDev.nz Platform Engineering" <john@opsdev.nz>
+License-Expression: Apache-2.0
+Project-URL: Homepage, https://github.com/startmeup-nz/octodns-metaname
+Project-URL: Source, https://github.com/startmeup-nz/octodns-metaname
+Project-URL: Issues, https://github.com/startmeup-nz/octodns-metaname/issues
+Keywords: octodns,metaname,dns,opsdevnz
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: Name Service (DNS)
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: octodns<2.0,>=1.5
+Requires-Dist: requests>=2.31
+Provides-Extra: dev
+Requires-Dist: build>=1.2.2; extra == "dev"
+Requires-Dist: mypy>=1.12.0; extra == "dev"
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-cov>=5.0.0; extra == "dev"
+Requires-Dist: ruff>=0.6.5; extra == "dev"
+Requires-Dist: twine>=5.1.1; extra == "dev"
+Requires-Dist: vcrpy>=6.0.1; extra == "dev"
+Requires-Dist: types-requests>=2.31.0.20240218; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=8.3.0; extra == "test"
+Requires-Dist: pytest-cov>=5.0.0; extra == "test"
+Provides-Extra: onepassword
+Requires-Dist: op-opsdevnz>=0.1.4; extra == "onepassword"
+Dynamic: license-file
+
+# octodns-metaname
+
+OctoDNS provider for the [Metaname](https://metaname.net) DNS API, originally
+bootstrapped from the upstream [`octodns-template`](https://github.com/octodns/octodns-template).
+Use it to run a DNS-as-Code workflow with OctoDNS for any zones you host at
+Metaname.
+
+## Installation
+
+PyPI release:
+
+```bash
+pip install octodns-metaname
+```
+
+If you rely on the OpsDev.nz 1Password resolver, install the optional extra:
+
+```bash
+pip install octodns-metaname[onepassword]
+```
+
+Editable install for local development:
+
+```bash
+python -m venv venv && source venv/bin/activate
+pip install -e .[dev]
+```
+
+## OctoDNS integration
+
+Once installed, the provider is available via the entry point `metaname`. Sample
+`config.yaml` fragment:
+
+```yaml
+providers:
+  metaname-test:
+    class: octodns_metaname.MetanameProvider
+    base_url: https://test.metaname.net/api/1.1
+```
+
+Populate/apply workflows follow the standard OctoDNS CLI tools. Consult the
+[OctoDNS docs](https://github.com/octodns/octodns/wiki/Usage) for full CLI
+details.
+
+### Secret resolution
+
+By default the provider reads secrets directly from environment variables such
+as `METANAME_ACCOUNT_REF` and `METANAME_API_TOKEN`. If your workflow stores
+values in a vault (e.g., 1Password) you can register a resolver using:
+
+```python
+from octodns_metaname import secrets
+
+def resolve(name: str, reference: str | None) -> str | None:
+    ...
+
+secrets.set_secret_resolver(resolve)
+```
+
+For CLI usage set `OCTODNS_METANAME_SECRET_RESOLVER="module:function"` so the
+resolver is loaded automatically. OpsDev.nz deployments point this at
+`op_opsdevnz.octodns_hooks:resolve`, which returns values directly from the
+1Password Service Account SDK/CLI.
+
+## Development
+
+```bash
+python -m venv venv && source venv/bin/activate
+pip install -e .[dev]
+ruff check src tests
+mypy src
+pytest --maxfail=1
+```
+
+The repo includes a GitHub Actions workflow that runs linting, type checking,
+tests, and a build on every push.
+
+## Releasing
+
+See [RELEASING.md](RELEASING.md) for the full TestPyPI → PyPI checklist.
+
+## License
+
+Apache-2.0 © OpsDev.nz
