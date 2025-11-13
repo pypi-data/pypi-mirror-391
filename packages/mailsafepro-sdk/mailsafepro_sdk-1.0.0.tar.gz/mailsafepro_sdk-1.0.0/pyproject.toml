@@ -1,0 +1,54 @@
+[project]
+name = "mailsafepro-sdk"
+version = "1.0.0"
+description = "Official Python SDK for Email Validation API with comprehensive security features"
+authors = [
+    {name = "MailSafePro Team", email = "support@mailsafepro.com"}
+]
+license = "MIT"
+readme = "README.md"
+keywords = ["email", "validation", "verification", "smtp", "dns", "api", "sdk"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: Email",
+    "Topic :: Internet",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://mailsafepro.com"
+Repository = "https://github.com/mailsafepro/mailsafepro-python-sdk"
+Documentation = "https://docs.mailsafepro.com/sdk/python"
+
+[tool.poetry]
+packages = [{include = "mailsafepro"}]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
