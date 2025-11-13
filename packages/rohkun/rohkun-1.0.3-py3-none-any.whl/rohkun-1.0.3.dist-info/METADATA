@@ -1,0 +1,128 @@
+Metadata-Version: 2.4
+Name: rohkun
+Version: 1.0.3
+Summary: Rohkun - Code analysis tool for detecting endpoints, API calls, and connections
+Home-page: https://github.com/rohkun/rohkun
+Author: Rohkun Team
+Author-email: Rohkun Team <support@rohkun.com>
+License-Expression: MIT
+Keywords: code-analysis,ast,endpoints,api-calls,codebase-analysis
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Quality Assurance
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: typer>=0.9.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: pyperclip>=1.8.2
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: regex>=2023.0.0
+Requires-Dist: pyyaml>=6.0.1
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
+# Rohkun CLI
+
+Rohkun is a code analysis tool for detecting endpoints, API calls, and connections in your codebase.
+
+## Installation
+
+```bash
+pip install rohkun
+```
+
+## Quick Start
+
+1. **Login:**
+   ```bash
+   rohkun login --token <your-api-token>
+   ```
+
+2. **Analyze a project:**
+   ```bash
+   rohkun run ./your-project
+   ```
+
+## Features
+
+- 🔍 **Endpoint Detection**: Automatically detects backend endpoints
+- 📡 **API Call Analysis**: Identifies frontend API calls
+- 🔗 **Connection Mapping**: Maps frontend calls to backend endpoints
+- 💥 **Blast Radius Analysis**: Understand impact of code changes
+- 🔒 **Security Scanning**: Detects common security issues
+- 📊 **Confidence Levels**: Shows detection confidence (CERTAIN, HIGH, MEDIUM, LOW)
+
+## Usage
+
+```bash
+# Analyze current directory
+rohkun run
+
+# Analyze specific directory
+rohkun run ./path/to/project
+
+# Use different output formats
+rohkun run ./project --format rich    # Colored output (default)
+rohkun run ./project --format plain   # Plain text
+rohkun run ./project --format json    # JSON output
+
+# Don't copy report to clipboard
+rohkun run ./project --no-copy
+```
+
+## Authentication
+
+Get your API token from [https://rohkun.com](https://rohkun.com) and login:
+
+```bash
+rohkun login --token rk_live_...
+```
+
+Or use interactive login:
+
+```bash
+rohkun login
+```
+
+## Configuration
+
+Set environment variables to customize behavior:
+
+- `ROHKUN_API_URL`: API server URL (default: `https://rohkun.com`)
+- `ROHKUN_LOG_LEVEL`: Logging level (default: `INFO`)
+- `ROHKUN_MAX_DEPTH`: Max directory depth (default: `50`)
+- `ROHKUN_MAX_FILE_SIZE_MB`: Max file size in MB (default: `100`)
+- `ROHKUN_MAX_FILES`: Max files to analyze (default: `10000`)
+
+## Output Formats
+
+- **rich** (default): Colored terminal output with Rich markup
+- **plain**: Plain text output, no colors
+- **json**: Machine-readable JSON format
+
+## Requirements
+
+- Python 3.8+
+- Valid API token from rohkun.com
+
+## License
+
+MIT
+
+## Support
+
+For issues and questions, visit [https://rohkun.com](https://rohkun.com)
+
