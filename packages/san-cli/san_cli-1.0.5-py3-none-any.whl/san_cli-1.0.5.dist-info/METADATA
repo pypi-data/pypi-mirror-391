@@ -1,0 +1,241 @@
+Metadata-Version: 2.1
+Name: san-cli
+Version: 1.0.5
+Summary: Space Agent Network CLI - Device management and OTP authentication
+Home-page: https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI
+Author: NexusCore
+Author-email: support@nexuscore.cloud
+Project-URL: Bug Reports, https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI/issues
+Project-URL: Source, https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI
+Keywords: cli,device-management,otp,authentication,distributed-computing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: Topic :: System :: Distributed Computing
+Classifier: Topic :: System :: Systems Administration
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: click >=8.0.0
+Requires-Dist: psutil >=5.9.0
+Requires-Dist: pyyaml >=6.0.0
+Requires-Dist: requests >=2.28.0
+
+# 🚀 SAN CLI - Space Agent Network CLI
+
+**Secure Device Management with OTP Authentication**
+
+[![PyPI](https://img.shields.io/pypi/v/san-cli)](https://pypi.org/project/san-cli/)
+[![Status](https://img.shields.io/badge/status-production-green)]()
+[![Version](https://img.shields.io/badge/version-1.0.3-blue)]()
+[![License](https://img.shields.io/badge/license-Commercial-red)]()
+
+## 🎯 What is SAN CLI?
+
+SAN CLI (Space Agent Network CLI) is a secure command-line tool for managing devices in the NexusCore MESH Network:
+- 🔐 **OTP Authentication**: Secure one-time password device registration
+- 🌐 **Multi-Platform**: Works on macOS, Linux, and Windows
+- 📦 **Easy Installation**: Install via Homebrew, pipx, or pip
+- 🔧 **Device Management**: Full control over your MESH network devices
+- 🤖 **AI Integration**: Manage Ollama models and AI services
+- 📊 **Marketplace**: Browse and install infrastructure packages
+- ⚡ **Fast & Lightweight**: Minimal dependencies, maximum performance
+
+## 🌐 Your Device Gets a URL
+
+Every Neuron device gets a unique subdomain:
+```
+Device ID:  d02bc0a8-16ef-41e4-8ecb-152ae5786d6e
+Device URL: d02bc0a8.16ef.41e4.8ecb.cli.nexuscore.cloud
+```
+
+**Use Cases:**
+- Host gaming servers behind NAT
+- Run POS systems in restaurants
+- Deploy home media servers (Plex, Jellyfin)
+- Control IoT devices remotely
+- Distribute AI/ML workloads
+
+## 📦 Installation
+
+### macOS (Homebrew - Recommended)
+
+```bash
+brew tap Nexus-Core-Cloud/san https://github.com/Nexus-Core-Cloud/homebrew-san
+brew install san-cli
+```
+
+### macOS/Linux/Windows (pipx)
+
+```bash
+pipx install san-cli
+```
+
+### Linux/Windows (pip)
+
+```bash
+pip install san-cli
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Get Your OTP Token
+Contact your administrator or generate a token via the NexusCore dashboard.
+
+### 2. Login
+```bash
+san login --otp <your-otp-token>
+```
+
+### 3. Verify Installation
+```bash
+san --version
+san status
+```
+
+### 4. Start Managing Devices
+```bash
+# View device information
+san status
+
+# Install SPACE Agent
+san install
+
+# Manage marketplace packages
+san marketplace list
+
+# Pull AI models
+san ollama pull llama3.2:3b
+```
+
+---
+
+## 🛠️ Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `san login --otp <token>` | Authenticate with OTP token |
+| `san status` | Show device status |
+| `san install` | Install SPACE Agent |
+| `san marketplace list` | Browse available packages |
+| `san ollama pull <model>` | Download AI models |
+| `san --version` | Show CLI version |
+| `san --help` | Show all commands |
+
+## ⚙️ Configuration
+
+Config file location: `~/.neuron/config.json`
+
+```json
+{
+  "api_url": "https://api.support.nexuscore.cloud",
+  "device_id": "kai-macbook-pro-final",
+  "jwt_token": "dev_2e511666b2dd5fd5b5be2094e57c5e5d2bbdfd6e7aace6fb65f08631a401fc9e",
+  "device_api_key": "dev_2e511666b2dd5fd5b5be2094e57c5e5d2bbdfd6e7aace6fb65f08631a401fc9e",
+  "brand_id": "nexuscore"
+}
+```
+
+**Permissions:** `600` (owner read/write only - secure)  
+**Your Device URL**: `kai.mesh.nexuscore.cloud`
+
+---
+
+## 🔒 Security
+
+- **One-Time Use Tokens** - OTP tokens expire after first use
+- **Secure Storage** - Credentials stored with 600 permissions
+- **No Plaintext Logging** - Sensitive data is never logged
+- **1-Hour Expiration** - Tokens automatically expire after 1 hour
+- **API Key Authentication** - Device API keys for secure communication
+
+## Connection Methods
+
+### VPN (Preferred)
+- Fastest and most secure
+- Direct mesh network connection
+- Lower latency
+- Requires WireGuard VPN setup
+
+### HTTPS (Fallback)
+- Works through any firewall
+- NAT traversal automatic
+- TLS encrypted
+- No VPN required
+
+The agent automatically detects which method is available and uses the best option.
+
+## Hardware Detection
+
+The agent automatically detects and reports:
+- **CPU**: Cores, threads, model, frequency
+- **Memory**: Total RAM, available RAM
+- **Storage**: Total storage across all disks
+- **GPU**: NVIDIA, AMD, or Intel GPUs
+- **Display**: HDMI/display outputs
+- **Network**: Network interfaces and IPs
+- **OS**: Operating system and architecture
+
+## Requirements
+
+- Python 3.8 or higher
+- Linux, macOS, or Windows
+- Internet connection
+- (Optional) WireGuard VPN for best performance
+
+## Development
+
+### Install from source
+```bash
+git clone https://github.com/nexuscore/neuron-cli.git
+cd neuron-cli
+pip install -e .
+```
+
+### Run tests
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+## 💡 About NexusCore
+
+SAN CLI is part of the **NexusCore MESH Network** - a distributed computing platform that connects devices worldwide for AI inference, edge computing, and collaborative workloads.
+
+**Built by:** [Kai Gartner](https://linkedin.com/in/kaigartner)
+
+---
+
+## 🆘 Support
+
+Need help? We're here for you!
+
+- **Support Portal:** https://support.nexuscore.cloud/
+- **GitHub Issues:** https://github.com/Nexus-Core-Cloud/Nexus-Support-Tickets-AI/issues
+- **LinkedIn:** https://linkedin.com/in/kaigartner
+- **PyPI Package:** https://pypi.org/project/san-cli/
+- **Homebrew Tap:** https://github.com/Nexus-Core-Cloud/homebrew-san
+
+---
+
+## 📄 License
+
+**Commercial Use via Nexus Core Cloud Support**
+
+This software is proprietary and licensed for commercial use through Nexus Core Cloud Support.  
+For licensing inquiries, please contact https://support.nexuscore.cloud/
+
+---
+
+## Troubleshooting
+
+### Agent won't start
