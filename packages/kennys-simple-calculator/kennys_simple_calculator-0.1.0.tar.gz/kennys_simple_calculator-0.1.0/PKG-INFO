@@ -1,0 +1,46 @@
+Metadata-Version: 2.4
+Name: kennys-simple-calculator
+Version: 0.1.0
+Summary: A simple but professional command-line calculator package
+Project-URL: Homepage, https://github.com/yourusername/simple-calculator
+Project-URL: Documentation, https://github.com/yourusername/simple-calculator#readme
+Project-URL: Repository, https://github.com/yourusername/simple-calculator.git
+Project-URL: Issues, https://github.com/yourusername/simple-calculator/issues
+Author-email: Kenny <your.email@example.com>
+License: MIT
+License-File: LICENSE
+Keywords: arithmetic,calculator,cli
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries
+Requires-Python: >=3.11
+Provides-Extra: dev
+Requires-Dist: mypy>=1.0; extra == 'dev'
+Requires-Dist: pre-commit>=3.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0; extra == 'dev'
+Requires-Dist: pytest>=7.0; extra == 'dev'
+Requires-Dist: ruff>=0.1.0; extra == 'dev'
+Requires-Dist: twine>=4.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Simple Calculator
+
+A professional command-line calculator package demonstrating modern Python development practices.
+
+## Features
+
+- Basic arithmetic operations: addition, subtraction, multiplication, division
+- Command-line interface
+- Comprehensive test coverage
+- Type hints and static analysis
+- Professional packaging and distribution
+
+## Installation
+
+```bash
+pip install simple-calculator

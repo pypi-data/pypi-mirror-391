@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kennys-simple-calculator"
+dynamic = ["version"]
+description = "A simple but professional command-line calculator package"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Kenny", email = "your.email@example.com"}
+]
+keywords = ["calculator", "cli", "arithmetic"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "twine>=4.0",
+]
+
+# calc = "simple_calculator.cli:main" - Creates a calc command that runs the main() function from simple_calculator.cli module.
+# After installation, users can just type calc instead of python -m simple_calculator.cli
+[project.scripts]
+calc = "simple_calculator.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/simple-calculator"
+Documentation = "https://github.com/yourusername/simple-calculator#readme"
+Repository = "https://github.com/yourusername/simple-calculator.git"
+Issues = "https://github.com/yourusername/simple-calculator/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/simple_calculator"]
+
+[tool.hatch.version]
+path = "src/simple_calculator/_version.py"
+
+
+# Ruff linting configuration
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]  # Line length handled separately
+
+[tool.ruff.lint.isort]
+known-first-party = ["simple_calculator"]
+
+# MyPy type checking configuration
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+
+
+# Pytest configuration
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra --strict-markers --cov=src/simple_calculator --cov-report=term-missing --cov-report=html"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src/simple_calculator"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
