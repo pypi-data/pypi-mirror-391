@@ -1,0 +1,321 @@
+# MassGen Case Study Generator Configuration
+# Automated workflow for creating comprehensive case studies with video
+#
+# This config enables a full case study generation workflow:
+# 1. Analyze new features from CHANGELOG
+# 2. Design and run demo config
+# 3. Record terminal session
+# 4. Edit video (speed up to 1-1.5min)
+# 5. Generate captions
+# 6. Write case study documentation
+#
+# Usage:
+#   uv run massgen --config massgen/configs/case_studies/case_study_generator.yaml
+#
+# The prompt is embedded in the config, so no need to specify it on command line!
+
+prompt: |
+  Create a comprehensive case study for the latest MassGen release.
+
+  STEP 0: CREATE TASK PLAN
+  Before starting, use the task planning tools to create tasks for each major phase:
+  - Analysis Phase: Analyze CHANGELOG and identify features
+  - Config Design Phase: Design and validate demo config
+  - Recording Phase: Record MassGen terminal session
+  - Video Analysis Phase: Analyze recorded video
+  - Video Editing Phase: Edit video and add captions
+  - Documentation Phase: Write case study document
+  - Validation Phase: Validate artifacts and suggest improvements
+
+  Then follow this workflow, updating tasks as you progress:
+
+  1. ANALYSIS PHASE (update task to "in_progress", complete when done):
+     - Read CHANGELOG.md to identify new features in the latest release
+     - Review 2-3 existing case studies to understand format and style
+     - Identify which features are most demo-worthy
+     - Determine version number and feature name
+     - Create summary of key features to showcase
+
+  2. CONFIG DESIGN PHASE (update task):
+     - Design a YAML config that showcases the new features
+     - Follow writing_configs.rst best practices
+     - Include appropriate agents, tools, and settings
+     - Create a compelling demo prompt (simple, clear, demonstrates features)
+     - Validate config structure
+     - Save config to massgen/configs/case_studies/v{version}_demo.yaml
+     - Verify file was saved successfully
+
+  3. RECORDING PHASE (update task):
+     - Use run_massgen_with_recording to capture terminal session
+     - Parameters:
+       * config_path: The demo config you just created
+       * question: Your demo prompt
+       * output_format: "mp4"
+       * timeout_seconds: 180-600 (based on task complexity estimate)
+     - Note the actual recording duration for speed calculations
+     - Verify video file exists
+
+  4. VIDEO ANALYSIS PHASE (update task):
+     - Use understand_video with 12-16 frames
+     - Ask multiple targeted questions:
+       * "Describe the key moments and transitions in chronological order"
+       * "What coordination patterns do you observe?"
+       * "How effective are the status indicators and display?"
+     - Identify specific timestamps for important events
+     - Extract insights for captions and case study content
+
+  5. VIDEO EDITING PHASE (update task):
+     - Calculate speed_factor = original_duration / 90 (for 1.5min target)
+       * Example: 600 seconds / 90 = 6.67x speed
+     - Use speed_up_video with calculated factor
+     - Note new duration to verify it's 1-1.5 minutes
+     - Use generate_captions:
+       * num_captions: 12-15 for readability
+       * caption_style: "technical"
+       * output_format: "both" (SRT + VTT)
+     - Verify all output files exist
+
+  6. DOCUMENTATION PHASE (update task):
+     - Read case study template carefully
+     - Fill in ALL required sections (do not skip any):
+       * Planning Phase: Evaluation Design, Analysis, Desired Features
+       * Testing Phase: Implementation Details, Agents, Demo
+       * Evaluation & Analysis: Results, Conclusion
+       * Status Tracker
+     - Include specific metrics and concrete examples
+     - Link to edited video file
+     - Provide runnable command examples
+     - Save to docs/source/examples/case_studies/v{version}_{feature_name}.md
+     - Verify file was saved successfully
+
+  7. VALIDATION PHASE (update task):
+     - Video checks:
+       * Duration is 1-1.5 minutes? ✓
+       * Captions are readable at playback speed? ✓
+       * Video quality is acceptable? ✓
+     - Case study checks:
+       * All template sections filled in? ✓
+       * Follows template structure? ✓
+       * Includes specific metrics? ✓
+     - Config checks:
+       * Config file is valid YAML? ✓
+       * Config is runnable? ✓
+     - List all output files with full paths
+     - Provide recommendations for improvements
+
+  FINAL OUTPUT CHECKLIST:
+  - [ ] Case study markdown: docs/source/examples/case_studies/v{version}_{feature}.md
+  - [ ] Demo config: massgen/configs/case_studies/v{version}_demo.yaml
+  - [ ] Edited video: workspace_case_study/massgen_terminal_speed{factor}x.mp4
+  - [ ] SRT captions: workspace_case_study/massgen_terminal_speed{factor}x.srt
+  - [ ] VTT captions: workspace_case_study/massgen_terminal_speed{factor}x.vtt
+  - [ ] Improvement recommendations provided
+
+agents:
+  - id: "case_study_generator"
+    backend:
+      type: "openai"
+      model: "gpt-5-mini"
+      reasoning:
+        effort: "high"  # Complex workflow requires deep thinking
+        summary: "auto"
+      cwd: "workspace_case_study"
+      enable_mcp_command_line: true
+      command_line_execution_mode: "local"  # Use local execution for ffmpeg/VHS commands
+      custom_tools:
+        # Video recording
+        - name: ["run_massgen_with_recording"]
+          category: "terminal_evaluation"
+          path: "massgen/tool/_multimodal_tools/run_massgen_with_recording.py"
+          function: ["run_massgen_with_recording"]
+
+        # Video understanding
+        - name: ["understand_video"]
+          category: "multimodal"
+          path: "massgen/tool/_multimodal_tools/understand_video.py"
+          function: ["understand_video"]
+
+        # Video editing
+        - name: ["speed_up_video"]
+          category: "video_editing"
+          path: "massgen/tool/_video_tools/video_editor.py"
+          function: ["speed_up_video"]
+
+        # Caption generation
+        - name: ["generate_captions"]
+          category: "video_tools"
+          path: "massgen/tool/_video_tools/generate_captions.py"
+          function: ["generate_captions"]
+
+    system_message: |
+      You are a case study researcher and video editor specializing in technical documentation.
+
+      Your mission: Create comprehensive case studies for MassGen releases that include:
+      - Written documentation following the template
+      - Professional demo videos (1-1.5 minutes, edited and captioned)
+      - Working demo configs for users to try
+
+      CRITICAL: Use task planning to organize this complex workflow!
+
+      START by creating tasks (use new_task):
+      1. new_task(task_description="Analyze CHANGELOG and identify demo features", status="pending")
+      2. new_task(task_description="Design and save demo config", status="pending")
+      3. new_task(task_description="Record MassGen terminal session", status="pending")
+      4. new_task(task_description="Analyze recorded video", status="pending")
+      5. new_task(task_description="Edit video and generate captions", status="pending")
+      6. new_task(task_description="Write case study documentation", status="pending")
+      7. new_task(task_description="Validate all artifacts", status="pending")
+
+      Then work through each task systematically:
+      - Update task status to "in_progress" when starting
+      - Mark "completed" when done
+      - Track your progress clearly
+
+      WORKFLOW PHASES:
+
+      1. ANALYSIS:
+         - Read CHANGELOG.md to find latest features
+         - Review existing case studies for style reference
+         - Identify demo-worthy features
+
+      2. CONFIG DESIGN:
+         - Create YAML config showcasing new features
+         - Choose appropriate agents, tools, and settings
+         - Design a clear, compelling demo prompt
+         - Save to massgen/configs/case_studies/
+
+      3. RECORDING:
+         - Use run_massgen_with_recording to capture session
+         - Format: MP4 (best quality)
+         - Timeout: 5-10 minutes (adjust based on task complexity)
+         - Resolution: 1920x1080, FontSize: 15
+
+      4. VIDEO ANALYSIS:
+         - Use understand_video to analyze recording
+         - Extract key moments and transitions
+         - Identify what makes this demo effective
+
+      5. VIDEO EDITING:
+         - Use speed_up_video to condense video:
+           * 10min → 1.5min: speed_factor=6.67
+           * 5min → 1.5min: speed_factor=3.33
+           * 3min → 1.5min: speed_factor=2.0
+         - Use generate_captions with "technical" style
+         - Generate both SRT and VTT files
+
+      6. DOCUMENTATION:
+         - Follow case study template structure exactly
+         - Fill in all sections (Planning, Testing, Evaluation)
+         - Include video links and command examples
+         - Provide specific metrics and results
+         - Save to docs/source/examples/case_studies/
+
+      7. REVIEW & ITERATE:
+         - Check all artifacts are complete
+         - Verify video quality and captions
+         - Ensure documentation is clear
+         - Suggest improvements
+
+      TOOLS AVAILABLE:
+      - run_massgen_with_recording: Record MassGen terminal sessions
+      - understand_video: Analyze videos with GPT-4.1 vision
+      - speed_up_video: Edit video speed with ffmpeg
+      - generate_captions: Create SRT/VTT captions
+      - MCP filesystem: Read/write files
+      - MCP command_line: Run commands (if needed)
+
+      BEST PRACTICES:
+      - Use task planning throughout - update task status after each step
+      - Use MP4 for final videos (YouTube compatible)
+      - Generate both SRT and VTT captions
+      - Follow case study template structure strictly
+      - Include actual runnable commands
+      - Provide concrete metrics (duration, improvement %, speed factor, etc.)
+      - Verify files exist after each write operation
+      - Handle errors gracefully and report them clearly
+
+      ERROR HANDLING:
+      - If recording fails: Check config validity, adjust timeout, try again
+      - If video editing fails: Check FFmpeg installed, verify input file exists
+      - If caption generation fails: Check OpenAI API key, reduce num_captions
+      - Always report errors with full context (which step, what failed, why)
+
+      QUALITY CRITERIA:
+      - Video: 1-1.5 minutes, captioned, clear and engaging
+      - Case study: All sections complete, follows template exactly
+      - Demo config: Valid YAML, runnable, showcases features effectively
+      - Documentation: Clear, specific, actionable, with concrete examples
+      - Task tracking: All tasks marked completed
+
+      CONCRETE EXAMPLES:
+
+      Example task creation:
+      ```
+      new_task(task_description="Analyze CHANGELOG for v0.1.8 features", status="pending")
+      update_task(task_id=1, status="in_progress")
+      # ... do the work ...
+      update_task(task_id=1, status="completed")
+      ```
+
+      Example video editing workflow:
+      ```
+      1. Record: run_massgen_with_recording(...) → 480 second video
+      2. Calculate: speed_factor = 480 / 90 = 5.33x
+      3. Speed up: speed_up_video(..., speed_factor=5.33) → 90 second video
+      4. Caption: generate_captions(..., num_captions=12) → SRT + VTT files
+      ```
+
+      Example config naming:
+      - Version 0.1.8, automation mode feature → v0.1.8_automation_mode_demo.yaml
+      - Version 0.1.9, terminal eval feature → v0.1.9_terminal_evaluation_demo.yaml
+
+      Remember: The goal is to create professional, publishable case studies
+      that demonstrate MassGen's capabilities and improvements!
+
+orchestrator:
+  snapshot_storage: "snapshots_case_studies"
+  agent_temporary_workspace: "temp_workspaces_case_studies"
+
+  context_paths:
+    # Source documentation for analysis
+    - path: "CHANGELOG.md"
+      permission: "read"
+
+    - path: "README.md"
+      permission: "read"
+
+    # Case study template and existing case studies
+    - path: "docs/source/examples/case_studies/case-study-template.md"
+      permission: "read"
+
+    - path: "docs/source/examples/case_studies"
+      permission: "read"
+
+    # Config writing guide
+    - path: "docs/source/development/writing_configs.rst"
+      permission: "read"
+
+    # Example configs for inspiration (all configs available)
+    - path: "massgen/configs"
+      permission: "read"
+
+    # Tools documentation
+    - path: "docs/source/user_guide"
+      permission: "read"
+
+    # Output location for case studies
+    - path: "docs/source/examples/case_studies"
+      permission: "write"
+
+    # Output location for demo configs
+    - path: "massgen/configs/case_studies"
+      permission: "write"
+
+  coordination:
+    enable_agent_task_planning: true  # Enable task planning for organized workflow
+    timeout_seconds: 3600  # 1 hour for full workflow
+
+ui:
+  display_type: "rich_terminal"
+  logging_enabled: true
+  skip_agent_selector: true  # Auto-quit when done

@@ -1,0 +1,114 @@
+# MassGen Video Workflow Configuration
+# Focused workflow for creating demo videos (recording, editing, captioning)
+#
+# Use this when you just need to create a demo video, not a full case study.
+#
+# Usage:
+#   uv run massgen --config massgen/configs/case_studies/video_workflow.yaml
+#
+
+prompt: |
+  Create a professional demo video for MassGen.
+
+  Workflow:
+  1. Record a MassGen session using the specified config and question
+  2. Analyze the video to understand content
+  3. Speed up the video to target length (1-1.5 minutes)
+  4. Generate captions describing what's happening
+  5. Provide final video files ready for publishing
+
+  Ask me for:
+  - Which config to use for the demo
+  - What question/prompt to use
+  - Target video length
+
+  Then execute the full workflow automatically.
+
+agents:
+  - id: "video_creator"
+    backend:
+      type: "openai"
+      model: "gpt-5-mini"
+      cwd: "workspace_video"
+      enable_mcp_command_line: true
+      custom_tools:
+        - name: ["run_massgen_with_recording"]
+          category: "terminal_evaluation"
+          path: "massgen/tool/_multimodal_tools/run_massgen_with_recording.py"
+          function: ["run_massgen_with_recording"]
+
+        - name: ["understand_video"]
+          category: "multimodal"
+          path: "massgen/tool/_multimodal_tools/understand_video.py"
+          function: ["understand_video"]
+
+        - name: ["speed_up_video"]
+          category: "video_editing"
+          path: "massgen/tool/_video_tools/video_editor.py"
+          function: ["speed_up_video"]
+
+        - name: ["generate_captions"]
+          category: "video_tools"
+          path: "massgen/tool/_video_tools/generate_captions.py"
+          function: ["generate_captions"]
+
+    system_message: |
+      You are a professional video creator for technical demos.
+
+      Workflow for creating demo videos:
+
+      1. GATHER REQUIREMENTS:
+         - Ask user which MassGen config to demo
+         - Ask for the question/prompt to use
+         - Ask for target video length (default: 1-1.5 minutes)
+
+      2. RECORD:
+         - Use run_massgen_with_recording
+         - Format: MP4 (1920x1080, FontSize 15)
+         - Reasonable timeout based on task complexity
+
+      3. ANALYZE:
+         - Use understand_video to understand content
+         - Identify key moments
+         - Plan caption content
+
+      4. EDIT:
+         - Calculate speed_factor to hit target length:
+           * For 10min → 1.5min: speed_factor = 10*60 / 90 = 6.67
+           * For 5min → 1.5min: speed_factor = 5*60 / 90 = 3.33
+         - Use speed_up_video with calculated factor
+
+      5. CAPTION:
+         - Use generate_captions with "technical" style
+         - Generate both SRT and VTT
+         - 10-15 captions for smooth reading
+
+      6. DELIVER:
+         - Provide paths to all output files
+         - Summary of video content
+         - Recommendations for publishing
+
+      Tools:
+      - run_massgen_with_recording: Record terminal sessions
+      - understand_video: Analyze video content
+      - speed_up_video: Adjust playback speed
+      - generate_captions: Create subtitle files
+
+      Best practices:
+      - Always use MP4 for maximum compatibility
+      - Generate both SRT and VTT captions
+      - Target 1-1.5 minutes for social media sharing
+      - Ensure captions are readable (not too fast)
+
+orchestrator:
+  snapshot_storage: "snapshots_video"
+  agent_temporary_workspace: "temp_workspaces_video"
+
+  context_paths:
+    - path: "massgen/configs"
+      permission: "read"
+
+ui:
+  display_type: "rich_terminal"
+  logging_enabled: true
+  skip_agent_selector: true
