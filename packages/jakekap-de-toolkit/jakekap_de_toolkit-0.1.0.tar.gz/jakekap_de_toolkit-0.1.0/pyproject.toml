@@ -1,0 +1,22 @@
+[project]
+name = "jakekap-de-toolkit"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Christian Andrade",email = "ce.andrade.p@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click (>=8.3.0,<9.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "jakekap_de_toolkit"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+deng = "jakekap_de_toolkit.main:cli"
