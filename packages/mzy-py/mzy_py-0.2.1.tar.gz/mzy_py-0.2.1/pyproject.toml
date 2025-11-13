@@ -1,0 +1,34 @@
+[build-system]
+requires      = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name            = "mzy_py"               # 包名，PyPI 全局唯一
+version         = "0.2.1"
+description     = "A sample of a Python package"
+readme          = "README.md"
+requires-python = ">=3.8"
+license         = {text = "MIT"}
+authors         = [{name = "MaZiYan", email = "2011283064@qq.com"}]
+keywords        = ["mzy", "wjh"]
+classifiers = [
+"Development Status :: 4 - Beta",
+"Intended Audience :: Developers",
+"License :: OSI Approved :: MIT License",
+"Programming Language :: Python :: 3",
+"Programming Language :: Python :: 3.8",
+"Programming Language :: Python :: 3.9",
+"Programming Language :: Python :: 3.10",
+"Programming Language :: Python :: 3.11",
+"Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "requests>=2.31",
+    "numpy>=1.24,<2.1",
+    "pandas>=2.1,<3",
+    "matplotlib>=3.7,<4",
+    "seaborn>=0.12.2",
+]
+[project.urls]
+Homepage   = "https://github.com/MaZiYan/mzy_py"
+Repository = "https://github.com/MaZiYan/mzy_py"
+Issues     = "https://github.com/MaZiYan/mzy_py/issues"
