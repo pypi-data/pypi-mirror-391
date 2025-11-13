@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "git-quick"
+version = "1.4.0"
+description = "Lightning-fast Git workflows with AI-powered commit messages"
+authors = [
+    {name = "Vishnu Swaroop", email = "vswaroop04@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = ["git", "cli", "productivity", "ai", "commit"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "click>=8.0",
+    "rich>=13.0",
+    "gitpython>=3.1",
+    "toml>=0.10",
+    "openai>=1.0",
+    "anthropic>=0.25",
+    "requests>=2.31",
+    "urllib3<2.0",  # Fix LibreSSL compatibility warning on macOS
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "mypy>=1.0",
+    "ruff>=0.1",
+]
+
+[project.scripts]
+gq = "git_quick.cli:cli"
+# Backward compatibility aliases
+git-quick = "git_quick.cli:cli"
+git-story = "git_quick.cli:story_cmd"
+git-time = "git_quick.cli:time_track"
+git-sync-all = "git_quick.cli:sync_all"
+
+[project.urls]
+Homepage = "https://github.com/vswaroop04/git-quick"
+Documentation = "https://github.com/vswaroop04/git-quick#readme"
+Repository = "https://github.com/vswaroop04/git-quick"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["git_quick*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
