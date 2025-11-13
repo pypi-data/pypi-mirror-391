@@ -1,0 +1,98 @@
+[project]
+name = "findpython"
+description = "A utility to find python versions on your system"
+authors = [
+    { name = "Frost Ming", email = "mianghong@gmail.com" },
+]
+dependencies = [
+    "packaging>=20",
+    "platformdirs>=4.3.6",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+dynamic = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+version = "0.7.1"
+
+[project.license]
+text = "MIT"
+
+[project.urls]
+Homepage = "https://github.com/frostming/findpython"
+
+[project.scripts]
+findpython = "findpython.__main__:main"
+
+[tool.pdm.version]
+source = "scm"
+write_to = "findpython/__version__.py"
+write_template = "__version__ = \"{}\"\n"
+
+[tool.pdm.build]
+package-dir = "src"
+
+[tool.pdm.dev-dependencies]
+tests = [
+    "pytest",
+]
+
+[tool.pdm.scripts]
+test = "pytest tests"
+
+[tool.black]
+line-length = 90
+include = "\\.pyi?$"
+exclude = "/(\n    \\.eggs\n  | \\.git\n  | \\.hg\n  | \\.mypy_cache\n  | \\.tox\n  | \\.venv\n  | build\n  | dist\n  | src/pythonfinder/_vendor\n)\n"
+
+[tool.ruff]
+line-length = 90
+src = [
+    "src",
+]
+exclude = [
+    "tests/fixtures",
+]
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "B",
+    "C4",
+    "E",
+    "F",
+    "PGH",
+    "RUF",
+    "W",
+    "YTT",
+]
+extend-ignore = [
+    "B018",
+    "B019",
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "findpython",
+]
+
+[tool.mypy]
+overrides = [
+    { module = "_winreg", ignore_missing_imports = true },
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
