@@ -1,0 +1,66 @@
+[project]
+name = "basic-colormath"
+version = "1.1.1"
+description = "Simple color conversion and perceptual (DeltaE CIE 2000) difference"
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Shay Hill", email = "shay_public@hotmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["uv_build>=0.9.4,<0.10.0"]
+build-backend = "uv_build"
+
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.10.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "colormath"
+]
+extra = ["numpy"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "1.1.1"
+tag_format = "$version"
+major-version-zero = false
+version_files = ["pyproject.toml:^version"]
+
+
+[tool.isort]
+profile = "black"
+
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+pythonpath = ["tests"]
+log_cli = 1
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+
+[tool.pyright]
+include = ["src"]
+exclude = ["**/__pycache__.py"]
+
+pythonVersion = "3.10"
+pythonPlatform = "Any"
+
+typeCheckingMode = "strict"
+reportCallInDefaultInitializer = true
+reportImplicitStringConcatenation = true
+# reportMissingSuperCall = true
+reportPropertyTypeMismatch = true
+reportUninitializedInstanceVariable = true
+reportUnnecessaryTypeIgnoreComment = true
+reportUnusedCallResult = true
+
+venvPath = "."
+venv = "./.venv"
