@@ -1,0 +1,22 @@
+Metadata-Version: 2.1
+Name: ipathy
+Version: 0.1.2
+Summary: The path fixer your OS forgot — cross-platform path normalizer for Python.
+Author: PyBeast
+Author-email: pybeast@example.com
+License: MIT
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: license
+
+# Pathy ðŸ§©  
+**The path fixer your OS forgot.**
+
+Cross-platform path normalizer for Python.  
+Because Windows slashes are chaos ðŸ’€.
+
+```python
+from pathy import pathy
+
+print(pathy("C:\\Users\\Me\\Desktop\\..\\file.txt"))
+# âžœ /Users/Me/file.txt
