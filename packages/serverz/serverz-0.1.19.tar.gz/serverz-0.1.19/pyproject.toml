@@ -1,0 +1,14 @@
+[project]
+name = "serverz"
+version = "0.1.19"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [ "anyio>=4.11.0", "apscheduler>=3.11.0", "deepagents>=0.1.4", "fastapi>=0.118.0", "langchain>=1.0.2", "langchain-mcp-adapters>=0.1.11", "langchain-openai>=1.0.1", "mcp[cli]>=1.16.0", "pro-craft>=0.2.65", "pymysql>=1.1.2", "uvicorn>=0.37.0",]
+
+[tool.setuptools.package-data]
+serverz = [ "config.yaml",]
+
+[tool.pytest.ini_options]
+testpaths = [ "tests",]
+pythonpath = [ "src",]
