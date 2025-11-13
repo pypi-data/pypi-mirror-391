@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gojan"
+version = "0.1.1"
+description = "Gojan — tiny package demonstrating runtime linking to TensorFlow + optional Flask and ML libs."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+requires-python = ">=3.9"
+
+# required runtime dependency
+dependencies = [
+  "tensorflow==2.12.1"
+]
+
+[project.optional-dependencies]
+web = [
+  "Flask>=2.2.0"
+]
+ml = [
+  "numpy>=1.24",
+  "pandas>=2.1",
+  "scikit-learn>=1.2",
+  "scipy>=1.10",
+  "matplotlib>=3.7",
+  "Pillow>=9.5",
+  "seaborn>=0.12"
+]
+torch = [
+  # Note: Torch packages are platform-dependent; user may prefer to install from pytorch.org
+  "torch>=2.2.0"
+]
+all = [
+  "Flask>=2.2.0",
+  "numpy>=1.24",
+  "pandas>=2.1",
+  "scikit-learn>=1.2",
+  "scipy>=1.10",
+  "matplotlib>=3.7",
+  "Pillow>=9.5",
+  "seaborn>=0.12",
+  "torch>=2.2.0"
+]
+
+[project.urls]
+"Homepage" = "https://example.com"
