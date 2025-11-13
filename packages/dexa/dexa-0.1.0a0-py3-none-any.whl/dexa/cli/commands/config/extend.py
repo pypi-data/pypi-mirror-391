@@ -1,0 +1,141 @@
+# The MIT License (MIT)
+# Copyright (c) 2025 The Nummertopia Delegation
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+# OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+"""Append values to existing arrays in the Dexa configuration."""
+
+from typing import Annotated
+
+from pathlib import Path
+
+from nebulog import logger
+
+import typer
+
+from dexa.cli.helpers import BasicConverter as Text
+from dexa.config import ConfigurationDomain, resolve_app_manager
+from dexa.logging import setup_app_logging
+
+config_extend_app = typer.Typer(no_args_is_help=True)
+
+
+HELP_MSG = (
+    ":straight_ruler: Extend an array key in the configuration file.\n\n"
+    "If no setting exists for the key, you cancreate an array with the single value "
+    "provided.\n\n"
+    ":rotating_light: [bold red]NOTE:[/] To extend a value in the configuration with a "
+    "[b][i]negative[/i][/b] number, you must pass the double dash separator to prevent "
+    "the application from interpreting it as a flag:\n\n"
+    "[bold yellow]$[/] [green]dexa[/] config extend somekey "
+    "[blue]--[/] -1"
+)
+
+
+@config_extend_app.command(name="extend", help=HELP_MSG)
+def extend_command(
+    key: Annotated[
+        str, typer.Argument(help=":key: The configuration key to be extended.")
+    ],
+    value: Annotated[
+        Text,
+        typer.Argument(
+            help=":keycap_#: The value to be stored with the key.", parser=Text
+        ),
+    ],
+    path: Annotated[
+        Path, typer.Option(help=":bus_stop: Specify a custom configuration file.")
+    ] = None,
+    secret: Annotated[
+        bool,
+        typer.Option(
+            "--secret",
+            "-s",
+            help=":lock: Store configuration in the secret manager instead.",
+        ),
+    ] = False,
+    create: Annotated[
+        bool,
+        typer.Option(
+            "--create-on-missing",
+            "-c",
+            help=(
+                ":new: Add the provided value in an array if the setting is not set. "
+                "Will raise an error otherwise."
+            ),
+        ),
+    ] = False,
+) -> None:
+    """Extend an array key in the configuration file."""
+    setup_app_logging(debug=False)
+    domain = ConfigurationDomain.from_flag(is_secret=secret)
+
+    logger.info(
+        "Extending array key via CLI", key=key, value=value.output, is_secret=secret
+    )
+
+    if path is not None:  # pragma: no cover
+        logger.info("Using custom configuration file", config=path)
+
+    app_manager = resolve_app_manager(domain, path)
+
+    if value.output is None:
+        typer.echo(f'Could not parse the value "{value.input}"', err=True)
+
+        raise typer.Exit(1)
+
+    current_setting = app_manager.get(f"{domain.value}.{key}")
+
+    if current_setting is None and create:
+        app_manager[domain.value, key] = [value.output]
+
+        app_manager.save(domain.value)
+        exit_code = 0
+
+    elif current_setting is None:
+        typer.echo(
+            f"Setting `{key}` was not found, if you wish to update the configuration, "
+            "run the command with the `--create-on-missing` option",
+            err=True,
+        )
+        exit_code = 1
+
+    elif isinstance(current_setting, list):
+        current_setting.append(value.output)
+        app_manager[domain.value, key] = current_setting
+
+        app_manager.save(domain.value)
+        exit_code = 0
+
+    else:
+        typer.echo(
+            f"To extend settings, the value for `{key}` must be an array, got "
+            f"{current_setting} instead",
+            err=True,
+        )
+        exit_code = 1
+
+    if exit_code != 0:
+        logger.debug("Dexa exited successfully")
+
+    else:
+        logger.debug("Dexa exited with an error")
+
+    raise typer.Exit(exit_code)
