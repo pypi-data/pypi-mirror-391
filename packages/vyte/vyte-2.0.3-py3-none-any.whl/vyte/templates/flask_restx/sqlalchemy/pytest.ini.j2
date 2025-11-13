@@ -1,0 +1,30 @@
+# Testing Strategy Configuration
+# This file helps organize your tests by speed vs realism
+
+[tool:pytest]
+testpaths = tests
+python_files = test_*.py
+python_classes = Test*
+python_functions = test_*
+addopts = 
+    -v
+    --tb=short
+    --durations=10
+    --disable-warnings
+    --timeout=30
+filterwarnings =
+    ignore::DeprecationWarning
+    ignore::PendingDeprecationWarning
+
+# Test markers for different strategies
+markers =
+    unit: Fast unit tests (use SQLite)
+    integration: Integration tests (use production DB)
+    database_specific: Tests requiring production DB features
+    slow: Slow tests that can be skipped in development
+    
+# Custom test commands:
+# pytest -m unit              # Fast tests only (SQLite)
+# pytest -m integration       # Realistic tests (Production DB)
+# pytest -m "not slow"        # Skip slow tests
+# pytest tests/unit/          # Directory-based organization
