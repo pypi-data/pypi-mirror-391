@@ -1,0 +1,32 @@
+Metadata-Version: 2.3
+Name: AirClerk
+Version: 0.1.0
+Summary: Air + Clerk for user management.
+Author: Daniel Roy Greenfeld, Audrey Roy Greenfeld
+Author-email: Daniel Roy Greenfeld <daniel@feldroy.com>, Audrey Roy Greenfeld <audrey@feldroy.com>
+Requires-Dist: air>=0.40.0
+Requires-Dist: clerk-backend-api>=3.3.1
+Requires-Dist: fastapi[standard]>=0.121.0
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: pydantic-settings>=2.11.0
+Requires-Python: >=3.13
+Project-URL: Homepage, https://github.com/feldroy/airclerk
+Project-URL: Issues, https://github.com/feldroy/airclerk/issues
+Description-Content-Type: text/markdown
+
+# airclerk
+
+Air + Clerk for user management.
+
+## Environment Variables
+
+AirClerk is driven by the following environment variables:
+
+| Variable | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `CLERK_PUBLISHABLE_KEY` | str | Yes | - | Clerk publishable API key for client-side authentication |
+| `CLERK_SECRET_KEY` | str | Yes | - | Clerk secret API key for server-side operations |
+| `CLERK_JS_SRC` | str | No | `https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js` | CDN URL for the Clerk JavaScript library |
+| `CLERK_LOGIN_ROUTE` | str | No | `/login` | URL path for the login page |
+| `CLERK_LOGOUT_ROUTE` | str | No | `/logout` | URL path for the logout endpoint |
+
