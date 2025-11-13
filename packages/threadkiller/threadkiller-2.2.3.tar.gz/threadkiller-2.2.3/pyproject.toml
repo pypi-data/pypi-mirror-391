@@ -1,0 +1,48 @@
+[project]
+name = "threadkiller"
+version = "2.2.3"
+description = "Telegram bot to delete messages sent outside of threads"
+authors = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"}
+]
+maintainers = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"}
+]
+license = "EUPL-1.2"
+license-files = ["LICENSE.txt"]
+readme = "README.md"
+keywords = [
+    "telegram",
+    "chat-threads",
+    "telegram-bot",
+    "chat-moderation",
+    "python-telegram-bot",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: Communications :: Chat",
+    "Typing :: Typed",
+]
+
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "python-telegram-bot (>=20.0a1,<=21.0)",
+    "cfig[cli] (>=0.2.3,<=0.4.0)",
+]
+
+[project.scripts]
+threadkiller = "threadkiller.__main__:main"
+
+[project.urls]
+Source = "https://forge.steffo.eu/steffo/threadkiller"
+Issues = "https://forge.steffo.eu/steffo/threadkiller/issues"
+Documentation = "https://forge.steffo.eu/steffo/threadkiller/wiki"
+Telegram = "https://t.me/the_threadkiller_bot?startgroup=yes"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
