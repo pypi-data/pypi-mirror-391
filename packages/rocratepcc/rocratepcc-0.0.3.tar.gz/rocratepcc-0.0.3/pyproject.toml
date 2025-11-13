@@ -1,0 +1,38 @@
+[project]
+name = "rocratepcc"
+version = "0.0.3"
+description = "Polyglot library (.NET, Python, Javascript) for creation of RO-Crate Profile Crates."
+authors = [
+    { name = "Heinrich Lukas Weil", email = "weil@rptu.de" },
+    { name = "Eli Chadwick", email = "eli.chadwick@manchester.ac.uk" },
+]
+requires-python = ">=3.11"
+readme = "README.md"
+keywords = [
+    "ro-crate",
+    "profile crate"
+]
+dependencies = [
+    "arctrl>=3.0.0b11,<4",
+]
+
+[project.urls]
+Repository = "https://github.com/nfdi4plants/ROCratePCC"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.1.1,<9",
+    "twine>=4.0.2"
+]
+
+[tool.poetry]
+include = [
+    "src/ROCratePCC/py/**/*.py"
+]
+packages = [
+    { include = "**/*.py", from = "src/ROCratePCC/", to = "rocratepcc" }
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
