@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: yangsuite-coverage
+Version: 3.0.18.post0.dev7
+Summary: Various utilities used for analysis of YANG models.
+Home-page: https://developer.cisco.com/yangsuite
+Author: Michael Ott
+Author-email: yang-suite-dev@cisco.com
+License: Cisco End User License Agreement
+License-File: LICENSE.txt
+Requires-Dist: yangsuite>=3.0.0
+Requires-Dist: yangsuite-yangtree>=2.0.0
+Requires-Dist: yangsuite-filemanager>=1.5.0
+Requires-Dist: yangsuite-devices>=2.0.0
+Requires-Dist: yangsuite-netconf>=1.0.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+yangsuite-coverage
+=======================
+ 
+Provides users with the ability to:
+
+- Check if their Cisco CLI config has YANG model coverage in a particular IOS release
+
+- Create datasets with Xpath as a key and data related to Xpath as columns
+
+- Show diffs between 2 versions of same module.
+
+- Map SNMP OIDs to YANG Xpaths.
