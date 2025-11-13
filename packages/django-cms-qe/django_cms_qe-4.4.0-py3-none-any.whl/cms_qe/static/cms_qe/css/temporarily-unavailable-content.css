@@ -1,0 +1,209 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background-image: linear-gradient(to bottom right, transparent, #888);
+  font-size: .3vmin;
+  display: grid;
+}
+
+body .wrapper * {
+  position: absolute;
+}
+
+.content {
+    color: #aaa;
+    position: relative;
+    font-size: 8em;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    z-index: 1000;
+}
+
+.wrapper {
+  background-image: linear-gradient(to bottom left, #000, #1a1a1a, #363636);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  animation: hue 2s ease-in-out infinite alternate;
+}
+
+@keyframes hue {
+  0% {
+    filter: saturate(4) contrast(1.5) hue-rotate(180deg);
+  }
+  100% {
+    filter: saturate(5) contrast(2) hue-rotate(360deg);
+  }
+}
+
+.scene {
+  place-self: center;
+  width: 100em;
+  aspect-ratio: 1;
+  perspective: 250em;
+}
+
+.scene * {
+  transform-style: preserve-3d;
+}
+
+.pivot, .starHedron {
+  inset: 0;
+}
+
+.pivot {
+  animation: wobble 8s ease-in-out alternate infinite;
+}
+
+@keyframes wobble {
+  0% {
+    rotate: x -30deg;
+  }
+  100% {
+    rotate: x 30deg;
+  }
+}
+
+.starHedron {
+  display: grid;
+  place-items: center;
+  animation: spin 9s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    rotate: y 1deg;
+  }
+  100% {
+    rotate: y 361deg;
+  }
+}
+
+.pentagon {
+  --pentaW: calc(sin(atan(1/(cos(36deg) + .5))) * 100);
+  width: calc(var(--pentaW)*1em);
+  aspect-ratio: 1;
+  --pushZ: calc(cos(atan(1/(cos(36deg) + .5))) * 50);
+  display: grid;
+}
+
+.pentagon::before, .triangle {
+  background-image: linear-gradient(23deg, #ffeeff02 20%, #eeffff28, #ffe1, #efea 85%);
+  background-size: 500% 500%;
+  animation: shimmer 1s linear alternate infinite;
+}
+
+.pentagon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(
+    calc(50%*(1 + sin(72deg*0))) calc(50%*(1 + cos(72deg*0))),
+    calc(50%*(1 + sin(72deg*1))) calc(50%*(1 + cos(72deg*1))),
+    calc(50%*(1 + sin(72deg*2))) calc(50%*(1 + cos(72deg*2))),
+    calc(50%*(1 + sin(72deg*3))) calc(50%*(1 + cos(72deg*3))),
+    calc(50%*(1 + sin(72deg*4))) calc(50%*(1 + cos(72deg*4))),
+
+    calc(50%*(1 + cos(36deg)*sin(72deg*4.5))) calc(50%*(1 + cos(36deg)*cos(72deg*4.5))),
+    calc(50%*(1 + cos(36deg)*sin(72deg*3.5))) calc(50%*(1 + cos(36deg)*cos(72deg*3.5))),
+    calc(50%*(1 + cos(36deg)*sin(72deg*2.5))) calc(50%*(1 + cos(36deg)*cos(72deg*2.5))),
+    calc(50%*(1 + cos(36deg)*sin(72deg*1.5))) calc(50%*(1 + cos(36deg)*cos(72deg*1.5))),
+    calc(50%*(1 + cos(36deg)*sin(72deg*.5))) calc(50%*(1 + cos(36deg)*cos(72deg*.5))),
+
+    calc(50%*(1 + cos(36deg)*sin(72deg*4.5))) calc(50%*(1 + cos(36deg)*cos(72deg*4.5)))
+  );
+  padding: 1px;
+  animation-delay: calc(-.415s*var(--step));
+  filter: hue-rotate(calc(var(--step)*61deg));
+}
+
+.side {
+  transform: rotateY(calc(72deg*var(--step))) rotateX(calc(atan(.5) + 90deg - (var(--dir)*90deg))) translateZ(calc(var(--pushZ)*1em))
+}
+
+.lid {
+  transform: rotateX(calc(90deg*var(--dir))) translateZ(calc(var(--pushZ)*1em)) rotate(36deg);
+}
+
+.pentagon:nth-child(1),
+.pentagon:nth-child(2) {
+  --step: 0;
+}
+
+.pentagon:nth-child(3),
+.pentagon:nth-child(4) {
+  --step: 1;
+}
+
+.pentagon:nth-child(5),
+.pentagon:nth-child(6) {
+  --step: 2;
+}
+
+.pentagon:nth-child(7),
+.pentagon:nth-child(8) {
+  --step: 3;
+}
+
+.pentagon:nth-child(9),
+.pentagon:nth-child(10) {
+  --step: 4;
+}
+
+.pentagon:nth-child(11),
+.pentagon:nth-child(12) {
+  --step: 5;
+}
+
+.pentagon:nth-child(odd) {
+  --dir: 1;
+}
+
+.pentagon:nth-child(even) {
+  --dir: -1;
+}
+
+.triangle {
+  top: 50%;
+  justify-self: center;
+  width: calc(cos(36deg)*sin(36deg)*var(--pentaW)*1em);
+  --baseH: calc(cos(36deg)*cos(36deg)*var(--pentaW)*.5);
+  --pyramidAngle: atan(.5);
+  height: calc(1/sin(var(--pyramidAngle)) * var(--baseH)*.5em);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  transform-origin: 50% 0;
+  transform: translateZ(calc(tan(var(--pyramidAngle))*var(--baseH)*1em)) rotate(calc(var(--triStep)*72deg)) rotateX(calc(-1*(var(--pyramidAngle))));
+  animation-delay: calc(-.32s*var(--triStep) - .87s*var(--step));
+  filter: hue-rotate(calc(var(--triStep)*43deg) + var(--step)*67deg);
+  padding: 1px;
+}
+
+.triangle:nth-child(1) {
+  --triStep: 0;
+}
+
+.triangle:nth-child(2) {
+  --triStep: 1;
+}
+
+.triangle:nth-child(3) {
+  --triStep: 2;
+}
+
+.triangle:nth-child(4) {
+  --triStep: 3;
+}
+
+.triangle:nth-child(5) {
+  --triStep: 4;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: top, left;
+  }
+  100% {
+    background-position: bottom, right;
+  }
+}
