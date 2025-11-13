@@ -1,0 +1,428 @@
+Metadata-Version: 2.4
+Name: zephyr-py
+Version: 0.1.0.dev1
+Summary: A modern, high-performance Python web framework with advanced developer tools and enterprise-grade capabilities
+Author-email: A M <mariesmw007@gmail.com>
+License: Business Source License 1.1
+        
+        License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved.
+        "Business Source License" is a trademark of MariaDB Corporation Ab.
+        
+        -----------------------------------------------------------------------------
+        
+        Business Source License 1.1
+        
+        Terms
+        
+        The Licensor hereby grants you the right to copy, modify, create derivative
+        works, redistribute, and make non-production use of the Licensed Work. The
+        Licensor may make an Additional Use Grant, above, permitting limited
+        production use.
+        
+        Effective on the Change Date, or the fourth anniversary of the first publicly
+        available distribution of a specific version of the Licensed Work under this
+        License, whichever comes first, the Licensor hereby grants you rights under
+        the terms of the Change License, and the rights granted in the paragraph
+        above terminate.
+        
+        If your use of the Licensed Work does not comply with the requirements
+        currently in effect as described in this License, you must purchase a
+        commercial license from the Licensor, its affiliated entities, or authorized
+        resellers, or you must refrain from using the Licensed Work.
+        
+        All copies of the original and modified Licensed Work, and derivative works
+        of the Licensed Work, are subject to this License. This License applies
+        separately for each version of the Licensed Work and the Change Date may vary
+        for each version of the Licensed Work released by Licensor.
+        
+        You must conspicuously display this License on each original or modified copy
+        of the Licensed Work. If you receive the Licensed Work in original or
+        modified form from a third party, the terms and conditions set forth in this
+        License apply to your use of that work.
+        
+        Any use of the Licensed Work in violation of this License will automatically
+        terminate your rights under this License for the current and all other
+        versions of the Licensed Work.
+        
+        This License does not grant you any right in any trademark or logo of
+        Licensor or its affiliates (provided that you may use a trademark or logo of
+        Licensor as expressly required by this License).
+        
+        TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON
+        AN "AS IS" BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS,
+        EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF
+        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND
+        TITLE.
+        
+        MariaDB hereby grants you permission to use this License's text to license
+        your works, and to refer to it using the trademark "Business Source License",
+        as long as you comply with the Covenants of Licensor below.
+        
+        Covenants of Licensor
+        
+        In consideration of the right to use this License's text and the "Business
+        Source License" name and trademark, Licensor covenants to MariaDB, and to all
+        other recipients of the licensed work to be provided by Licensor:
+        
+        1. To specify as the Change License the GPL Version 2.0 or any later version,
+           or a license that is compatible with GPL Version 2.0 or a later version,
+           where "compatible" means that software provided under the Change License can
+           be included in a program with software provided under GPL Version 2.0 or a
+           later version. Licensor may specify additional Change Licenses without
+           limitation.
+        
+        2. To either: (a) specify an additional grant of rights to use that does not
+           impose any additional restriction on the right granted in this License, as
+           the Additional Use Grant; or (b) insert the text "None".
+        
+        3. To specify a Change Date.
+        
+        4. Not to modify this License in any other way.
+        
+        -----------------------------------------------------------------------------
+        
+        Notice
+        
+        The Business Source License (this document) is not an Open Source license.
+        However, the Licensed Work will eventually be made available under an Open
+        Source License, as stated in this License.
+        
+        -----------------------------------------------------------------------------
+        
+        Parameters
+        
+        Licensor:             BBDevs
+        Licensed Work:        Zephyr Framework
+                              The Licensed Work is (c) 2024 BBDevs
+        
+        Additional Use Grant: You may make production use of the Licensed Work,
+                              provided such use does not include offering the Licensed
+                              Work to third parties on a hosted or embedded basis which
+                              is competitive with BBDevs products or services that
+                              provide the Licensed Work.
+        
+        Change Date:          2028-11-12
+        
+        Change License:       Apache License, Version 2.0
+        
+        For information about alternative licensing arrangements for the Licensed Work,
+        please contact licensing@bbdevs.com.
+        
+        -----------------------------------------------------------------------------
+License-File: LICENSE
+Keywords: async,enterprise,framework,ldap,web
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: Other/Proprietary License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Python: <4.0,>=3.11
+Requires-Dist: aiosmtplib>=2.0.0
+Requires-Dist: anyio>=4.9.0
+Requires-Dist: click>=8.0.0
+Requires-Dist: cryptography>=41.0.0
+Requires-Dist: ldap3>=2.9.1
+Requires-Dist: passlib[bcrypt]>=1.7.4
+Requires-Dist: pydantic-settings>=2.0.0
+Requires-Dist: pydantic>=2.11.2
+Requires-Dist: pyotp>=2.9.0
+Requires-Dist: pytest-asyncio>=0.18.0
+Requires-Dist: pytest>=7.0.0
+Requires-Dist: python-jose[cryptography]>=3.3.0
+Requires-Dist: python-keycloak>=3.0.0
+Requires-Dist: python-multipart>=0.0.20
+Requires-Dist: qrcode>=7.4.2
+Requires-Dist: sqlalchemy>=2.0.0
+Requires-Dist: twine>=6.2.0
+Requires-Dist: typing-extensions>=4.0.0
+Requires-Dist: webauthn>=1.11.0
+Provides-Extra: dev
+Requires-Dist: black>=25.1.0; extra == 'dev'
+Requires-Dist: isort>=5.10.0; extra == 'dev'
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.18.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.0.0; extra == 'dev'
+Requires-Dist: pytest-mock>=3.10.0; extra == 'dev'
+Requires-Dist: pytest-xdist>=3.0.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.13.3; extra == 'dev'
+Provides-Extra: performance
+Requires-Dist: uvloop>=0.21.0; (sys_platform != 'win32') and extra == 'performance'
+Provides-Extra: stubs
+Requires-Dist: mypy>=1.0.0; extra == 'stubs'
+Requires-Dist: types-cryptography>=3.0.0; extra == 'stubs'
+Requires-Dist: types-passlib>=1.7.0; extra == 'stubs'
+Requires-Dist: types-python-jose>=3.3.0; extra == 'stubs'
+Requires-Dist: types-requests>=2.31.0; extra == 'stubs'
+Description-Content-Type: text/markdown
+
+# Zephyr Framework
+
+[![PyPI version](https://badge.fury.io/py/zephyr-py.svg)](https://badge.fury.io/py/zephyr-py)
+[![Python versions](https://img.shields.io/pypi/pyversions/zephyr-py.svg)](https://pypi.org/project/zephyr-py/)
+[![Downloads](https://pepy.tech/badge/zephyr-py)](https://pepy.tech/project/zephyr-py)
+
+A modern, high-performance Python web framework with advanced developer tools and enterprise-grade capabilities.
+
+> **⚠️ Development Status**: This framework is currently in active development (v0.1.0-dev0). APIs may change between releases. Use in production at your own risk.
+
+## Architecture
+
+```mermaid
+graph TD
+    A[Application] --> B[Core]
+    A --> C[Security]
+    A --> D[Database]
+    B --> E[Router]
+    B --> F[Middleware]
+    B --> G[Events]
+    C --> H[Auth]
+    C --> I[RBAC]
+    C --> J[Rate Limit]
+    D --> K[ORM]
+    D --> L[Migration]
+    D --> M[Pool]
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B,C,D fill:#bbf,stroke:#333,stroke-width:2px
+    style E,F,G,H,I,J,K,L,M fill:#dfd,stroke:#333,stroke-width:2px
+```
+
+## Features
+
+### Core Framework
+- Modern API patterns (FastAPI-style decorators)
+- GraphQL & WebSocket support
+- Event-driven architecture
+- Advanced database patterns
+- Type-safe queries and validation
+
+### Security
+- JWT Authentication
+- Role-Based Access Control (RBAC)
+- Redis-based Rate Limiting
+- CSRF Protection
+- Security Headers
+
+### Database
+- Advanced ORM with type safety
+- Query builder with joins
+- Migration system
+- Connection pooling
+- Read/write splitting
+
+### Caching
+- Multi-level cache (Memory + Redis)
+- Cache tags and invalidation
+- Cache warming strategies
+- Distributed caching
+
+### Queue System
+- Distributed job queues
+- Job scheduling
+- Retry mechanisms
+- Dead letter queues
+- Queue monitoring
+
+### Developer Tools
+- Interactive debugger with breakpoints
+- Performance profiler
+- Code generation tools
+- Schema management
+- Migration tools
+
+### Observability
+- Distributed tracing
+- Metrics collection
+- Structured logging
+- Real-time monitoring
+- Health checks
+
+### CLI Tools
+- Development server
+- Database migrations
+- Code generation
+- Monitoring dashboard
+- Deployment management
+
+## Project Structure
+```
+zephyr/
+├── zephyr/                # Main package
+│   ├── core/             # Core components
+│   │   ├── app.py       # Application class
+│   │   ├── config.py    # Configuration
+│   │   ├── context.py   # Request context
+│   │   └── router.py    # URL routing
+│   ├── security/        # Security components
+│   │   ├── auth.py     # Authentication
+│   │   ├── rbac.py     # Access control
+│   │   └── rate_limit.py# Rate limiting
+│   ├── db/             # Database components
+│   │   ├── models.py   # ORM models
+│   │   ├── query.py    # Query builder
+│   │   └── pool.py     # Connection pool
+│   ├── cache/          # Caching system
+│   │   ├── memory.py   # Memory cache
+│   │   └── redis.py    # Redis cache
+│   ├── queue/          # Queue system
+│   │   ├── memory.py   # Memory queue
+│   │   └── redis.py    # Redis queue
+│   ├── graphql/        # GraphQL support
+│   ├── websockets/     # WebSocket support
+│   └── tools/          # Developer tools
+├── docs/               # Documentation
+├── examples/           # Example code
+└── deployment/         # Deployment configs
+```
+
+## Installation
+
+### Using uv (Recommended)
+
+[`uv`](https://github.com/astral-sh/uv) is an extremely fast Python package and project manager written in Rust. It's 10-100x faster than pip and provides a unified toolchain.
+
+**Install uv:**
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or via pip/pipx
+pip install uv
+```
+
+**Install Zephyr:**
+```bash
+# Create virtual environment and install
+uv venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv pip install zephyr-py
+
+# With performance optimizations
+uv pip install zephyr-py[performance]
+
+# With all dev tools
+uv pip install zephyr-py[dev]
+```
+
+### Using pip
+
+```bash
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install package
+pip install zephyr-py
+
+# With optional dependencies
+pip install zephyr-py[performance]  # Performance optimizations
+pip install zephyr-py[dev]          # Development tools
+```
+
+## Requirements
+
+- Python 3.11 or higher
+- Modern async/await support
+
+## Quick Start
+
+```python
+from zephyr import Application
+from zephyr.core import Router
+from zephyr.security import JWT, RateLimiter
+from zephyr.cache import RedisCache
+from zephyr.db import Database
+
+# Create application
+app = Application("myapp")
+
+# Configure components
+app.use_jwt(JWT(secret_key="your-secret"))
+app.use_rate_limit(RateLimiter(requests=100, window=60))
+app.use_cache(RedisCache(url="redis://localhost"))
+app.use_database(Database(url="postgresql://localhost/myapp"))
+
+# Define routes
+router = Router()
+
+@router.get("/")
+async def hello():
+    return {"message": "Hello from Zephyr!"}
+
+@router.post("/items")
+@jwt_required
+async def create_item(item: Item):
+    return await item.save()
+
+app.add_router(router)
+
+# Run the application
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
+```
+
+## Visualizing Diagrams
+
+The documentation includes Mermaid diagrams which can be viewed in several ways:
+
+1. **VS Code**: 
+   - Install the "Markdown Preview Mermaid Support" extension
+   - Open markdown file and press `Ctrl+Shift+V` to preview
+
+2. **Mermaid Live Editor**:
+   - Copy diagram code between ```mermaid tags
+   - Paste at [Mermaid Live Editor](https://mermaid.live)
+
+3. **Documentation Site**:
+   - Run `mkdocs serve` in the project directory
+   - Open http://localhost:8000
+
+## Documentation
+
+- [Getting Started](docs/guides/getting_started.md)
+- [Core Concepts](docs/guides/core_concepts.md)
+- [Security Guide](docs/guides/security.md)
+- [Database Guide](docs/guides/database.md)
+- [Cache Guide](docs/guides/cache.md)
+- [Queue Guide](docs/guides/queue.md)
+- [GraphQL Guide](docs/guides/graphql.md)
+- [WebSocket Guide](docs/guides/websockets.md)
+- [API Reference](docs/api/reference.md)
+- [Deployment Guide](docs/guides/deployment.md)
+
+## Links
+
+- **PyPI**: https://pypi.org/project/zephyr-py/
+- **Documentation**: https://zephyr-py.readthedocs.io/
+- **Source Code**: Available on internal Gerrit repository
+- **Issue Tracker**: Contact development team for bug reports
+
+## Contributing
+
+This is a proprietary framework developed by BBDevs. External contributions are not currently accepted.
+
+## License
+
+**Business Source License (BSL) 1.1**
+
+This software is licensed under the Business Source License 1.1. You may use this software for development and testing purposes. Commercial use requires a separate commercial license from BBDevs.
+
+Key restrictions:
+- ✅ **Allowed**: Development, testing, evaluation, non-commercial use
+- ❌ **Restricted**: Commercial production use without license
+- ❌ **Restricted**: Creating competing frameworks or services
+- ❌ **Restricted**: Redistribution of source code
+
+For commercial licensing, contact: licensing@bbdevs.com
+
+See [LICENSE](LICENSE) for full terms.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history and release notes.
