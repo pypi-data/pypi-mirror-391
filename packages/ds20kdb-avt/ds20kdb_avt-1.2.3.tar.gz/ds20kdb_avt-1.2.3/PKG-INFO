@@ -1,0 +1,178 @@
+Metadata-Version: 2.4
+Name: ds20kdb-avt
+Version: 1.2.3
+Summary: A cross-platform Python interface to the DarkSide-20k production database
+Home-page: https://gitlab.in2p3.fr/darkside/productiondb_software/
+Author: Alan Taylor, Paolo Franchini
+Author-email: avt@hep.ph.liv.ac.uk
+Maintainer: Alan Taylor
+Maintainer-email: avt@hep.ph.liv.ac.uk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Environment :: Console
+Classifier: Environment :: X11 Applications
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: English
+Classifier: License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiohttp
+Requires-Dist: importlib-metadata
+Requires-Dist: matplotlib
+Requires-Dist: pandas
+Requires-Dist: pyarrow
+Requires-Dist: python-dateutil>=2.9.0
+Requires-Dist: requests
+Requires-Dist: tkcalendar
+Requires-Dist: ttkwidgets
+Requires-Dist: paramiko
+Requires-Dist: polars-lts-cpu
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# DarkSide-20k pre-production database low-level interaction
+
+This is a cross-platform Python interface to the DarkSide-20k production database. It is sufficiently friendly to be used interactively, and can be used as a foundation to build more complex database interactions. The package includes a number of command-line automation scripts.
+
+The software can be obtained/upgraded from [pypi.org](https://pypi.org/project/ds20kdb-avt/) using `python3 -m pip install --upgrade ds20kdb-avt`.
+
+The software requires Python 3.8 or newer for full functionality, though it will tolerate Python 3.6 and 3.7.
+
+## Documentation
+
+[Wiki documentation](https://gitlab.in2p3.fr/darkside/productiondb_software/-/wikis/home)
+
+## Example interactive usage
+
+The following can be performed after [installation](https://gitlab.in2p3.fr/darkside/productiondb_software/-/wikis/Installation-instructions) and once [authentication has been configured](https://gitlab.in2p3.fr/darkside/productiondb_software/-/wikis/Set-up-authentication):
+
+```python
+(pve) ➜  ~ source /Users/avt/Documents/gitlab/pve/bin/activate
+(pve) ➜  ~ python
+Python 3.13.7 (main, Aug 15 2025, 23:01:14) [Clang 17.0.0 (clang-1700.3.19.1)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from ds20kdb import interface
+
+>>> # check version
+>>> interface.__version__
+'1.1.34'
+
+>>> # create an instance so we can interact with the database
+>>> dbi = interface.Database()
+
+>>> # get list of database tables
+>>> dbi.describe().data
+['acs', 'amicra_settings', 'attribute', 'attribute_description', 'cryoprobe_card', 'sipm', 'sipm_test', 'user_test', 'vtile', 'detector', 'dummy', 'dummyload', 'dummyload_test', 'motherboard', 'vpdu_qc', 'wafer', 'noa_users', 'pcb', 'pcb_status', 'pdu', 'sipm_warm_test', 'sipm_qc', 'tile', 'solder', 'vtile_exp', 'tile_setup', 'tile_status', 'tile_test_offline', 'vasic', 'vasic_grip_ring', 'vasic_test', 'vasic_wafer', 'vcable', 'vmotherboard', 'motherboard_signature', 'vmotherboard_test', 'vpcb', 'vpcb_asic', 'vpcb_asic_test', 'vpcb_test', 'vpdu', 'vpdu_cold_test', 'vpdu_test', 'vtile_test', 'wafer_defects', 'wafer_status', 'pcb_setup', 'motherboard_setup', 'vtile_cold_test', 'motherboard_qc', 'tile2', 'tile_test', 'tile_qc', 'motherboard_pdu_status', 'vtile_qc', 'unusable_sipm', 'pdu_test', 'pdu_qc', 'motherboard_test', 'vmotherboard_pdu_status', 'pcb_qc', 'vradon_test', 'pcb_test', 'vdust_test']
+>>> # get columns for table 'wafer'
+>>> dbi.describe('wafer').data
+['wafer_pid', 'manufacturer', 'lot', 'wafer_number', 'production_date', 'spad_size', 'dose', 'description', 'checksum']
+
+>>> # get a Pandas DataFrame for a table
+>>> dbi.get('wafer').data
+      wafer_pid  manufacturer  ...                                        description  checksum
+0             5             2  ...  backside: Au2 L pressure 1week waiting run B -...        --
+1             6             2  ...  backside: Au1 H pressure 1week waiting run A -...        --
+2             2             2  ...  backside: Au1 H pressure 2weeks waiting run A ...        --
+3             4             2  ...  backside: Au1 H pressure 1week waiting run A -...        --
+4             3             2  ...  backside: Au3 L pressure 1week waiting run C -...        --
+...         ...           ...  ...                                                ...       ...
+1610       1599             2  ...                                     production lot        E0
+1611       1600             2  ...                                     production lot        D3
+1612       1602             2  ...                                     production lot        C1
+1613       1601             2  ...                                     production lot        C6
+1614          1             2  ...  backside: Au2 L pressure 2weeks waiting run B ...        --
+
+[1615 rows x 9 columns]
+
+>>> # narrow the selection with arguments
+>>> dbi.get('wafer', lot=9262109, wafer_number=3).data
+   wafer_pid  manufacturer  ...                                        description  checksum
+0          1             2  ...  backside: Au2 L pressure 2weeks waiting run B ...        --
+
+[1 rows x 9 columns]
+
+>>> # support for Polars
+>>> dbi.get_polars('wafer', lot=9262109, wafer_number=3).data
+shape: (1, 9)
+┌───────────┬──────────────┬─────────┬─────────────┬───┬───────────┬──────┬─────────────┬──────────┐
+│ wafer_pid ┆ manufacturer ┆ lot     ┆ wafer_numbe ┆ … ┆ spad_size ┆ dose ┆ description ┆ checksum │
+│ ---       ┆ ---          ┆ ---     ┆ r           ┆   ┆ ---       ┆ ---  ┆ ---         ┆ ---      │
+│ i64       ┆ i64          ┆ i64     ┆ ---         ┆   ┆ i64       ┆ i64  ┆ str         ┆ str      │
+│           ┆              ┆         ┆ i64         ┆   ┆           ┆      ┆             ┆          │
+╞═══════════╪══════════════╪═════════╪═════════════╪═══╪═══════════╪══════╪═════════════╪══════════╡
+│ 1         ┆ 2            ┆ 9262109 ┆ 3           ┆ … ┆ 30        ┆ 3    ┆ backside:   ┆ --       │
+│           ┆              ┆         ┆             ┆   ┆           ┆      ┆ Au2 L       ┆          │
+│           ┆              ┆         ┆             ┆   ┆           ┆      ┆ pressure    ┆          │
+│           ┆              ┆         ┆             ┆   ┆           ┆      ┆ 2week…      ┆          │
+└───────────┴──────────────┴─────────┴─────────────┴───┴───────────┴──────┴─────────────┴──────────┘
+
+>>> # cached loading of entire database tables
+>>> dbi.table_get('sipm_test', cache=True, time_to_live={'hours': 12}).data
+shape: (566_808, 19)
+┌────────┬────────────┬────────────┬──────────┬───┬────────────┬───────────┬───────────┬───────────┐
+│ id     ┆ timestamp  ┆ institute_ ┆ operator ┆ … ┆ classifica ┆ quality_f ┆ comment   ┆ i_at_25v  │
+│ ---    ┆ ---        ┆ id         ┆ ---      ┆   ┆ tion       ┆ lag       ┆ ---       ┆ ---       │
+│ i64    ┆ datetime[μ ┆ ---        ┆ str      ┆   ┆ ---        ┆ ---       ┆ str       ┆ str       │
+│        ┆ s]         ┆ i64        ┆          ┆   ┆ str        ┆ i64       ┆           ┆           │
+╞════════╪════════════╪════════════╪══════════╪═══╪════════════╪═══════════╪═══════════╪═══════════╡
+│ 1      ┆ 2023-02-17 ┆ 2          ┆ davini   ┆ … ┆ unclassifi ┆ 1024      ┆ Unclassif ┆ null      │
+│        ┆ 10:46:33   ┆            ┆          ┆   ┆ ed         ┆           ┆ ied by    ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ operator: ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ soft…     ┆           │
+│ 2      ┆ 2023-02-17 ┆ 2          ┆ davini   ┆ … ┆ unclassifi ┆ 1024      ┆ Unclassif ┆ null      │
+│        ┆ 10:46:33   ┆            ┆          ┆   ┆ ed         ┆           ┆ ied by    ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ operator: ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ soft…     ┆           │
+│ 3      ┆ 2023-02-17 ┆ 2          ┆ davini   ┆ … ┆ unclassifi ┆ 1024      ┆ Unclassif ┆ null      │
+│        ┆ 10:46:33   ┆            ┆          ┆   ┆ ed         ┆           ┆ ied by    ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ operator: ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ soft…     ┆           │
+│ 4      ┆ 2023-02-17 ┆ 2          ┆ davini   ┆ … ┆ unclassifi ┆ 1024      ┆ Unclassif ┆ null      │
+│        ┆ 10:46:33   ┆            ┆          ┆   ┆ ed         ┆           ┆ ied by    ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ operator: ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ soft…     ┆           │
+│ 5      ┆ 2023-02-17 ┆ 2          ┆ davini   ┆ … ┆ unclassifi ┆ 1024      ┆ Unclassif ┆ null      │
+│        ┆ 10:46:33   ┆            ┆          ┆   ┆ ed         ┆           ┆ ied by    ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ operator: ┆           │
+│        ┆            ┆            ┆          ┆   ┆            ┆           ┆ soft…     ┆           │
+│ …      ┆ …          ┆ …          ┆ …        ┆ … ┆ …          ┆ …         ┆ …         ┆ …         │
+│ 567149 ┆ 2025-04-09 ┆ 9          ┆ elymazza ┆ … ┆ good       ┆ 0         ┆ null      ┆ 7.186e-12 │
+│        ┆ 14:32:34   ┆            ┆          ┆   ┆            ┆           ┆           ┆           │
+│ 567150 ┆ 2025-04-09 ┆ 9          ┆ elymazza ┆ … ┆ good       ┆ 0         ┆ null      ┆ 6.584e-12 │
+│        ┆ 14:32:34   ┆            ┆          ┆   ┆            ┆           ┆           ┆           │
+│ 567151 ┆ 2025-04-09 ┆ 9          ┆ elymazza ┆ … ┆ good       ┆ 0         ┆ null      ┆ 5.73e-12  │
+│        ┆ 14:32:34   ┆            ┆          ┆   ┆            ┆           ┆           ┆           │
+│ 567152 ┆ 2025-04-09 ┆ 9          ┆ elymazza ┆ … ┆ good       ┆ 0         ┆ null      ┆ 5.393e-12 │
+│        ┆ 14:32:34   ┆            ┆          ┆   ┆            ┆           ┆           ┆           │
+│ 567153 ┆ 2025-04-09 ┆ 9          ┆ elymazza ┆ … ┆ good       ┆ 0         ┆ null      ┆ 6.909e-12 │
+│        ┆ 14:32:34   ┆            ┆          ┆   ┆            ┆           ┆           ┆           │
+└────────┴────────────┴────────────┴──────────┴───┴────────────┴───────────┴───────────┴───────────┘
+
+>>> # search across all cached tables, support for regex
+>>> dbi.table_cache_search(r'(?i)vdb')
+tile_qc, tile_qc_pid=25, comment="'tuning of warm Vdb after PTF; warm Rd; tau fall at 144V'"
+tile_status, tile_status_pid=11475, comment="vDB FIX - update of the DB "
+```
