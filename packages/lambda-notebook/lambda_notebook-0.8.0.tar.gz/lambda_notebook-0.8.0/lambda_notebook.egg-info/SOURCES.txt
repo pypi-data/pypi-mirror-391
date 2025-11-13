@@ -1,0 +1,243 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+lamb/__init__.py
+lamb/auto.py
+lamb/combinators.py
+lamb/console.py
+lamb/display.py
+lamb/lang.py
+lamb/lnsetup.py
+lamb/magics.py
+lamb/parsing.py
+lamb/test_lang.py
+lamb/tree_mini.py
+lamb/treetransforms.py
+lamb/types.py
+lamb/utils.py
+lamb/meta/__init__.py
+lamb/meta/boolean.py
+lamb/meta/core.py
+lamb/meta/meta.py
+lamb/meta/number.py
+lamb/meta/parser.py
+lamb/meta/ply.py
+lamb/meta/quantifiers.py
+lamb/meta/sets.py
+lamb/meta/test.py
+lamb/notebooks/An introduction to compositionality.ipynb
+lamb/notebooks/Introduction to typed lambda calculus.ipynb
+lamb/notebooks/Lambda Notebook Intro (start here).ipynb
+lamb/notebooks/documentation/Ad hoc polymorphism.ipynb
+lamb/notebooks/documentation/Binding expressions.ipynb
+lamb/notebooks/documentation/Composition.ipynb
+lamb/notebooks/documentation/Domain elements and MetaTerms.ipynb
+lamb/notebooks/documentation/Intro to type variables.ipynb
+lamb/notebooks/documentation/Lexical ambiguity.ipynb
+lamb/notebooks/documentation/Metalanguage documentation.ipynb
+lamb/notebooks/documentation/Metalanguage evaluation.ipynb
+lamb/notebooks/documentation/Metalanguage functions.ipynb
+lamb/notebooks/documentation/Metalanguage sets.ipynb
+lamb/notebooks/documentation/Partiality documentation.ipynb
+lamb/notebooks/documentation/Quick reference.ipynb
+lamb/notebooks/fragments/Compositional DRT.ipynb
+lamb/notebooks/fragments/Continuations and quantifier scope.ipynb
+lamb/notebooks/fragments/Hamblin semantics.ipynb
+lamb/notebooks/fragments/Intensional scope.ipynb
+lamb/notebooks/fragments/Neo-davidsonian event semantics.ipynb
+lamb/notebooks/fragments/Reader monad demo.ipynb
+lamb/notebooks/fragments/Relative clauses.ipynb
+lamb/notebooks/fragments/Variable free binding.ipynb
+lamb/notebooks/fragments/von Fintel and Heim beginning.ipynb
+lamb/notebooks/misc/00 Readme for upgrading from IPython 2.ipynb
+lamb/notebooks/misc/Diagnostics.ipynb
+lamb/notebooks/misc/LSA poster examples.ipynb
+lamb/notebooks/misc/Lambda calculus testing.ipynb
+lamb/notebooks/misc/Polymorphism examples.ipynb
+lamb/notebooks/tutorials/Composition operations.ipynb
+lamb/notebooks/tutorials/Quantification tutorial.ipynb
+lamb/notebooks/tutorials/Type shifting.ipynb
+lambda_notebook.egg-info/PKG-INFO
+lambda_notebook.egg-info/SOURCES.txt
+lambda_notebook.egg-info/dependency_links.txt
+lambda_notebook.egg-info/requires.txt
+lambda_notebook.egg-info/top_level.txt
+notebooks/An introduction to compositionality.ipynb
+notebooks/Introduction to typed lambda calculus.ipynb
+notebooks/Lambda Notebook Intro (start here).ipynb
+notebooks/documentation/Ad hoc polymorphism.ipynb
+notebooks/documentation/Binding expressions.ipynb
+notebooks/documentation/Composition.ipynb
+notebooks/documentation/Domain elements and MetaTerms.ipynb
+notebooks/documentation/Intro to type variables.ipynb
+notebooks/documentation/Lexical ambiguity.ipynb
+notebooks/documentation/Metalanguage documentation.ipynb
+notebooks/documentation/Metalanguage evaluation.ipynb
+notebooks/documentation/Metalanguage functions.ipynb
+notebooks/documentation/Metalanguage sets.ipynb
+notebooks/documentation/Partiality documentation.ipynb
+notebooks/documentation/Quick reference.ipynb
+notebooks/fragments/Compositional DRT.ipynb
+notebooks/fragments/Continuations and quantifier scope.ipynb
+notebooks/fragments/Hamblin semantics.ipynb
+notebooks/fragments/Intensional scope.ipynb
+notebooks/fragments/Neo-davidsonian event semantics.ipynb
+notebooks/fragments/Reader monad demo.ipynb
+notebooks/fragments/Relative clauses.ipynb
+notebooks/fragments/Variable free binding.ipynb
+notebooks/fragments/von Fintel and Heim beginning.ipynb
+notebooks/local_notebooks/D3 testing.ipynb
+notebooks/local_notebooks/asking-questions.ipynb
+notebooks/local_notebooks/demo for screenshot.ipynb
+notebooks/local_notebooks/html_bug2.ipynb
+notebooks/local_notebooks/ln-03-10-23.patch
+notebooks/local_notebooks/maybe.ipynb
+notebooks/local_notebooks/misc bug tracking.ipynb
+notebooks/local_notebooks/misc scratchpad.ipynb
+notebooks/local_notebooks/misc_notes.md
+notebooks/local_notebooks/svgwrite_trees.ipynb
+notebooks/local_notebooks/dev working/Case etc working.ipynb
+notebooks/local_notebooks/dev working/Display testing.ipynb
+notebooks/local_notebooks/dev working/Errors.ipynb
+notebooks/local_notebooks/dev working/Mereology operators.ipynb
+notebooks/local_notebooks/dev working/Polymorphic types working.ipynb
+notebooks/local_notebooks/dev working/Polymorphism examples.ipynb
+notebooks/local_notebooks/dev working/Profiling working.ipynb
+notebooks/local_notebooks/dev working/Profiling.ipynb
+notebooks/local_notebooks/dev working/Projective 2016.ipynb
+notebooks/local_notebooks/dev working/Projective meaning-home.ipynb
+notebooks/local_notebooks/dev working/Projective office.ipynb
+notebooks/local_notebooks/dev working/Scenario generator.ipynb
+notebooks/local_notebooks/dev working/Set testing.ipynb
+notebooks/local_notebooks/dev working/Simplification testing.ipynb
+notebooks/local_notebooks/dev working/Type unification examples.ipynb
+notebooks/local_notebooks/dev working/binary quant working.ipynb
+notebooks/local_notebooks/dev working/composition testing.ipynb
+notebooks/local_notebooks/dev working/data type.ipynb
+notebooks/local_notebooks/dev working/dict working.ipynb
+notebooks/local_notebooks/dev working/evaluation work.ipynb
+notebooks/local_notebooks/dev working/function working.ipynb
+notebooks/local_notebooks/dev working/inference working.ipynb
+notebooks/local_notebooks/dev working/let polymorphism working.ipynb
+notebooks/local_notebooks/dev working/models working.ipynb
+notebooks/local_notebooks/dev working/new display testing.ipynb
+notebooks/local_notebooks/dev working/parser testing.ipynb
+notebooks/local_notebooks/dev working/parsing 2025.ipynb
+notebooks/local_notebooks/dev working/partiality testing.ipynb
+notebooks/local_notebooks/dev working/polymorphism_2023.ipynb
+notebooks/local_notebooks/dev working/random testing.ipynb
+notebooks/local_notebooks/dev working/repr testing.ipynb
+notebooks/local_notebooks/dev working/tree composition testing.ipynb
+notebooks/local_notebooks/dev working/type adjust refactor.ipynb
+notebooks/local_notebooks/dev working/type type.ipynb
+notebooks/local_notebooks/dev working/var testing.ipynb
+notebooks/local_notebooks/dev working/wrapper working.ipynb
+notebooks/local_notebooks/grading/Emily Weinberg Assignment 6 submission-checkpoint.ipynb
+notebooks/local_notebooks/grading/Final.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Denis McInerney Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Dylan Lewis_sem_midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Dylan Pulver Semantics Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Icon
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Possessives problem solutions.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Sadhwi Srinivas Midterm .ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Stephanie Carr Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Zhenglong Zhou Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Christian Dudley Reotutar Midterm/Christian-Dudley Reotutar Possessives_problem_template (2).ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Christian Dudley Reotutar Midterm/Christian-Dudley Reotutar midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Corby Rosset Midterm/Corby Rosset Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Corby Rosset Midterm/Corby Rosset Possessives_problem_template.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Emily Weinberg Midterm/Emily Weinberg Possessives_problem_template-checkpoint.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Emily Weinberg Midterm/Emily Weinberg Semantics Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Emma Maxwell Midterm/Emma Maxwell Midterm (handwritten).pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Emma Maxwell Midterm/Emma Maxwell Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Frempongma Wadee Midterm/Frempongma Wadee Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Frempongma Wadee Midterm/Frempongma_Wadee_Possessives_problem_template.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Hongyuan Mei Midterm/Hongyuan Mei Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Hongyuan Mei Midterm/HongyuanMei.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Irina Plaks Midterm/Irina Plaks Midterm Parts 2 and 3.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Irina Plaks Midterm/Irina Plaks Midterm part 1.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Isis Dwyer Midterm/Isis Dwyer - Midterm - Problem 2.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Isis Dwyer Midterm/Isis Dwyer midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Lawrence Wolf-Sonkin midterm/Lawrence Wolf-Sonkin Possessives Problems Midterm.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Lawrence Wolf-Sonkin midterm/Lawrence Wolf-Sonkin Semantics Midterm - flattened.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Lawrence Wolf-Sonkin midterm/Lawrence Wolf-Sonkin Semantics Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Lisa Bauer Midterm/LisaBauer.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Lisa Bauer Midterm/lisa-bauer-midterm (1).pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Matthew Francis Landau Midterm/Matthew Francis-Landau midterm-full.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Matthew Francis Landau Midterm/Matthew Francis-Landau midterm.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Najoung Kim Midterm/Najoung Kim Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Najoung Kim Midterm/Najoung Kim Midterm_lambs.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Patrick Xia Midterm/Patrick Xia midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Patrick Xia Midterm/Patrick Xia possessives.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tatiana Sorenson Midterm/Tatiana Sorenson Midterm.docx
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tatiana Sorenson Midterm/Tatiana Sorenson Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tatiana Sorenson Midterm/Tatiana Sorenson_Possessives_problem.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tyana Warren Midterm/Tyana Warren Midterm.docx
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tyana Warren Midterm/Tyana Warren Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Tyana Warren Midterm/Tyana Warren Possessives_problem.ipynb
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Yuqing Zhu Midterm/Yuqing Zhu Midterm.pdf
+notebooks/local_notebooks/grading/Semantics 1 - Midterm/Yuqing Zhu Midterm/Yuqing Zhu Possessives.ipynb
+notebooks/local_notebooks/img/KrausTable.png
+notebooks/local_notebooks/misc notes/H&K partiality overview.ipynb
+notebooks/local_notebooks/misc notes/Rojas-Esponda on doch.ipynb
+notebooks/local_notebooks/misc semantics/Intensional scope.ipynb
+notebooks/local_notebooks/misc semantics/degree semantics testing.ipynb
+notebooks/local_notebooks/misc semantics/monads working.ipynb
+notebooks/local_notebooks/misc semantics/opacity monad.ipynb
+notebooks/local_notebooks/svgling/leaf edges.ipynb
+notebooks/local_notebooks/svgling/svgling testing.ipynb
+notebooks/local_notebooks/svgling/test.pdf
+notebooks/local_notebooks/svgling/test.png
+notebooks/local_notebooks/svgling/test.ps
+notebooks/local_notebooks/svgling/svgling/__init__.py
+notebooks/local_notebooks/svgling/svgling/__main__.py
+notebooks/local_notebooks/svgling/svgling/core.py
+notebooks/local_notebooks/svgling/svgling/figure.py
+notebooks/local_notebooks/svgling/svgling/html.py
+notebooks/local_notebooks/svgling/svgling/semantics.py
+notebooks/local_notebooks/svgling/svgling/utils.py
+notebooks/local_notebooks/svgling/svgling/__pycache__/__init__.cpython-311.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/__init__.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/__init__.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/__main__.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/__main__.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/core.cpython-311.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/core.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/core.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/figure.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/figure.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/html.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/html.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/semantics.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/semantics.cpython-39.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/utils.cpython-312.pyc
+notebooks/local_notebooks/svgling/svgling/__pycache__/utils.cpython-39.pyc
+notebooks/local_notebooks/teaching/Basics of lambda calculus problem set.ipynb
+notebooks/local_notebooks/teaching/Causative problem template.ipynb
+notebooks/local_notebooks/teaching/Charlow int.ipynb
+notebooks/local_notebooks/teaching/Charlow.ipynb
+notebooks/local_notebooks/teaching/Continuation monad.ipynb
+notebooks/local_notebooks/teaching/Control problem set.ipynb
+notebooks/local_notebooks/teaching/Ditransitive example.ipynb
+notebooks/local_notebooks/teaching/Lambda calculus problem set template.ipynb
+notebooks/local_notebooks/teaching/Possessives problem solutions F21.ipynb
+notebooks/local_notebooks/teaching/Possessives problem solutions.ipynb
+notebooks/local_notebooks/teaching/Possessives problem template.ipynb
+notebooks/local_notebooks/teaching/Reader monad demo.ipynb
+notebooks/local_notebooks/teaching/powerset monad.ipynb
+notebooks/local_notebooks/teaching/sem 1 10-4-23 examples.ipynb
+notebooks/local_notebooks/teaching/sem 1 9-23-25 examples.ipynb
+notebooks/local_notebooks/teaching/sem 1 9-25-25 examples.ipynb
+notebooks/local_notebooks/teaching/sem 1 Class examples 10-9-23-Copy1.ipynb
+notebooks/local_notebooks/teaching/sem 1 Class examples 10-9-23.ipynb
+notebooks/misc/00 Readme for upgrading from IPython 2.ipynb
+notebooks/misc/Diagnostics.ipynb
+notebooks/misc/LSA poster examples.ipynb
+notebooks/misc/Lambda calculus testing.ipynb
+notebooks/misc/Polymorphism examples.ipynb
+notebooks/tutorials/Composition operations.ipynb
+notebooks/tutorials/Quantification tutorial.ipynb
+notebooks/tutorials/Type shifting.ipynb

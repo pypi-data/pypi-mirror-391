@@ -1,0 +1,347 @@
+diff --git a/lamb/meta/core.py b/lamb/meta/core.py
+index 8ccb404..0b5bed3 100644
+--- a/lamb/meta/core.py
++++ b/lamb/meta/core.py
+@@ -69,8 +69,33 @@ def get_type_system():
+ def ts_unify(a, b):
+     """Calls the current type system's `unify` function on types `a` and `b`.
+     This returns a unified type, or `None` if the two can't be unified."""
+-    ts = get_type_system()
+-    return ts.unify(a, b)
++    return get_type_system().unify(a, b)
++
++
++def ts_unify_with(a, b, error=None):
++    """Try to unify the types of expressions `a` and `b`. This does not change
++    the expressions themselves at all, but they are used for error reporting.
++    On failure, this may either return None or raise a TypeMismatch. If
++    `error` is set, guarantees a TypeMismatch on failure; otherwise, the caller
++    should handle error conditions. The value of `error` may be overridden
++    by the type system.
++    """
++    try:
++        # for the most part, the type system won't actually raise. The case
++        # where it does is occurs check failures.
++        result = get_type_system().unify(a.type, b.type, allow_raise=True)
++        # an exxception from the `unify` call will override `error`
++        if result is None and error is not None:
++            raise TypeMismatch(a.type, b.type, mode=error)
++        return result
++    except TypeMismatch as e:
++        # sub in the provided expressions on `e`. e.type1 and e.type2 should
++        # already be set...though we aren't guaranteed that they correspond
++        # to the expressions.
++        e.i1 = a_expr
++        e.i2 = b_expr
++        raise e
++
+ 
+ global unify
+ unify = ts_unify # remove this?
+@@ -393,7 +418,6 @@ class TypeEnv(object):
+         return result
+ 
+     def try_add_var_mapping(self, vname, typ):
+-        ts = get_type_system()
+         if vname in self.var_mapping:
+             principal = self.try_unify(self.var_mapping[vname], typ,
+                                                         update_mapping=True)
+@@ -412,7 +436,11 @@ class TypeEnv(object):
+ 
+     def try_unify(self, t1, t2, update_mapping=False):
+         ts = get_type_system()
+-        result = ts.unify_details(t1, t2, assignment=self.type_mapping)
++        try:
++            result = ts.unify_details(t1, t2, assignment=self.type_mapping)
++        except types.OccursCheckError as e:
++            return None
++
+         if result is None:
+             return None
+         else:
+@@ -441,7 +469,7 @@ class TypeEnv(object):
+                 self.type_var_set = self.type_var_set | {type_var, typ}                
+         else:
+             principal = self.try_unify(type_var, typ, update_mapping=True)
+-        if not defer:
++        if principal is not None and not defer:
+             self.update_type_vars()
+         return principal
+ 
+@@ -504,10 +532,10 @@ def merge_type_envs(env1, env2, target=None):
+         if (not env1[k1].term()):
+             continue
+         if k1 in env2:
+-            unify = ts.unify(env1[k1].type, env2[k1].type)
+-            if unify is None:
+-                raise TypeMismatch(env1[k1], env2[k1],
+-                    "Failed to unify types across distinct instances of term")
++            unify = ts_unify_with(env1[k1], env2[k1],
++                error="Failed to unify types across distinct instances of term")
++            # if the previous call succeeds, it should be impossible to get
++            # an adjustment failure here...
+             result[k1] = env1[k1].try_adjust_type(unify)
+         else:
+             result[k1] = env1[k1]
+@@ -535,12 +563,9 @@ def merge_tes(te1, te2, symmetric=True):
+         `te2` are equal.
+     The failure cases for both modes will raise a TypeMismatch.
+     """
+-    ts = get_type_system()
+-    principal = ts.unify(te1.type, te2.type)
+     # TODO: these error messages are somewhat cryptic
+-    if principal is None:
+-        raise TypeMismatch(te1, te2,
+-                "Failed to merge typed expressions (incompatible types)")
++    principal = ts_unify_with(te1, te2,
++                error="Failed to merge typed expressions (incompatible types)")
+     te1_new = te1.try_adjust_type(principal)
+     te2_new = te2.try_adjust_type(principal)
+     if te1_new is None or te2_new is None:
+@@ -694,6 +719,8 @@ class TypedExpr(object):
+                     if result is not None:
+                         result._type_env = env
+                 if result is None:
++                    # TODO: can this arise in current versions? Maybe convert
++                    # to an exception? (This error is pretty old...)
+                     logger.warning(
+                         "In type adjustment, unify suggested a strengthened arg"
+                         " type, but could not accommodate: %s -> %s"
+@@ -740,15 +767,14 @@ class TypedExpr(object):
+         ts = get_type_system()
+         # check: is the type of the substitution compatible with the type of
+         # what it is replacing?
+-        unified = ts.unify(s.type, old.type) # order matters: prioritize type
+-                                             # variables from the substitution
+-        if unified is None:
+-            raise TypeMismatch(s, old, "Substitution for element %s of '%s'"
+-                                                            % (i, repr(self)))
++        # order matters: prioritize type variables from the substitution
++        unified = ts_unify_with(s, old,
++                    error=f"Substitution for element {i} of '{repr(self)}'")
+         if unified != s.type:
+             # compatible but unify suggested a new type for the substitution.  
+             # Try adjusting the type of the expression.
+             s_a = s.try_adjust_type(unified)
++            # (can this fail if unify succeeded?)
+             if s_a is None:
+                 raise TypeMismatch(s, old, "Substitution for element %s of '%s'"
+                                                             % (i, repr(self)))
+@@ -1386,7 +1412,7 @@ class TypedExpr(object):
+         return (isinstance(self.op, str) and len(self.args) == 0)
+ 
+     def functional(self):
+-        funtype = unify(self.type, tp("<?,?>"))
++        funtype = ts_unify(self.type, tp("<?,?>"))
+         return (funtype is not None)
+ 
+     def atomic(self):
+@@ -2581,9 +2607,8 @@ class BinaryGenericEqExpr(SyncatOpExpr):
+     """Type-generic equality.  This places no constraints on the type of `arg1`
+     and `arg2` save that they be equal."""
+     def __init__(self, arg1, arg2):
+-        t = get_type_system().unify(arg1.type, arg2.type)
+-        if t is None:
+-            raise types.TypeMismatch(arg1, arg2, mode="Equality requires compatible types")
++        t = ts_unify_with(arg1, arg2,
++                                error="Equality requires compatible types")
+         arg1 = self.ensure_typed_expr(arg1, t)
+         # maybe raise the exception directly?
+         arg2 = self.ensure_typed_expr(arg2, t)
+@@ -2608,7 +2633,7 @@ class BinaryGenericEqExpr(SyncatOpExpr):
+     def check_viable(cls, *args):
+         if len(args) != 2:
+             return False
+-        principal_type = get_type_system().unify(args[0].type, args[1].type)
++        principal_type = ts_unify(args[0].type, args[1].type)
+         # leave type t to the simply-typed biconditional operator
+         # TODO: it should be possible to handle this in a more generalized way
+         return principal_type is not None and principal_type != type_t
+@@ -3330,10 +3355,12 @@ def variable_replace_strict(expr, m):
+ 
+ def term_replace_unify(expr, m):
+     def transform(e):
+-        ts = get_type_system()
+         result = TypedExpr.factory(m[e.op])
+         if result.type != e.type:
+-            unify = ts.unify(result.type, e.type)
++            # note: error reporting from here has a different order than the
++            # raise below, so we handle it manually... (unclear to me if this
++            # is important)
++            unify = ts_unify_with(result, e, error=None)
+             if unify is None:
+                 raise TypeMismatch(e, result, "Variable replace failed with mismatched types")
+             if unify == e.type: # unify gives us back e.  Can we return e?
+diff --git a/lamb/types.py b/lamb/types.py
+index 4e7f188..d9bac9c 100644
+--- a/lamb/types.py
++++ b/lamb/types.py
+@@ -53,6 +53,11 @@ class SimpleIntegerSet(OntoSet):
+     def infcheck(self,x):
+         return isinstance(x,int)
+ 
++
++def is_type(x):
++    return isinstance(x, TypeConstructor)
++
++
+ class TypeConstructor(object):
+     def __init__(self):
+         self.symbol = None
+@@ -1206,6 +1211,14 @@ class TypeSystem(object):
+         (result, r_assign) = a.unify(b, self.unify, None)
+         return result
+ 
++    def unify_details(self, a, b):
++        result = self.unify(a, b):
++        if result is None:
++            return None
++        # unification in this system is very straightforward: if a type is
++        # found, it is the principal type.
++        return UnificationResult(result, a, b, dict())
++
+     def unify_ar(self, arg, ret):
+         return FunType(arg, ret)
+ 
+@@ -1455,9 +1468,15 @@ class PolyTypeSystem(TypeSystem):
+         super().add_atomic(t)
+         self.type_ranking[t.__class__] = ranking
+ 
+-    def unify(self, t1, t2, assignment=None):
++    def unify(self, t1, t2, assignment=None, allow_raise=False):
+         assignment = dict()
+-        result = self.unify_details(t1, t2, assignment=assignment)
++        try:
++            result = self.unify_details(t1, t2, assignment=assignment)
++        except OccursCheckFailure as e:
++            if allow_raise:
++                raise e
++            else:
++                return None
+         if result is None:
+             return None
+         else:
+@@ -1479,7 +1498,10 @@ class PolyTypeSystem(TypeSystem):
+             assignment = dict()
+         else:
+             assignment = assignment.copy() # ugh
++
++        # note: the following may raise OccursCheckError!
+         (result, r_assign) = self.unify_r(t1, t2, assignment)
++
+         if result is None:
+             return None
+         # a principal type has been found, but may not be fully represented by
+@@ -1500,15 +1522,22 @@ class PolyTypeSystem(TypeSystem):
+ 
+         This is not really intended to be called directly; see comments in
+         `unify_details` for more information.  Call `unify` or
+-        `unify_detail`."""
++        `unify_detail`.
++
++        On failure may return None (as the first element of a tupple) or
++        raise."""
+         if self.occurs_check(t1, t2):
+-            from lamb import meta
+-            from lamb.meta import logger
+-            # this should probably raise a TypeMismatch?
+-            logger.error(
+-                "Failed occurs check: can't unify recursive types %s and %s"
+-                % (t1,t2))
+-            return (None, assignment)
++            # this is the only case in this code that raises. The external
++            # api still needs to return None for this case...but it's useful
++            # to track that there was specifically an occurs check failure
++            raise OccursCheckFailure(t1, t2)
++            # from lamb import meta
++            # from lamb.meta import logger
++            # # this should probably raise a TypeMismatch?
++            # logger.error(
++            #     "Failed occurs check: can't unify recursive types %s and %s"
++            #     % (t1,t2))
++            # return (None, assignment)
+         # Type rankings put type classes that have custom unification code
+         # for polymorphism higher than those that don't. If t2 has a higher
+         # or equal type ranking, let it drive unification. However, we provide
+@@ -1565,8 +1594,13 @@ class PolyTypeSystem(TypeSystem):
+         assignment = dict()
+         t1safe = make_safe(t1, t2, set(assignment.keys())
+                                                     | set(assignment.values()))
+-        (result, r_assign) = self.unify_r(t1safe, t2, assignment)
+-        return injective(r_assign) and not strengthens(r_assign)
++        try:
++            (result, r_assign) = self.unify_r(t1safe, t2, assignment)
++        except OccursCheckFailure:
++            # only used in a test context, so we don't need to make occurs
++            # checks presentable..
++            return False
++        return result and injective(r_assign) and not strengthens(r_assign)
+ 
+     def compact_type_vars(self, t1, unsafe=None):
+         """Compact the type variables in `t1` so as to make them more
+@@ -1589,7 +1623,7 @@ class PolyTypeSystem(TypeSystem):
+         if ((r1 is None) and (r2 is None)):
+             return True
+         if ((r1 is None) or (r2 is None)):
+-            print("Unify failed in one direction, results '%s' and '%s'"
++            logger.error("Unify failed in one direction, results '%s' and '%s'"
+                                                     % (repr(r1), repr(r2)))
+             return False
+         result = self.alpha_equiv(r1, r2)
+@@ -1644,17 +1678,26 @@ class PolyTypeSystem(TypeSystem):
+ 
+ class TypeMismatch(Exception):
+     """Exception for type mismatches of all sorts."""
+-    def __init__(self, i1, i2, mode=None):
++    def __init__(self, i1, i2, mode=None, occurs_check=False):
+         self.i1 = i1
+         self.i2 = i2
+-        try:
+-            self.type1 = self.i1.type
+-        except AttributeError:
+-            self.type1 = "?"
+-        try:
+-            self.type2 = self.i2.type
+-        except AttributeError:
+-            self.type2 = "?"
++        self.occurs_check = occurs_check
++        if is_type(i1):
++            self.type1 = i1
++        else:
++            try:
++                self.type1 = self.i1.type
++            except AttributeError:
++                self.type1 = "?"
++
++        if is_type(i2):
++            self.type2 = i2
++        else:
++            try:
++                self.type2 = self.i2.type
++            except AttributeError:
++                self.type2 = "?"
++
+         if mode is None:
+             self.mode = "unknown"
+         else:
+@@ -1663,7 +1706,7 @@ class TypeMismatch(Exception):
+     def item_str(self, i, t, latex=False):
+         if i is None:
+             return None
+-        if isinstance(i, TypeConstructor):
++        if is_type(i):
+             if latex:
+                 return "type %s" % i.latex_str()
+             else:
+@@ -1720,6 +1763,11 @@ class TypeMismatch(Exception):
+         return self.__str__()
+ 
+ 
++class OccursCheckFailure(TypeMismatch):
++    def __init__(self, t1, t2):
++        super().__init__(t1, t2, occurs_check=True, mode="Occurs check failed")
++
++
+ class TypeParseError(Exception):
+     """Exception for when types can't be parsed or generated correctly."""
+     def __init__(self, msg, s, i):
