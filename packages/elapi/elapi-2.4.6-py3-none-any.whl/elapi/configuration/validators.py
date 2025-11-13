@@ -1,0 +1,623 @@
+import errno
+from pathlib import Path
+from types import NoneType
+from typing import Iterable, Optional
+
+from dynaconf.utils.boxing import DynaBox
+
+from .._names import APP_NAME, ElabStrictVersionMatchModes
+from ..configuration.config import CANON_YAML_EXTENSION, CONFIG_FILE_NAME
+from ..core_validators import (
+    CriticalValidationError,
+    PathValidationError,
+    PathValidator,
+    Validate,
+    ValidationError,
+    Validator,
+)
+from ..loggers import DefaultLogLevels, Logger
+from ..path import ProperPath
+from ..styles import Missing, stdout_console
+from ..styles.highlight import NoteText
+from ..utils import add_message
+from ._config_history import FieldValueWithKey, MinimalActiveConfiguration
+from .config import (
+    _XDG_DOWNLOAD_DIR,
+    ASYNC_CAPACITY_DEFAULT_VAL,
+    ASYNC_RATE_LIMIT_DEFAULT_VAL,
+    DEVELOPMENT_MODE_DEFAULT_VAL,
+    ELAB_STRICT_VERSION_MATCH_DEFAULT_VAL,
+    ENABLE_HTTP2_DEFAULT_VAL,
+    FALLBACK_EXPORT_DIR,
+    KEY_ASYNC_CAPACITY,
+    KEY_ASYNC_RATE_LIMIT,
+    KEY_DEVELOPMENT_MODE,
+    KEY_ELAB_STRICT_VERSION_MATCH,
+    KEY_ENABLE_HTTP2,
+    KEY_EXPORT_DIR,
+    KEY_HOST,
+    KEY_PLUGIN_KEY_NAME,
+    KEY_TIMEOUT,
+    KEY_UNSAFE_TOKEN_WARNING,
+    KEY_VERIFY_SSL,
+    PLUGIN_DEFAULT_VALUE,
+    TIMEOUT_DEFAULT_VAL,
+    UNSAFE_TOKEN_WARNING_DEFAULT_VAL,
+    VERIFY_SSL_DEFAULT_VAL,
+)
+
+logger = Logger()
+
+
+class ConfigurationValidation:
+    def __init__(self, minimal_active_config_obj: MinimalActiveConfiguration | dict, /):
+        self.active_configuration = minimal_active_config_obj
+
+    @property
+    def active_configuration(self) -> MinimalActiveConfiguration | dict:
+        return self._active_configuration
+
+    @active_configuration.setter
+    def active_configuration(self, value: MinimalActiveConfiguration | dict):
+        if not isinstance(value, (MinimalActiveConfiguration, dict)):
+            raise TypeError(
+                f"Value must be an instance of dict or {MinimalActiveConfiguration.__name__}."
+            )
+        self._active_configuration = value
+
+
+class HostConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def validate(self) -> str:
+        self.active_configuration: MinimalActiveConfiguration
+        _HOST_EXAMPLE: str = f"{KEY_HOST.lower()}: 'https://demo.elabftw.net/api/v2'"
+
+        if isinstance(self.active_configuration.get_value(KEY_HOST), Missing):
+            logger.critical(f"'{KEY_HOST.lower()}' is missing from configuration file.")
+            stdout_console.print(
+                NoteText(
+                    f"Host is the URL of the root API endpoint. Example:"
+                    f"\n{_HOST_EXAMPLE}",
+                )
+            )
+            raise CriticalValidationError
+        if (host := self.active_configuration.get_value(KEY_HOST)) is None:
+            logger.critical(
+                f"'{KEY_HOST.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            stdout_console.print(
+                NoteText(
+                    f"Host contains the URL of the root API endpoint. Example:"
+                    f"\n{_HOST_EXAMPLE}",
+                )
+            )
+            raise CriticalValidationError
+        if not isinstance(host, str):
+            logger.critical(
+                f"'{KEY_HOST.lower()}' is detected in configuration file, "
+                f"but it's not a string."
+            )
+            stdout_console.print(
+                NoteText(
+                    f"Host contains the URL of the root API endpoint. Example:"
+                    f"\n{_HOST_EXAMPLE}",
+                )
+            )
+            raise CriticalValidationError
+        if not host:
+            logger.critical(
+                f"'{KEY_HOST.lower()}' is detected in configuration file, "
+                f"but it's empty."
+            )
+            stdout_console.print(
+                NoteText(
+                    f"Host contains the URL of the root API endpoint. Example:"
+                    f"\n{_HOST_EXAMPLE}",
+                )
+            )
+            raise CriticalValidationError
+        return host
+
+
+class APITokenConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def validate(self) -> str:
+        from .config import KEY_API_TOKEN
+
+        self.active_configuration: MinimalActiveConfiguration
+        if isinstance(self.active_configuration.get_value(KEY_API_TOKEN), Missing):
+            logger.critical(
+                f"'{KEY_API_TOKEN.lower()}' is missing from configuration file."
+            )
+            stdout_console.print(
+                NoteText(
+                    "An API token with at least read-access is required to make requests."
+                )
+            )
+            raise CriticalValidationError
+        if (api_token := self.active_configuration.get_value(KEY_API_TOKEN)) is None:
+            logger.critical(
+                f"'{KEY_API_TOKEN.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            stdout_console.print(
+                NoteText(
+                    "An API token with at least read-access is required to make requests.",
+                )
+            )
+            raise CriticalValidationError
+        try:
+            api_token = api_token.token
+        except AttributeError:
+            logger.critical(
+                f"'{KEY_API_TOKEN.lower()}' is detected in configuration file, "
+                f"but it's not a string."
+            )
+            stdout_console.print(
+                NoteText(
+                    "An API token with at least read-access is required to make requests.",
+                )
+            )
+            raise CriticalValidationError
+        if not isinstance(api_token, str):
+            logger.critical(
+                f"'{KEY_API_TOKEN.lower()}' is detected in configuration file, "
+                f"but it's not a string."
+            )
+            stdout_console.print(
+                NoteText(
+                    "An API token with at least read-access is required to make requests.",
+                )
+            )
+            raise CriticalValidationError
+        if not api_token:
+            logger.critical(
+                f"'{KEY_API_TOKEN.lower()}' is detected in configuration file, "
+                f"but it's empty."
+            )
+            stdout_console.print(
+                NoteText(
+                    "An API token with at least read-access is required to make requests.",
+                )
+            )
+            raise CriticalValidationError
+        return api_token
+
+
+class ExportDirConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def validate(self) -> Path:
+        self.active_configuration: MinimalActiveConfiguration
+
+        def get_validated_fallback():
+            global FALLBACK_EXPORT_DIR, _XDG_DOWNLOAD_DIR, ProperPath
+
+            ACTUAL_FALLBACK_EXPORT_DIR = FALLBACK_EXPORT_DIR
+            if _XDG_DOWNLOAD_DIR is not None:
+                try:
+                    _XDG_DOWNLOAD_DIR = ProperPath(_XDG_DOWNLOAD_DIR)
+                except ValueError:
+                    _XDG_DOWNLOAD_DIR = None
+                else:
+                    if _XDG_DOWNLOAD_DIR.kind != "dir":
+                        _XDG_DOWNLOAD_DIR = None
+                if ProperPath(FALLBACK_EXPORT_DIR).kind != "dir":
+                    FALLBACK_EXPORT_DIR = None
+            try:
+                fallback_export_dir = Validate(
+                    PathValidator([_XDG_DOWNLOAD_DIR, FALLBACK_EXPORT_DIR])
+                ).get()
+            except ValidationError:
+                logger.critical(
+                    f"{APP_NAME} couldn't validate {ACTUAL_FALLBACK_EXPORT_DIR} to store exported data. "
+                    f"This is a fatal error. To quickly fix this error define an export directory "
+                    f"with '{KEY_EXPORT_DIR}' in configuration file. {APP_NAME} will not run!"
+                )
+                raise CriticalValidationError
+            else:
+                return fallback_export_dir
+
+        if isinstance(
+            config_export_dir := self.active_configuration.get_value(KEY_EXPORT_DIR),
+            (Missing, NoneType),
+        ):
+            return get_validated_fallback()
+        else:
+            if not isinstance(config_export_dir, str):
+                logger.warning(
+                    f"'{KEY_EXPORT_DIR.lower()}' is detected in configuration file, "
+                    f"but it's not a string."
+                )
+                return get_validated_fallback()
+            if not config_export_dir:
+                return get_validated_fallback()
+            try:
+                export_dir = Validate(PathValidator(config_export_dir)).get()
+            except PathValidationError as e:
+                if e.errno in [errno.EEXIST, errno.ENOTDIR]:
+                    logger.warning(
+                        f"{KEY_EXPORT_DIR}: {config_export_dir} from configuration file "
+                        f"is not a directory!"
+                    )
+                    stdout_console.print(
+                        NoteText(
+                            "If you want to export to a file use '--export <path-to-file>'.\n",
+                            stem="Note",
+                        )
+                    )
+                logger.warning(
+                    f"{KEY_EXPORT_DIR}: {config_export_dir} from configuration "
+                    f"file couldn't be validated!"
+                )
+                return get_validated_fallback()
+            else:
+                return export_dir
+
+
+class ModesWithFallbackConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args, key_name: str, fallback_value: bool):
+        super().__init__(*args)
+        self.key_name = key_name
+        self.fallback_value = fallback_value
+
+    def validate(self) -> bool:
+        if isinstance(
+            value := self.active_configuration.get_value(self.key_name), Missing
+        ):
+            return self.fallback_value
+        if value is None:
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            return self.fallback_value
+        if not isinstance(value, bool):
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's not a boolean."
+            )
+            return self.fallback_value
+        return value
+
+
+class ElabVersionModeWithFallbackConfigurationValidator(
+    ConfigurationValidation, Validator
+):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args, key_name: str, fallback_value: str):
+        super().__init__(*args)
+        self.key_name = key_name
+        self.fallback_value = fallback_value
+
+    def validate(self) -> str:
+        if isinstance(
+            value := self.active_configuration.get_value(self.key_name), Missing
+        ):
+            return self.fallback_value
+        if value is None:
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            return self.fallback_value
+        if not isinstance(value, str):
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's value '{value}' is not valid. Valid values: "
+                f"{', '.join(ElabStrictVersionMatchModes)}. "
+                f"The default value '{self.fallback_value}' will be used instead."
+            )
+            return self.fallback_value
+        if value.lower() not in ElabStrictVersionMatchModes.__members__.values():
+            # Python 3.11.2 doesn't support "v in ElabStrictVersionMatchModes"
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's value '{value}' is not valid. Valid values: "
+                f"{', '.join(ElabStrictVersionMatchModes)}. "
+                f"The default value '{self.fallback_value}' will be used instead."
+            )
+            return self.fallback_value
+        return value
+
+
+class TimeWithFallbackConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(
+        self,
+        *args,
+        key_name: str,
+        fallback_value: Optional[float],
+        allow_none: bool = False,
+    ):
+        super().__init__(*args)
+        self.key_name = key_name
+        self.fallback_value = fallback_value
+        self.allow_none = allow_none
+
+    def validate(self) -> Optional[float]:
+        self.active_configuration: MinimalActiveConfiguration
+
+        if isinstance(
+            value := self.active_configuration.get_value(self.key_name), Missing
+        ):
+            return self.fallback_value
+        if value is None and not self.allow_none:
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            return self.fallback_value
+        if not isinstance(value, (float, int)) or isinstance(value, bool):
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's not a float or integer{' or None' if self.allow_none else ''}."
+            )
+            return self.fallback_value
+        return float(value)
+
+
+class DiscreteWithFallbackConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(
+        self,
+        *args,
+        key_name: str,
+        fallback_value: Optional[int],
+        allow_none: bool = False,
+    ):
+        super().__init__(*args)
+        self.key_name = key_name
+        self.fallback_value = fallback_value
+        self.allow_none = allow_none
+
+    def validate(self) -> Optional[int]:
+        self.active_configuration: MinimalActiveConfiguration
+
+        if isinstance(
+            value := self.active_configuration.get_value(self.key_name), Missing
+        ):
+            return self.fallback_value
+        if value is None:
+            if not self.allow_none:
+                logger.warning(
+                    f"'{self.key_name.lower()}' is detected in configuration file, "
+                    f"but it's null."
+                )
+                return self.fallback_value
+            return None
+        if not isinstance(value, int) or isinstance(value, bool):
+            logger.warning(
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's not an integer{' or None' if self.allow_none else ''}."
+            )
+            return self.fallback_value
+        return int(value)
+
+
+class PluginConfigurationValidator(ConfigurationValidation, Validator):
+    ALREADY_VALIDATED: bool = False
+    __slots__ = ()
+
+    def __init__(self, *args, key_name: str, fallback_value: dict):
+        super().__init__(*args)
+        self.key_name = key_name
+        self.fallback_value = fallback_value
+
+    def validate(self) -> dict:
+        self.active_configuration: MinimalActiveConfiguration
+        value: DynaBox = self.active_configuration.get_value(self.key_name)
+
+        if isinstance(value, Missing):
+            return self.fallback_value
+        if value is None:
+            message = (
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's null."
+            )
+            add_message(message, DefaultLogLevels.WARNING, is_aggressive=True)
+            return self.fallback_value
+        if not isinstance(value, dict):
+            message = (
+                f"'{self.key_name.lower()}' is detected in configuration file, "
+                f"but it's not a {CANON_YAML_EXTENSION.upper()} dictionary."
+            )
+            add_message(message, DefaultLogLevels.WARNING, is_aggressive=True)
+            return self.fallback_value
+        else:
+            value: dict = value.to_dict()  # Dynaconf uses Box:
+            # https://github.com/cdgriffith/Box/wiki/Converters#dictionary
+            for plugin_name, plugin_config in value.copy().items():
+                if not isinstance(plugin_config, dict):
+                    message = (
+                        f"Configuration value for plugin '{plugin_name}' "
+                        f"exists in '{CONFIG_FILE_NAME}' under '{self.key_name.lower()}', "
+                        f"but it's not a {CANON_YAML_EXTENSION.upper()} dictionary. "
+                        f"Plugin configuration for '{plugin_name}' will be ignored."
+                    )
+                    add_message(message, DefaultLogLevels.WARNING, is_aggressive=True)
+                    value.pop(plugin_name)
+        return value
+
+
+class MainConfigurationValidator(ConfigurationValidation, Validator):
+    ALL_VALIDATORS: list = [
+        HostConfigurationValidator,
+        APITokenConfigurationValidator,
+        ExportDirConfigurationValidator,
+        ModesWithFallbackConfigurationValidator,
+        TimeWithFallbackConfigurationValidator,
+        DiscreteWithFallbackConfigurationValidator,
+        PluginConfigurationValidator,
+        ElabVersionModeWithFallbackConfigurationValidator,
+    ]
+    ESSENTIAL_VALIDATORS: list = [
+        HostConfigurationValidator,
+        APITokenConfigurationValidator,
+    ]
+    NON_ESSENTIAL_VALIDATORS: list = [
+        ExportDirConfigurationValidator,
+        ModesWithFallbackConfigurationValidator,
+        TimeWithFallbackConfigurationValidator,
+        DiscreteWithFallbackConfigurationValidator,
+        PluginConfigurationValidator,
+        ElabVersionModeWithFallbackConfigurationValidator,
+    ]
+    __slots__ = ()
+
+    def __init__(
+        self,
+        *,
+        limited_to: Optional[Iterable[type[Validator]]] = None,
+    ):
+        from ._config_history import MinimalActiveConfiguration
+
+        super().__init__(MinimalActiveConfiguration())
+        self.limited_to = limited_to
+
+    @property
+    def limited_to(self) -> list[type[Validator]]:
+        return self._limited_to
+
+    @limited_to.setter
+    def limited_to(self, value):
+        if value is None:
+            self._limited_to = MainConfigurationValidator.ALL_VALIDATORS
+        else:
+            if not isinstance(value, Iterable) and isinstance(value, str):
+                raise ValueError(
+                    f"Value must be an iterable of {Validator.__name__} subclass."
+                )
+            for _ in value:
+                if not issubclass(_, Validator):
+                    raise ValueError(
+                        f"Value must be an iterable of {Validator.__name__} subclass."
+                    )
+            self._limited_to = value
+
+    def validate(self) -> list[FieldValueWithKey]:
+        validated_fields: list[FieldValueWithKey] = []
+
+        if HostConfigurationValidator in self.limited_to:
+            _validate = Validate(HostConfigurationValidator(self.active_configuration))
+            try:
+                _validate()
+            except ValidationError as e:
+                raise e
+
+        if APITokenConfigurationValidator in self.limited_to:
+            _validate = Validate(
+                APITokenConfigurationValidator(self.active_configuration)
+            )
+            try:
+                _validate()
+            except ValidationError as e:
+                raise e
+
+        if ExportDirConfigurationValidator in self.limited_to:
+            try:
+                export_dir = Validate(
+                    ExportDirConfigurationValidator(self.active_configuration)
+                ).get()
+            except ValidationError as e:
+                raise e
+            # Update validated_fields after validation
+            validated_fields.append(FieldValueWithKey(KEY_EXPORT_DIR, export_dir))
+        if ModesWithFallbackConfigurationValidator in self.limited_to:
+            unsafe_token_warning = Validate(
+                ModesWithFallbackConfigurationValidator(
+                    self.active_configuration,
+                    key_name=KEY_UNSAFE_TOKEN_WARNING,
+                    fallback_value=UNSAFE_TOKEN_WARNING_DEFAULT_VAL,
+                )
+            ).get()
+            # Update validated_fields after validation
+            validated_fields.append(
+                FieldValueWithKey(KEY_UNSAFE_TOKEN_WARNING, unsafe_token_warning)
+            )
+            for key_name, default_value in [
+                (KEY_ENABLE_HTTP2, ENABLE_HTTP2_DEFAULT_VAL),
+                (KEY_VERIFY_SSL, VERIFY_SSL_DEFAULT_VAL),
+                (KEY_DEVELOPMENT_MODE, DEVELOPMENT_MODE_DEFAULT_VAL),
+            ]:
+                value = Validate(
+                    ModesWithFallbackConfigurationValidator(
+                        self.active_configuration,
+                        key_name=key_name,
+                        fallback_value=default_value,
+                    )
+                ).get()
+                # Update validated_fields after validation
+                validated_fields.append(FieldValueWithKey(key_name, value))
+        if TimeWithFallbackConfigurationValidator in self.limited_to:
+            timeout = Validate(
+                TimeWithFallbackConfigurationValidator(
+                    self.active_configuration,
+                    key_name=KEY_TIMEOUT,
+                    fallback_value=TIMEOUT_DEFAULT_VAL,
+                )
+            ).get()
+            # Update validated_fields after validation
+            validated_fields.append(FieldValueWithKey(KEY_TIMEOUT, timeout))
+        if DiscreteWithFallbackConfigurationValidator in self.limited_to:
+            for key_name, default_value in [
+                (KEY_ASYNC_RATE_LIMIT, ASYNC_RATE_LIMIT_DEFAULT_VAL),
+                (KEY_ASYNC_CAPACITY, ASYNC_CAPACITY_DEFAULT_VAL),
+            ]:
+                value = Validate(
+                    DiscreteWithFallbackConfigurationValidator(
+                        self.active_configuration,
+                        key_name=key_name,
+                        fallback_value=default_value,
+                        allow_none=True,
+                    )
+                ).get()
+                # Update validated_fields after validation
+                validated_fields.append(FieldValueWithKey(key_name, value))
+        if PluginConfigurationValidator in self.limited_to:
+            plugin = Validate(
+                PluginConfigurationValidator(
+                    self.active_configuration,
+                    key_name=KEY_PLUGIN_KEY_NAME,
+                    fallback_value=PLUGIN_DEFAULT_VALUE,
+                )
+            ).get()
+            # Update validated_fields after validation
+            validated_fields.append(FieldValueWithKey(KEY_PLUGIN_KEY_NAME, plugin))
+        if ElabVersionModeWithFallbackConfigurationValidator in self.limited_to:
+            version_mode = Validate(
+                ElabVersionModeWithFallbackConfigurationValidator(
+                    self.active_configuration,
+                    key_name=KEY_ELAB_STRICT_VERSION_MATCH,
+                    fallback_value=ELAB_STRICT_VERSION_MATCH_DEFAULT_VAL,
+                )
+            ).get()
+            # Update validated_fields after validation
+            validated_fields.append(
+                FieldValueWithKey(KEY_ELAB_STRICT_VERSION_MATCH, version_mode)
+            )
+        return validated_fields
