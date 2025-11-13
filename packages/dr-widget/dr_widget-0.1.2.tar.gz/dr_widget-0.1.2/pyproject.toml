@@ -1,0 +1,25 @@
+[project]
+name = "dr-widget"
+version = "0.1.2"
+description = "Widgets to use with marimo notebooks"
+readme = "README.md"
+authors = [
+    { name = "Danielle Rothermel", email = "danielle.rothermel@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "anywidget>=0.9.18",
+    "marimo==0.17.7",
+    "traitlets>=5.14.3",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+source-include = ["src/dr_widget/widgets/config_file_manager/static/**"]
+source-exclude = [
+    "src/dr_widget/widgets/config_file_manager/node_modules",
+    "src/dr_widget/widgets/config_file_manager/node_modules/**",
+]
