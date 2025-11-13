@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m unittest:*)",
+      "Bash(python3 -m unittest:*)",
+      "Bash(ruff check:*)",
+      "Bash(req-update-check:*)",
+      "Bash(python3 -m pytest:*)",
+      "Bash(ruff format:*)",
+      "Bash(cat:*)",
+      "Bash(ruff:*)",
+      "Bash(pip3 list:*)",
+      "Bash(coverage run:*)",
+      "Bash(coverage report:*)",
+      "Bash(python3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
