@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://json-schema.org/draft-07/schema#
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "uv.lock"
+      - "pyproject.toml"
+      - "p2d/**"
+      - "test/**"
+      - ".github/workflows/**"
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - "uv.lock"
+      - "pyproject.toml"
+      - "p2d/**"
+      - "test/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install the project
+        run: |
+          uv sync --all-extras --dev
+
+      - name: Lint
+        run: |
+          uv tool run ruff check
+
+      - name: Unit Test
+        run: |
+          uv run --frozen pytest
