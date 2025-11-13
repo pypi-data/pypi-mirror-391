@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# --- EDIT EVERYTHING BELOW ---
+
+[project]
+# This is the name people will use to "pip install"
+name = "abhidrip" 
+# Start with 0.0.1. You MUST change this for every new upload.
+version = "0.0.1"
+authors = [
+  { name="Your Name", email="your@email.com" },
+]
+description = "A short, one-sentence description of your package."
+# This reads your README file for the description on PyPI
+readme = "README.md" 
+requires-python = ">=3.8"
+license = { file="LICENSE" }
+# Pick classifiers from: https://pypi.org/classifiers/
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+# Add any packages your project needs to run
+dependencies = [
+    # "requests>=2.20",
+    # "numpy",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/your_username/your_project"
+"Bug Tracker" = "https://github.com/your_username/your_project/issues"
