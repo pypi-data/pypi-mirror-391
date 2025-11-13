@@ -1,0 +1,52 @@
+[project]
+name = "polymarket-gamma"
+version = "0.1.1"
+description = "Modern Python SDK for Polymarket Gamma API. Install as 'polymarket-gamma', import as 'py_gamma'."
+authors = [{ name = "Polybacktest Team", email = "team@polybacktest.dev" }]
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+    "Operating System :: OS Independent",
+]
+dependencies = ["httpx>=0.28.0", "pydantic>=2.12.0", "diskcache>=5.6.0", "cachetools>=6.2.0", "python-dotenv>=1.2.0", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+    "basedpyright>=1.33.0",
+    "pre-commit>=3.4.0",
+    "types-PyYAML>=6.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Unipredict/py-gamma"
+Documentation = "https://github.com/Unipredict/py-gamma"
+Repository = "https://github.com/Unipredict/py-gamma.git"
+"Bug Tracker" = "https://github.com/Unipredict/py-gamma/issues"
+Changelog = "https://github.com/Unipredict/py-gamma/blob/main/CHANGELOG.md"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/py_gamma"]
+
+[dependency-groups]
+dev = [
+    "basedpyright>=1.33.0",
+]
