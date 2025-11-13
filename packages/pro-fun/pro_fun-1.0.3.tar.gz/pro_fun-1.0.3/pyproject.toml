@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling >= 1.17"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pro_fun"
+version = "1.0.3"
+authors = [
+  { name="John Dallas", email="jdallas@gmail.com" },
+]
+description = "Resolve simple client"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+dependencies = [
+    "cryptography>45.0.0",
+]
+[pyproject.license-files]
+globs = ["LICEN[CS]E*", "AUTHORS*"]
+
+[project.urls]
+Homepage = "https://github.com/pypa/resolve"
+Issues = "https://github.com/pypa/resolve/issues"
