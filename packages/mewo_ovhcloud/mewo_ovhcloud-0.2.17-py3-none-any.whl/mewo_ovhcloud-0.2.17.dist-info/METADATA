@@ -1,0 +1,42 @@
+Metadata-Version: 2.4
+Name: mewo_ovhcloud
+Version: 0.2.17
+Summary: 
+Author: feluxe
+Author-email: felix@meyerwolters.de
+Requires-Python: >=3.14,<4.0
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.14
+Requires-Dist: cmdi (>=3.0.0,<4.0.0)
+Requires-Dist: ovh (>=1.2.0,<2.0.0)
+Requires-Dist: pydantic (>=2.12.0,<3.0.0)
+Requires-Dist: requests (>=2.32.5,<3.0.0)
+Requires-Dist: sty (>=1.0.6,<2.0.0)
+Description-Content-Type: text/markdown
+
+# mewo_ovhcloud
+
+## Testing
+
+**WARNING: This creates real instances on ovhcloud**
+
+You need these env vars for testing:
+
+    export OVH_APPLICATION_KEY="your_key"
+    export OVH_APPLICATION_SECRET="your_secret"
+    export OVH_CONSUMER_KEY="your_consumer_key"
+    export OVH_PROJECT_ID="your_project_id"
+    
+You can also run:
+
+    mkunlock ovhcloud --source'
+
+
+Run quick validation (no resources created):
+
+    poetry run python tests/test_e2e.py quick
+
+Run full end-to-end test (creates and deletes resources):
+
+    poetry run python tests/test_e2e.py
+
