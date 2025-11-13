@@ -1,0 +1,39 @@
+# Site-specific configuration example
+# This file shows how to configure mlcrawler for a specific site
+
+# Override the mode for this site
+mode = "sitemap"
+
+# Site-specific user agent
+user_agent = "mlcrawler/0.1 (+https://yoursite.com/contact)"
+
+# Seed URL for sitemap discovery
+seeds = ["https://example.com"]
+
+[limits]
+# Limit to 100 pages for this site
+max_pages = 100
+
+[concurrency]
+# Be more polite to this site
+per_host = 2
+
+[rate_limit]
+# Slower rate for this site
+per_host_delay_ms = 1000
+
+[output]
+# Site-specific output directory
+dir = "output/example-site"
+
+[sitemap]
+# Direct sitemap URL if known
+url = "https://example.com/sitemap.xml"
+
+[filter]
+# Remove additional elements for this site
+extra_remove = [".sidebar", ".advertisement", "nav.secondary"]
+
+[extract]
+# Use main article extraction for this site
+main_article = true

@@ -1,0 +1,23 @@
+version: 2
+
+sphinx:
+  configuration: docs/conf.py
+
+# For MkDocs builds tell RTD to use MkDocs
+build:
+  image: latest
+  os: ubuntu-latest
+
+python:
+  version: 3.11
+
+formats:
+  - html
+
+# Install requirements for building the docs
+requirements_file: docs/requirements.txt
+
+# Use mkdocs builder rather than Sphinx (RTD supports MkDocs)
+use_mkdocs: true
+mkdocs:
+  config_file: mkdocs.yml

@@ -1,0 +1,52 @@
+site_name: mlcrawler
+site_description: A thin, configurable Python crawler and scraper — CLI + library API
+site_author: "mlcrawler contributors"
+repo_name: mlcrawler
+repo_url: https://github.com/<your-org>/mlcrawler
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Installation: installation.md
+  - Quick Reference: quick-reference.md
+  - API Reference: api.md
+  - CLI Usage: cli.md
+  - Examples: examples.md
+  - Contributing: contributing.md
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  features:
+    - navigation.instant
+    - navigation.top
+    - toc.integrate
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes
+  - attr_list
+  - pymdownx.superfences
+  - pymdownx.arithmatex
+
+plugins:
+  - search
+  # Optionally enable mkdocstrings for API auto-generation when desired
+  # - mkdocstrings:
+  #     handlers:
+  #       python:
+  #         options:
+  #           show_root_heading: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/<your-org>/mlcrawler
+
+# ReadTheDocs configuration notes:
+# - On ReadTheDocs select MkDocs as the documentation type
+# - Ensure "mkdocs" and "mkdocs-material" are listed in docs build requirements

@@ -1,0 +1,57 @@
+# mlcrawler default configuration
+# This file contains the default settings for mlcrawler
+
+# Crawl mode: 'sitemap' or 'seed'
+mode = "sitemap"
+
+# User agent string
+user_agent = "mlcrawler/0.1 (+https://example.com/contact)"
+
+# Obey robots.txt (not implemented in M1)
+obey_robots = true
+
+# Only crawl same domain
+same_domain_only = true
+
+# Maximum crawl depth (seed mode only, 0 = unlimited)
+max_depth = 2
+
+[limits]
+max_pages = 0  # 0 = unlimited
+
+[concurrency]
+global = 8
+per_host = 4
+
+[rate_limit]
+per_host_delay_ms = 500
+
+[cache]
+dir = ".cache/mlcrawler"
+respect_conditional = true
+
+[output]
+dir = "output"
+metadata_backend = "json"
+
+[sitemap]
+# url = "https://example.com/sitemap.xml"  # Optional, will discover if omitted
+use_lastmod = true
+
+# Seed URLs (for seed mode or sitemap discovery base)
+seeds = []
+
+[discovery]
+follow_links = true
+include_patterns = []  # Regex patterns for URLs to include
+exclude_patterns = []  # Regex patterns for URLs to exclude
+
+[filter]
+dom_remove = ["script", "style", "svg"]
+extra_remove = []  # Additional selectors like "nav", "footer", ".ads"
+
+[extract]
+main_article = false  # Use trafilatura for main article extraction
+
+[storage]
+duckdb_path = "mlcrawler.duckdb"  # Used if metadata_backend="duckdb"
