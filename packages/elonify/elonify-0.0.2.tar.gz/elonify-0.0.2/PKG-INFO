@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: elonify
+Version: 0.0.2
+Summary: The one-liner web toolkit that auto-thinks like Elon.
+Home-page: https://github.com/abrlake/elonify
+Author: Legen
+License: MIT
+Project-URL: Homepage, https://github.com/abrlake/elonify
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: license
+
+# elonify 🚀
+
+The one-liner web toolkit that auto-thinks like Elon.
+
+```python
+from elonify import get
+
+r = get("https://github.com/abrlake/elonify")
+print(r.json["public_repos"])
+✅ Auto-detects JSON / HTML
+✅ Simple .get() API
+✅ .json, .html, .text, .find() — all built in
+

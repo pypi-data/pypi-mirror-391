@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elonify"
+version="0.0.2"
+
+description = "The one-liner web toolkit that auto-thinks like Elon."
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+authors = [
+  { name = "Legen" }
+]
+dependencies = [
+  "requests",
+  "beautifulsoup4"
+]
+
+[project.urls]
+Homepage = "https://github.com/abrlake/elonify"
