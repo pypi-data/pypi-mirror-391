@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "powerblog-toolkit"
+version = "0.3.0"
+authors = [
+  { name="Samarth", email="samarth.agrawal.86@gmail.com" }
+]
+description = "Fetch and analyze search data from Serper.dev and manage results in Google Sheets."
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+  "pandas",
+  "requests",
+  "numpy",
+  "gspread",
+  "gspread-dataframe",
+  "google-auth",
+]
+requires-python = ">=3.8"
