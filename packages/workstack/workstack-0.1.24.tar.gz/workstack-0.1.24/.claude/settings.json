@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(workstack-dev:*)",
+      "Bash(uv run python:*)",
+      "Bash(python:*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*.py",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "DOT_AGENT_KIT_ID=dignified-python-313 DOT_AGENT_HOOK_ID=compliance-reminder-hook dot-agent run dignified-python-313 compliance-reminder-hook",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

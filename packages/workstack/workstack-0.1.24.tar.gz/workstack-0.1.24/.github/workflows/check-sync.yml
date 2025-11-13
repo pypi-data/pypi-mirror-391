@@ -1,0 +1,20 @@
+name: Check Sync
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install uv
+        run: pip install uv
+      - name: Install dependencies
+        run: uv sync
+      - name: Check artifacts and bundled kit sync status
+        run: uv run --package dot-agent-kit dot-agent check
