@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm", "build"]  # Build requirements
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygbm-dec52"
+dynamic = ["version"]
+description = "A Python package for modelling geometric Brownian motions."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "David Chen", email = "dec52@cam.ac.uk" }
+]
+
+dependencies = [
+    "numpy",
+    "matplotlib"
+]
+
+[project.scripts]
+pygbm = "pygbm.cli:main"
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+write_to = "pygbm/version.py"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"pygbm" = ["data/*"]
