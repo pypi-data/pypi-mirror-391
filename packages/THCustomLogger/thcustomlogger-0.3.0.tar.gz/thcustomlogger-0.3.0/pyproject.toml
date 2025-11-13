@@ -1,0 +1,38 @@
+[project]
+name = "THCustomLogger"
+version = "0.3.0"
+description = "A custom logging package with multiline formatting"
+authors = [
+    {name = "Tyler Haunreiter", email = "silentbox23@gmail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: System :: Logging",
+]
+dependencies = [
+    "colorlog>=6.9.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/THCustomLogger"]
+
+[project.urls]
+"Homepage" = "https://github.com/TabgoHotel/CustomLogger.git"
+"Bug Tracker" = "https://github.com/TabgoHotel/CustomLogger/issues"
+"Changelog" = "https://github.com/TabgoHotel/CustomLogger/blob/main/changelog.md"

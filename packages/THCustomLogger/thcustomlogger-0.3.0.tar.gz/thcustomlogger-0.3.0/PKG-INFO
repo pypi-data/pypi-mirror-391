@@ -1,0 +1,470 @@
+Metadata-Version: 2.4
+Name: THCustomLogger
+Version: 0.3.0
+Summary: A custom logging package with multiline formatting
+Project-URL: Homepage, https://github.com/TabgoHotel/CustomLogger.git
+Project-URL: Bug Tracker, https://github.com/TabgoHotel/CustomLogger/issues
+Project-URL: Changelog, https://github.com/TabgoHotel/CustomLogger/blob/main/changelog.md
+Author-email: Tyler Haunreiter <silentbox23@gmail.com>
+License: MIT
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: System :: Logging
+Requires-Python: >=3.8
+Requires-Dist: colorlog>=6.9.0
+Description-Content-Type: text/markdown
+
+# THCustomLogger
+
+[![PyPI version](https://badge.fury.io/py/THCustomLogger.svg)](https://badge.fury.io/py/THCustomLogger)
+[![Python Versions](https://img.shields.io/pypi/pyversions/THCustomLogger.svg)](https://pypi.org/project/THCustomLogger/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A powerful and flexible Python logging package with colorized output, multiline formatting, rate limiting, and git
+integration.
+
+## ✨ Features
+
+- 🎨 **Colorized Console Output** - Beautiful, color-coded log levels using `colorlog`
+- 📝 **Multiline Message Formatting** - Properly indented multiline log messages
+- 🚦 **Rate Limiting** - Prevent log spam with configurable rate limiting
+- 🔄 **Log Rotation** - Automatic time-based log file rotation
+- 🔧 **Flexible Configuration** - Configure via code or environment variables
+- 🌳 **Git Integration** - Built-in methods to log commit hashes and tags
+- 🧵 **Thread-Safe** - Safe to use in multi-threaded applications
+- 📊 **Custom Formatters** - Support for custom message breaks and formatting
+
+## Table of Contents
+
+<!-- TOC -->
+* [THCustomLogger](#thcustomlogger)
+  * [✨ Features](#-features)
+  * [Table of Contents](#table-of-contents)
+  * [Installation](#installation)
+  * [Quick Start](#quick-start)
+  * [Configure logger globally](#configure-logger-globally)
+    * [Configuration Options](#configuration-options)
+  * [📖 Usage Examples](#-usage-examples)
+    * [Multiline Logging](#multiline-logging)
+    * [Rate Limiting](#rate-limiting)
+    * [Git Integration](#git-integration)
+    * [Environment-Based Configuration](#environment-based-configuration)
+  * [⚙️ Configuration Options](#-configuration-options)
+    * [Programmatic Configuration](#programmatic-configuration)
+    * [Environment Variables](#environment-variables)
+  * [🎯 Advanced Usage](#-advanced-usage)
+    * [Using LoggerFactory](#using-loggerfactory)
+    * [Colored Output](#colored-output)
+    * [Multiline Formatting](#multiline-formatting)
+    * [Thread Safety](#thread-safety)
+    * [Type Hints](#type-hints)
+  * [🧪 Testing](#-testing)
+  * [📝 Examples](#-examples)
+    * [Example: Web Application Logging](#example-web-application-logging)
+    * [Example: Data Processing with Rate Limiting](#example-data-processing-with-rate-limiting)
+  * [🤝 Contributing](#-contributing)
+  * [📄 License](#-license)
+  * [🔗 Links](#-links)
+  * [👤 Author](#-author)
+  * [🙏 Acknowledgments](#-acknowledgments)
+<!-- TOC -->
+
+## Installation
+
+```bash
+pip install THCustomLogger
+```
+
+## Quick Start
+
+Usage example
+
+```python 
+from THCustomLogger import get_logger
+
+# Get a logger instance
+logger = get_logger(__name__)
+
+# Basic logging
+logger.info("Hello, World!")
+logger.debug("Debug message")
+logger.warning("Warning message")
+logger.error("Error message")
+
+# Multiline logging with custom formatting
+logger.info("Multiple\nline\nmessage")
+
+# Git information
+logger.info(f"Current commit: {logger.get_commit_hash()}")
+logger.info(f"Latest tag: {logger.get_latest_tag()}")
+
+# Logging with break lines
+logger.info("Message with break line", extra={'msg_break': '*'})
+```
+
+Output
+
+```terminaloutput
+2025-04-29 11:00:00.625 | Line: 186 logger_setup.<module>             | INFO    : Hello, World!
+2025-04-29 11:00:00.625 | Line: 188 logger_setup.<module>             | WARNING : Warning message
+2025-04-29 11:00:00.625 | Line: 189 logger_setup.<module>             | ERROR   : Error message
+2025-04-29 11:00:00.625 | Line: 192 logger_setup.<module>             | INFO    : Multiple
+                                                                                  line
+                                                                                  message
+2025-04-29 11:00:00.632 | Line: 195 logger_setup.<module>             | INFO    : Current commit: afba168c52d65a621139c3b3e072a1fd991b26bd
+2025-04-29 11:00:00.639 | Line: 107 logger_setup.get_latest_tag       | ERROR   : Error getting latest tag: fatal: No names found, cannot describe anything.
+
+2025-04-29 11:00:00.640 | Line: 196 logger_setup.<module>             | INFO    : Latest tag: unknown
+2025-04-29 11:00:00.640 | Line: 199 logger_setup.<module>             | INFO    : Message with break line
+**********************************************************************************
+
+2025-04-29 11:05:17.340 | Line: 172 logger_setup.example              | ERROR   : division by zero
+Traceback (most recent call last):
+  File "/Users/tylerhaunreiter/Desktop/Python/CustomLogger/src/THCustomLogger/logger_setup.py", line 170, in example
+    1 / 0
+    ~~^~~
+ZeroDivisionError: division by zero
+```
+
+## Configure logger globally
+
+configure(
+log_level=logging.DEBUG,
+log_dir="logs",
+file_name_prefix="myapp",
+console_enabled=True,
+file_enabled=True
+)
+logger = get_logger(__name__)
+logger.info("Logger configured!")
+
+### Configuration Options
+
+| Option            | Description                            | Default |
+|-------------------|----------------------------------------|---------|
+| console_enabled   | Enable console output                  | True    |
+| file_enabled      | Enable file output                     | True    |
+| log_level         | Logging level                          | "INFO"  |
+| rotation_when     | Log rotation interval type (S/M/H/D/W) | "D"     |
+| rotation_interval | Number of intervals before rotation    | 1       |
+| backup_count      | Number of backup files to keep         | 7       |
+| encoding          | Log file encoding                      | "utf-8" |
+
+## 📖 Usage Examples
+
+### Multiline Logging
+
+```python
+from THCustomLogger import get_logger
+
+logger = get_logger(__name__)
+
+# Multiline messages are automatically indented
+logger.info("Processing items:\n- Item 1\n- Item 2\n- Item 3")
+
+# Add custom message breaks
+logger.info("Section completed", extra={'msg_break': '='})
+
+# Disable indentation for specific messages
+logger.info("Line 1\nLine 2", extra={'no_indent': True})
+```
+
+### Rate Limiting
+
+```python
+from THCustomLogger import get_logger
+
+logger = get_logger(__name__)
+
+# Configure rate limiting
+logger.configure_rate_limit(
+    enabled=True,
+    window_seconds=60,  # Time window in seconds
+    max_count=10  # Max occurrences per window
+)
+
+# Only first 10 occurrences within 60 seconds will be logged
+for i in range(100):
+    logger.info("Repeated message")
+```
+
+### Git Integration
+
+```python
+from THCustomLogger import get_logger
+
+logger = get_logger(__name__)
+
+# Log current git commit hash
+logger.info(f"Running on commit: {logger.get_commit_hash()}")
+
+# Log latest git tag
+logger.info(f"Version: {logger.get_latest_tag()}")
+```
+
+### Environment-Based Configuration
+
+Set environment variables to configure the logger:
+
+```bash
+export LOGGER_LEVEL=DEBUG
+export LOGGER_DIR=logs
+export LOGGER_FILE_PREFIX=myapp
+export LOGGER_CONSOLE_ENABLED=true
+export LOGGER_FILE_ENABLED=true
+export LOGGER_ROTATION_WHEN=midnight
+export LOGGER_ROTATION_INTERVAL=1
+export LOGGER_BACKUP_COUNT=30
+```
+
+```python
+from THCustomLogger import get_logger
+
+# Logger will automatically use environment variables
+logger = get_logger(__name__)
+logger.info("Configured from environment!")
+```
+
+## ⚙️ Configuration Options
+
+### Programmatic Configuration
+
+```python
+from THCustomLogger import configure
+import logging
+
+configure(
+    log_level=logging.INFO,  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    log_dir="logs",  # Directory for log files
+    file_name_prefix="app",  # Prefix for log file names
+    console_enabled=True,  # Enable console output
+    file_enabled=True,  # Enable file output
+    rotation_when="midnight",  # When to rotate logs
+    rotation_interval=1,  # Rotation interval
+    backup_count=30,  # Number of backup files to keep
+    encoding="utf-8",  # File encoding
+)
+```
+
+### Environment Variables
+
+| Variable                   | Description                                       | Default    |
+|----------------------------|---------------------------------------------------|------------|
+| `LOGGER_LEVEL`             | Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL) | `INFO`     |
+| `LOGGER_DIR`               | Directory for log files                           | `logs`     |
+| `LOGGER_FILE_PREFIX`       | Prefix for log filenames                          | `app`      |
+| `LOGGER_CONSOLE_ENABLED`   | Enable console logging                            | `true`     |
+| `LOGGER_FILE_ENABLED`      | Enable file logging                               | `true`     |
+| `LOGGER_ROTATION_WHEN`     | When to rotate (midnight, H, D, W0-W6)            | `midnight` |
+| `LOGGER_ROTATION_INTERVAL` | Rotation interval                                 | `1`        |
+| `LOGGER_BACKUP_COUNT`      | Number of backup files                            | `30`       |
+| `LOGGER_ENCODING`          | File encoding                                     | `utf-8`    |
+
+## 🎯 Advanced Usage
+
+### Using LoggerFactory
+
+```python
+from THCustomLogger import LoggerFactory
+import logging
+
+# Get the configuration instance
+config = LoggerFactory.get_config()
+print(config.as_dict)
+
+# Create multiple loggers
+logger1 = LoggerFactory.get_logger("module1")
+logger2 = LoggerFactory.get_logger("module2")
+
+# Reconfigure all loggers
+LoggerFactory.configure(log_level=logging.DEBUG)
+```
+
+### Colored Output
+
+Console output is automatically colored based on log level:
+
+- DEBUG: Green
+- INFO: Light White
+- WARNING: Light Yellow
+- ERROR: Light Red
+- CRITICAL: Bold Light Purple
+
+```python
+from THCustomLogger import MultilineFormatter, ColoredMultilineFormatter
+import logging
+
+# Use custom formatters
+handler = logging.StreamHandler()
+handler.setFormatter(ColoredMultilineFormatter(
+    "%(log_color)s%(levelname)-8s%(reset)s %(message)s",
+    log_colors={
+        'DEBUG': 'cyan',
+        'INFO': 'green',
+        'WARNING': 'yellow',
+        'ERROR': 'red',
+        'CRITICAL': 'red,bg_white',
+    }
+))
+```
+
+### Multiline Formatting
+
+Messages with multiple lines are automatically formatted with proper indentation:
+
+```terminaloutput
+2025-04-29 11:00:00.622 | Line: 165 logger_setup.main                 | INFO    : Commit hash: afba168c52d65a621139c3b3e072a1fd991b26bd
+                                                                                  Latest tag:unknown
+```
+
+```python
+from THCustomLogger import get_logger
+
+logger = get_logger(__name__)
+logger.info("Message with custom break", extra={'msg_break': '*'})
+logger.info("No indent message\nSecond line", extra={'no_indent': True})
+```
+
+```terminaloutput
+2025-04-29 11:05:17.343 | Line: 185 logger_setup.<module>             | INFO    : Message with custom break
+**********************************************************************************
+2025-04-29 11:05:17.343 | Line: 186 logger_setup.<module>             | INFO    : No indent message
+Second line
+```
+
+### Thread Safety
+
+The logger is thread-safe and can be used in multi-threaded applications:
+
+python import threading
+def worker(): logger = LoggerFactory.get_logger(**name**) logger.info("Working in thread")
+threads = [threading.Thread(target=worker) for _ in range(3)] for thread in threads: thread.start()
+
+### Type Hints
+
+```python
+from THCustomLogger import CustomLogger, get_logger
+
+
+def my_function() -> None:
+    logger: CustomLogger = get_logger(__name__)
+    logger.info("Type-safe logging!")
+
+    # Access CustomLogger-specific methods
+    logger.configure_rate_limit(enabled=True, window_seconds=30)
+    commit = logger.get_commit_hash()
+```
+
+## 🧪 Testing
+
+The package includes comprehensive tests. Run them with:
+
+```bash
+# Install dev dependencies
+pip install pytest pytest-cov
+
+# Run tests
+pytest tests/
+
+# Run with coverage
+pytest tests/ --cov=THCustomLogger --cov-report=html
+```
+
+## 📝 Examples
+
+### Example: Web Application Logging
+
+```python
+from THCustomLogger import configure, get_logger
+import logging
+
+# Configure at application startup
+configure(
+    log_level=logging.INFO,
+    log_dir="/var/log/myapp",
+    file_name_prefix="webapp",
+    console_enabled=True,
+    file_enabled=True,
+    rotation_when="midnight",
+    backup_count=90
+)
+
+# Use in different modules
+logger = get_logger(__name__)
+
+
+def process_request(request_id: str):
+    logger.info(f"Processing request: {request_id}")
+    try:
+        # ... process request ...
+        logger.info(f"Request {request_id} completed successfully")
+    except Exception as e:
+        logger.exception(f"Error processing request {request_id}: {e}")
+```
+
+### Example: Data Processing with Rate Limiting
+
+```python
+from THCustomLogger import get_logger
+
+logger = get_logger(__name__)
+logger.configure_rate_limit(enabled=True, window_seconds=60, max_count=5)
+
+
+def process_data(items):
+    for item in items:
+        try:
+            # ... process item ...
+            pass
+        except ValueError as e:
+            # This error won't spam logs if it occurs frequently
+            logger.error(f"Invalid item: {e}")
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (\`git checkout -b feature/AmazingFeature\`)
+3. Commit your changes (\`git commit -m 'Add some AmazingFeature'\`)
+4. Push to the branch (\`git push origin feature/AmazingFeature\`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🔗 Links
+
+- **GitHub Repository**: [https://github.com/TabgoHotel/CustomLogger](https://github.com/TabgoHotel/CustomLogger)
+- **PyPI Package**: [https://pypi.org/project/THCustomLogger/](https://pypi.org/project/THCustomLogger/)
+- **Issue Tracker
+  **: [https://github.com/TabgoHotel/CustomLogger/issues](https://github.com/TabgoHotel/CustomLogger/issues)
+- **Changelog**: [CHANGELOG.md](changelog.md)
+
+## 👤 Author
+
+**Tyler Haunreiter**
+
+- Email: silentbox23@gmail.com
+- GitHub: [@TabgoHotel](https://github.com/TabgoHotel)
+
+## 🙏 Acknowledgments
+
+- Built with [colorlog](https://github.com/borntyping/python-colorlog) for colorized output
+- Inspired by Python's built-in logging module
+
+---
+
+Made with ❤️ by Tyler Haunreiter
+
