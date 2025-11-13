@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: CAL-1.0-Combined-Work-Exception
+# SPDX-FileCopyrightText: 2025 PyGremlinBox Maintainer <simon@sigre.xyz>
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygremlinbox-cal-1-0-combined-work-exception"
+version = "1.4.0"
+description = "PyGremlinBox CAL-1.0-Combined-Work-Exception - Supply chain security testing module with CAL-1.0-Combined-Work-Exception licence"
+license = {text = "CAL-1.0-Combined-Work-Exception"}  # SPDX: CAL-1.0-Combined-Work-Exception
+authors = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+maintainers = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+keywords = ["security", "supply-chain", "testing", "licence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/gocortexio/pygremlinbox"
+Repository = "https://github.com/gocortexio/pygremlinbox.git"
+Issues = "https://github.com/gocortexio/pygremlinbox/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pygremlinbox_cal_1_0_combined_work_exception"]
+
+[tool.setuptools.package-dir]
+"" = "src"
