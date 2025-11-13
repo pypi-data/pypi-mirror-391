@@ -1,0 +1,93 @@
+{% extends "variants/variants_layout.html" %}
+{% from "variants/utils.html" import cell_rank, filter_form_footer, mark_heteroplasmic_mt, snv_filters, variant_link_href, variant_rank_score %}
+{% from "variants/components.html" import cell_cadd, cell_models, frequency_cell_general, gene_cell, observed_cell_general, overlapping_cell, variant_funct_anno_cell %}
+
+{% block category_title %}
+  SNVs and INDELs
+{% endblock %}
+
+{% block variants_form_action%}
+  {{url_for('variants.variants', institute_id=institute._id, case_name=case.display_name)}}
+{% endblock %}
+
+{% block variants_filter %}
+  {{ snv_filters(form, institute, case) }}
+{% endblock %}
+
+{% block variants_filter_form_footer %}
+  {{ filter_form_footer(form, result_size, total_variants, page, variants|length, institute) }}
+{% endblock %}
+
+{% block variants_table_header %}
+  <tr>
+    <th scope="col" style="width:2%"></th>
+    <th scope="col" style="width:7%" title="Rank position">Rank</th>
+    <th scope="col" style="width:10%" data-bs-toggle="tooltip" title="Rank score (normalized rank score in the range 0-1)">Score</th>
+    <th scope="col" style="width:4%" title="Chromosome">Chr.</th>
+    <th scope="col" style="width:12%" title="HGNC symbols">Gene</th>
+    <th scope="col" style="width:6%" title="Population Frequency">Pop Freq</th>
+    <th scope="col" style="width:10%" title="Observed database matches">Observed</th>
+    <th scope="col" style="width:5%" title="CADD score">CADD</th>
+    <th scope="col" style="width:18%" title="Functional annotation">Function</th>
+    <th scope="col" style="width:14%" title="Inheritance models">Inheritance model</th>
+    <th scope="col" style="width:14%" title="Overlapping">Overlap</th>
+  </tr>
+{% endblock %}
+
+{% block variants_table_rows %}
+  {% for variant in variants %}
+    {{ variant_row(variant, institute, case, inherit_palette) }}
+  {% else %}
+    <tr>
+      <td colspan="11">
+        No matching variants
+      </td>
+    </tr>
+  {% endfor %}
+{% endblock %}
+
+{% macro variant_row(variant, institute, case, inherit_palette) %}
+  <tr data-target="_blank" data-href="{{ variant_link_href(variant, institute, case) }}"
+    {% if variant.dismiss_variant %}
+       class="dismiss">
+    {% elif 'causatives' in case and variant._id in case.causatives %}
+       class="causative">
+    {% else %}
+       >
+    {% endif %}
+    <td class="no-row-click"><input type="checkbox" value="{{variant._id}}" name="dismiss" onclick="enableDismiss()"></td>
+    <td class="text-start">{{ cell_rank(variant, institute, case, form, manual_rank_options) }}</td>
+    <td class="text-start">{{variant_rank_score(variant)}}</td>
+    <td>
+      {{ variant.chromosome }}
+      {% if variant.chromosome in ["MT","M"] %}
+        {{ mark_heteroplasmic_mt(case.individuals, variant.samples) }}
+      {% endif %}
+    </td>
+    <td>{{ gene_cell(variant, inherit_palette) }}</td>
+    <td class="text-start">{{ frequency_cell_general(variant) }}</td>
+    <td class="text-start">{{ observed_cell_general(variant) }}</td>
+    <td class="text-end">{{ cell_cadd(variant) }}</td>
+    <td>
+      {{ variant_funct_anno_cell(variant) }}
+    </td>
+    <td>{{ cell_models(variant, genetic_models_palette) }}</td>
+    <td>{{ overlapping_cell(variant, institute, case) }}</td>
+  </tr>
+{% endmacro %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if(document.getElementById('compound_follow_filter').checked || document.getElementById('compound_rank_score').value) {
+          $('#hidecompounds').collapse('show');
+        }
+      });
+
+    document.getElementById('symbol_file').onchange = function() {
+      var the_form = document.forms['filters_form'];
+      the_form.submit();
+    };
+  </script>
+{% endblock %}

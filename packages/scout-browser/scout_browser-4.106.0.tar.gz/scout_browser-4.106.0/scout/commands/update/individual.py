@@ -1,0 +1,162 @@
+"""Code for updating information on individuals"""
+
+import logging
+from pathlib import Path
+
+import click
+
+from scout.server.extensions import store
+
+LOG = logging.getLogger(__name__)
+
+UPDATE_DICT = {
+    "assembly_alignment_path": "path",
+    "bam_file": "path",
+    "bionano_access.sample": "str",
+    "bionano_access.project": "str",
+    "d4_file": "path",
+    "chromograph_images.autozygous": "str",
+    "chromograph_images.coverage": "str",
+    "chromograph_images.upd_regions": "str",
+    "chromograph_images.upd_sites": "str",
+    "minor_allele_frequency_wig": "path",
+    "mt_bam": "path",
+    "omics_sample_id": "str",  # RNA sample id for connected wts outliers
+    "paraphase_alignment_path": "path",
+    "phase_blocks": "path",
+    "reviewer.alignment": "path",
+    "reviewer.alignment_index": "path",
+    "reviewer.vcf": "path",
+    "reviewer.catalog": "path",
+    "rhocall_bed": "path",
+    "rhocall_wig": "path",
+    "rna_alignment_path": "path",
+    "rna_coverage_bigwig": "path",  # Coverage islands generated from bam or cram files (RNA-seq analysis)
+    "splice_junctions_bed": "path",  # An indexed junctions .bed.gz file obtained from STAR v2 aligner *.SJ.out.tab file.
+    "subject_id": "str",  # Individual subject_id (for matching multiomics data and statistics)
+    "tiddit_coverage_wig": "path",
+    "upd_regions_bed": "path",
+    "upd_sites_bed": "path",
+    "vcf2cytosure": "path",
+}
+UPDATE_KEYS = UPDATE_DICT.keys()
+
+
+@click.command()
+@click.option("--case-id", "-c", required=True, help="Case id")
+@click.option("--ind", "-n", help="Individual display name")
+@click.option(
+    "--delete",
+    "-d",
+    is_flag=True,
+    help="Delete the given key from the case individual.",
+)
+@click.argument("key", required=False)
+@click.argument("value", required=False)
+def individual(case_id, ind, delete, key, value):
+    """Update information on individual level in Scout
+
+    UPDATE_DICT holds keys and type of value. If the value type is "path", and most are, a check
+    for file existence is performed.
+
+    If the key contains a dot (only one needed currently), keys for a dict type value is assumed:
+    e.g. "reviewer.alignment" -> ind["reviewer"]["alignment"] (path value required)
+
+    If the delete flag is set, do not require a value, and remove the key from the individual if present.
+    """
+    case_obj = store.case(case_id)
+    if not case_obj:
+        LOG.error(f"Could not find case {case_id}")
+        return
+
+    if not _validate_input(case_obj, ind, key, value, delete):
+        return
+
+    for ind_obj in case_obj["individuals"]:
+        if ind_obj["display_name"] == ind:
+            if delete:
+                deleted_value = _delete_key(ind_obj, key)
+                LOG.info(f"Deleted value {deleted_value} from {key} on {ind} in {case_id}.")
+            else:
+                _update_key(ind_obj, key, value)
+
+    link = f"/{case_obj['owner']}/{case_obj['display_name']}"
+    institute_obj = store.institute(case_obj["owner"])
+    store.update_case_individual(
+        case_obj, user_obj=None, institute_obj=institute_obj, link=link, keep_date=False
+    )
+
+
+def _validate_input(case_obj: dict, ind: str, key: str, value: str, delete: bool) -> bool:
+    """Validate input values: check ind, key and value.
+    If ind name is empty, print available individual names for this case to help the user to build the command.
+    If key is null or non-valid, print a list of all the keys that can be updated using this function.
+    If key is a file path, and the file is not found on the server, ask if user wants to update the key anyway.
+
+    """
+    individuals = {ind_info["display_name"]: ind_info for ind_info in case_obj["individuals"]}
+
+    if ind is None:
+        LOG.error(
+            f"Please specify individual name with '-n' option. Available individuals for this case:{list(individuals.keys())}"
+        )
+        return False
+    if ind not in individuals:
+        LOG.error(
+            f"Could not find individual '{ind}' in case individuals. Available individuals for this case: {list(individuals.keys())}"
+        )
+        return False
+
+    if key is None or key not in UPDATE_KEYS:
+        newliner = "\n\t"
+        LOG.error(
+            f"Please specify a valid key to update. Valid keys:{newliner}{newliner.join(sorted(UPDATE_KEYS))}"
+        )
+        return False
+
+    if delete:
+        # no need to check values for delete
+        return True
+
+    if value is None:
+        LOG.error(f"Please specify a value ({UPDATE_DICT[key]} for key {key}")
+        return False
+
+    if UPDATE_DICT[key] == "path":
+        file_path = Path(value)
+        if not file_path.exists():
+            return click.confirm(
+                "The provided path was not found on the server, update key anyway?",
+                abort=True,
+            )
+
+    return True
+
+
+def _delete_key(ind_obj: dict, key: str):
+    """Delete key. Also remove the parent key if this was the last key in a sub dict."""
+    if "." not in key:
+        deleted_value = ind_obj.pop(key, None)
+        return deleted_value
+
+    key_parts = key.split(".")
+    if not ind_obj.get(key_parts[0]):
+        ind_obj[key_parts[0]] = {}
+
+    deleted_value = ind_obj[key_parts[0]].pop(key_parts[1], None)
+    if len(ind_obj[key_parts[0]]) == 0:
+        ind_obj.pop(key_parts[0])
+    return deleted_value
+
+
+def _update_key(ind_obj: dict, key: str, value: str):
+    """Perform the update. Note that the keys that dig into dictionaries may have a parent exist and be None."""
+    if "." not in key:
+        ind_obj[key] = value
+        return
+
+    key_parts = key.split(".")
+    if not ind_obj.get(key_parts[0]):
+        ind_obj[key_parts[0]] = {}
+
+    ind_obj[key_parts[0]][key_parts[1]] = value
