@@ -1,0 +1,68 @@
+Metadata-Version: 2.4
+Name: tts-text-norm
+Version: 1.0.0
+Summary: 多语言文本规范化库，支持中文、日语和英语
+Home-page: https://gitlab.com/<group>/<project>
+Author: Your Name
+Author-email: your.email@example.com
+Project-URL: Bug Reports, https://gitlab.com/<group>/<project>/-/issues
+Project-URL: Source, https://gitlab.com/<group>/<project>
+Project-URL: Documentation, https://gitlab.com/<group>/<project>/-/blob/main/README.md
+Keywords: text normalization,nlp,chinese,japanese,english,text processing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: inflect==7.3.1
+Requires-Dist: regex==2024.11.6
+Requires-Dist: num2words==0.5.14
+Requires-Dist: pynini==2.1.5
+Requires-Dist: flake8
+Requires-Dist: importlib_resources
+Requires-Dist: pytest
+Requires-Dist: pre-commit==3.5.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Text Normalizer
+
+## 基本使用
+
+```python
+from tts_text_norm import TextNormalizer
+
+# 创建规范化器实例
+normalizer = TextNormalizer()
+
+# 中文文本规范化
+text_zh = "这是123个测试文本"
+result_zh = normalizer.text_normalize(text_zh, language="中文")
+print(result_zh)  # 输出：这是一百二十三 test
+
+# 日语文本规范化
+text_jp = "これは123のテストです"
+result_jp = normalizer.text_normalize(text_jp, language="日语")
+print(result_jp)
+
+# 英语文本规范化
+text_en = "This is a test with 123 numbers"
+result_en = normalizer.text_normalize(text_en, language="英语")
+print(result_en)
+```
