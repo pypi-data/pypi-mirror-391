@@ -1,0 +1,73 @@
+# Environment variables (содержат секреты!)
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+1-npm-registry/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Kiro settings (содержат API ключи!)
+.kiro/settings/
+.kiro/mcp_data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Secrets (ВАЖНО!)
+*secret*
+*token*
+*password*
+*CREDENTIALS*
+!deploy.ps1
+!deploy.sh
+!requirements*.txt
+!render.yaml
+!*_cloud.py
+!server_*.py
+
+# Google Cloud
+.gcloud/
+service-account*.json
