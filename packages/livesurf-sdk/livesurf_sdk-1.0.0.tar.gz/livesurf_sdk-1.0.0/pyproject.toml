@@ -1,0 +1,18 @@
+[project]
+name = "livesurf-sdk"
+version = "1.0.0"
+description = "Python SDK для LiveSurf API"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "DecPro", email = "decpro2009@gmail.com" }]
+requires-python = ">=3.8"
+dependencies = ["requests>=2.31.0"]
+
+[project.urls]
+Homepage = "https://github.com/DevAnlim/livesurf-sdk-python"
+Repository = "https://github.com/DevAnlim/livesurf-sdk-python"
+Issues = "https://github.com/DevAnlim/livesurf-sdk-python/issues"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
