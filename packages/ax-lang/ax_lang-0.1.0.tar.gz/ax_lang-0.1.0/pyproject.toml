@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["ax_lang"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+axreldable = ["**/*.py"] # include all python files requrcively
+
+[project]
+name = "ax-lang"
+version = "0.1.0"
+requires-python = ">=3.12"
+description = "axreldable programing language"
+readme = "README.md"
+license = { text = "MIT License" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "twine",
+    "build"
+]
+
+[project.urls]
+Repository = "https://github.com/axreldable/ax-lang"
+Issues = "https://github.com/axreldable/ax-lang/issues"
