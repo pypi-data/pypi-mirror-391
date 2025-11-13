@@ -1,0 +1,18 @@
+external_id was not read from old excel sheets (#1420)
+
+# Description
+
+Legacy Metadata sheet had `external_id` as field instead of
+`externalId`, which led to failure to read.
+This is now fixed
+
+## Bump
+
+- [x] Patch
+- [ ] Minor
+- [ ] Skip
+
+## Changelog
+### Fixed
+
+- reading legacy metadata sheet
