@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: PSyclone
+Version: 3.2.1
+Summary: PSyclone - a source-to-source and DSL Fortran compiler for HPC applications
+Home-page: https://github.com/stfc/psyclone
+Author: Rupert Ford, Andrew Porter <andrew.porter@stfc.ac.uk>, Sergi Siso <sergi.siso@stfc.ac.uk>, Joerg Henrichs <joerg.henrichs@bom.gov.au>
+Author-email: andrew.porter@stfc.ac.uk
+License: OSI Approved :: BSD 3-Clause License
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Fortran
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Software Development
+Classifier: Topic :: Utilities
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS
+License-File: LICENSE
+Requires-Dist: pyparsing
+Requires-Dist: fparser>=0.2.1
+Requires-Dist: configparser
+Requires-Dist: sympy
+Requires-Dist: Jinja2
+Requires-Dist: termcolor
+Requires-Dist: graphviz
+Provides-Extra: doc
+Requires-Dist: sphinx; extra == "doc"
+Requires-Dist: sphinxcontrib.bibtex; extra == "doc"
+Requires-Dist: sphinx_design; extra == "doc"
+Requires-Dist: pydata-sphinx-theme; extra == "doc"
+Requires-Dist: sphinx-autodoc-typehints; extra == "doc"
+Requires-Dist: autoapi; extra == "doc"
+Provides-Extra: test
+Requires-Dist: flake8; extra == "test"
+Requires-Dist: pylint; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Requires-Dist: pytest-xdist; extra == "test"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
+
+PSyclone is a source-to-source Fortran compiler designed to programmatically
+optimise, parallelise and instrument HPC applications via user-provided
+transformation scripts. It also supports domain-specific language extensions
+to the Fortran language, which simplify the implementation of Finite Element/
+Volume/Difference codes.
+
+PSyclone is used by the UK Met Office in their new weather model, LFRic
+(https://www.metoffice.gov.uk/research/approach/modelling-systems/lfric), and
+by the NEMO ocean-modelling framework
+(https://sites.nemo-ocean.io/user-guide/psyclone.html).
+
+See https://github.com/stfc/psyclone for more information.
