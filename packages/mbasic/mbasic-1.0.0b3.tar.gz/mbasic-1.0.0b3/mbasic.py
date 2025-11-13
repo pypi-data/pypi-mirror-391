@@ -1,0 +1,330 @@
+#!/usr/bin/env python3
+"""
+MBASIC 5.21 Interpreter
+
+Usage:
+    python3 mbasic.py                         # Interactive mode (curses screen editor)
+    python3 mbasic.py program.bas             # Execute program
+    python3 mbasic.py --ui curses             # Curses text UI (urwid, full-screen terminal) (default)
+    python3 mbasic.py --ui cli                # CLI backend (line-based)
+    python3 mbasic.py --ui tk                 # Tkinter GUI (graphical)
+    python3 mbasic.py --ui web                # Web UI (browser-based)
+    python3 mbasic.py --ui web --port 3000    # Web UI on custom port
+    python3 mbasic.py --debug                 # Enable debug output
+"""
+
+import sys
+import os
+import argparse
+import importlib
+from pathlib import Path
+
+# Add src to path
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
+
+from parser import TypeInfo
+
+
+def list_backends():
+    """Check which backends are available and print status"""
+    backends = {
+        'cli': {
+            'name': 'CLI',
+            'description': 'Line-based command interface',
+            'module': None,  # Built-in, always available
+            'install': None
+        },
+        'visual': {
+            'name': 'Visual',
+            'description': 'Generic visual stub',
+            'module': None,  # Built-in, always available
+            'install': None
+        },
+        'curses': {
+            'name': 'Curses',
+            'description': 'Full-screen terminal UI',
+            'module': 'urwid',
+            'install': 'pip install mbasic[curses]'
+        },
+        'tk': {
+            'name': 'Tkinter',
+            'description': 'Graphical UI',
+            'module': 'tkinter',
+            'install': 'Included with Python (may need: apt install python3-tk)'
+        },
+        'web': {
+            'name': 'Web',
+            'description': 'Web-based UI (NiceGUI)',
+            'module': 'nicegui',
+            'install': 'pip install nicegui'
+        },
+    }
+
+    print("Available MBASIC backends:\n")
+    for name, info in backends.items():
+        status = "✓ Available"
+        install_help = ""
+
+        # Check if module is available
+        if info['module']:
+            try:
+                __import__(info['module'])
+            except ImportError:
+                status = "✗ Not available"
+                if info['install']:
+                    install_help = f" ({info['install']})"
+
+        print(f"  {name:10} {info['name']:12} {info['description']:30} {status}{install_help}")
+
+    print("\nUsage: python3 mbasic.py --ui <name>")
+
+
+def create_default_def_type_map():
+    """Create default DEF type map (all SINGLE precision)"""
+    def_type_map = {}
+    for letter in 'abcdefghijklmnopqrstuvwxyz':
+        def_type_map[letter] = TypeInfo.SINGLE
+    return def_type_map
+
+
+def load_backend(backend_name, io_handler, program_manager):
+    """Load a UI backend dynamically using importlib
+
+    Args:
+        backend_name: Name of backend ('cli', 'visual', 'curses', 'tk', 'web')
+        io_handler: IOHandler instance for I/O operations
+        program_manager: ProgramManager instance for program storage
+
+    Returns:
+        UIBackend instance
+
+    Raises:
+        ImportError: If backend module cannot be loaded (with helpful installation instructions)
+        AttributeError: If backend doesn't have required classes
+    """
+    try:
+        # Map backend name to module and class name
+        backend_map = {
+            'cli': ('src.ui.cli', 'CLIBackend'),
+            'visual': ('src.ui.visual', 'VisualBackend'),
+            'curses': ('src.ui.curses_ui', 'CursesBackend'),
+            'tk': ('src.ui.tk_ui', 'TkBackend'),
+            'web': ('src.ui.web', 'NiceGUIBackend'),
+        }
+
+        if backend_name not in backend_map:
+            raise ValueError(f"Unknown backend: {backend_name}")
+
+        module_name, class_name = backend_map[backend_name]
+
+        # Import the backend module
+        backend_module = importlib.import_module(module_name)
+
+        # Get the backend class
+        backend_class = getattr(backend_module, class_name)
+
+        # Create and return the backend instance
+        return backend_class(io_handler, program_manager)
+
+    except ImportError as e:
+        # Provide helpful installation instructions
+        help_messages = {
+            'tk': (
+                "\nTkinter backend requires tkinter (usually included with Python).\n"
+                "If missing:\n"
+                "  • Debian/Ubuntu: sudo apt-get install python3-tk\n"
+                "  • RHEL/Fedora:   sudo dnf install python3-tkinter\n"
+                "  • macOS/Windows: Reinstall Python from python.org\n"
+                "\n"
+                "Alternative: Use --ui cli or --ui curses\n"
+                "Run 'python3 mbasic.py --list-backends' to see all available UIs."
+            ),
+            'curses': (
+                "\nCurses backend requires urwid library.\n"
+                "Install with: pip install mbasic[curses]\n"
+                "         or: pip install urwid>=2.0.0\n"
+                "\n"
+                "Alternative: Use --ui cli or --ui tk\n"
+                "Run 'python3 mbasic.py --list-backends' to see all available UIs."
+            ),
+            'web': (
+                "\nWeb backend requires nicegui library.\n"
+                "Install with: pip install mbasic[web]\n"
+                "         or: pip install nicegui>=3.2.0\n"
+                "\n"
+                "Alternative: Use --ui cli, --ui curses, or --ui tk\n"
+                "Run 'python3 mbasic.py --list-backends' to see all available UIs."
+            ),
+        }
+
+        error_msg = f"Failed to load backend '{backend_name}': {e}"
+        if backend_name in help_messages:
+            error_msg += help_messages[backend_name]
+
+        raise ImportError(error_msg)
+    except AttributeError as e:
+        raise AttributeError(f"Backend '{backend_name}' does not have class '{class_name}': {e}")
+
+
+def run_file(program_path, backend, debug_enabled=False):
+    """Execute a BASIC program from file
+
+    Args:
+        program_path: Path to BASIC program file
+        backend: UIBackend instance to use
+        debug_enabled: Enable debug output
+    """
+    try:
+        # Load the program using ProgramManager
+        success, errors = backend.program.load_from_file(program_path)
+
+        # Report any errors
+        if errors:
+            for line_num, error_msg in errors:
+                print(f"Parse error at line {line_num}: {error_msg}", file=sys.stderr)
+
+        if not success:
+            print(f"Failed to load program: {program_path}", file=sys.stderr)
+            sys.exit(1)
+
+        # Enter interactive mode with program loaded
+        # (Don't call cmd_run() here - it needs the event loop which starts in backend.start())
+        backend.start()
+
+    except FileNotFoundError:
+        print(f"Error: File not found: {program_path}", file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        # Print traceback only in DEBUG mode
+        if debug_enabled or os.environ.get('DEBUG'):
+            import traceback
+            traceback.print_exc()
+        else:
+            print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def main():
+    """Main entry point with argument parsing"""
+    parser = argparse.ArgumentParser(
+        description='MBASIC 5.21 Interpreter',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python3 mbasic.py                         # Interactive mode (curses screen editor)
+  python3 mbasic.py program.bas             # Run program and enter interactive mode
+  python3 mbasic.py --ui curses             # Curses text UI (urwid, full-screen terminal) (default)
+  python3 mbasic.py --ui cli                # CLI backend (line-based)
+  python3 mbasic.py --ui tk                 # Tkinter GUI (graphical)
+  python3 mbasic.py --ui web                # Web UI (browser-based)
+  python3 mbasic.py --ui web --port 3000    # Web UI on custom port
+  python3 mbasic.py --debug                 # Enable debug output
+        """
+    )
+
+    parser.add_argument(
+        'program',
+        nargs='?',
+        help='BASIC program file to load and run'
+    )
+
+    parser.add_argument(
+        '--ui',
+        '--backend',  # Keep --backend as alias for backwards compatibility
+        dest='backend',
+        choices=['cli', 'visual', 'curses', 'tk', 'web'],
+        default='curses',
+        help='UI to use (default: curses)'
+    )
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug output'
+    )
+
+    parser.add_argument(
+        '--list-backends',
+        action='store_true',
+        help='List available backends and exit'
+    )
+
+    parser.add_argument(
+        '--dump-keymap',
+        action='store_true',
+        help='Print keyboard shortcuts for the selected UI and exit'
+    )
+
+    parser.add_argument(
+        '--port',
+        type=int,
+        default=8080,
+        help='Port for web backend (default: 8080)'
+    )
+
+    args = parser.parse_args()
+
+    # Handle --list-backends first (exit after showing)
+    if args.list_backends:
+        list_backends()
+        sys.exit(0)
+
+    # Handle --dump-keymap (exit after showing)
+    if args.dump_keymap:
+        from src.ui.keybinding_loader import dump_keymap
+        dump_keymap(args.backend)
+        sys.exit(0)
+
+    # Create I/O handler based on backend choice
+    if args.backend == 'cli':
+        from iohandler.console import ConsoleIOHandler
+        io_handler = ConsoleIOHandler(debug_enabled=args.debug)
+    elif args.backend == 'curses':
+        # Curses backend creates its own CursesIOHandler internally
+        # Pass a dummy handler for initialization (will be replaced)
+        from iohandler.console import ConsoleIOHandler
+        io_handler = ConsoleIOHandler(debug_enabled=args.debug)
+    elif args.backend == 'tk':
+        # Tk backend uses console I/O for now (will implement TkIOHandler later)
+        from iohandler.console import ConsoleIOHandler
+        io_handler = ConsoleIOHandler(debug_enabled=args.debug)
+    elif args.backend == 'visual':
+        # Visual backend uses console I/O (stub)
+        from iohandler.console import ConsoleIOHandler
+        io_handler = ConsoleIOHandler(debug_enabled=args.debug)
+        print("Note: Visual backend is a stub, using console I/O")
+    else:
+        # Fallback to console I/O
+        from iohandler.console import ConsoleIOHandler
+        io_handler = ConsoleIOHandler(debug_enabled=args.debug)
+
+    # Create program manager
+    from editing import ProgramManager
+    program_manager = ProgramManager(create_default_def_type_map())
+
+    # Web backend uses per-client architecture
+    if args.backend == 'web':
+        from src.ui.web.nicegui_backend import start_web_ui
+        try:
+            start_web_ui(port=args.port)
+        except KeyboardInterrupt:
+            print("\n\nMBASIC Web UI: Exiting due to Ctrl+C\n")
+            sys.exit(0)
+        return
+
+    # Load other backends dynamically
+    try:
+        backend = load_backend(args.backend, io_handler, program_manager)
+    except (ImportError, AttributeError) as e:
+        print(f"Error loading backend: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # Run program or enter interactive mode
+    if args.program:
+        run_file(args.program, backend, debug_enabled=args.debug)
+    else:
+        backend.start()
+
+
+if __name__ == '__main__':
+    main()
