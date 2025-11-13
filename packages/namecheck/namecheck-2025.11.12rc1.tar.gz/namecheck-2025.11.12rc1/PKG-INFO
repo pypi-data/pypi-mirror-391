@@ -1,0 +1,64 @@
+Metadata-Version: 2.4
+Name: namecheck
+Version: 2025.11.12rc1
+Summary: CLI tool to check the availability of a package name on PyPI and TestPyPI
+Project-URL: Homepage, https://github.com/pixelprotest/namecheck
+Project-URL: Bug Tracker, https://github.com/pixelprotest/namecheck/issues
+Author-email: pixelprotest <hello@pixelprotest.com>
+License: MIT
+License-File: LICENSE
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.7
+Requires-Dist: beautifulsoup4>=4.14.2
+Requires-Dist: check-availability>=0.1.1
+Requires-Dist: platformdirs>=4.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: rich>=13.8.1
+Provides-Extra: dev
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.4; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# namecheck
+
+<p align="left" width="250">
+    <a href="https://github.com/pixelprotest/namecheck/actions">
+        <img src="https://github.com/pixelprotest/namecheck/actions/workflows/tests.yml/badge.svg" alt="Build Status">
+    </a>
+    <a href="">
+        <img src="https://img.shields.io/github/v/release/pixelprotest/namecheck">
+    </a>
+    <a href="">
+        <img src="https://img.shields.io/github/license/pixelprotest/namecheck?label=license&style=flat">
+    </a>
+</p>
+
+CLI utility to check the availability of project names on PyPi and TestPyPi
+
+<img alt="Demo" width="100%" src="https://github.com/user-attachments/assets/4adf3f46-5ab8-42cf-bcf6-360540daf4b7">
+
+## 📦 Installation
+Simple pip installation
+```
+pip install namecheck
+```
+
+## 🚀 Usage
+Then to launch just run
+
+```bash
+namecheck
+```
+
+## License
+
+MIT License. This project is for personal use.
