@@ -1,0 +1,121 @@
+name: build-on-ubunu
+
+on:
+  workflow_call:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-24.04
+      
+    steps:
+
+    - name: checkout
+      uses: actions/checkout@v4
+
+    - name: Get history and tags for SCM versioning to work
+      run: |
+        git fetch --prune --unshallow
+        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+    - name: Get version
+      id: get_version
+      uses: battila7/get-version-action@v2
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update -qy
+        sudo apt-get install -y \
+          libgirepository1.0-dev \
+          libgirepository-2.0-dev \
+          libcairo2-dev \
+          pkg-config \
+          python3-dev \
+          gir1.2-gtk-3.0 \
+          gir1.2-gtksource-4 \
+          libgtksourceview-4-0
+
+    - name: Log system package info
+      run: |
+        echo "### lab_release -a ###"
+        lsb_release -a | tee lsb_release_a.txt
+        echo "### uname -a ###"
+        uname -a | tee uname_a.txt
+        echo "### apt list --installed ###"
+        apt list --installed | tee apt_list_installed.txt
+        
+    - name: Install pythonic dependencies
+      run: |
+        pip install --upgrade pip
+        pip install wheel setuptools_scm
+        pip install -r pyinstaller/linux/requirements.txt
+        pip install pyinstaller
+
+    - name: Fix setuptools_scm-generated version
+      id: fix_version
+      run: |
+        version=$(SETUPTOOLS_SCM_DEBUG=1 python -m setuptools_scm)  # have version written to file to appear in bundled app as well
+        echo "version=$version" >> $GITHUB_OUTPUT
+
+    - name: Log python package info
+      run: |
+        echo "### pip freeze ###"
+        pip freeze | tee pip_freeze.txt
+
+    - name: Compile gschemas
+      run: |
+        glib-compile-schemas .
+      working-directory: dtool_lookup_gui
+
+    - name: Package executable with pyinstaller
+      run: |
+        pyinstaller -y ./pyinstaller/linux/dtool-lookup-gui-linux-one-file.spec 2>&1 | tee pyinstaller.log
+        mv dist/dtool-lookup-gui dtool-lookup-gui
+        chmod +x dtool-lookup-gui
+
+    # use tar here, see https://github.com/actions/upload-artifact/issues/38
+    - name: Pack build assets
+      run: |
+        bash -c "tar -cvf dtool-lookup-gui-linux.tar $(xargs -a pyinstaller/MANIFEST.linux)"
+
+    - name: Collect release assets
+      run: |
+        prefix=$(pwd)
+        mkdir -p /tmp/release
+        bash ${prefix}/maintenance/copy_files_into_folders.sh \
+             ${prefix}/pyinstaller/MANIFEST.general /tmp/release
+        bash ${prefix}/maintenance/copy_files_into_folders.sh \
+             ${prefix}/pyinstaller/MANIFEST.linux-release /tmp/release
+
+    - name: List content of release
+      run: |
+        ls -lhv /tmp/release/
+
+    - name: Pack release assets
+      run: |
+        cd /tmp/release \
+          && tar -cvzf dtool-lookup-gui-${{ steps.fix_version.outputs.version }}-linux.tar.gz ./*
+
+    - name: List packed release
+      run: |
+        ls -lhv /tmp/release/
+
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dtool-lookup-gui-linux
+        path: dtool-lookup-gui-linux.tar
+        if-no-files-found: error
+
+    - name: Upload release artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dtool-lookup-gui-linux-release
+        path: /tmp/release/dtool-lookup-gui-${{ steps.fix_version.outputs.version }}-linux.tar.gz
+        if-no-files-found: error

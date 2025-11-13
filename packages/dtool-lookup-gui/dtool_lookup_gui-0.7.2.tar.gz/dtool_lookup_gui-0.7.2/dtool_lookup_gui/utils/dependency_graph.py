@@ -1,0 +1,140 @@
+#
+# Copyright 2020-2022 Johannes Laurin Hörmann
+#           2020-2021 Lars Pastewka
+#
+# ### MIT license
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+import json
+import logging
+
+from aiohttp.client_exceptions import ContentTypeError
+
+from dtool_lookup_gui import is_uuid
+from dtool_lookup_gui.models.simple_graph import SimpleGraph
+from dtool_lookup_gui.models.search_state import SearchState
+
+logger = logging.getLogger(__name__)
+
+
+def _log_nested(log_func, dct):
+    for l in json.dumps(dct, indent=2, default=str).splitlines():
+        log_func(l)
+
+
+class DependencyGraph:
+    def __init__(self):
+        self._search_state = SearchState()
+        self._reset_graph()
+        self._reset_graph()
+
+    @property
+    def graph(self):
+        return self._graph
+
+    def _reset_graph(self):
+        self._graph = SimpleGraph()
+        self._uuid_to_vertex = {}
+        self._missing_uuids = []
+
+    async def trace_dependencies(self, lookup, root_uuid, dependency_keys=None):
+        """Build dependency graph by UUID."""
+        logger.debug(f"Build dependency graph for root '{root_uuid}'.")
+        self._reset_graph()
+
+        if isinstance(dependency_keys, str):
+            dependency_keys = json.loads(dependency_keys)
+
+        if (dependency_keys is not None) and (not isinstance(dependency_keys, list)):
+            logger.warning("Dependency keys not valid. Ignored.")
+            dependency_keys = None
+
+        pagination = {}
+        try:
+            datasets = await lookup.get_graph_by_uuid(uuid=root_uuid,
+                                                      dependency_keys=dependency_keys,
+                                                      page_size=self._search_state.page_size,
+                                                      pagination=pagination)
+        except ContentTypeError as exc:
+            logger.error("%s", exc)
+            return
+
+        logger.debug("Got first batch of dependency graph datasets with pagination information '%s'.", pagination)
+
+        self._search_state.ingest_pagination_information(pagination=pagination)
+
+        for page in range(self._search_state.first_page+1, self._search_state.last_page+1):
+            try:
+                more_datasets = await lookup.get_graph_by_uuid(uuid=root_uuid,
+                                                               dependency_keys=dependency_keys,
+                                                               page_number=page, page_size=self._search_state.page_size,
+                                                               pagination=pagination)
+            except ContentTypeError as exc:
+                logger.error("%s", exc)
+                return
+            logger.debug("Got batch #%s of dependency graph datasets with pagination information '%s'.", page, pagination)
+            if len(more_datasets) > 0:
+                datasets.extend(more_datasets)
+
+        logger.debug("Server response on querying dependency graph for UUID = {}.".format(root_uuid))
+        _log_nested(logger.debug, datasets)
+
+        for dataset in datasets:
+            # This check should be redundant, as all documents have field 'uuid'
+            # and this field is unique:
+            uuid = dataset['uuid']
+            if 'uuid' in dataset and uuid not in self._uuid_to_vertex:
+                logger.debug(f"Add dependency graph vertex '{uuid}'.")
+                v = self._graph.add_vertex(
+                    uuid=uuid,
+                    name=dataset['name'],
+                    kind='root' if uuid == root_uuid else 'dependent')
+                self._uuid_to_vertex[uuid] = v
+
+        for dataset in datasets:
+            if 'uuid' in dataset and 'derived_from' in dataset:
+                for parent_uuid in dataset['derived_from']:
+                    if is_uuid(parent_uuid):
+                        if parent_uuid not in self._uuid_to_vertex:
+                            # This UUID is present in the graph but not in the database
+                            logger.debug(f"Add dependency graph vertex of missing dataset '{parent_uuid}'.")
+                            v = self._graph.add_vertex(
+                                uuid=parent_uuid,
+                                name='Dataset does not exist in database.',
+                                kind='does-not-exist')
+                            self._uuid_to_vertex[parent_uuid] = v
+                            self._missing_uuids += [parent_uuid]
+
+                        logger.debug(f"Add dependency graph edge between child '{dataset['uuid']}' and parent {parent_uuid}.")
+                        self._graph.add_edge(
+                            self._uuid_to_vertex[dataset['uuid']],
+                            self._uuid_to_vertex[parent_uuid])
+                    else:
+                        logger.warning(
+                            "Parent dataset '{}' of child '{}': '{}' is no "
+                            "valid UUID, ignored.".format(parent_uuid,
+                                                          dataset['uuid'],
+                                                          dataset['name']))
+        logger.debug(f"Done building dependency graph for root '{root_uuid}'.")
+
+    @property
+    def missing_uuids(self):
+        return self._missing_uuids

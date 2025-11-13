@@ -1,0 +1,428 @@
+#
+# Copyright 2023 Ashwin Vazhappilly
+#           2021-2023 Johannes Laurin Hörmann
+#           2020-2021 Lars Pastewka
+#
+# ### MIT license
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+import asyncio
+import logging
+import os
+import json
+
+import yaml
+from concurrent.futures import ProcessPoolExecutor
+
+import dtoolcore
+from dtoolcore.utils import generous_parse_uri
+from dtool_info.utils import date_fmt, sizeof_fmt
+
+from dtool_info.inventory import _dataset_info
+from dtool_lookup_api.core.LookupClient import ConfigurationBasedLookupClient
+
+from ..utils.logging import _log_nested
+from ..utils.multiprocessing import StatusReportingChildProcessBuilder, process_initializer
+from ..utils.progressbar import ProgressBar
+
+
+logger = logging.getLogger(__name__)
+
+
+class CopyFuncWrapper:
+    def __init__(self, copy_func):
+        self._copy_func = copy_func
+
+    def __call__(self, src_uri, dest_base_uri, status_report_callback):
+        """Wraps a dtool copy_func into interface compatible with StatusReportingChildProcessBuilder"""
+        self._copy_func(
+            src_uri=src_uri,
+            dest_base_uri=dest_base_uri,
+            config_path=None,
+            progressbar=status_report_callback,
+        )
+
+
+def _proto_dataset_info(dataset):
+    """Return information about proto dataset as a dict."""
+    # Analogous to dtool_info.inventory._dataset_info
+    info = {}
+
+    info['type'] = 'dtool-proto'
+
+    info['uri'] = dataset.uri
+
+    info['uuid'] = dataset.uuid
+
+    info["size_int"] = None
+    info["size_str"] = 'unknown'
+
+    info['creator'] = dataset._admin_metadata['creator_username']
+    info['name'] = dataset._admin_metadata['name']
+
+    info["date"] = 'not yet frozen'
+
+    try:
+        info['readme_content'] = dataset.get_readme_content()
+    except Exception as exc:  # exception here depends on storage broker
+        # i.e. FileNotFoundError on local file system, or
+        # botocore.errorfactory.NoSuchKey: An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist.
+        # on dtool-s3
+        logger.warning(f"{dataset.uuid}, {dataset.uri}: {str(exc)}")
+        info['readme_content'] = ''
+
+
+
+    return info
+
+
+def _info(dataset):
+    if isinstance(dataset, dtoolcore.DataSet):
+        info = _dataset_info(dataset)
+        info['type'] = 'dtool-dataset'
+        info['is_frozen'] = True
+
+        manifest = []
+        for identifier in dataset._identifiers():
+            manifest += [(identifier, dataset.item_properties(identifier))]
+        info['manifest'] = manifest
+    else:
+        info = _proto_dataset_info(dataset)
+        info['is_frozen'] = False
+
+    p = generous_parse_uri(info['uri'])
+    info['scheme'] = p.scheme
+    info['base_uri'] = p.path if p.netloc is None else p.netloc
+
+    info['tags'] = dataset.list_tags()
+    annotation_names = dataset.list_annotation_names()
+    info['annotations'] = {annotation_name: dataset.get_annotation(annotation_name)
+                           for annotation_name in annotation_names}
+    return info
+
+
+def _mangle_lookup_manifest(manifest_dict):
+    """Convert dictionary returned from lookup server into a normalized manifest"""
+    manifest = []
+    for key, value in manifest_dict['items'].items():
+        manifest += [(key, value)]
+    return manifest
+
+
+async def _lookup_info(lookup_dict):
+    """Mangle return dict of lookup server into a proper dataset info"""
+
+    info = {}
+
+    uri = lookup_dict['uri']
+
+    info['type'] = 'lookup'
+
+    info['uri'] = uri
+    p = generous_parse_uri(uri)
+    info['scheme'] = p.scheme
+    info['base_uri'] = p.path if p.netloc is None else p.netloc
+
+    info['uuid'] = lookup_dict['uuid']
+
+    # The server does not include these fields in response as of 0.17.2
+    # They will be available in next release,
+    # https://github.com/jic-dtool/dtool-lookup-server/pull/21
+    try:
+        info["size_int"] = lookup_dict['size_in_bytes']
+        info["size_str"] = sizeof_fmt(lookup_dict['size_in_bytes'])
+    except KeyError:
+        info["size_int"] = None
+        info["size_str"] = 'unknown'
+
+    info['creator'] = lookup_dict['creator_username']
+    info['name'] = lookup_dict['name']
+
+    info['date'] = date_fmt(lookup_dict['frozen_at'])
+
+    info['is_frozen'] = True
+
+    return info
+
+
+def _list_proto_datasets(base_uri):
+    datasets = []
+    for dataset in dtoolcore.iter_proto_datasets_in_base_uri(base_uri):
+        datasets += [DatasetModel.from_dataset(dataset)]
+    return datasets
+
+
+def _list_datasets(base_uri):
+    datasets = []
+    for dataset in dtoolcore.iter_datasets_in_base_uri(base_uri):
+        datasets += [DatasetModel.from_dataset(dataset)]
+    return datasets
+
+
+def _load_dataset(uri):
+    logger.info(f'Loading dataset from URI: {uri}')
+
+    # determine from admin metadata whether this is a protodataset
+    admin_metadata = dtoolcore._admin_metadata_from_uri(uri, None)
+
+    if admin_metadata['type'] == 'protodataset':
+        dataset = dtoolcore.ProtoDataSet.from_uri(uri)
+    else:
+        dataset = dtoolcore.DataSet.from_uri(uri)
+
+    return dataset
+
+
+async def _copy_dataset(uri, target_base_uri, resume, auto_resume, progressbar=None):
+    logger.info(f'Copying dataset from URI {uri} to {target_base_uri}...')
+
+    dataset = _load_dataset(uri)
+
+    dest_uri = dtoolcore._generate_uri(
+        admin_metadata=dataset._admin_metadata,
+        base_uri=target_base_uri
+    )
+
+    copy_func = dtoolcore.copy
+    is_dataset = dtoolcore._is_dataset(dest_uri, config_path=None)
+    if resume or (auto_resume and is_dataset):
+        # copy resume
+        copy_func = dtoolcore.copy_resume
+    elif is_dataset:
+        # don't resume
+        raise FileExistsError("Dataset already exists: {}".format(dest_uri))
+    else:
+        # If the destination URI is a "file" dataset one needs to check if
+        # the path already exists and exit gracefully if true.
+        parsed_dataset_uri = dtoolcore.utils.generous_parse_uri(dest_uri)
+        if parsed_dataset_uri.scheme == "file":
+            if os.path.exists(parsed_dataset_uri.path):
+                raise FileExistsError(
+                    "Path already exists: {}".format(parsed_dataset_uri.path))
+
+    num_items = len(list(dataset.identifiers))
+
+    copy_func_wrapper = CopyFuncWrapper(copy_func)
+
+    with ProgressBar(length=2*num_items,
+                     label="Copying dataset",
+                     pb=progressbar) as pb:
+        non_blocking_copy_func = StatusReportingChildProcessBuilder(copy_func_wrapper, pb)
+        dest_uri = await non_blocking_copy_func(uri, target_base_uri)
+
+    logger.info(f'Dataset successfully copied from {uri} to {target_base_uri}.')
+
+    return dest_uri
+
+
+class DatasetModel:
+    """
+    Model for both frozen and proto datasets, either received from dtoolcore
+    or the lookup server.
+    """
+
+    @staticmethod
+    async def all(base_uri):
+        """Return all datasets at base URI"""
+
+        datasets = []
+
+        loop = asyncio.get_running_loop()
+        datasets = []
+        with ProcessPoolExecutor(max_workers=2, initializer=process_initializer) as executor:
+            datasets += await loop.run_in_executor(executor, _list_proto_datasets, base_uri)
+            datasets += await loop.run_in_executor(executor, _list_datasets, base_uri)
+
+        return datasets
+
+    @classmethod
+    def from_uri(cls, uri):
+        return cls(uri=uri)
+
+    @classmethod
+    def from_dataset(cls, dataset):
+        return cls(dataset_info=_info(dataset))
+
+    @classmethod
+    async def from_lookup(cls, lookup_dict):
+        return cls(dataset_info=await _lookup_info(lookup_dict))
+
+    def __init__(self, uri=None, dataset_info=None):
+        if uri is not None:
+            self.reload(uri)
+        elif dataset_info is not None:
+            self._dataset_info = dataset_info
+        else:
+            raise ValueError('Please provide either `uri` or `dateset_info`.')
+
+    @classmethod
+    async def get_datasets(cls, free_text=None, page_number=None, page_size=None,
+                           sort_fields=None, sort_order=None, pagination={} , sorting={}):
+        async with ConfigurationBasedLookupClient() as lookup:
+            datasets = await lookup.get_datasets(
+                free_text=free_text, page_number=page_number, page_size=page_size,
+                sort_fields=sort_fields, sort_order=sort_order,
+                pagination=pagination, sorting=sorting)
+        return [await cls.from_lookup(lookup_dict) for lookup_dict in datasets]
+
+    @classmethod
+    async def get_datasets_by_mongo_query(cls, query, *args, **kwargs):
+        async with ConfigurationBasedLookupClient() as lookup:
+            datasets = await lookup.get_datasets_by_mongo_query(query=query, *args, **kwargs)
+        return [await cls.from_lookup(lookup_dict) for lookup_dict in datasets]
+
+    @classmethod
+    async def query_all(cls, sort_fields=None, sort_order=None, page_number=None,
+                        page_size=None, pagination={}, sorting={}):
+        """Query all datasets from the lookup server."""
+        async with ConfigurationBasedLookupClient() as lookup:
+            datasets = await lookup.get_datasets(
+                page_number=page_number, page_size=page_size,
+                sort_fields=sort_fields, sort_order=sort_order,
+                pagination=pagination,sorting=sorting)
+        return [await cls.from_lookup(lookup_dict) for lookup_dict in datasets]
+
+    @classmethod
+    async def versions(cls):
+        """To return version info from the server """
+        async with ConfigurationBasedLookupClient() as lookup:
+            version_info = await lookup.get_versions()
+        print(version_info)
+
+    def __str__(self):
+        return self._dataset_info['uri']
+
+    def __getattr__(self, name):
+        return self._dataset_info[name]
+
+    def __setattr__(self, name, value):
+        if name.startswith('_'):
+            super().__setattr__(name, value)
+        else:
+            self._dataset_info[name] = value
+
+    def __getstate__(self):
+        return self._dataset_info
+
+    def __setstate__(self, state):
+        self._dataset_info = state
+
+    def reload(self, uri=None):
+        """Load the dataset from a URI.
+
+        :param uri: URI to a dtoolcore.DataSet
+        """
+        self._dataset_info = _info(_load_dataset(uri))
+
+    async def copy(self, target_base_uri, resume=False, auto_resume=True, progressbar=None):
+        """Copy a dataset."""
+        await _copy_dataset(self.uri, target_base_uri, resume, auto_resume, progressbar)
+
+    def freeze(self):
+        uri = str(self)
+        _load_dataset(str(self)).freeze()
+        logger.debug(f"Froze {uri}")
+        # We need to reread dataset after freezing, since _data is currently
+        # a dtoolcore.ProtoDataSet but should not become a dtoolcore.DataSet
+        # Dataset and URI lost when freezing, preserve and reload here
+        self.reload(uri=uri)
+        uri = str(self)
+        logger.debug(f"Reloaded {uri}")
+
+    def put_readme(self, text):
+        self.readme_content = text
+        return _load_dataset(str(self)).put_readme(text)
+
+    def put_tag(self, tag):
+        _load_dataset(str(self)).put_tag(tag)
+        if 'tags' not in self._dataset_info:
+            self._dataset_info['tags'] = []
+        self._dataset_info['tags'].append(tag)
+
+    def put_annotation(self, annotation_name, annotation):
+        _load_dataset(str(self)).put_annotation(annotation_name, annotation)
+        if 'annotations' not in self._dataset_info:
+            self._dataset_info['annotations'] = {}
+        self._dataset_info['annotations'].update({annotation_name : annotation})
+
+    def delete_tag(self,tag):
+        _load_dataset(str(self)).delete_tag(tag)
+        if 'tags' in self._dataset_info:
+            self._dataset_info['tags'].remove(tag)
+
+    def delete_annotation(self, annotation_name):
+        _load_dataset(str(self)).delete_annotation(annotation_name)
+        if 'annotations' in self._dataset_info and annotation_name in self._dataset_info['annotations']:
+            del self._dataset_info['annotations'][annotation_name]
+
+    async def get_readme(self):
+        if 'readme_content' in self._dataset_info:
+            logger.debug("%s", dir(self._dataset_info))
+            logger.debug("%s", dict(self._dataset_info))
+            logger.debug("README.yml cached.")
+            return self._dataset_info['readme_content']
+
+        logger.debug("README.yml queried from lookup server.")
+        async with ConfigurationBasedLookupClient() as lookup:
+            self._dataset_info['readme_content'] = await lookup.get_readme(self.uri)
+        return self._dataset_info['readme_content']
+
+    async def get_manifest(self):
+        # ATTENTION HERE: will try to get data from lookup server for proto datasets without following check
+        if not self.is_frozen:
+            return dict()
+        if 'manifest' in self._dataset_info:
+            return self._dataset_info['manifest']
+        async with ConfigurationBasedLookupClient() as lookup:
+            manifest_dict = await lookup.get_manifest(self.uri)
+        self._dataset_info['manifest'] = _mangle_lookup_manifest(manifest_dict)
+        return self._dataset_info['manifest']
+
+    async def get_tags(self):
+        if 'tags' in self._dataset_info:
+            return self._dataset_info['tags']
+
+        async with ConfigurationBasedLookupClient() as lookup:
+            tags_list = await lookup.get_tags(self.uri)
+        self._dataset_info['tags'] = tags_list
+        return tags_list
+
+    async def get_annotations(self):
+        if 'annotations' in self._dataset_info:
+            return self._dataset_info['annotations']
+
+        async with ConfigurationBasedLookupClient() as lookup:
+            annotations_dict = await lookup.get_annotations(self.uri)
+        self._dataset_info['annotations'] = annotations_dict
+        return annotations_dict
+
+    async def get_item(self, item_uuid):
+        """Get item from dataset by item UUID"""
+        if not self.is_frozen:
+            raise ValueError("Cannot retrieve items by UUID from ProtoDatasets.")
+
+        dataset = _load_dataset(str(self))
+        if item_uuid in dataset.identifiers:
+            cached_file = dataset.item_content_abspath(item_uuid)
+            logger.debug(f"Retrieved cached item {cached_file}.")
+            return cached_file
+        else:
+            raise ValueError(f"Item UUID '{item_uuid}' does not exist within dataset '{str(self)}'.")
