@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(jlpm install)",
+      "Bash(jlpm build:*)",
+      "Bash(jlpm lint:check:*)",
+      "Bash(jlpm prettier:*)",
+      "Bash(jlpm eslint:check:*)",
+      "Bash(cat:*)",
+      "Bash(make publish:*)",
+      "Bash(python -m build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
