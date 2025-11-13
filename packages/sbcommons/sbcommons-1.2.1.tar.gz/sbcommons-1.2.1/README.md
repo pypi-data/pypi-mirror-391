@@ -1,0 +1,190 @@
+# sbcommons
+
+[![CI](https://github.com/Snusbolaget/sbcommons/actions/workflows/ci.yml/badge.svg)](https://github.com/Snusbolaget/sbcommons/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/sbcommons.svg)](https://pypi.org/project/sbcommons/)
+
+A comprehensive Python library providing shared utilities and clients for AWS services, CRM integrations (Klaviyo, Symplify), messaging platforms (Slack, Microsoft Teams), and data processing operations used across Haypp Group's data systems.
+
+## Features
+
+- **AWS Integration**: Clients for S3, Redshift, Lambda, DMS, SNS, and Secrets Manager
+- **CRM Clients**: 
+  - Klaviyo API v3 client with comprehensive campaign, event, and customer management
+  - Symplify integration for customer relationship management
+  - ADP client for survey data
+- **Messaging**: Slack and Microsoft Teams webhook utilities with modern Adaptive Cards support
+- **Logging**: Enhanced logging with Lambda-compatible logger and rotating file handlers
+- **Data Utilities**: Extract and parse utilities for common data transformation tasks
+
+## Installation
+
+Install from PyPI:
+
+```bash
+pip install sbcommons
+```
+
+## Requirements
+
+- Python 3.9, 3.10, 3.11, or 3.12
+- boto3 >= 1.24.35
+- requests >= 2.28.1
+- Other dependencies listed in `requirements.txt`
+
+## Usage
+
+### AWS Services
+
+```python
+from sbcommons.aws.s3 import S3Client
+from sbcommons.aws.redshift import RedshiftClient
+from sbcommons.aws.secrets import get_secret
+
+# S3 operations
+s3_client = S3Client()
+s3_client.upload_file('local.txt', 'bucket', 'key.txt')
+
+# Redshift queries
+redshift = RedshiftClient(host='your-host', database='db')
+results = redshift.execute_query('SELECT * FROM table')
+
+# Secrets Manager
+secret = get_secret('my-secret-name')
+```
+
+### CRM Integration
+
+```python
+from sbcommons.crm.klaviyo.client import KlaviyoClient
+
+# Klaviyo operations
+klaviyo = KlaviyoClient(api_key='your-key')
+campaigns = klaviyo.get_email_campaigns()
+events = klaviyo.get_events(metric_id='metric123')
+```
+
+### Messaging
+
+```python
+from sbcommons.teams.teams import post_to_teams
+from sbcommons.slack.slack import SlackMessenger
+
+# Microsoft Teams (Adaptive Cards)
+post_to_teams('https://webhook-url', 'Message title', 'Message body')
+
+# Slack
+slack = SlackMessenger('https://slack-webhook-url')
+slack.post_message('Hello from sbcommons!')
+```
+
+## Development
+
+### Setup Development Environment
+
+Clone the repository and create a virtual environment:
+
+```bash
+git clone https://github.com/Snusbolaget/sbcommons.git
+cd sbcommons
+pip install -r requirements.txt
+```
+
+### Running Tests
+
+```bash
+# Run tests with pytest
+pytest tests/ -v --cov=sbcommons --cov-report=term
+```
+
+Tests are automatically run via GitHub Actions on push and pull requests for Python 3.9, 3.10, and 3.11.
+
+### Building and Publishing
+
+#### Local Development Builds
+
+For local testing, you can build the package:
+
+```bash
+# Install build tools
+pip install build twine
+
+# Build distributions
+python -m build
+
+# Validate the build
+twine check dist/*
+
+# Clean build artifacts when done
+rm -rf dist/ build/ *.egg-info
+```
+
+#### Testing on TestPyPI (Optional)
+
+Before releasing to production, you can test the package on TestPyPI:
+
+```bash
+# Build and upload to TestPyPI
+python -m build
+twine upload --repository testpypi dist/*
+
+# Test installation from TestPyPI
+pip install --index-url https://test.pypi.org/simple/ sbcommons
+```
+
+**Note**: TestPyPI uploads are for manual testing only and should not be part of the automated workflow.
+
+#### Publishing to PyPI (Production)
+
+**Publishing is fully automated via GitHub Actions.** When your PR is merged to `main`, the release workflow automatically:
+
+1. Builds the package distributions
+2. Publishes to PyPI using the `PYPI_API_TOKEN` secret
+
+**To release a new version:**
+
+1. Update the version in `setup.py`
+2. Document changes in `CHANGELOG.md`
+3. Create a PR to `main`
+4. Once merged, the package is automatically published to PyPI
+
+**Manual publishing is not recommended** to ensure consistency and prevent version conflicts. All releases should go through the PR review process.
+
+## Project Structure
+
+```
+sbcommons/
+├── adp/              # ADP client integration
+├── aws/              # AWS service clients (S3, Redshift, Lambda, etc.)
+├── crm/              # CRM integrations (Klaviyo, Symplify)
+├── extract_utils/    # Data extraction utilities
+├── logging/          # Enhanced logging utilities
+├── messaging/        # Webhook utilities
+├── parse_utils/      # Configuration and text parsing
+├── slack/            # Slack messaging client
+└── teams/            # Microsoft Teams messaging (Adaptive Cards)
+```
+
+## CI/CD
+
+The project uses GitHub Actions for continuous integration and deployment:
+
+- **CI Workflow** (`.github/workflows/ci.yml`): Runs tests on Python 3.9-3.11 for all pull requests and pushes to main
+- **Release Workflow** (`.github/workflows/release.yml`): Automatically publishes to PyPI when changes are pushed to main branch
+
+## Contributing
+
+1. Create a feature branch from `main`
+2. Make your changes and add tests
+3. Update the CHANGELOG.md with your changes
+4. Update the version in `setup.py`
+5. Submit a pull request
+
+The CI workflow will verify that:
+- Tests pass on all supported Python versions
+- If `sbcommons/` code is modified, both CHANGELOG.md and setup.py versions are updated
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
+**Maintained by Haypp Group Data Team** | [data@hayppgroup.com](mailto:data@hayppgroup.com)
