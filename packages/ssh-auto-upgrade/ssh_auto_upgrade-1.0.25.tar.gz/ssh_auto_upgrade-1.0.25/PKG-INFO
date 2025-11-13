@@ -1,0 +1,859 @@
+Metadata-Version: 2.4
+Name: ssh-auto-upgrade
+Version: 1.0.25
+Summary: 自动检测和升级OpenSSH的工具
+Author-email: 坐公交也用券 <liumou.site@qq.com>
+License: MIT
+Project-URL: Homepage, https://gitee.com/liumou_site/ssh-automatic-upgrade
+Project-URL: Repository, https://gitee.com/liumou_site/ssh-automatic-upgrade
+Project-URL: Bug Reports, https://gitee.com/liumou_site/ssh-automatic-upgrade/issues
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: System :: Systems Administration
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests>=2.25.0
+Requires-Dist: beautifulsoup4>=4.9.0
+Requires-Dist: systemd-python>=234
+Requires-Dist: dbus-python>=1.2.0
+Requires-Dist: plpm-liumou-stable>=1.0.1
+Requires-Dist: paramiko>=4.0.0
+Dynamic: license-file
+
+# SSH自动升级工具
+
+> 一个专业的OpenSSH自动检测和升级工具，支持守护进程模式和systemd服务管理
+
+[![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)](https://www.python.org/)
+
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Linux-lightgrey)](https://www.linux.org/)
+
+- **项目地址**: <https://gitee.com/liumou_site/ssh-automatic-upgrade>
+- **PyPI地址**: <https://pypi.org/project/ssh-auto-upgrade>
+- **最新版本**: ![PyPI](https://img.shields.io/pypi/v/ssh-auto-upgrade)
+- **下载量**: ![PyPI - Downloads](https://img.shields.io/pypi/dm/ssh-auto-upgrade?style=flat-square)
+
+## 📖 项目简介
+
+SSH自动升级工具是一个专为Linux系统管理员设计的自动化工具，能够自动检测OpenSSH最新版本、下载源码、编译安装，并支持注册为systemd守护进程服务。工具采用模块化设计，具有良好的可扩展性和稳定性。
+
+### ✨ 核心特性
+
+- 🔍 **智能版本检测** - 自动从OpenSSH官方源检测最新版本
+- 📥 **可靠下载机制** - 支持断点续传、进度显示和文件完整性验证
+- 🛡️ **安全安装流程** - 包含安装前验证、回滚机制和错误处理
+- 🔧 **系统服务管理** - 支持systemd服务注册、启动、停止和管理
+- 📋 **依赖自动管理** - 智能检测和安装编译所需的系统依赖
+- 📊 **详细日志记录** - 完整的安装过程日志和状态监控
+- 🔄 **循环日志系统** - 智能日志文件轮转，防止磁盘空间耗尽
+- 🎯 **模块化架构** - 清晰的代码结构，易于维护和扩展
+- ⚡ **智能检测机制** - 多维度系统状态检测和验证
+- 🛡️ **参数验证系统** - 完善的输入验证和安全检查
+
+## 🏗️ 系统架构
+
+```bash
+ssh_auto_upgrade/
+├── 📁 src/ssh_auto_upgrade/
+│   ├── 🚀 main.py                    # 主程序入口，守护进程模式
+│   ├── 🔍 version_detector.py         # 版本检测模块
+│   ├── 📥 downloader.py              # 下载器模块
+│   ├── 🛠️ installer.py               # 安装器核心模块
+│   ├── ⚙️ installer_service_manager.py # 安装器服务管理
+│   ├── 📁 installer_file_manager.py   # 安装器文件管理
+│   ├── 🔧 service_manager.py          # systemd服务管理
+│   ├── 📋 dependencies.py            # 依赖管理模块
+│   ├── 📝 dependency_constants.py     # 依赖常量定义
+│   ├── 📊 logger.py                   # 日志记录模块（支持循环日志）
+│   ├── 🔨 compile.py                  # 传统编译脚本（兼容模式）
+│   ├── 🧹 legacy_cleaner.py         # 遗留文件清理模块
+│   ├── 🔍 mirror_checker.py          # 镜像源检查模块
+│   ├── 🔍 service_detector.py         # 服务检测模块
+│   ├── 🔍 systemd_checker.py          # systemd检查模块
+│   ├── 🔍 time_checker.py            # 时间检查模块
+│   ├── 🔍 installer_service_detector.py # 安装器服务检测
+│   ├── ⚙️ ssh_config_manager.py       # SSH配置管理
+│   └── ✅ argument_validator.py       # 参数验证模块
+├── 📄 pyproject.toml                  # 项目配置和打包信息
+├── 📄 requirements.txt               # Python依赖列表
+└── 📄 setup.py                       # 传统打包配置
+```
+
+### 🔄 工作流程
+
+#### 守护进程模式完整流程
+
+```mermaid
+graph TD
+    A[启动程序] --> B[权限检查]
+    B --> C[参数验证]
+    C --> D[systemd检查]
+    D --> E[镜像源检测]
+    E --> F[依赖检查]
+    F --> G{服务注册模式?}
+    G -->|是| H[注册systemd服务]
+    G -->|否| I[进入守护循环]
+    H --> J[退出程序]
+    I --> K[时间段检查]
+    K -->|在时间段内| L[版本检测]
+    K -->|不在时间段内| M[等待1小时]
+    L --> N{需要升级?}
+    N -->|是| O[停止SSH服务]
+    N -->|否| M
+    O --> P[下载源码]
+    P --> Q[编译安装]
+    Q --> R[验证安装]
+    R --> S[重启服务]
+    S --> T[配置root登录]
+    T --> M
+    M --> I
+```
+
+1. **系统初始化检查**
+   - **权限验证** → 检查root权限（必需）
+   - **参数验证** → 验证命令行参数格式和组合
+   - **systemd检查** → 确保系统支持systemd
+   - **镜像源检测** → 验证OpenSSH镜像源可用性
+
+2. **依赖环境准备**
+   - **编译依赖检查** → 检测gcc、make、autoconf等编译工具
+   - **自动安装缺失依赖** → 使用系统包管理器安装
+   - **依赖验证** → 确保所有编译环境就绪
+
+3. **服务注册模式**（如果指定--service参数）
+   - **systemd服务创建** → 生成systemd服务单元文件
+   - **服务注册** → 注册到systemd并设置开机自启
+   - **服务配置** → 配置服务参数和工作目录
+
+4. **守护进程主循环**（非服务注册模式）
+   - **时间段检查** → 验证当前时间是否在允许升级的时间段
+   - **版本检测** → 检查当前OpenSSH版本和最新可用版本
+   - **升级决策** → 根据版本对比和force参数决定是否升级
+
+5. **OpenSSH升级流程**（当需要升级时）
+   - **服务停止** → 停止SSH守护服务（CLS、xc-ssh等）
+   - **原生服务禁用** → 禁用系统原生SSH服务避免端口冲突
+   - **源码下载** → 从镜像源下载OpenSSH源码包
+   - **编译安装** → 配置、编译并安装到指定目录
+   - **安装验证** → 验证新版本安装是否成功
+   - **服务重启** → 重新启动SSH服务和守护服务
+   - **配置更新** → 根据参数设置root登录权限
+   - **遗留清理** → 清理旧版本文件和启动脚本
+
+6. **循环等待**
+   - **时间检查** → 每小时检查一次是否在升级时间段
+   - **日志记录** → 记录所有操作和状态变化
+   - **异常处理** → 处理网络、权限、依赖等异常情况
+
+#### 🔍 工作流程关键改进
+
+**相比传统升级工具的核心优势：**
+
+1. **智能时间控制**
+   - 支持时间段限制（`--start-time` 和 `--end-time`）
+   - 避免在业务高峰期进行升级操作
+   - 每小时检查一次，确保在安全时间段内执行
+
+2. **服务兼容性处理**
+   - 自动检测并停止CLS、xc-ssh等SSH守护服务
+   - 智能禁用系统原生SSH服务避免端口冲突
+   - 升级完成后自动恢复所有服务
+
+3. **异常安全机制**
+   - 完整的依赖检查和自动修复
+   - 安装失败自动回滚机制
+   - 服务状态验证确保升级成功
+   - 循环日志系统防止磁盘空间耗尽
+
+4. **参数验证系统**
+   - 严格的命令行参数格式验证
+   - 参数组合逻辑检查
+   - 友好的错误提示信息
+
+5. **镜像源智能检测**
+   - 自动检测阿里云镜像源可用性
+   - 支持版本号解析和排序
+   - 网络异常重试机制
+
+## 🚀 快速开始
+
+### 系统依赖安装
+
+在安装Python包之前，请确保系统已安装必要的编译依赖：
+
+```bash
+# Ubuntu/Debian 系统
+sudo apt update
+sudo apt install libsystemd-dev libdbus-1-dev libglib2.0-dev pkg-config
+
+# CentOS/RHEL系统  
+sudo yum install systemd-devel dbus-devel glib2-devel pkgconfig
+
+# 或者使用 dnf (CentOS 8+/RHEL 8+)
+sudo dnf install systemd-devel dbus-devel glib2-devel pkgconfig
+```
+
+### 方法一：通过PyPI安装（推荐）
+
+```bash
+# 使用pip3并添加清华大学镜像源加速安装
+pip3 install ssh-auto-upgrade -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+### 方法二：开发模式安装（从源码安装）
+
+```bash
+# 开发模式安装，便于修改代码，使用清华大学镜像源
+pip3 install -e . -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+### 升级到最新版本
+
+```bash
+# 使用清华大学镜像源升级到最新版本
+pip3 install --upgrade ssh-auto-upgrade -i https://pypi.tuna.tsinghua.edu.cn/simple/
+```
+
+### 卸载工具
+
+```bash
+pip3 uninstall ssh-auto-upgrade
+```
+
+## ⚙️ 使用说明
+
+### 命令行参数
+
+```bash
+# 查看所有选项
+ssh-auto-upgrade --help
+
+# 基本用法示例
+ssh-auto-upgrade
+
+# 自定义镜像源
+ssh-auto-upgrade --mirror https://mirrors.aliyun.com/openssh/portable/
+
+# 自定义安装目录
+ssh-auto-upgrade --install-dir /usr/local/openssh
+
+# 自定义下载目录
+ssh-auto-upgrade --download-dir /tmp/ssh-upgrade
+
+# 自定义日志目录
+ssh-auto-upgrade --log-dir /var/log/ssh-auto-upgrade
+
+# 强制升级（即使版本相同也执行安装）
+ssh-auto-upgrade --force
+
+# 注册为systemd服务（需要root权限）
+ssh-auto-upgrade --service
+
+# 设置升级时间段（默认00:00:00-08:00:00）
+ssh-auto-upgrade --upgrade-time 00:00:00-08:00:00
+
+# 设置跨天时间段
+ssh-auto-upgrade --upgrade-time 22:00:00-06:00:00
+
+# 智能检测root登录配置（默认）
+ssh-auto-upgrade --root-login auto
+
+# 强制启用root登录
+ssh-auto-upgrade --root-login yes
+
+# 强制禁用root登录
+ssh-auto-upgrade --root-login no
+
+# 使用简化参数设置root登录
+ssh-auto-upgrade -rl yes
+ssh-auto-upgrade -rl no
+
+# 组合使用示例
+ssh-auto-upgrade --force --upgrade-time 00:00:00-08:00:00 --root-login yes
+ssh-auto-upgrade --service --mirror https://mirrors.aliyun.com/openssh/portable/ -rl no
+```
+
+### 参数说明
+
+| 参数 | 短参数 | 默认值 | 说明 |
+|------|--------|--------|------|
+| `--mirror` | `-m` | `https://mirrors.aliyun.com/openssh/portable/` | OpenSSH镜像源URL |
+| `--install-dir` | `-i` | `/usr/local/openssh` | OpenSSH安装目录 |
+| `--download-dir` | `-d` | `/tmp/ssh-upgrade` | 下载目录 |
+| `--log-dir` | `-l` | `/var/log/ssh-auto-upgrade` | 日志目录 |
+| `--force` | `-f` | `false` | 强制升级，即使版本相同也执行安装 |
+| `--service` | 无 | `false` | 注册为systemd服务 |
+| `--upgrade-time` | `-t` | `00:00:00-08:00:00` | 升级时间段，格式为 HH:MM:SS-HH:MM:SS |
+| `--root-login` | `-rl` | `auto` | root登录配置：auto(智能检测), yes(启用), no(禁用) |
+
+### systemd服务管理
+
+#### 注册为systemd服务
+
+```bash
+sudo ssh-auto-upgrade --service
+```
+
+#### ⚠️ 重要说明：升级期间服务管理
+
+**升级期间需要停止的服务：**
+
+- **CLS服务** - 主要的SSH守护进程服务
+- **xc-ssh.service** - 属于SSH守护的辅助服务
+
+**服务停止流程：**
+
+1. 升级前自动检查并停止上述两个服务
+2. 升级完成后自动重新启动服务
+3. 如果服务不存在，会输出提示信息并继续执行
+
+**冲突服务处理建议：**
+
+- 如果有其他与SSH相关的服务存在冲突，建议：
+  - **修改服务名称** - 避免与SSH守护服务冲突
+  - **使用不同端口** - 配置不同的监听端口
+  - **不要使用本工具** - 如果存在无法解决的冲突
+
+**安全特性：**
+
+- 自动检查服务存在性，避免操作不存在的服务
+- 服务停止失败不会影响主要升级流程
+- 提供详细的日志输出，便于问题排查
+
+### 安装使用效果
+
+```shell
+[root@ecs ~]# pip3 install ssh-auto-upgrade -i https://pypi.tuna.tsinghua.edu.cn/simple/
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple/
+Collecting ssh-auto-upgrade
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/76/5a/0058bc6b79ff1f35dfcdc00de7d2d61636de768da4225c3601c1db20c4e8/ssh_auto_upgrade-1.0.21-py3-none-any.whl (61 kB)
+Collecting requests>=2.25.0
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/70/8e/0e2d847013cb52cd35b38c009bb167a1a26b2ce6cd6965bf26b47bc0bf44/requests-2.31.0-py3-none-any.whl (62 kB)
+Requirement already satisfied: systemd-python>=234 in /usr/lib64/python3.7/site-packages (from ssh-auto-upgrade) (234)
+Collecting beautifulsoup4>=4.9.0
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/94/fe/3aed5d0be4d404d12d36ab97e2f1791424d9ca39c2f754a6285d59a3b01d/beautifulsoup4-4.14.2-py3-none-any.whl (106 kB)
+Collecting dbus-python>=1.2.0
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ff/24/63118050c7dd7be04b1ccd60eab53fef00abe844442e1b6dec92dae505d6/dbus-python-1.4.0.tar.gz (232 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+    Preparing wheel metadata ... done
+Collecting plpm-liumou-stable>=1.0.1
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/58/a3/b83da7d015409f17ad35396122f360ea640de77bceced807efa93b196195/plpm_liumou_stable-1.0.2-py3-none-any.whl (29 kB)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/lib/python3.7/site-packages (from requests>=2.25.0->ssh-auto-upgrade) (1.24.3)
+Collecting certifi>=2017.4.17
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/e4/37/af0d2ef3967ac0d6113837b44a4f0bfe1328c2b9763bd5b1744520e5cfed/certifi-2025.10.5-py3-none-any.whl (163 kB)
+     |████████████████████████████████| 163 kB 796 kB/s 
+Collecting charset-normalizer<4,>=2
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/0a/4c/925909008ed5a988ccbb72dcc897407e5d6d3bd72410d69e051fc0c14647/charset_normalizer-3.4.4-py3-none-any.whl (53 kB)
+     |████████████████████████████████| 53 kB 2.6 MB/s 
+Requirement already satisfied: idna<4,>=2.5 in /usr/lib/python3.7/site-packages (from requests>=2.25.0->ssh-auto-upgrade) (2.8)
+Collecting soupsieve>1.2
+  Downloading https://pypi.tuna.tsinghua.edu.cn/packages/49/37/673d6490efc51ec46d198c75903d99de59baffdd47aea3d071b80a9e4e89/soupsieve-2.4.1-py3-none-any.whl (36 kB)
+Collecting typing-extensions>=4.0.0
+  Using cached https://pypi.tuna.tsinghua.edu.cn/packages/ec/6b/63cc3df74987c36fe26157ee12e09e8f9db4de771e0f3404263117e75b95/typing_extensions-4.7.1-py3-none-any.whl (33 kB)
+Building wheels for collected packages: dbus-python
+  Building wheel for dbus-python (PEP 517) ... done
+  Created wheel for dbus-python: filename=dbus_python-1.4.0-cp37-cp37m-linux_aarch64.whl size=127550 sha256=a2282c2e21565b51d59f983b9d70bf7ea795c6f8c9b6f35086b8e1a15c392549
+  Stored in directory: /root/.cache/pip/wheels/3a/74/b0/4bad641f2016f4157e1fb2d2f217945f745c493ee4f2ef5277
+Successfully built dbus-python
+ERROR: docker-compose 1.22.0 has requirement requests!=2.11.0,!=2.12.2,!=2.18.0,<2.22,>=2.6.1, but you'll have requests 2.31.0 which is incompatible.
+Installing collected packages: certifi, charset-normalizer, requests, soupsieve, typing-extensions, beautifulsoup4, dbus-python, plpm-liumou-stable, ssh-auto-upgrade
+  Attempting uninstall: requests
+    Found existing installation: requests 2.21.0
+    Uninstalling requests-2.21.0:
+      Successfully uninstalled requests-2.21.0
+Successfully installed beautifulsoup4-4.14.2 certifi-2025.10.5 charset-normalizer-3.4.4 dbus-python-1.4.0 plpm-liumou-stable-1.0.2 requests-2.31.0 soupsieve-2.4.1 ssh-auto-upgrade-1.0.21 typing-extensions-4.7.1
+[root@ecs ~]# ssh-auto-upgrade -h
+usage: ssh-auto-upgrade [-h] [--mirror MIRROR] [--install-dir INSTALL_DIR]
+                        [--download-dir DOWNLOAD_DIR] [--log-dir LOG_DIR]
+                        [--force] [--service] [--upgrade-time UPGRADE_TIME]
+                        [--root-login {auto,yes,no}] [--check-interval [1-48]]
+
+OpenSSH自动升级守护进程工具-V1.0.21
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --mirror MIRROR, -m MIRROR
+                        OpenSSH镜像源URL
+  --install-dir INSTALL_DIR, -i INSTALL_DIR
+                        OpenSSH安装目录
+  --download-dir DOWNLOAD_DIR, -d DOWNLOAD_DIR
+                        下载目录
+  --log-dir LOG_DIR, -l LOG_DIR
+                        日志目录
+  --force, -f           强制升级，即使版本相同也执行安装
+  --service, -s         注册为systemd服务
+  --upgrade-time UPGRADE_TIME, -t UPGRADE_TIME
+                        升级时间段，格式为 HH:MM:SS-HH:MM:SS，默认00:00:00-08:00:00
+  --root-login {auto,yes,no}
+                        升级后root登录配置: auto(智能检测当前配置，默认), yes(启用), no(禁用)
+  --check-interval [1-48]
+                        检测间隔时间，单位小时，默认1，最低1，最大48
+[root@ecs ~]# ssh-auto-upgrade -s
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:84] main() - 检测到当前root登录配置: 禁用
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:85] main() - 默认设置为: --root-login no
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:86] main() - 可通过 --root-login yes/no 参数强制设置
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:89] main() - 检查镜像地址可用性
+2025-10-30 09:41:39 - ssh_auto_upgrade.mirror_checker - INFO - [mirror_checker.py:47] check_mirror_availability() - 开始检测镜像地址可用性: https://mirrors.aliyun.com/openssh/portable/
+2025-10-30 09:41:39 - ssh_auto_upgrade.mirror_checker - INFO - [mirror_checker.py:67] check_mirror_availability() - ✓ 镜像地址可用: https://mirrors.aliyun.com/openssh/portable/
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:100] main() - 镜像地址检测通过
+2025-10-30 09:41:39 - ssh_auto_upgrade - INFO - [main.py:103] main() - 检查编译依赖
+2025-10-30 09:41:39 - ssh_auto_upgrade.dependencies - INFO - [dependencies.py:44] _init_modules() - plpm模块已成功加载
+2025-10-30 09:41:39 - ssh_auto_upgrade.dependencies - INFO - [dependencies.py:280] ensure_dependencies() - 检查编译依赖...
+2025-10-30 09:41:39 - ssh_auto_upgrade.dependencies - INFO - [dependencies.py:281] ensure_dependencies() - 检测到系统: kylin
+2025-10-30 09:41:39 - ssh_auto_upgrade.dependencies - INFO - [dependencies.py:282] ensure_dependencies() - 检测到包管理器: yum
+2025-10-30 09:41:40 - ssh_auto_upgrade.dependencies - INFO - [dependencies.py:288] ensure_dependencies() - ✓ 所有编译依赖已安装
+2025-10-30 09:41:40 - ssh_auto_upgrade - INFO - [main.py:116] main() - 编译依赖检查通过
+2025-10-30 09:41:40 - ssh_auto_upgrade - INFO - [service_registrar.py:27] register_service() - 正在注册systemd服务...
+2025-10-30 09:41:40 - ssh_auto_upgrade - INFO - [service_registrar.py:33] register_service() - 开始服务检测流程...
+=== 开始服务检测流程 ===
+⚠️  检测到xc-ssh服务存在
+请确认该服务是否为SSH守护服务：
+   - 如果是SSH守护服务，可以继续注册，升级期间会停止该服务，升级完成后启动
+   - 如果不是SSH守护服务，建议重命名该服务以避免冲突
+xc-ssh服务是否为SSH守护服务？(y/n): y
+确认xc-ssh为SSH守护服务，继续注册...
+✓ 确认以下服务为SSH守护服务: xc-ssh
+这些服务将在升级期间被停止，升级完成后重新启动。
+=== 服务检测流程完成 ===
+2025-10-30 09:41:44 - ssh_auto_upgrade - INFO - [service_registrar.py:86] register_service() - 成功: systemd服务注册成功，服务已启动并设置为开机自启
+
+服务已注册，可以使用以下命令管理:
+  systemctl start ssh-auto-upgrade    # 启动服务
+  systemctl stop ssh-auto-upgrade     # 停止服务
+  systemctl status ssh-auto-upgrade   # 查看服务状态
+  systemctl enable ssh-auto-upgrade   # 启用开机自启
+  systemctl disable ssh-auto-upgrade  # 禁用开机自启
+
+服务启动命令 (ExecStart):
+  /usr/local/bin/ssh-auto-upgrade --mirror https://mirrors.aliyun.com/openssh/portable/ --install-dir /usr/local/openssh --download-dir /tmp/ssh-upgrade --log-dir /var/log/ssh-auto-upgrade --upgrade-time 00:00:00-08:00:00 --root-login no
+[root@ecs ~]# 
+```
+
+### 时间段升级功能
+
+工具支持设置特定的升级时间段，只有在指定时间段内才会执行版本检测和升级操作，其他时间自动跳过检测。
+
+#### 时间段格式
+
+- **格式**: `HH:MM:SS-HH:MM:SS`
+- **示例**: `00:00:00-08:00:00` (凌晨0点到早上8点)
+- **跨天支持**: `22:00:00-06:00:00` (晚上10点到次日早上6点)
+
+#### 使用场景
+
+1. **业务低峰期升级** - 在凌晨时段自动升级，避免影响正常业务
+2. **网络空闲时段** - 在网络使用率低的时段进行下载和安装
+3. **运维窗口期** - 在预定的维护窗口内执行升级操作
+
+#### 示例日志
+
+```
+升级时间段设置为: 00:00:00 - 08:00:00
+当前时间 09:33:09 不在升级时间段内，跳过检测...
+等待1小时后再次检查...
+```
+
+### Root登录配置功能
+
+工具支持在OpenSSH升级后自动配置root登录权限，可以根据当前系统配置智能处理或强制设置。
+
+#### 智能检测机制
+
+- **配置文件不存在** - 默认启用root登录
+- **配置未设置** - 默认启用root登录  
+- **配置被注释** - 默认启用root登录
+- **配置已设置** - 遵循当前配置值
+
+#### 命令行参数
+
+```bash
+# 智能检测root登录配置（默认）
+ssh-auto-upgrade --root-login auto
+
+# 强制启用root登录
+ssh-auto-upgrade --root-login yes
+
+# 强制禁用root登录
+ssh-auto-upgrade --root-login no
+
+# 强制升级并启用root登录
+ssh-auto-upgrade --force --root-login yes
+
+# 注册服务时设置root登录配置
+ssh-auto-upgrade --service --root-login yes
+ssh-auto-upgrade --service --root-login no
+
+# 结合时间段和root登录配置
+ssh-auto-upgrade --upgrade-time 00:00:00-08:00:00 --root-login yes
+```
+
+#### 配置处理流程
+
+1. **升级前检测** - 检查当前SSH配置中的root登录设置
+2. **升级执行** - 完成OpenSSH版本升级
+3. **配置应用** - 根据参数设置root登录权限
+4. **服务重启** - 重启SSH服务使配置生效
+
+#### 安全特性
+
+- **自动备份** - 修改配置前自动备份原文件
+- **权限保护** - 确保配置文件权限正确
+- **错误恢复** - 配置失败时自动恢复备份
+
+#### 示例日志
+
+```
+检查当前root登录配置...
+当前root登录状态: 启用 (PermitRootLogin yes)
+OpenSSH升级成功! 新版本: 9.6p1
+SSH服务重启成功
+已启用root登录: root登录已启用
+SSH服务重启成功（应用root登录配置）: SSH服务重启成功
+```
+
+### 循环日志系统
+
+工具采用智能循环日志系统，有效防止日志文件无限增长导致磁盘空间耗尽。
+
+#### 核心特性
+
+- **自动轮转** - 日志文件达到指定大小后自动创建新文件
+- **智能命名** - 支持 `.1`, `.2` 等扩展名格式的日志轮转
+- **路径追踪** - 自动追踪当前活动日志文件路径
+- **兼容模式** - 同时支持循环日志和普通文件日志
+
+#### 日志文件结构
+
+```
+/var/log/ssh-auto-upgrade/
+├── ssh_upgrade.log          # 当前活动日志文件
+├── ssh_upgrade.1.log        # 上一个日志文件
+├── ssh_upgrade.2.log        # 更早的日志文件
+└── ...
+```
+
+#### 配置参数
+
+```python
+# 在代码中配置循环日志
+logger = setup_logger(
+    log_dir="/var/log/ssh-auto-upgrade",
+    max_bytes=10*1024*1024,     # 10MB per file
+    backup_count=5             # Keep 5 backup files
+)
+```
+
+#### 使用示例
+
+```bash
+# 查看当前活动日志文件
+ tail -f /var/log/ssh-auto-upgrade/ssh_upgrade.log
+
+# 查看所有日志文件
+ls -la /var/log/ssh-auto-upgrade/
+
+# 查看上一个日志文件的内容
+cat /var/log/ssh-auto-upgrade/ssh_upgrade.1.log
+```
+
+### 作为Python模块使用
+
+```python
+from ssh_auto_upgrade import VersionDetector, Downloader, Installer
+
+# 检测最新版本
+detector = VersionDetector()
+version_info = detector.get_latest_version()
+print(f"最新版本: {version_info['version']}")
+
+# 下载安装文件
+downloader = Downloader()
+script_path = downloader.download_install_script()
+
+# 执行安装
+installer = Installer(script_path, version_info['download_url'])
+if installer.install_openssh():
+    print("安装成功!")
+```
+
+## ✅ 测试验证
+
+### 服务管理功能测试
+
+项目已通过全面的服务管理功能测试，验证了ServiceManager类的完整功能：
+
+#### 🧪 测试环境
+- **测试系统**: Ubuntu Linux
+- **测试服务**: vsftpd (FTP服务器)
+- **测试工具**: 自定义测试脚本 `test_service_manager.py`
+
+#### 📊 测试结果
+
+所有5项核心测试全部通过：
+
+1. **✅ 基本功能测试** - ServiceManager实例化、systemd检测、可执行文件检查
+2. **✅ 服务状态检查** - 使用D-Bus API准确检测服务状态
+3. **✅ 服务控制功能** - 启动、停止、启用、禁用服务操作
+4. **✅ 服务文件创建** - 正确生成systemd服务文件
+5. **✅ 完整服务管理流程** - 完整的服务生命周期管理
+
+#### 🔧 关键修复
+
+在测试过程中发现并修复了以下问题：
+- **D-Bus接口调用优化** - 将`bus.get_interface()`改为使用预初始化的接口对象
+- **API调用一致性** - 确保所有服务控制方法使用一致的D-Bus API调用方式
+- **错误处理完善** - 增强了异常处理和状态验证机制
+
+#### 🎯 功能验证
+
+通过vsftpd服务的实际测试，验证了ServiceManager类的以下能力：
+- **服务检测** - 准确识别服务存在状态
+- **服务控制** - 可靠的启动、停止、启用、禁用操作
+- **服务文件管理** - 正确的systemd服务文件生成
+- **错误处理** - 完善的异常处理和状态反馈
+- **权限管理** - 正确的root权限检查
+
+### 系统兼容性
+
+工具已在以下环境中验证：
+- ✅ Ubuntu 20.04+ (systemd环境)
+- ✅ Debian 10+ (systemd环境)
+- ✅ CentOS 7+ (systemd环境)
+
+### 依赖验证
+
+所有Python依赖包已更新并验证：
+- ✅ `requests>=2.25.0` - HTTP请求处理
+- ✅ `beautifulsoup4>=4.9.0` - HTML解析
+- ✅ `systemd-python>=234` - systemd集成
+- ✅ `dbus-python>=1.2.0` - D-Bus API集成（新增）
+
+项目现已具备完整、可靠的服务管理能力，可以安全地用于生产环境。
+
+## 📋 系统要求
+
+### Python环境
+
+- **Python**: 3.6 或更高版本
+- **pip**: 包管理工具
+
+### 系统包（自动检测和安装）
+
+- **编译工具**: gcc, make, autoconf, automake
+- **开发库**: zlib-devel, openssl-devel, pam-devel
+- **系统工具**: wget, tar, systemd
+
+### Python包依赖
+
+- **requests** >= 2.25.0 - HTTP请求处理
+- **beautifulsoup4** >= 4.9.0 - HTML解析
+
+## 🔧 模块详解
+
+### 核心模块
+
+#### 1. 版本检测模块 (`version_detector.py`)
+
+- 从OpenSSH官方镜像源解析最新版本信息
+- 检测当前系统安装的OpenSSH版本
+- 支持自定义镜像源URL
+
+#### 2. 下载器模块 (`downloader.py`)
+
+- 支持断点续传和进度显示
+- 文件完整性验证和错误重试
+- 可配置的下载目录和超时设置
+
+#### 3. 安装器模块 (`installer.py`)
+
+- 完整的编译安装流程控制
+- 错误处理和回滚机制
+- 与服务管理和文件管理模块协同工作
+
+#### 4. 服务管理模块 (`service_manager.py`)
+
+- systemd服务注册和管理
+- 服务状态监控和故障恢复
+- 权限验证和安全控制
+- **D-Bus API集成** - 使用dbus-python进行systemd服务管理
+- **服务生命周期管理** - 完整的服务创建、启用、启动、停止、禁用、移除流程
+- **错误处理机制** - 完善的异常处理和状态反馈
+
+##### ✅ 服务管理功能测试验证
+
+通过全面的功能测试验证，ServiceManager类已确认具备以下能力：
+
+- **✅ 基本功能测试** - 实例化、systemd检测、可执行文件检查
+- **✅ 服务状态检查** - 使用D-Bus API准确检测服务状态
+- **✅ 服务控制功能** - 启动、停止、启用、禁用服务
+- **✅ 服务文件创建** - 正确生成systemd服务文件
+- **✅ 完整服务管理流程** - 完整的服务生命周期管理
+
+##### 🔧 关键修复
+
+- 修复了D-Bus接口调用问题，将`bus.get_interface()`改为使用预初始化的接口对象
+- 确保所有服务控制方法使用一致的D-Bus API调用方式
+- 完善了错误处理和状态验证机制
+
+### 辅助模块
+
+#### 依赖管理模块 (`dependencies.py`)
+
+- 自动检测系统包管理器（apt/yum/dnf等）
+- 智能安装缺失的编译依赖
+- 支持多种Linux发行版
+
+#### 参数验证模块 (`argument_validator.py`)
+
+- 时间格式验证和解析
+- 路径有效性检查
+- 参数组合逻辑验证
+- 错误提示和修复建议
+
+#### 系统检测模块
+
+- **镜像源检查 (`mirror_checker.py`)** - 验证镜像源可用性和响应速度
+- **服务检测 (`service_detector.py`)** - 检测SSH相关服务状态
+- **systemd检查 (`systemd_checker.py`)** - 验证systemd环境和支持
+- **时间检查 (`time_checker.py`)** - 时间段验证和格式检查
+- **安装器服务检测 (`installer_service_detector.py`)** - 安装器服务状态检测
+
+#### 配置管理模块
+
+- **SSH配置管理 (`ssh_config_manager.py`)** - SSH配置文件解析和修改
+- **遗留清理 (`legacy_cleaner.py`)** - 清理旧版本文件和配置
+
+#### 日志记录模块 (`logger.py`)
+
+- 结构化日志记录
+- 文件和控制台双重输出
+- **循环日志系统** - 支持日志文件轮转和大小限制
+- **智能路径管理** - 自动管理当前活动日志文件路径
+- 时间戳和日志级别过滤
+
+##### 循环日志系统特性
+
+- **自动轮转** - 日志文件达到指定大小后自动创建新文件
+- **文件限制** - 支持设置最大日志文件数量和总大小限制
+- **路径追踪** - 智能追踪当前活动日志文件路径
+- **兼容性** - 同时支持循环日志和普通文件日志
+
+## 🐛 故障排除
+
+### 常见问题
+
+#### 1. 权限不足
+
+```bash
+# 确保以root权限运行服务注册
+sudo ssh-auto-upgrade --service
+```
+
+#### 2. 网络连接问题
+
+```bash
+# 检查网络连接
+ping mirrors.aliyun.com
+```
+
+#### 3. 依赖安装失败
+
+```bash
+# 手动安装编译依赖（Ubuntu/Debian）
+sudo apt update
+sudo apt install build-essential zlib1g-dev libssl-dev libpam0g-dev
+
+# CentOS/RHEL
+sudo yum install gcc make zlib-devel openssl-devel pam-devel
+```
+
+### 日志查看
+
+```bash
+# 查看服务日志
+sudo journalctl -u ssh-auto-upgrade
+
+# 实时监控日志
+sudo journalctl -u ssh-auto-upgrade -f
+
+# 查看特定时间段的日志
+sudo journalctl -u ssh-auto-upgrade --since "2024-01-01" --until "2024-01-02"
+```
+
+## 🤝 贡献指南
+
+我们欢迎各种形式的贡献！请参考以下步骤：
+
+### 开发环境设置
+
+1. **Fork项目**
+
+   ```bash
+   git clone https://gitee.com/liumou_site/ssh-automatic-upgrade.git
+   cd ssh-automatic-upgrade
+   ```
+
+2. **创建特性分支**
+
+   ```bash
+   git checkout -b feature/你的特性名称
+   ```
+
+3. **提交更改**
+
+   ```bash
+   git commit -m "描述你的特性"
+   ```
+
+4. **推送到分支**
+
+   ```bash
+   git push origin feature/你的特性名称
+   ```
+
+5. **创建Pull Request**
+
+### 代码规范
+
+- 遵循PEP 8 Python代码规范
+- 添加适当的文档字符串（docstring）
+- 包含单元测试（如果适用）
+- 更新相关文档
+
+## 📄 许可证
+
+本项目采用 [MIT许可证](LICENSE)。您可以自由使用、修改和分发本软件。
+
+## 🔗 相关链接
+
+- **项目主页**: <https://gitee.com/liumou_site/ssh-automatic-upgrade>
+- **问题反馈**: 请在Gitee Issues中提交
+- **作者主页**: <https://liumou.site>
+- **QQ群**: [点击链接加入群聊【坐公交也用券】：](https://qm.qq.com/q/rjB2YGP0M)
+
+## 🙏 致谢
+
+感谢所有为这个项目做出贡献的开发者！特别感谢：
+
+- OpenSSH开发团队提供优秀的SSH实现
+- 各Linux发行版维护者
+- 开源社区的支持和反馈
+
+---
+
+**注意**: 使用本工具前请确保您了解相关风险，建议在生产环境使用前进行充分测试。工具作者不对因使用本工具导致的任何问题负责。
