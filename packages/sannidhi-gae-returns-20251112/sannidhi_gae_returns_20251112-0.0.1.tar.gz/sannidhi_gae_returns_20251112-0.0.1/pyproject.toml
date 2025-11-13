@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sannidhi-gae-returns-20251112"
+version = "0.0.1"
+description = "Discounted returns utilities for Reinforcement Learning: discounted cumulative sums, n-step TD targets, and Generalized Advantage Estimation (GAE). Created by Sannidhi Nair for B.Tech AI (RL Practicum, NMIMS MPSTME)."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "Sannidhi Nair", email = "sannidhi.nair88@nmims.in" }
+]
+keywords = ["reinforcement-learning", "returns", "gae", "n-step", "advantages", "rl", "sannidhi-nair"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Education",
+    "Development Status :: 4 - Beta"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/sannidhi-gae-returns-20251112/"
+Repository = "https://github.com/SannidhiNair/sannidhi-gae-returns-20251112"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gae_returns"]
