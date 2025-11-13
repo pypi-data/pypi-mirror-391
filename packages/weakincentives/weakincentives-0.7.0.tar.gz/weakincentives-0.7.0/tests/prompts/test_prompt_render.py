@@ -1,0 +1,332 @@
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Unit tests covering prompt rendering, validation, and error handling."""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import cast
+
+import pytest
+
+from weakincentives.prompt import (
+    MarkdownSection,
+    Prompt,
+    PromptRenderError,
+    PromptValidationError,
+    SupportsDataclass,
+)
+from weakincentives.prompt.prompt import (
+    RenderedPrompt,
+    _format_specialization_argument,
+)
+
+
+@dataclass
+class IntroParams:
+    title: str
+
+
+@dataclass
+class DetailsParams:
+    body: str
+
+
+@dataclass
+class OutroParams:
+    footer: str
+
+
+def build_prompt() -> Prompt:
+    intro = MarkdownSection[IntroParams](
+        title="Intro",
+        template="Intro: ${title}",
+        key="intro",
+    )
+    details = MarkdownSection[DetailsParams](
+        title="Details",
+        template="Details: ${body}",
+        key="details",
+    )
+    outro = MarkdownSection[OutroParams](
+        title="Outro",
+        template="Outro: ${footer}",
+        key="outro",
+        default_params=OutroParams(footer="bye"),
+    )
+    return Prompt(
+        ns="tests/prompts",
+        key="render-basic",
+        sections=[intro, details, outro],
+    )
+
+
+@dataclass
+class ParentToggleParams:
+    heading: str
+    include_children: bool
+
+
+@dataclass
+class ChildNestedParams:
+    detail: str
+
+
+@dataclass
+class LeafParams:
+    note: str
+
+
+@dataclass
+class SummaryParams:
+    summary: str
+
+
+def test_prompt_renders_section_without_params() -> None:
+    static_section = MarkdownSection(
+        title="Static", key="static", template="Static content."
+    )
+    prompt = Prompt(
+        ns="tests.prompts",
+        key="paramless-section",
+        sections=(static_section,),
+    )
+
+    rendered = prompt.render()
+
+    assert rendered.text.strip().endswith("Static content.")
+
+
+def test_prompt_rejects_placeholders_for_paramless_section() -> None:
+    section = MarkdownSection(title="Bad", key="bad", template="${value}")
+
+    with pytest.raises(PromptValidationError):
+        Prompt(ns="tests.prompts", key="bad-section", sections=(section,))
+
+
+def build_nested_prompt() -> Prompt:
+    leaf = MarkdownSection[LeafParams](
+        title="Leaf",
+        template="Leaf: ${note}",
+        key="leaf",
+    )
+    child = MarkdownSection[ChildNestedParams](
+        title="Child",
+        template="Child detail: ${detail}",
+        key="child",
+        children=[leaf],
+    )
+    parent = MarkdownSection[ParentToggleParams](
+        title="Parent",
+        template="Parent: ${heading}",
+        key="parent",
+        children=[child],
+        enabled=lambda params: params.include_children,
+    )
+    summary = MarkdownSection[SummaryParams](
+        title="Summary",
+        template="Summary: ${summary}",
+        key="summary",
+    )
+    return Prompt(
+        ns="tests/prompts",
+        key="render-nested",
+        sections=[parent, summary],
+    )
+
+
+def test_prompt_render_merges_defaults_and_overrides() -> None:
+    prompt = build_prompt()
+
+    rendered = prompt.render(
+        IntroParams(title="hello"),
+        DetailsParams(body="world"),
+    )
+
+    assert rendered.text == "\n\n".join(
+        [
+            "## Intro\n\nIntro: hello",
+            "## Details\n\nDetails: world",
+            "## Outro\n\nOutro: bye",
+        ]
+    )
+
+
+def test_prompt_render_accepts_unordered_inputs() -> None:
+    prompt = build_prompt()
+
+    rendered = prompt.render(
+        DetailsParams(body="unordered"),
+        IntroParams(title="still works"),
+    )
+
+    assert "still works" in rendered.text
+    assert "unordered" in rendered.text
+
+
+def test_prompt_render_requires_parameter_values() -> None:
+    prompt = build_prompt()
+
+    with pytest.raises(PromptRenderError) as exc:
+        prompt.render(IntroParams(title="missing detail"))
+
+    assert isinstance(exc.value, PromptRenderError)
+    assert exc.value.dataclass_type is DetailsParams
+
+
+def test_prompt_render_requires_dataclass_instances() -> None:
+    prompt = build_prompt()
+
+    with pytest.raises(PromptValidationError) as exc:
+        prompt.render(cast(SupportsDataclass, IntroParams))
+
+    assert isinstance(exc.value, PromptValidationError)
+    assert exc.value.dataclass_type is IntroParams
+
+
+def test_prompt_render_rejects_duplicate_param_instances() -> None:
+    prompt = build_prompt()
+
+    with pytest.raises(PromptValidationError) as exc:
+        prompt.render(IntroParams(title="first"), IntroParams(title="second"))
+
+    assert isinstance(exc.value, PromptValidationError)
+    assert exc.value.dataclass_type is IntroParams
+
+
+def test_prompt_render_renders_nested_sections_and_depth() -> None:
+    prompt = build_nested_prompt()
+
+    rendered = prompt.render(
+        ParentToggleParams(heading="Main Heading", include_children=True),
+        ChildNestedParams(detail="Child detail"),
+        LeafParams(note="Deep note"),
+        SummaryParams(summary="All done"),
+    )
+
+    assert rendered.text == "\n\n".join(
+        [
+            "## Parent\n\nParent: Main Heading",
+            "### Child\n\nChild detail: Child detail",
+            "#### Leaf\n\nLeaf: Deep note",
+            "## Summary\n\nSummary: All done",
+        ]
+    )
+
+
+def test_prompt_render_skips_disabled_parent_and_children() -> None:
+    prompt = build_nested_prompt()
+
+    rendered = prompt.render(
+        ParentToggleParams(heading="Unused", include_children=False),
+        SummaryParams(summary="Visible"),
+    )
+
+    assert rendered.text == "## Summary\n\nSummary: Visible"
+    assert "Parent" not in rendered.text
+    assert "Child" not in rendered.text
+    assert "Leaf" not in rendered.text
+
+
+def test_prompt_render_wraps_template_errors_with_context() -> None:
+    @dataclass
+    class ErrorParams:
+        value: str
+
+    class ExplodingSection(MarkdownSection[ErrorParams]):
+        def render(self, params: ErrorParams, depth: int) -> str:
+            raise ValueError("boom")
+
+    section = ExplodingSection(
+        title="Explode",
+        template="unused",
+        key="explode",
+    )
+    prompt = Prompt(ns="tests/prompts", key="render-error", sections=[section])
+
+    with pytest.raises(PromptRenderError) as exc:
+        prompt.render(ErrorParams(value="x"))
+
+    assert isinstance(exc.value, PromptRenderError)
+    assert exc.value.section_path == ("explode",)
+    assert exc.value.dataclass_type is ErrorParams
+
+
+def test_prompt_render_propagates_enabled_errors() -> None:
+    @dataclass
+    class ToggleParams:
+        flag: bool
+
+    def raising_enabled(params: ToggleParams) -> bool:
+        raise RuntimeError("enabled failure")
+
+    section = MarkdownSection[ToggleParams](
+        title="Guard",
+        template="Guard: ${flag}",
+        key="guard",
+        enabled=raising_enabled,
+    )
+    prompt = Prompt(
+        ns="tests/prompts",
+        key="render-enabled-error",
+        sections=[section],
+    )
+
+    with pytest.raises(PromptRenderError) as exc:
+        prompt.render(ToggleParams(flag=True))
+
+    assert isinstance(exc.value, PromptRenderError)
+    assert exc.value.section_path == ("guard",)
+    assert exc.value.dataclass_type is ToggleParams
+
+
+def test_rendered_prompt_str_returns_text() -> None:
+    rendered = RenderedPrompt(
+        text="Rendered output",
+        output_type=None,
+        container=None,
+        allow_extra_keys=None,
+    )
+
+    assert str(rendered) == "Rendered output"
+
+
+def test_format_specialization_argument_variants() -> None:
+    assert _format_specialization_argument(None) == "?"
+    assert _format_specialization_argument(int) == "int"
+    assert _format_specialization_argument({"id": 1}) == "{'id': 1}"
+
+
+def test_prompt_build_response_format_requires_output_container() -> None:
+    prompt = Prompt(
+        ns="tests/prompts",
+        key="response-format",
+        sections=[],
+    )
+
+    with pytest.raises(RuntimeError):
+        prompt._build_response_format_params()
+
+
+def test_markdown_section_missing_placeholder_raises_prompt_error() -> None:
+    section = MarkdownSection[IntroParams](
+        title="Intro",
+        template="Hello ${name}",
+        key="intro",
+    )
+
+    with pytest.raises(PromptRenderError) as exc:
+        section.render(IntroParams(title="ignored"), depth=0)
+
+    assert isinstance(exc.value, PromptRenderError)
+    assert exc.value.placeholder == "name"
