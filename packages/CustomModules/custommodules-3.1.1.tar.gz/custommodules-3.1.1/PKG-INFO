@@ -1,0 +1,201 @@
+Metadata-Version: 2.4
+Name: CustomModules
+Version: 3.1.1
+Summary: A collection of custom Python modules for Discord bots and utilities
+Home-page: https://github.com/Serpensin/CustomModules-Python
+Author: Serpensin
+License-Expression: AGPL-3.0-or-later
+Project-URL: Homepage, https://github.com/Serpensin/CustomModules-Python
+Project-URL: Bug Reports, https://github.com/Serpensin/CustomModules-Python/issues
+Project-URL: Source, https://github.com/Serpensin/CustomModules-Python
+Keywords: discord,bot,utilities,modules,custom
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Communications :: Chat
+Requires-Python: >=3.10,<3.14
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Provides-Extra: apptranslation
+Requires-Dist: discord.py>=2.3.0; extra == "apptranslation"
+Provides-Extra: bitmaphandler
+Provides-Extra: botdirectory
+Requires-Dist: aiohttp>=3.9.3; extra == "botdirectory"
+Provides-Extra: databasehandler
+Requires-Dist: aiosqlite>=0.19.0; extra == "databasehandler"
+Requires-Dist: aiomysql>=0.2.0; extra == "databasehandler"
+Requires-Dist: asyncpg>=0.29.0; extra == "databasehandler"
+Requires-Dist: psycopg[binary,pool]>=3.1.0; extra == "databasehandler"
+Requires-Dist: motor>=3.3.0; extra == "databasehandler"
+Provides-Extra: googletrans
+Requires-Dist: google-cloud-translate>=3.15.3; extra == "googletrans"
+Provides-Extra: invitetracker
+Requires-Dist: discord.py>=2.3.0; extra == "invitetracker"
+Provides-Extra: killswitch
+Requires-Dist: aiohttp>=3.9.3; extra == "killswitch"
+Requires-Dist: html2text>=2024.2.26; extra == "killswitch"
+Requires-Dist: beautifulsoup4>=4.12.3; extra == "killswitch"
+Provides-Extra: libretrans
+Requires-Dist: aiohttp>=3.9.3; extra == "libretrans"
+Requires-Dist: aiofiles>=25.1.0; extra == "libretrans"
+Provides-Extra: loghandler
+Requires-Dist: colorama>=0.4.6; extra == "loghandler"
+Provides-Extra: patchnotes
+Requires-Dist: aiohttp>=3.9.3; extra == "patchnotes"
+Requires-Dist: html2text>=2024.2.26; extra == "patchnotes"
+Requires-Dist: beautifulsoup4>=4.12.3; extra == "patchnotes"
+Provides-Extra: privatevoice
+Requires-Dist: discord.py>=2.3.0; extra == "privatevoice"
+Provides-Extra: randomusernames
+Provides-Extra: statdock
+Requires-Dist: discord.py>=2.3.0; extra == "statdock"
+Requires-Dist: pytz>=2024.2; extra == "statdock"
+Provides-Extra: steam
+Requires-Dist: aiohttp>=3.9.3; extra == "steam"
+Requires-Dist: beautifulsoup4>=4.12.3; extra == "steam"
+Provides-Extra: steamcharts
+Requires-Dist: aiohttp>=3.9.3; extra == "steamcharts"
+Requires-Dist: beautifulsoup4>=4.12.3; extra == "steamcharts"
+Provides-Extra: twitch
+Requires-Dist: aiohttp>=3.9.3; extra == "twitch"
+Requires-Dist: requests>=2.31.0; extra == "twitch"
+Provides-Extra: all
+Requires-Dist: aiofiles>=25.1.0; extra == "all"
+Requires-Dist: aiohttp>=3.9.3; extra == "all"
+Requires-Dist: aiomysql>=0.2.0; extra == "all"
+Requires-Dist: aiosqlite>=0.19.0; extra == "all"
+Requires-Dist: asyncpg>=0.29.0; extra == "all"
+Requires-Dist: beautifulsoup4>=4.12.3; extra == "all"
+Requires-Dist: colorama>=0.4.6; extra == "all"
+Requires-Dist: discord.py>=2.3.0; extra == "all"
+Requires-Dist: google-cloud-translate>=3.15.3; extra == "all"
+Requires-Dist: html2text>=2024.2.26; extra == "all"
+Requires-Dist: motor>=3.3.0; extra == "all"
+Requires-Dist: psycopg[binary,pool]>=3.1.0; extra == "all"
+Requires-Dist: pytz>=2024.2; extra == "all"
+Requires-Dist: requests>=2.31.0; extra == "all"
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-python
+
+# CustomModules
+
+[![PyPI version](https://img.shields.io/pypi/v/CustomModules.svg)](https://pypi.org/project/CustomModules/)
+[![Python versions](https://img.shields.io/pypi/pyversions/CustomModules.svg)](https://pypi.org/project/CustomModules/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Build Status](https://github.com/Serpensin/CustomModules-Python/actions/workflows/test-build.yml/badge.svg)](https://github.com/Serpensin/CustomModules-Python/actions/workflows/test-build.yml)
+[![PyPI downloads](https://img.shields.io/pypi/dm/CustomModules.svg)](https://pypi.org/project/CustomModules/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A collection of custom Python modules for Discord bots and various utilities.
+
+## ✨ What's New in v2.0.2
+
+- **Universal Logger Support**: All modules now support optional logger parameter with hierarchical child logger pattern
+- **Improved Security**: Fixed dependency issues and passed all Snyk security scans
+- **Code Quality**: Achieved 10/10 pylint score with black formatting and flake8 compliance
+
+## Installation
+
+Install the base package:
+```bash
+pip install CustomModules
+```
+
+Install with specific module dependencies:
+```bash
+# Install with a specific module's dependencies
+pip install CustomModules[statdock]
+pip install CustomModules[databasehandler]
+pip install CustomModules[loghandler]
+
+# Install multiple modules
+pip install CustomModules[statdock,databasehandler,loghandler]
+
+# Install all modules with all dependencies
+pip install CustomModules[all]
+```
+
+## Available Modules
+
+- **AppTranslation** - Discord Application translation utilities
+- **BitmapHandler** - Bitmap manipulation and handling
+- **BotDirectory** - Bot directory management
+- **DatabaseHandler** - Multi-database async handler (SQLite, MySQL, PostgreSQL, MongoDB)
+- **Googletrans** - Google Translate integration
+- **InviteTracker** - Discord invite tracking
+- **Killswitch** - Dead by Daylight killswitch monitoring
+- **Libretrans** - LibreTranslate integration
+- **LogHandler** - Advanced logging with colored console output
+- **Patchnotes** - Patch notes management for DeadByDaylight
+- **PrivateVoice** - Private voice channel management
+- **RandomUsernames** - Random username generation
+- **StatDock** - Statistics tracking for Discord
+- **Steam** - Steam API integration
+- **SteamCharts** - Steam Charts data retrieval
+- **Twitch** - Twitch API integration
+
+## Usage
+
+Import modules using dot notation:
+```python
+from CustomModules.bitmap_handler import BitmapHandler
+from CustomModules.database_handler import DatabaseHandler
+from CustomModules.log_handler import LogManager
+from CustomModules.stat_dock import setup as stat_dock_setup
+```
+
+### Logger Support (v2.0.2+)
+
+All modules now support optional logger parameter for better debugging and monitoring:
+
+```python
+import logging
+from CustomModules.bitmap_handler import BitmapHandler
+from CustomModules.steam import API as SteamAPI
+
+# Create a parent logger
+logger = logging.getLogger('MyApp')
+
+# All modules create child loggers under CustomModules.ModuleName
+bitmap = BitmapHandler(['read', 'write'], logger=logger)
+# Creates logger: MyApp.CustomModules.BitmapHandler
+
+steam_api = SteamAPI(api_key='your_key', logger=logger)
+# Creates logger: MyApp.CustomModules.Steam
+
+# Function-based modules use set_logger()
+from CustomModules import killswitch
+killswitch.set_logger(logger)
+# Creates logger: MyApp.CustomModules.Killswitch
+```
+
+## Requirements
+
+- Python 3.10 or higher
+- Additional dependencies are installed based on which modules you use (see extras_require)
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3 (AGPL-3.0).
+
+## Documentation
+
+- **[INSTALLATION.md](INSTALLATION.md)** - Detailed installation guide for end users
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Guide for developers and contributors
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Support
+
+For issues and questions, please use the [GitHub Issues](https://github.com/Serpensin/CustomModules-Python/issues) page.
