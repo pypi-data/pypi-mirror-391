@@ -1,0 +1,170 @@
+Metadata-Version: 2.4
+Name: redditadmin
+Version: 0.1.7
+Summary: Extensible Python administrative bot
+Project-URL: Homepage, https://github.com/Grod56/reddit-admin
+Project-URL: Issues, https://github.com/Grod56/reddit-admin/issues
+Author-email: Grod56 <providenceuniversalstudios@gmail.com>
+License-Expression: MIT
+License-File: LICENSE
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+
+# Reddit Admin
+
+[![build](https://github.com/Grod56/reddit-admin/actions/workflows/build.yml/badge.svg)](https://github.com/Grod56/reddit-admin/actions/workflows/build.yml) [![pypi](https://img.shields.io/pypi/v/redditadmin.svg)](https://pypi.org/project/redditadmin/)
+
+Plugin-based, extensible administrative Reddit bot framework capable of managing and running multiple 'plugins' (i.e. scripts) asynchronously. Built on top of the PRAW API client wrapper.
+
+It includes a working implementation of the bot itself and tools to build plugins for the bot to run.
+
+## Installation
+
+```console
+pip install redditadmin
+```
+
+For instructions on installing Python and `pip` see "The Hitchhiker's Guide to Python"
+[Installation Guides](https://docs.python-guide.org/en/latest/starting/installation/).
+
+## Quickstart
+
+`reddit-admin` requires two things in order for it to work:
+
+-   Valid OAuth script application credentials i.e. `client_id`, `client_secret`, `username`, `password` and `user_agent` (see more about that [here](https://github.com/reddit-archive/reddit/wiki/OAuth2-Quick-Start-Example#first-steps))
+-   A list of plugins (will discuss more about how to implement these later)
+
+Assuming that both of these are provided for, the bot may be run in this way:
+
+```py
+from redditadmin import get_reddit_admin, BotCredentials
+
+# Enter the OAuth credentials into the BotCredentials constructor
+bot_credentials = BotCredentials(
+    client_id="example_id",
+    client_secret="example_secret",
+    user_agent="example_useragent",
+    username="example_username",
+    password="example_password"
+)
+
+# List of plugins provided by the user
+plugins = [plugin1, plugin2, ...]
+
+# Built-in function to get an instance of the reddit-admin bot
+reddit_admin = get_reddit_admin(
+    plugins=plugins
+)
+
+# Running the bot
+reddit_admin.run(
+    bot_credentials=bot_credentials,
+    listen=False # (Default value)
+)
+```
+
+_NOTE: `RedditAdmin.run()` is a blocking command, meaning that no further code will execute until either the `RedditAdmin.stop()` function is called elsewhere, or if the bot receives a `SIGINT` or `SIGTERM` signal._
+
+Console output:
+
+```
+redditadmin.core : Initializing the bot
+Asynchronous Plugins Executor : Initializing Plugins Executor
+Asynchronous Plugins Executor : Retrieving initial program commands
+Asynchronous Plugins Executor : Executing initial program commands
+Asynchronous Plugins Executor : Running program 'plugin1_program'
+Asynchronous Plugins Executor : Running program 'plugin2_program'
+Asynchronous Plugins Executor : Programs Executor initialized
+redditadmin.core : Bot successfully initialized
+redditadmin.core : The bot is now running
+```
+
+### Bot modes
+
+The bot runs in two modes: 'listening' mode and 'autonomous' mode. In listening mode, the bot is capable of receiving commands through the console input, while in autonomous mode, the bot only responds to system signals (e.g. `SIGINT`).
+
+Listening mode bot commands:
+
+-   `status` - displays the status of running plugin programs
+-   `run` - runs a plugin program (provided one is not already running)
+-   `shutdown/quit/exit` - shuts down the bot
+
+## Plugins
+
+Plugins are mini-applications run and managed by Reddit Admin which instantiate a specific task or program.
+
+The `redditadminplugins` Python package contains some useful plugins which may be adapted to the user's needs (see more [here](https://pypi.org/project/redditadminplugins/)).
+
+To create a custom plugin, you need to do 2 things:
+
+-   To implement a `Program`
+-   To implement a `Plugin` based on the implemented program
+
+For example, we may create a plugin which automatically posts a submission to the r/test subreddit when run as follows:
+
+Program:
+
+```py
+from redditadmin import Plugin, Program, get_reddit_admin
+
+
+class MyProgram[Program]:
+    """The program to post our submission"""
+
+    def __init__(praw_reddit):
+        super().__init__("My Program")
+        self.praw_reddit = praw_reddit
+
+    def execute(self, *args, **kwargs):
+        """Overriden from the Program superclass"""
+
+        self.praw_reddit.subreddit('test').submit(
+            title="Testing 123",
+            url="https://google.com"
+        )
+```
+
+Plugin:
+
+```py
+class MyPlugin[Plugin[MyProgram]]
+
+
+"""The plugin for our program"""
+
+
+def __init__():
+    super().__init__("myprogram")
+
+
+def get_program(self, reddit_interface):
+    """Overriden from Plugin superclass"""
+
+    praw_reddit = reddit_interface.praw_reddit
+
+    return MyProgram(praw_reddit)
+```
+
+Voila! We may now supply our plugin to the bot and run it just as we did before
+
+```py
+plugin = MyPlugin()
+bot_credentials = ...
+
+reddit_admin = get_reddit_admin(
+    plugins=[plugin]
+)
+
+reddit_admin.run(
+    bot_credentials=bot_credentials
+)
+```
+
+For more information on how to use PRAW in your plugins, see the official repository [here](https://github.com/praw-dev/praw).
+
+## See more
+
+-   [reddit-admin-plugins](https://github.com/Grod56/reddit-admin-plugins)
+-   [PRAW](https://github.com/praw-dev/praw)
