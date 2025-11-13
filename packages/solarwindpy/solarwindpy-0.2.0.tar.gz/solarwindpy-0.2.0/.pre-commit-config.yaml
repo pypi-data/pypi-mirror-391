@@ -1,0 +1,72 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: trailing-whitespace
+    files: ^(solarwindpy|tests|\.claude)/.*\.py$
+    exclude: \.claude/templates/.*\.py$
+  - id: check-merge-conflict
+    files: ^(solarwindpy|tests|\.claude)/.*\.py$
+    exclude: \.claude/templates/.*\.py$
+  - id: check-added-large-files
+    args: [--maxkb=5000]
+    files: ^(solarwindpy|tests|\.claude)/.*\.py$
+    exclude: \.claude/templates/.*\.py$
+
+- repo: https://github.com/psf/black
+  rev: 23.1.0
+  hooks:
+  - id: black
+    files: ^(solarwindpy|tests|\.claude)/.*\.py$
+    exclude: \.claude/templates/.*\.py$
+
+- repo: https://github.com/pycqa/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+    files: ^(solarwindpy|tests|\.claude)/.*\.py$
+    exclude: \.claude/templates/.*\.py$
+
+- repo: https://github.com/PyCQA/doc8
+  rev: v1.1.1
+  hooks:
+  - id: doc8
+    name: doc8 - Documentation linter
+    args: ['--max-line-length=100', '--quiet']
+    files: \.(py|rst|md)$
+    exclude: |
+      (?x)^(
+        docs/build/|
+        docs/_build/|
+        \.claude/templates/
+      )$
+
+- repo: local
+  hooks:
+  - id: check-conventional-commits
+    name: Check Conventional Commits
+    entry: scripts/check_conventional_commits.sh
+    language: system
+    stages: [commit-msg]
+  - id: solarwindpy-physics
+    name: SolarWindPy Physics Validation
+    entry: .claude/hooks/pre-commit-tests.sh
+    language: system
+    files: \.py$
+    pass_filenames: false
+  - id: import-test
+    name: Import Testing
+    entry: python -c
+    args: ["import solarwindpy; print('✓ Import successful')"]
+    language: system
+    files: ^solarwindpy/.*\.py$
+    pass_filenames: false
+  - id: attribution-reminder
+    name: Attribution Guidelines Reminder
+    entry: bash -c
+    args: ['echo "📝 Remember: External code needs attribution - see .claude/docs/ATTRIBUTION.md"; exit 0']
+    language: system
+    stages: [commit]
+    pass_filenames: false
+    always_run: true
+    verbose: true
