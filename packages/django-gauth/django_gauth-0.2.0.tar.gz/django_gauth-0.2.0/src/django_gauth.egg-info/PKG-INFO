@@ -1,0 +1,151 @@
+Metadata-Version: 2.4
+Name: django_gauth
+Version: 0.2.0
+Summary: A Django app for providing the Google's discovery based Oauth2 authentication mechanism is HTTP/HTTPS oriented Django Servers/Projects.
+Author-email: Ankit Kumar <ankit.kumar05@telusdigital.com>, Ankit Yadav <ankit8290@gmail.com>
+Maintainer-email: Ankit yadav <ankit8290@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Ankit Yadav
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Documentation, https://masterpiece93.github.io/django-gauth/
+Project-URL: Repository, https://github.com/masterPiece93/django-gauth
+Project-URL: Changelog, https://github.com/masterPiece93/django-gauth/releases
+Keywords: django_gauth,google,oauth2,auth
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Framework :: Django :: 3.1
+Classifier: Framework :: Django :: 3.2
+Classifier: Framework :: Django :: 4.0
+Classifier: Framework :: Django :: 4.1
+Classifier: Framework :: Django :: 4.2
+Classifier: Framework :: Django :: 5.0
+Classifier: Framework :: Django :: 5.1
+Classifier: Framework :: Django :: 5.2
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Utilities
+Classifier: Typing :: Typed
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: google-auth-oauthlib
+Requires-Dist: Django>=3.1; python_version >= "3.9" and python_version < "3.11"
+Requires-Dist: Django>=4.2.26; python_version >= "3.9"
+Provides-Extra: dev
+Requires-Dist: build==1.2.1; extra == "dev"
+Requires-Dist: nox==2024.4.15; extra == "dev"
+Requires-Dist: twine==5.1.1; extra == "dev"
+Requires-Dist: check-wheel-contents; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: graphviz; extra == "dev"
+Requires-Dist: pipdeptree; extra == "dev"
+Provides-Extra: lint
+Requires-Dist: codespell>=2.2.4; extra == "lint"
+Requires-Dist: ruff; extra == "lint"
+Requires-Dist: vulture; extra == "lint"
+Requires-Dist: tomli; extra == "lint"
+Requires-Dist: validate-pyproject[all]; extra == "lint"
+Requires-Dist: isort; extra == "lint"
+Requires-Dist: black; extra == "lint"
+Requires-Dist: mypy; extra == "lint"
+Requires-Dist: pylint; extra == "lint"
+Requires-Dist: pylint-actions; extra == "lint"
+Dynamic: license-file
+
+# Google Auth <sup>[ Django ]<sup>
+
+![Static Badge](https://img.shields.io/badge/latest-0.1.2-blue)  [![pages-build-deployment](https://github.com/masterPiece93/django-gauth/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/masterPiece93/django-gauth/actions/workflows/pages/pages-build-deployment)  [![Pylint](https://github.com/masterPiece93/django-gauth/actions/workflows/pylint.yml/badge.svg)](https://github.com/masterPiece93/django-gauth/actions/workflows/pylint.yml)
+
+
+> [Official Documentation](https://masterpiece93.github.io/django-gauth/)
+
+## Installation
+
+<!-- Implement Carousal -->
+
+| Source | Command |
+| ------ | ------- |
+| **GitHub** | ```pip install -e git+https://github.com/masterPiece93/django-gauth.git#egg=django_gauth```|
+| **PyPi**| ```pip install django-gauth``` |
+
+## Quickstart
+
+1. add the app name : `django_gauth` in **INSTALLED_APPS** entry of you project ( in settings.py file )
+2. add required configuration variables ( in *settings.py* file )    
+    ```python
+    # settings.py
+    GOOGLE_CLIENT_ID= env("GOOGLE_CLIENT_ID")           # << set according to your oauth2 client
+    GOOGLE_CLIENT_SECRET= env("GOOGLE_CLIENT_SECRET")   # << set according to your oauth2 client
+    GOOGLE_AUTH_FINAL_REDIRECT_URL= None        # defaults to `<host>/gauth/`
+    CREDENTIALS_SESSION_KEY_NAME= "credentials" # defaults to `credentials`
+    STATE_KEY_NAME= "oauth_state"               # defaults to `oauth_state`
+    SCOPE= [
+        "https://www.googleapis.com/auth/userinfo.email"    # always preffered
+        ,"https://www.googleapis.com/auth/userinfo.profile" # always preffered
+        ,"openid"                                           # always preffered
+        ,"https://www.googleapis.com/auth/drive"            # based on your usage
+    ]
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'         # strictly for local-development only
+    ```
+
+    - `os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'` directs the server to accept in-secure (http) connections .
+
+3. configure auth urls ( in *urls.py* file of root )
+    ```python
+    # urls.py
+    from django.contrib import admin
+    from django.urls import path, include
+
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('gauth/', include('django_gauth.urls')),
+        
+        # add your other app's urls
+        # ...
+
+    ]
+    ```
+4. now run your project server
+    - once your server is up & running , navigate to `.../gauth`, this is the master interface ( default landing page )
+    - click on `Authenticate` button to launch Google Oauth2 Login .
+    - just follow the flow you are directed to .
+    - post authentication , you'll be redirected back to `.../gauth`
+
+* NOTE : 
+    useually all servers ( **wsgi**, **asgi**, **uWsgi**) runs default on `http://127.0.0.1:PORT/` , hence always take care to set the redirect endpoints in your google oauth2 client app in accordance with *127.0.0.1* , don't mistake to consider *localhost* , *0.0.0.0* and *127.0.0.1* as the same thing while dealing with redirect uri's . 
+    - For example : suppose you have set `http://localhost:PORT/gauth/google-callback` as your redirect uri , then take note of running your django app on localhost:PORT only !!
+
+---
+<br>
+
