@@ -1,0 +1,275 @@
+Metadata-Version: 2.4
+Name: ails-cli-tool
+Version: 1.0.2
+Summary: AI-powered directory scanner and project analyzer
+Author: oldjs
+License: MIT
+Project-URL: Homepage, https://github.com/oldjs/ails
+Project-URL: Bug Tracker, https://github.com/oldjs/ails/issues
+Keywords: ai,directory,scanner,analyzer,cli
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: openai>=1.0.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.25.0
+Requires-Dist: sqlite-vec>=0.1.0
+Requires-Dist: pathspec>=0.11.0
+Requires-Dist: pyperclip>=1.8.0
+Dynamic: license-file
+
+# AILS - AI-Powered Directory Scanner & Project Analyzer
+
+[![PyPI version](https://img.shields.io/pypi/v/ails-cli-tool.svg)](https://pypi.org/project/ails-cli-tool/)
+[![Python Support](https://img.shields.io/pypi/pyversions/ails-cli-tool.svg)](https://pypi.org/project/ails-cli-tool/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A powerful command-line tool that intelligently scans directories, analyzes project structures, and leverages AI to provide deep insights about your codebase. Perfect for developers who want to understand complex projects quickly or document their code automatically.
+
+##  eatures
+
+- **AI-Powered Analysis** - Leverages advanced language models to understand and describe your project structure
+- **Smart Directory Scanning** - Efficiently scans and categorizes files with intelligent .gitignore support
+- **Multi-language Support** - Full interface support for English and Chinese
+- **Interactive Configuration** - Easy-to-use wizard for setting up API credentials
+- **Secure & Private** - User-specific configuration storage keeps credentials safe
+- **Vector Search** - Advanced semantic search capabilities for code analysis
+- **Beautiful CLI** - Clean, colorful terminal interface with progress indicators
+- **Auto-Recovery** - Smart error handling with automatic configuration retry
+
+##  Quick Start
+
+### Installation
+
+Install AILS directly from PyPI:
+
+```bash
+uvx ails-cli-tool
+```
+
+### First Run
+
+1. **Start analyzing your projects**:
+   ```bash
+   ails
+   ```
+
+That's it! AILS will guide you through the rest.
+
+## Detailed Installation
+
+### PyPI (Recommended)
+
+For stable releases:
+```bash
+uvx ails-cli-tool
+```
+
+### System Requirements
+
+- Python 3.8 or higher
+- uvx (included with uv)
+- Internet connection for AI API calls
+
+## Configuration
+
+### Initial Setup
+
+Run the configuration wizard to set up your AI API credentials:
+
+```bash
+ails-config
+```
+
+The wizard will guide you through:
+1. Choosing between recommended configuration or manual setup
+2. Entering your API credentials
+3. Testing the connection
+4. Saving the configuration securely
+
+### Configuration Options
+
+AILS requires three main settings:
+
+| Setting | Description | Example |
+|---------|-------------|---------|
+| `AI_API_KEY` | Your API key for the AI service | `sk-xxxxxxxxxxxxxxxx` |
+| `AI_API_URL` | Base URL for the API endpoint | `https://api.openai.com/v1` |
+| `AI_MODEL` | Model name to use | `gpt-4`, `gpt-3.5-turbo` |
+
+### Recommended Configuration
+
+AILS offers a **one-click recommended configuration** that:
+-  Uses pre-configured, tested API settings
+-  Automatically validates the connection
+-  Gets you up and running in seconds
+
+Simply select "Yes" when prompted during `ails-config`.
+
+### Manual Configuration
+
+For custom API providers or specific requirements:
+
+1. Run `ails-config`
+2. Choose manual configuration
+3. Enter your specific:
+   - API Key
+   - API URL (must end in `/v1`)
+   - Model name
+
+### Configuration Storage
+
+Configurations are stored securely in:
+- **Windows**: `%APPDATA%\AILS\config`
+- **macOS/Linux**: `~/.config/ails/config`
+
+This ensures your credentials are:
+-  Separated from project files
+-  Accessible across all projects
+-  Easy to update or remove
+
+##  Usage
+
+### Basic Usage
+
+Scan and analyze your current directory:
+```bash
+ails
+```
+
+### Language Settings
+
+Switch interface language using environment variables:
+
+**English (default)**:
+```bash
+export AILS_LANG=en
+ails
+```
+
+**Chinese**:
+```bash
+export AILS_LANG=zh
+ails
+```
+
+**Windows users**:
+```powershell
+$env:AILS_LANG="zh"
+ails
+```
+
+### Error Recovery
+
+If AILS encounters an authentication error (401), it will:
+1.  Detect the issue automatically
+2.  Ask if you want to use recommended configuration
+3. Retry immediately after successful configuration
+
+No need to restart the program!
+
+##  Advanced Features
+
+### Vector Search Integration
+
+AILS includes semantic search capabilities using sqlite-vec:
+- Find related code segments
+- Discover similar functionality
+- Navigate large codebases efficiently
+
+### Smart File Filtering
+
+Automatically respects:
+- `.gitignore` patterns
+- `.kilocodeignore` custom patterns
+- Standard exclusion rules for common build artifacts
+
+### Enhanced Prompts
+
+AILS intelligently enhances prompts to:
+- Add relevant context
+- Include file metadata
+- Optimize token usage
+
+##  Troubleshooting
+
+### Invalid Token Error (401)
+
+**Symptom**: `Error code: 401 - invalid token`
+
+**Solution**:
+1. Select "Yes" when prompted to use recommended configuration
+2. Or run `ails-config` manually
+3. Verify your API key is correct and active
+
+### Connection Timeout
+
+**Symptom**: `API request timeout`
+
+**Solution**:
+- Check your internet connection
+- Verify the API URL is accessible
+- Try using a different network or VPN if blocked
+
+### Configuration Not Loading
+
+**Symptom**: Program keeps asking for configuration
+
+**Solution**:
+```bash
+# Verify configuration file exists
+# Windows:
+type %APPDATA%\AILS\config
+
+# macOS/Linux:
+cat ~/.config/ails/config
+
+# Re-run configuration wizard
+ails-config
+```
+
+### Import Errors
+
+**Symptom**: `ModuleNotFoundError`
+
+**Solution**:
+```bash
+# Reinstall with all dependencies
+uvx --force ails-cli-tool
+```
+
+##  Dependencies
+
+AILS requires the following packages (automatically installed):
+
+- `openai>=1.0.0` - AI API client
+- `python-dotenv>=1.0.0` - Environment configuration
+- `requests>=2.25.0` - HTTP requests
+- `sqlite-vec>=0.1.0` - Vector search
+- `pathspec>=0.11.0` - Pattern matching
+- `pyperclip>=1.8.0` - Clipboard operations
+
+
+##  Acknowledgments
+
+- Built with ❤️ by the AILS team
+- Powered by OpenAI and compatible AI services
+- Thanks to all contributors and users
+
+##  Links
+
+-  **PyPI**: [ails-cli-tool](https://pypi.org/project/ails-cli-tool/)
+
+---
+
+Made with ❤️ for developers who want to understand their code better.
