@@ -1,0 +1,173 @@
+Metadata-Version: 2.4
+Name: compas_eve
+Version: 2.1.0
+Summary: COMPAS Event Extensions: adds event-based communication infrastructure to the COMPAS framework.
+Author-email: Gonzalo Casas <casas@arch.ethz.ch>, Chen Kasirer <kasirer@arch.ethz.ch>
+License: MIT License
+        
+        Copyright (c) 2023 Gramazio Kohler Research
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/compas-dev/compas_eve
+Project-URL: Documentation, https://compas.dev/compas_eve
+Project-URL: Repository, https://github.com/compas-dev/compas_eve
+Project-URL: Changelog, https://github.com/compas-dev/compas_eve/blob/main/CHANGELOG.md
+Project-URL: Issues, https://github.com/compas-dev/compas_eve/issues
+Project-URL: Forum, https://forum.compas-framework.org/
+Keywords: events,event-driven,compas,architecture,distributed systems
+Classifier: Development Status :: 4 - Beta
+Classifier: Topic :: Scientific/Engineering
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS.md
+Requires-Dist: compas>=1.17.6
+Requires-Dist: paho-mqtt<3,>=1
+Provides-Extra: dev
+Requires-Dist: attrs>=17.4; extra == "dev"
+Requires-Dist: black>=22.12.0; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: bump-my-version; extra == "dev"
+Requires-Dist: compas_invocations2; extra == "dev"
+Requires-Dist: compas_pb>=0.4.4; extra == "dev"
+Requires-Dist: invoke>=0.14; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: sphinx_compas2_theme; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Requires-Dist: pythonnet; extra == "dev"
+Dynamic: license-file
+
+# COMPAS EVE
+
+Event-based communication for the COMPAS framework.
+
+```python
+>>> import compas_eve as eve
+>>> pub = eve.Publisher("/hello_world")
+>>> sub = eve.EchoSubscriber("/hello_world")
+>>> sub.subscribe()
+>>> for i in range(10):
+...    pub.publish(dict(text=f"Hello World {i}"))
+```
+
+It is extremely easy to send messages around. COMPAS EVE supports
+different transport mechanisms to send messages between different threads, processes, computers, etc.
+
+## Installation
+
+Install using `pip`:
+
+```bash
+
+    pip install compas_eve
+```
+
+Or using `conda`:
+
+```bash
+
+    conda install compas_eve
+```
+
+## Supported features
+
+* Publisher/subscriber communication model (N-to-N communication)
+* In-process events
+* MQTT support
+* Extensible codec system for message serialization (JSON, Protocol Buffers)
+
+## Examples
+
+### In-process events
+
+The simplest option is to use in-process events. This works for
+simple applications and allows to communicate between threads.
+
+```python
+import compas_eve as eve
+
+pub = eve.Publisher("/hello_world")
+sub = eve.EchoSubscriber("/hello_world")
+sub.subscribe()
+
+for i in range(10):
+    pub.publish(dict(text=f"Hello World {i}"))
+```
+
+### MQTT
+
+MQTT is a protocol that allows to send messages between different
+systems/computers. Using MQTT is very simple as well:
+
+```python
+import compas_eve as eve
+from compas_eve.mqtt import MqttTransport
+
+tx = MqttTransport("broker.hivemq.com")
+eve.set_default_transport(tx)
+
+pub = eve.Publisher("/hello_world")
+sub = eve.EchoSubscriber("/hello_world")
+sub.subscribe()
+
+for i in range(10):
+    pub.publish(dict(text=f"Hello World {i}"))
+```
+
+This example shows how to send and receive from a single script, but
+running publishers and subscribers on different scripts, different processes, or even different computers will work the exact same way.
+
+### Using different codecs
+
+By default, COMPAS EVE uses JSON for message serialization. However, you can use different codecs for more efficient serialization:
+
+```python
+import compas_eve as eve
+from compas_eve import JsonMessageCodec
+from compas_eve.codecs import ProtobufMessageCodec
+from compas_eve.mqtt import MqttTransport
+
+# Use JSON codec (default)
+json_codec = JsonMessageCodec()
+tx = MqttTransport("broker.hivemq.com", codec=json_codec)
+
+# Or use Protocol Buffers for binary serialization (requires compas_pb)
+pb_codec = ProtobufMessageCodec()
+tx = MqttTransport("broker.hivemq.com", codec=pb_codec)
+```
+
+
+### Usage from Rhinoceros 3D
+
+It is possible to use the same code from within Rhino/Grasshopper.
+
+To install `compas_eve`, use the the syntax `# r: compas_eve` at the top of any Python 3.x script in Rhino/Grasshopper.
