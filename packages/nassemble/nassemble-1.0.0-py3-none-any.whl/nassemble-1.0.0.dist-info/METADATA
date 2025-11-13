@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: nassemble
+Version: 1.0.0
+Summary: A simple tool to aggregate code and documentation from a directory into a single text file.
+Author-email: Nathan Cerisara <cerisara.nathan@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2025 Nathan Cerisara
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Environment :: Console
+Classifier: Topic :: Software Development :: Documentation
+Classifier: Topic :: Utilities
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: build; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Dynamic: license-file
+
+# 📦 nassemble
+
+**`nassemble`** is a simple command-line utility that recursively explores a directory and combines all source code and documentation files into a single text file.
+
+This is especially useful for providing context to Large Language Models (LLMs) or for creating a simple, single-file archive of a project's text-based assets.
+
+## Installation
+
+You can install `nassemble` directly from PyPI:
+
+```bash
+pip install nassemble
+````
+
+## Usage
+
+Using `nassemble` is simple. Just run it from your terminal.
+
+```bash
+nassemble [OPTIONS]
+```
+
+### Options
+
+* `-p, --path` (str): The path to start exploring. (Default: `.`, the current directory)
+* `-o, --output` (str): The name of the combined output file. (Default: `.all_doc_together.txt`)
+* `-d, --depth` (int): The maximum recursive depth. (Default: `-1`, for no limit)
+
+### Example
+
+To combine all `.py` and `.md` files in your current project into a file named `context.txt`, you would run:
+
+```bash
+nassemble -p . -o context.txt
+```
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
