@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: geff-spec
+Version: 1.1.0.post0
+Summary: Specification of the Graph Exchange File Format
+License-Expression: MIT
+Project-URL: repository, https://github.com/live-image-tracking-tools/geff
+Project-URL: homepage, https://github.com/live-image-tracking-tools/geff
+Project-URL: documentation, https://liveimagetrackingtools.org/geff/
+Classifier: Development Status :: 3 - Alpha
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.11
+Requires-Dist: numpy>=1.24
+Requires-Dist: numpy>=1.26; python_version >= "3.12"
+Requires-Dist: numpy>=2.1; python_version >= "3.13"
+Requires-Dist: annotated_types
+Dynamic: license-file
+
+![](../../docs/images/GEFF_HorizontalLogo_RGB.png)
+
+# Graph Exchange File Format Specification
+
+[![License](https://img.shields.io/pypi/l/geff.svg?color=green)](https://github.com/live-image-tracking-tools/geff/raw/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/geff-spec.svg?color=green)](https://pypi.org/project/geff-spec)
+[![Python Version](https://img.shields.io/pypi/pyversions/geff-spec.svg?color=green)](https://python.org)
+
+GEFF is a specification for a file format for **exchanging** spatial graph data. It is not intended to be mutable, editable, chunked, or optimized for use in an application setting.
+
+A python library for reading and writing GEFFs can be found [here](https://pypi.org/project/geff) and a java library can be found [here](https://github.com/live-image-tracking-tools/geff-java).
+
+Learn more in the [documentation](https://live-image-tracking-tools.github.io/geff/latest/) or check out the [source code](https://github.com/live-image-tracking-tools/geff).
+
+## Installation
+
+```
+pip install geff-spec
+```
