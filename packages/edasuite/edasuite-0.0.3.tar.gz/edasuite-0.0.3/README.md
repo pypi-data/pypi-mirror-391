@@ -1,0 +1,676 @@
+# EDASuite
+
+A comprehensive Python library for exploratory data analysis with advanced features for data profiling, quality assessment, and stability monitoring.
+
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+### Core Analysis
+- **Automated Feature Analysis**
+  - Continuous features: mean, median, std, quartiles, skewness, kurtosis, outliers
+  - Categorical features: mode, value counts, cardinality, entropy
+  - Automatic type inference with metadata override support
+  - Missing value detection and sentinel value replacement
+
+### Advanced Statistics
+- **Target Relationship Analysis**
+  - Information Value (IV) and Weight of Evidence (WoE)
+  - Optimal binning for continuous features
+  - Predictive power classification
+  - Statistical significance testing
+
+- **Correlation Analysis**
+  - Pearson and Spearman correlations with p-values
+  - Configurable correlation thresholds
+  - Top-N correlation tracking per feature
+  - Smart feature selection for large datasets
+
+### Data Quality
+- **Quality Assessment System**
+  - Automated quality scoring (0-10 scale)
+  - Per-feature quality flags (high_missing, low_variance, constant, outliers)
+  - Overall dataset quality metrics
+  - Actionable recommendations
+
+- **Sentinel Value Handling**
+  - Automatic detection and replacement of no-hit values
+  - Provider-specific default value handling
+  - Configurable via feature metadata
+
+### Stability Monitoring
+- **Cohort-Based Stability**
+  - PSI (Population Stability Index) for categorical features
+  - KS (Kolmogorov-Smirnov) test for continuous features
+  - Train/test drift detection
+  - Feature-level stability metrics
+
+- **Time-Based Stability**
+  - Multiple time window strategies (monthly, weekly, quartile, custom)
+  - Temporal trend analysis (increasing, decreasing, volatile)
+  - Auto-detection of optimal time periods
+  - Minimum sample size enforcement
+
+### Provider Analytics
+- **Provider Match Rates / Hit Rates**
+  - Automatic detection via `<provider>_user_not_found` columns
+  - Data coverage statistics by provider (% of records with data)
+  - Feature-level availability tracking
+  - Not-found record counts per provider
+  - Supports both column-based and metadata-based detection
+
+### Performance
+- **Large Dataset Support**
+  - Multiple file format support (CSV, Parquet)
+  - Chunked CSV reading for files >100MB
+  - Configurable sampling for faster analysis
+  - Memory-efficient correlation computation
+  - Tested with 100K+ rows, 400+ features
+
+## Installation
+
+```bash
+pip install edasuite
+```
+
+## Quick Start
+
+### Basic Usage
+
+```python
+from edasuite import EDARunner, DataLoader
+import pandas as pd
+
+# Option 1: Load from file using DataLoader
+df = DataLoader.load_csv("data.csv")
+
+# Option 2: Use existing DataFrame
+df = pd.read_csv("data.csv")  # or from database, etc.
+
+# Initialize runner
+runner = EDARunner(
+    max_categories=50,
+    top_correlations=10
+)
+
+# Run analysis
+results = runner.run(
+    data=df,
+    output_path="eda_results.json"
+)
+```
+
+### Loading Data
+
+EDASuite provides `DataLoader` utilities for loading data:
+
+```python
+from edasuite import DataLoader
+
+# Load CSV
+df = DataLoader.load_csv("data.csv")
+
+# Load Parquet (faster for large files)
+df = DataLoader.load_parquet("data.parquet")
+
+# Load with sampling
+df = DataLoader.load_csv("large_file.csv", sample_size=10000)
+```
+
+### With Feature Metadata
+
+```python
+from edasuite import EDARunner, DataLoader, FeatureMetadata
+
+# Load data and metadata
+df = DataLoader.load_csv("data.csv")
+feature_metadata = DataLoader.load_feature_metadata("feature_config.json")
+
+# Or create metadata programmatically
+feature_metadata = {
+    'age': FeatureMetadata(
+        name='age',
+        provider='demographics',
+        variable_type='continuous',
+        description='User age',
+        no_hit_value='-1'
+    ),
+    'zip_code': FeatureMetadata(
+        name='zip_code',
+        provider='address',
+        variable_type='categorical',
+        description='ZIP code',
+        no_hit_value='',
+        default='00000'
+    )
+}
+
+# Run with metadata
+runner = EDARunner()
+results = runner.run(
+    data=df,
+    feature_metadata=feature_metadata,
+    target_variable="target",
+    output_path="eda_results.json"
+)
+```
+
+**Feature metadata JSON format** (`feature_config.json`):
+```json
+{
+  "features": [
+    {
+      "name": "age",
+      "provider": "demographics",
+      "variable_type": "continuous",
+      "description": "User age",
+      "no_hit_value": "-1",
+      "default": null
+    }
+  ]
+}
+```
+
+### Working with DataFrames
+
+EDARunner works with pandas DataFrames, making it easy to integrate into existing data pipelines:
+
+```python
+import pandas as pd
+from edasuite import EDARunner, FeatureMetadata
+
+# From database
+df = pd.read_sql("SELECT * FROM users", connection)
+
+# From API
+import requests
+data = requests.get("https://api.example.com/data").json()
+df = pd.DataFrame(data)
+
+# In-memory transformations
+df['age_group'] = pd.cut(df['age'], bins=[0, 30, 50, 100])
+
+# Run EDA
+runner = EDARunner()
+results = runner.run(data=df, target_variable='target')
+```
+
+This is particularly useful for:
+- Working in Jupyter notebooks
+- Data loaded from databases (via `pd.read_sql()`)
+- In-memory transformations without saving to disk
+- Integration with existing data pipelines
+
+See [examples/example_12_dataframe_input.py](examples/example_12_dataframe_input.py) for more examples.
+
+### Stability Analysis
+
+#### Cohort-Based (Train/Test)
+
+```python
+from edasuite import EDARunner, DataLoader
+
+# Load data
+df = DataLoader.load_parquet("data.parquet")
+feature_metadata = DataLoader.load_feature_metadata("feature_config.json")
+
+# Configure for stability analysis
+runner = EDARunner(
+    calculate_stability=True,
+    cohort_column='dataTag',
+    baseline_cohort='training',
+    comparison_cohort='test'
+)
+
+results = runner.run(
+    data=df,
+    feature_metadata=feature_metadata
+)
+```
+
+#### Time-Based
+
+```python
+from edasuite import EDARunner, DataLoader
+
+# Load data
+df = DataLoader.load_parquet("data.parquet")
+feature_metadata = DataLoader.load_feature_metadata("feature_config.json")
+
+# Configure for time-based stability
+runner = EDARunner(
+    time_based_stability=True,
+    time_column='onboarding_time',
+    time_window_strategy='monthly',  # or 'weekly', 'quartiles', 'custom'
+    baseline_period='first',
+    comparison_periods='all',
+    min_samples_per_period=100
+)
+
+results = runner.run(
+    data=df,
+    feature_metadata=feature_metadata
+)
+```
+
+## Feature Metadata
+
+Feature metadata enables advanced functionality:
+
+### Variable Type Override
+Override automatic type inference:
+```json
+{
+  "name": "customer_id",
+  "variable_type": "categorical"  // Treat numeric ID as categorical
+}
+```
+
+### Sentinel Values
+Define values that should be treated as missing:
+```json
+{
+  "name": "income",
+  "no_hit_value": "-1",      // Provider had no data
+  "default": "0"              // Default when not computed
+}
+```
+
+### Provider Tracking
+Track data sources:
+```json
+{
+  "name": "credit_score",
+  "provider": "bureau_provider",
+  "description": "FICO credit score"
+}
+```
+
+## Output Format
+
+EDASuite produces comprehensive JSON output with:
+
+### Dataset Summary
+- Row/column counts, memory usage
+- Missing value statistics
+- Feature type distribution
+- Duplicate row detection
+
+### Feature Analysis
+Each feature includes:
+- Statistics (mean, median, mode, quartiles, etc.)
+- Distribution (histogram or value counts)
+- Missing values
+- Quality assessment
+- Correlations (with target and other features)
+- Target relationship (IV, WoE if target specified)
+
+### Stability Results (if enabled)
+- Per-feature stability metrics (PSI/KS)
+- Highest stability features
+- Distribution comparisons
+- Temporal trends (for time-based)
+
+### Feature Counts
+- **High Correlation**: Count of features with |correlation| > 0.1 with target
+- **Redundant Features**: Count of features with correlation > 0.7 with another feature
+- **High IV**: Count of features with Information Value > 0.1
+- **High Stability**: Count of features with PSI/KS < 0.5 (stable across cohorts)
+- Includes detailed feature lists for each category
+
+### Provider Statistics
+- **Match rates / hit rates** by provider (automatically computed)
+- Matched vs. not-found record counts
+- Feature-level coverage statistics (when using metadata)
+- Computation method indicator (column-based or feature analysis)
+
+## Provider Match Rates / Hit Rates
+
+EDASuite automatically computes provider match rates (also called "hit rates") to help you understand data coverage from different third-party data providers.
+
+### Automatic Detection
+
+Provider match rates are computed automatically during EDA using one of two methods:
+
+#### Method 1: Using `<provider>_user_not_found` columns (Preferred)
+
+If your dataset includes columns like `payu_user_not_found`, `truecaller_user_not_found`, etc., EDASuite will automatically detect and use them:
+
+```python
+# Your data has these columns:
+# - payu_user_not_found: 0 = user found, 1 = user not found
+# - truecaller_user_not_found: 0 = user found, 1 = user not found
+
+runner = EDARunner()
+results = runner.run(data="data.csv")
+
+# Access provider stats
+provider_stats = results['provider_match_rates']
+# {
+#   "payu": {
+#     "hit_rate": 0.876,           # 87.6% of records found
+#     "matched_records": 876,
+#     "not_found_records": 124,
+#     "total_records": 1000,
+#     "computation_method": "user_not_found_column"
+#   },
+#   "truecaller": {
+#     "hit_rate": 0.996,           # 99.6% of records found
+#     ...
+#   }
+# }
+```
+
+#### Method 2: Using Feature Metadata (Fallback)
+
+If no `user_not_found` columns exist, you can use feature metadata to group features by provider:
+
+```python
+# feature_metadata.json
+{
+  "features": [
+    {
+      "name": "credit_score",
+      "source": {"provider": "bureau"},
+      "description": "Credit bureau score"
+    },
+    {
+      "name": "income_estimate",
+      "source": {"provider": "bureau"},
+      "description": "Estimated annual income"
+    }
+  ]
+}
+
+# Run EDA with metadata
+runner = EDARunner()
+results = runner.run(
+    data="data.csv",
+    feature_metadata="feature_metadata.json"
+)
+
+# Provider stats show match rates based on feature null analysis
+provider_stats = results['provider_match_rates']
+# {
+#   "bureau": {
+#     "hit_rate": 0.85,
+#     "matched_records": 850,      # Records with at least 1 non-null feature
+#     "total_records": 1000,
+#     "computation_method": "feature_analysis",
+#     "feature_match_rates": {
+#       "credit_score": 0.80,      # 80% non-null
+#       "income_estimate": 0.75    # 75% non-null
+#     }
+#   }
+# }
+```
+
+### Example
+
+See [examples/example_10_provider_match_rates.py](examples/example_10_provider_match_rates.py) for a complete working example.
+
+## Feature Counts
+
+EDASuite automatically computes feature counts across 4 key categories - perfect for building dashboard UIs and feature selection workflows.
+
+### Automatic Computation
+
+Feature counts are computed automatically during EDA and included in the results:
+
+```python
+from edasuite import EDARunner
+
+runner = EDARunner()
+results = runner.run(
+    data="data.csv",
+    target_variable="target"  # Required for correlation and IV
+)
+
+# Access feature counts
+feature_counts = results['feature_counts']
+
+print(f"High Correlation: {feature_counts['high_correlation']['count']}")
+print(f"Redundant Features: {feature_counts['redundant_features']['count']}")
+print(f"High IV: {feature_counts['high_iv']['count']}")
+print(f"High Stability: {feature_counts['high_stability']['count']}")
+```
+
+### Categories
+
+| Category | Threshold | Description |
+|----------|-----------|-------------|
+| **High Correlation** | \|correlation\| > 0.1 | Features correlated with target variable |
+| **Redundant Features** | correlation > 0.7 | Features highly correlated with another feature |
+| **High IV** | IV > 0.1 | Features with strong predictive power |
+| **High Stability** | PSI/KS < 0.5 | Features stable across cohorts (low drift) |
+
+### Output Format
+
+```json
+{
+  "feature_counts": {
+    "high_correlation": {
+      "count": 28,
+      "threshold": 0.1,
+      "description": "Features with absolute correlation > 0.1",
+      "features": [
+        {
+          "feature_name": "age",
+          "correlation": 0.45
+        }
+      ]
+    },
+    "redundant_features": {
+      "count": 15,
+      "threshold": 0.7,
+      "description": "Features with correlation > 0.7 with another feature",
+      "features": [
+        {
+          "feature_name": "total_amount",
+          "max_correlation": 0.95,
+          "correlated_with": "sum_amount"
+        }
+      ]
+    },
+    "high_iv": {
+      "count": 22,
+      "threshold": 0.1,
+      "description": "Features with Information Value > 0.1",
+      "features": [
+        {
+          "feature_name": "credit_score",
+          "information_value": 0.45,
+          "predictive_power": "strong"
+        }
+      ]
+    },
+    "high_stability": {
+      "count": 52,
+      "threshold": 0.5,
+      "description": "Features with PSI/KS < 0.5 (more stable)",
+      "features": [
+        {
+          "feature_name": "account_age",
+          "psi": 0.05,
+          "stability": "stable"
+        }
+      ]
+    }
+  }
+}
+```
+
+### Use Cases
+
+**Dashboard UI**: Display feature counts as metric cards
+
+```python
+ui_data = {
+    'high_correlation': results['feature_counts']['high_correlation']['count'],
+    'redundant': results['feature_counts']['redundant_features']['count'],
+    'high_iv': results['feature_counts']['high_iv']['count'],
+    'high_stability': results['feature_counts']['high_stability']['count']
+}
+```
+
+**Feature Selection**: Identify features to remove
+
+```python
+# Get list of redundant features to potentially remove
+redundant = results['feature_counts']['redundant_features']['features']
+features_to_remove = [f['feature_name'] for f in redundant]
+```
+
+**Model Monitoring**: Track stability over time
+
+```python
+# Features that are drifting (not stable)
+unstable_features = [
+    f['feature_name']
+    for f in results['features'].values()
+    if f.get('feature_name') not in
+       [sf['feature_name'] for sf in results['feature_counts']['high_stability']['features']]
+]
+```
+
+### Example
+
+See [examples/example_11_feature_counts.py](examples/example_11_feature_counts.py) for a complete working example with UI formatting.
+
+## Advanced Configuration
+
+### Correlation Settings
+
+```python
+runner = EDARunner(
+    top_correlations=10,           # Top N correlations per feature
+    max_correlation_features=500   # Limit features in correlation matrix
+)
+```
+
+### Sampling for Large Datasets
+
+```python
+runner = EDARunner(
+    sample_size=10000  # Analyze sample of 10K rows
+)
+```
+
+### Custom Column Selection
+
+```python
+results = runner.run(
+    data="data.parquet",
+    columns=['age', 'income', 'zip_code']  # Analyze specific columns
+)
+```
+
+### Compact JSON Output
+
+```python
+results = runner.run(
+    data="data.parquet",
+    output_path="results.json",
+    compact_json=True  # Minimize JSON size
+)
+```
+
+### Parquet File Benefits
+
+Parquet format offers significant advantages:
+- **Faster loading**: Columnar format with efficient compression
+- **Smaller file size**: Typically 50-80% smaller than CSV
+- **Type preservation**: Maintains data types (no type inference needed)
+- **Column selection**: Read only needed columns (reduces memory usage)
+
+```python
+# Convert CSV to Parquet (one-time operation)
+import pandas as pd
+df = pd.read_csv("data.csv")
+df.to_parquet("data.parquet", index=False)
+
+# Then use Parquet for faster analysis
+runner = EDARunner()
+results = runner.run(data="data.parquet")
+```
+
+## Architecture
+
+```
+edasuite/
+├── core/
+│   ├── base.py              # Base analyzer with centralized type determination
+│   ├── loader.py            # CSV & Parquet loading with chunking support
+│   ├── types.py             # Type definitions
+│   ├── missing.py           # Sentinel value replacement
+│   ├── correlation.py       # Correlation engine
+│   ├── feature_processor.py # Feature analysis orchestration
+│   └── schema_mapper.py     # Output schema mapping
+├── analyzers/
+│   ├── basic.py             # Dataset overview statistics
+│   ├── continuous.py        # Continuous feature analysis
+│   ├── categorical.py       # Categorical feature analysis
+│   ├── stability.py         # Stability metrics (PSI/KS)
+│   └── target_analysis.py   # IV/WoE calculation
+└── output/
+    └── formatter.py         # JSON output formatting
+```
+
+## Development
+
+### Building
+
+```bash
+python -m build
+```
+
+### Testing
+
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific test
+python tests/test_eda_full.py
+```
+
+### Installation for Development
+
+```bash
+pip install -e .
+```
+
+## Documentation
+
+Comprehensive documentation is coming soon. For now, refer to the examples in the `examples/` directory and the inline docstrings in the code.
+
+## Performance Benchmarks
+
+Tested on MacBook Pro M1:
+- **10K rows × 445 features**: ~10 seconds
+- **100K rows × 445 features**: ~75 seconds
+- Chunked reading for files >100MB
+- Memory-efficient correlation computation
+
+## Requirements
+
+- Python 3.8+
+- pandas >= 2.0.0
+- numpy >= 1.24.0
+- scipy >= 1.10.0
+- pyarrow >= 10.0.0 (for Parquet support)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or suggestions:
+- Email: dev@lattiq.com
+- GitHub: [https://github.com/lattiq/edasuite](https://github.com/lattiq/edasuite)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
