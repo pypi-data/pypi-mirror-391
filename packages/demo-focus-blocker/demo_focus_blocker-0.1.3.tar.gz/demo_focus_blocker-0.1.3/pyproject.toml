@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demo-focus-blocker"
+version = "0.1.3"
+description = "A simple Python package to block distracting websites during focus hours"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Shyam Tyagi", email = "sst@gmail.com"}
+]
+keywords = ["productivity", "focus", "blocker", "time-management"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/demo/demo-focus-blocker"
+Repository = "https://github.com/demo/demo-focus-blocker"
+"Bug Reports" = "https://github.com/demo/demo-focus-blocker/issues"
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "flake8"]
+
+[project.scripts]
+focus-blocker-demo = "demo_focus_blocker.blocker:demo"
