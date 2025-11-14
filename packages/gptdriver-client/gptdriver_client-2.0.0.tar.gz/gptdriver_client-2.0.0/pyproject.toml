@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["playground", "playground.*", "tests", "tests.*"]
+
+[project]
+name = "gptdriver-client"
+version = "2.0.0"
+authors = [
+    { name = "MobileBoost", email = "chris@mobileboost.io" },
+]
+description = "Test your mobile apps with the AI native GPT Driver."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "requests",
+    "pydantic",
+    "Appium-Python-Client",
+    "pillow",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://www.mobileboost.io"
