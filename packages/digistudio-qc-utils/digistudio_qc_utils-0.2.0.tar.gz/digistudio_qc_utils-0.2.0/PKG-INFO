@@ -1,0 +1,160 @@
+Metadata-Version: 2.4
+Name: digistudio-qc-utils
+Version: 0.2.0
+Summary: CLI utilities for QFieldCloud: upload to GCP, clean old files, and more
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: qfieldcloud-sdk>=0.11.0
+Requires-Dist: google-cloud-storage>=2.10.0
+Provides-Extra: dev
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: basedpyright; extra == "dev"
+
+# digistudio-qc-utils
+
+CLI utilities for QFieldCloud: upload photos to Google Cloud Storage, clean old files, and more.
+
+## Features
+
+- **Upload photos to GCP**: Copy photos from QFieldCloud to a Google Cloud Storage bucket
+- **Clean old photos**: Remove photos older than a specified number of days from QFieldCloud
+- **Flexible filtering**: Use glob patterns to filter which files to process (default: `*.jpg`)
+- **Dry-run mode**: Test cleanup operations without actually deleting files
+- **Progress reporting**: See detailed progress and summary of operations
+
+## Installation
+
+### Requirements
+
+- Python 3.10 or higher
+- [uv](https://github.com/astral-sh/uv) package manager
+
+### Install dependencies
+
+```bash
+uv sync
+```
+
+This will install the package in development mode with all dependencies.
+
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file or export these environment variables:
+
+```bash
+# QFieldCloud authentication (required for both commands)
+export QFIELDCLOUD_USERNAME="your_username"
+export QFIELDCLOUD_PASSWORD="your_password"
+
+# Optional: QFieldCloud API URL (default: https://app.qfield.cloud/api/v1/)
+export QFIELDCLOUD_URL="https://app.qfield.cloud/api/v1/"
+
+# Alternative: use token authentication
+export QFIELDCLOUD_TOKEN="your_token"
+```
+
+### GCP Service Account
+
+For the upload command, you need a GCP service account JSON file with permissions to write to Cloud Storage.
+
+See `.env.example` for a complete list of environment variables.
+
+## Usage
+
+### Upload photos to GCP
+
+Upload photos from QFieldCloud to a Google Cloud Storage bucket:
+
+```bash
+qc-to-gcp upload \
+  --qc-project-id "your-qfield-project-id" \
+  --gcp-bucket "your-gcs-bucket" \
+  --gcp-bucket-directory "photos/2024" \
+  --gcp-auth-file "path/to/service-account.json" \
+  --qc-filter "*.jpg"
+```
+
+**Options:**
+- `--qc-project-id`: QFieldCloud project ID (required)
+- `--gcp-bucket`: GCP bucket name (required)
+- `--gcp-bucket-directory`: Directory path in bucket (required)
+- `--gcp-auth-file`: Path to GCP service account JSON file (required)
+- `--qc-filter`: File pattern to match (default: `*.jpg`)
+- `--verbose`, `-v`: Enable verbose logging
+
+**Features:**
+- Intelligently compares file lists to skip existing files (only 2 API calls instead of N+1)
+- Handles subdirectories properly (DCIM/, files/, etc.)
+- Shows progress for each file
+- Provides detailed analysis summary before upload
+- Uses temporary storage for downloads
+
+### Clean old photos from QFieldCloud
+
+Remove photos older than a specified number of days:
+
+```bash
+qc-clean \
+  --qc-project-id "your-qfield-project-id" \
+  --keep-days 15 \
+  --qc-filter "*.jpg"
+```
+
+**Options:**
+- `--qc-project-id`: QFieldCloud project ID (required)
+- `--keep-days`: Keep files newer than this many days (default: 15)
+- `--qc-filter`: File pattern to match (default: `*.jpg`)
+- `--dry-run`: Show what would be deleted without actually deleting
+- `--verbose`, `-v`: Enable verbose logging and show detailed file list
+
+**Example with dry-run:**
+```bash
+qc-clean \
+  --qc-project-id "693d753d-2b71-44e1-892f-dd2e77852c4a" \
+  --keep-days 30 \
+  --qc-filter "*.jpg" \
+  --dry-run
+```
+
+## Development
+
+### Project structure
+
+```
+qc-utils/
+├── src/qc_utils/
+│   ├── __init__.py
+│   ├── cli.py              # CLI entry points
+│   ├── commands/
+│   │   ├── clean.py        # Clean command implementation
+│   │   └── upload.py       # Upload command implementation
+│   └── core/
+│       ├── filters.py      # File filtering utilities
+│       ├── gcp_client.py   # GCP Storage client wrapper
+│       └── qfield_client.py # QFieldCloud client wrapper
+├── pyproject.toml
+└── README.md
+```
+
+### Run linting
+
+```bash
+uv run ruff check .
+uv run ruff format .
+```
+
+### Run type checking
+
+```bash
+uv run basedpyright
+```
+
+## License
+
+[Add your license here]
+
+## Credits
+
+This tool replaces the historical bash/Python scripts with a modern CLI architecture.
