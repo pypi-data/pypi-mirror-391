@@ -1,0 +1,175 @@
+Metadata-Version: 2.4
+Name: autocleaneeg-pipeline
+Version: 3.0.0a2
+Summary: A modular framework for automated EEG data processing, built on MNE-Python
+Project-URL: Homepage, https://github.com/cincibrainlab/autoclean_pipeline
+Project-URL: Repository, https://github.com/cincibrainlab/autoclean_pipeline
+Project-URL: Documentation, https://cincibrainlab.github.io/autoclean_pipeline/
+Project-URL: Issues, https://github.com/cincibrainlab/autoclean_pipeline/issues
+Author-email: Ernest Pedapati <ernest.pedapati@cchmc.org>, Gavin Gammoh <gavin.gammoh@cchmc.org>
+License: # MIT License
+        
+        Copyright (c) 2024 Cincinnati Children's Hospital Medical Center
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE.md
+Keywords: bids,eeg,electrophysiology,mne-python,neuroscience,preprocessing,signal-processing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Requires-Python: <3.14,>=3.11
+Requires-Dist: auth0-python==4.13.0
+Requires-Dist: autoclean-eeg2source==0.3.7
+Requires-Dist: autocleaneeg-icvision==0.2.0
+Requires-Dist: autocleaneeg-mne-qt-browser-fork>0.7.2
+Requires-Dist: autocleaneeg-view==0.1.6
+Requires-Dist: autoreject==0.4.3
+Requires-Dist: bctpy==0.6.1
+Requires-Dist: cryptography==46.0.1
+Requires-Dist: cython==3.1.4
+Requires-Dist: defusedxml==0.7.1
+Requires-Dist: eeglabio==0.1.1
+Requires-Dist: fastparquet==2024.11.0
+Requires-Dist: inquirer==3.4.1
+Requires-Dist: jinja2==3.1.6
+Requires-Dist: loguru==0.7.3
+Requires-Dist: matplotlib==3.10.6
+Requires-Dist: mne-bids==0.17.0
+Requires-Dist: mne-connectivity==0.7.0
+Requires-Dist: mne-icalabel==0.8.0
+Requires-Dist: mne==1.10.1
+Requires-Dist: networkx==3.5
+Requires-Dist: nibabel==5.3.2
+Requires-Dist: numpy==2.3.3
+Requires-Dist: onnxruntime==1.22.1
+Requires-Dist: openai==1.109.0
+Requires-Dist: pandas==2.3.2
+Requires-Dist: platformdirs==4.4.0
+Requires-Dist: pybv==0.7.6
+Requires-Dist: pydantic==2.11.9
+Requires-Dist: pyjsonviewer==1.6.0
+Requires-Dist: pyopengl-accelerate==3.1.10
+Requires-Dist: pyprep==0.5.0
+Requires-Dist: pyqt6==6.7.1
+Requires-Dist: python-dotenv==1.1.1
+Requires-Dist: python-picard==0.8
+Requires-Dist: python-ulid==3.1.0
+Requires-Dist: pyvistaqt==0.11.3
+Requires-Dist: pywavelets==1.9.0
+Requires-Dist: pyyaml==6.0.2
+Requires-Dist: qtpy==2.4.3
+Requires-Dist: reportlab==4.4.4
+Requires-Dist: requests==2.32.5
+Requires-Dist: rich==14.1.0
+Requires-Dist: schema==0.7.7
+Requires-Dist: scipy==1.16.2
+Requires-Dist: seaborn==0.13.2
+Requires-Dist: specparam>=2.0.0rc3
+Requires-Dist: textual-dev==1.7.0
+Requires-Dist: textual==6.1.0
+Requires-Dist: torch==2.8.0
+Provides-Extra: blocks-all
+Requires-Dist: meegkit>=0.1.9; extra == 'blocks-all'
+Provides-Extra: blocks-analysis
+Provides-Extra: blocks-signal
+Requires-Dist: meegkit>=0.1.9; extra == 'blocks-signal'
+Description-Content-Type: text/markdown
+
+# AutoCleanEEG Pipeline
+
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE.md)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A modular framework for automated EEG data processing, built on MNE‑Python.
+
+## Features
+
+- Framework for automated EEG preprocessing with "lego block" modularity
+- Support for multiple EEG paradigms (ASSR, Chirp, MMN, Resting State) 
+- BIDS-compatible data organization and comprehensive quality control
+- Extensible plugin system for file formats, montages, and event processing
+- Research-focused workflow: single file testing → parameter tuning → batch processing
+- Detailed output: BIDS‑compatible derivatives, single task log file, stage files, exports, and QA visualizations
+
+## Installation (uv)
+
+Use Astral's uv for fast, isolated installs. If you don't have uv yet, see https://docs.astral.sh/uv/
+
+- Install CLI (recommended for users):
+
+```bash
+uv tool install autocleaneeg-pipeline
+autocleaneeg-pipeline --help
+```
+
+- Upgrade or remove:
+
+```bash
+uv tool upgrade autocleaneeg-pipeline
+uv tool uninstall autocleaneeg-pipeline
+```
+
+- Development install from source (editable install):
+
+```bash
+git clone https://github.com/cincibrainlab/autocleaneeg_pipeline.git
+cd autocleaneeg_pipeline
+uv tool install -e --upgrade . --force
+autocleaneeg-pipeline --help # Slow on first run!
+```
+
+## Documentation
+
+Full documentation is available at [https://docs.autocleaneeg.org](https://docs.autocleaneeg.org)
+
+## Development
+
+For contributors, we provide a Makefile with convenient development commands:
+
+```bash
+make help          # Show all available commands
+make check         # Run code quality checks
+make format        # Auto-format code
+make lint          # Run linting and type checking
+make test          # Run unit tests
+make test-cov      # Run tests with coverage
+make ci-check      # Run CI-equivalent checks locally
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full development guidelines.
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
+
+## Acknowledgments
+
+- Cincinnati Children's Hospital Research Foundation
+- Built with [MNE-Python](https://mne.tools/)
