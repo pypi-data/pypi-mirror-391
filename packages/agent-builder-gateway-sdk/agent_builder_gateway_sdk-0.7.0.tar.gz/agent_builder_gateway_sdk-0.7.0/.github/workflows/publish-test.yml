@@ -1,0 +1,72 @@
+name: Publish to Test PyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_suffix:
+        description: 'Version suffix (e.g., dev1, rc1)'
+        required: false
+        default: 'dev'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        uv sync --dev
+
+    - name: Set gateway URL for test environment
+      run: |
+        python scripts/set_gateway_url.py
+      env:
+        GATEWAY_ENVIRONMENT: test
+
+    - name: Update version for test release
+      run: |
+        # 读取当前版本
+        CURRENT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+        # 添加后缀
+        TEST_VERSION="${CURRENT_VERSION}.${{ inputs.version_suffix }}$(date +%Y%m%d%H%M%S)"
+        echo "Test version: $TEST_VERSION"
+        # 更新 pyproject.toml
+        sed -i "s/^version = .*/version = \"$TEST_VERSION\"/" pyproject.toml
+
+    - name: Build package
+      run: |
+        uv build
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-package
+        path: dist/*
+
+    - name: Instructions for manual publish
+      run: |
+        echo "✅ Test package built successfully!"
+        echo ""
+        echo "📦 To publish to Test PyPI manually:"
+        echo "   1. Download the artifacts from this run"
+        echo "   2. Install twine: pip install twine"
+        echo "   3. Upload to Test PyPI: twine upload --repository testpypi dist/*"
+        echo ""
+        echo "Or set TEST_PYPI_API_TOKEN secret and uncomment the publish step in the workflow"
+
