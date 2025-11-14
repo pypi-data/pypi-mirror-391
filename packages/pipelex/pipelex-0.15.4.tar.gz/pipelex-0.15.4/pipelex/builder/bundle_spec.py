@@ -1,0 +1,176 @@
+from pydantic import ConfigDict, Field, ValidationError, field_validator, model_validator
+from rich.console import Group
+from rich.table import Table
+from rich.text import Text
+from typing_extensions import override
+
+from pipelex.builder.builder_errors import (
+    ConceptFailure,
+    ConceptSpecError,
+    PipeBuilderError,
+    PipeFailure,
+    PipeSpecError,
+)
+from pipelex.builder.concept.concept_spec import ConceptSpec
+from pipelex.builder.exceptions import PipelexBundleError, PipelexBundleSpecValueError
+from pipelex.builder.pipe.pipe_spec_union import PipeSpecUnion
+from pipelex.core.bundles.pipe_sorter import sort_pipes_by_dependencies
+from pipelex.core.bundles.pipelex_bundle_blueprint import PipeBlueprintUnion, PipelexBundleBlueprint
+from pipelex.core.concepts.concept_blueprint import ConceptBlueprint
+from pipelex.core.domains.exceptions import DomainCodeError
+from pipelex.core.domains.validation import validate_domain_code
+from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.tools.misc.pretty import PrettyPrintable
+from pipelex.tools.typing.pydantic_utils import format_pydantic_validation_error
+
+
+class PipelexBundleSpec(StructuredContent):
+    """Complete spec of a Pipelex bundle TOML definition.
+
+    Represents the top-level structure of a Pipelex bundle, which defines a domain
+    with its concepts, pipes, and configuration. Bundles are the primary unit of
+    organization for Pipelex workflows, loaded from TOML files.
+
+    Attributes:
+        domain: The domain identifier for this bundle in snake_case format.
+               Serves as the namespace for all concepts and pipes within.
+        description: Natural language description of the pipeline's purpose and functionality.
+        system_prompt: Default system prompt applied to all LLM pipes in the bundle
+                      unless overridden at the pipe level.
+        main_pipe: The main pipe of the bundle.
+        concept: Dictionary of concept definitions used in this domain. Keys are concept
+                codes in PascalCase format, values are ConceptBlueprint instances or
+                string references to existing concepts.
+        pipe: Dictionary of pipe definitions for data transformation. Keys are pipe
+             codes in snake_case format, values are specific pipe spec types
+             (PipeLLM, PipeImgGen, PipeSequence, etc.).
+
+    Validation Rules:
+        1. Domain must be in valid snake_case format.
+        2. Concept keys must be in PascalCase format.
+        3. Pipe keys must be in snake_case format.
+        4. Extra fields are forbidden (strict mode).
+        5. Pipe types must match their blueprint discriminator.
+
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    domain: str
+    description: str | None = None
+    system_prompt: str | None = None
+    main_pipe: str
+
+    concept: dict[str, ConceptSpec | str] | None = Field(default_factory=dict)
+
+    pipe: dict[str, PipeSpecUnion] | None = Field(default_factory=dict)
+
+    @field_validator("domain", mode="before")
+    @classmethod
+    def validate_domain_syntax(cls, domain: str) -> str:
+        try:
+            validate_domain_code(code=domain)
+        except DomainCodeError as exc:
+            msg = f"Error when trying to validate pipelex bundle spec: domain '{domain}' is not a valid domain code: {exc}"
+            raise PipelexBundleSpecValueError(msg) from exc
+        return domain
+
+    @model_validator(mode="after")
+    def validate_main_pipe(self) -> "PipelexBundleSpec":
+        if not self.pipe or (self.main_pipe not in self.pipe):
+            msg = f"Main pipe '{self.main_pipe}' could not be found in bundle spec"
+            raise PipelexBundleError(message=msg)
+        return self
+
+    def to_blueprint(self) -> PipelexBundleBlueprint:
+        concept: dict[str, ConceptBlueprint | str] | None = None
+
+        if self.concept:
+            concept = {}
+            for concept_code, concept_spec_or_name in self.concept.items():
+                if isinstance(concept_spec_or_name, ConceptSpec):
+                    try:
+                        concept[concept_code] = concept_spec_or_name.to_blueprint()
+                    except ValidationError as exc:
+                        msg = f"Failed to create concept blueprint from spec for concept code {concept_code}: {format_pydantic_validation_error(exc)}"
+                        concept_failure = ConceptFailure(concept_spec=concept_spec_or_name, error_message=msg)
+                        raise ConceptSpecError(message=msg, concept_failure=concept_failure) from exc
+                else:
+                    concept[concept_code] = ConceptBlueprint(description=concept_code, structure=concept_spec_or_name)
+
+        pipe: dict[str, PipeBlueprintUnion] | None = None
+        if self.pipe:
+            # First, convert all specs to blueprints
+            pipe_blueprints: dict[str, PipeBlueprintUnion] = {}
+            for pipe_code, pipe_spec in self.pipe.items():
+                try:
+                    pipe_blueprints[pipe_code] = pipe_spec.to_blueprint()
+                except ValidationError as exc:
+                    msg = f"Failed to create pipe blueprint from spec for pipe code {pipe_code}: {format_pydantic_validation_error(exc)}"
+                    pipe_failure = PipeFailure(pipe_spec=pipe_spec, error_message=msg)
+                    raise PipeSpecError(message=msg, pipe_failure=pipe_failure) from exc
+
+            # Then, sort blueprints by dependencies
+            try:
+                sorted_pipe_items = sort_pipes_by_dependencies(pipe_blueprints)
+            except Exception as exc:
+                msg = f"Failed to sort pipes by dependencies: {exc}"
+                raise PipeBuilderError(msg) from exc
+
+            # Finally, create the ordered dict
+            pipe = dict(sorted_pipe_items)
+
+        return PipelexBundleBlueprint(
+            domain=self.domain,
+            description=self.description,
+            system_prompt=self.system_prompt,
+            main_pipe=self.main_pipe,
+            pipe=pipe,
+            concept=concept,
+        )
+
+    @override
+    def rendered_pretty(self, title: str | None = None, depth: int = 0) -> PrettyPrintable:
+        bundle_group = Group()
+
+        # Bundle header info
+        if title:
+            bundle_group.renderables.append(Text(title, style="bold"))
+        bundle_group.renderables.append(Text.from_markup(f"Domain: [yellow]{self.domain}[/yellow]\n", style="bold"))
+        if self.description:
+            bundle_group.renderables.append(Text.from_markup(f"Description: [yellow italic]{self.description}[/yellow italic]\n"))
+        bundle_group.renderables.append(Text.from_markup(f"Main Pipe: [red]{self.main_pipe}[/red]\n"))
+        if self.system_prompt:
+            bundle_group.renderables.append(Text(f"System Prompt: {self.system_prompt}\n", style="dim"))
+
+        # Concepts table
+        if self.concept:
+            bundle_group.renderables.append(Text("\n"))
+            concepts_table = Table(
+                title="Concepts", title_style="bold green", show_header=False, show_edge=True, show_lines=True, border_style="green"
+            )
+            concepts_table.add_column("Concept", style="white")
+
+            for concept_code, concept_spec_or_name in self.concept.items():
+                if isinstance(concept_spec_or_name, ConceptSpec):
+                    concept_rendered = concept_spec_or_name.rendered_pretty()
+                    concepts_table.add_row(concept_rendered)
+                else:
+                    # Simple string concept reference
+                    concepts_table.add_row(Text.from_markup(f"[green]{concept_code}[/green]: {concept_spec_or_name}"))
+
+            bundle_group.renderables.append(concepts_table)
+
+        # Pipes table
+        if self.pipe:
+            bundle_group.renderables.append(Text("\n"))
+            pipes_table = Table(title="Pipes", title_style="bold red", show_header=False, show_edge=True, show_lines=True, border_style="red")
+            pipes_table.add_column("Pipe", style="white")
+
+            for pipe_spec in self.pipe.values():
+                pipe_rendered = pipe_spec.rendered_pretty()
+                pipes_table.add_row(pipe_rendered)
+
+            bundle_group.renderables.append(pipes_table)
+
+        return bundle_group
