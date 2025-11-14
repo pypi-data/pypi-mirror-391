@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pygeofilter-aeronet"
+dynamic = ["version"]
+description = ''
+readme = "README.md"
+requires-python = ">=3.8"
+license = "Apache-2.0"
+keywords = []
+authors = [
+  { name = "Fabrice Brito", email = "fabrice.brito@terradue.com" },
+  { name = "Simone Tripodi", email = "simone.tripodi@terradue.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "pygeofilter>=0.3.1",
+  "pygeofilter-duckdb",
+  "ipykernel",
+  "shapely",
+  "nose2",
+  "loguru",
+  "requests",
+  "click>=8.3.0",
+  "pandas>=2.3",
+  "geopandas",
+  "pyarrow",
+  "httpx>=0.23.0,<0.29.0",
+  "attrs>=22.2.0",
+  "python-dateutil>=2.8.2",
+  "pystac",
+  "stac-geoparquet"
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.urls]
+Documentation = "https://github.com/Terradue/pygeofilter-aeronet#readme"
+Issues = "https://github.com/Terradue/pygeofilter-aeronet/issues"
+Source = "https://github.com/Terradue/pygeofilter-aeronet"
+
+[tool.hatch.envs.prod]
+path = "/app/envs/aeronet-client"
+
+[project.scripts]
+aeronet-client = "pygeofilter_aeronet.cli:main"
+
+[tool.hatch.version]
+path = "src/pygeofilter_aeronet/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/pygeofilter_aeronet tests}"
+
+[tool.coverage.run]
+source_pkgs = ["pygeofilter_aeronet", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/pygeofilter_aeronet/__about__.py",
+]
+
+[tool.coverage.paths]
+pygeofilter_aeronet = ["src/pygeofilter_aeronet", "*/pygeofilter-aeronet/src/pygeofilter_aeronet"]
+tests = ["tests", "*/pygeofilter-aeronet/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+
+[tool.hatch.envs.default.scripts]
+test = "hatch run nose2"
