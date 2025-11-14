@@ -1,0 +1,21 @@
+[build-system]
+requires = ['setuptools>=61.0']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = 'yorsent'
+version = '0.1.2'
+description = 'A Yoruba language model to predict sentiment of Yoruba texts'
+readme = 'README.md'
+license = {text='Apache-2.0'}
+authors = [{name= 'Abeeb Kasaba', email = 'kasabaabeeb@gmail.com'}]
+dependencies = [
+    'pandas',
+    'scikit-learn',
+    'joblib',
+]
+
+[project.urls]
+WebApp ='https://yoruba-sentiment-checker.streamlit.app/'
+Doc = 'https://www.researchgate.net/publication/395652737_A_Hybrid_Approach_to_Yoruba_Sentiment_Analysis_Integrating_Lexicon-Based_Rules_and_Machine_-_Learning_Models?_sg%5B0%5D=8vJfQsf1VA-UkFECUunrdXKmy893G3WDsVffPwovvelkg8HGHtWK4tN_ofooxMaR1CrSXAXOGysUtTiw0RS4offeIZaDZmQzqPKTvp53.NaquqpMe6e1m_sRPv-hL08O2uW9DuSDuxErVcgZ0X1zZA4z5ePxo-Yna_LNZBqUHKGFUuKes5Vl2m7yeK9GAsA&_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InByb2ZpbGUiLCJwYWdlIjoicHJvZmlsZSIsInByZXZpb3VzUGFnZSI6InByb2ZpbGUiLCJwb3NpdGlvbiI6InBhZ2VDb250ZW50In19'
+Source = 'https://github.com/Kasaba6330/yoruba-sentiment-checker'
