@@ -1,0 +1,38 @@
+Metadata-Version: 2.1
+Name: crudini_simple
+Version: 0.1.1
+Summary: A CLI tool for managing INI files.
+Home-page: https://github.com/hujianli94/crudini_simple
+Author: hjl
+Author-email: hjl@hjl.com
+License: UNKNOWN
+Description: # crudini_simple
+        
+        使用python实现一个工具 curdini.py，实现对ini或conf文件的put、get、update、delete，使用argparse、configparser
+        
+        类似项目：https://github.com/pixelb/crudini
+        
+        ## usage
+        
+        ```sh
+        crudini_simple set Database MaxConnections 100 example.ini
+        crudini_simple get Database host example.ini
+        crudini_simple update Server port 9090 example.ini
+        crudini_simple del Server port example.ini
+        crudini_simple del Server port ip example.ini
+        crudini_simple merge example2.ini example.ini
+        ```
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
