@@ -1,0 +1,84 @@
+# Multi-Label Agreement (ml_agreement)
+
+**Multi-Label Agreement (ml_agreement)** is a Python library for measuring inter-annotator agreement in **multi-label** annotation tasks — scenarios where annotators can assign multiple labels (or none) to each data item. Unlike traditional agreement metrics like Cohen's Kappa or Fleiss’ Kappa, this metric is tailored for tasks where each item may receive multiple simultaneous annotations.
+
+## Key Features
+
+- Supports **multi-label** annotations (binary one-hot label vectors)
+- Handles **any number of annotators** and **labels**
+- Compatible with standard agreement normalizations: `kappa`, `AC1`, and `PABAK`
+- Calculates agreement:
+  - For each **item**
+  - For each **label**
+  - **Overall** across the dataset
+- Provides baseline estimates like **expected agreement** and **minimum possible agreement**
+
+## Background
+
+Inter-annotator agreement (IAA) is essential to ensure the objectivity and quality of annotated data. However, most classical metrics assume a **single-label** decision per annotator per item.
+
+In contrast, many real-world NLP and social science tasks involve **multi-label annotation**, e.g., tagging media bias, emotions, or topics — where a sentence might validly be tagged with multiple classes.
+
+This package defines a new agreement framework adapted for multi-label settings and implements a range of calculations to assess agreement reliability.
+
+For a deeper discussion, see our paper ...
+
+## Installation
+
+You can install this package via pip or clone it directly from git:
+
+```bash
+pip install ml_agreement
+````
+
+```bash
+https://github.com/Timperator2/MultiLabelAgreement.git
+````
+
+## Usage Example
+
+# My Project
+
+```python
+import ml_agreement
+
+# Each annotator assigns k labels to N items
+annotator_1 = [["Science Fiction", "Action", "Comedy"], ["Drama", "Romance"], ["Horror", "Comedy"]]
+annotator_2 = [["Science Fiction", "Action"], ["Romance"], ["Horror", "Comedy"]]
+annotator_3 = [["Science Fiction", "Action"], ["Drama", "Romance"], ["Thriller", "Comedy"]]
+
+all_decisions = [annotator_1, annotator_2, annotator_3]
+
+# The data needs to be converted to binary one-hot label vectors
+
+# The labels available to assign to each item
+available_labels = ["Action", "Comedy", "Drama", "Horror", "Romance", "Science Fiction", "Thriller", "Fantasy"]
+
+# If the data is already binary encoded, this transformation converts it back to the textual form as above
+all_decisions = ml_agreement.transform_data(all_decisions, available_labels)
+
+# Calculate the multi-label agreement using all three different methods 
+# (for a discussion of each method, see the paper referenced above)
+multi_label_k = ml_agreement.calculate_total_multi_label_agreement(all_decisions, "k")
+multi_label_ac1 = ml_agreement.calculate_total_multi_label_agreement(all_decisions, "ac1")
+multi_label_pabak = ml_agreement.calculate_total_multi_label_agreement(all_decisions, "pabak")
+
+# Calculate the minimum possible multi-label agreement to see how low it can drop 
+# with the given number of annotators and prevalence
+minimum_k = ml_agreement.calculate_minimum_prevalence_agreement(all_decisions, "k")
+
+# Calculate the prevalence of a label (in this case label_0, which is "Action")
+prevalence_action = ml_agreement.calculate_label_prevalence(all_decisions, 0)
+
+# Calculate the agreement for this label
+ml_agreement_k_action = ml_agreement.calcuate_label_agreement(all_decisions, 0, "k")
+```
+
+# License
+
+MIT License. See LICENSE file for details.
+
+# Citation
+
+If you use this package in your research, please cite the corresponding paper.
+
