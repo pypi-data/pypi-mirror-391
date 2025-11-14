@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mkdocs-header-dropdown"
+version = "0.1.0"
+description = "A MkDocs plugin to add configurable dropdown menus to the Material theme header"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+keywords = ["mkdocs", "plugin", "dropdown", "navigation", "material-theme", "documentation"]
+authors = [
+    {name = "CMS Common Analysis Tools"},
+]
+maintainers = [
+    {name = "CMS Common Analysis Tools"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Documentation",
+    "Topic :: Text Processing :: Markup :: Markdown",
+    "Framework :: MkDocs",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "mkdocs>=1.4.0",
+    "pyyaml",
+]
+
+[project.urls]
+Homepage = "https://github.com/cms-cat/mkdocs-header-dropdown"
+Repository = "https://github.com/cms-cat/mkdocs-header-dropdown"
+Issues = "https://github.com/cms-cat/mkdocs-header-dropdown/issues"
+Documentation = "https://github.com/cms-cat/mkdocs-header-dropdown#readme"
+
+[project.entry-points."mkdocs.plugins"]
+header-dropdown = "mkdocs_header_dropdown.plugin:HeaderDropdownPlugin"
+
+[tool.setuptools]
+packages = ["mkdocs_header_dropdown"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+mkdocs_header_dropdown = ["templates/**/*"]
