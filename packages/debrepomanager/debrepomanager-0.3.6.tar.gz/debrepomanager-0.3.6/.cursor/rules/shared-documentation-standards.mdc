@@ -1,0 +1,220 @@
+---
+alwaysApply: true
+---
+# Documentation Standards
+
+Documentation principles and language conventions.
+
+## Documentation Principles
+
+Write clear, maintainable documentation.
+
+**Keep documentation compact:**
+- Be concise and avoid verbose explanations
+- Get to the point quickly
+- Use bullet points and lists
+- Remove unnecessary words
+- Clear and direct language
+
+**Write flexible documentation:**
+- Focus on principles and patterns
+- Avoid implementation details that change frequently
+- **Avoid specific quantities:**
+  - Don't mention exact numbers of files, commands, tests
+  - Don't mention percentages that can change
+  - Don't mention version numbers that update
+  - Use relative terms: "many", "several", "comprehensive"
+- Document WHY, not just WHAT
+- Make documentation age well
+
+**Keep documentation up to date:**
+- Update docs when code changes
+- Review docs regularly for accuracy
+- Remove obsolete information
+- Mark deprecated features clearly
+- Date-stamp time-sensitive information
+
+**Write for your audience:**
+- New developers: setup and getting started
+- Contributors: architecture and conventions
+- Users: API documentation and examples
+- Maintainers: deployment and operations
+- Adjust detail level appropriately
+
+## Code Comments
+
+Add comments that provide value.
+
+**When to comment:**
+- Complex algorithms or business logic
+- Non-obvious decisions and tradeoffs
+- Workarounds and their reasons
+- Public APIs and interfaces
+- Important constraints or assumptions
+- Security-sensitive code
+
+**What to explain:**
+- **WHY, not WHAT** - code shows what, comments explain why
+- Context for decisions made
+- Tradeoffs considered
+- Edge cases handled
+- Performance considerations
+- Security implications
+
+**What to avoid:**
+- Stating the obvious
+- Redundant information
+- Commented-out code (remove it, use version control)
+- Outdated or misleading comments
+- Excessive comments that clutter code
+
+**Keep comments up to date:**
+- Update comments when code changes
+- Remove obsolete comments
+- Review comments during code review
+- Treat comments like code
+- Inaccurate comments are worse than no comments
+
+## Language Conventions
+
+Maintain consistency across files and documentation.
+
+**All generated files use English:**
+- Code (variables, functions, classes, comments)
+- Documentation (README, API docs, guides)
+- Commit messages
+- Pull request descriptions
+- Issue descriptions
+- Configuration files
+- Regardless of user's input language
+
+**Rationale:**
+- International collaboration
+- Tooling compatibility
+- Searchability and discoverability
+- Industry standard
+- Long-term maintainability
+
+**Agent responses:**
+- Can match user's language in conversation
+- Files always generated in English
+- Helps non-English speakers learn technical English
+
+**Maintain consistency:**
+- Keep codebase and docs in English
+- Translate user-facing content if needed
+- Document translation strategy if multi-language support
+
+## API and Interface Documentation
+
+Document interfaces clearly and completely.
+
+**Document public APIs:**
+- Purpose and use cases
+- Parameters and types
+- Return values and types
+- Possible errors or exceptions
+- Usage examples
+- Behavior and side effects
+
+**Examples are valuable:**
+- Show common use cases
+- Demonstrate proper usage
+- Include error handling
+- Keep examples up to date
+- Test examples actually work
+
+**Interface contracts:**
+- Document preconditions and postconditions
+- Invariants that must hold
+- Thread-safety guarantees
+- Performance characteristics
+- Deprecation notices
+
+**Keep in sync:**
+- Update docs when API changes
+- Breaking changes prominently documented
+- Deprecation warnings with migration path
+- Version documentation with releases
+
+## README Structure
+
+Every project should have clear README.
+
+**Essential sections:**
+- **Overview:** What the project does and why it exists
+- **Quick Start:** Get running in minutes
+- **Installation:** Dependencies and setup steps
+- **Usage:** Basic usage examples
+- **Configuration:** Environment variables, config files
+- **Development:** How to contribute, run tests
+- **Links:** Detailed docs, issue tracker, related projects
+
+**README best practices:**
+- Scannable format with clear sections
+- Brief but complete
+- Links to detailed documentation
+- Keep up to date
+- Screenshots/demos for visual projects
+- Status badges (build, coverage) when applicable
+
+**Avoid:**
+- Walls of text
+- Outdated information
+- Excessive detail (link to docs instead)
+- Tutorial-length content (separate docs)
+
+## Changelog Maintenance
+
+Document changes for users and developers.
+
+**Changelog format:**
+- Follow Keep a Changelog format
+- Organized by version
+- Categorized changes: Added, Changed, Deprecated, Removed, Fixed, Security
+- Release date for each version
+- Unreleased section for upcoming changes
+
+**What to include:**
+- User-facing changes
+- API changes
+- Breaking changes prominently
+- Deprecations with timeline
+- Security fixes (carefully worded)
+- Major bug fixes
+
+**What to exclude:**
+- Internal refactorings
+- Minor code cleanups
+- Development tool changes
+- Non-user-affecting changes
+
+**Keep updated:**
+- Update with each release
+- Add to Unreleased section as changes are made
+- Move to versioned section on release
+- Link to detailed commit history
+
+## Documentation Organization
+
+Organize documentation for easy navigation.
+
+**Structure:**
+- README in project root
+- Detailed docs in `/docs` directory
+- API docs generated from code
+- Architecture docs for big-picture
+- Operational docs for deployment/maintenance
+- Troubleshooting guides
+
+**Link between docs:**
+- Cross-reference related documents
+- Avoid duplication
+- Single source of truth for each topic
+- Clear navigation path
+
+**Documentation as code:**
+- Version control all documentation
+- Review docs in pull requests
+- Test documentation (examples, links)
+- Automate doc generation when possible

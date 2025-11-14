@@ -1,0 +1,283 @@
+---
+tags: ["testing", "docker", "integration", "apt"]
+globs: ["tests/**/*.py", "tests/**/*.sh", "tests/**/Dockerfile*", "tests/**/*.yml"]
+---
+
+# Testing Strategy
+
+## Test Pyramid
+
+### Unit Tests (250+)
+**Location**: `tests/test_*.py`  
+**Coverage**: 80.62% overall  
+**Speed**: ~7 seconds
+
+**Strategy**:
+- Mock subprocess and file I/O
+- Test each module independently
+- Focus on business logic
+- High coverage for core modules (100%)
+
+**Per-module coverage targets**:
+- config.py, gpg.py, metadata.py: 100% ✅
+- utils.py: 97% ✅
+- gpg_rotation.py, retention.py: 85%+ ✅
+- aptly.py: 80%+ ✅
+- cli.py: 55% (CLI code, lower priority)
+
+### Fuzzing Tests (25)
+**Location**: `tests/test_fuzz_*.py`  
+**Framework**: Hypothesis  
+**Timeout**: 30s per test
+
+**What we fuzz**:
+- Config loading with random YAML
+- Version comparison with random strings
+- Path handling with random structures
+- Package metadata parsing
+
+### Integration Tests (10)
+**Location**: `tests/integration/test_integration.py`  
+**Environment**: Docker  
+**Speed**: ~5-8 minutes
+
+**What we test**:
+- Real aptly operations
+- Multi-codename isolation
+- Repository creation/deletion
+- Package addition
+- Snapshot management
+
+### Real APT E2E Tests (4 scenarios) ✨ NEW in v0.3.2
+
+**Location**: `tests/integration/test_real_apt.sh`  
+**Environment**: Docker + nginx  
+**Speed**: ~1-2 minutes
+
+**Critical validation of production architecture!**
+
+#### Scenario 1: Install Package v1.0.0
+- Create .deb package with fpm
+- Add to repository via `repoadd` script
+- Start nginx serving `/opt/repo/public`
+- Configure APT sources
+- `apt-get update && apt-get install`
+- **Verify installed package content**
+
+#### Scenario 2: Package Upgrade to v2.0.0
+- Add newer version to same repository
+- `apt-get update && apt-get upgrade`
+- **Verify upgraded package content**
+
+#### Scenario 3: Multi-codename Isolation
+- **Same package name/version** (jethome-tool v2.0.0)
+- **Different content** in bookworm vs noble
+- Install from both repositories
+- **Validates multi-root isolation works!**
+
+#### Scenario 4: Multi-component Isolation
+- **Same package name/version** (jethome-common v1.0.0)
+- **Different content** in 3 components:
+  - jethome-tools
+  - jethome-bookworm
+  - jethome-desktop
+- Install from each component separately
+- **Validates component isolation!**
+
+**Test Matrix**: 2 codenames × 3 components = **6 repositories validated**
+
+## Running Tests
+
+### Local Development
+
+```bash
+# All unit tests
+make test
+
+# With coverage
+make test-coverage
+
+# Integration tests
+make test-integration
+
+# Real APT tests (comprehensive)
+make test-real-apt
+
+# All checks before commit
+make check-all
+```
+
+### CI/CD (GitHub Actions)
+
+**Runs on all pushes and PRs:**
+- Test (Python 3.11, 3.12, 3.13)
+- Integration Tests (Docker)
+- Real APT Tests (Docker + nginx) ✨ NEW!
+- Code Quality (black, flake8, mypy, isort)
+- Security Scan (bandit, safety)
+- Build Package
+
+## Docker Test Environments
+
+### Integration Tests
+**File**: `tests/integration/Dockerfile`  
+**Compose**: `tests/integration/docker-compose.yml`
+
+**Contains**:
+- Debian bookworm-slim
+- aptly, fpm, gpg
+- Python 3.11+
+- Test fixtures
+
+### Real APT Tests
+**File**: `tests/integration/Dockerfile.realtest`  
+**Compose**: `tests/integration/docker-compose.realtest.yml`
+
+**Contains**:
+- Debian bookworm-slim
+- aptly, fpm, gpg
+- **nginx** (serves /opt/repo/public)
+- Python 3.11+
+- Full APT stack
+
+**nginx config**:
+```nginx
+server {
+    listen 8080;
+    root /opt/repo/public;
+    autoindex on;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+## Test Data
+
+### Package Creation (fpm)
+
+```bash
+# Create test package
+fpm -s dir -t deb \
+    -n package-name \
+    -v 1.0.0 \
+    -a amd64 \
+    --description "Test package" \
+    -C /tmp/package-root \
+    --package /tmp/output.deb \
+    .
+```
+
+### Repository Structure Validation
+
+**Check published files exist**:
+```bash
+find /opt/repo/public/{codename}/pool -name "*.deb"
+find /opt/repo/public/{codename}/dists -name "Packages*"
+find /opt/repo/public/{codename}/dists -name "Release"
+```
+
+**Check multi-root isolation**:
+```bash
+ls -la /opt/repo/bookworm/pool  # Separate pool
+ls -la /opt/repo/noble/pool     # Separate pool
+```
+
+## Test Patterns
+
+### Mocking aptly Commands
+
+```python
+from unittest.mock import MagicMock, patch
+
+@patch('subprocess.run')
+def test_create_repo(mock_run):
+    mock_run.return_value = MagicMock(
+        returncode=0,
+        stdout="",
+        stderr=""
+    )
+    
+    manager = AptlyManager(config)
+    result = manager.create_repo("bookworm", "tools")
+    
+    assert result is True
+    mock_run.assert_called_once()
+```
+
+### Testing FileSystemPublishEndpoints
+
+```python
+def test_aptly_config_has_filesystem_endpoints():
+    """Verify aptly.conf includes FileSystemPublishEndpoints."""
+    manager = AptlyManager(config)
+    manager._create_aptly_config("bookworm")
+    
+    config_path = Path(config.get_aptly_root("bookworm")) / "aptly.conf"
+    config_data = json.loads(config_path.read_text())
+    
+    assert "FileSystemPublishEndpoints" in config_data
+    assert "public" in config_data["FileSystemPublishEndpoints"]
+    assert config_data["FileSystemPublishEndpoints"]["public"]["rootDir"] == \
+           str(Path(config.publish_base))
+```
+
+### Testing Real APT Install
+
+```bash
+# From test_real_apt.sh
+info "Installing package..."
+apt-get install -y package-name || error "Install failed"
+
+info "Verifying content..."
+output=$(/usr/bin/package-command)
+[ "$output" = "Expected output" ] || error "Wrong content: $output"
+success "Package verified"
+```
+
+## Test Isolation
+
+### Unique Component Names
+```python
+@pytest.fixture
+def unique_component():
+    """Generate unique component for test isolation."""
+    import time
+    return f"test-{int(time.time() * 1000000)}"
+```
+
+### Temporary Directories
+```python
+@pytest.fixture
+def temp_aptly_root(tmp_path):
+    """Create temporary aptly root."""
+    aptly_root = tmp_path / "aptly"
+    aptly_root.mkdir()
+    return str(aptly_root)
+```
+
+## Critical Test Cases
+
+### Multi-codename Same Package
+**Tests**: `test_add_same_package_different_codenames`
+
+Validates core architecture requirement:
+- Same package name + version
+- Different content
+- Different codenames
+- Both work independently
+
+### FileSystemPublishEndpoints
+**Tests**: Real APT scenarios
+
+Validates PR #33 fix:
+- Files published to `/opt/repo/public/{codename}/`
+- NOT `/opt/repo/{codename}/public/`
+- Web server can serve correctly
+- APT can install packages
+
+## See Also
+
+- [local-architecture.md](local-architecture.md) - Module structure
+- [local-aptly.md](local-aptly.md) - Aptly patterns
+- [shared-testing-standards.mdc](shared-testing-standards.mdc) - Universal testing standards
