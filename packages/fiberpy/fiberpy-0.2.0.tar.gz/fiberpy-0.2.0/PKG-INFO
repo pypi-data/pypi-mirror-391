@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: fiberpy
+Version: 0.2.0
+Summary: Computional methods for fiber-reinforced composites
+Author-email: Tianyi Li <tianyikillua@gmail.com>
+Project-URL: Homepage, https://github.com/tianyikillua/fiberpy
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Science/Research
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy
+Requires-Dist: scipy
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: matplotlib; extra == "dev"
+Dynamic: license-file
+
+# Computational methods for fiber-reinforced composites
+
+This package provides several computational models for fiber-reinforced composites (thermoplastics reinforced by glass fibers, for instance).
+
+- Compute the 4th-order fiber orientation tensor from the 2nd-order one (linear, quadratic, hybrid, orthotropic closure models...)
+- Compute the effective thermomechanical properties from the microstructure definition (Mori-Tanaka, orientation averaging...)
+- Compute fiber orientation tensor evolution using the Folgar-Tucker model or its variants (RSC model...)
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/4027283/60251521-f4d52000-98c8-11e9-804e-e3a1d031286d.png" width="800">
+</p>
+
+Documentation is available [here](https://fiberpy.readthedocs.io).
+
+## Installation
+
+To install `fiberpy`, run
+
+```sh
+pip install -U fiberpy
+```
+
+## Testing
+
+To run the `fiberpy` unit tests, run
+
+```sh
+pytest
+```
+
+## License
+
+`fiberpy` is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
