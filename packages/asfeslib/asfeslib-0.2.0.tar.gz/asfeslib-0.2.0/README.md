@@ -1,0 +1,252 @@
+# 🧠 ASFESLIB --- универсальная библиотека для хакатонов и серверов ASFES
+
+**ASFESLIB** --- лёгкая асинхронная Python‑библиотека, созданная
+специально для инфраструктуры ASFES (`asfes.ru`).\
+Она объединяет всё, что нужно для быстрых серверов, API, интеграций,
+микросервисов и внутренних проектов.
+
+------------------------------------------------------------------------
+
+## 🚀 Основные возможности
+
+  -----------------------------------------------------------------------
+  Модуль                     Что делает
+  -------------------------- --------------------------------------------
+  `asfeslib.core.logger`     Цветной логгер + вывод в файл
+
+  `asfeslib.core.utils`      Генерация токенов, timestamp, хэшей,
+                             случайных строк
+
+  `asfeslib.databases`       Быстрые асинхронные коннекторы к MongoDB,
+                             PostgreSQL, MariaDB/MySQL
+
+  `asfeslib.net.http`        Асинхронный HTTP‑клиент с логами и retry
+
+  `asfeslib.net.mail`        Асинхронная отправка писем (SMTP)
+
+  `asfeslib.weather`         Полный WeatherAPI‑клиент (current, forecast,
+                             history, astronomy, search, bulk, alerts)
+  -----------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## 📦 Установка
+
+### 🔧 Разработка
+
+``` bash
+git clone https://github.com/alxprgs/asfeslib.git
+cd asfeslib
+pip install -e .
+```
+
+### 🏭 Продакшн (после публикации на PyPI)
+
+``` bash
+pip install asfeslib
+```
+
+------------------------------------------------------------------------
+
+# 📚 Модули ASFESLIB
+
+------------------------------------------------------------------------
+
+# 🟦 1. asfeslib.core
+
+## 🪵 Логгер
+
+``` python
+from asfeslib.core.logger import Logger
+log = Logger("demo", log_to_file=True)
+
+log.info("ASFESLIB запущен!")
+log.warning("Предупреждение")
+log.error("Ошибка")
+```
+
+------------------------------------------------------------------------
+
+## 🧰 Утилиты (`asfeslib.core.utils`)
+
+``` python
+from asfeslib.core import utils
+
+utils.now_str()         # "2025-11-06 22:11:10"
+utils.gen_token()       # "cfa8179be9d04a..."
+utils.hash_text("Hi")   # SHA‑256
+utils.random_string(8)  # Рандомная строка
+```
+
+------------------------------------------------------------------------
+
+# 🟩 2. Базы данных --- asfeslib.databases
+
+### MongoDB
+
+``` python
+from asfeslib.databases.MongoDB import MongoConnectScheme, connect_mongo
+
+cfg = MongoConnectScheme(host="localhost", db_name="hackathon_db")
+client, db, ok = await connect_mongo(cfg)
+```
+
+### PostgreSQL
+
+``` python
+from asfeslib.databases.PostgreSQL import PostgresConnectScheme, connect_postgres
+
+cfg = PostgresConnectScheme(username="user", password="pass")
+conn, ok = await connect_postgres(cfg)
+```
+
+### MariaDB/MySQL
+
+``` python
+from asfeslib.databases.MySQL import MariaConnectScheme, connect_mariadb
+
+cfg = MariaConnectScheme(username="root", password="1234")
+conn, ok = await connect_mariadb(cfg)
+```
+
+### Универсальный
+
+``` python
+from asfeslib.databases import connect_database
+client, db, ok = await connect_database("mongo", cfg)
+```
+
+------------------------------------------------------------------------
+
+# 🟧 3. HTTP‑клиент --- asfeslib.net.http
+
+``` python
+from asfeslib.net.http import HTTPClient
+
+async with HTTPClient("https://api.github.com") as http:
+    data = await http.get("/repos/alxprgs/asfeslib")
+```
+
+✔ Retry\
+✔ Таймауты\
+✔ Логи запросов\
+✔ JSON / text / bytes
+
+------------------------------------------------------------------------
+
+# 🟨 4. SMTP‑почта --- asfeslib.net.mail
+
+``` python
+from asfeslib.net.mail import MailConfig, MailMessage, send_mail
+
+cfg = MailConfig(
+    host="mail.asfes.ru",
+    port=587,
+    username="noreply@asfes.ru",
+    password="PASSWORD",
+)
+
+msg = MailMessage(
+    to=["alex@asfes.ru"],
+    subject="Test",
+    body="<b>ASFESLIB OK!</b>",
+    html=True
+)
+
+await send_mail(cfg, msg)
+```
+
+------------------------------------------------------------------------
+
+# 🌦 5. WeatherAPI --- `asfeslib.weather`
+
+Полный асинхронный клиент для WeatherAPI.
+
+### Поддерживаемые методы
+
+  Метод                 Описание
+  --------------------- -------------------------
+  `current(q)`          Текущая погода
+  `forecast(q, days)`   Прогноз 1--14 дней
+  `history(q, dt)`      История погоды
+  `future(q, dt)`       Прогноз на будущие даты
+  `astronomy(q, dt)`    Восход/закат, фаза луны
+  `timezone(q)`         Часовой пояс
+  `search(q)`           Автодополнение локаций
+  `alerts(q)`           Погодные предупреждения
+  `marine(q, days)`     Морской прогноз
+  `bulk(locations)`     Массовые запросы
+
+------------------------------------------------------------------------
+
+## Пример
+
+``` python
+from asfeslib.weather import WeatherApiClient
+
+async with WeatherApiClient(api_key="KEY", lang="ru") as w:
+    data = await w.current("Moscow")
+    print(data.current.temp_c)
+```
+
+------------------------------------------------------------------------
+
+## 🧪 Живые тесты (real API)
+
+Включаются, если задан ключ:
+
+``` bash
+set WEATHERAPI_KEY=YOUR_KEY
+pytest -m live
+```
+
+------------------------------------------------------------------------
+
+# 📂 Структура проекта
+
+    asfeslib/
+    │
+    ├── core/
+    ├── databases/
+    ├── net/
+    ├── weather/
+    └── tests/
+
+------------------------------------------------------------------------
+
+# 🛠 Использование в FastAPI
+
+``` python
+from fastapi import FastAPI
+from asfeslib.core.logger import Logger
+from asfeslib.databases.MongoDB import MongoConnectScheme
+from asfeslib.databases import connect_database
+
+log = Logger("api")
+app = FastAPI()
+
+@app.on_event("startup")
+async def start():
+    cfg = MongoConnectScheme(db_name="hackathon_db")
+    _, app.state.db, ok = await connect_database("mongo", cfg)
+    if ok:
+        log.info("DB подключена!")
+```
+
+------------------------------------------------------------------------
+
+# 📜 Лицензия
+
+MIT License
+
+------------------------------------------------------------------------
+
+# 👤 Контакты
+
+-   🌐 https://asfes.ru\
+-   🔧 GitHub: https://github.com/alxprgs\
+-   ✉️ Автор: Александр
+
+------------------------------------------------------------------------
+
+*Разработано с помощью ChatGPT (GPT‑5.1) для ASFES Hackathon 2025.*
