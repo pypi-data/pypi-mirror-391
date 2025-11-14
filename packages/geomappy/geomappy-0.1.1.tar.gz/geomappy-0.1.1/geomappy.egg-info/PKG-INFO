@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: geomappy
+Version: 0.1.1
+Summary: Plotting geospatial vector and raster data on a basemap using matplotlib and cartopy
+Author-email: jasperroebroek <roebroek.jasper@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2021 Jasper Roebroek
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://github.com/jasperroebroek/geomappy
+Project-URL: Bug Tracker, https://github.com/jasperroebroek/geomappy/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cartopy>=0.22
+Requires-Dist: rioxarray
+Requires-Dist: geopandas
+Requires-Dist: matplotlib>=3.10
+Provides-Extra: dev
+Requires-Dist: sphinx; extra == "dev"
+Requires-Dist: sphinx_rtd_theme; extra == "dev"
+Requires-Dist: numpydoc; extra == "dev"
+Requires-Dist: jupyter; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: libgdal-hdf5; extra == "dev"
+Dynamic: license-file
+
+[![Documentation Status](https://readthedocs.org/projects/geomappy/badge/?version=latest)](https://geomappy.readthedocs.io/en/latest/?badge=latest)
+
+This package provides a streamlined interface for creating publication-quality maps. It supports plotting both raster and vector (polygon) data on a basemap using ``cartopy`` and integrates seamlessly with ``geopandas`` and ``rioxarray``. Built on top of the ``matplotlib`` ecosystem, it retains access to all standard ``matplotlib`` functionality. Currently, only choropleth-style plotting is supported, which ensures a consistent interface for both raster and vector data. For additional vector plotting options, see the geoplot package—both can be used together, although terminology may differ. Map projections are handled automatically, but can also be explicitly specified, supporting any valid Cartopy projection.
+
+Key features
+------------
+- Unified plotting interface for both raster and vector shapes. 
+- Automatic integration with ``geopandas`` and ``rioxarray``. 
+- Support for classified (discrete) and continuous data. 
+- Full control over map projections, color mapping, and Matplotlib styling. 
