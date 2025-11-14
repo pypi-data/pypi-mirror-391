@@ -1,0 +1,359 @@
+import warnings
+import numpy as np
+from .utils import _parse_to_list
+from .core_objects import Signal, Module, Network, SignalsT
+from .common.mma import MMA
+from .common.optimizers import OC, SLP
+from typing import Callable
+from scipy.sparse import issparse
+
+
+# flake8: noqa: C901
+def finite_difference(
+    fromsig: SignalsT = None,
+    tosig: SignalsT = None,
+    function: Module = None,
+    dx: float = 1e-8,
+    relative_dx: bool = False,
+    tol: float = 1e-5,
+    random: bool = True,
+    use_df: list = None,
+    test_fn: Callable = None,
+    keep_zero_structure=True,
+    verbose=True,
+):
+    """Performs a finite difference check on the given Module or Network
+
+    Args:
+        fromsig (optional): Specify input signals of interest
+        tosig (optional): Specify output signals of interest
+        function (optional): The module or network
+
+    Keyword Args:
+        dx: Perturbation size
+        relative_dx: Use a relative perturbation size or not
+        tol: Tolerance
+        random: Randomize sensitivity data
+        use_df: Give pre-defined sensitivity data
+        test_fn: A generic test function (x, dx, df_an, df_fd)
+        keep_zero_structure: If ``True`` variables that are ``0`` are not perturbed
+        verbose: Print extra information to console
+    """
+    if function is None:  # Default grab the global network, if none is provided
+        function = Network.active[0]
+
+    print("\n=========================================================================================================")
+    print(f'Starting finite difference of "{type(function).__name__}" with dx = {dx}, and tol = {tol}')
+
+    # In case a Network is passed, only the blocks connecting input and output need execution
+    if isinstance(function, Network):
+        subfn = function.get_output_cone(tosig).get_input_cone(fromsig)
+        if len(subfn) == 0:
+            raise RuntimeError(
+                f"Could not find a network that use the provided input signals {fromsig} "
+                f"and produce the requested output signals {tosig}"
+            )
+        inps = subfn.sig_in if fromsig is None else _parse_to_list(fromsig)
+        outps = subfn.sig_out if tosig is None else _parse_to_list(tosig)
+
+        # Check if all required states have a value, else try to run anything up to input signals
+        if any([s.state is None for s in inps]):
+            blks_pre = function.get_output_cone(tosig=inps)
+            blks_pre.response()
+
+        function = subfn
+    else:  # Module
+        # Parse inputs and outputs to be finite-differenced
+        inps = function.sig_in if fromsig is None else _parse_to_list(fromsig)
+        outps = function.sig_out if tosig is None else _parse_to_list(tosig)
+
+    print("Inputs:")
+    if verbose:
+        [print("{}\t{} = {}".format(i, s.tag, s.state)) for i, s in enumerate(inps)]
+    else:
+        print(", ".join([s.tag for s in inps]))
+    print("")
+
+    # Setup some internal storage
+    f0 = [None for _ in outps]  # Response values at original inputs
+    df_an = [np.empty(0) for _ in outps]  # Analytical output sensitivities
+    dx_an = [[np.empty(0) for _ in inps] for _ in outps]
+
+    # Initial reset in case some memory is still left
+    function.reset()
+
+    # Perform response
+    function.response()
+
+    print("Outputs:")
+    if verbose:
+        [print("{}\t{} = {}".format(i, s.tag, s.state)) for i, s in enumerate(outps)]
+    else:
+        print(", ".join([s.tag for s in outps]))
+
+    # Get analytical response and sensitivities, by looping over all outputs
+    for Iout, Sout in enumerate(outps):
+        # Obtain the output state
+        output = Sout.state
+
+        # Store the output value
+        f0[Iout] = output.copy() if hasattr(output, "copy") else output
+
+        # Get the output state shape
+        shape = output.shape if hasattr(output, "shape") else ()
+
+        if output is None:
+            warnings.warn(f"Output {Iout} of {Sout.tag} is None")
+            continue
+
+        # Generate a (random) sensitivity for output signal
+        if use_df is not None:
+            df_an[Iout] = use_df[Iout]
+        else:
+            if random:
+                df_an[Iout] = np.random.rand(*shape)
+            else:
+                df_an[Iout] = np.ones(shape)
+
+            if np.iscomplexobj(output):
+                if random:
+                    df_an[Iout] = df_an[Iout] + 1j * np.random.rand(*shape)
+                else:
+                    df_an[Iout] = df_an[Iout] + 1j * np.ones(shape)
+
+        # Set the output sensitivity
+        Sout.sensitivity = df_an[Iout]
+
+        # Perform the analytical sensitivity calculation
+        function.sensitivity()
+
+        # Store all input sensitivities for this output
+        for Iin, Sin in enumerate(inps):
+            sens = Sin.sensitivity
+            dx_an[Iout][Iin] = sens.copy() if hasattr(sens, "copy") else sens
+
+        # Reset the sensitivities for next output
+        function.reset()
+
+    # Perturb each of the input signals
+    for Iin, Sin in enumerate(inps):
+        print("___________________________________________________")
+        print('Perturbing input {} "{}"...\n'.format(Iin, Sin.tag))
+
+        # Get input state
+        x = Sin.state
+
+        try:
+            # Get iterator for x
+            it = np.nditer(x, flags=["c_index", "multi_index"], op_flags=["readwrite"])
+            is_iterable = True
+        except TypeError:
+            it = np.nditer(np.array(x), flags=["c_index", "multi_index"], op_flags=["readwrite"])
+            is_iterable = False
+
+        i_failed, i_tested = 0, 0
+        # Loop over all values in x
+        while not it.finished:
+            # Get original value and do the perturbation
+            if is_iterable:
+                x0 = it[0].copy()
+                if x0 == 0 and keep_zero_structure:
+                    it.iternext()
+                    continue
+                sf = np.abs(x0) if (relative_dx and np.abs(x0) != 0) else 1.0  # Scale factor
+                it[0] += dx * sf
+                Sin.state = x
+            else:
+                x0 = it[0].item()
+                sf = np.abs(x0) if (relative_dx and np.abs(x0) != 0) else 1.0
+                Sin.state = x0 + dx * sf
+
+            # Calculate perturbed solution
+            function.response()
+
+            # Obtain all perturbed responses
+            for Iout, Sout in enumerate(outps):
+                # Obtain perturbed response
+                fp = Sout.state
+                if fp is None:
+                    warnings.warn(f"Output {Iout} of {Sout.tag} is None")
+                    continue
+
+                # Finite difference sensitivity
+                if issparse(fp):
+                    df = (fp.toarray() - f0[Iout].toarray()) / (dx * sf)
+                else:
+                    df = (fp - f0[Iout]) / (dx * sf)
+
+                dgdx_fd = np.real(np.sum(df * df_an[Iout]))
+
+                if dx_an[Iout][Iin] is not None:
+                    try:
+                        dgdx_an = np.real(dx_an[Iout][Iin][it.multi_index])
+                    except (IndexError, TypeError):
+                        dgdx_an = np.real(dx_an[Iout][Iin])
+                else:
+                    dgdx_an = 0.0
+
+                if abs(dgdx_an) == 0:
+                    error = abs(dgdx_fd - dgdx_an)
+                else:
+                    error = abs(dgdx_fd - dgdx_an) / max(abs(dgdx_fd), abs(dgdx_an))
+
+                i_tested += 1
+                if error > tol:
+                    i_failed += 1
+
+                if verbose or error > tol:
+                    print(
+                        "δ%s/δ%s     i = %s \tAn :% .3e \tFD : % .3e \tError: % .3e %s"
+                        % (Sout.tag, Sin.tag, it.multi_index, dgdx_an, dgdx_fd, error, "<--*" if error > tol else "")
+                    )
+
+                if test_fn is not None:
+                    test_fn(x0, dx, dgdx_an, dgdx_fd)
+
+            # Restore original state
+            if is_iterable:
+                it[0] = x0
+                Sin.state = x
+            else:
+                Sin.state = x0
+
+            # If the input state is complex, also do a perturbation in the imaginary direction
+            if np.iscomplexobj(x0):
+                # Do the perturbation
+                if is_iterable:
+                    it[0] += dx * 1j * sf
+                else:
+                    Sin.state = x0 + dx * 1j * sf
+
+                # Calculate perturbed solution
+                function.response()
+
+                # Obtain all perturbed responses
+                for Iout, Sout in enumerate(outps):
+                    # Obtain perturbed response
+                    fp = Sout.state
+
+                    if fp is None:
+                        warnings.warn(f"Output {Iout} of {Sout.tag} is None")
+                        continue
+
+                    # Finite difference sensitivity
+                    if issparse(fp):
+                        df = (fp.toarray() - f0[Iout].toarray()) / (dx * 1j * sf)
+                    else:
+                        df = (fp - f0[Iout]) / (dx * 1j * sf)
+                    dgdx_fd = np.imag(np.sum(df * df_an[Iout]))
+
+                    if dx_an[Iout][Iin] is not None:
+                        try:
+                            dgdx_an = np.imag(dx_an[Iout][Iin][it.multi_index])
+                        except IndexError:
+                            dgdx_an = np.imag(dx_an[Iout][Iin])
+                    else:
+                        dgdx_an = 0.0
+
+                    if abs(dgdx_an) < tol:
+                        error = abs(dgdx_fd - dgdx_an)
+                    else:
+                        error = abs(dgdx_fd - dgdx_an) / max(abs(dgdx_fd), abs(dgdx_an))
+
+                    i_tested += 1
+                    if error > tol:
+                        i_failed += 1
+
+                    if verbose or error > tol:
+                        print(
+                            "δ%s/δ%s (I) i = %s \tAn :% .3e \tFD : % .3e \tError: % .3e %s"
+                            % (
+                                Sout.tag,
+                                Sin.tag,
+                                it.multi_index,
+                                dgdx_an,
+                                dgdx_fd,
+                                error,
+                                "<--*" if error > tol else "",
+                            )
+                        )
+
+                    if test_fn is not None:
+                        test_fn(x0, dx, dgdx_an, dgdx_fd)
+
+                # Restore original state
+                if is_iterable:
+                    it[0] = x0
+                else:
+                    Sin.state = x0
+
+            # Go to the next entry in the array
+            it.iternext()
+
+        print(f"-- Number of finite difference values beyond tolerance ({tol}) = {i_failed} / {i_tested}")
+
+    print("___________________________________________________")
+    print(f'\nFinished finite-difference check of "{type(function).__name__}"\n')
+    print("=========================================================================================================\n")
+
+
+def minimize_oc(variables: SignalsT, objective: Signal, function: Module = None,
+                maxit: int = 100, tolx: float = 1e-4, tolf: float = 1e-4, **kwargs):
+    """Execute minimization using the OC-method
+
+    Args:
+        variables: One or more varaible Signals defining the design variables
+        response: Response signal to be minimized (objective)
+
+    Keyword Args:
+        function (optional): The Network defining the optimization problem
+        maxit: Maximum number of iterations
+        tolx: Stopping criterium for relative design change
+        tolf: Stopping criterium for relative objective change
+        **kwargs: Arguments passed to :py:class:`pymoto.OC`
+    """
+    oc = OC(variables, objective, function, **kwargs)
+    oc.optimize(maxiter=maxit, tolx=tolx, tolf=tolf)
+
+
+
+def minimize_mma(variables: SignalsT, responses: SignalsT, function: Module = None, 
+                 maxit: int = 100, tolx: float = 1e-4, tolf: float = 1e-4, **kwargs):
+    """Execute minimization using the MMA-method
+    Svanberg (1987), The method of moving asymptotes - a new method for structural optimization
+
+    Args:
+        variables: One or more variable Signals defining the design variables
+        responses: One or more response Signals, where the first is to be minimized and the others are constraints in 
+          negative null form.
+
+    Keyword Args:
+        function (optional): The Network defining the optimization problem
+        maxit: Maximum number of iterations
+        tolx: Stopping criterium for relative design change
+        tolf: Stopping criterium for relative objective change
+        **kwargs: Arguments passed to :py:class:`pymoto.MMA`
+    """
+    mma = MMA(variables, responses, function, **kwargs)
+    mma.optimize(maxiter=maxit, tolx=tolx, tolf=tolf)
+
+
+def minimize_slp(variables: SignalsT, responses: SignalsT, function: Module = None, 
+                 maxit: int = 100, tolx: float = 1e-4, tolf: float = 1e-4, **kwargs):
+    """Sequential linear programming optimization algorithm
+
+    Args:
+        variables: One or more variable Signals defining the design variables
+        responses: One or more response Signals, where the first is to be minimized and the others are constraints in 
+          negative null form.
+
+    Keyword Args:
+        function (optional): The Network defining the optimization problem
+        maxit: Maximum number of iterations
+        tolx: Stopping criterium for relative design change
+        tolf: Stopping criterium for relative objective change
+        **kwargs: Arguments passed to :py:class:`pymoto.SLP`
+    """
+    slp = SLP(variables, responses, function, **kwargs)
+    slp.optimize(maxiter=maxit, tolx=tolx, tolf=tolf)
+    
