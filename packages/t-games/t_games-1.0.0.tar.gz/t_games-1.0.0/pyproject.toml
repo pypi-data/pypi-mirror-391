@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "t-games"
+version = "1.0.0"
+description = "A collection of classic games playable in your terminal"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "pavansai-tanguturi", email = "pavansaitanguturi@gmail.com"}
+]
+keywords = ["games", "terminal", "console", "multiplayer", "chess", "sudoku", "tictactoe", "battleship", "adventure"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Games/Entertainment",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "python-chess>=1.9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/pavansai-tanguturi/t-games"
+"Bug Reports" = "https://github.com/pavansai-tanguturi/t-games/issues"
+"Source Code" = "https://github.com/pavansai-tanguturi/t-games"
+
+[project.scripts]
+games = "games.main:main"
+tictactoe = "games.tictactoe:main"
+chess-game = "games.chess:main"
+sudoku-game = "games.sudoku:main"
+adventure-game = "games.adventure:main"
