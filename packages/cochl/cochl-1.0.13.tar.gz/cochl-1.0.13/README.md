@@ -1,0 +1,128 @@
+# cochl
+
+`cochl` is a Python client library providing easy integration of Cochl.Sense API into any Python application. You can upload a file (MP3, WAV, OGG) or raw PCM audio stream.
+<br/>
+
+## Installation
+`cochl` can be installed and used in Python 3.10+.
+```commandline
+pip install --upgrade cochl
+```
+<br/>
+
+## Usage
+This simple setup is enough to input your file. API project key can be retrieved from [Cochl Dashboard](https://dashboard.cochl.ai/).
+```python
+import cochl.sense as sense
+from cochl.sense import Result
+
+api_config = sense.APIConfigFromJson('./config.json')
+client = sense.Client(
+    'YOUR_API_PROJECT_KEY',
+    api_config=api_config,
+)
+result: Result = client.predict('your_file.wav')
+
+print(result.events.to_dict(api_config))  # Return the event result as a dictionary.
+# print(result.events_summarized(api_config))  # Return the event result in a simplified form.
+```
+<br/>
+
+You can adjust the custom settings like below. For more details please refer to **Advanced configurations**.
+- config.json
+```json
+{
+  "sensitivity_control": {
+    "default_sensitivity": 0,
+    "tag_sensitivity": {
+    }
+  },
+  "result_summary": {
+    "default_interval_margin": 0,
+    "tag_interval_margin": {
+    }
+  },
+  "tag_filter": {
+    "enabled_tags": []
+  }
+}
+```
+<br/>
+
+The file prediction result can be displayed in a summarized format. More details at **Result Summary**.
+```python
+# print(result.events.to_dict(api_config))  # get results as a dict
+
+
+print(result.events_summarized(api_config))  # Return the event result in a simplified form.
+
+# At 0.0-1.0s, [Baby_cry] was detected
+```
+<br/>
+
+Cochl.Sense API supports three file formats: MP3, WAV, OGG. \
+If a file is not in a supported format, it has to be manually converted. More details at **Convert to supported file formats**.
+
+
+<br/>
+
+## Advanced Configurations
+
+### Sensitivity
+
+Sensitivity Control allows users to adjust the sensitivity so that it can be customized depending on target sounds and user scenarios. Sensitivity is adjustable on a scale from -2 (Very Low) to 2 (Very High). Default is 0 (Normal). Sensitivity can be set globally or individually per tag.
+
+- If certain tags are not being detected frequently, try increasing the sensitivity.
+- If you experience too many false-detections, lowering the sensitivity may help.
+
+```json
+  "sensitivity_control": {
+    "default_sensitivity": -1,
+    "tag_sensitivity": {
+      "Baby_cry": -2,
+      "Gunshot": 1
+    }
+  }
+```
+
+<br/>
+
+### Result Summary
+Result Summary summarizes the prediction results by merging consecutive detection windows and returns the start time and duration of each detected sound tag.
+
+The interval_margin parameter defines how much undetected duration between adjacent tags should still be considered part of a single event. This margin is applied globally to all tags by default, but it can also be overridden per tag to fine-tune behavior individually.
+
+```python
+  "result_summary": {
+    "default_interval_margin": 2,
+    "tag_interval_margin": {
+      "Baby_cry": 5,
+      "Gunshot": 3
+    }
+  }
+```
+<br/>
+
+## Other notes
+
+### Convert to supported file formats (WAV, MP3, OGG)
+
+`Pydub` is one of the easy ways to convert audio file into a supported format (WAV, MP3, OGG).
+
+First install Pydub refering to this [link](https://github.com/jiaaro/pydub?tab=readme-ov-file#installation). \
+Then write a Python script converting your file into a supported format like below.
+
+```python
+from pydub import AudioSegment
+
+mp4_version = AudioSegment.from_file("sample.mp4", "mp4")
+mp4_version.export("sample.mp3", format="mp3")
+```
+
+For more details of `Pydub`, please refer to this [link](https://github.com/jiaaro/pydub).
+
+<br/>
+
+### Links
+
+Documentation: https://docs.cochl.ai/sense/cochl.sense-cloud-api/gettingstarted/
