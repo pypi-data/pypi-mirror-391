@@ -1,0 +1,7 @@
+__title__ = 'cpaas-test-python'
+__description__ = ''
+__url__ = 'https://github.com/cpaas-sdks-test/cpaas-test-python'
+__version__ = '0.1.1'
+__author__ = 'cpaas-sdks-test-om'
+__author_email__ = 'cpaas-sdks-test-om@nttcoms.com'
+__license__ = 'MIT license'
