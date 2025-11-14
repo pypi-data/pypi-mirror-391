@@ -1,0 +1,186 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "autocleaneeg-pipeline"
+dynamic = ["version"]
+description = "A modular framework for automated EEG data processing, built on MNE-Python"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = {file = "LICENSE.md"}
+keywords = ["eeg", "neuroscience", "signal-processing", "preprocessing", "mne-python", "bids", "electrophysiology"]
+authors = [
+    { name = "Ernest Pedapati", email = "ernest.pedapati@cchmc.org" },
+    { name = "Gavin Gammoh", email = "gavin.gammoh@cchmc.org" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+    # Core scientific computing
+    "numpy==2.3.3",
+    "scipy==1.16.2",
+    "pandas==2.3.2",
+    "matplotlib==3.10.6",
+    "seaborn==0.13.2",
+    "PyWavelets==1.9.0",
+    # EEG processing core
+    "mne==1.10.1",
+    "mne-icalabel==0.8.0",
+    "mne-bids==0.17.0",
+    "autoreject==0.4.3",
+    "pyprep==0.5.0",
+    "python-picard==0.8",
+    # EEG file formats
+    "eeglabio==0.1.1",
+    "pybv==0.7.6",
+    "fastparquet==2024.11.0",
+    # Connectivity analysis
+    "mne-connectivity==0.7.0",
+    "networkx==3.5",
+    "bctpy==0.6.1",
+    "specparam>=2.0.0rc3",
+    # Machine learning
+    "torch==2.8.0", 
+    # Utilities and data handling
+    "rich==14.1.0",
+    "python-dotenv==1.1.1",
+    "defusedxml==0.7.1",
+    "pyyaml==6.0.2",
+    "schema==0.7.7",
+    "Jinja2==3.1.6",
+    "python-ulid==3.1.0",
+    "cython==3.1.4",
+    "loguru==0.7.3",
+    "pydantic==2.11.9",
+    "reportlab==4.4.4",
+    "nibabel==5.3.2",
+    "platformdirs==4.4.0",
+    # Authentication and compliance
+    "auth0-python==4.13.0",
+    "requests==2.32.5",
+    "cryptography==46.0.1",
+    "inquirer==3.4.1",
+    "autocleaneeg-icvision==0.2.0",
+    "autoclean-eeg2source==0.3.7",
+    "autocleaneeg-view==0.1.6",
+    # GUI dependencies
+    "PyQt6==6.7.1",
+    "autocleaneeg-mne-qt-browser-fork>0.7.2",
+    # "PySide6>=6.5.0",
+    "pyjsonviewer==1.6.0",
+    "textual==6.1.0",
+    "textual-dev==1.7.0",
+    "pyvistaqt==0.11.3",
+    "qtpy==2.4.3",
+    # OpenGL acceleration
+    "PyOpenGL-accelerate==3.1.10",
+    # Documentation handled externally; keep Python package lean
+    # AI dependencies
+    "openai==1.109.0",
+    "onnxruntime==1.22.1",
+]
+
+[project.optional-dependencies]
+# Optional dependencies for processing blocks
+# Install with: uv tool install "autocleaneeg-pipeline[blocks-all]"
+# Or individual groups: uv tool install "autocleaneeg-pipeline[blocks-signal]"
+
+# Signal processing blocks
+blocks-signal = [
+    "meegkit>=0.1.9",  # Required for zapline DSS-based line noise removal
+]
+
+# Analysis blocks (currently all dependencies in main package)
+blocks-analysis = []
+
+# All optional block dependencies
+blocks-all = [
+    "meegkit>=0.1.9",
+]
+
+[tool.uv.sources]
+#autocleaneeg-mne-qt-browser-fork = { path = "/home/ernie/Documents/Github/autocleaneeg-mne-qt-browser-fork", editable = true }
+#autocleaneeg-mne-qt-browser-fork = { path = "/Volumes/braindata/cincineuro_github/mne-qt-browser", editable = true }
+
+
+torch = [
+  { index = "pytorch-cpu" },
+]
+torchvision = [
+  { index = "pytorch-cpu" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[project.urls]
+Homepage = "https://github.com/cincibrainlab/autoclean_pipeline"
+Repository = "https://github.com/cincibrainlab/autoclean_pipeline"
+Documentation = "https://cincibrainlab.github.io/autoclean_pipeline/"
+Issues = "https://github.com/cincibrainlab/autoclean_pipeline/issues"
+
+[project.scripts]
+autocleaneeg-pipeline = "autoclean.__main__:main"
+
+[tool.hatch.version]
+path = "src/autoclean/__init__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/autoclean", "configs"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/autoclean/data/builtins/registry.json",
+    "src/autoclean/data/builtins/tasks/**",
+    "src/autoclean/configkit/schema_exports/**",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --cov=autoclean"
+testpaths = [
+    "tests",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py39", "py310"]
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.ruff]
+exclude = [
+    "autoclean/tasks/TEMPLATE.py",
+    ".git",
+    ".env",
+    "__pycache__",
+    "build",
+    "dist"
+]
+
+[tool.ruff.lint]
+per-file-ignores = { "autoclean/step_functions/__init__.py" = ["E402", "F403"], "autoclean/tools/autoclean_review.py" = ["E402"], "autoclean/calc/source.py" = ["F401"] }
