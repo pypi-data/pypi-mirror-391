@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: asb-cli
+Version: 0.1.0
+Summary: A CLI tool for managing Ansible projects.
+Home-page: https://github.com/hujianli94/asb_cli
+Author: hjl
+Author-email: hjl@hjl.com
+License: UNKNOWN
+Description: # asb_cli
+        
+        `asb_cli` 是一个用于管理 Ansible 项目的命令行工具。
+        
+        ## 功能
+        - `asb_cli init`: 创建一个标准的 Ansible 项目目录。
+        - `asb_cli role`: 创建一个类似 `ansible-galaxy` 的 roles 目录结构。
+        - `asb_cli playbook`: 创建一个单独的 Ansible playbook 文件。
+        
+        ## 安装
+        ```bash
+        python setup.py develop
+        # 或者使用 pip 安装
+        pip install -e .
+        ```
+        
+        ## 使用
+        ```bash
+        # project
+        asb_cli init .
+        asb_cli init ./myprojkect
+        asb_cli init ../myprojkect
+        asb_cli init demo1
+        asb_cli init /tmp/test/demo1
+        
+        # role
+        asb_cli role .
+        asb_cli role demo2
+        asb_cli role ../demo10
+        asb_cli role /tmp/test/demo1
+        
+        # playbook
+        asb_cli playbook --name site.yml .
+        asb_cli playbook --name custom.yml ./playbooks
+        # 在指定绝对路径创建名为 prod.yml 的 playbook
+        asb_cli playbook --name prod.yml /tmp/test/playbooks
+        # 直接指定文件路径创建 playbook
+        asb_cli playbook --name custom.yml ./playbooks/custom.yml
+        ```
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
