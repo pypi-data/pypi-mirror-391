@@ -1,0 +1,14 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+recursive-exclude mdsmart/examples *
+recursive-exclude mdsmart/tests *
+recursive-exclude venv *
+recursive-exclude .venv *
+recursive-exclude .git *
+recursive-exclude __pycache__ *
+recursive-exclude *.egg-info *
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude *.pyd
+global-exclude .DS_Store
