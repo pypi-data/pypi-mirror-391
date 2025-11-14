@@ -1,0 +1,19 @@
+requests~=2.27
+six~=1.16
+
+[:python_version <= "3.6"]
+cachetools~=2.1
+
+[:python_version == "2.7"]
+requests-pkcs12==1.10
+keyring==18.0.1
+
+[:python_version == "3.6"]
+keyring~=23.4
+
+[:python_version > "3.6"]
+keyring~=23.5
+cachetools~=5.0
+
+[:python_version >= "3.6"]
+requests-pkcs12==1.27
