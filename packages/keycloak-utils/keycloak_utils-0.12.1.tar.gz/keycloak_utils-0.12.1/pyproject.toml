@@ -1,0 +1,79 @@
+[tool.black]
+line_length = 88
+force_exclude = """
+        (.github/*)
+    """
+
+[tool.isort]
+profile = "black"
+quiet = "True"
+skip_glob = ".github/*"
+skip_gitignore = "True"
+combine_as_imports = "True"
+line_length = 88
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "keycloak-utils"
+version = "0.12.1"
+authors = [
+    { name = "Jerin Peter George", email = "jerinpetergeorge@gmail.com" },
+]
+description = "Helper classes for keycloak authentication in Django and FastAPI"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Environment :: Web Environment",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "pyjwt[crypto]>=2.8.0",
+    "python-keycloak>=4.6.2",
+    "pika>=1.3.2",
+    "msgpack_python>=0.5.6",
+    "pydantic>=1.10.12",
+    "httpx>=0.24.0",
+    "asgiref>=3.6.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/ottuco/keycloak-auth-utils.git"
+
+[project.optional-dependencies]
+django = [
+    "djangorestframework>=3.12.0",
+    "Django>=3.2",
+    "redis>=5.0.3",
+    "django-tenants>=3.7.0",
+]
+fastapi = ["fastapi>=0.68.0"]
+django-sync = ["keycloak-utils[django]", "celery>=5.4.0"]
+
+all = ["keycloak-utils[django-sync,fastapi]"]
+
+# Testing dependencies
+tox = ["tox>=4.0.0"]
+pytest = ["pytest>=7.0.0"]
+test-fastapi = ["keycloak-utils[fastapi,pytest,tox]"]
+test-django = ["keycloak-utils[django-sync,pytest,tox]", "pytest-django>=4.5.2"]
+
+
+lint-and-formatting = ["black", "flake8", "flake8-print", "isort", "pre-commit"]
+dev = ["keycloak-utils[test, lint-and-formatting]", "bump2version~=1.0.1"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.test_rest_framework.settings"
+testpaths = ["tests"]
+markers = ["django_db"]
