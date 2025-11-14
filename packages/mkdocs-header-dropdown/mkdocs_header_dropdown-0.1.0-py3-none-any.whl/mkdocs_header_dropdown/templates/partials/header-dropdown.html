@@ -1,0 +1,125 @@
+<!--
+  Header Dropdown - Rendered directly in header
+-->
+{% if config.extra.header_dropdowns %}
+  {% for dropdown in config.extra.header_dropdowns %}
+    <div class="md-header__option" style="margin-right: 0.1rem;">
+      <div class="md-header__dropdown"
+           style="position: relative; display: inline-block;"
+           onmouseenter="showHeaderDropdown(this)"
+           onmouseleave="hideHeaderDropdown(this)">
+        <button class="md-header__button"
+                style="padding: 0.4rem; display: flex; align-items: center; gap: 0.3rem"
+                onclick="toggleHeaderDropdown(event)">
+          {% if dropdown.icon %}
+            <img src="{{ dropdown.icon }}" alt="{{ dropdown.title }}" style="width: 35px; height: 35px;" />
+          {% endif %}
+          <span style="font-size: 0.7rem;">{{ dropdown.title }}</span>
+        </button>
+        <div class="md-header__dropdown-content"
+             style="display: none; position: absolute; left: 0; top: 100%; background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.1rem; box-shadow: var(--md-shadow-z2); min-width: 200px; z-index: 1000;">
+          {% for link in dropdown.links %}
+            {% if link.submenu %}
+              <div class="md-header__dropdown-item md-header__dropdown-nested"
+                   style="position: relative;"
+                   onmouseenter="showNestedDropdown(this)"
+                   onmouseleave="hideNestedDropdown(this)">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; color: var(--md-default-fg-color); font-size: 0.7rem; cursor: pointer;"
+                     onmouseover="this.style.backgroundColor='var(--md-default-fg-color--lightest)'"
+                     onmouseout="this.style.backgroundColor='transparent'">
+                  <span>{{ link.text }}</span>
+                  <svg style="width: 0.8rem; height: 0.8rem; margin-left: 0.5rem;" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                  </svg>
+                </div>
+                <div class="md-header__dropdown-submenu"
+                     style="display: none; position: absolute; left: 100%; top: 0; background: var(--md-default-bg-color); border: 1px solid var(--md-default-fg-color--lightest); border-radius: 0.1rem; box-shadow: var(--md-shadow-z2); min-width: 200px; z-index: 1001;">
+                  {% for sublink in link.submenu %}
+                    <a href="{{ sublink.url }}"
+                       {% if sublink.target %}target="{{ sublink.target }}"{% endif %}
+                       style="display: block; padding: 0.5rem 1rem; color: var(--md-default-fg-color); text-decoration: none; font-size: 0.7rem"
+                       onmouseover="this.style.backgroundColor='var(--md-default-fg-color--lightest)'"
+                       onmouseout="this.style.backgroundColor='transparent'">
+                      {{ sublink.text }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <a href="{{ link.url }}"
+                 {% if link.target %}target="{{ link.target }}"{% endif %}
+                 style="display: block; padding: 0.5rem 1rem; color: var(--md-default-fg-color); text-decoration: none; font-size: 0.7rem"
+                 onmouseover="this.style.backgroundColor='var(--md-default-fg-color--lightest)'"
+                 onmouseout="this.style.backgroundColor='transparent'">
+                {{ link.text }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<script>
+  // Dropdown interaction functions
+  if (typeof toggleHeaderDropdown === 'undefined') {
+    function toggleHeaderDropdown(event) {
+      event.stopPropagation();
+      const dropdown = event.target.closest('.md-header__dropdown');
+      const content = dropdown.querySelector('.md-header__dropdown-content');
+      const isVisible = content.style.display === 'block';
+
+      // Close all other dropdowns
+      document.querySelectorAll('.md-header__dropdown-content').forEach(el => {
+        el.style.display = 'none';
+      });
+
+      // Toggle current dropdown
+      content.style.display = isVisible ? 'none' : 'block';
+    }
+
+    function showHeaderDropdown(dropdown) {
+      const content = dropdown.querySelector('.md-header__dropdown-content');
+      content.style.display = 'block';
+    }
+
+    function hideHeaderDropdown(dropdown) {
+      setTimeout(() => {
+        const content = dropdown.querySelector('.md-header__dropdown-content');
+        if (!dropdown.matches(':hover')) {
+          content.style.display = 'none';
+        }
+      }, 100);
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.md-header__dropdown-content').forEach(el => {
+        el.style.display = 'none';
+      });
+      document.querySelectorAll('.md-header__dropdown-submenu').forEach(el => {
+        el.style.display = 'none';
+      });
+    });
+
+    // Nested dropdown functions
+    function showNestedDropdown(item) {
+      const submenu = item.querySelector('.md-header__dropdown-submenu');
+      if (submenu) {
+        submenu.style.display = 'block';
+      }
+    }
+
+    function hideNestedDropdown(item) {
+      setTimeout(() => {
+        if (!item.matches(':hover')) {
+          const submenu = item.querySelector('.md-header__dropdown-submenu');
+          if (submenu) {
+            submenu.style.display = 'none';
+          }
+        }
+      }, 100);
+    }
+  }
+</script>
