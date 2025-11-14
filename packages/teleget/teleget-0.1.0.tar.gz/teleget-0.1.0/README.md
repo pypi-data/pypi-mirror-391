@@ -1,0 +1,42 @@
+# مكتبة TeleInfo
+
+مكتبة بايثون بسيطة جداً لجلب المعلومات العامة عن أي مستخدم في تيليجرام باستخدام اسم المستخدم.
+
+## التثبيت
+
+لتثبيت المكتبة من المجلد المحلي، قم بتنفيذ الأمر التالي في الطرفية:
+```bash
+pip install .
+```
+
+## كيفية الاستخدام
+
+يمكنك استيراد المكتبة واستخدام دالة `get` للحصول على بيانات المستخدم.
+
+```python
+import teleinfo
+
+# استبدل "telegram" باسم المستخدم الذي تريد البحث عنه
+username = "telegram"
+user_data = teleinfo.get(username)
+
+if "error" in user_data:
+    print(f"حدث خطأ: {user_data['error']}")
+else:
+    # طباعة البيانات كما هي (كائن JSON)
+    print("--- البيانات الخام ---")
+    print(user_data)
+
+    # أو طباعة البيانات بشكل منسق كما في طلبك
+    print("\n--- البيانات المنسقة ---")
+    ff = f"""
+الاسم الاول : {user_data.get("First Name", "N/A")}
+الاسم الاخير : {user_data.get("Last Name", "N/A")}
+اسم المستخدم : {user_data.get("Username", "N/A")}
+ايدي الحساب : {user_data.get("ID", "N/A")}
+هل هو بوت : {user_data.get("Is Bot", "N/A")}
+بريميوم : {user_data.get("Is Verified", "N/A")}
+"""
+    print(ff)
+
+```
