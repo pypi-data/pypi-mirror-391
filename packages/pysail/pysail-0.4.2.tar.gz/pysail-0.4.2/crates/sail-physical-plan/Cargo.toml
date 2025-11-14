@@ -1,0 +1,18 @@
+[package]
+name = "sail-physical-plan"
+version = { workspace = true }
+edition = { workspace = true }
+
+[lints]
+workspace = true
+
+[dependencies]
+sail-common-datafusion = { path = "../sail-common-datafusion" }
+sail-data-source = { path = "../sail-data-source" }
+sail-logical-plan = { path = "../sail-logical-plan" }
+
+datafusion = { workspace = true }
+datafusion-common = { workspace = true }
+datafusion-expr = { workspace = true }
+futures = { workspace = true }
+tokio-stream = { workspace = true }
