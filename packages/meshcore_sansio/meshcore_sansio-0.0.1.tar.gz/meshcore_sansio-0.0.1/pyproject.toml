@@ -1,0 +1,43 @@
+[project]
+name = "meshcore_sansio"
+#dynamic = ["version"]
+version = "0.0.1"
+description = "MeshCore protocol implementation Sans I/O"
+authors = [
+    { name = "Kevin Steen", email = "code@kevinsteen.net" },
+]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENCE"]
+readme = "README.md"
+# Please consult https://pypi.org/classifiers/ for a full list.
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+]
+# TODO: add keywords
+keywords = []
+
+requires-python = ">=3.7"
+dependencies = []
+
+#[project.optional-dependencies]
+#serial = [
+#    "pyserial>=3.5",
+#]
+
+
+[project.urls]
+"Source Code" = "https://codeberg.org/skyguy/meshcore-sansio"
+
+
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+#[tool.hatch.build.targets.wheel]
+#packages = ["src/meshcore_sansio"]
+
+#[tool.hatch.version]
+#path = "src/RNS/_version.py"
