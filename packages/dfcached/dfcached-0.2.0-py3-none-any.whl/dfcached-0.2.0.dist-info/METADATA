@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: dfcached
+Version: 0.2.0
+Summary: Minimal on-disk cache decorator: DataFrame→Parquet (else pickle); others→pickle; top-level containers.
+License: MIT
+License-File: LICENSE
+Keywords: cache,pandas,parquet,pickle,decorator
+Author: Iurii Zhakun
+Author-email: yurij.zhacun@gmail.com
+Requires-Python: >=3.10,<3.14
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: parquet
+Requires-Dist: fastparquet (>=2023.0.0) ; extra == "parquet"
+Requires-Dist: pandas (>=2.0,<3.0)
+Requires-Dist: pyarrow (>=12.0) ; extra == "parquet"
+Project-URL: Documentation, https://github.com/IuriiZhakun/dfcached#readme
+Project-URL: Homepage, https://github.com/IuriiZhakun/dfcached
+Project-URL: Repository, https://github.com/IuriiZhakun/dfcached
+Description-Content-Type: text/markdown
+
+### Parameters (defaults shown)
+
+```python
+@persist_cache(
+  cache_dir=".dfcached_cache",
+  version=None,
+  refresh=False,
+  exclude_from_key=None,
+  canonicalize_kwargs=True,
+  write_checksums=True,
+  verify_checksums=True,
+  strict_integrity=True,
+)
+
+
