@@ -1,0 +1,28 @@
+{% extends "_base/class.html.jinja" %}
+{% block heading scoped %}
+  {% if config.extra.namespace %}
+    {% set class_full_name = config.extra.namespace + "." + class_name %}
+  {% else %}
+    {% set class_full_name = class_name %}
+  {% endif %}
+  {% if config.show_symbol_type_heading %}
+    <code class="doc-symbol doc-symbol-heading doc-symbol-class">
+    </code>
+  {% endif %}
+  {# same heading regardless of the config.separate_signature value #}
+  <span class="doc doc-object-name doc-class-name">{{ class_full_name }}</span>
+  {#
+  {% if config.separate_signature %}
+    <span class="doc doc-object-name doc-class-name">{{ class_full_name }}</span>
+  {% elif config.merge_init_into_class and "__init__" in class.all_members %}
+    {% with function = class.all_members["__init__"] %}
+      {%+ filter highlight(language="python", inline=True) %}
+        {{ class_full_name }}
+        {% include "signature"|get_template with context %}
+      {% endfilter %}
+    {% endwith %}
+  {% else %}
+    <code>{{ class_full_name }}</code>
+  {% endif %}
+  #}
+{% endblock heading %}

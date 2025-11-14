@@ -1,0 +1,22 @@
+{% extends "_base/docstring/returns.html.jinja" %}
+
+{% block list_style scoped %}
+  {#- Block for the `list` section style. -#}
+  <p><span class="doc-section-title">{{ section.title or lang.t("Returns:") }}</span></p>
+  <ul>
+    {% for returns in section.value %}
+      <li class="doc-section-item field-body">
+        {% if returns.name %}<b><code>{{ returns.name }}</code></b>{% endif %}
+        {% if returns.annotation is string %}
+          {% with expression = returns.annotation %}
+            (<i>{% include "expression"|get_template with context %}</i>)
+          {% endwith %}
+          –
+        {% endif %}
+        <div class="doc-md-description">
+          {{ returns.description|convert_markdown(heading_level, html_id, autoref_hook=autoref_hook) }}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock list_style %}
