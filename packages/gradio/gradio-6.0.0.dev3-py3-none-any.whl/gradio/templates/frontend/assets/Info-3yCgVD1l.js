@@ -1,0 +1,2 @@
+import{p as n}from"./i18n-0yVmjjWQ.js";import{p as f,f as p,h as m,b as d,c as l,g as u,r as v}from"./index-C_pgmrh1.js";import{M as h}from"./MarkdownCode-BCT1FD5c.js";/* empty css                                                        */var c=p('<div class="svelte-9hc4ua"><!></div>');function _(e,a){f(a,!1);let r=n(a,"info",12);var s={get info(){return r()},set info(i){r(i),u()}},o=c(),t=m(o);return h(t,{get message(){return r()},sanitize_html:!0}),v(o),d(e,o),l(s)}export{_ as I};
+//# sourceMappingURL=Info-3yCgVD1l.js.map

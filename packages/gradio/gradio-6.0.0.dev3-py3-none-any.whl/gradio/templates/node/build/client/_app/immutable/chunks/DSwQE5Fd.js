@@ -1,0 +1,240 @@
+import "./9B4_veAf.js";
+import { p as push, I as onMount, c as from_html, d as child, s as sibling, r as reset, t as template_effect, b as append, o as pop, k as get, A as user_derived, K as tick } from "./DEzry6cj.js";
+import { r as rest_props, i as if_block, b as bind_this, s as spread_props } from "./DUftb7my.js";
+import { s as slot } from "./DX-MI-YE.js";
+import { G as Gradio, s as set_attribute, a as set_class, g as Static } from "./DXi4jxVF.js";
+import "./BAp-OWo-.js";
+var root = from_html(`<div role="region" aria-label="Draggable items container"><!> <!></div>`);
+function Index($$anchor, $$props) {
+  push($$props, true);
+  const props = rest_props($$props, ["$$slots", "$$events", "$$legacy"]);
+  const gradio = new Gradio(props);
+  let container_el;
+  let dragged_el = null;
+  let items = [];
+  let current_drop_target = null;
+  const drag_event_handlers = [
+    { event: "dragstart", handler: handle_drag_start },
+    { event: "dragend", handler: handle_drag_end }
+  ];
+  const drop_event_handlers = [
+    { event: "dragover", handler: handle_drag_over },
+    { event: "drop", handler: handle_drop },
+    { event: "dragenter", handler: handle_drag_enter }
+  ];
+  function add_drag_listeners(element) {
+    drag_event_handlers.forEach(({ event, handler }) => {
+      element.addEventListener(event, handler);
+    });
+  }
+  function remove_drag_listeners(element) {
+    drag_event_handlers.forEach(({ event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+  }
+  function add_drop_listeners(element) {
+    drop_event_handlers.forEach(({ event, handler }) => {
+      element.addEventListener(event, handler);
+    });
+  }
+  function remove_drop_listeners(element) {
+    drop_event_handlers.forEach(({ event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+  }
+  function setup_draggable_item(element, index) {
+    element.classList.add("draggable-item");
+    element.setAttribute("data-index", index.toString());
+    element.style.position = "relative";
+    const handle = document.createElement("div");
+    handle.className = "drag-handle";
+    handle.setAttribute("draggable", "true");
+    handle.setAttribute("aria-grabbed", "false");
+    handle.setAttribute("data-index", index.toString());
+    handle.innerHTML = "⋮⋮";
+    element.appendChild(handle);
+    add_drag_listeners(handle);
+    add_drop_listeners(element);
+  }
+  function setup_drag_and_drop() {
+    if (!container_el) return;
+    items.forEach((item) => {
+      const handle = item.querySelector(".drag-handle");
+      if (handle) {
+        remove_drag_listeners(handle);
+        handle.remove();
+      }
+      remove_drop_listeners(item);
+    });
+    items = [];
+    const children = Array.from(container_el.children);
+    let item_index = 0;
+    children.forEach((child2) => {
+      if (child2.classList.contains("status-tracker")) return;
+      if (child2.classList.contains("form") && child2.children.length > 0) {
+        const form_children = Array.from(child2.children);
+        form_children.forEach((form_child) => {
+          items.push(form_child);
+          setup_draggable_item(form_child, item_index);
+          item_index++;
+        });
+      } else {
+        items.push(child2);
+        setup_draggable_item(child2, item_index);
+        item_index++;
+      }
+    });
+  }
+  function handle_drag_start(e) {
+    e.stopPropagation?.();
+    const handle = e.currentTarget;
+    const element = handle.parentElement;
+    dragged_el = element;
+    parseInt(handle.dataset.index || "-1");
+    handle.setAttribute("aria-grabbed", "true");
+    element.classList.add("dragging");
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/html", element.outerHTML);
+      e.dataTransfer.setDragImage(element, 10, 10);
+    }
+  }
+  function handle_drag_end(e) {
+    e.stopPropagation?.();
+    const handle = e.currentTarget;
+    const element = handle.parentElement;
+    element.classList.remove("dragging");
+    handle.setAttribute("aria-grabbed", "false");
+    if (current_drop_target) {
+      current_drop_target.classList.remove("drop-target");
+      current_drop_target = null;
+    }
+    dragged_el = null;
+  }
+  function handle_drag_over(e) {
+    e.preventDefault();
+    e.dataTransfer && (e.dataTransfer.dropEffect = "move");
+    return false;
+  }
+  function handle_drag_enter(e) {
+    e.stopPropagation?.();
+    const target = e.currentTarget;
+    if (target === dragged_el) return;
+    if (!dragged_el || !container_el) return;
+    const dragged_parent = dragged_el.parentElement;
+    const target_parent = target.parentElement;
+    const is_dragged_in_form = dragged_parent?.classList.contains("form") && dragged_parent.parentElement === container_el;
+    const is_target_in_form = target_parent?.classList.contains("form") && target_parent.parentElement === container_el;
+    const is_dragged_direct = dragged_parent === container_el;
+    const is_target_direct = target_parent === container_el;
+    if (!((is_dragged_in_form || is_dragged_direct) && (is_target_in_form || is_target_direct))) {
+      return;
+    }
+    if (current_drop_target && current_drop_target !== target) {
+      current_drop_target.classList.remove("drop-target");
+    }
+    target.classList.add("drop-target");
+    current_drop_target = target;
+  }
+  async function handle_drop(e) {
+    e.stopPropagation?.();
+    const target = e.currentTarget;
+    target.classList.remove("drop-target");
+    if (current_drop_target) {
+      current_drop_target.classList.remove("drop-target");
+      current_drop_target = null;
+    }
+    if (dragged_el && dragged_el !== target && container_el) {
+      const dragged_parent = dragged_el.parentElement;
+      const target_parent = target.parentElement;
+      const is_dragged_in_form = dragged_parent?.classList.contains("form") && dragged_parent.parentElement === container_el;
+      const is_target_in_form = target_parent?.classList.contains("form") && target_parent.parentElement === container_el;
+      const is_dragged_direct = dragged_parent === container_el;
+      const is_target_direct = target_parent === container_el;
+      if (!((is_dragged_in_form || is_dragged_direct) && (is_target_in_form || is_target_direct))) {
+        return false;
+      }
+      const placeholder = document.createElement("div");
+      placeholder.style.display = "none";
+      dragged_parent.insertBefore(placeholder, dragged_el);
+      target_parent.insertBefore(dragged_el, target);
+      dragged_parent.insertBefore(target, placeholder);
+      placeholder.remove();
+      dragged_el?.classList.remove("dragging");
+      const dragged_handle = dragged_el?.querySelector(".drag-handle");
+      if (dragged_handle) {
+        dragged_handle.setAttribute("aria-grabbed", "false");
+      }
+      await tick();
+      setup_drag_and_drop();
+    }
+    return false;
+  }
+  onMount(() => {
+    setup_drag_and_drop();
+    const observer = new MutationObserver(setup_drag_and_drop);
+    if (container_el) {
+      observer.observe(container_el, { childList: true, subtree: false });
+    }
+    return () => {
+      observer.disconnect();
+      items.forEach((item) => {
+        const handle = item.querySelector(".drag-handle");
+        if (handle) {
+          remove_drag_listeners(handle);
+        }
+        remove_drop_listeners(item);
+      });
+    };
+  });
+  var div = root();
+  let classes;
+  var node = child(div);
+  {
+    var consequent = ($$anchor2) => {
+      {
+        let $0 = user_derived(() => gradio.shared.loading_status ? gradio.shared.loading_status.status == "pending" ? "generating" : gradio.shared.loading_status.status : null);
+        Static($$anchor2, spread_props(
+          {
+            get autoscroll() {
+              return gradio.shared.autoscroll;
+            },
+            get i18n() {
+              return gradio.i18n;
+            }
+          },
+          () => gradio.shared.loading_status,
+          {
+            get status() {
+              return get($0);
+            }
+          }
+        ));
+      }
+    };
+    if_block(node, ($$render) => {
+      if (gradio.shared.loading_status && gradio.props.show_progress) $$render(consequent);
+    });
+  }
+  var node_1 = sibling(node, 2);
+  slot(node_1, $$props, "default", {}, null);
+  reset(div);
+  bind_this(div, ($$value) => container_el = $$value, () => container_el);
+  template_effect(
+    ($0) => {
+      set_attribute(div, "id", gradio.shared.elem_id);
+      classes = set_class(div, 1, `draggable ${$0 ?? ""}`, "svelte-1kr8imm", classes, {
+        hide: !gradio.shared.visible,
+        horizontal: gradio.props.orientation === "row",
+        vertical: gradio.props.orientation === "column"
+      });
+    },
+    [() => (gradio.shared.elem_classes || []).join(" ")]
+  );
+  append($$anchor, div);
+  pop();
+}
+export {
+  Index as default
+};
+//# sourceMappingURL=DSwQE5Fd.js.map

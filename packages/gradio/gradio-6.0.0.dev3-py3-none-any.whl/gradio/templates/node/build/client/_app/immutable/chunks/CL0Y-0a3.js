@@ -1,0 +1,46 @@
+import { F as FlowGraphBlock, g as getNumericValue, i as isNumeric } from "./CWCX69Ol.js";
+import { R as RichTypeAny } from "./CERZDFgL.js";
+import { R as RegisterClass } from "./f5NiF4Sn.js";
+class FlowGraphDataSwitchBlock extends FlowGraphBlock {
+  constructor(config) {
+    super(config);
+    this.config = config;
+    this._inputCases = /* @__PURE__ */ new Map();
+    this.case = this.registerDataInput("case", RichTypeAny, NaN);
+    this.default = this.registerDataInput("default", RichTypeAny);
+    this.value = this.registerDataOutput("value", RichTypeAny);
+    const array = this.config.cases || [];
+    for (let caseValue of array) {
+      caseValue = getNumericValue(caseValue);
+      if (this.config.treatCasesAsIntegers) {
+        caseValue = caseValue | 0;
+        if (this._inputCases.has(caseValue)) {
+          return;
+        }
+      }
+      this._inputCases.set(caseValue, this.registerDataInput(`in_${caseValue}`, RichTypeAny));
+    }
+  }
+  _updateOutputs(context) {
+    const selectionValue = this.case.getValue(context);
+    let outputValue;
+    if (isNumeric(selectionValue)) {
+      outputValue = this._getOutputValueForCase(getNumericValue(selectionValue), context);
+    }
+    if (!outputValue) {
+      outputValue = this.default.getValue(context);
+    }
+    this.value.setValue(outputValue, context);
+  }
+  _getOutputValueForCase(caseValue, context) {
+    return this._inputCases.get(caseValue)?.getValue(context);
+  }
+  getClassName() {
+    return "FlowGraphDataSwitchBlock";
+  }
+}
+RegisterClass("FlowGraphDataSwitchBlock", FlowGraphDataSwitchBlock);
+export {
+  FlowGraphDataSwitchBlock
+};
+//# sourceMappingURL=CL0Y-0a3.js.map
