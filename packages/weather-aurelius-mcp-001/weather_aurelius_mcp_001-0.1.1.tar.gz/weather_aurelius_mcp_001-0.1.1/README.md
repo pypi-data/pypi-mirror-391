@@ -1,0 +1,29 @@
+# weather-aurelius-mcp-001
+
+使用 `uv`/`uvx` 即时运行的天气查询 MCP 服务。
+
+## 快速使用
+
+运行以下命令即可启动 MCP 服务器（首次执行会自动安装依赖）：
+
+```bash
+uvx weather-aurelius-mcp-001
+```
+
+服务器通过 STDIO 暴露 `query_weather` 工具，可直接在支持 MCP 的客户端中调用。
+
+如果你在本地仓库中开发，可通过以下方式运行：
+
+```bash
+uv toolchain install 3.11     # 安装兼容的 Python
+uv sync                       # 同步依赖
+uv run python -m weather_Aurelius_MCP_001.main
+```
+
+## 本地开发
+
+```bash
+uv sync
+uv run python -m weather_Aurelius_MCP_001.main
+```
+

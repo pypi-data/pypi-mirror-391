@@ -1,0 +1,19 @@
+[project]
+name = "weather-aurelius-mcp-001"
+version = "0.1.1"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp>=1.21.0",
+    "requests>=2.32.5",
+]
+
+[project.scripts]
+weather-aurelius-mcp-001 = "weather_Aurelius_MCP_001.main:main"
+
+[tool.uv.workspace]
+members = [
+    "weather_Aurelius_MCP_001",
+]
