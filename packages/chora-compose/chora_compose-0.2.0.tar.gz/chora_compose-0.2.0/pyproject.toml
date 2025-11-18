@@ -1,0 +1,129 @@
+[tool.poetry]
+name = "chora-compose"
+version = "0.2.0"
+description = "Content generation and orchestration capability server"
+authors = ["Victor Piper <victor@liminalcommons.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/liminalcommons/chora-compose"
+keywords = ["mcp", "fastmcp", "content-generation", "orchestration", "chora", "capability-server"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Code Generators",
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastmcp = ">=0.3.0"
+pydantic = ">=2.0.0"
+pydantic-settings = ">=2.0.0"
+python-dotenv = ">=1.0.0"
+click = ">=8.0.0"
+fastapi = ">=0.104.0"
+uvicorn = {extras = ["standard"], version = ">=0.24.0"}
+jinja2 = ">=3.1.0"
+anthropic = ">=0.40.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+pytest-asyncio = "^0.24.0"
+pytest-cov = "^6.0.0"
+mypy = "^1.11.0"
+ruff = "^0.7.0"
+black = "^24.10.0"
+pre-commit = "^4.0.1"
+
+[tool.poetry.scripts]
+chora-compose = "chora_compose.interfaces.cli.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["-v", "--cov=chora_compose", "--cov-report=term-missing"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["ARG", "S101"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.coverage.run]
+source = ["src/chora_compose"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+fail_under = 85.0
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = ["fastmcp", "fastmcp.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["pytest", "pytest.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
