@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=67.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py-promptkit"
+version = "0.1.0"
+description = "Config-driven prompt loading and execution for LLM applications."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Adit Bajaj", email = "randomemail@gmail.com" }
+]
+dependencies = [
+  "flask==3.1.2",
+  "pydantic==2.12.4",
+  "litellm==1.79.1",
+  "requests==2.32.5",
+  "jsonschema==4.25.1",
+  "python-dotenv==1.2.1",
+  "typing-extensions>=4.8.0"
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.4.2",
+  "ruff==0.14.3",
+  "pylyzer==0.0.82",
+  "iniconfig==2.3.0",
+  "pyright==1.1.407"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
