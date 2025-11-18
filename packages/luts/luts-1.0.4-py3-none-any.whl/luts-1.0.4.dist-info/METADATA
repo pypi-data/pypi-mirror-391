@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: luts
+Version: 1.0.4
+Summary: Multidimensional labeled arrays and datasets in Python, similar to xarray.
+Author-email: François Steinmetz <fs@hygeos.com>, Mustapha Moulana <mm@hygeos.com>
+Project-URL: Source, https://github.com/hygeos/luts
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Intended Audience :: Science/Research
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.TXT
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: xarray
+Requires-Dist: netcdf4
+Requires-Dist: pyhdf
+Dynamic: license-file
+
+# luts.py
+
+Multidimensional labeled arrays and datasets in Python. This module provides objects whose design is close to [xarray](http://xarray.pydata.org/).
+
+Provides the following objects:
+
+- LUT (look-up table): a multidimensional array with labeled axes.
+The equivalent of this object in xarray is [`xarray.DataArray`](http://xarray.pydata.org/en/stable/generated/xarray.DataArray.html)
+- MLUT (multi-look-up table): a set of LUTs
+The equivalent of this object in xarray is [`xarray.Dataset`](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html)
+
+
+## Installation
+
+This module is managed by [python-poetry](https://python-poetry.org/). It can be installed in your current python environment, including its dependencies, using:
+
+1) A git repository: `pip install git+https://github.com/hygeos/luts.git`
+
+2) A directory: `pip install luts/` or in editable mode: `pip install -e luts/`
+
+## Testing
+
+    $ pytest tests
