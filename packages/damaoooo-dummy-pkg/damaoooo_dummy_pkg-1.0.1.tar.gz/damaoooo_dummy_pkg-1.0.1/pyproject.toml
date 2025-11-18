@@ -1,0 +1,23 @@
+# pyproject.toml
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "damaoooo-dummy-pkg"  # 必须是唯一的！请替换成你的名字
+version = "1.0.1"
+authors = [
+  { name="Li Zhou", email="li.zhou@kaust.edu.sa" },
+]
+description = "A dummy package that prints a message on import."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/damaoooo/damaoooo-dummy-pkg" # 可选
