@@ -1,0 +1,10 @@
+graft src
+include src/**/*.py
+include README.md
+include LICENSE
+recursive-exclude tests *
+recursive-exclude temp *
+recursive-exclude __pycache__ *
+global-exclude *.pyc
+global-exclude *.pyo
+exclude examples.py

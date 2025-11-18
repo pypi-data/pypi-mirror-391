@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nbrb"
+version = "1.0.0"
+description = "Курсы валют Национального банка Республики Беларусь"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31",
+]
+authors = [
+    { name = "Vladimir Nadulich", email = "g240596448@gmail.com" },
+]
+license = "MIT"
+keywords = ["Беларусь", "РБ", "nbrb", "курсы", "валюты"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business :: Financial",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/240596448/nbrb"
+Documentation = "https://gitlab.com/240596448/nbrb/-/blob/master/README.md"
+Repository = "https://gitlab.com/240596448/nbrb"
+"Bug Tracker" = "https://gitlab.com/240596448/nbrb/-/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=7.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "src",
+]
+testpaths = [
+    "tests",
+]
+
