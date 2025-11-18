@@ -1,0 +1,163 @@
+import numpy as np
+
+
+from .basescatterview import BaseScatterView
+
+
+class SpikeAmplitudeView(BaseScatterView):
+    _depend_on = ["spike_amplitudes"]
+    _settings = BaseScatterView._settings + [
+        {"name": "noise_level", "type": "bool", "value": True},
+        {"name": "noise_factor", "type": "int", "value": 5},
+    ]
+
+    def __init__(self, controller=None, parent=None, backend="qt"):
+        y_label = "Amplitude (uV)"
+        spike_data = controller.spike_amplitudes
+
+        BaseScatterView.__init__(
+            self,
+            controller=controller,
+            parent=parent,
+            backend=backend,
+            y_label=y_label,
+            spike_data=spike_data,
+        )
+
+    def _qt_make_layout(self):
+        from .myqt import QT
+
+        super()._qt_make_layout()
+        self.noise_harea = []
+        if self.settings["noise_level"] and self.controller.has_extension("noise_levels"):
+            self._qt_add_noise_area()
+        # add split shortcut, so that it's not duplicated
+        shortcut_split = QT.QShortcut(self.qt_widget)
+        shortcut_split.setKey(QT.QKeySequence("ctrl+s"))
+        shortcut_split.activated.connect(self.split)
+
+    def _qt_refresh(self):
+        super()._qt_refresh()
+        # average noise across channels
+        if self.settings["noise_level"] and self.controller.has_extension("noise_levels"):
+            self._qt_add_noise_area()
+        # remove noise area if not selected
+        elif not self.settings["noise_level"] and len(self.noise_harea) > 0:
+            for n in self.noise_harea:
+                self.plot2.removeItem(n)
+            self.noise_harea = []
+
+    def _qt_add_noise_area(self):
+        import pyqtgraph as pg
+
+        n = self.settings["noise_factor"]
+        noise = np.mean(self.controller.noise_levels)
+        alpha_factor = 50 / n
+        self.noise_harea=[]
+        for i in range(1, n + 1):
+            noise_bar = self.plot2.addItem(
+                pg.LinearRegionItem(
+                    values=(-i * noise, i * noise),
+                    orientation="horizontal",
+                    brush=(255, 255, 255, int(i * alpha_factor)),
+                    pen=(0, 0, 0, 0),
+                )
+            )
+            self.noise_harea.append(noise_bar)
+
+    def _panel_make_layout(self):
+        self.noise_sources = []
+        self.noise_hareas = []
+        layout = super()._panel_make_layout()
+
+        return layout
+
+    def _panel_create_noise_areas(self):
+        """Create noise area glyphs based on current noise_factor."""
+        from bokeh.models import ColumnDataSource
+
+        if not self.controller.has_extension("noise_levels"):
+            return
+
+        noise = np.mean(self.controller.noise_levels)
+        n = self.settings["noise_factor"]
+        alpha_factor = 50 / n
+
+        self.noise_sources = []
+        self.noise_hareas = []
+
+        for i in range(1, n + 1):
+            alpha = int(i * alpha_factor) / 255
+            source = ColumnDataSource(data=dict(y=[-i * noise, i * noise], x1=[0, 0], x2=[10_000, 10_000]))
+            self.noise_sources.append(source)
+
+            h = self.hist_fig.harea(
+                y="y",
+                x1="x1",
+                x2="x2",
+                source=source,
+                alpha=alpha,
+                color="lightgray",
+                visible=self.settings["noise_level"],
+            )
+            self.noise_hareas.append(h)
+
+    def _panel_remove_noise_areas(self):
+        """Remove all noise area glyphs from the figure."""
+        for harea in self.noise_hareas:
+            if harea in self.hist_fig.renderers:
+                self.hist_fig.renderers.remove(harea)
+
+        self.noise_sources = []
+        self.noise_hareas = []
+
+    def _panel_refresh(self):
+        # Toggle visibility and update data if needed
+        if self.settings["noise_level"]:
+            if len(self.noise_hareas) != self.settings["noise_factor"]:
+                # Remove old areas
+                self._panel_remove_noise_areas()
+                # Create new areas
+                self._panel_create_noise_areas()
+            else:
+                self._panel_update_noise_areas()
+            # Make visible
+            for harea in self.noise_hareas:
+                harea.visible = True
+        elif len(self.noise_hareas) > 0:
+            # Hide areas
+            for harea in self.noise_hareas:
+                harea.visible = False
+
+        super()._panel_refresh()
+
+    def _panel_update_noise_areas(self):
+        if self.controller.noise_levels is None or len(self.noise_hareas) == 0:
+            return
+
+        noise = np.mean(self.controller.noise_levels)
+        n = self.settings["noise_factor"]
+        alpha_factor = 50 / n
+
+        for i in range(n):
+            alpha = int(i * alpha_factor) / 255
+            noise_harea = self.noise_hareas[i]
+            if noise_harea.glyph.fill_alpha != alpha:
+                noise_harea.glyph.fill_alpha = alpha
+            self.noise_sources[i].data = dict(
+                y=[-(i + 1) * noise, (i + 1) * noise],
+                x1=[0, 0],
+                x2=[10_000, 10_000],
+            )
+
+
+SpikeAmplitudeView._gui_help_txt = """
+## Spike Amplitude View
+
+Check amplitudes of spikes across the recording time or in a histogram
+comparing the distribution of ampltidues to the noise levels.
+
+### Controls
+- **select** : activate lasso selection to select individual spikes
+- **split** or **ctrl+s** : split the selected spikes into a new unit (only if one unit is visible)
+"""
