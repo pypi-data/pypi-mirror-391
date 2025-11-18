@@ -1,0 +1,136 @@
+Metadata-Version: 2.4
+Name: iloko-cli
+Version: 1.5.1
+Summary: A command-line interpreter for the ILOKO esolang.
+Author: Christian Andrei
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-python
+Dynamic: summary
+
+# Iloko Programming Language CLI
+
+**Iloko** is an Ilocano-inspired esolang (esoteric programming language) designed for fun, creativity, and cultural expression.  
+It allows you to write programs using Ilocano-style syntax and run them easily from your terminal.
+
+---
+
+## How to Install and Run
+
+Follow these steps to set up your environment and run your first Iloko program.
+
+---
+
+### 1. Create a Project Folder
+
+First, navigate to or create a new folder for your project.
+
+```bash
+mkdir my-iloko-project
+cd my-iloko-project
+```
+
+---
+
+### 2. Create a Virtual Environment
+
+Create a Python virtual environment to keep dependencies isolated.
+
+```bash
+python3 -m venv venv
+```
+
+---
+
+### 3. Activate the Virtual Environment
+
+**On macOS/Linux:**
+```bash
+source venv/bin/activate
+```
+
+**On Windows (Command Prompt):**
+```bash
+.\venv\Scripts\activate
+```
+
+---
+
+### 4. Install the Iloko CLI
+
+Use pip to install the command-line tool.
+
+```bash
+pip install iloko-cli
+```
+
+---
+
+### 5. Create Your First Iloko File
+
+Create a new file named `test.iloko`.
+
+```bash
+touch test.iloko
+```
+
+---
+
+### 6. Write Your Iloko Code
+
+Open `test.iloko` in your code editor and paste the following code:
+
+```iloko
+IPAKITA "Hello, CLI! Nagmayat!"
+IPAKITA "---"
+IKABIL a = 100
+IKABIL b = 25
+IPAKITA a * b
+```
+
+---
+
+### 7. Run the Program
+
+Go back to your terminal (make sure your venv is still active) and run the file using the `iloko` command:
+
+```bash
+iloko test.iloko
+```
+
+---
+
+### 8. See the Output
+
+You should see the following output in your terminal:
+
+```
+Hello, CLI! Nagmayat!
+---
+2500
+```
+
+---
+
+## About Iloko
+
+- **Keywords:** `IPAKITA`, `IKABIL`, `NO`, and more (case-insensitive)  
+- **File Extension:** `.iloko`  
+- **Language Base:** Built in Python  
+- **Goal:** Promote programming through Ilocano-inspired syntax and creativity  
+- **Type:** Esoteric (Esolang)
+
+---
+
+## Created By
+
+**DOS Team**  
+> Bringing Ilocano culture into programming and technology.  
+> Python-powered. Community-inspired.
