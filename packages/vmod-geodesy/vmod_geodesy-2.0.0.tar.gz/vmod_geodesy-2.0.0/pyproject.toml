@@ -1,0 +1,42 @@
+[build-system]
+requires = [
+    "setuptools>=61.0.0",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vmod-geodesy"
+version = "2.0.0"
+description = "Versatile Modeling of Deformation"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Mario Angarita Vargas", email = "mfangaritasr@alaska.edu"},
+    {name = "Ronni Grapenthin", email = "rgrapenthin@alaska.edu"},
+    {name = "Scott Henderson", email = "scottyh@uw.edu"},
+    {name = "Michael Christoffersen", email = "mchristoffersen@alaska.edu"},
+    {name = "Kyle Anderson", email = "kranderson@usgs.gov"}
+]
+dependencies = [
+    "h5py == 3.*",
+    "matplotlib == 3.*",
+    "numpy == 2.*",
+    "pandas == 2.*",
+    "rasterio == 1.*",
+    "scipy == 1.*",
+    "scikit-image == 0.*",
+    "utm == 0.7.0",
+    "jupyterlab == 4.*",
+    "corner == 2.*",
+    "emcee == 3.*",
+    "tqdm",
+    "ipympl",
+    "pygmt",
+    "hankel"
+]
+
+[project.urls]
+documentation = "https://github.com/uafgeotools/vmod"
+repository = "https://github.com/uafgeotools/vmod"
