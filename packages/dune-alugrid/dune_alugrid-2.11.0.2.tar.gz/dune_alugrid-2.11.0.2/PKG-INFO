@@ -1,0 +1,92 @@
+Metadata-Version: 2.1
+Name: dune_alugrid
+Version: 2.11.0.2
+Summary: Module providing the DUNE grid interface for unstructured simplicial and cube grids in 2 and 3 space dimensions
+Home-page: https://gitlab.dune-project.org/extensions/dune-alugrid
+Author: Robert Kloefkorn, Martin Alkaemper, Andreas Dedner and Martin Nolte
+Author-email: dune-devel@lists.dune-project.org
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Requires-Python: >=3.4
+Description-Content-Type: text/markdown
+License-File: COPYING
+License-File: AUTHORS
+
+DUNE-ALUGrid
+============
+
+[DUNE-ALUGrid][0] is a [Distributed and Unified Numerics Environment][1]
+module which implements the DUNE grid interface
+providing unstructured simplicial and cube grids.
+
+A detailed description of all the newer features and some more
+details concerning the inner workings of DUNE-ALUGrid can be found
+in the paper
+
+[Alkämper, Dedner, Klöfkorn, Nolte. The DUNE-ALUGrid Module, Archive of Numerical Software 4(1), 2016][3] [(bibtex)][6].
+
+**This is the paper we would ask everyone to cite when using DUNE-ALUGrid.**
+
+Download via git:
+
+```
+git clone https://gitlab.dune-project.org/extensions/dune-alugrid.git
+```
+
+Features of DUNE-ALUGrid include
+
+  *  Cube and simplex grids in 2D and 3D with nonconforming refinement
+  *  Simplex grids with conforming refinement (newest vertex bisection) for 2D and 3D
+  *  Parallelization and dynamic load balancing for all grids
+  *  Internal load balancing based on space filling curves
+     making DUNE-ALUGrid self contained also in parallel
+  *  Bindings for fully parallel partitioning using [Zoltan][4]
+  *  Complete user control of the load balancing
+  *  Improved memory footprint
+
+The old ALUGrid version is deprecated and not supported anymore.
+We have removed the special grid types e.g. ALUConformGrid, ALUSimplexGrid, and ALUCubeGrid.
+Instead the type of the grid is always of the form
+Dune::ALUGrid< dimgrid, dimworld, eltype, refinetype, communicator > (where communicator has a default value). The values for eltype are cube,simplex and for refinetype the values are conforming, nonconforming defined in the DUNE namespace.
+The GRIDTYPE defines can still be used as before.
+
+The define HAVE_ALUGRID will not work correctly anymore. Since DUNE-ALUGrid is now
+a dune module the correct name for the define is HAVE_DUNE_ALUGRID.
+
+License
+-------
+
+The DUNE-ALUGrid library, headers and test programs are free open-source software,
+licensed under version 2 or later of the GNU General Public License.
+
+See the file [COPYING][5] for full copying permissions.
+
+Installation
+------------
+
+For general installation instructions please see the [DUNE website][2].
+
+For installation of Zoltan we recommend to install the system package, e.g.
+`libtrilinos-zoltan-dev` under Debian or Ubuntu or if not available simple
+use the [build-zoltan.sh][7] script or download the package from the
+[Zoltan][4] page, unpack and configure with the following parameters:
+
+```
+configure CXXFLAGS="-Ofast -DNDEBUG -fPIC" CFLAGS="-Ofast -DNDEBUG -fPIC" --prefix=PATH_TO_INSTALL_ZOLTAN --with-mpi-compilers=yes --enable-shared
+
+make
+make install
+```
+
+[0]: https://gitlab.dune-project.org/extensions/dune-alugrid
+[1]: http://www.dune-project.org
+[2]: http://www.dune-project.org/doc/installation
+[3]: http://journals.ub.uni-heidelberg.de/index.php/ans/article/view/23252
+[4]: https://sandialabs.github.io/Zoltan/
+[5]: https://gitlab.dune-project.org/extensions/dune-alugrid/blob/master/COPYING
+[6]: https://gitlab.dune-project.org/extensions/dune-alugrid/blob/master/doc/dunealugrid.bib
+[7]: https://gitlab.dune-project.org/extensions/dune-alugrid/-/blob/master/scripts/build-zoltan.sh?ref_type=heads
+
+
+git-7b15ca1e4ffecac25290d7253fc7f14fbdd5fdb5
