@@ -1,0 +1,65 @@
+{% extends "dsgov/base.html" %}
+{% load br_components %}
+{% load static %}
+
+{% block content %}
+   <nav class="br-pagination d-none d-sm-flex" aria-label="paginação" data-total="50" data-current="1">
+  <ul>
+    <!-- Botão voltar -->
+    <li>
+      <button class="br-button circle" type="button" data-previous-page="data-previous-page" aria-label="Voltar página">
+        <i class="fas fa-angle-left" aria-hidden="true"></i>
+      </button>
+    </li>
+
+    <!-- Primeiras páginas -->
+    <li><a class="page active" href="javascript:void(0)" aria-label="Página 1">1</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 2">2</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 3">3</a></li>
+
+    <!-- Primeiro ellipsis (páginas 4–20) -->
+    <li class="pagination-ellipsis">
+      <button class="br-button circle" type="button" data-toggle="dropdown" aria-label="Abrir lista de páginas">
+        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+      </button>
+      <div class="br-list" role="menu">
+        <a class="br-item" href="javascript:void(0)" role="menuitem">4</a>
+        <a class="br-item" href="javascript:void(0)" role="menuitem">5</a>
+        ...
+        <a class="br-item" href="javascript:void(0)" role="menuitem">20</a>
+      </div>
+    </li>
+
+    <!-- Algumas páginas intermediárias -->
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 21">21</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 22">22</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 23">23</a></li>
+
+    <!-- Segundo ellipsis (páginas 24–46) -->
+    <li class="pagination-ellipsis">
+      <button class="br-button circle" type="button" data-toggle="dropdown" aria-label="Abrir lista de páginas">
+        <i class="fas fa-ellipsis-h" aria-hidden="true"></i>
+      </button>
+      <div class="br-list" role="menu">
+        <a class="br-item" href="javascript:void(0)" role="menuitem">24</a>
+        <a class="br-item" href="javascript:void(0)" role="menuitem">25</a>
+        ...
+        <a class="br-item" href="javascript:void(0)" role="menuitem">46</a>
+      </div>
+    </li>
+
+    <!-- Últimas páginas -->
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 47">47</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 48">48</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 49">49</a></li>
+    <li><a class="page" href="javascript:void(0)" aria-label="Página 50">50</a></li>
+
+    <!-- Botão avançar -->
+    <li>
+      <button class="br-button circle" type="button" data-next-page="data-next-page" aria-label="Próxima página">
+        <i class="fas fa-angle-right" aria-hidden="true"></i>
+      </button>
+    </li>
+  </ul>
+</nav>
+{% endblock %}
