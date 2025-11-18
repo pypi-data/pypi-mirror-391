@@ -1,0 +1,124 @@
+# -*- mode: yaml; coding: utf-8 -*-
+#
+# Copyright (C) 2023 Benjamin Thomas Schwertfeger
+# All rights reserved.
+# https://github.com/btschwertfeger
+#
+# Workflow to apply pre-commit, build, test and upload the package
+# to the test index of PyPI.
+
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - "**"
+  schedule:
+    - cron: "20 16 * * 0"
+  release:
+    types: [created]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ##    Checks the code logic, style and more
+  ##
+  Pre-Commit:
+    uses: ./.github/workflows/_pre_commit.yaml
+
+  ##  Discover vulnerabilities
+  ##
+  CodeQL:
+    uses: ./.github/workflows/_codeql.yaml
+
+  ##    Builds the package on multiple OS for multiple
+  ##    Python versions
+  ##
+  Build:
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_build.yaml
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+
+  ##    Build the documentation
+  ##
+  Build-Doc:
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_build_doc.yaml
+    with:
+      os: ubuntu-latest
+      python-version: "3.11"
+
+  ##    Run the unit tests for Python 3.8 until 3.11
+  ##
+  Test:
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_test.yaml
+    strategy:
+      # FIXME: fail-fast as soon as the tests are not flaky anymore
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    with:
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.python-version }}
+
+  ##    Generates and uploads the coverage statistics to codecov
+  ##
+  CodeCov:
+    if: |
+      (success() && github.actor == 'btschwertfeger')
+      && (github.event_name == 'push' || github.event_name == 'release')
+    needs: [Pre-Commit]
+    uses: ./.github/workflows/_codecov.yaml
+    with:
+      os: ubuntu-latest
+      python-version: "3.11"
+    secrets: inherit
+
+  ##    Uploads the package to test.pypi.org on master if triggered by
+  ##    a regular commit/push.
+  ##
+  UploadTestPyPI:
+    if: |
+      (
+        success()
+        && github.actor == 'btschwertfeger'
+        && github.ref == 'refs/heads/master'
+      )
+      && (github.event_name == 'push' || github.event_name == 'release')
+    needs:
+      - Build
+      - Build-Doc
+      - Test
+      - CodeQL
+    name: Upload current version to Test PyPI
+    uses: ./.github/workflows/_pypi_test_publish.yaml
+    secrets:
+      API_TOKEN: ${{ secrets.TEST_PYPI_API_TOKEN }}
+
+  ##    Upload the python-kraken-sdk to Production PyPI
+  ##
+  UploadPyPI:
+    if: |
+      success() &&
+      github.actor == 'btschwertfeger' &&
+      github.event_name == 'release'
+    needs:
+      - Build
+      - Build-Doc
+      - Test
+      - CodeQL
+    name: Upload the current release to PyPI
+    uses: ./.github/workflows/_pypi_publish.yaml
+    secrets:
+      API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
