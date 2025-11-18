@@ -1,0 +1,33 @@
+[project]
+name = "phy-std-base-toknzer"
+version = "0.1.1"
+description = "Base tokenizer for phy project extracted from python 3.14 builtin tokenize module"
+authors = [
+    {name = "alfred-du",email = "ihearmywords@hotmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+
+[dependency-groups]
+dev = [
+    "pytest (>=8.4.2,<9.0.0)",
+    "scikit-build-core>=0.11.6",
+]
+
+
+[build-system]
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+cmake.define.Python_EXECUTABLE = "{python_executable}"
+cmake.define.Python3_EXECUTABLE = "{python_executable}"
+
+[tool.pytest.ini_options]
+norecursedirs = []
+
+[tool.pylint]
+ignore = []
+disable = []

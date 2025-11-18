@@ -1,0 +1,12 @@
+services:
+
+  test-build-std-base-toknzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PY_VERSION=${PY_VERSION}
+
+    image: build-std-base-toknzer:${PY_VERSION}
+    volumes:
+      - ./dist:/src/dist

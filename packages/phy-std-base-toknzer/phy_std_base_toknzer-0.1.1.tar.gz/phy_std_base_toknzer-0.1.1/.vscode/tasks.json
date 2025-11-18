@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+    {
+      "label": "uv build",
+      "type": "shell",
+      "command": "uv",
+      "args": ["build"],
+      "problemMatcher": []
+    },
+    {
+      "label": "uv sync",
+      "type": "shell",
+      "command": "uv",
+      "args": ["sync"],
+      "problemMatcher": [],
+      "dependsOn": ["uv build"]
+    }
+  ]
+}
