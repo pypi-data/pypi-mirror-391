@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "demucs-infer"
+version = "4.1.0"
+description = "Music source separation in the waveform domain - Inference-only (PyTorch 2.x)"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+# Note: license-files automatically includes LICENSE by default
+authors = [
+    {name = "Alexandre Défossez", email = "defossez@fb.com"},
+]
+maintainers = [
+    {name = "worzpro Development Team"},
+]
+keywords = ["audio", "music", "source-separation", "demucs", "inference"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# Minimal inference-only dependencies
+dependencies = [
+    "torch>=2.0.0",
+    "torchaudio>=2.0.0",
+    "einops",
+    "julius>=0.2.3",
+    "openunmix",
+    "pyyaml",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# Optional: MP3 encoding support
+mp3 = [
+    "lameenc>=1.2",
+]
+# Optional: Quantized model support
+quantized = [
+    "diffq>=0.2.1",
+]
+# Development dependencies
+dev = [
+    "black",
+    "ruff",
+]
+
+[project.scripts]
+demucs-infer = "demucs_infer.separate:main"
+
+[project.urls]
+Homepage = "https://github.com/openmirlab/demucs-infer"
+Repository = "https://github.com/openmirlab/demucs-infer"
+"Original Demucs" = "https://github.com/facebookresearch/demucs"
+"Bug Reports" = "https://github.com/openmirlab/demucs-infer/issues"
+Changelog = "https://github.com/openmirlab/demucs-infer/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["demucs_infer"]
+
+[tool.hatch.build.targets.sdist]
+packages = ["demucs_infer"]
+
+[tool.hatch.build]
+include = [
+    "demucs_infer/**/*.py",
+    "demucs_infer/**/*.yaml",  # Include YAML config files (remote/*.yaml)
+    "demucs_infer/**/*.yml",   # Include YAML config files
+    "demucs_infer/**/*.txt",   # Include files.txt in remote/
+]
