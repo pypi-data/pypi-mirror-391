@@ -1,0 +1,87 @@
+Metadata-Version: 2.4
+Name: marge3d
+Version: 0.0.2
+Summary: Solver for the Maxey-Riley-Gatignol Equations (MaRGE) in 3D
+Project-URL: Homepage, https://github.com/CompMath-TUHH/MaRGE_3D_solver
+Project-URL: Tracker, https://github.com/CompMath-TUHH/MaRGE_3D_solver/issues
+Maintainer-email: Vamika Rathi <vamika.rathi@tuhh.de>, Finn Sommer <finn.sommer@tuhh.de>
+License: BSD 2-Clause License
+        
+        Copyright (c) 2025, Chair Computational Mathematics TUHH
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: LICENSE
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.10
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: scipy
+Provides-Extra: docs
+Requires-Dist: myst-parser; extra == 'docs'
+Requires-Dist: nbsphinx; extra == 'docs'
+Requires-Dist: pygments>=2.4.1; extra == 'docs'
+Requires-Dist: setuptools>=18.0; extra == 'docs'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: sphinx-autoapi; extra == 'docs'
+Requires-Dist: sphinx-favicon; extra == 'docs'
+Requires-Dist: sphinx-gallery<0.11.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=1.0.0; extra == 'docs'
+Requires-Dist: sphinxcontrib-video; extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: coverage[toml]; extra == 'tests'
+Requires-Dist: flake8; extra == 'tests'
+Requires-Dist: pytest; extra == 'tests'
+Requires-Dist: pytest-cov; extra == 'tests'
+Requires-Dist: pytest-timeout; extra == 'tests'
+Description-Content-Type: text/markdown
+
+# MaRGE3D package
+
+[![Read the Docs](https://img.shields.io/readthedocs/marge-3d-solver?logo=readthedocs)](https://marge-3d-solver.readthedocs.io/)
+[![Repo status](https://www.repostatus.org/badges/latest/active.svg)](https://github.com/CompMath-TUHH/MaRGE_3D_solver)
+[![CI pipeline](https://github.com/CompMath-TUHH/MaRGE_3D_solver/actions/workflows/ci_pipeline.yml/badge.svg)](https://github.com/CompMath-TUHH/MaRGE_3D_solver/actions/workflows/ci_pipeline.yml)
+[![Coverage](https://codecov.io/github/CompMath-TUHH/MaRGE_3D_solver/graph/badge.svg?token=5Q6GS039XF)](https://codecov.io/github/CompMath-TUHH/MaRGE_3D_solver)
+[![PyPI - Package](https://img.shields.io/pypi/v/marge3d?logo=python)](https://pypi.org/project/marge3d)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/marge3d?logo=pypi)](https://pypistats.org/packages/marge3d)
+
+📜 _Solver for Maxey-Riley-Gatignol Equations (MaRGE) in 3D flow based on the method by [Daitche (2013)](https://doi.org/10.1016/j.jcp.2013.07.024). Analytical solution in simple vortex is provided to validate the method._
+
+[![DOI](https://zenodo.org/badge/1090126264.svg)](https://doi.org/10.5281/zenodo.17601798)
+
+## Installation
+
+```bash
+pip install marge3d
+```
+
+## Documentation
+
+The code is currently transformed into a proper Python package that can be referred in a publication.
+Details on the full transformation are given [here ...](./docs/changelog.md)

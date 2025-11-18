@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "marge3d"
+version = "0.0.2"
+description = "Solver for the Maxey-Riley-Gatignol Equations (MaRGE) in 3D"
+dependencies = [
+    "numpy",
+    "scipy",
+    "matplotlib",
+]
+requires-python = ">=3.10"
+maintainers = [
+    {name = "Vamika Rathi", email = "vamika.rathi@tuhh.de"},
+    {name = "Finn Sommer", email = "finn.sommer@tuhh.de"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+
+    "Topic :: Scientific/Engineering :: Mathematics",
+
+    "License :: OSI Approved :: BSD License",
+
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+[project.urls]
+Homepage = "https://github.com/CompMath-TUHH/MaRGE_3D_solver"
+Tracker = "https://github.com/CompMath-TUHH/MaRGE_3D_solver/issues"
+
+[project.optional-dependencies]
+tests = [
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "pytest-timeout",
+    "coverage[toml]",
+]
+docs = [
+    "setuptools >= 18.0",
+    "sphinx",
+    "sphinx-autoapi",
+    "nbsphinx",
+    "pygments >= 2.4.1",
+    "sphinx_rtd_theme >= 1.0.0",
+    "sphinx-gallery < 0.11.0",
+    "sphinxcontrib-video",
+    "myst-parser",
+    "sphinx-favicon"
+]
+
+[tool.coverage.run]
+relative_files = true
+concurrency = ['multiprocessing']
+include = ['*/marge3d/*']
+
+[tool.coverage.report]
+skip_empty = true
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    # Enable the standard pragma
+    'pragma: no cover',
+
+    # Don't complain if tests don't hit defensive assertion code:
+    'raise',
+    'except',
+
+    # Ignore footer of scripts
+    'if __name__ == "__main__":',
+    ]

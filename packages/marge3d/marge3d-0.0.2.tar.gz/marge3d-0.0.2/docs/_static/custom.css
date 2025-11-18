@@ -1,0 +1,113 @@
+.wy-nav-content {
+    padding: 1.618em 3.236em;
+    height: 100%;
+    max-width: 1000px;
+}
+
+p {
+    line-height: 24px;
+    font-size: 16px;
+    margin: 0 0 12px;
+}
+
+.nbinput, .nboutput {
+    margin-bottom: 12px !important;
+}
+
+.nboutput .output_area {
+    font-weight: bold;
+    color: #8a8a8a;
+}
+
+.rst-content {
+h1, h2, ol, ul {
+    margin-bottom: 12px !important;
+    }
+}
+
+blockquote {
+    padding: 5px 5px;
+    margin: 10px 0 12px 0 !important;
+    border-left: 4px solid #dfdfdf;
+    background: #eeeeee;
+    border-radius: 5px;
+}
+blockquote p {
+    margin-bottom: 0;
+}
+blockquote small {
+    display: block;
+    line-height: 19px;
+    color: #999999;
+}
+blockquote small:before {
+    content: '\2014 \00A0';
+}
+blockquote.pull-right {
+    float: right;
+    padding-right: 15px;
+    padding-left: 0;
+    border-right: 5px solid #eeeeee;
+    border-left: 0;
+}
+blockquote.pull-right p,
+blockquote.pull-right small {
+    text-align: right;
+}
+blockquote.pull-right small:before {
+    content: '';
+}
+blockquote.pull-right small:after {
+    content: '\00A0 \2014';
+}
+q:before,
+q:after,
+blockquote:before,
+blockquote:after {
+    content: "";
+}
+
+.rst-content div[class^="highlight"] {
+    margin: 1px 0 16px;
+}
+
+blockquote > div > div[class^="highlight"] {
+    margin: 8px 3px !important;
+}
+
+/* Change the primary color (blue) */
+.rst-content .section > h1,
+.rst-content .section > h2,
+.rst-content .section > h3,
+.rst-content .section > h4,
+.rst-content .section > h5,
+.rst-content .section > h6 {
+    border-bottom-color: #005e73;
+}
+
+/* Change the sidebar and header background */
+.wy-side-nav-search,
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.toctree-l1.current > a {
+    background-color: #00c0d1;
+}
+
+/* Change the link color */
+a {
+    color: #005e73;
+}
+
+/* Change the button color */
+.wy-btn {
+    background-color: #00c0d1;
+    border-color: #005e73;
+}
+
+/* Change the search bar button */
+.wy-side-nav-search input[type="submit"] {
+    background-color: #005e73;
+}
+
+.wy-side-nav-search a {
+    color: #005e73;
+}
