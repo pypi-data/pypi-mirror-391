@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "interval": 0.4,
+    "startTime": 1477063882018.4387,
+    "abi": "x86_64-gcc3",
+    "oscpu": "Intel Mac OS X 10.12",
+    "platform": "Macintosh",
+    "processType": 0,
+    "stackwalk": 1,
+    "debug": false,
+    "version": 27,
+    "importedFrom": "VMProf",
+    "categories": [
+      {
+        "name": "Python",
+        "color": "yellow",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "Memory",
+        "color": "red",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "Native",
+        "color": "lightblue",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "JIT",
+        "color": "purple",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "ASM",
+        "color": "blue",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "JIT(Inlined)",
+        "color": "purple",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "Mixed",
+        "color": "orange",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "Garbage Collection",
+        "color": "green",
+        "subcategories": [
+          "Other"
+        ]
+      },
+      {
+        "name": "Interpreter",
+        "color": "yellow",
+        "subcategories": [
+          "Other"
+        ]
+      }
+    ],
+    "preprocessedProfileVersion": 47,
+    "symbolicated": true,
+    "markerSchema": []
+  },
+  "libs": [],
+  "pages": [],
+  "counters": [],
+  "threads": [
+    {
+      "name": "Thread 0",
+      "isMainThread": false,
+      "processType": "default",
+      "processName": "Parent Process",
+      "processStartupTime": 0,
+      "processShutdownTime": null,
+      "registerTime": 23.841461000000002,
+      "unregisterTime": null,
+      "tid": 12345,
+      "pid": "51580",
+      "markers": {
+        "data": [],
+        "name": [],
+        "startTime": [],
+        "endTime": [],
+        "phase": [],
+        "category": [],
+        "length": 0
+      },
+      "nativeSymbols": {
+        "libIndex": [
+          0,
+          1
+        ],
+        "address": [
+          -1,
+          2
+        ],
+        "name": [
+          0,
+          2
+        ],
+        "functionSize": [
+          null,
+          null
+        ],
+        "length": 2
+      },
+      "frameTable": {
+        "address": [
+          -1,
+          -1,
+          -1
+        ],
+        "inlineDepth": [
+          0,
+          0,
+          0
+        ],
+        "category": [
+          0,
+          6,
+          3
+        ],
+        "subcategory": [
+          null,
+          null,
+          null
+        ],
+        "func": [
+          0,
+          1,
+          2
+        ],
+        "innerWindowID": [
+          0,
+          0,
+          0
+        ],
+        "implementation": [
+          null,
+          null,
+          null
+        ],
+        "nativeSymbol": [
+          0,
+          0,
+          1
+        ],
+        "line": [
+          0,
+          0,
+          0
+        ],
+        "column": [
+          null,
+          null,
+          null
+        ],
+        "length": 3
+      },
+      "funcTable": {
+        "isJS": [
+          true,
+          true,
+          true
+        ],
+        "relevantForJS": [
+          false,
+          false,
+          false
+        ],
+        "name": [
+          0,
+          0,
+          2
+        ],
+        "resource": [
+          0,
+          0,
+          1
+        ],
+        "fileName": [
+          1,
+          1,
+          1
+        ],
+        "lineNumber": [
+          0,
+          0,
+          0
+        ],
+        "columnNumber": [
+          null,
+          null,
+          null
+        ],
+        "length": 3
+      },
+      "resourceTable": {
+        "lib": [
+          0,
+          1
+        ],
+        "name": [
+          0,
+          2
+        ],
+        "host": [
+          null,
+          null
+        ],
+        "type": [
+          1,
+          1
+        ],
+        "length": 2
+      },
+      "stackTable": {
+        "frame": [
+          1,
+          2
+        ],
+        "category": [
+          6,
+          5
+        ],
+        "subcategory": [
+          null,
+          null
+        ],
+        "prefix": [
+          null,
+          0
+        ],
+        "length": 2
+      },
+      "samples": {
+        "stack": [
+          1
+        ],
+        "time": [
+          0.0
+        ],
+        "eventDelay": [
+          7
+        ],
+        "weightType": "samples",
+        "weight": null,
+        "length": 1
+      },
+      "stringArray": [
+        "function_a",
+        "dummyfile.py",
+        "function_b"
+      ]
+    }
+  ]
+}
