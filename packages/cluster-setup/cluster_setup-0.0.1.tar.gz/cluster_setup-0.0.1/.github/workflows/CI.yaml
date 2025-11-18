@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: '**/requirements**.txt'
+
+      - name: Install pip packages
+        run: |
+          pip install uv
+          uv venv
+          uv pip install --system -r requirements/requirements-${{ matrix.python-version }}.txt
+          uv pip install --system --no-deps -e .
+
+      - name: Run tests with pytest (w/ coverage)
+        run: pytest -vv -n auto --cov=src/cluster_setup --cov-branch --junitxml=junit.xml -o junit_family=legacy --cov-report=term-missing --cov-report=xml --pyargs cluster_setup
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install pip packages
+        run: |
+          pip install uv
+
+      - name: Run pre-commit hooks
+        run: uvx pre-commit run --all-files
+
+  build:
+    name: Build package
+    needs: [test, code-quality]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install Hatch
+        run: pipx install hatch
+
+      - name: Build dist
+        run: hatch build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: distribution
+          path: dist
+
+  publish:
+    name: Upload release to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    environment:
+      name: pypi
+      url: https://pypi.org/p/cluster-setup
+    permissions:
+      id-token: write
+    steps:
+    - name: Download specific artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: distribution
+        path: dist
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  test-publish:
+    name: Upload release to Test PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/cluster-setup
+    permissions:
+      id-token: write
+    steps:
+    - name: Download specific artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: distribution
+        path: dist
+
+    - name: Publish package distributions to Test PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/

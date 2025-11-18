@@ -1,0 +1,16 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+
+This project implements a version of
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html) described
+[here]((https://iscinumpy.dev/post/bound-version-constraints/#semver)) called
+"Realistic" Semantic Versioning.
+
+## [0.0.1] - 2025-11-13
+
+* First release
+
+[0.0.1]: https://github.com/ugognw/cluster-setup/releases/tag/hatch-v0.0.1

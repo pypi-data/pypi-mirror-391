@@ -1,0 +1,199 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cluster-setup"
+dynamic = ["version"]
+description = 'Set up a remote cluster for computational chemistry'
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "Ugochukwu Nwosu", email = "ugognw@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+  "Jinja2>=3.1.6",
+  'tomli >= 1.1.0 ; python_version < "3.11"'
+]
+
+[project.optional-dependencies]
+dev = [
+    "bump-my-version>=1.2.0",
+    "pre-commit>=2.20.0",
+    "mypy>=1.17.0",
+    "ruff>=0.12.3",
+]
+test = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.0.0",
+    "pytest-datadir>=1.7.2",
+    "pytest-xdist>=3.8.0",
+]
+
+[project.scripts]
+cluster-setup = "cluster_setup.main:run"
+
+[project.urls]
+Documentation = "https://github.com/ugognw/cluster-setup#readme"
+Issues = "https://github.com/ugognw/cluster-setup/issues"
+Source = "https://github.com/ugognw/cluster-setup"
+
+[tool.hatch.envs.default]
+features = ["dev", "test"]
+python = "3.11"
+
+[tool.hatch.envs.default.scripts]
+test = "pytest -vvn auto {args:--pyargs cluster_setup}"
+test-cov = "pytest -vvn auto --cov=src/cluster_setup --cov-report=html --cov-report=lcov --cov-report=xml --cov-report=term-missing {args:--pyargs cluster_setup}"
+
+[tool.hatch.version]
+path = "src/cluster_setup/__about__.py"
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "src/cluster_setup/__about__.py",
+  "__main__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+show_missing = true
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--import-mode=importlib",
+  "-r A",
+  "--strict-markers",
+  "--tb=short",
+]
+filterwarnings =[
+  "error"
+]
+markers = [
+  "heavy: mark a test as heavy/requiring a lot of resources (deselect with '-m \"not heavy\"')",
+  "recursive: tests which run the test suite (deselect with '-m' \"not recursive\"')",
+]
+python_files = [
+  "test_*.py",
+  "*_test.py",
+  "tests.py"
+]
+testpaths = ["src/cluster_setup/tests"]
+
+[tool.ruff]
+line-length = 79
+src = ["src", "tests"]
+target-version = "py311"
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 79
+
+[tool.ruff.lint]
+ignore = [
+    "D203", # pydocstyle one-blank-line-before-class
+    "D213", # pydocstyle multi-line-summary-second-line
+    "D300", # pydocstyle triple-single-quotes
+    "D406", # pydocstyle new-line-after-section-name
+    "D407", # pydocstyle dashed-underline-after-section
+    "E111", # pycodestyle indentation-with-invalid-multiple
+    "E114", # pycodestyle indentation-with-invalid-multiple-comment
+    "E117", # pycodestyle over-indented
+    "E501", # pycodestyle line-too-long
+    "PLR0913", # pylint too-many-arguments
+    "Q000", # flake8-quotes bad-quotes-inline-string
+    "Q001", # flake8-quotes bad-quotes-multiline-string
+    "Q002", # flake8-quotes bad-quotes-docstring
+    "Q003", # flake8-quotes avoidable-escaped-quote
+    "RUF001", # ruff-specific rules ambiguous-unicode-character-string
+    "S101", # flake8-bandit assert
+    "S308", # flake8-bandit suspicious-mark-safe-usage
+    "UP036", # pyupgrade outdated-version-block
+    "W191", # pycodestyle tab-indentation
+]
+select = [
+    "ARG", # flake8-unused-arguments
+    "A", # flake8-builtins
+    "B", # flake8-bugbear
+    "BLE", # flake8-blind-except
+    "C4", # flake8-comprehensions
+    "C90", # mccabe complexity
+    "COM818", # flake8-commas trailing-comma-on-bare-tuple
+    "D", # pydocstyle
+    "DTZ", # flake8-datetimez
+    "E", # pycodestyle errors
+    "EM", # flake8-errmsg
+    "EXE", # flake8-executable
+    "F", # pyflakes
+    "I", # isort
+    "INT", # flake8-gettext
+    "N", # pep8-naming
+    "NPY", # NumPy-specific rules
+    "PIE", # flake8-pie
+    "PL", # pylint
+    "PT", # flake8-pytest-style
+    "PTH", # flake8-use-pathlib
+    "Q", # flake8-quotes
+    "RSE", # flake8-raise
+    "RUF", # ruff-specific rules
+    "S", # flake8-bandit
+    "SIM", # flake8-simplify
+    "TC", # flake8-type-checking
+    "TID", # flake8-tidy-imports
+    "UP", # pyupgrade
+    "W", # pycodestyle warnings
+    "YTT", # flake8-2020
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "double"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.isort]
+forced-separate = ["conftest"]
+force-single-line = true
+force-sort-within-sections = true
+split-on-trailing-comma = false
+known-first-party = ["cluster_setup"]
+
+[tool.ruff.lint.per-file-ignores]
+"noxfile.py" = ["EXE002", "D"]
+"__main__.py" = ["D100"]
+"__about__.py" = ["D100"]
+"*/tests/**" = ["D", "PLR2004"]
+"conf.py" = [
+    "A001",
+    "ARG001",
+    "D",
+    "PLR2004"
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
