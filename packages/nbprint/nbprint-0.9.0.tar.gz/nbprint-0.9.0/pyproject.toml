@@ -1,0 +1,272 @@
+[build-system]
+requires = ["hatchling", "hatch-js"]
+build-backend="hatchling.build"
+
+[project]
+name = "nbprint"
+version = "0.9.0"
+authors = [{name = "the nbprint authors", email = "t.paine154@gmail.com"}]
+description = "A framework for customizing NBConvert templates and building reports"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+keywords = [
+    "Jupyter",
+    "JupyterLab",
+    "Notebook",
+    "Notebooks",
+    "Report",
+    "Reports",
+    "Reporting",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: Apache Software License",
+    "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+dependencies = [
+    "ccflow>=0.4.0",
+    "ccflow-email",
+    "dominate",
+    "hydra-core",
+    "ipywidgets",
+    "lerna>=1.1.0",
+    "nbconvert[webpdf]>=7.11.0",
+    "nbformat",
+    "notebook",
+    "omegaconf",
+    "pydantic>=2,<3",
+    "pydantic_extra_types",
+    "strenum",
+    "typer",
+    "typing-extensions",
+]
+
+[project.optional-dependencies]
+develop = [
+    "build",
+    "bump-my-version",
+    "check-manifest",
+    "codespell>=2.4,<2.5",
+    "hatch-js",
+    "hatchling",
+    "mdformat>=0.7.22,<1.1",
+    "mdformat-tables>=1",
+    "pytest",
+    "pytest-cov",
+    "ruff>=0.9,<0.15",
+    "twine",
+    "wheel",
+    # notebook deps
+    "great_tables",
+    "matplotlib",
+    "nbprint-example-plugin",
+    "pandas",
+    "perspective-python>=3",
+    "plotly",
+    "pyarrow",
+    "seaborn",
+    "superstore",
+]
+
+[project.entry-points."hydra.lernaplugins"]
+nbprint = "pkg:nbprint.config.hydra"
+
+[project.scripts]
+nbprint = "nbprint.cli:main"
+nbprint-cc = "nbprint.cli:hydra"
+nbprint-cc-explain = "nbprint.cli:hydra_explain"
+
+[project.urls]
+Repository = "https://github.com/nbprint/nbprint"
+Homepage = "https://github.com/nbprint/nbprint"
+
+[tool.bumpversion]
+current_version = "0.9.0"
+commit = true
+tag = false
+commit_args = "-s"
+
+[[tool.bumpversion.files]]
+filename = "nbprint/__init__.py"
+search = '__version__ = "{current_version}"'
+replace = '__version__ = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "js/package.json"
+search = '"version": "{current_version}"'
+replace = '"version": "{new_version}"'
+
+[tool.check-manifest]
+ignore = [
+    ".copier-answers.yaml",
+    "js/pnpm-lock.yaml",
+    "Makefile",
+    ".vscode/*",
+    "nbprint/extension/**/*",
+    "docs/**/*",
+    "js/dist/**/*",
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "nbprint/tests/integration/",
+]
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]
+ignore_errors = true
+fail_under = 50
+
+[tool.hatch.build]
+artifacts = [
+    "nbprint/templates",
+    "nbprint/extension",
+]
+
+[tool.hatch.build.sources]
+src = "/"
+
+[tool.hatch.build.targets.sdist]
+packages = [
+    "nbprint",
+    "js",
+]
+include = [
+    "LICENSE",
+    "README.md",
+]
+exclude = [
+    "/.github",
+    "/.gitignore",
+    "/dist",
+    "/examples",
+    "/js/dist",
+    "/js/node_modules",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["nbprint"]
+exclude = ["/js"]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"nbprint/templates/nbprint" = "share/jupyter/nbconvert/templates/nbprint"
+"nbprint/extension" = "share/jupyter/labextensions/nbprint"
+"nbprint/voila" = "share/jupyter/voila/templates/nbprint_voila"
+
+[tool.hatch.build.hooks.hatch-js]
+path = "js"
+build_cmd = "build"
+tool = "pnpm"
+targets = [
+    "nbprint/templates/nbprint/static/nbprint.css",
+    "nbprint/extension/index.js",
+]
+
+[tool.pytest.ini_options]
+addopts = ["-vvv", "--junitxml=junit.xml"]
+testpaths = "nbprint/tests"
+
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    # TODO:remove first
+    "D101",
+    "D102",
+    "D103",
+    "D105",
+    "D107",
+    "D205",
+    "D400",
+    "D415",
+    "D417",
+    "PLR0913",
+    "PTH100",
+    "PTH110",
+    "PTH118",
+    "PTH120",
+    "PTH123",
+    "SLF001",
+    # TODO:remove later
+    "ANN001",
+    "D100",
+    "D104",
+    "ERA001",
+    "FA100",
+    "PT007",
+    "S101",
+    "T203",
+    "UP006",
+    "UP035",
+
+    "A005", # module shadowing standard library
+    "ANN002", # missing-type-args - Missing type annotation for *{name}
+    "ANN003", # missing-type-kwargs - Missing type annotation for **{name}
+    "B008",  # function-call-in-default-argument
+    "COM812", # missing-trailing-comma - Trailing comma missing
+    "D203", # one-blank-line-before-class - 1 blank line required before class docstring
+    "D213", # multi-line-summary-second-line - Multi-line docstring summary should start at the second line
+    "D401", # non-imperative-mood - First line of docstring should be in imperative mood: "{first_line}"
+    "DTZ",  # flake8-datetimez
+    "FBT", # flake8-boolean-trap
+    "FIX002", # line-contains-todo - Line contains TODO, consider resolving the issue
+    "ISC001", # single-line-implicit-string-concatenation - Implicitly concatenated string literals on one line
+    "PLC0415", # `import` should be at top-level of a file
+    "TC001", # typing-only-first-party-import Move application import {} into a type-checking block
+    "TC002", # typing-only-third-party-import Move third-party import {} into a type-checking block
+    "TD002", # missing-todo-author - Missing author in TODO; try: # TODO(<author_name>): ... or # TODO @<author_name>: ...
+    "TD003", # missing-todo-link - Missing issue link on the line following this TODO
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+default-section = "third-party"
+known-first-party = ["nbprint"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"nbprint/tests/*" = [
+    "ANN",
+    "D",
+    "S101",
+    "PLR2004",
+]
+"nbprint/example/*" = [
+    "ANN",
+    "ARG",
+    "D",
+    "E501",
+    "ERA",
+    "S101",
+]

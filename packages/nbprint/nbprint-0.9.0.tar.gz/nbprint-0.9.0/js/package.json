@@ -1,0 +1,41 @@
+{
+  "name": "nbprint",
+  "version": "0.9.0",
+  "description": "A framework for customizing NBConvert templates and building reports",
+  "repository": "git@github.com:nbprint/nbprint.git",
+  "author": "Tim Paine <3105306+timkpaine@users.noreply.github.com>",
+  "license": "Apache-2.0",
+  "files": [
+    "dist/**/*",
+    "index.d.ts"
+  ],
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "node build.mjs",
+    "clean": "rm -rf dist playwright-report ../nbprint/extension",
+    "lint": "prettier --check \"src/**/*.{js,ts,jsx,tsx,less,css}\" \"tests/**/*\" \"*.mjs\" \"*.json\"",
+    "fix": "prettier  --write \"src/**/*.{js,ts,jsx,tsx,less,css}\" \"tests/**/*\" \"*.mjs\" \"*.json\"",
+    "preinstall": "npx only-allow pnpm",
+    "prepack": "pnpm run build",
+    "start:tests": "http-server -p 3000 ",
+    "start:examples": "http-server -p 3000 -o examples/",
+    "test": "TZ=UTC playwright test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.0.0",
+    "pagedjs": "^0.4.3"
+  },
+  "devDependencies": {
+    "@finos/perspective-esbuild-plugin": "^3.2.1",
+    "@playwright/test": "^1.56.1",
+    "@prospective.co/procss": "^0.1.17",
+    "cpy": "^12.1.0",
+    "esbuild": "^0.25.11",
+    "esbuild-plugin-less": "^1.3.28",
+    "http-server": "^14.1.1",
+    "prettier": "^3.6.2"
+  }
+}
