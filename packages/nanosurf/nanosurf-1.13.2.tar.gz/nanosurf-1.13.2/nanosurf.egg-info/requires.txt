@@ -1,0 +1,16 @@
+numpy
+scipy
+h5py>=3.11
+psutil
+debugpy
+matplotlib
+notebook
+pyside6<6.10,>=6.9.2
+pyqtgraph>=0.13.7
+
+[:platform_system == "Linux"]
+smbus3
+
+[:platform_system == "Windows"]
+pywin32>=306
+lupa>=2.1
