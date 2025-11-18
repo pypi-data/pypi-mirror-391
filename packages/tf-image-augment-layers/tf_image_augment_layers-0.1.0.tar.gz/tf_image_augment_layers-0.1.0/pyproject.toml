@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tf-image-augment-layers"
+version = "0.1.0"
+description = "TensorFlow augmentation layers including RGBA background compositing, random color temperature, and color cast."
+readme = "README.md"
+authors = [
+    {name = "Nao", email = "ozawa_naomitsu@kurume-u.ac.jp"},
+]
+license = { file = "LICENSE" }
+keywords = ["tensorflow", "augmentation", "image-processing", "keras"]
+requires-python = ">=3.8"
+
+dependencies = [
+    "tensorflow>=2.9",
+]
+
+[project.urls]
+Homepage = "https://https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow"
+Source = "https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow"

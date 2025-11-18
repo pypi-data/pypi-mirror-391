@@ -1,0 +1,38 @@
+Metadata-Version: 2.4
+Name: tf-image-augment-layers
+Version: 0.1.0
+Summary: TensorFlow augmentation layers including RGBA background compositing, random color temperature, and color cast.
+Author-email: Nao <ozawa_naomitsu@kurume-u.ac.jp>
+License: MIT License
+        
+        Copyright (c) 2025 naomitsu-ozawa
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow
+Project-URL: Source, https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow
+Keywords: tensorflow,augmentation,image-processing,keras
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: tensorflow>=2.9
+Dynamic: license-file
+
+# WB_augmentor_for_tensorflow
+TensorFlow/Keras 向けの高機能画像拡張レイヤー集。RGBA 対応の背景置換、色温度変換、色被り生成など、学習データの多様性を大幅に向上させる独自処理を提供。すべて TensorFlow グラフ上で動作し、高速かつ GPU での前処理に最適化された拡張ライブラリ。
