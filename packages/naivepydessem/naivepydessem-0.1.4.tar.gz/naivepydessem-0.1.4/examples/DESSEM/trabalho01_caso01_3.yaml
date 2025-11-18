@@ -1,0 +1,71 @@
+# ==========================================
+# Master Data File — Trabalho 1
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: horas
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Vazão: m3/s
+# - Volume: hm3
+# - Cabeça líquida (h): m
+
+meta:
+  name: "UFPR-EELT7030-Trabalho1-Caso1.3"
+  horizon: 24                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (h)
+  Cdef: 1000.0                # penalidade de déficit [$ / MWh]
+  c_pmax: 10_000               # potência máxima do déficit
+  Solver: cplex_direct
+  Solver_Options:
+    mip_solver: glpk
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 3600
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: [700, 750, 850, 950, 1000, 1100, 1150, 1200, 1250, 1400, 1500, 1400, 1400, 1300, 1400, 1600, 1700, 1900, 2000, 1800, 1300, 1100, 900, 800]
+
+# =========================
+# HYDRO (HydraulicData)
+# =========================
+hydro:
+  zeta: 0.00981               # 9.81/1000 (MW por (m3/s)*m)
+  zeta_vol: 0.0036            # 3600/1e6 (hm3 por (m3/s)*h)
+  units:                      # Dict[str, HydraulicUnit]
+    UHE_1:                    # convenção: {GER}_{UNIT}
+      Qmin:  0.0              # m3/s
+      Qmax:  600.0            # m3/s
+      Vmin:  1000.0           # hm3
+      Vmax:  3000.0           # hm3
+      Vmeta: 2000.0           # hm3 (meta terminal)
+      Vini:  2500.0           # hm3 (inicial)
+      afluencia:  [200, 210, 220, 230, 240, 250, 260, 270, 280, 290, 300, 310, 320, 330, 350, 250, 240, 230, 220, 210, 200, 190, 180, 170]
+      upstreams: []           # ex.: ["UHE_0"] se houver
+      # a, b, rho, losses só para modos 'specific'/'exact'
+      a:      [4.012e+2, 5.010e-2, -1.573e-5, 3.297e-9, -2.883e-13]           # coef. polinômio h_mont(V) (ex.: [c0, c1, ...])
+      b:      [3.719e+2, 1.932e-3, -8.530e-8, 2.376e-12, -2.616e-17]          # coef. polinômio h_jus(Q+S)
+      rho:    [6.895e-2, 3.007e-3, 5.559e-3, 5.840e-6, -4.637e-6, -3.636e-5]  # coef. colina (6 coeficientes) se usar 'exact'
+      losses: [0.0, 0.0, 1.375e-5]                                            # coef. polinômio h_perdas(Q)
+      pe:     0.92             # produtividade específica (MW/(m3/s))
+      p:      0.9              # produtividade global p (para 'constant'/'simplified')
+      mode:   "simplified"     # {"constant","specific","exact","simplified"}
+      compute_total_inflow: true
+    UHE_2:                    # convenção: {GER}_{UNIT} 
+      Qmin:  0.0              # m3/s
+      Qmax:  500.0            # m3/s
+      Vmin:  2000.0           # hm3
+      Vmax:  6000.0           # hm3
+      Vmeta: 4000.0           # hm3 (meta terminal)
+      Vini:  5000.0           # hm3 (inicial)
+      afluencia:  [500, 480, 460, 440, 420, 400, 380, 360, 340, 320, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500, 510, 520, 450]
+      upstreams: ['UHE_1']    # ex.: ["UHE_0"] se houver
+      # a, b, rho, losses só para modos 'specific'/'exact'
+      a:      [3.352e+2, 6.780e-3]                                            # coef. polinômio h_mont(V) (ex.: [c0, c1, ...])
+      b:      [2.635e+2, 9.145e-4, -6.713e-9]                                 # coef. polinômio h_jus(Q+S)
+      rho:    [2.449e-1, 2.886e-3, 6.657e-3, 1.867e-5, -9.176e-6, -5.735e-5]  # coef. colina (6 coeficientes) se usar 'exact'
+      losses: [0.0, 0.0, 1.939e-5]   # coef. polinômio h_perdas(Q)
+      pe:     0.92                   # produtividade específica (MW/(m3/s))
+      p:      0.9                    # produtividade global p (para 'constant'/'simplified')
+      mode:   "simplified"           # {"constant","specific","exact","simplified"}
+      compute_total_inflow: true

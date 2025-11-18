@@ -1,0 +1,215 @@
+# ==========================================
+# Master Data File — Trabalho 1, Caso 2
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: horas
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Vazão: m3/s
+# - Volume: hm3
+# - Cabeça líquida (h): m
+
+meta:
+  name: "UFPR-EELT7030-Trabalho1-Caso2"
+  horizon: 24                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (h)
+  Cdef: 1000.0                # penalidade de déficit [$ / MWh]
+  c_pmax: 10_000               # potência máxima do déficit
+  Solver: scip
+  Solver_Options:
+    mip_solver: cbc
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 3600
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: [700, 750, 850, 950, 1000, 1100, 1150, 1200, 1250, 1400, 1500, 1400, 1400, 1300, 1400, 1600, 1700, 1900, 2000, 1800, 1300, 1100, 900, 800]
+
+# =========================
+# THERMAL (ThermalData)
+# =========================
+thermal:
+  units:                    # Dict[str, ThermalUnit]
+    UT_1:                   # convenção {GER}_{UNIT}
+      Pmin: 150             # potência mínima quando ligado
+      Pmax: 455             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    1000            # custo fixo [$ / h]
+      b:    16.19           # custo linear [$ / MWh]
+      c:    0.00048         # custo quadrático [$ / (MWh)^2]
+      SC:   4500            # start-up cost [$]
+      t_up:   8             # min up-time (períodos)
+      t_down: 8             # min down-time
+      init_status_h: 8      # estado inicial
+      u0:    1              # estado inicial
+      p0:    405.0          # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_2:                   # convenção {GER}_{UNIT}
+      Pmin: 150             # potência mínima quando ligado
+      Pmax: 455             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    970             # custo fixo [$ / h]
+      b:    17.26           # custo linear [$ / MWh]
+      c:    0.00031         # custo quadrático [$ / (MWh)^2]
+      SC:   5000            # start-up cost [$]
+      t_up:   8             # min up-time (períodos)
+      t_down: 8             # min down-time
+      init_status_h: 8      # estado inicial
+      u0:    1              # estado inicial
+      p0:    295.0          # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_3:                   # convenção {GER}_{UNIT}
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 130             # potência máxima quando ligado      
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    700             # custo fixo [$ / h]
+      b:    16.60           # custo linear [$ / MWh]
+      c:    0.002           # custo quadrático [$ / (MWh)^2]
+      SC:   550             # start-up cost [$]
+      t_up:   5             # min up-time (períodos)
+      t_down: 5             # min down-time
+      init_status_h: -5     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_4:                   # convenção {GER}_{UNIT}
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 130             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    680             # custo fixo [$ / h]
+      b:    16.50           # custo linear [$ / MWh]
+      c:    0.00211         # custo quadrático [$ / (MWh)^2]
+      SC:   560             # start-up cost [$]
+      t_up:   5             # min up-time (períodos)
+      t_down: 5             # min down-time
+      init_status_h: -5     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_5:                   # convenção {GER}_{UNIT}
+      Pmin: 25              # potência mínima quando ligado
+      Pmax: 162             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    450             # custo fixo [$ / h]
+      b:    19.7            # custo linear [$ / MWh]
+      c:    0.00398         # custo quadrático [$ / (MWh)^2]
+      SC:   900             # start-up cost [$]
+      t_up:   6             # min up-time (períodos)
+      t_down: 6             # min down-time
+      init_status_h: -6     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_6:                   # convenção {GER}_{UNIT}
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 80              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    370             # custo fixo [$ / h]
+      b:    22.26           # custo linear [$ / MWh]
+      c:    0.00712         # custo quadrático [$ / (MWh)^2]
+      SC:   170             # start-up cost [$]
+      t_up:   3             # min up-time (períodos)
+      t_down: 3             # min down-time
+      init_status_h: -3     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_7:                   # convenção {GER}_{UNIT}
+      Pmin: 25              # potência mínima quando ligado
+      Pmax: 85              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    480             # custo fixo [$ / h]
+      b:    27.74           # custo linear [$ / MWh]
+      c:    0.00079         # custo quadrático [$ / (MWh)^2]
+      SC:   260             # start-up cost [$]
+      t_up:   3             # min up-time (períodos)
+      t_down: 3             # min down-time
+      init_status_h: -3     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_8:                   # convenção {GER}_{UNIT}
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    660             # custo fixo [$ / h]
+      b:    25.92           # custo linear [$ / MWh]
+      c:    0.00413         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_9:                   # convenção {GER}_{UNIT}
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    665             # custo fixo [$ / h]
+      b:    27.27           # custo linear [$ / MWh]
+      c:    0.00222         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_10:                  # convenção {GER}_{UNIT}
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    670             # custo fixo [$ / h]
+      b:    27.79           # custo linear [$ / MWh]
+      c:    0.00173         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+    # (opcional) requisito de reserva por período
+  # Rreq: None
+  has_history: false        # suporte aos dados da última hora (se houver)

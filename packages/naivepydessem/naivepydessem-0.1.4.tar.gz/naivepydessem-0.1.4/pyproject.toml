@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "naivepydessem"
+version = "0.1.4"
+description = "A modular and pedagogical framework for power system operation and expansion planning using Pyomo (DESSEM, DECOMP, MDI-like solvers)"
+readme = "README.md"
+license = { text = "GPL-3.0" }
+requires-python = ">=3.9"
+
+authors = [
+    { name = "Augusto Mathias Adams", email = "augusto.adams@ufpr.br" }
+]
+
+keywords = [
+    "pyomo",
+    "energy-planning",
+    "hydrothermal",
+    "power-systems",
+    "optimization",
+    "decomp",
+    "dessem",
+    "mdi"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research"
+]
+
+dependencies = [
+  "colorama>=0.4.6",
+  "matplotlib>=3.10.5",
+  "numpy>=2.2.6",
+  "scipy>=1.15.3",
+  "pandas>=2.3.2",
+  "pyomo>=6.9.3",
+  "PyYAML>=6.0.2"
+]
+
+[project.optional-dependencies]
+
+docs = ["sphinx>=7.2", "myst-parser>=2.0"]
+
+solvers = [
+  "highspy>=1.11.0",
+  "gurobipy>=12.0.3",
+  "glpk>=0.4.8",
+  "cplex>=22.1.2.0",
+  "cyipopt>=1.6.1",
+  "docplex>=2.30.251"
+]
+
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.5.0",         # Linter moderno (substitui flake8)
+    "black>=24.10.0",
+    "pre-commit>=3.8.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/superflanker/NaivePyDESSEM"
+Repository = "https://github.com/superflanker/NaivePyDESSEM"
+Documentation = "https://superflanker.github.io/NaivePyDESSEM/"
+Issues = "https://github.com/superflanker/NaivePyDESSEM/issues"
+
+[project.scripts]
+pydessem-solve = "NaivePyDESSEM.cli.cli:main"
+pydessem-plot = "NaivePyDESSEM.cli.plot_cli:main"
+pydecomp-solve = "NaivePyDECOMP.cli.cli:main"
+pydecomp-plot = "NaivePyDECOMP.cli.plot_cli:main"
+pydecomp-pddd-solve = "NaivePyDECOMP.cli.pddd_cli:main"
+mdi-plot = "MDI.cli.plot_cli:main"
+mdi-solve = "MDI.cli.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

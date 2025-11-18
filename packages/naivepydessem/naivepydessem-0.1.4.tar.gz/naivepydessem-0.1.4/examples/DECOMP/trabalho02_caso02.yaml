@@ -1,0 +1,90 @@
+# ==========================================
+# Master Data File — Trabalho 2
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: meses
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Volume: hm3
+
+meta:
+  name: "UFPR-EELT7030-Trabalho2-Caso2"
+  horizon: 12                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (Meses)
+  Cdef: 500.0                 # penalidade de déficit [$ / MWh]
+  c_pmax: 10_000               # potência máxima do déficit
+  Solver: cbc
+  Solver_Options:
+    mip_solver: glpk
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 3600
+
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: [100, 120, 150, 100, 120, 150, 100, 120, 150, 100, 120, 150]
+
+# =========================
+# HYDRO (HydraulicData)
+# =========================
+hydro:
+  units:                      # Dict[str, HydraulicUnit]
+    UHE_1:                    # convenção: {GER}_{UNIT}
+      Qmin: 0.0               # hm3
+      Qmax:  60.0             # hm3
+      Vmin:  20.0             # hm3
+      Vmax:  100.0            # hm3
+      Vini:  100.0            # hm3 (inicial)
+      afluencia:  [16, 14, 11, 
+                   16, 14, 11, 
+                   16, 14, 11, 
+                   16, 14, 11]
+      upstreams: []           # ex.: ["UHE_0"] se houver
+      p:      0.95            # produtividade global p (para 'constant'/'simplified')
+      compute_total_inflow: true
+    UHE_2:                    # convenção: {GER}_{UNIT} 
+      Qmin: 0.0               # hm3
+      Qmax:  80.0             # hm3
+      Vmin:  40.0             # hm3
+      Vmax:  200.0            # hm3
+      Vini:  130.0            # hm3 (inicial)
+      afluencia:  [15, 12, 10, 
+                   15, 12, 10, 
+                   15, 12, 10, 
+                   15, 12, 10]
+      upstreams: []            # ex.: ["UHE_0"] se houver
+      p:      0.90             # produtividade global p (para 'constant'/'simplified')
+      compute_total_inflow: true
+
+
+# =========================
+# THERMAL (ThermalData)
+# =========================
+thermal:
+  units:                    # Dict[str, ThermalUnit]
+    UT_1:                   # convenção {GER}_{UNIT}
+      Gmin: 0               # potência mínima quando ligado
+      Gmax: 30              # potência máxima quando ligado
+      Cost: 10              # Custo médio de operação
+    UT_2:                   # convenção {GER}_{UNIT}
+      Gmin: 0               # potência mínima quando ligado
+      Gmax: 20              # potência máxima quando ligado
+      Cost: 25              # Custo médio de operação
+
+
+# =========================
+# RENEWABLE (RenewableData)
+# =========================
+renewable:
+  units:                     # Dict[str, RenewableUnit]
+    EOL_1:                   # convenção {GER}_{UNIT}
+      gbar: [30, 25, 40,
+             30, 25, 40,
+             30, 25, 40,
+             25, 25, 40]
+    SOL_1:
+      gbar: [25, 20, 30,
+             25, 10, 30,
+             25, 10, 30,
+             10, 10, 30]

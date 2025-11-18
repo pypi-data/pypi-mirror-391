@@ -1,0 +1,347 @@
+# ==========================================
+# Master Data File — Complete System
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: horas
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Vazão: m3/s
+# - Volume: hm3
+# - Cabeça líquida (h): m
+
+meta:
+  name: "UFPR-EELT7030-TRANSMISSION-DESSEM"
+  horizon: 24                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (h)
+  Cdef: 1000.0                # penalidade de déficit [$ / MWh]
+  c_pmax: 10_000              # potência máxima do déficit
+  p_base: 1000                # potência base (cálculo em p.u)
+  Solver: mindtpy
+  Solver_Options:
+    mip_solver: cbc
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 300
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: [700, 750, 850, 950, 1000, 1100, 1150, 1200, 
+           1250, 1400, 1500, 1400, 1400, 1300, 1400, 1600, 
+           1700, 1900, 2000, 1800, 1300, 1100, 900, 800]
+
+# =========================
+# HYDRO (HydraulicData)
+# =========================
+hydro:
+  zeta: 0.00981               # 9.81/1000 (MW por (m3/s)*m)
+  zeta_vol: 0.0036            # 3600/1e6 (hm3 por (m3/s)*h)
+  units:                      # Dict[str, HydraulicUnit]
+    UHE_1:                    # convenção: {GER}_{UNIT}
+      bar:   "BAR_1"          # Barra conectada
+      Qmin:  0.0              # m3/s
+      Qmax:  600.0            # m3/s
+      Vmin:  1000.0           # hm3
+      Vmax:  3000.0           # hm3
+      Vmeta: 2000.0           # hm3 (meta terminal)
+      Vini:  2500.0           # hm3 (inicial)
+      afluencia:  [200, 210, 220, 230, 240, 250, 260, 270, 
+                   280, 290, 300, 310, 320, 330, 350, 250, 
+                   240, 230, 220, 210, 200, 190, 180, 170]
+      upstreams: []           # ex.: ["UHE_0"] se houver
+      # a, b, rho, losses só para modos 'specific'/'exact'
+      a:      [4.012e+2, 5.010e-2, -1.573e-5, 3.297e-9, -2.883e-13]           # coef. polinômio h_mont(V) (ex.: [c0, c1, ...])
+      b:      [3.719e+2, 1.932e-3, -8.530e-8, 2.376e-12, -2.616e-17]          # coef. polinômio h_jus(Q+S)
+      rho:    [6.895e-2, 3.007e-3, 5.559e-3, 5.840e-6, -4.637e-6, -3.636e-5]  # coef. colina (6 coeficientes) se usar 'exact'
+      losses: [0.0, 0.0, 1.375e-5]                                            # coef. polinômio h_perdas(Q)
+      pe:     0.92             # produtividade específica (MW/(m3/s))
+      p:      0.92             # produtividade global p (para 'constant'/'simplified')
+      mode:   "exact"          # {"constant","specific","exact","simplified"}
+      compute_total_inflow: true
+    UHE_2:                    # convenção: {GER}_{UNIT} 
+      bar:   "BAR_1"          # Barra conectada
+      Qmin:  0.0              # m3/s
+      Qmax:  500.0            # m3/s
+      Vmin:  2000.0           # hm3
+      Vmax:  6000.0           # hm3
+      Vmeta: 4000.0           # hm3 (meta terminal)
+      Vini:  5000.0           # hm3 (inicial)
+      afluencia:  [500, 480, 460, 440, 420, 400, 380, 360, 
+                   340, 320, 300, 320, 340, 360, 380, 400, 
+                   420, 440, 460, 480, 500, 510, 520, 450]
+      upstreams: ['UHE_1']    # ex.: ["UHE_0"] se houver
+      # a, b, rho, losses só para modos 'specific'/'exact'
+      a:      [3.352e+2, 6.780e-3]                                            # coef. polinômio h_mont(V) (ex.: [c0, c1, ...])
+      b:      [2.635e+2, 9.145e-4, -6.713e-9]                                 # coef. polinômio h_jus(Q+S)
+      rho:    [2.449e-1, 2.886e-3, 6.657e-3, 1.867e-5, -9.176e-6, -5.735e-5]  # coef. colina (6 coeficientes) se usar 'exact'
+      losses: [0.0, 0.0, 1.939e-5]   # coef. polinômio h_perdas(Q)
+      pe:     0.92                   # produtividade específica (MW/(m3/s))
+      p:      0.92                   # produtividade global p (para 'constant'/'simplified')
+      mode:   "exact"                # {"constant","specific","exact","simplified"}
+      compute_total_inflow: true
+
+# =========================
+# THERMAL (ThermalData)
+# =========================
+thermal:
+  units:                    # Dict[str, ThermalUnit]
+    UT_1:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"          # Barra conectada
+      Pmin: 150             # potência mínima quando ligado
+      Pmax: 455             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    1000            # custo fixo [$ / h]
+      b:    16.19           # custo linear [$ / MWh]
+      c:    0.00048         # custo quadrático [$ / (MWh)^2]
+      SC:   4500            # start-up cost [$]
+      t_up:   8             # min up-time (períodos)
+      t_down: 8             # min down-time
+      init_status_h: 8      # estado inicial
+      u0:    1              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_2:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"          # Barra conectada
+      Pmin: 150             # potência mínima quando ligado
+      Pmax: 455             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    970             # custo fixo [$ / h]
+      b:    17.26           # custo linear [$ / MWh]
+      c:    0.00031         # custo quadrático [$ / (MWh)^2]
+      SC:   5000            # start-up cost [$]
+      t_up:   8             # min up-time (períodos)
+      t_down: 8             # min down-time
+      init_status_h: 8      # estado inicial
+      u0:    1              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_3:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"          # Barra conectada
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 130             # potência máxima quando ligado      
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    700             # custo fixo [$ / h]
+      b:    16.60           # custo linear [$ / MWh]
+      c:    0.002           # custo quadrático [$ / (MWh)^2]
+      SC:   550             # start-up cost [$]
+      t_up:   5             # min up-time (períodos)
+      t_down: 5             # min down-time
+      init_status_h: -5     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_4:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 130             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    680             # custo fixo [$ / h]
+      b:    16.50           # custo linear [$ / MWh]
+      c:    0.00211         # custo quadrático [$ / (MWh)^2]
+      SC:   560             # start-up cost [$]
+      t_up:   5             # min up-time (períodos)
+      t_down: 5             # min down-time
+      init_status_h: -5     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_5:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 25              # potência mínima quando ligado
+      Pmax: 162             # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    450             # custo fixo [$ / h]
+      b:    19.7            # custo linear [$ / MWh]
+      c:    0.00398         # custo quadrático [$ / (MWh)^2]
+      SC:   900             # start-up cost [$]
+      t_up:   6             # min up-time (períodos)
+      t_down: 6             # min down-time
+      init_status_h: -6     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_6:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 20              # potência mínima quando ligado
+      Pmax: 80              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    370             # custo fixo [$ / h]
+      b:    22.26           # custo linear [$ / MWh]
+      c:    0.00712         # custo quadrático [$ / (MWh)^2]
+      SC:   170             # start-up cost [$]
+      t_up:   3             # min up-time (períodos)
+      t_down: 3             # min down-time
+      init_status_h: -3     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_7:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 25              # potência mínima quando ligado
+      Pmax: 85              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    480             # custo fixo [$ / h]
+      b:    27.74           # custo linear [$ / MWh]
+      c:    0.00079         # custo quadrático [$ / (MWh)^2]
+      SC:   260             # start-up cost [$]
+      t_up:   3             # min up-time (períodos)
+      t_down: 3             # min down-time
+      init_status_h: -3     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_8:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    660             # custo fixo [$ / h]
+      b:    25.92           # custo linear [$ / MWh]
+      c:    0.00413         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_9:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    665             # custo fixo [$ / h]
+      b:    27.27           # custo linear [$ / MWh]
+      c:    0.00222         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+    UT_10:                  # convenção {GER}_{UNIT}
+      bar:   "BAR_2"        # Barra conectada
+      Pmin: 10              # potência mínima quando ligado
+      Pmax: 55              # potência máxima quando ligado
+      RU:   50              # ramp-up (MW/h)
+      RD:   50              # ramp-down (MW/h)
+      a:    670             # custo fixo [$ / h]
+      b:    27.79           # custo linear [$ / MWh]
+      c:    0.00173         # custo quadrático [$ / (MWh)^2]
+      SC:   30              # start-up cost [$]
+      t_up:   1             # min up-time (períodos)
+      t_down: 1             # min down-time
+      init_status_h: -1     # estado inicial
+      u0:    0              # estado inicial
+      p0:    0.0            # estado inicial
+      gamma: 0.0            # desconsidere esta variável (reservado para uso futuro)
+      pw_breaks: null       # para pwl - sem uso por enquanto (não testado)
+      pw_costs:  null       # para pwl - sem uso por enquanto (não testado)
+
+  has_history: true         # suporte aos dados da última hora (se houver)
+
+
+# =========================
+# RENEWABLE (RenewableData)
+# =========================
+renewable:
+  units:                     # Dict[str, RenewableUnit]
+    EOL_1:                   # convenção {GER}_{UNIT}
+      bar:   "BAR_1"         # Barra conectada
+      gbar: [110, 112, 110, 105, 100, 85, 80, 60, 
+             55, 50, 45, 40, 40, 45, 50, 55, 
+             60, 80, 85, 100, 105, 110, 112, 110]
+    SOL_1:
+      bar:   "BAR_1"         # Barra conectada
+      gbar: [0, 0, 0, 0, 0, 0, 40, 65, 
+             90, 120, 140, 160, 170, 170, 160, 130, 
+             100, 60, 20, 0, 0, 0, 0, 0]
+
+# =========================
+# STORAGE (StorageData)
+# =========================
+storage:
+  delta_t: 1.0                # usa meta.delta_t por padrão; mantenha aqui por clareza
+  units:                      # Dict[str, StorageUnit]
+    BAT_1:                    # convenção {GER}_{UNIT}
+      bar:   "BAR_1"          # Barra conectada
+      Emin:    300.0          # SoCmin (MWh)          <-- exemplo da Tabela (Trabalho 1)
+      Emax:    1500.0         # SoCmax (MWh)
+      Eini:    400.0          # SoC0   (MWh)
+      Pch_max: 150.0          # MW
+      Pdis_max: 150.0         # MW
+      eta_c: 0.95             # eficiência de carga (0-1)
+      eta_d: 0.95             # eficiência de descarga (0-1)
+
+# ===============================
+# Connection Bars (ConnectionBar)
+# ===============================
+bars:
+  units:                            # Dict[str, ConnectionBar]
+    BAR_1:                          # convenção {BAR}_{UNIT}                
+      slack: True                   # barra de referência
+      Cdef: 1000.0                  # penalidade de déficit [$ / MWh]
+      c_pmax: 10_000                # potência máxima do déficit
+      demand: [140, 150, 170, 190,  # Demanda por barra (MW)
+               200, 220, 230, 240, 
+               250, 280, 300, 280, 
+               280, 260, 280, 320, 
+               340, 380, 400, 360, 
+               260, 220, 180, 160]
+    BAR_2:                          # Dict[str, ConnectionBar]
+      slack: False                  # barra de referência
+      Cdef: 1000.0                  # penalidade de déficit [$ / MWh]
+      c_pmax: 10_000                # potência máxima do déficit
+      demand: [560, 600, 680, 760,  # demanda por barra
+               800, 880, 920, 960, 
+               1000, 1120, 1200, 1120,
+               1120, 1040, 1120, 1280, 
+               1360, 1520, 1600, 1440, 
+               1040, 880, 720, 640]
+
+# =========================
+# LINES (TransmissionLine) 
+# =========================
+lines:                             
+  units:                            # Dict[str, TransmissionLine]
+    LINE_1:                         # convenção {LINE}_{UNIT}
+      model: "dc"            # modelo utilizado (transport, dc)
+      b: 2                          # reatãncia da linha (pu)
+      pmax: 1_000                  # potência máxima da linha (MW)
+      endpoints: ["BAR_1", "BAR_2"] # circuito

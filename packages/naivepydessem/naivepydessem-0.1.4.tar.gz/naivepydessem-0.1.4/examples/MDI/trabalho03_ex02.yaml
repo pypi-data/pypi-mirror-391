@@ -1,0 +1,95 @@
+# ==========================================
+# Master Data File — Trabalho 3
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: meses
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Volume: hm3
+
+meta:
+  name: "UFPR-EELT7030-Trabalho3-Ex02"
+  horizon: 10                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (anos)
+  parcel_investment: False    # investimento anualizado ou não
+  interest_rate: 0.0          # taxa de juros
+  Cdef: 5_000                 # custo de operação do deficit
+  c_pmax: 10_000               # potência máxima do déficit
+  Solver: cbc
+  Solver_Options:
+    mip_solver: glpk
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 3600
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: {"Ponta": [200, 350, 350, 400, 500, 600, 650, 750, 850, 1000],
+           "Fora": [100, 150, 200, 250, 300, 350, 400, 450, 450, 500]}
+  
+  level_hours: {"Ponta": 2000,
+                "Fora": 6740}
+  level_precedence: ["Ponta", "Fora"]
+
+# =========================
+# GENERATOR (GeneratorData)
+# =========================
+
+generator:
+  units:                      # Dict[str, GeneratorUnit]
+    UHE_1:                    # convenção: {GER}_{UNIT}
+      state: 1                # existente
+      p_max: 600              # potência máxima projetada
+      c_op: 0                 # custos de operação
+      c_inv: 0                # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+    UHE_2:                    # convenção: {GER}_{UNIT}
+      state: 0                # candidata
+      p_max: 500              # potência máxima projetada
+      c_op: 0                 # custos de operação
+      c_inv: 75_000_000       # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+    UTE_1:                    # convenção: {GER}_{UNIT}
+      state: 1                # existente
+      p_max: 250              # potência máxima projetada
+      c_op: 55                # custos de operação
+      c_inv: 0                # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+    UTE_2:                    # convenção: {GER}_{UNIT}
+      state: 0                # candidata
+      p_max: 250              # potência máxima projetada
+      c_op: 40                # custos de operação
+      c_inv: 15_000_000       # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+    SOL_1: 
+      state: 0                # candidata
+      p_max: 100              # potência máxima projetada
+      c_op: 0                 # custos de operação
+      c_inv: 15_000_000       # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+    EOL_1:
+      state: 0                # candidata
+      p_max: 100              # potência máxima projetada
+      c_op: 0                 # custos de operação
+      c_inv: 10_000_000       # custos de investimento e O&M
+      include_cap: True       # incluir na restrição de capacidade
+
+# =========================
+# STORAGE (StorageData)
+# =========================
+
+storage:
+  delta_t: 1.0                # usa meta.delta_t por padrão; mantenha aqui por clareza
+  units:                      # Dict[str, StorageUnit]
+    BAT_1:                    # convenção {GER}_{UNIT}
+      state: 0                # candidata
+      c_op: 0                 # custos de operação
+      c_inv: 10_000_000       # custos de investimento e O&M
+      Emin:    50.0           # SoCmin (MWh)
+      Emax:    500.0          # SoCmax (MWh)
+      Eini:    100.0          # SoC0   (MWh)
+      Pch_max: 300.0          # MWh/patamar
+      Pdis_max: 300.0         # MWh/patamar
+      eta_c: 0.95             # eficiência de carga (0-1)
+      eta_d: 0.95             # eficiência de descarga (0-1)
+      include_cap: True       # incluir na restrição de capacidade          

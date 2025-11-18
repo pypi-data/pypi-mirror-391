@@ -1,0 +1,145 @@
+# ==========================================
+# Master Data File — Complete System
+# ==========================================
+# Unidades recomendadas:
+# - Tempo: meses
+# - Potência: MW
+# - Energia (SoC): MWh
+# - Volume: hm3
+
+meta:
+  name: "UFPR-EELT7030-TRANSMISSION-DECOMP"
+  horizon: 12                 # TODO: nº de períodos (ex.: 24)
+  delta_t: 1.0                # duração do período (Meses)
+  Cdef: 500.0                 # penalidade de déficit [$ / MWh]
+  p_base: 100                 # potência base (linhas em pu)
+  c_pmax: 10_000              # potência máxima do déficit
+  Solver: cbc
+  Solver_Options:
+    mip_solver: glpk
+    nlp_solver: cyipopt
+    strategy: OA
+    time_limit: 3600
+
+  # -------------------------
+  # Demanda do sistema
+  # -------------------------
+  demand: [100, 120, 150, 100, 120, 150, 100, 120, 150, 100, 120, 150]
+
+# =========================
+# HYDRO (HydraulicData)
+# =========================
+hydro:
+  units:                      # Dict[str, HydraulicUnit]
+    UHE_1:                    # convenção: {GER}_{UNIT}
+      bar: BAR_1              # Barra de Conexão
+      Qmin: 0.0               # hm3
+      Qmax:  60.0             # hm3
+      Vmin:  20.0             # hm3
+      Vmax:  100.0            # hm3
+      Vini:  100.0            # hm3 (inicial)
+      afluencia:  [16, 14, 11, 
+                   16, 14, 11, 
+                   16, 14, 11, 
+                   16, 14, 11]
+      upstreams: ['UHE_2']    # ex.: ["UHE_0"] se houver
+      p:      0.95            # produtividade global p (para 'constant'/'simplified')
+      compute_total_inflow: true
+    UHE_2:                    # convenção: {GER}_{UNIT}
+      bar: BAR_1              # Barra de Conexão 
+      Qmin: 0.0               # hm3
+      Qmax:  80.0             # hm3
+      Vmin:  40.0             # hm3
+      Vmax:  200.0            # hm3
+      Vini:  130.0            # hm3 (inicial)
+      afluencia:  [15, 12, 10, 
+                   15, 12, 10, 
+                   15, 12, 10, 
+                   15, 12, 10]
+      upstreams: []            # ex.: ["UHE_0"] se houver
+      p:      0.90             # produtividade global p (para 'constant'/'simplified')
+      compute_total_inflow: true
+
+
+# =========================
+# THERMAL (ThermalData)
+# =========================
+thermal:
+  units:                    # Dict[str, ThermalUnit]
+    UT_1:                   # convenção {GER}_{UNIT}
+      bar: BAR_1            # Barra de Conexão
+      Gmin: 0               # potência mínima quando ligado
+      Gmax: 30              # potência máxima quando ligado
+      Cost: 10              # Custo médio de operação
+    UT_2:                   # convenção {GER}_{UNIT}
+      bar: BAR_1            # Barra de Conexão
+      Gmin: 0               # potência mínima quando ligado
+      Gmax: 20              # potência máxima quando ligado
+      Cost: 25              # Custo médio de operação
+
+# =========================
+# RENEWABLE (RenewableData)
+# =========================
+renewable:
+  units:                     # Dict[str, RenewableUnit]
+    EOL_1:                   # convenção {GER}_{UNIT}
+      bar: "BAR_1"           # Barra de Conexão
+      gbar: [30, 25, 40,     # potência horária (MW)
+             30, 25, 40,
+             30, 25, 40,
+             25, 25, 40]
+    SOL_1:
+      bar: "BAR_1"           # Barra de Conexão
+      gbar: [25, 20, 30,     # potência horária
+             25, 10, 30,
+             25, 10, 30,
+             10, 10, 30]
+
+# =========================
+# STORAGE (StorageData)
+# =========================
+storage:
+  delta_t: 1.0                # usa meta.delta_t por padrão; mantenha aqui por clareza
+  units:                      # Dict[str, StorageUnit]
+    BAT_1:                    # convenção {GER}_{UNIT}
+      bar: "BAR_2"            # barra de conexão
+      Emin:    50.0           # SoCmin (MWh)          <-- exemplo da Tabela (Trabalho 2)
+      Emax:    500.0          # SoCmax (MWh)
+      Eini:    60.0           # SoC0   (MWh)
+      Pch_max: 50.0           # MW
+      Pdis_max: 50.0          # MW
+      eta_c: 0.95             # eficiência de carga (0-1)
+      eta_d: 0.95             # eficiência de descarga (0-1)
+      
+# ===============================
+# Connection Bars (ConnectionBar)
+# ===============================
+bars:
+  units:                            # Dict[str, ConnectionBar]
+    BAR_1:                          # convenção {BAR}_{UNIT}                
+      slack: True                   # barra de referência
+      Cdef: 500.0                   # penalidade de déficit [$ / MWh]
+      c_pmax: 10_000                 # potência máxima do déficit
+      demand: [20, 24, 30, 
+               20, 24, 30, 
+               20, 24, 30,
+               20, 24, 30]
+    BAR_2:                          # Dict[str, ConnectionBar]
+      slack: False                  # barra de referência
+      Cdef: 500.0                   # penalidade de déficit [$ / MWh]
+      c_pmax: 10_000                 # potência máxima do déficit
+      demand: [80, 96, 120,
+              80, 96, 120,
+              80, 96, 120,
+              80, 96, 120]
+
+# =========================
+# LINES (TransmissionLine) 
+# =========================
+lines:                             
+  units:                            # Dict[str, TransmissionLine]
+    LINE_1:                         # convenção {LINE}_{UNIT}
+      model: "dc"                   # modelo utilizado (transport, dc)
+      b: 2                          # reatãncia da linha (pu)
+      pmax: 200                     # potência máxima da linha (MW)
+      endpoints: ["BAR_1", "BAR_2"] # circuito
