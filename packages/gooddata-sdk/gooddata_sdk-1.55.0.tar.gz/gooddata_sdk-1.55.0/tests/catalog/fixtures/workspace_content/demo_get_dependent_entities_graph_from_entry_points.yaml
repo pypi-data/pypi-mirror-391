@@ -1,0 +1,70 @@
+# (C) 2025 GoodData Corporation
+version: 1
+interactions:
+  - request:
+      method: POST
+      uri: http://localhost:3000/api/v1/actions/workspaces/demo/dependentEntitiesGraph
+      body:
+        identifiers:
+          - id: campaign_channel_id
+            type: attribute
+      headers:
+        Accept:
+          - application/json
+        Accept-Encoding:
+          - br, gzip, deflate
+        Content-Type:
+          - application/json
+        X-GDC-VALIDATE-RELATIONS:
+          - 'true'
+        X-Requested-With:
+          - XMLHttpRequest
+    response:
+      status:
+        code: 200
+        message: OK
+      headers:
+        Cache-Control:
+          - no-cache, no-store, max-age=0, must-revalidate
+        Content-Length:
+          - '275'
+        Content-Type:
+          - application/json
+        DATE: &id001
+          - PLACEHOLDER
+        Expires:
+          - '0'
+        Featurepolicy:
+          - geolocation 'none'; midi 'none'; notifications 'none'; push 'none'; sync-xhr
+            'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope
+            'none'; speaker 'none'; vibrate 'none'; fullscreen 'none'; payment 'none';
+        Pragma:
+          - no-cache
+        Referrer-Policy:
+          - same-origin
+        Vary:
+          - Origin
+          - Access-Control-Request-Method
+          - Access-Control-Request-Headers
+        X-Content-Type-Options:
+          - nosniff
+        X-Frame-Options:
+          - SAMEORIGIN
+        X-GDC-TRACE-ID: *id001
+        X-Xss-Protection:
+          - 1; mode=block
+      body:
+        string:
+          graph:
+            edges:
+              - - id: campaign_channel_id
+                  type: attribute
+                - id: campaign_channels
+                  type: dataset
+            nodes:
+              - id: campaign_channel_id
+                title: Campaign channel id
+                type: attribute
+              - id: campaign_channels
+                title: Campaign channels
+                type: dataset
