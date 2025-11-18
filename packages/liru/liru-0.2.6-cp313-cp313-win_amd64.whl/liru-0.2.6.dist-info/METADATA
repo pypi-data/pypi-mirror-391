@@ -1,0 +1,253 @@
+Metadata-Version: 2.2
+Name: liru
+Version: 0.2.6
+Summary: High-performance Python wrapper for Spout 2.007 GPU texture sharing
+Keywords: spout,gpu,texture-sharing,realtime,video,opengl,moderngl
+Author-Email: =?utf-8?q?Lauri_M=C3=A4ki?= <laurimaeki@gmail.com>
+Maintainer-Email: =?utf-8?q?Lauri_M=C3=A4ki?= <laurimaeki@gmail.com>
+License: BSD-2-Clause
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: 3.15
+Classifier: Programming Language :: C++
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Project-URL: Homepage, https://github.com/Ranttali/liru
+Project-URL: Documentation, https://github.com/Ranttali/liru/tree/main/docs
+Project-URL: Repository, https://github.com/Ranttali/liru
+Project-URL: Issues, https://github.com/Ranttali/liru/issues
+Project-URL: Changelog, https://github.com/Ranttali/liru/blob/main/CHANGELOG.md
+Requires-Python: >=3.13
+Provides-Extra: dev
+Requires-Dist: pytest>=8.3.0; extra == "dev"
+Requires-Dist: pytest-benchmark>=4.0.0; extra == "dev"
+Requires-Dist: pytest-timeout>=2.2.0; extra == "dev"
+Requires-Dist: black>=24.0.0; extra == "dev"
+Requires-Dist: ruff>=0.6.0; extra == "dev"
+Requires-Dist: mypy>=1.11.0; extra == "dev"
+Requires-Dist: moderngl>=5.11.0; extra == "dev"
+Requires-Dist: numpy>=2.0.0; extra == "dev"
+Requires-Dist: build>=1.2.0; extra == "dev"
+Requires-Dist: twine>=5.1.0; extra == "dev"
+Description-Content-Type: text/markdown
+
+# liru
+
+High-performance Python wrapper for Spout 2 GPU texture sharing
+
+[![License: BSD-2-Clause](https://img.shields.io/badge/License-BSD%202--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![Platform: Windows](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
+
+**liru** provides zero-copy GPU texture sharing between Python applications using the Spout 2 DirectX 11 shared texture mechanism. Designed for real-time video mixing, compositing, and live graphics applications on Windows.
+
+## Key Features
+
+- **Zero-Copy GPU Sharing**: Direct GPU-to-GPU texture transfer via DirectX 11
+- **Real-Time Performance**: Minimal latency for 60 FPS+ video pipelines
+- **ModernGL Integration**: Seamless interoperability with ModernGL contexts
+- **Simple API**: Pythonic interface wrapping Spout 2.007 SDK
+- **Type Hints**: Full type annotations for IDE autocomplete and type checking
+- **Context Managers**: Automatic resource cleanup with `with` statements
+
+## Installation
+
+```bash
+pip install liru
+```
+
+**Requirements:**
+
+- Windows 10/11 (Spout is Windows-only)
+- Python 3.13 or later
+- DirectX 11 compatible GPU
+- Visual C++ Redistributable 2022 (usually already installed)
+
+## Quick Start
+
+### Sending Textures
+
+```python
+import moderngl
+import liru
+
+# Create OpenGL context and texture
+ctx = moderngl.create_context()
+texture = ctx.texture((1920, 1080), 4)  # RGBA
+
+# Send textures via Spout (automatic cleanup with context manager)
+with liru.Sender("MyOutput", 1920, 1080) as sender:
+    running = True
+    while running:
+        # Render to texture
+        # ... your rendering code ...
+
+        # Send via Spout (GPU-only, zero CPU copy)
+        sender.send_texture(texture.glo)
+
+        # Optional: monitor performance
+        print(f"FPS: {sender.get_fps():.1f}, Latency: {sender.last_send_time_ms:.3f}ms")
+```
+
+### Receiving Textures
+
+```python
+import moderngl
+import liru
+
+ctx = moderngl.create_context()
+
+# Connect to a Spout sender (automatic cleanup with context manager)
+with liru.Receiver("MyOutput") as receiver:
+    # Get dimensions immediately (no frame reception required)
+    print(f"Sender resolution: {receiver.width}x{receiver.height}")
+
+    # Create texture sized to match sender
+    texture = ctx.texture((receiver.width, receiver.height), 4)
+
+    running = True
+    while running:
+        # Note: is_updated() may return False for first 1-2 frames
+        # while the OpenGL connection is being established
+        if receiver.is_updated():
+            width, height = receiver.receive_texture(texture.glo)
+            # Use texture for compositing, preview, etc.
+            # ... your processing code ...
+```
+
+### Listing Available Senders
+
+```python
+import liru
+
+with liru.Receiver() as receiver:
+    senders = receiver.get_sender_list()
+    for sender_name in senders:
+        print(f"Available sender: {sender_name}")
+```
+
+## Documentation
+
+- [API Reference](docs/api_reference.md) - Complete API documentation
+- [Architecture](docs/plan/02_architecture.md) - System design and internals
+- [Build Guide](docs/plan/05_build_and_distribution.md) - Building from source
+
+## Why liru?
+
+You want to use Python and Spout. It seems alternatives were somewhat stale or lacking at the time I needed this.
+
+## API Overview
+
+### Sender
+
+```python
+# Constructor
+liru.Sender(name: str, width: int, height: int)
+
+# Methods
+send_texture(texture_id: int) -> None
+get_fps() -> float
+release() -> None
+
+# Properties
+name: str                  # Sender name
+width: int                 # Texture width
+height: int                # Texture height
+last_send_time_ms: float   # Last send operation time in milliseconds
+```
+
+### Receiver
+
+```python
+# Constructor
+liru.Receiver(sender_name: str = "")
+
+# Methods
+receive_texture(texture_id: int) -> tuple[int, int]  # Returns (width, height)
+is_updated() -> bool
+select_sender(name: str) -> None
+get_sender_list() -> list[str]
+
+# Properties
+active_sender: str         # Currently connected sender name
+width: int                 # Sender texture width
+height: int                # Sender texture height
+last_receive_time_ms: float  # Last receive operation time in milliseconds
+```
+
+## Development
+
+For contributors and developers who want to build from source, see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed setup instructions.
+
+## Project Structure
+
+```text
+liru/
+├── liru/                   # Python package
+│   ├── __init__.py         # Public API
+│   ├── sender.py           # Sender wrapper
+│   ├── receiver.py         # Receiver wrapper
+│   └── py.typed            # Type checking marker
+├── src/                    # C++ sources
+│   ├── bindings.cpp        # pybind11 bindings
+│   ├── sender_wrapper.cpp  # Sender implementation
+│   └── receiver_wrapper.cpp # Receiver implementation
+├── tests/                  # Test suite
+├── docs/                   # Documentation
+├── CMakeLists.txt          # CMake configuration
+├── pyproject.toml          # Python packaging (scikit-build-core)
+└── README.md               # This file
+```
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+
+- Setting up your development environment
+- Running tests
+- Code style and quality standards
+- Submitting pull requests
+
+## License
+
+**liru** is licensed under the BSD-2-Clause License - see [LICENSE](LICENSE) for details.
+Q: Why not MIT? A: Because Spout is BSD-2 too so 1 type is less than 2.
+
+### Third-Party Components
+
+liru includes and redistributes the following third-party components:
+
+- **Spout.dll** (BSD-2-Clause License) - GPU texture sharing framework by Lynn Jarvis
+  - Bundled in wheel packages
+  - See [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) for full license text
+  - <https://github.com/leadedge/Spout2>
+
+All third-party licenses are included in the distribution and must be retained when redistributing liru.
+
+## Acknowledgments
+
+- **Spout**: GPU texture sharing framework by Lynn Jarvis
+  - <https://spout.zeal.co/>
+  - <https://github.com/leadedge/Spout2>
+
+- **pybind11**: Seamless C++/Python interoperability
+  - <https://pybind11.readthedocs.io/>
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/Ranttali/liru/issues)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
+
+## Project Status
+
+liru is under active development (Alpha). The API is stable but may change before the 1.0 release.
+
+---
+
+**Maintained by**: Ranttali
+**License**: BSD-2-Clause
