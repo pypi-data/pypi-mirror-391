@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "FlightGear"
+dynamic = ["version"]           # see tool.setuptools.dynamic below
+authors = [
+  { name="Stuart Buchanan", email="stuart13@gmail.com" },
+  { name="Torsten Dreyer", email="torsten@t3r.de" },
+  { name="Florent Rougon", email="f.rougon@frougon.net" },
+  { name="James Turner", email="james@flightgear.org" },
+]
+maintainers = [
+  { name="Stuart Buchanan", email="stuart13@gmail.com" },
+  { name="Torsten Dreyer", email="torsten@t3r.de" },
+  { name="Florent Rougon", email="f.rougon@frougon.net" },
+  { name="James Turner", email="james@flightgear.org" },
+]
+description = "Tooling for the FlightGear flight simulator"
+readme = "README.md"
+license = "GPL-2.0-or-later"
+license-files = ["LICEN[CS]E*", "LICENSES/*"]
+requires-python = ">=3.8"
+keywords = [
+  "FlightGear", "flightgear", "flight", "simulator", "tools",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Games/Entertainment :: Simulation",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["lxml"]
+
+[project.scripts]
+"fg-copy-weather-scenarios-to-default-locale" = "flightgear.meta.scripts.i18n.fg_copy_weather_scenarios_to_default_locale:main"
+"fg-extract-translatable-strings" = "flightgear.meta.scripts.i18n.fg_extract_translatable_strings:main"
+"fg-merge-xliff-into-xliff" = "flightgear.meta.scripts.i18n.fg_merge_xliff_into_xliff:main"
+"fg-new-translations" = "flightgear.meta.scripts.i18n.fg_new_translations:main"
+"fg-update-translation-files" = "flightgear.meta.scripts.i18n.fg_update_translation_files:main"
+"fg-fix-Qt-translation-files" = "flightgear.meta.scripts.i18n.fg_fix_Qt_translation_files:main"
+# Script we used to migrate to the XLIFF format for translations in 2017; there
+# is no need to install it nowadays, that I can see.
+# "fg-convert-translation-files" = "flightgear.meta.scripts.i18n.fg_convert_translation_files:main"
+"fg-validate-PropertyList" = "flightgear.meta.scripts.fg_validate_PropertyList:main"
+"fg-validate-shaders" = "flightgear.meta.scripts.fg_validate_shaders:main"
+"git-date.py" = "flightgear.meta.scripts.git_date:main"
+"terrasync.py" = "flightgear.meta.scripts.terrasync.terrasync:main"
+"create_dirindex.py" = "flightgear.meta.scripts.terrasync.create_dirindex:main"
+
+[project.urls]
+Homepage = "https://www.flightgear.org/"
+Repository = "https://gitlab.com/flightgear/fgmeta-python/"
+Issues = "https://gitlab.com/flightgear/fgmeta-python/-/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "flightgear.meta.__version__"}
