@@ -1,0 +1,117 @@
+# SPDX-FileCopyrightText: 2025-present The Bluemira Developers <https://github.com/Fusion-Power-Plant-Framework/bluemira>
+#
+# SPDX-License-Identifier: LGPL-2.1-or-later
+"""References for matproplib library"""
+
+FOKKENS_2003 = {
+    "id": "fokkens2003",
+    "type": "report",
+    "author": [{"family": "Fokkens, J. H."}],
+    "title": "Thermomechanical finite element analysis of the HCPB in-pile test element",
+    "event_date": {"raw": "2003"},
+    "annote": "NRG Report 21477/02.50560/P. Technical Report, TW0-TTBB-004-D1,",
+}
+
+
+CORATO_2016 = {
+    "id": "corato2016",
+    "type": "report",
+    "author": [
+        {
+            "family": (
+                "V. Corato, R. Bonifetto, P. Bruzzone, D. Ciazynski, M. Coleman, "
+                "E. Gaio, R. Heller, B. Lacroix, M. Lewandowska, A. Maistrello, "
+                "L. Muzzi, S. Nicollet, A. Nijhuis, F. Nunio, A. Panin, L. Savoldi"
+                ", K. Sedlak, A. Torre, S. Turtu, R. Vallcorba, R. Wesche, "
+                "L. Zani, R. Zanino"
+            )
+        }
+    ],
+    "title": "Common operating values for DEMO magnets design for 2016",
+    "event_date": {"raw": "2016"},
+    "annote": "MEMO for WPMAG-MCD-2.1, version 1.4, EFDA_D_2MMDTG",
+    "url": "https://scipub.euro-fusion.org/wp-content/uploads/eurofusion/WPMAGREP16_16565_submitted.pdf",
+}
+
+FERRACIN_2022 = {
+    "id": "ferracin2022",
+    "type": "event",
+    "author": [{"family": "Ferracin, P., Marchevsky, M, Todesco, E."}],
+    "title": "Unit 9 and 10 Practical superconductors for accelerator magnets",
+    "event_date": {"raw": "2022"},
+    "annote": "Superconducting Accelerator Magnets, June 20 - July 1, 2022",
+}
+
+BAUER_2007 = {
+    "id": "bauer2007",
+    "type": "report",
+    "author": [{"family": "Bauer, P., Rajainmaki, H., Salpietro, E."}],
+    "title": "EFDA Material Data Compilation for Superconductor Simulation",
+    "event_date": {"raw": "2007"},
+    "annote": "EFDA CSU, Garching, 04/18/07",
+}
+
+SIMON_1992 = {
+    "id": "simon1992",
+    "type": "report",
+    "author": [{"family": "Simon, J., Drexler, E. S., and Reed, R. P."}],
+    "title": (
+        "NIST Monograph 177, Properties of Copper and Copper Alloys at"
+        " Cryogenic Temperatures"
+    ),
+    "event_date": {"raw": "1992"},
+    "annote": "",
+    "url": "https://nvlpubs.nist.gov/nistpubs/Legacy/MONO/nistmonograph177.pdf",
+    "doi": "10.6028/NIST.MONO.177",
+}
+
+HUST_1984 = {
+    "id": "hust1984",
+    "type": "report",
+    "author": [{"family": "Hust, J. G., and Lankford, A. B."}],
+    "title": (
+        "THERMAL CONDUCTIVITY OF ALUMINUM, COPPER, IRON, AND TUNGSTEN FOR "
+        "TEMPERATURES FROM 1 K TO THE MELTING POINT"
+    ),
+    "event_date": {"raw": "1984"},
+    "annote": "NBSIR 84-3007",
+    "url": "https://www.govinfo.gov/content/pkg/GOVPUB-C13-5dca61206b094d8b3a54099ebcff1baa/pdf/GOVPUB-C13-5dca61206b094d8b3a54099ebcff1baa.pdf",
+    "doi": "10.6028/NBS.IR.84-3007",
+}
+
+
+CHOONG_1975 = {
+    "id": "choong1975",
+    "type": "report",
+    "author": [{"family": "Choong, S. K"}],
+    "title": "Thermophysical Properties of Stainless Steels",
+    "event_date": {"raw": "1975"},
+    "annote": "",
+    "url": "https://www.osti.gov/servlets/purl/4152287",
+    "doi": "10.2172/4152287",
+}
+
+
+PLANSEE_2025 = {
+    "id": "plansee_w_2025",
+    "type": "report",
+    "author": [{"organisation": "Plansee"}],
+    "url": "https://www.plansee.com/download/?DOKNR=HPM-070-TD-025&DOKAR=QM1&DOKTL=100",
+}
+
+COOLPROP_7 = {
+    "doi": "10.1021/ie4033999",
+    "id": "coolprop_7",
+    "type": "article",
+    "journal": "Industrial & Engineering Chemistry Research",
+    "author": [
+        {
+            "family": "Bell, Ian H. and Wronski, Jorrit and Quoilin, Sylvain"
+            " and Lemort, Vincent"
+        }
+    ],
+    "title": "Pure and Pseudo-pure Fluid Thermophysical Property Evaluation and the "
+    "Open-Source Thermophysical Property Library CoolProp",
+    "event_date": {"raw": "2014"},
+    "url": "http://pubs.acs.org/doi/abs/10.1021/ie4033999",
+}
