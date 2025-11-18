@@ -1,0 +1,23 @@
+[project]
+name = "baai-flagdataset-ks3util"
+version = "0.1.1"
+description = ""
+authors = [
+    {name = "史红光",email = "hgshi@baai.ac.cn"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "baai_flagdataset_ks3util", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[project.scripts]
+ihttpd = "baai_flagdataset_ks3util.cmd.cmd_run:with_cmdargs"
