@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import libevdev; print(''Types count:'', len(libevdev.types)); print(''Props count:'', len(libevdev.props)); print(''Sample types:'', [str(t) for t in libevdev.types[:5]]); print(''Sample props:'', [str(p) for p in libevdev.props[:3]])\")",
+      "Bash(python3 -m pytest:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
