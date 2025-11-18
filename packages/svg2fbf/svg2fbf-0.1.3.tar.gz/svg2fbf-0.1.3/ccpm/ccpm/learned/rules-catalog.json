@@ -1,0 +1,345 @@
+{
+  "catalog_version": "1.0",
+  "created": "2025-11-13T12:34:17Z",
+  "last_updated": "2025-11-13T12:34:17Z",
+  "ccpm_rules": [
+    {
+      "name": "agent-coordination",
+      "file": "./rules/agent-coordination.md",
+      "category": "coordination",
+      "purpose": "Rules for multiple agents working in parallel within the same epic worktree.",
+      "size_bytes": 4986,
+      "summary": "Rules for multiple agents working in parallel within the same epic worktree.",
+      "applies_to": [
+        "agents",
+        "github",
+        "coordination",
+        "parallel"
+      ],
+      "keywords": [
+        "coordination",
+        "agent",
+        "stream",
+        "commit",
+        "files",
+        "issue",
+        "file",
+        "bash",
+        "update",
+        "agents",
+        "work"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "high",
+      "load_trigger": "task_contains(['coordination', 'agent', 'stream', 'commit', 'files'])"
+    },
+    {
+      "name": "branch-operations",
+      "file": "./rules/branch-operations.md",
+      "category": "operational",
+      "purpose": "Git branches enable parallel development by allowing multiple developers to work on the same repository with isolated changes.",
+      "size_bytes": 2961,
+      "summary": "Git branches enable parallel development by allowing multiple developers to work on the same repository with isolated changes.",
+      "applies_to": [
+        "branch",
+        "git",
+        "pr"
+      ],
+      "keywords": [
+        "operations",
+        "branch",
+        "epic",
+        "name",
+        "main",
+        "bash",
+        "origin",
+        "push",
+        "branches",
+        "pull",
+        "commit"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "medium",
+      "load_trigger": "task_contains(['operations', 'branch', 'epic', 'name', 'main'])"
+    },
+    {
+      "name": "datetime",
+      "file": "./rules/datetime.md",
+      "category": "operational",
+      "purpose": "",
+      "size_bytes": 3684,
+      "summary": "",
+      "applies_to": [
+        "file-creation",
+        "frontmatter",
+        "timestamp"
+      ],
+      "keywords": [
+        "rule",
+        "date",
+        "datetime",
+        "current",
+        "frontmatter",
+        "real",
+        "created",
+        "time",
+        "update",
+        "command",
+        "format"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "critical",
+      "load_trigger": "task_contains(['rule', 'date', 'datetime', 'current', 'frontmatter'])"
+    },
+    {
+      "name": "frontmatter-operations",
+      "file": "./rules/frontmatter-operations.md",
+      "category": "operational",
+      "purpose": "Standard patterns for working with YAML frontmatter in markdown files.",
+      "size_bytes": 1423,
+      "summary": "Standard patterns for working with YAML frontmatter in markdown files.",
+      "applies_to": [
+        "file-creation",
+        "frontmatter",
+        "timestamp"
+      ],
+      "keywords": [
+        "rule",
+        "operations",
+        "frontmatter",
+        "files",
+        "datetime",
+        "progress",
+        "yaml",
+        "markdown",
+        "fields",
+        "update",
+        "always",
+        "updated"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "medium",
+      "load_trigger": "task_contains(['rule', 'operations', 'frontmatter', 'files', 'datetime'])"
+    },
+    {
+      "name": "github-operations",
+      "file": "./rules/github-operations.md",
+      "category": "operational",
+      "purpose": "Standard patterns for GitHub CLI operations across all commands.",
+      "size_bytes": 2743,
+      "summary": "Standard patterns for GitHub CLI operations across all commands.",
+      "applies_to": [
+        "issue",
+        "github",
+        "cli",
+        "pr"
+      ],
+      "keywords": [
+        "rule",
+        "operations",
+        "echo",
+        "github",
+        "remote",
+        "issue",
+        "origin",
+        "repository",
+        "check",
+        "create",
+        "repo",
+        "bash"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "critical",
+      "load_trigger": "task_contains(['rule', 'operations', 'echo', 'github', 'remote'])"
+    },
+    {
+      "name": "path-standards",
+      "file": "./rules/path-standards.md",
+      "category": "quality",
+      "purpose": "",
+      "size_bytes": 4720,
+      "summary": "",
+      "applies_to": [],
+      "keywords": [
+        "specification",
+        "standards",
+        "paths",
+        "project",
+        "path",
+        "internal",
+        "content",
+        "server",
+        "documentation",
+        "users",
+        "name",
+        "relative"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "low",
+      "load_trigger": "task_contains(['specification', 'standards', 'paths', 'project', 'path'])"
+    },
+    {
+      "name": "standard-patterns",
+      "file": "./rules/standard-patterns.md",
+      "category": "quality",
+      "purpose": "This file defines common patterns that all commands should follow to maintain consistency and simplicity.",
+      "size_bytes": 3935,
+      "summary": "This file defines common patterns that all commands should follow to maintain consistency and simplicity.",
+      "applies_to": [
+        "github"
+      ],
+      "keywords": [
+        "commands",
+        "patterns",
+        "standard",
+        "markdown",
+        "check",
+        "what",
+        "file",
+        "output",
+        "github",
+        "just",
+        "read",
+        "only",
+        "operations"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "low",
+      "load_trigger": "task_contains(['commands', 'patterns', 'standard', 'markdown', 'check'])"
+    },
+    {
+      "name": "strip-frontmatter",
+      "file": "./rules/strip-frontmatter.md",
+      "category": "operational",
+      "purpose": "Standard approach for removing YAML frontmatter before sending content to GitHub.",
+      "size_bytes": 2114,
+      "summary": "Standard approach for removing YAML frontmatter before sending content to GitHub.",
+      "applies_to": [
+        "file-creation",
+        "frontmatter",
+        "github",
+        "timestamp"
+      ],
+      "keywords": [
+        "frontmatter",
+        "file",
+        "strip",
+        "repo",
+        "content",
+        "bash",
+        "github",
+        "input",
+        "files",
+        "issue"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "medium",
+      "load_trigger": "task_contains(['frontmatter', 'file', 'strip', 'repo', 'content'])"
+    },
+    {
+      "name": "test-execution",
+      "file": "./rules/test-execution.md",
+      "category": "quality",
+      "purpose": "Standard patterns for running tests across all testing commands.",
+      "size_bytes": 1455,
+      "summary": "Standard patterns for running tests across all testing commands.",
+      "applies_to": [
+        "validation",
+        "testing",
+        "pytest"
+      ],
+      "keywords": [
+        "rule",
+        "test",
+        "tests",
+        "output",
+        "failures",
+        "focus",
+        "pkill",
+        "null",
+        "true",
+        "execution",
+        "always"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "critical",
+      "load_trigger": "task_contains(['rule', 'test', 'tests', 'output', 'failures'])"
+    },
+    {
+      "name": "use-ast-grep",
+      "file": "./rules/use-ast-grep.md",
+      "category": "quality",
+      "purpose": "",
+      "size_bytes": 5288,
+      "summary": "",
+      "applies_to": [],
+      "keywords": [
+        "agent",
+        "cursor",
+        "protocol",
+        "integration",
+        "grep",
+        "pattern",
+        "lang",
+        "code",
+        "find",
+        "language",
+        "ruby",
+        "search",
+        "structural",
+        "patterns"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "low",
+      "load_trigger": "task_contains(['agent', 'cursor', 'protocol', 'integration', 'grep'])"
+    },
+    {
+      "name": "worktree-operations",
+      "file": "./rules/worktree-operations.md",
+      "category": "operational",
+      "purpose": "Git worktrees enable parallel development by allowing multiple working directories for the same repository.",
+      "size_bytes": 2775,
+      "summary": "Git worktrees enable parallel development by allowing multiple working directories for the same repository.",
+      "applies_to": [
+        "git",
+        "worktree",
+        "parallel",
+        "epic"
+      ],
+      "keywords": [
+        "operations",
+        "worktree",
+        "epic",
+        "name",
+        "main",
+        "bash",
+        "remove",
+        "worktrees",
+        "branch",
+        "commit",
+        "merge"
+      ],
+      "required_by_skills": [],
+      "required_by_agents": [],
+      "priority": "high",
+      "load_trigger": "task_contains(['operations', 'worktree', 'epic', 'name', 'main'])"
+    }
+  ],
+  "note": "Rules are CCPM internal implementation. Users: create SKILLS for project-specific behavior.",
+  "metadata": {
+    "total_ccpm_rules": 11,
+    "total_size_bytes": 36084,
+    "catalog_size_bytes": 9402,
+    "average_rule_size": 3280
+  }
+}
