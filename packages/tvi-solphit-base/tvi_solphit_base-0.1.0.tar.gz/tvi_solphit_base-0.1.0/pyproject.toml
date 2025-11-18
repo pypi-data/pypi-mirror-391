@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tvi-solphit-base"
+version = "0.1.0"
+description = "Base utilities for the tvi.solphit namespace (logging, config, helpers)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Tobias Hagenbeek", email = "tobias@solphit.com" }]
+keywords = ["logging", "utilities", "solphit", "namespace", "base"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# Expose console script later if you want.
+# [project.scripts]
+# solphit-info = "tvi.solphit.base.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/solphit/tvi-solphit-base"
+Issues = "https://github.com/solphit/tvi-solphit-base/issues"
+
+[tool.setuptools.package-data]
+"tvi.solphit.base" = []
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
