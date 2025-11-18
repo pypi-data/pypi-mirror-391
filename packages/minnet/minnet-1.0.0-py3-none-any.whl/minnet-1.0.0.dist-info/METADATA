@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: minnet
+Version: 1.0.0
+Summary: Minimalist, text-only Internet client/server in Python.
+Author: Gamer0ppgaming
+Author-email: gamer07340@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+# Minnet
+
+Minnet is a minimalist text-only Internet client/server in Python.
+
+- Default server is read-only.
+- Client supports `min://ip/path` URLs.
+- Unified POST-only style requests (body optional).
+- Lightweight and fast.
+
+## Example
+
+### Server
+
+```python
+from minnet import Minnet
+server = Minnet()
+server.serve() # Uses default handler, serves files in ./www
+# You can create your own handler(path,body) and give it to server.serve()
+```
+
+### Client
+```
+from minnet import Minnet
+client = Minnet()
+response = client.request("min://127.0.0.1/index.txt")
+print(response)
+```
