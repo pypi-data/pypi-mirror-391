@@ -1,0 +1,30 @@
+[project]
+name = "drpython"
+version = "0.1.5"
+description = "Modular notifications: drpython.telegram & drpython.email"
+readme = "README.md"
+authors = [{ name = "samircd4", email = "samircd4@gmail.com" }]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Communications :: Chat",
+    "Topic :: Communications :: Email",
+]
+dependencies = [
+    "python-dotenv>=1.2.1",
+    "requests>=2.31.0,<3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=25.11.0",
+    "pytest>=9.0.1",
+    "ruff>=0.14.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
