@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cogniz"
+version = "1.0.1"
+description = "Python SDK for Cogniz Memory Platform - Persistent memory for AI applications"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+keywords = [
+    "ai", "memory", "llm", "rag", "agent",
+    "chatbot", "embeddings", "langchain", "llama index"
+]
+authors = [
+    {name = "Cogniz Team", email = "support@cogniz.online"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-httpx>=0.22.0",
+    "black>=23.7.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://cogniz.online"
+Documentation = "https://docs.cogniz.online"
+Repository = "https://github.com/cogniz-ai/cogniz-python"
+Changelog = "https://github.com/cogniz-ai/cogniz-python/blob/main/CHANGELOG.md"
+Issues = "https://github.com/cogniz-ai/cogniz-python/issues"
+
+[tool.setuptools]
+packages = ["cogniz"]
+
+[tool.setuptools.package-data]
+cogniz = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=cogniz --cov-report=html --cov-report=term -v"
+asyncio_mode = "auto"
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
