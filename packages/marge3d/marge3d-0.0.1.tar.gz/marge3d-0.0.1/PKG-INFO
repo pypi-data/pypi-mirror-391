@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: marge3d
+Version: 0.0.1
+Summary: Solver for Maxey-Riley-Gatignol (MaRGE) in 3D
+Project-URL: Homepage, https://github.com/CompMath-TUHH/MaRGE_3D_solver
+Project-URL: Tracker, https://github.com/CompMath-TUHH/MaRGE_3D_solver/issues
+Maintainer-email: Vamika Rathi <vamika.rathi@tuhh.de>, Finn Sommer <finn.sommer@tuhh.de>
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.10
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: scipy
+Provides-Extra: docs
+Requires-Dist: myst-parser; extra == 'docs'
+Requires-Dist: nbsphinx; extra == 'docs'
+Requires-Dist: pygments>=2.4.1; extra == 'docs'
+Requires-Dist: setuptools>=18.0; extra == 'docs'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: sphinx-autoapi; extra == 'docs'
+Requires-Dist: sphinx-favicon; extra == 'docs'
+Requires-Dist: sphinx-gallery<0.11.0; extra == 'docs'
+Requires-Dist: sphinx-rtd-theme>=1.0.0; extra == 'docs'
+Requires-Dist: sphinxcontrib-video; extra == 'docs'
+Provides-Extra: tests
+Requires-Dist: coverage[toml]; extra == 'tests'
+Requires-Dist: flake8; extra == 'tests'
+Requires-Dist: pytest; extra == 'tests'
+Requires-Dist: pytest-cov; extra == 'tests'
+Requires-Dist: pytest-timeout; extra == 'tests'
+Description-Content-Type: text/markdown
+
+# MaRGE3D package
+
+[![Repo status](https://www.repostatus.org/badges/latest/active.svg)](https://github.com/CompMath-TUHH/MaRGE_3D_solver)
+[![CI pipeline](https://github.com/CompMath-TUHH/MaRGE_3D_solver/actions/workflows/ci_pipeline.yml/badge.svg)](https://github.com/CompMath-TUHH/MaRGE_3D_solver/actions/workflows/ci_pipeline.yml)
+[![Coverage](https://codecov.io/github/CompMath-TUHH/MaRGE_3D_solver/graph/badge.svg?token=5Q6GS039XF)](https://codecov.io/github/CompMath-TUHH/MaRGE_3D_solver)
+
+📜 _Solver for Maxey-Riley-Gatignol Equations (MaRGE) in 3D flow based on the method by [Daitche (2013)](https://doi.org/10.1016/j.jcp.2013.07.024). Analytical solution in simple vortex is provided to validate the method._
+
+## Installation
+
+Download the repository, then run the following command inside :
+
+```bash
+pip install .
+```
+
+## Documentation
+
+The code is currently transformed into a proper Python package that can be referred in a publication.
+Details on the full transformation are given [here ...](./docs/changelog.md)
