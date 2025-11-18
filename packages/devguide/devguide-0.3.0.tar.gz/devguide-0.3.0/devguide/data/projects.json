@@ -1,0 +1,772 @@
+[
+    {
+        "title": "Sistema de Reservas Online",
+        "tags": ["reservas", "hotel", "booking", "agendamento"],
+        "stack": ["Django or FastAPI", "PostgreSQL", "React / Next.js", "Docker"],
+        "steps": [
+            "Definir modelos: Hotel, Quarto, Reserva, Usuário",
+            "Implementar autenticação (JWT) e autorização",
+            "Criar endpoints RESTful para busca e reserva de quartos",
+            "Painel admin para gestão de hotéis e reservas"
+        ]
+    },
+    {
+        "title": "E-commerce de Produtos Digitais",
+        "tags": ["ecommerce", "loja", "digital", "pagamento"],
+        "stack": ["Next.js", "Node.js", "Stripe", "MongoDB"],
+        "steps": [
+            "Configurar catálogo de produtos digitais",
+            "Integração com gateway de pagamento (Stripe/PayPal)",
+            "Área do usuário com downloads e histórico de compras"
+        ]
+    },
+    {
+        "title": "Blog Pessoal / Portfolio",
+        "tags": ["blog", "portfolio", "ssg", "markdown"],
+        "stack": ["Next.js or Astro", "TailwindCSS", "Vercel"],
+        "steps": [
+            "Estruturar conteúdo com Markdown/MDX",
+            "Gerar páginas estáticas para posts e projetos",
+            "Configurar CI/CD para deploy automático"
+        ]
+    },
+    {
+        "title": "Organizador Automático de Arquivos",
+        "tags": ["automação", "python", "scripts", "filesystem"],
+        "stack": ["Python", "pathlib", "shutil", "watchdog"],
+        "steps": [
+            "1. Setup: Crie um ambiente virtual e instale a biblioteca 'watchdog' com 'pip install watchdog'.",
+            "2. Mapeamento: Crie um dicionário que mapeia extensões para pastas (ex: '.pdf' -> 'Documentos').",
+            "3. Lógica de Organização: Implemente uma função que recebe um caminho de arquivo e o move para a pasta correta com base no mapeamento.",
+            "4. Monitoramento: Use 'watchdog' para monitorar uma pasta (ex: Downloads) em tempo real, detectando novos arquivos.",
+            "5. Handler de Eventos: Crie uma classe de handler para o 'watchdog' que, no evento 'on_created', chama sua função de organização.",
+            "6. Execução: Inicie o observador do 'watchdog' em um loop infinito para manter o script rodando."
+        ]
+    },
+    {
+        "title": "API de Classificação de Sentimentos",
+        "tags": ["ia", "nlp", "machine learning", "api", "texto"],
+        "stack": ["Python", "FastAPI", "scikit-learn", "NLTK"],
+        "steps": [
+            "1. Coleta de Dados: Baixe um dataset de reviews (ex: IMDb) com labels 'positivo' e 'negativo'.",
+            "2. Pré-processamento: Limpe o texto removendo pontuação, stop words e aplicando stemming/lematização com NLTK.",
+            "3. Vetorização: Use TfidfVectorizer do scikit-learn para transformar o texto em vetores numéricos.",
+            "4. Treinamento: Treine um modelo de classificação simples, como Naive Bayes ou Logistic Regression.",
+            "5. Criação da API: Crie um endpoint no FastAPI que recebe um texto, o processa, e retorna a predição do modelo (positivo/negativo).",
+            "6. Dockerização: Crie um Dockerfile para empacotar e distribuir a API facilmente."
+        ]
+    },
+    {
+        "title": "Detector de Objetos em Imagens",
+        "tags": ["ia", "visão computacional", "deep learning", "imagem"],
+        "stack": ["Python", "OpenCV", "PyTorch", "YOLO"],
+        "steps": [
+            "1. Setup do Ambiente: Instale as bibliotecas 'opencv-python', 'torch' e 'ultralytics'.",
+            "2. Carregar Modelo: Carregue um modelo YOLO pré-treinado (ex: 'yolov8n.pt') usando a biblioteca 'ultralytics'.",
+            "3. Função de Detecção: Crie uma função que recebe uma imagem (carregada com OpenCV), passa pelo modelo YOLO e obtém as predições (caixas delimitadoras, classes e confianças).",
+            "4. Desenhar na Imagem: Itere sobre as predições e use as funções do OpenCV para desenhar as caixas e os labels na imagem original.",
+            "5. Exibição/Salvar: Mostre a imagem com as detecções em uma janela ou salve-a em um novo arquivo.",
+            "6. CLI Simples: Crie uma interface de linha de comando simples com 'argparse' para passar o caminho da imagem a ser processada."
+        ]
+    },
+    {
+        "title": "Sistema de Gestão de Tarefas",
+        "tags": ["tarefas", "produtividade", "kanban", "equipe"],
+        "stack": ["React", "Node.js", "Express", "MongoDB", "Socket.io"],
+        "steps": [
+            "1. Setup: Crie o backend com Node.js/Express e o frontend com React (ou Next.js)",
+            "2. Modelagem: Defina os modelos de dados - Usuário, Projeto, Tarefa (com status: todo, doing, done)",
+            "3. Autenticação: Implemente login/registro com JWT para controle de acesso",
+            "4. CRUD de Tarefas: Crie endpoints REST para criar, listar, atualizar e deletar tarefas",
+            "5. Board Kanban: Implemente drag-and-drop no frontend usando react-beautiful-dnd",
+            "6. Tempo Real: Use Socket.io para sincronizar mudanças entre usuários em tempo real",
+            "7. Filtros: Adicione filtros por projeto, responsável, prioridade e data"
+        ]
+    },
+    {
+        "title": "Plataforma de Cursos Online",
+        "tags": ["educação", "cursos", "videoaulas", "e-learning"],
+        "stack": ["Next.js", "PostgreSQL", "Prisma", "AWS S3", "Stripe"],
+        "steps": [
+            "1. Modelagem: Crie modelos para Curso, Módulo, Aula, Usuário, Progresso",
+            "2. Upload de Vídeos: Integre com AWS S3 ou Cloudinary para armazenar vídeos",
+            "3. Player: Implemente um player de vídeo com controles personalizados",
+            "4. Sistema de Progresso: Rastreie quais aulas o aluno já assistiu",
+            "5. Pagamentos: Integre Stripe para venda de cursos",
+            "6. Certificados: Gere certificados em PDF ao completar um curso",
+            "7. Área do Instrutor: Painel para criação e gestão de cursos"
+        ]
+    },
+    {
+        "title": "Sistema de Controle Financeiro",
+        "tags": ["finanças", "gastos", "planejamento", "orçamento"],
+        "stack": ["React", "Python", "FastAPI", "PostgreSQL", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Defina Conta, Categoria, Transação (receita/despesa), Orçamento",
+            "2. CRUD de Transações: Endpoints para registrar receitas e despesas",
+            "3. Categorização: Sistema de categorias personalizáveis (alimentação, transporte, etc)",
+            "4. Dashboard: Gráficos de pizza e barras mostrando gastos por categoria",
+            "5. Relatórios: Gere relatórios mensais e anuais em PDF",
+            "6. Metas de Orçamento: Defina limites por categoria e alerte quando ultrapassar",
+            "7. Importação: Permita importar extratos bancários (CSV/OFX)"
+        ]
+    },
+    {
+        "title": "Chatbot de Atendimento",
+        "tags": ["chatbot", "IA", "automação", "suporte"],
+        "stack": ["Python", "Rasa", "FastAPI", "React", "WebSocket"],
+        "steps": [
+            "1. Setup Rasa: Instale o Rasa e crie um projeto base",
+            "2. Intents: Defina intenções (saudação, dúvida, reclamação, despedida)",
+            "3. Treinamento: Crie exemplos de frases para cada intent e treine o modelo",
+            "4. Stories: Defina fluxos de conversação no arquivo stories.yml",
+            "5. Actions: Implemente actions customizadas para consultar banco de dados",
+            "6. API: Crie endpoints FastAPI para conectar o Rasa ao frontend",
+            "7. Interface: Desenvolva um widget de chat com React e WebSocket"
+        ]
+    },
+    {
+        "title": "Plataforma de Marketplace",
+        "tags": ["marketplace", "loja", "vendas", "produtos"],
+        "stack": ["Next.js", "Node.js", "PostgreSQL", "Stripe Connect", "Redis"],
+        "steps": [
+            "1. Multi-tenant: Modele Vendedor, Loja, Produto, Pedido, Avaliação",
+            "2. Cadastro de Vendedores: Sistema de onboarding para novos vendedores",
+            "3. Catálogo: Cada vendedor gerencia seus próprios produtos",
+            "4. Busca e Filtros: Implemente busca com Elasticsearch ou Algolia",
+            "5. Carrinho: Sistema de carrinho com produtos de múltiplos vendedores",
+            "6. Pagamentos: Use Stripe Connect para split de pagamentos entre vendedores",
+            "7. Avaliações: Sistema de reviews e ratings para produtos e vendedores"
+        ]
+    },
+    {
+        "title": "Sistema de Delivery Local",
+        "tags": ["delivery", "comida", "logística", "pedidos"],
+        "stack": ["React Native", "Node.js", "MongoDB", "Google Maps API", "Socket.io"],
+        "steps": [
+            "1. Modelagem: Restaurante, Cardápio, Pedido, Entregador, Cliente",
+            "2. Catálogo: Sistema para restaurantes cadastrarem pratos com fotos e preços",
+            "3. Pedidos: Fluxo completo de carrinho, checkout e confirmação",
+            "4. Rastreamento: Integre Google Maps API para tracking em tempo real",
+            "5. Status: Atualize status do pedido (preparando, saiu para entrega, entregue)",
+            "6. Notificações: Push notifications para cliente e entregador",
+            "7. Pagamentos: Integre com gateway (Stripe, PagSeguro, Mercado Pago)"
+        ]
+    },
+    {
+        "title": "Aplicativo de Lista de Compras",
+        "tags": ["compras", "supermercado", "organização"],
+        "stack": ["React Native", "Firebase", "AsyncStorage"],
+        "steps": [
+            "1. Setup: Crie um app React Native com navegação básica",
+            "2. CRUD Local: Use AsyncStorage para salvar listas offline",
+            "3. Categorias: Organize itens por categoria (frutas, laticínios, etc)",
+            "4. Checkbox: Marque itens como comprados com animação",
+            "5. Compartilhamento: Use Firebase Realtime Database para listas compartilhadas",
+            "6. Histórico: Salve listas antigas para reutilização",
+            "7. Sugestões: Implemente autocomplete baseado em compras anteriores"
+        ]
+    },
+    {
+        "title": "Sistema de Monitoramento de Estoque",
+        "tags": ["estoque", "inventário", "produtos"],
+        "stack": ["Django", "PostgreSQL", "Celery", "Redis", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Produto, Categoria, Fornecedor, Movimentação (entrada/saída)",
+            "2. CRUD: Endpoints para gerenciar produtos e fornecedores",
+            "3. Movimentações: Registre entradas (compras) e saídas (vendas)",
+            "4. Alertas: Configure estoque mínimo e envie alertas por email",
+            "5. Relatórios: Gere relatórios de giro de estoque e produtos mais vendidos",
+            "6. Código de Barras: Integre leitor de código de barras para agilizar",
+            "7. Dashboard: Visualize métricas em tempo real com gráficos"
+        ]
+    },
+    {
+        "title": "Aplicação de Previsão do Tempo",
+        "tags": ["clima", "api", "meteorologia"],
+        "stack": ["React", "OpenWeatherMap API", "Geolocation API", "Chart.js"],
+        "steps": [
+            "1. Setup: Crie um projeto React e obtenha API key do OpenWeatherMap",
+            "2. Geolocalização: Use a Geolocation API para detectar localização do usuário",
+            "3. Busca: Implemente busca de cidades com autocomplete",
+            "4. Dados Atuais: Mostre temperatura, umidade, vento, sensação térmica",
+            "5. Previsão: Exiba previsão para os próximos 7 dias",
+            "6. Gráficos: Visualize variação de temperatura ao longo do dia",
+            "7. Favoritos: Salve cidades favoritas no localStorage"
+        ]
+    },
+    {
+        "title": "Gerador de Currículos",
+        "tags": ["currículo", "documento", "emprego"],
+        "stack": ["React", "Node.js", "PDFKit", "TailwindCSS"],
+        "steps": [
+            "1. Formulário: Crie um formulário multi-step para coletar dados pessoais, experiência, educação",
+            "2. Templates: Desenvolva 3-5 templates de currículo com estilos diferentes",
+            "3. Preview: Mostre preview em tempo real conforme o usuário preenche",
+            "4. Geração PDF: Use PDFKit no backend para gerar o PDF final",
+            "5. Download: Endpoint para baixar o currículo em PDF",
+            "6. Salvamento: Permita salvar rascunhos no localStorage",
+            "7. Dicas: Adicione tooltips com dicas de como preencher cada seção"
+        ]
+    },
+    {
+        "title": "Sistema de Agenda Médica",
+        "tags": ["médico", "consultas", "agendamentos"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Twilio", "Google Calendar API"],
+        "steps": [
+            "1. Modelagem: Médico, Paciente, Consulta, Especialidade, Horário Disponível",
+            "2. Cadastro: Sistema de registro para médicos e pacientes",
+            "3. Agenda: Visualize horários disponíveis em formato de calendário",
+            "4. Agendamento: Permita marcar consultas com confirmação automática",
+            "5. Lembretes: Envie SMS/WhatsApp via Twilio 24h antes da consulta",
+            "6. Prontuário: Área para médicos registrarem anotações das consultas",
+            "7. Relatórios: Gere relatórios de consultas realizadas e cancelamentos"
+        ]
+    },
+    {
+        "title": "Aplicativo de Hábitos Saudáveis",
+        "tags": ["saúde", "hábitos", "rotina"],
+        "stack": ["React Native", "Firebase", "Expo", "Chart.js"],
+        "steps": [
+            "1. Setup: Crie um app React Native com Expo",
+            "2. Cadastro de Hábitos: Permita criar hábitos personalizados (beber água, exercício, meditação)",
+            "3. Check-in Diário: Interface para marcar hábitos cumpridos a cada dia",
+            "4. Streaks: Calcule e exiba sequências de dias consecutivos",
+            "5. Notificações: Lembretes diários para cada hábito",
+            "6. Estatísticas: Gráficos mostrando progresso semanal/mensal",
+            "7. Motivação: Sistema de conquistas e badges para engajamento"
+        ]
+    },
+    {
+        "title": "Plataforma de Eventos",
+        "tags": ["eventos", "ingressos", "participantes"],
+        "stack": ["Next.js", "PostgreSQL", "Stripe", "QR Code", "SendGrid"],
+        "steps": [
+            "1. Modelagem: Evento, Ingresso, Participante, Check-in",
+            "2. Criação de Eventos: Formulário completo com data, local, descrição, imagem",
+            "3. Tipos de Ingresso: Suporte para diferentes lotes e preços",
+            "4. Pagamento: Integre Stripe para venda de ingressos",
+            "5. QR Code: Gere QR codes únicos para cada ingresso",
+            "6. Email: Envie ingresso por email com SendGrid",
+            "7. Check-in: App para escanear QR codes e validar entrada"
+        ]
+    },
+    {
+        "title": "Sistema de Gestão de Academias",
+        "tags": ["academia", "fitness", "cadastro"],
+        "stack": ["React", "Django", "PostgreSQL", "Celery", "Stripe"],
+        "steps": [
+            "1. Modelagem: Aluno, Plano, Pagamento, Treino, Instru tor, Presença",
+            "2. Cadastro de Alunos: Ficha completa com dados pessoais e avaliação física",
+            "3. Planos: Gerencie diferentes tipos de planos (mensal, trimestral, anual)",
+            "4. Pagamentos: Controle de mensalidades com integração Stripe",
+            "5. Catraca: Sistema de check-in com controle de acesso",
+            "6. Treinos: Instrutores podem criar fichas de treino personalizadas",
+            "7. Relatórios: Dashboard com métricas de frequência e inadimplência"
+        ]
+    },
+    {
+        "title": "Gerenciador de Estudos",
+        "tags": ["estudos", "tempo", "foco", "pomodoro"],
+        "stack": ["React", "Node.js", "MongoDB", "Chart.js"],
+        "steps": [
+            "1. Timer Pomodoro: Implemente timer de 25min trabalho / 5min pausa",
+            "2. Matérias: Organize sessões de estudo por matéria/assunto",
+            "3. Metas: Defina metas diárias e semanais de horas de estudo",
+            "4. Estatísticas: Gráficos de tempo estudado por matéria",
+            "5. Calendário: Visualize sessões de estudo em um calendário",
+            "6. Notas: Área para fazer anotações rápidas durante o estudo",
+            "7. Ranking: Sistema de pontos e conquistas para motivação"
+        ]
+    },
+    {
+        "title": "Sistema de Freelancers",
+        "tags": ["freelas", "propostas", "projetos"],
+        "stack": ["Next.js", "PostgreSQL", "Stripe", "WebSocket", "AWS S3"],
+        "steps": [
+            "1. Modelagem: Freelancer, Cliente, Projeto, Proposta, Milestone",
+            "2. Perfis: Freelancers criam portfólios com habilidades e trabalhos anteriores",
+            "3. Projetos: Clientes postam projetos com descrição e orçamento",
+            "4. Propostas: Freelancers enviam propostas com preço e prazo",
+            "5. Chat: Sistema de mensagens em tempo real entre cliente e freelancer",
+            "6. Escrow: Pagamentos ficam retidos até aprovação do trabalho",
+            "7. Avaliações: Sistema de reviews e ratings após conclusão"
+        ]
+    },
+    {
+        "title": "Aplicação de Controle de Veículos",
+        "tags": ["frota", "carros", "manutenção"],
+        "stack": ["React", "Python", "FastAPI", "PostgreSQL", "Celery"],
+        "steps": [
+            "1. Modelagem: Veículo, Motorista, Manutenção, Abastecimento, Multa",
+            "2. Cadastro: Registre veículos com placa, modelo, ano, quilometragem",
+            "3. Manutenções: Agende e registre manutenções preventivas e corretivas",
+            "4. Abastecimento: Controle gastos com combustível e calcule média de consumo",
+            "5. Alertas: Notificações para revisão, IPVA, seguro, licenciamento",
+            "6. Relatórios: Custos totais por veículo e por período",
+            "7. Dashboard: Visualize métricas da frota em tempo real"
+        ]
+    },
+    {
+        "title": "Sistema de Controle de Contratos",
+        "tags": ["contratos", "jurídico", "documentos"],
+        "stack": ["React", "Node.js", "PostgreSQL", "AWS S3", "DocuSign API"],
+        "steps": [
+            "1. Modelagem: Contrato, Parte, Cláusula, Renovação, Documento",
+            "2. Upload: Armazene PDFs de contratos no AWS S3",
+            "3. Metadados: Extraia e cadastre informações-chave (partes, valor, vigência)",
+            "4. Alertas: Notifique sobre vencimentos e renovações próximas",
+            "5. Assinatura Digital: Integre DocuSign para assinaturas eletrônicas",
+            "6. Busca: Sistema de busca por texto completo nos contratos",
+            "7. Histórico: Rastreie todas as alterações e versões do contrato"
+        ]
+    },
+    {
+        "title": "Plataforma de Doações",
+        "tags": ["doações", "ong", "financeiro"],
+        "stack": ["Next.js", "Stripe", "PostgreSQL", "SendGrid", "Chart.js"],
+        "steps": [
+            "1. Modelagem: ONG, Campanha, Doador, Doação, Meta",
+            "2. Cadastro de ONGs: Perfis com missão, projetos e transparência",
+            "3. Campanhas: Crie campanhas com metas financeiras e prazos",
+            "4. Doações: Integre Stripe para pagamentos únicos ou recorrentes",
+            "5. Progress Bar: Mostre progresso visual das metas",
+            "6. Recibos: Envie recibos por email para dedução no IR",
+            "7. Transparência: Dashboard público mostrando como o dinheiro foi usado"
+        ]
+    },
+    {
+        "title": "Sistema de Biblioteca Digital",
+        "tags": ["livros", "leitura", "biblioteca"],
+        "stack": ["React", "Django", "PostgreSQL", "Elasticsearch", "AWS S3"],
+        "steps": [
+            "1. Modelagem: Livro, Autor, Categoria, Usuário, Empréstimo, Reserva",
+            "2. Catálogo: Sistema de cadastro de livros com capa, sinopse, ISBN",
+            "3. Busca Avançada: Use Elasticsearch para busca por título, autor, categoria",
+            "4. Empréstimos: Controle de empréstimos com prazo de devolução",
+            "5. Reservas: Permita reservar livros que estão emprestados",
+            "6. Multas: Calcule multas automáticas por atraso",
+            "7. Relatórios: Livros mais emprestados, usuários mais ativos"
+        ]
+    },
+    {
+        "title": "Monitor de Preços de Produtos",
+        "tags": ["preços", "comparação", "ecommerce"],
+        "stack": ["Python", "Scrapy", "FastAPI", "PostgreSQL", "Celery", "Redis"],
+        "steps": [
+            "1. Web Scraping: Use Scrapy para extrair preços de sites de e-commerce",
+            "2. Agendamento: Configure Celery para rodar scraping periódico (diário/horário)",
+            "3. Armazenamento: Salve histórico de preços no PostgreSQL",
+            "4. Alertas: Notifique usuários quando preço cair abaixo do desejado",
+            "5. Gráficos: Visualize variação de preços ao longo do tempo",
+            "6. Comparação: Compare preços entre diferentes lojas",
+            "7. API: Exponha dados via FastAPI para integrações"
+        ]
+    },
+    {
+        "title": "Sistema de Chamados Internos",
+        "tags": ["chamados", "suporte", "tickets"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Socket.io", "SendGrid"],
+        "steps": [
+            "1. Modelagem: Ticket, Usuário, Categoria, Prioridade, Status, Comentário",
+            "2. Abertura: Formulário para criar tickets com anexos",
+            "3. Atribuição: Sistema para atribuir tickets a técnicos",
+            "4. Status: Workflow de status (aberto, em andamento, resolvido, fechado)",
+            "5. Comentários: Thread de comunicação entre solicitante e técnico",
+            "6. SLA: Monitore tempo de resolução e alerte sobre SLA",
+            "7. Relatórios: Métricas de tickets por categoria, técnico, tempo médio"
+        ]
+    },
+    {
+        "title": "Criador de Propostas Comerciais",
+        "tags": ["vendas", "propostas", "negócios"],
+        "stack": ["React", "Node.js", "PostgreSQL", "PDFKit", "TinyMCE"],
+        "steps": [
+            "1. Templates: Crie templates de propostas reutilizáveis",
+            "2. Editor: Use TinyMCE para edição rica de texto",
+            "3. Variáveis: Sistema de variáveis dinâmicas (nome cliente, valor, prazo)",
+            "4. Itens: Adicione produtos/serviços com preços e quantidades",
+            "5. Cálculos: Calcule automaticamente subtotais, impostos, total",
+            "6. Geração PDF: Exporte proposta em PDF profissional",
+            "7. Tracking: Rastreie se o cliente abriu/visualizou a proposta"
+        ]
+    },
+    {
+        "title": "Aplicação de Meditação",
+        "tags": ["meditação", "saúde mental", "relaxamento"],
+        "stack": ["React Native", "Expo", "Firebase", "Audio API"],
+        "steps": [
+            "1. Biblioteca de Áudios: Organize meditações guiadas por categoria e duração",
+            "2. Player: Implemente player de áudio com controles (play, pause, seek)",
+            "3. Timer: Meditação livre com timer configurável e sons ambiente",
+            "4. Progresso: Rastreie dias consecutivos e minutos meditados",
+            "5. Lembretes: Notificações diárias para meditar",
+            "6. Sons Ambiente: Biblioteca de sons (chuva, oceano, floresta)",
+            "7. Estatísticas: Gráficos de progresso e conquistas"
+        ]
+    },
+    {
+        "title": "Sistema de Reservas de Salas",
+        "tags": ["salas", "coworking", "agendamento"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Google Calendar API"],
+        "steps": [
+            "1. Modelagem: Sala, Reserva, Usuário, Recurso (projetor, whiteboard)",
+            "2. Calendário: Visualização de disponibilidade em grade horária",
+            "3. Reserva: Sistema de booking com verificação de conflitos",
+            "4. Recorrência: Permita reservas recorrentes (diárias, semanais)",
+            "5. Recursos: Associe recursos às salas e permita filtrar por eles",
+            "6. Check-in: QR code ou NFC para confirmar uso da sala",
+            "7. Relatórios: Taxa de ocupação e salas mais utilizadas"
+        ]
+    },
+    {
+        "title": "Plataforma de Podcast",
+        "tags": ["podcast", "áudio", "episódios"],
+        "stack": ["Next.js", "Node.js", "PostgreSQL", "AWS S3", "RSS"],
+        "steps": [
+            "1. Modelagem: Podcast, Episódio, Categoria, Autor, Inscrição",
+            "2. Upload: Armazene arquivos de áudio no AWS S3",
+            "3. Player: Player web com controles avançados e velocidade variável",
+            "4. Feed RSS: Gere feeds RSS para distribuição em plataformas",
+            "5. Transcrição: Integre API de speech-to-text para transcrições",
+            "6. Comentários: Sistema de comentários e avaliações",
+            "7. Analytics: Métricas de reproduções, downloads, retenção"
+        ]
+    },
+    {
+        "title": "Sistema de Controle de Obras",
+        "tags": ["construção", "obras", "planejamento"],
+        "stack": ["React", "Python", "Django", "PostgreSQL", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Obra, Etapa, Tarefa, Funcionário, Material, Orçamento",
+            "2. Cronograma: Gráfico de Gantt para visualizar etapas e dependências",
+            "3. Orçamento: Controle de custos planejados vs realizados",
+            "4. Materiais: Gestão de compra e consumo de materiais",
+            "5. Mão de Obra: Registro de horas trabalhadas por funcionário",
+            "6. Fotos: Upload de fotos do progresso da obra",
+            "7. Relatórios: Dashboards com status, custos e prazos"
+        ]
+    },
+    {
+        "title": "Aplicativo de Networking Profissional",
+        "tags": ["networking", "contatos"],
+        "stack": ["React Native", "Node.js", "MongoDB", "Socket.io", "Geolocation"],
+        "steps": [
+            "1. Perfis: Crie perfis profissionais com habilidades, experiência, interesses",
+            "2. Matching: Algoritmo para sugerir conexões baseado em interesses comuns",
+            "3. QR Code: Troca rápida de contatos via QR code",
+            "4. Eventos: Lista de eventos de networking próximos",
+            "5. Chat: Mensagens diretas entre conexões",
+            "6. Feed: Timeline com atualizações profissionais da rede",
+            "7. Recomendações: Sistema de endosso de habilidades"
+        ]
+    },
+    {
+        "title": "Sistema de Recrutamento",
+        "tags": ["rh", "vagas", "candidatos"],
+        "stack": ["React", "Node.js", "PostgreSQL", "AWS S3", "SendGrid"],
+        "steps": [
+            "1. Modelagem: Vaga, Candidato, Aplicação, Entrevista, Avaliação",
+            "2. Portal de Vagas: Página pública com vagas abertas",
+            "3. Candidatura: Formulário de aplicação com upload de currículo",
+            "4. Triagem: Sistema de filtros e busca de candidatos",
+            "5. Pipeline: Kanban com etapas do processo seletivo",
+            "6. Agendamento: Marque entrevistas e envie convites automáticos",
+            "7. Avaliação: Formulários de feedback para entrevistadores"
+        ]
+    },
+    {
+        "title": "Ferramenta de Análise de SEO",
+        "tags": ["seo", "marketing", "análise"],
+        "stack": ["Python", "Scrapy", "FastAPI", "React", "Chart.js"],
+        "steps": [
+            "1. Crawler: Use Scrapy para analisar estrutura do site (meta tags, headings, links)",
+            "2. Keywords: Extraia e analise densidade de palavras-chave",
+            "3. Performance: Integre com Google PageSpeed Insights API",
+            "4. Backlinks: Identifique e liste backlinks do site",
+            "5. Concorrentes: Compare métricas com sites concorrentes",
+            "6. Relatórios: Gere relatórios com recomendações de melhoria",
+            "7. Monitoramento: Acompanhe posição de keywords ao longo do tempo"
+        ]
+    },
+    {
+        "title": "Gerenciador de Ideias",
+        "tags": ["ideias", "inovação", "brainstorming"],
+        "stack": ["React", "Node.js", "MongoDB", "Socket.io"],
+        "steps": [
+            "1. Cadastro de Ideias: Formulário para registrar ideias com título, descrição, categoria",
+            "2. Tags: Sistema de tags para organizar e filtrar ideias",
+            "3. Votação: Membros da equipe podem votar nas melhores ideias",
+            "4. Comentários: Thread de discussão para cada ideia",
+            "5. Status: Workflow (nova, em análise, aprovada, em desenvolvimento, descartada)",
+            "6. Colaboração: Sessões de brainstorming em tempo real com Socket.io",
+            "7. Relatórios: Dashboard com ideias mais votadas e implementadas"
+        ]
+    },
+    {
+        "title": "Sistema de Notificação Push",
+        "tags": ["push", "mensagens", "mobile"],
+        "stack": ["Node.js", "Firebase Cloud Messaging", "PostgreSQL", "Redis", "Bull"],
+        "steps": [
+            "1. Setup FCM: Configure Firebase Cloud Messaging para Android/iOS",
+            "2. Registro: Armazene tokens de dispositivos dos usuários",
+            "3. Segmentação: Crie grupos de usuários (todos, premium, região, etc)",
+            "4. Agendamento: Use Bull para agendar notificações futuras",
+            "5. Templates: Crie templates de mensagens reutilizáveis",
+            "6. Analytics: Rastreie taxa de entrega, abertura e conversão",
+            "7. A/B Testing: Teste diferentes mensagens e horários"
+        ]
+    },
+    {
+        "title": "Plataforma de Feedbacks",
+        "tags": ["feedback", "equipe", "desempenho"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Feedback, Usuário, Ciclo, Competência, Meta",
+            "2. Ciclos: Configure períodos de avaliação (trimestral, semestral)",
+            "3. 360°: Feedback de múltiplas fontes (gestor, pares, subordinados)",
+            "4. Formulários: Questionários customizáveis por competência",
+            "5. Anônimo: Opção de feedback anônimo quando apropriado",
+            "6. Relatórios: Visualize evolução de competências ao longo do tempo",
+            "7. PDI: Gere Plano de Desenvolvimento Individual baseado nos feedbacks"
+        ]
+    },
+    {
+        "title": "Sistema de Controle de Assinaturas",
+        "tags": ["assinaturas", "pagamentos"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Stripe Subscriptions", "SendGrid"],
+        "steps": [
+            "1. Modelagem: Plano, Assinatura, Usuário, Pagamento, Fatura",
+            "2. Planos: Crie diferentes níveis (básico, premium, enterprise)",
+            "3. Stripe: Integre Stripe Subscriptions para cobranças recorrentes",
+            "4. Trial: Implemente período de teste gratuito",
+            "5. Upgrades/Downgrades: Permita mudança de plano com prorrateamento",
+            "6. Cancelamento: Fluxo de cancelamento com pesquisa de motivo",
+            "7. Dunning: Sistema de recuperação de pagamentos falhos"
+        ]
+    },
+    {
+        "title": "Aplicação de Lembretes Inteligentes",
+        "tags": ["lembretes", "automação"],
+        "stack": ["React Native", "Node.js", "MongoDB", "ML", "Push Notifications"],
+        "steps": [
+            "1. CRUD de Lembretes: Crie lembretes com título, descrição, data/hora",
+            "2. Recorrência: Suporte para lembretes recorrentes (diário, semanal, mensal)",
+            "3. Localização: Lembretes baseados em geolocalização (ao chegar/sair de um lugar)",
+            "4. Inteligência: Use ML para sugerir horários baseado em padrões do usuário",
+            "5. Voz: Integre reconhecimento de voz para criar lembretes",
+            "6. Snooze: Opções de adiar com sugestões inteligentes",
+            "7. Integrações: Conecte com calendário, tarefas, emails"
+        ]
+    },
+    {
+        "title": "Plataforma de Votação Online",
+        "tags": ["votação", "enquetes"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Blockchain", "JWT"],
+        "steps": [
+            "1. Modelagem: Eleição, Candidato, Eleitor, Voto",
+            "2. Autenticação: Sistema robusto para validar identidade dos eleitores",
+            "3. Cédula: Interface para visualizar candidatos e registrar voto",
+            "4. Anonimato: Garanta que votos sejam anônimos mas verificáveis",
+            "5. Blockchain: Use blockchain para imutabilidade e transparência",
+            "6. Apuração: Contagem automática em tempo real",
+            "7. Auditoria: Logs completos para auditoria pós-eleição"
+        ]
+    },
+    {
+        "title": "Sistema de Gestão Escolar",
+        "tags": ["escola", "alunos", "notas"],
+        "stack": ["React", "Django", "PostgreSQL", "SendGrid", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Aluno, Professor, Turma, Disciplina, Nota, Frequência",
+            "2. Matrículas: Sistema de cadastro e matrícula de alunos",
+            "3. Diário: Professores lançam notas e frequências",
+            "4. Boletim: Geração automática de boletins",
+            "5. Portal do Aluno: Área para alunos consultarem notas e materiais",
+            "6. Comunicação: Envio de avisos para pais via email/SMS",
+            "7. Relatórios: Dashboards com desempenho por turma e disciplina"
+        ]
+    },
+    {
+        "title": "Dashboard de Analytics",
+        "tags": ["analytics", "dados", "gráficos"],
+        "stack": ["React", "Python", "FastAPI", "PostgreSQL", "D3.js", "Pandas"],
+        "steps": [
+            "1. Conexão de Dados: Integre com múltiplas fontes (APIs, bancos, CSVs)",
+            "2. ETL: Pipeline para extrair, transformar e carregar dados",
+            "3. Widgets: Crie componentes reutilizáveis (gráficos, tabelas, KPIs)",
+            "4. Drag-and-Drop: Interface para montar dashboards customizados",
+            "5. Filtros: Filtros dinâmicos por período, categoria, região",
+            "6. Tempo Real: Atualização automática de dados com WebSocket",
+            "7. Export: Exporte relatórios em PDF, Excel, CSV"
+        ]
+    },
+    {
+        "title": "Sistema de Gamificação",
+        "tags": ["gamificação", "pontos", "badges"],
+        "stack": ["React", "Node.js", "MongoDB", "Redis", "Socket.io"],
+        "steps": [
+            "1. Modelagem: Usuário, Ponto, Badge, Conquista, Ranking, Missão",
+            "2. Sistema de Pontos: Defina ações que geram pontos",
+            "3. Badges: Crie badges com critérios de conquista",
+            "4. Níveis: Sistema de progressão por níveis",
+            "5. Ranking: Leaderboard global e por categoria",
+            "6. Missões: Desafios diários/semanais com recompensas",
+            "7. Notificações: Alerte sobre conquistas e subida de nível"
+        ]
+    },
+    {
+        "title": "Aplicação de Receitas",
+        "tags": ["culinária", "receitas", "cozinha"],
+        "stack": ["React Native", "Node.js", "MongoDB", "AWS S3", "Algolia"],
+        "steps": [
+            "1. Modelagem: Receita, Ingrediente, Categoria, Usuário, Avaliação",
+            "2. Cadastro: Formulário para adicionar receitas com fotos",
+            "3. Busca: Use Algolia para busca rápida por nome, ingrediente, categoria",
+            "4. Filtros: Filtre por tempo de preparo, dificuldade, tipo de refeição",
+            "5. Favoritos: Sistema de favoritos e coleções personalizadas",
+            "6. Timer: Timer integrado para acompanhar o preparo",
+            "7. Lista de Compras: Gere lista de compras a partir dos ingredientes"
+        ]
+    },
+    {
+        "title": "Plataforma de Mentorias",
+        "tags": ["mentoria", "consultoria"],
+        "stack": ["Next.js", "Node.js", "PostgreSQL", "Stripe", "Google Meet API"],
+        "steps": [
+            "1. Modelagem: Mentor, Mentorado, Sessão, Área de Expertise, Avaliação",
+            "2. Perfis de Mentores: Cadastro com experiência, especialidades, tarifas",
+            "3. Busca: Encontre mentores por área, preço, disponibilidade",
+            "4. Agendamento: Sistema de booking com calendário integrado",
+            "5. Videochamada: Integre Google Meet ou Zoom para sessões online",
+            "6. Pagamentos: Processe pagamentos por sessão via Stripe",
+            "7. Avaliações: Sistema de reviews e ratings pós-sessão"
+        ]
+    },
+    {
+        "title": "Sistema de Controle de Projetos",
+        "tags": ["projetos", "gestão", "equipes"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Socket.io", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Projeto, Tarefa, Sprint, Membro, Milestone",
+            "2. Metodologias: Suporte para Scrum, Kanban, Waterfall",
+            "3. Backlog: Gerencie backlog de tarefas com priorização",
+            "4. Sprints: Planeje e execute sprints com burndown charts",
+            "5. Dependências: Defina dependências entre tarefas",
+            "6. Tempo: Rastreie tempo gasto em cada tarefa",
+            "7. Relatórios: Velocity, cumulative flow, lead time"
+        ]
+    },
+    {
+        "title": "Catálogo Digital para Lojas",
+        "tags": ["catálogo", "ecommerce"],
+        "stack": ["Next.js", "Node.js", "MongoDB", "AWS S3", "QR Code"],
+        "steps": [
+            "1. Modelagem: Produto, Categoria, Variante (tamanho, cor), Imagem",
+            "2. Upload: Sistema de upload múltiplo de imagens para AWS S3",
+            "3. Organização: Estrutura hierárquica de categorias",
+            "4. Busca e Filtros: Busca por nome, categoria, preço, disponibilidade",
+            "5. QR Code: Gere QR codes para cada produto",
+            "6. Compartilhamento: Compartilhe catálogo via link ou WhatsApp",
+            "7. Analytics: Rastreie produtos mais visualizados"
+        ]
+    },
+    {
+        "title": "Plataforma de Matching (estilo Tinder)",
+        "tags": ["matching", "perfis", "algoritmo"],
+        "stack": ["React Native", "Node.js", "MongoDB", "Socket.io", "Geolocation"],
+        "steps": [
+            "1. Modelagem: Usuário, Perfil, Match, Mensagem, Preferência",
+            "2. Perfis: Cadastro com fotos, bio, interesses",
+            "3. Swipe: Interface de swipe (like/dislike) com animações",
+            "4. Algoritmo: Sugira perfis baseado em localização, preferências, interesses",
+            "5. Matches: Notifique quando houver match mútuo",
+            "6. Chat: Sistema de mensagens em tempo real",
+            "7. Moderação: Sistema de report e bloqueio de usuários"
+        ]
+    },
+    {
+        "title": "Sistema de Controle de Senhas",
+        "tags": ["senhas", "segurança"],
+        "stack": ["React", "Node.js", "PostgreSQL", "AES-256", "2FA"],
+        "steps": [
+            "1. Criptografia: Use AES-256 para criptografar senhas armazenadas",
+            "2. Master Password: Senha mestra para acessar o cofre",
+            "3. CRUD: Adicione, edite, delete e visualize senhas",
+            "4. Gerador: Gere senhas fortes com parâmetros customizáveis",
+            "5. Organização: Organize por categorias e tags",
+            "6. 2FA: Implemente autenticação de dois fatores",
+            "7. Auto-fill: Extensão de navegador para preencher senhas automaticamente"
+        ]
+    },
+    {
+        "title": "Aplicação de Música Online",
+        "tags": ["música", "playlists", "streaming"],
+        "stack": ["React", "Node.js", "MongoDB", "AWS S3", "Web Audio API"],
+        "steps": [
+            "1. Modelagem: Música, Artista, Álbum, Playlist, Usuário",
+            "2. Upload: Armazene arquivos de áudio no AWS S3",
+            "3. Player: Player web com controles, equalizer, shuffle, repeat",
+            "4. Playlists: Crie e gerencie playlists personalizadas",
+            "5. Busca: Busca por música, artista, álbum, gênero",
+            "6. Recomendações: Algoritmo de recomendação baseado em histórico",
+            "7. Social: Compartilhe playlists e siga outros usuários"
+        ]
+    },
+    {
+        "title": "Sistema de Gestão de Documentos",
+        "tags": ["documentos", "upload", "organização"],
+        "stack": ["React", "Node.js", "PostgreSQL", "AWS S3", "Elasticsearch"],
+        "steps": [
+            "1. Modelagem: Documento, Pasta, Versão, Permissão, Tag",
+            "2. Upload: Drag-and-drop para upload múltiplo de arquivos",
+            "3. Organização: Estrutura de pastas hierárquica",
+            "4. Versionamento: Controle de versões com histórico",
+            "5. Permissões: Controle granular de acesso (leitura, escrita, compartilhamento)",
+            "6. Busca: OCR e busca full-text com Elasticsearch",
+            "7. Preview: Visualize PDFs, imagens, documentos no navegador"
+        ]
+    },
+    {
+        "title": "Plataforma de Revisão de Textos",
+        "tags": ["revisão", "escrita"],
+        "stack": ["React", "Python", "FastAPI", "LanguageTool", "GPT API"],
+        "steps": [
+            "1. Editor: Implemente editor de texto rico com destaque de erros",
+            "2. Gramática: Integre LanguageTool para verificação gramatical",
+            "3. Estilo: Analise clareza, concisão, voz passiva, repetições",
+            "4. Sugestões: Use GPT para sugerir melhorias e reescrita",
+            "5. Dicionário: Dicionário integrado e sinônimos",
+            "6. Métricas: Contagem de palavras, tempo de leitura, legibilidade",
+            "7. Export: Exporte em diversos formatos (DOCX, PDF, Markdown)"
+        ]
+    },
+    {
+        "title": "Sistema de Registro de Horas Trabalhadas",
+        "tags": ["timesheet", "horas"],
+        "stack": ["React", "Node.js", "PostgreSQL", "Chart.js"],
+        "steps": [
+            "1. Modelagem: Registro, Projeto, Tarefa, Usuário, Cliente",
+            "2. Timer: Timer integrado para rastrear tempo em tempo real",
+            "3. Registro Manual: Adicione horas manualmente com data/hora",
+            "4. Projetos: Associe horas a projetos e tarefas específicas",
+            "5. Aprovação: Workflow de aprovação de horas por gestor",
+            "6. Relatórios: Horas por projeto, funcionário, período",
+            "7. Faturamento: Gere faturas baseadas nas horas aprovadas"
+        ]
+    },
+    {
+        "title": "Aplicação de Análise de Sentimento",
+        "tags": ["sentimento", "IA", "linguagem natural"],
+        "stack": ["Python", "FastAPI", "Transformers", "React", "Chart.js"],
+        "steps": [
+            "1. Modelo: Use modelo pré-treinado de sentiment analysis (BERT, RoBERTa)",
+            "2. API: Crie endpoint FastAPI que recebe texto e retorna sentimento",
+            "3. Classificação: Classifique como positivo, negativo, neutro com score de confiança",
+            "4. Batch: Suporte para análise em lote (CSV, JSON)",
+            "5. Visualização: Gráficos de distribuição de sentimentos",
+            "6. Entidades: Extraia entidades mencionadas (produtos, marcas, pessoas)",
+            "7. Dashboard: Monitore sentimento ao longo do tempo (redes sociais, reviews)"
+        ]
+    }
+]
