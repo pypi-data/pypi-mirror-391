@@ -1,0 +1,92 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sptbuild"
+description = "Build and release tool for SPT client plugins"
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "flir", email = "flir.063ur@passmail.net"}
+]
+keywords = ["spt", "tarkov", "bepinex", "plugin", "build", "gitlab"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "semver>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "towncrier>=23.11.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "build>=1.0.0",
+    "twine>=4.0.0",
+]
+
+[project.scripts]
+sptbuild = "sptbuild.__main__:main"
+
+[project.urls]
+Homepage = "https://gitlab.com/flir063-spt/sptbuild"
+Issues = "https://gitlab.com/flir063-spt/sptbuild/-/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sptbuild*"]
+exclude = ["changes*"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sptbuild.__version__"}
+
+[tool.towncrier]
+filename = "CHANGELOG.md"
+directory = "changes"
+title_format = "## [{version}] - {project_date}"
+issue_format = "#{issue}"
+start_string = "<!-- towncrier release notes start -->\n"
+underlines = ["", "", ""]
+template = "changes/template.md"
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug Fixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "improvement"
+name = "Improvements"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Removals"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Miscellaneous"
+showcontent = true
