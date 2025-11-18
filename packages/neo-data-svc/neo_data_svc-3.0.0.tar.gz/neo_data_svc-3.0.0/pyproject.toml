@@ -1,0 +1,66 @@
+[project]
+name = "neo-data-svc"
+version = "3.0.0"
+description = ""
+authors = [
+    {name = "Eric", email = "xiaoxiang.cn@gmail.com"},
+]
+readme = "README.md"
+requires-python = ">=3.12.3"
+license = {text = "Proprietary"}
+
+dependencies = [
+    "dynaconf==3.0.12",
+    "aiosqlite==0.21.0",
+    "sqlalchemy==2.0.43",
+    "sqlmodel==0.0.27",
+    "redis==6.4.0",
+    "pyspark==3.5.5",
+    "delta-spark==3.3.1",
+    "apscheduler==3.11.0",
+    "asyncpg==0.30.0",
+    "psycopg2-binary==2.9.10",
+    "pydantic-settings==2.10.1",
+    "lakefs==0.12.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.mypy]
+files = "."
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+[tool.ruff]
+preview = true
+line-length = 100
+exclude = ["docs"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D203", "D213", "F403", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportAttributeAccessIssue = "none"
+reportMissingImports = false
+reportPrivateImportUsage = false
+reportUndefinedVariable = false
+enableTypeIgnoreComments = true
+reportPrivateUsage = false
+reportGeneralTypeIssues = false
+reportWildcardImportFromLibrary = false
+disableDiagnostics = [
+    "attr-defined",
+    "reportUnknownMemberType",
+    "reportUnknownArgumentType",
+    "reportUnknownVariableType",
+    "reportOperatorIssue"
+]
