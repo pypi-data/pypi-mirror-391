@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deltafq"
+description = "A comprehensive Python quantitative finance library"
+authors = [
+    {name = "DeltaF", email = "leek_li@outlook.com"}
+]
+readme = "README_EN.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+dependencies = [
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
+    "scipy>=1.7.0",
+    "matplotlib>=3.4.0",
+    "yfinance>=0.1.70",
+    "requests>=2.25.0",
+]
+
+# Auto-read version from the VERSION file at build time
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[project.optional-dependencies]
+viz = [
+    "plotly>=5.0.0",
+]
+talib = [
+    "TA-Lib>=0.4.24",
+]
+dev = [
+    "black>=21.0.0",
+    "flake8>=3.9.0",
+    "sphinx>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Delta-F/deltafq"
+Repository = "https://github.com/Delta-F/deltafq"
+Issues = "https://github.com/Delta-F/deltafq/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["deltafq*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
