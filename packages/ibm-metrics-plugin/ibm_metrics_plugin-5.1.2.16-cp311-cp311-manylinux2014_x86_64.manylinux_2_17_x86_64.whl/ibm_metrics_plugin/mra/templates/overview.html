@@ -1,0 +1,45 @@
+<h1> Overview </h1>
+<br>
+<br>
+    <table class="fm_overview">
+        <tr>
+            <td> <p class="medium">Foundational Model</p> </td>
+        </tr>    
+        {% set model_name = report_details.get('Foundation Model Name', "Model name not found") %} 
+        <tr>
+            <td><p class="big">{{model_name}}</p></td>
+        </tr>   
+
+        <tr>
+            <td> <p class="small">{{fm_description_dict.get(model_name, "Model description is not found")}} </p></td>
+        </tr>                  
+    </table>
+
+    <br>
+
+    <table class="fm_overview">
+        <tr>
+            <td> <p class="big">Evaluation Overview:</p> </td> <td> </td>
+        </tr>    
+        {% for report_key, report_value in report_details.items() %}
+            {% if report_key != "utc_date" %}
+                <tr>
+                    <td> <p class="small"> {{report_key}}:</p> </td> <td> <p class="small"> {{report_value}}</p></td>
+                </tr>   
+            {% endif %}
+        {% endfor %}
+               
+    </table>    
+    <br>
+    <br>
+
+    <table class="fm_overview">
+
+        <tr>
+            <td><p class="big">Evaluation Summary</p></td>
+        </tr>   
+
+        <tr>
+            <td> <p class="small"> {{summary}}</p></td>
+        </tr>                  
+    </table>    

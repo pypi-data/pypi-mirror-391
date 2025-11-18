@@ -1,0 +1,35 @@
+<h1>Score Snapshot</h1>
+<article id="metric details">
+  <h3></h3>
+</article>
+<br />
+<p class="medium">Here is a summary of the key results of the testing.</p>
+<br>
+<table class="snapshot">
+
+  <tr>
+    <th style="width: 50%; text-align: left;">Benchmark</th>
+    <th style="width: 25%; text-align: left;">Score/Error Margin</th>
+    <th style="width: 25%; text-align: center;">Range</th>
+
+  </tr>
+
+
+  {% for risk_dim, cards in executive_summary_data.items() %}
+    <tr><td><p class="medium bold" style=" padding: 20px 0 5px 0;"> {{risk_dim }}</p></td></tr>
+      {% for card_name, metrics in cards.items() %}
+
+      <tr style="page-break-inside: avoid; break-inside: avoid;">
+        <td>{{metric_card_name_translation.get(card_name,card_name)}}</td>
+        <td>{{metrics.get("score")}}</td>
+        {% if 'cards.safety' in card_name %}
+          {% set card_id = 'cards.safety.bbq.Age' %}
+        {% else %}
+          {% set card_id = card_name %}  
+        {% endif %}                            
+        <td>{{meta_data_based_on_id[card_id]['Methodology']["Desired_score"]}}</td>
+      </tr>
+    {% endfor %}
+  {% endfor %}
+</table>
+<br>
