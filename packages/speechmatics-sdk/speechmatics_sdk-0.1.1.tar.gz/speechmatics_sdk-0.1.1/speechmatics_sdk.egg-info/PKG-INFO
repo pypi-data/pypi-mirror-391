@@ -1,0 +1,77 @@
+Metadata-Version: 2.4
+Name: speechmatics-sdk
+Version: 0.1.1
+Summary: Speechmatics Python SDK - Complete package for all Speechmatics APIs
+Author-email: Speechmatics <support@speechmatics.com>
+License-Expression: MIT
+Project-URL: homepage, https://github.com/speechmatics/speechmatics-python-sdk
+Project-URL: documentation, https://docs.speechmatics.com/
+Project-URL: repository, https://github.com/speechmatics/speechmatics-python-sdk
+Project-URL: issues, https://github.com/speechmatics/speechmatics-python-sdk/issues
+Keywords: speechmatics,speech-to-text,tts,voice,agents,batch,real-time,transcription,api,sdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Multimedia :: Sound/Audio :: Speech
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: speechmatics-batch
+Requires-Dist: speechmatics-rt
+Requires-Dist: speechmatics-voice
+Requires-Dist: speechmatics-tts
+Provides-Extra: smart
+Requires-Dist: speechmatics-voice[smart]; extra == "smart"
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: build; extra == "dev"
+
+# Speechmatics SDK
+
+The complete Speechmatics Python SDK package that includes all Speechmatics API clients:
+
+- **speechmatics-batch**: Batch API client for transcription jobs
+- **speechmatics-rt**: Real-time API client for live transcription
+- **speechmatics-voice**: Voice Agent API client with real-time conversational AI
+- **speechmatics-tts**: Text-to-Speech API client
+
+## Installation
+
+Install the complete SDK:
+
+```bash
+pip install speechmatics-sdk
+```
+
+For Voice SDK with Smart Turn features (includes ONNX ML runtime and models):
+
+```bash
+pip install speechmatics-sdk[smart]
+```
+
+## Usage
+
+This is a meta-package that installs all Speechmatics API clients. See the individual package documentation for usage:
+
+- [Batch API Documentation](https://docs.speechmatics.com/)
+- [Real-time API Documentation](https://docs.speechmatics.com/)
+- [Voice API Documentation](https://docs.speechmatics.com/)
+- [TTS API Documentation](https://docs.speechmatics.com/)
+
+## Links
+
+- [GitHub Repository](https://github.com/speechmatics/speechmatics-python-sdk)
+- [Documentation](https://docs.speechmatics.com/)
+- [Issue Tracker](https://github.com/speechmatics/speechmatics-python-sdk/issues)
