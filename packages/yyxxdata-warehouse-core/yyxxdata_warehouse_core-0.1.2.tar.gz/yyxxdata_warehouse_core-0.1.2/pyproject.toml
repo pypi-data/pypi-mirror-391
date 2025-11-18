@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "yyxxdata-warehouse-core"
+version = "0.1.2"
+description = "数据处理核心库，提供数据库连接和Ibis数据处理能力"
+authors = ["Zeng Kaishin <kaishinz@qq.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "warehouse_core" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.3.3"
+sqlalchemy = "^2.0.44"
+pyyaml = "^6.0.3"
+typing-extensions = "^4.0.0"
+toolz = "^0.12.0"
+parsy = "^2.0.0"
+sqlglot = ">=23.4,!=26.32.0"
+atpublic = "^6.0.0"
+pyarrow = "^22.0.0"
+rich = "^14.2.0"
+regex = "^2025.11.3"
+ibis-framework = {version = "11.0.0", extras = ["mysql", "sqlite"]}
+mysqlclient = "^2.2.7"
+
+
+[[tool.poetry.source]]
+name = "mirrors"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+# default = true
+# secondary = false
+
+[tool.poetry.group.dev.dependencies]
+debugpy = "^1.8.17"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
