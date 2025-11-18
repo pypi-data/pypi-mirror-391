@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+mortie/tests/mycookies.txt
+/target/
+Cargo.lock
+RUST_TESTING_PLAN.md
+RUST_INTEGRATION_PLAN.md
+RUST_IMPLEMENTATION_SUMMARY.md
+diagnose_divergence.py
+test_rust_vs_numba.py
