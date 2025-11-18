@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: tensnap
+Version: 0.1.0
+Summary: Agent-based model visualization toolkit - Python bindings
+Author-email: billstark001 <billstark001@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/billstark001/tensnap
+Project-URL: Documentation, https://github.com/billstark001/tensnap/tree/main/docs
+Project-URL: Repository, https://github.com/billstark001/tensnap
+Project-URL: Issues, https://github.com/billstark001/tensnap/issues
+Keywords: agent-based-modeling,simulation,visualization,abm
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.24.0
+Requires-Dist: networkx>=3.0
+Requires-Dist: msgpack>=1.0.5
+Requires-Dist: websockets>=12.0
+Requires-Dist: typing-extensions>=4.9.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: mypy>=1.7.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+
+# Tensnap Python Bindings
+
+Python bindings for Tensnap - an agent-based model visualization toolkit.
+
+## Installation
+
+```bash
+pip install tensnap
+```
+
+## Quick Start
+
+```python
+from tensnap import Scenario
+import asyncio
+
+# Create a scenario
+scenario = Scenario(name="my-simulation", port=8765)
+
+# Define your model logic
+# See examples/ directory for complete examples
+
+# Run the server
+asyncio.run(scenario.run())
+```
+
+## Examples
+
+Check the `examples/` directory for complete simulations:
+
+- `flock.py` - Flocking behavior
+- `sirs.py` - SIRS epidemic model
+- `sugarscape.py` - Sugarscape economic model
+
+## Documentation
+
+Full documentation: <https://github.com/billstark001/tensnap>
+
+## License
+
+See LICENSE file in the repository root.
