@@ -1,0 +1,165 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./f5NiF4Sn.js","./DUftb7my.js","./DEzry6cj.js","./DdkXqxbl.js","./C0o3u5MS.js"])))=>i.map(i=>d[i]);
+import { _ as __vitePreload } from "./DUftb7my.js";
+import { e as Tools, aI as Clamp, L as Logger, aJ as EncodeArrayBufferToBase64, E as EngineStore, aK as EffectRenderer, aL as EffectWrapper, _ as __decorate, aM as nativeOverride } from "./f5NiF4Sn.js";
+let ResourcesPromise = null;
+async function _CreateDumpResourcesAsync() {
+  const canvas = EngineStore.LastCreatedEngine?.createCanvas(100, 100) ?? new OffscreenCanvas(100, 100);
+  if (canvas instanceof OffscreenCanvas) {
+    Logger.Warn("DumpData: OffscreenCanvas will be used for dumping data. This may result in lossy alpha values.");
+  }
+  const { ThinEngine: thinEngineClass } = await __vitePreload(async () => {
+    const { ThinEngine: thinEngineClass2 } = await import("./f5NiF4Sn.js").then((n) => n.co);
+    return { ThinEngine: thinEngineClass2 };
+  }, true ? __vite__mapDeps([0,1,2,3]) : void 0, import.meta.url);
+  if (!thinEngineClass.IsSupported) {
+    throw new Error("DumpData: No WebGL context available. Cannot dump data.");
+  }
+  const options = {
+    preserveDrawingBuffer: true,
+    depth: false,
+    stencil: false,
+    alpha: true,
+    premultipliedAlpha: false,
+    antialias: false,
+    failIfMajorPerformanceCaveat: false
+  };
+  const engine = new thinEngineClass(canvas, false, options);
+  EngineStore.Instances.pop();
+  EngineStore.OnEnginesDisposedObservable.add((e) => {
+    if (engine && e !== engine && !engine.isDisposed && EngineStore.Instances.length === 0) {
+      Dispose();
+    }
+  });
+  engine.getCaps().parallelShaderCompile = void 0;
+  const renderer = new EffectRenderer(engine);
+  const { passPixelShader } = await __vitePreload(async () => {
+    const { passPixelShader: passPixelShader2 } = await import("./C0o3u5MS.js");
+    return { passPixelShader: passPixelShader2 };
+  }, true ? __vite__mapDeps([4,0,1,2,3]) : void 0, import.meta.url);
+  const wrapper = new EffectWrapper({
+    engine,
+    name: passPixelShader.name,
+    fragmentShader: passPixelShader.shader,
+    samplerNames: ["textureSampler"]
+  });
+  return {
+    canvas,
+    dumpEngine: { engine, renderer, wrapper }
+  };
+}
+async function _GetDumpResourcesAsync() {
+  if (!ResourcesPromise) {
+    ResourcesPromise = _CreateDumpResourcesAsync();
+  }
+  return await ResourcesPromise;
+}
+class EncodingHelper {
+  /**
+   * Encodes image data to the given mime type.
+   * This is put into a helper class so we can apply the nativeOverride decorator to it.
+   * @internal
+   */
+  static async EncodeImageAsync(pixelData, width, height, mimeType, invertY, quality) {
+    const resources = await _GetDumpResourcesAsync();
+    const dumpEngine = resources.dumpEngine;
+    dumpEngine.engine.setSize(width, height, true);
+    const texture = dumpEngine.engine.createRawTexture(pixelData, width, height, 5, false, !invertY, 1);
+    dumpEngine.renderer.setViewport();
+    dumpEngine.renderer.applyEffectWrapper(dumpEngine.wrapper);
+    dumpEngine.wrapper.effect._bindTexture("textureSampler", texture);
+    dumpEngine.renderer.draw();
+    texture.dispose();
+    return await new Promise((resolve, reject) => {
+      Tools.ToBlob(resources.canvas, (blob) => {
+        if (!blob) {
+          reject(new Error("EncodeImageAsync: Failed to convert canvas to blob."));
+        } else {
+          resolve(blob);
+        }
+      }, mimeType, quality);
+    });
+  }
+}
+__decorate([
+  nativeOverride
+], EncodingHelper, "EncodeImageAsync", null);
+const EncodeImageAsync = EncodingHelper.EncodeImageAsync;
+async function DumpFramebuffer(width, height, engine, successCallback, mimeType = "image/png", fileName, quality) {
+  const bufferView = await engine.readPixels(0, 0, width, height);
+  const data = new Uint8Array(bufferView.buffer);
+  DumpData(width, height, data, successCallback, mimeType, fileName, true, void 0, quality);
+}
+async function DumpDataAsync(width, height, data, mimeType = "image/png", fileName, invertY = false, toArrayBuffer = false, quality) {
+  if (data instanceof Float32Array) {
+    const data2 = new Uint8Array(data.length);
+    let n = data.length;
+    while (n--) {
+      const v = data[n];
+      data2[n] = Math.round(Clamp(v) * 255);
+    }
+    data = data2;
+  }
+  const blob = await EncodingHelper.EncodeImageAsync(data, width, height, mimeType, invertY, quality);
+  if (fileName !== void 0) {
+    Tools.DownloadBlob(blob, fileName);
+  }
+  if (blob.type !== mimeType) {
+    Logger.Warn(`DumpData: The requested mimeType '${mimeType}' is not supported. The result has mimeType '${blob.type}' instead.`);
+  }
+  const buffer = await blob.arrayBuffer();
+  if (toArrayBuffer) {
+    return buffer;
+  }
+  return `data:${mimeType};base64,${EncodeArrayBufferToBase64(buffer)}`;
+}
+function DumpData(width, height, data, successCallback, mimeType = "image/png", fileName, invertY = false, toArrayBuffer = false, quality) {
+  if (fileName === void 0 && !successCallback) {
+    fileName = "";
+  }
+  DumpDataAsync(width, height, data, mimeType, fileName, invertY, toArrayBuffer, quality).then((result) => {
+    if (successCallback) {
+      successCallback(result);
+    }
+  });
+}
+function Dispose() {
+  if (!ResourcesPromise) {
+    return;
+  }
+  ResourcesPromise?.then((resources) => {
+    if (resources.canvas instanceof HTMLCanvasElement) {
+      resources.canvas.remove();
+    }
+    if (resources.dumpEngine) {
+      resources.dumpEngine.engine.dispose();
+      resources.dumpEngine.renderer.dispose();
+      resources.dumpEngine.wrapper.dispose();
+    }
+  });
+  ResourcesPromise = null;
+}
+const DumpTools = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DumpData,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DumpDataAsync,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  DumpFramebuffer,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Dispose
+};
+const InitSideEffects = () => {
+  Tools.DumpData = DumpData;
+  Tools.DumpDataAsync = DumpDataAsync;
+  Tools.DumpFramebuffer = DumpFramebuffer;
+};
+InitSideEffects();
+export {
+  Dispose,
+  DumpData,
+  DumpDataAsync,
+  DumpFramebuffer,
+  DumpTools,
+  EncodeImageAsync
+};
+//# sourceMappingURL=BWOjRsQS.js.map

@@ -1,0 +1,66 @@
+import { GLTFLoader } from "./yHduKdDt.js";
+import { F as Color3, aN as unregisterGLTFExtension, aO as registerGLTFExtension } from "./f5NiF4Sn.js";
+const NAME = "KHR_materials_specular";
+class KHR_materials_specular {
+  /**
+   * @internal
+   */
+  constructor(loader) {
+    this.name = NAME;
+    this.order = 190;
+    this._loader = loader;
+    this.enabled = this._loader.isExtensionUsed(NAME);
+  }
+  /** @internal */
+  dispose() {
+    this._loader = null;
+  }
+  /**
+   * @internal
+   */
+  // eslint-disable-next-line no-restricted-syntax
+  loadMaterialPropertiesAsync(context, material, babylonMaterial) {
+    return GLTFLoader.LoadExtensionAsync(context, material, this.name, async (extensionContext, extension) => {
+      const promises = new Array();
+      promises.push(this._loader.loadMaterialPropertiesAsync(context, material, babylonMaterial));
+      promises.push(this._loadSpecularPropertiesAsync(extensionContext, extension, babylonMaterial));
+      const adapter = this._loader._getOrCreateMaterialAdapter(babylonMaterial);
+      if (extension.extensions && extension.extensions.EXT_materials_specular_edge_color) {
+        const specularEdgeColorExtension = extension.extensions.EXT_materials_specular_edge_color;
+        if (specularEdgeColorExtension.specularEdgeColorEnabled) {
+          adapter.enableSpecularEdgeColor(true);
+        }
+      }
+      return await Promise.all(promises).then(() => {
+      });
+    });
+  }
+  // eslint-disable-next-line @typescript-eslint/promise-function-async, no-restricted-syntax
+  _loadSpecularPropertiesAsync(context, properties, babylonMaterial) {
+    const adapter = this._loader._getOrCreateMaterialAdapter(babylonMaterial);
+    const promises = new Array();
+    adapter.specularWeight = properties.specularFactor ?? 1;
+    adapter.specularColor = properties.specularColorFactor !== void 0 ? Color3.FromArray(properties.specularColorFactor) : new Color3(1, 1, 1);
+    if (properties.specularTexture) {
+      properties.specularTexture.nonColorData = true;
+      promises.push(this._loader.loadTextureInfoAsync(`${context}/specularTexture`, properties.specularTexture, (texture) => {
+        texture.name = `${babylonMaterial.name} (Specular)`;
+        adapter.specularWeightTexture = texture;
+      }));
+    }
+    if (properties.specularColorTexture) {
+      promises.push(this._loader.loadTextureInfoAsync(`${context}/specularColorTexture`, properties.specularColorTexture, (texture) => {
+        texture.name = `${babylonMaterial.name} (Specular Color)`;
+        adapter.specularColorTexture = texture;
+      }));
+    }
+    return Promise.all(promises).then(() => {
+    });
+  }
+}
+unregisterGLTFExtension(NAME);
+registerGLTFExtension(NAME, true, (loader) => new KHR_materials_specular(loader));
+export {
+  KHR_materials_specular
+};
+//# sourceMappingURL=CTTbx2xh.js.map

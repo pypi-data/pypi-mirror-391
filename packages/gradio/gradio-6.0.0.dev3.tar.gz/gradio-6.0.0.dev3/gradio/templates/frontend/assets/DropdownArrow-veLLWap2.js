@@ -1,0 +1,2 @@
+import"./i18n-0yVmjjWQ.js";import{n as t,b as s}from"./index-C_pgmrh1.js";/* empty css                                                        */var p=t('<svg class="dropdown-arrow svelte-loyhyk" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 18 18"><path d="M5 8l4 4 4-4z"></path></svg>');function g(o){var r=p();s(o,r)}export{g as D};
+//# sourceMappingURL=DropdownArrow-veLLWap2.js.map

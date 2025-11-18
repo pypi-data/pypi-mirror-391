@@ -1,0 +1,2 @@
+import{b as e}from"./i18n-0yVmjjWQ.js";import{p as o,f as r,t as p,b as d,c as v,i as m,a9 as c,h as u,r as f}from"./index-C_pgmrh1.js";var h=r('<div class="matplotlib layout svelte-n8pych"><img class="svelte-n8pych"/></div>');function g(s,a){o(a,!0);let i=c(()=>a.value?.plot);var t=h();e(t,"data-testid","matplotlib");var l=u(t);f(t),p(()=>{e(l,"src",m(i)),e(l,"alt",`${a.value.chart} plot visualising provided data`)}),d(s,t),v()}export{g as default};
+//# sourceMappingURL=MatplotlibPlot-CjgQ4rGJ.js.map
