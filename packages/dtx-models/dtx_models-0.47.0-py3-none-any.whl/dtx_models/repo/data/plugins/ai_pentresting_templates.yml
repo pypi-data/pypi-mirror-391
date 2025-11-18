@@ -1,0 +1,467 @@
+# AI Pentesting Templates
+# This document maps high-level red team templates to the specific,
+# testable plugins from the AI Red Teaming Plugins Checklist.
+metadata:
+  version: "1.2"
+  lastUpdated: "2025-09-30"
+  description: "A comprehensive mapping of strategic red team templates to tactical execution plugins and tests."
+
+template_plugin_mappings:
+  # Mapping for Template 1
+  - template_name: "Initial Access & Reconnaissance Playbook"
+    mappings:
+      - tactic_name: "Identify AI-Enabled Web Apps & APIs via OSINT"
+        mitre_atlas_id: "AML.T0002"
+        relevant_plugins:
+          - plugin_id: "ME-001"
+            plugin_name: "InferenceAttacks"
+            relevant_tests:
+              - test_id: "ME-001-06"
+                test_name: "probe_model_deployment_details"
+      - tactic_name: "Scan for Undocumented AI Inference APIs"
+        mitre_atlas_id: "AML.T0004"
+        relevant_plugins:
+          - plugin_id: "IE-005"
+            plugin_name: "AccessControlTesting"
+            relevant_tests:
+              - test_id: "IE-005-04"
+                test_name: "evaluate_api_access_restrictions"
+      - tactic_name: "Fingerprint AI Models, Platforms, and Providers"
+        mitre_atlas_id: "AML.T0004"
+        relevant_plugins:
+          - plugin_id: "ME-001"
+            plugin_name: "InferenceAttacks"
+            relevant_tests:
+              - test_id: "ME-001-04"
+                test_name: "evaluate_backend_system_fingerprinting"
+              - test_id: "ME-001-08"
+                test_name: "evaluate_model_version_detection"
+      - tactic_name: "Probe for Security Controls (WAFs, Filters)"
+        mitre_atlas_id: "AML.T0004"
+        relevant_plugins:
+          - plugin_id: "SE-008"
+            plugin_name: "ControlsBypass"
+            relevant_tests:
+              - test_id: "SE-008-02"
+                test_name: "test_prompt_security_firewall_proxy_evasion"
+              - test_id: "SE-008-03"
+                test_name: "probe_waf_bypass_methods"
+      - tactic_name: "Check for Unsecured Credentials in Public Code"
+        mitre_atlas_id: "AML.T0048"
+        relevant_plugins:
+          - plugin_id: "N/A"
+            plugin_name: "Standard Secret Scanning (Not AI-Specific)"
+            relevant_tests: []
+      - tactic_name: "Discover AI Model Ontology & Capabilities"
+        mitre_atlas_id: "AML.T0049"
+        relevant_plugins:
+          - plugin_id: "ME-001"
+            plugin_name: "InferenceAttacks"
+            relevant_tests:
+              - test_id: "ME-001-03"
+                test_name: "test_model_capability_inference"
+
+  # Mapping for Template 2
+  - template_name: "Prompt Injection & Hijacking Gauntlet"
+    mappings:
+      - tactic_name: "Craft Malicious Prompts for Direct Injection"
+        mitre_atlas_id: "AML.T0016"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+            relevant_tests:
+              - test_id: "ME-006-02"
+                test_name: "evaluate_prompt_injection_methods"
+      - tactic_name: "Stage Poisoned Content for Indirect Injection"
+        mitre_atlas_id: "AML.T0017"
+        relevant_plugins:
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-002-01"
+                test_name: "test_vector_database_poisoning"
+      - tactic_name: "Craft Prompts for LLM Jailbreaking"
+        mitre_atlas_id: "AML.T0016"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+            relevant_tests:
+              - test_id: "ME-006-01"
+                test_name: "test_jailbreak_technique_effectiveness"
+      - tactic_name: "LLM Prompt Obfuscation to Bypass Filters"
+        mitre_atlas_id: "AML.T0044"
+        relevant_plugins:
+          - plugin_id: "IE-004"
+            plugin_name: "ContentFilteringBypassTesting"
+            relevant_tests:
+              - test_id: "IE-004-02"
+                test_name: "probe_filter_evasion_techniques"
+      - tactic_name: "LLM Prompt Injection"
+        mitre_atlas_id: "AML.T0035"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+            relevant_tests:
+              - test_id: "ME-006-02"
+                test_name: "evaluate_prompt_injection_methods"
+      - tactic_name: "LLM Jailbreak"
+        mitre_atlas_id: "AML.T0043"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+            relevant_tests:
+              - test_id: "ME-006-01"
+                test_name: "test_jailbreak_technique_effectiveness"
+
+  # Mapping for Template 3
+  - template_name: "PII & Sensitive Data Exfiltration Hunt"
+    mappings:
+      - tactic_name: "Craft Prompts to Induce Data Leakage"
+        mitre_atlas_id: "AML.T0016"
+        relevant_plugins:
+          - plugin_id: "ME-005"
+            plugin_name: "DataRiskAssessment"
+            relevant_tests:
+              - test_id: "ME-005-05"
+                test_name: "probe_pii_sensitive_data_recovery"
+      - tactic_name: "LLM Data Leakage from Training Data or Context"
+        mitre_atlas_id: "AML.T0063"
+        relevant_plugins:
+          - plugin_id: "ME-005"
+            plugin_name: "DataRiskAssessment"
+            relevant_tests:
+              - test_id: "ME-005-01"
+                test_name: "test_data_access_violation"
+              - test_id: "ME-005-06"
+                test_name: "test_training_data_reconstruction"
+      - tactic_name: "Extract LLM System Prompt"
+        mitre_atlas_id: "AML.T0062"
+        relevant_plugins:
+          - plugin_id: "ME-002"
+            plugin_name: "ExtractionAttacks"
+            relevant_tests:
+              - test_id: "ME-002-07"
+                test_name: "test_system_prompt_recovery"
+      - tactic_name: "Exfiltration via AI Inference API"
+        mitre_atlas_id: "AML.T0061"
+        relevant_plugins:
+          - plugin_id: "ME-002"
+            plugin_name: "ExtractionAttacks"
+            relevant_tests:
+              - test_id: "ME-002-01"
+                test_name: "test_model_knowledge_base_extraction"
+              - test_id: "ME-002-02"
+                test_name: "probe_training_data_recovery"
+
+  # Mapping for Template 4
+  - template_name: "AI Supply Chain & Dependency Vulnerability Scan"
+    mappings:
+      - tactic_name: "Discover Public Code to Identify Dependencies"
+        mitre_atlas_id: "AML.T0003"
+        relevant_plugins:
+          - plugin_id: "SE-003"
+            plugin_name: "SupplyChainVulnerabilities"
+            relevant_tests:
+              - test_id: "SE-003-01"
+                test_name: "test_dependency_integrity"
+      - tactic_name: "Find Publicly Hosted AI Artifacts (e.g., Hugging Face models)"
+        mitre_atlas_id: "AML.T0006"
+        relevant_plugins:
+          - plugin_id: "SE-003"
+            plugin_name: "SupplyChainVulnerabilities"
+            relevant_tests:
+              - test_id: "SE-003-04"
+                test_name: "evaluate_model_source_validation"
+      - tactic_name: "Search Open AI Vulnerability Databases for Known CVEs"
+        mitre_atlas_id: "AML.T0001"
+        relevant_plugins:
+          - plugin_id: "N/A"
+            plugin_name: "External Research (Not an active test)"
+            relevant_tests: []
+      - tactic_name: "Assess for AI Supply Chain Compromise Risks"
+        mitre_atlas_id: "AML.T0018"
+        relevant_plugins:
+          - plugin_id: "SE-003"
+            plugin_name: "SupplyChainVulnerabilities"
+            relevant_tests:
+              - test_id: "SE-003-05"
+                test_name: "test_deployment_pipeline_security"
+
+  # Mapping for Template 5
+  - template_name: "Function & Tool Abuse Assessment (Agentic Systems)"
+    mappings:
+      - tactic_name: "Discover Agent's Tools via Prompting & Error Analysis"
+        mitre_atlas_id: "AML.T0049"
+        relevant_plugins:
+          - plugin_id: "ME-001"
+            plugin_name: "InferenceAttacks"
+            relevant_tests:
+              - test_id: "ME-001-03"
+                test_name: "test_model_capability_inference"
+      - tactic_name: "Manipulate Tool Inputs to Trigger SSRF or Command Injection"
+        mitre_atlas_id: "AML.T0036"
+        relevant_plugins:
+          - plugin_id: "IE-006"
+            plugin_name: "AgentToolPluginSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-006-01"
+                test_name: "test_tool_access_control_boundaries"
+              - test_id: "IE-006-06"
+                test_name: "test_function_call_security"
+      - tactic_name: "Chain Tool Commands for Complex Attacks"
+        mitre_atlas_id: "AML.T0036"
+        relevant_plugins:
+          - plugin_id: "IE-006"
+            plugin_name: "AgentToolPluginSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-006-05"
+                test_name: "assess_multi_tool_attack_chains"
+
+  # Mapping for Template 6
+  - template_name: "RAG System Data Poisoning & Exploitation"
+    mappings:
+      - tactic_name: "Gather RAG-Indexed Targets (e.g., public docs, websites)"
+        mitre_atlas_id: "AML.T0005"
+        relevant_plugins:
+          - plugin_id: "N/A"
+            plugin_name: "Standard OSINT (Not an active test)"
+            relevant_tests: []
+      - tactic_name: "Retrieval Content Crafting (Poisoning)"
+        mitre_atlas_id: "AML.T0017"
+        relevant_plugins:
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-002-01"
+                test_name: "test_vector_database_poisoning"
+      - tactic_name: "RAG Poisoning to Manipulate Responses"
+        mitre_atlas_id: "AML.T0038"
+        relevant_plugins:
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-002-04"
+                test_name: "evaluate_retrieval_result_manipulation"
+      - tactic_name: "False RAG Entry Injection for Phishing or Misinformation"
+        mitre_atlas_id: "AML.T0045"
+        relevant_plugins:
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-002-03"
+                test_name: "test_semantic_search_pollution"
+
+  # Mapping for Template 7
+  - template_name: "Adversarial Evasion & Security Bypass Test"
+    mappings:
+      - tactic_name: "Craft Adversarial Data (e.g., text with homoglyphs)"
+        mitre_atlas_id: "AML.T0059"
+        relevant_plugins:
+          - plugin_id: "ME-007"
+            plugin_name: "AdversarialRobustnessTesting"
+            relevant_tests:
+              - test_id: "ME-007-01"
+                test_name: "test_novel_attack_patterns"
+      - tactic_name: "Evade AI Model's Security Classifiers"
+        mitre_atlas_id: "AML.T0042"
+        relevant_plugins:
+          - plugin_id: "ME-007"
+            plugin_name: "AdversarialRobustnessTesting"
+            relevant_tests:
+              - test_id: "ME-007-02"
+                test_name: "evaluate_unknown_vulnerabilities"
+              - test_id: "ME-007-04"
+                test_name: "assess_failure_mode_patterns"
+      - tactic_name: "LLM Prompt Obfuscation to Bypass Content Filters"
+        mitre_atlas_id: "AML.T0044"
+        relevant_plugins:
+          - plugin_id: "IE-004"
+            plugin_name: "ContentFilteringBypassTesting"
+            relevant_tests:
+              - test_id: "IE-004-02"
+                test_name: "probe_filter_evasion_techniques"
+
+  # Mapping for Template 8
+  - template_name: "Multi-Modal Vulnerability Assessment"
+    mappings:
+      - tactic_name: "Craft Adversarial Data (e.g., images with adversarial patches)"
+        mitre_atlas_id: "AML.T0059"
+        relevant_plugins:
+          - plugin_id: "ME-007"
+            plugin_name: "AdversarialRobustnessTesting"
+            relevant_tests:
+              - test_id: "ME-007-01"
+                test_name: "test_novel_attack_patterns"
+      - tactic_name: "Evade AI Model's Image or Audio Classifiers"
+        mitre_atlas_id: "AML.T0042"
+        relevant_plugins:
+          - plugin_id: "ME-007"
+            plugin_name: "AdversarialRobustnessTesting"
+            relevant_tests:
+              - test_id: "ME-007-01"
+                test_name: "test_novel_attack_patterns"
+      - tactic_name: "Inject Malicious Payloads in Non-Text Formats"
+        mitre_atlas_id: "AML.T0042"
+        relevant_plugins:
+          - plugin_id: "ME-008"
+            plugin_name: "TechnicalHarmVectorTesting"
+            relevant_tests:
+              - test_id: "ME-008-02"
+                test_name: "evaluate_exploit_generation_potential"
+
+  # Mapping for Template 9
+  - template_name: "OWASP Top 10 LLM App Audit"
+    objective: "To systematically audit an AI application against the OWASP Top 10 for Large Language Model Applications, mapping each risk to specific red team tests."
+    description: "A compliance and best-practice focused template for ensuring an application addresses the most common and critical LLM vulnerabilities."
+    mappings:
+      - tactic_name: "LLM01: Test for Direct & Indirect Prompt Injection"
+        mitre_atlas_id: "AML.T0035"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+            relevant_tests:
+              - test_id: "ME-006-02"
+                test_name: "evaluate_prompt_injection_methods"
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-002-01"
+                test_name: "test_vector_database_poisoning"
+      - tactic_name: "LLM02: Test for Insecure Output Handling"
+        mitre_atlas_id: "AML.T0034"
+        relevant_plugins:
+          - plugin_id: "SE-001"
+            plugin_name: "RemoteCodeExecution"
+            relevant_tests:
+              - test_id: "SE-001-01"
+                test_name: "test_model_output_code_execution"
+              - test_id: "SE-001-02"
+                test_name: "probe_system_command_injection"
+      - tactic_name: "LLM03: Assess Training Data Poisoning Vectors"
+        mitre_atlas_id: "AML.T0037"
+        relevant_plugins:
+          - plugin_id: "ME-005"
+            plugin_name: "DataRiskAssessment"
+            relevant_tests:
+              - test_id: "ME-005-06"
+                test_name: "test_training_data_reconstruction"
+      - tactic_name: "LLM04: Test for Model Denial of Service"
+        mitre_atlas_id: "AML.T0068"
+        relevant_plugins:
+          - plugin_id: "SE-006"
+            plugin_name: "ResourceControlTesting"
+            relevant_tests:
+              - test_id: "SE-006-02"
+                test_name: "probe_resource_exhaustion_vectors"
+              - test_id: "SE-006-06"
+                test_name: "probe_dos_resilience"
+      - tactic_name: "LLM05: Assess Supply Chain Vulnerabilities"
+        mitre_atlas_id: "AML.T0018"
+        relevant_plugins:
+          - plugin_id: "SE-003"
+            plugin_name: "SupplyChainVulnerabilities"
+            relevant_tests:
+              - test_id: "SE-003-01"
+                test_name: "test_dependency_integrity"
+              - test_id: "SE-003-04"
+                test_name: "evaluate_model_source_validation"
+      - tactic_name: "LLM06: Test for Sensitive Information Disclosure"
+        mitre_atlas_id: "AML.T0063"
+        relevant_plugins:
+          - plugin_id: "ME-005"
+            plugin_name: "DataRiskAssessment"
+            relevant_tests:
+              - test_id: "ME-005-05"
+                test_name: "probe_pii_sensitive_data_recovery"
+      - tactic_name: "LLM07: Test for Insecure Plugin Design & Abuse"
+        mitre_atlas_id: "AML.T0036"
+        relevant_plugins:
+          - plugin_id: "IE-006"
+            plugin_name: "AgentToolPluginSecurityTesting"
+            relevant_tests:
+              - test_id: "IE-006-01"
+                test_name: "test_tool_access_control_boundaries"
+              - test_id: "IE-006-06"
+                test_name: "test_function_call_security"
+      - tactic_name: "LLM08: Test for Excessive Agency"
+        mitre_atlas_id: "AML.T0036"
+        relevant_plugins:
+          - plugin_id: "RE-008"
+            plugin_name: "AgentBoundaryTesting"
+            relevant_tests:
+              - test_id: "RE-008-02"
+                test_name: "ensure_agent_does_not_exceed_authority"
+              - test_id: "RE-008-03"
+                test_name: "validate_agent_operates_within_defined_capabilities"
+      - tactic_name: "LLM09: Assess for Overreliance Scenarios"
+        mitre_atlas_id: "N/A"
+        relevant_plugins:
+          - plugin_id: "RE-003"
+            plugin_name: "OverRelianceAssessment"
+            relevant_tests:
+              - test_id: "RE-003-01"
+                test_name: "test_human_operator_over_trust_scenarios"
+      - tactic_name: "LLM10: Test for Model Theft & Extraction"
+        mitre_atlas_id: "AML.T0058"
+        relevant_plugins:
+          - plugin_id: "ME-002"
+            plugin_name: "ExtractionAttacks"
+            relevant_tests:
+              - test_id: "ME-002-01"
+                test_name: "test_model_knowledge_base_extraction"
+              - test_id: "ME-002-03"
+                test_name: "test_weight_parameter_extraction"
+
+  # Mapping for Template 10
+  - template_name: "OWASP GenAI Red Teaming Audit"
+    objective: "To conduct a holistic red team audit based on the OWASP AI Red Teaming Checklist, covering the full spectrum of AI vulnerabilities from the model core to runtime and human interaction."
+    description: "A comprehensive, phase-based audit for organizations seeking a deep and broad assessment of their Generative AI systems."
+    mappings:
+      - tactic_name: "Phase 1: Perform Inference & Extraction Attacks"
+        mitre_atlas_id: "AML.T0049"
+        relevant_plugins:
+          - plugin_id: "ME-001"
+            plugin_name: "InferenceAttacks"
+          - plugin_id: "ME-002"
+            plugin_name: "ExtractionAttacks"
+      - tactic_name: "Phase 1: Test Alignment, Harms, and Robustness"
+        mitre_atlas_id: "AML.T0043"
+        relevant_plugins:
+          - plugin_id: "ME-006"
+            plugin_name: "AlignmentControlTesting"
+          - plugin_id: "ME-004"
+            plugin_name: "SocioTechnologicalHarmAssessment"
+          - plugin_id: "ME-007"
+            plugin_name: "AdversarialRobustnessTesting"
+      - tactic_name: "Phase 2: Test Implementation Guardrails"
+        mitre_atlas_id: "AML.T0042"
+        relevant_plugins:
+          - plugin_id: "IE-001"
+            plugin_name: "PromptSafetyControlTesting"
+          - plugin_id: "IE-004"
+            plugin_name: "ContentFilteringBypassTesting"
+      - tactic_name: "Phase 2: Test RAG and Agent Security"
+        mitre_atlas_id: "AML.T0038"
+        relevant_plugins:
+          - plugin_id: "IE-002"
+            plugin_name: "KnowledgeRetrievalSecurityTesting"
+          - plugin_id: "IE-006"
+            plugin_name: "AgentToolPluginSecurityTesting"
+      - tactic_name: "Phase 3: Test System-Level Vulnerabilities"
+        mitre_atlas_id: "AML.T0034"
+        relevant_plugins:
+          - plugin_id: "SE-001"
+            plugin_name: "RemoteCodeExecution"
+          - plugin_id: "SE-003"
+            plugin_name: "SupplyChainVulnerabilities"
+          - plugin_id: "SE-006"
+            plugin_name: "ResourceControlTesting"
+      - tactic_name: "Phase 4: Evaluate Human & Runtime Risks"
+        mitre_atlas_id: "N/A"
+        relevant_plugins:
+          - plugin_id: "RE-001"
+            plugin_name: "BusinessProcessIntegrationTesting"
+          - plugin_id: "RE-004"
+            plugin_name: "SocialEngineeringVectors"
+          - plugin_id: "RE-005"
+            plugin_name: "DownstreamImpactAnalysis"

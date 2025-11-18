@@ -1,0 +1,138 @@
+# OWASP Top 10 for Large Language Model (LLM) Applications
+# Source: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+metadata:
+  version: "2023.1"
+  lastUpdated: "2025-09-30"
+  description: "A structured list of the ten most critical security risks for applications using Large Language Models."
+
+owasp_top_10_llm:
+  - id: "LLM01"
+    name: "PromptInjection"
+    title: "Prompt Injection"
+    description: "Attackers manipulate an LLM through crafted inputs, causing it to perform unintended actions by overriding its original instructions."
+    cwe_related: "CWE-20: Improper Input Validation"
+    examples:
+      - "Direct Injection (Jailbreaking): A user adds 'ignore all previous instructions' to a prompt to bypass safety guardrails."
+      - "Indirect Injection: The LLM processes a malicious, hidden prompt from an external data source, like a webpage or document."
+    mitigations:
+      - "Establish trust boundaries between the LLM, external sources, and downstream tools."
+      - "Implement strict privilege controls for LLM access to backend systems and plugins."
+      - "Use human-in-the-loop for sensitive or irreversible actions."
+      - "Segregate external content from user prompts and treat it as potentially malicious."
+
+  - id: "LLM02"
+    name: "InsecureOutputHandling"
+    title: "Insecure Output Handling"
+    description: "Failing to validate or sanitize LLM outputs before they are passed to downstream components, leading to vulnerabilities like XSS, CSRF, or code execution."
+    cwe_related: "CWE-116: Improper Encoding or Escaping of Output"
+    examples:
+      - "An LLM generates JavaScript code that is rendered directly in a user's browser, causing a Cross-Site Scripting (XSS) attack."
+      - "A model generates a malicious SQL query that is executed without validation on a backend database."
+    mitigations:
+      - "Treat all model outputs as untrusted user input."
+      - "Apply robust input validation and sanitization on all model-generated content before it is used by other components."
+      - "Contextually encode outputs to prevent injection attacks in downstream systems (e.g., HTML-encode for web, parameterize for SQL)."
+
+  - id: "LLM03"
+    name: "TrainingDataPoisoning"
+    title: "Training Data Poisoning"
+    description: "Manipulating the model's training data to introduce vulnerabilities, biases, or backdoors that compromise its security, effectiveness, or fairness."
+    cwe_related: "CWE-345: Insufficient Verification of Data Authenticity"
+    examples:
+      - "An attacker subtly alters training data to create a backdoor, causing the model to generate vulnerable code when a secret trigger is used."
+      - "Poisoning data to introduce biases against a specific demographic or to favor a certain product."
+    mitigations:
+      - "Verify the integrity and legitimacy of training data sources."
+      - "Implement data sanitization, filtering, and anomaly detection in the pre-training pipeline."
+      - "Conduct regular adversarial testing and targeted fine-tuning to correct undesirable model behaviors."
+
+  - id: "LLM04"
+    name: "ModelDenialOfService"
+    title: "Model Denial of Service (DoS)"
+    description: "Attackers cause the LLM to consume an exceptionally high amount of resources, leading to degraded service quality and high costs ('Denial of Wallet')."
+    cwe_related: "CWE-400: Uncontrolled Resource Consumption"
+    examples:
+      - "Submitting complex queries or recursive prompts that require extensive processing time and memory."
+      - "Repeatedly interacting with long context windows to maximize computational cost."
+    mitigations:
+      - "Implement strict rate limiting and resource quotas per user or API key."
+      - "Set limits on input length, context window size, and the number of queries over time."
+      - "Monitor resource usage to detect and cap anomalous activity."
+
+  - id: "LLM05"
+    name: "SupplyChainVulnerabilities"
+    title: "Supply Chain Vulnerabilities"
+    description: "Using insecure third-party components, pre-trained models, or datasets in the LLM application's supply chain, which can introduce security risks."
+    cwe_related: "CWE-1357: Use of Unmaintained Third Party Components"
+    examples:
+      - "Using a pre-trained model from an untrusted source that contains a backdoor."
+      - "Relying on an outdated or vulnerable dependency in the application framework."
+    mitigations:
+      - "Use models, libraries, and datasets only from reputable, trusted sources."
+      - "Perform vulnerability scanning and integrity checks on all dependencies."
+      - "Maintain a Software Bill of Materials (SBOM) for all components."
+
+  - id: "LLM06"
+    name: "SensitiveInformationDisclosure"
+    title: "Sensitive Information Disclosure"
+    description: "The LLM inadvertently reveals confidential data, such as trade secrets, PII, or proprietary information, in its responses."
+    cwe_related: "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor"
+    examples:
+      - "A user crafts a prompt that tricks the model into leaking sensitive API keys or intellectual property it was trained on."
+      - "The model hallucinates a response that includes real personal information from its training data."
+    mitigations:
+      - "Implement robust data sanitization and filtering during pre-training and fine-tuning to remove sensitive data."
+      - "Use strict data loss prevention (DLP) controls on both model inputs and outputs."
+      - "Fine-tune the model to refuse to answer questions that could reveal confidential information."
+
+  - id: "LLM07"
+    name: "InsecurePluginDesign"
+    title: "Insecure Plugin Design"
+    description: "Plugins or tools connected to the LLM have security flaws, such as insufficient access control or accepting unsafe inputs, which can be exploited by the model."
+    cwe_related: "CWE-269: Improper Privilege Management"
+    examples:
+      - "A plugin with excessive permissions allows an LLM to delete files or access sensitive systems."
+      - "A plugin that accepts natural language inputs without proper sanitization is vulnerable to command injection."
+    mitigations:
+      - "Enforce the principle of least privilege for all plugins."
+      - "Mandate strict input validation and parameterization for all plugin functions."
+      - "Require manual user authorization for sensitive plugin actions."
+
+  - id: "LLM08"
+    name: "ExcessiveAgency"
+    title: "Excessive Agency"
+    description: "The LLM is granted too much autonomy to interact with other systems, make decisions, or perform actions, leading to unintended and potentially harmful consequences."
+    cwe_related: "CWE-77: Command Injection"
+    examples:
+      - "An autonomous agent connected to an e-commerce backend gets stuck in a loop, placing thousands of fraudulent orders."
+      - "An LLM-powered coding assistant is tricked into browsing internal repositories and exfiltrating source code."
+    mitigations:
+      - "Limit the scope and permissions of tools the LLM can access."
+      - "Require human confirmation for all sensitive or irreversible actions."
+      - "Implement robust monitoring, logging, and alerting for all agentic actions."
+
+  - id: "LLM09"
+    name: "Overreliance"
+    title: "Overreliance"
+    description: "Developers or users trust the LLM's output uncritically, failing to perform necessary oversight and leading to the propagation of misinformation, insecure code, or poor decisions."
+    cwe_related: "CWE-691: Insufficient Control Flow Management"
+    examples:
+      - "A developer copies and pastes insecure code generated by an LLM directly into a production application."
+      - "A user accepts a factually incorrect or 'hallucinated' answer from a chatbot as truth."
+    mitigations:
+      - "Clearly communicate to users that LLM outputs may be inaccurate."
+      - "Implement human-in-the-loop review processes for critical tasks."
+      - "Log all LLM interactions to enable auditing and traceability."
+
+  - id: "LLM10"
+    name: "ModelTheft"
+    title: "Model Theft"
+    description: "An attacker gains unauthorized access to and exfiltrates a proprietary LLM, resulting in significant financial loss and loss of competitive advantage."
+    cwe_related: "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor"
+    examples:
+      - "An insider with access to model weights leaks them publicly."
+      - "An attacker exploits a vulnerability in the hosting infrastructure to download the model files."
+    mitigations:
+      - "Implement strong access controls and monitoring for infrastructure housing the model."
+      - "Use model watermarking and other techniques to trace the source of leaked models."
+      - "Segment networks to prevent unauthorized access to model storage."

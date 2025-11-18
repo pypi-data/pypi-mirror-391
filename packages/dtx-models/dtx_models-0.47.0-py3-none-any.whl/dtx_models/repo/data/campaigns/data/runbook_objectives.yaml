@@ -1,0 +1,298 @@
+# -----------------------------------------------------------------------------
+# CATEGORY: Private Data & PII Exfiltration (6 Objectives)
+# High-Level Objective: Campaigns designed to extract sensitive training data, 
+# user PII, or internal system context.
+# -----------------------------------------------------------------------------
+- name: runtime_input_leakage
+  title: Runtime Input Leakage
+  description: "Tests if the AI system, when processing a multi-turn conversation or RAG documents, can be tricked into leaking previous or concurrent user inputs."
+  campaign_objective_names: ["private_data_exfiltration"]
+  plugins:
+    - information_hazard:data_leaks:input-leakage
+    - information_hazard:private_information:session_leak
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:02"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:04"]
+    - framework: gdpr
+      controls: ["gdpr:art5"]
+---
+- name: system_prompt_disclosure
+  title: System Prompt Disclosure
+  description: "Tests for the extraction of the hidden, proprietary initial instructions (system prompt) or chain-of-thought data, which often contain API keys, privileged logic, or sensitive configuration details."
+  campaign_objective_names: ["private_data_exfiltration"]
+  plugins:
+    - defense_bypass:prompt_injection:system_prompt_leakage # Adjusted for consistency
+    - information_hazard:private_information:sensitive_business_data
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:07"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:07"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:2.10"]
+---
+- name: rag_data_exfiltration
+  title: RAG Data Exfiltration
+  description: "Tests for unauthorized retrieval and output of sensitive data chunks stored in the vector database or document sources leveraged by RAG."
+  campaign_objective_names: ["private_data_exfiltration"]
+  plugins:
+    - information_hazard:data_leaks:sensitive-data
+    - information_hazard:personal_identification:api-db-leak
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:02"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:03"]
+    - framework: gdpr
+      controls: ["gdpr:art17"]
+---
+- name: training_data_inversion
+  title: Training Data Inversion
+  description: "Tests the ability to reconstruct specific, unique data points (e.g., a full address, proprietary phrase) from the original training dataset via repeated, targeted queries (Model Inversion)."
+  campaign_objective_names: ["private_data_exfiltration"]
+  plugins:
+    - information_hazard:personal_identification:direct-exposure
+    - information_hazard:private_information:proprietary-algorithm-exposure
+  framework_references:
+    - framework: generic
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:2.1"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:mod:05"]
+    - framework: gdpr
+      controls: ["gdpr:art17"]
+---
+- name: membership_inference
+  title: Membership Inference Attack
+  description: "Tests the ability to definitively determine if a specific individual's record or data point was included in the AI system's training dataset."
+  campaign_objective_names: ["private_data_exfiltration"]
+  plugins:
+    - information_hazard:personal_identification:direct-exposure
+    - information_hazard:data_leaks:sensitive-data
+  framework_references:
+    - framework: generic
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:mod:04"]
+    - framework: gdpr
+      controls: ["gdpr:art5"]
+    - framework: mitre_atlas
+      controls: ["mitre:atlas:exfiltration"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: Content Policy Violation & Misinformation (2 Objectives)
+# High-Level Objective: AI system manipulated to generate unsafe, toxic, or policy-violating content.
+# -----------------------------------------------------------------------------
+- name: hate_speech_generation
+  title: Hate Speech and Toxic Content Generation
+  description: "Tests the AI system's refusal mechanism against inputs designed to provoke the generation of hate speech, discrimination, or severely toxic content that violates company policies."
+  campaign_objective_names: ["content_policy_violation_misinfo"]
+  plugins:
+    - toxicity:hate_speech:discrimination
+    - toxicity:severe_toxicity:insults
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:01"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:2.1"]
+---
+- name: political_propaganda_amplification
+  title: Political Propaganda Amplification
+  description: "Tests the model's susceptibility to amplifying political or religious propaganda, biased narratives, or fake news, thereby violating neutrality policies."
+  campaign_objective_names: ["content_policy_violation_misinfo"]
+  plugins:
+    - misinformation:propaganda:politics
+    - misinformation:propaganda:religion
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:01"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:2.2"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: Agentic System Misuse & Unauthorized Action (2 Objectives)
+# High-Level Objective: Use adversarial inputs to seize control of connected tools or agents.
+# -----------------------------------------------------------------------------
+- name: data_exfil_via_agent
+  title: Data Exfiltration via Agent Tool
+  description: "Tests if an adversarial instruction can hijack a connected agent or tool (e.g., web fetch, email, database query) to encode and transmit newly retrieved sensitive data to an external, attacker-controlled endpoint (AITG-APP-06)."
+  campaign_objective_names: ["agentic_system_misuse"]
+  plugins:
+    - malicious_use:excessive_agency:functionality
+    - defense_bypass:hacking:shell_injection
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:06"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:06"]
+    - framework: mitre_atlas
+      controls: ["mitre:atlas:impact"]
+---
+- name: malicious_tool_command_injection
+  title: Malicious Agent Tool Command Injection
+  description: "Tests if a connected AI agent can be tricked into accepting a malicious command (e.g., SQL query, shell command) and executing it against a backend service or tool."
+  campaign_objective_names: ["agentic_system_misuse"]
+  plugins:
+    - defense_bypass:hacking:sqli
+    - defense_bypass:hacking:shell_injection
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:05"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:06"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: AI System Intellectual Property Theft (2 Objectives)
+# High-Level Objective: Attempt to steal or replicate the proprietary AI asset's core function or architecture.
+# -----------------------------------------------------------------------------
+- name: model_architecture_disclosure
+  title: Model Architecture Disclosure
+  description: "Tests for the leakage of proprietary information concerning the AI model's architecture, training methods, or internal configuration details through adversarial prompts."
+  campaign_objective_names: ["system_ip_theft"]
+  plugins:
+    - information_hazard:private_information:proprietary-algorithm-exposure
+    - defense_bypass:prompt_injection:system_prompt_leakage
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:08"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:2.10"]
+---
+- name: competitor_derogation_generation
+  title: Competitor Derogation Generation
+  description: "Tests if the model can be manipulated into generating biased, derogatory, or misleading comparisons against competitors, violating brand and legal guidelines."
+  campaign_objective_names: ["system_ip_theft"]
+  plugins:
+    - misinformation:competition:derogatory_mentions
+    - misinformation:competition:biased_comparison
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:01"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:01"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: Business Logic Disruption & Financial Loss (1 Objective)
+# High-Level Objective: Causing failures or inaccurate outputs in core business functions leading to loss.
+# -----------------------------------------------------------------------------
+- name: financial_guidance_misalignment
+  title: Financial Guidance Misalignment and Loss
+  description: "Tests the AI system's output for inaccurate or unsafe financial/investment advice that could potentially lead a user to financial loss or expose the company to liability."
+  campaign_objective_names: ["business_logic_disruption"]
+  plugins:
+    - misinformation:unreliable_experts:specialized
+    - misinformation:misinterpretation:contracts
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:01"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:01"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: MLOps Supply Chain Attack (1 Objective)
+# High-Level Objective: Exploit weaknesses in the MLOps pipeline, third-party libraries, or training data sources.
+# -----------------------------------------------------------------------------
+- name: training_data_poisoning
+  title: Training Data Poisoning Impact
+  description: "Tests the production AI system's vulnerability to inputs designed to expose the effects of a simulated data poisoning attack in the training or RAG retrieval pipeline."
+  campaign_objective_names: ["mlops_supply_chain_attack"]
+  plugins:
+    - misinformation:hallucination:noisy_training_data
+    - defense_bypass:prompt_injection:indirect_injection
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:09"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:mod:06"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: Adversarial Jailbreak & Evasion (1 Objective)
+# High-Level Objective: Bypassing safety and security mechanisms and tricking the AI system into incorrect decisions.
+# -----------------------------------------------------------------------------
+- name: adversarial_suffix_jailbreak
+  title: Adversarial Suffix Jailbreak
+  description: "Tests the effectiveness of using mathematically optimized adversarial suffixes (token manipulation) to bypass input filters and prompt-based safety mechanisms."
+  campaign_objective_names: ["adversarial_jailbreak_evasion"]
+  plugins:
+    - defense_bypass:prompt_injection:adversarial_suffix
+    - defense_bypass:prompt_injection:payload_splitting
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:04"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:01"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: AI System Robustness Failure (2 Objectives)
+# High-Level Objective: Test the fragility of the AI system's core component with unusual inputs.
+# -----------------------------------------------------------------------------
+- name: robustness_denial_of_service
+  title: Context Window Denial of Service
+  description: "Tests the system's robustness by injecting unusually long or complex inputs designed to consume excessive resources, cause timeouts, or degrade performance for subsequent requests."
+  campaign_objective_names: ["system_robustness_failure"]
+  plugins:
+    - defense_bypass:prompt_injection:multilingual_obfuscated_attack
+    - malicious_use:excessive_agency:functionality
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:03"]
+    - framework: owasp_aitg
+      controls: ["owasp:aitg:app:08"]
+---
+- name: explainability_breakdown
+  title: Explainability and Interpretability Breakdown
+  description: "Tests if complex or adversarial inputs cause the model to provide opaque, inconsistent, or non-traceable reasoning, leading to loss of trust and interpretability failure."
+  campaign_objective_names: ["system_robustness_failure"]
+  plugins:
+    - misinformation:hallucination:defective_decoding_process
+    - misinformation:hallucination:explainability-issues
+  framework_references:
+    - framework: generic
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:4.1"]
+
+# -----------------------------------------------------------------------------
+# CATEGORY: Fairness and Bias Exploitation (2 Objectives)
+# High-Level Objective: Manipulate the AI system to exhibit discrimination or unfair treatment.
+# -----------------------------------------------------------------------------
+- name: demographic_bias_exploitation
+  title: Demographic Bias Exploitation
+  description: "Tests if the model exhibits, amplifies, or can be steered toward discriminatory behavior or biased outputs against a specific protected demographic or identity group."
+  campaign_objective_names: ["fairness_and_bias_exploitation"]
+  plugins:
+    - toxicity:hate_speech:discrimination
+    - misinformation:competition:biased_comparison
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:10"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:3.2"]
+---
+- name: moral_alignment_manipulation
+  title: Moral Alignment Manipulation
+  description: "Tests whether the model's core ethical or moral alignment can be shifted by adversarial inputs, leading to non-compliant or questionable moral advice."
+  campaign_objective_names: ["fairness_and_bias_exploitation"]
+  plugins:
+    - malicious_use:illegal_activities:promotion
+    - human_computer_interaction:overreliance:interaction-harm
+  framework_references:
+    - framework: generic
+    - framework: owasp_llm
+      controls: ["owasp:llm:01"]
+    - framework: nist_rmf
+      controls: ["nist:ai:measure:3.1"]

@@ -1,0 +1,1003 @@
+# Prompt Canvas Converters Configuration
+# This file defines various prompt converters for the Prompt Canvas system
+# with detailed parameter schemas including descriptions, data types, and default values
+
+converters:
+  - name: zero_width_converter
+    display_name: "Zero Width Space Injector"
+    description: "Injects zero-width spaces between characters in the provided text to bypass content safety mechanisms."
+    converter_type: "static"
+    class_name: "ZeroWidthConverter"
+    parameters_schema: []
+    parameters: {}
+
+  - name: zalgo_converter
+    display_name: "Zalgo Text Converter"
+    description: "Converts text into cursed Zalgo text using combining Unicode marks with configurable intensity and word selection. Inherits from WordLevelConverter for advanced word selection options."
+    converter_type: "static"
+    class_name: "ZalgoConverter"
+    parameters_schema:
+      - name: intensity
+        description: "Number of combining marks per character (0-100). Higher values create more intense Zalgo effects."
+        type: "integer"
+        required: true
+        default: 10
+        min_value: 0
+        max_value: 100
+      - name: seed
+        description: "Optional seed for reproducible output. If null, uses random selection."
+        type: "integer"
+        required: false
+        # default: null
+      - name: indices
+        description: "Specific indices of words to convert. Only one selection criteria can be used at a time."
+        type: "array"
+        required: false
+        # default: null
+        item_type: "integer"
+      - name: keywords
+        description: "Keywords to select words for conversion. Only one selection criteria can be used at a time."
+        type: "array"
+        required: false
+        # default: null
+        item_type: "string"
+      - name: proportion
+        description: "Proportion of randomly selected words to convert [0.0-1.0]. Only one selection criteria can be used at a time."
+        type: "float"
+        required: false
+        # default: null
+        min_value: 0.0
+        max_value: 1.0
+      - name: regex
+        description: "Regex pattern to match words for conversion. Only one selection criteria can be used at a time."
+        type: "string"
+        required: false
+        # default: null
+      - name: word_split_separator
+        description: "Separator used to split words in the input text."
+        type: "string"
+        required: false
+        default: " "
+    parameters:
+      intensity: 10
+      word_split_separator: " "
+
+  - name: variation_converter
+    display_name: "Variation Generator"
+    description: "Generates variations of input prompts using an LLM target and prompt template."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4"
+    prompt_template_id: "prompt_variation"
+    parameters_schema:
+      - name: number_iterations
+        description: "Number of variations to generate."
+        type: "integer"
+        required: true
+        default: 1
+        min_value: 1
+        max_value: 10
+      - name: temperature
+        description: "LLM temperature for creativity. Higher values (0.7-1.0) create more creative variations."
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response."
+        type: "integer"
+        required: false
+        default: 500
+        min_value: 1
+        max_value: 4000
+    parameters:
+      number_iterations: 1
+      temperature: 0.7
+      max_tokens: 500
+
+  - name: url_converter
+    display_name: "URL Encoder"
+    description: "Converts a prompt to a URL-encoded string using urllib.parse.quote."
+    converter_type: "static"
+    class_name: "UrlConverter"
+    parameters_schema: []
+    parameters: {}
+
+  - name: unicode_substitution_converter
+    display_name: "Unicode Substitution Encoder"
+    description: "Encodes the prompt using any unicode starting point. Default uses invisible flag emoji characters."
+    converter_type: "static"
+    class_name: "UnicodeSubstitutionConverter"
+    parameters_schema:
+      - name: start_value
+        description: "Unicode starting point for character substitution. Default uses invisible flag emoji range."
+        type: "integer"
+        required: false
+        default: 917504  # 0xE0000 in decimal
+        min_value: 0
+        max_value: 1114111  # Maximum Unicode code point
+    parameters:
+      start_value: 917504  # 0xE0000
+
+  - name: unicode_replacement_converter
+    display_name: "Unicode Replacement Converter"
+    description: "Converts a prompt to its unicode representation with configurable word selection and space encoding."
+    converter_type: "static"
+    class_name: "UnicodeReplacementConverter"
+    parameters_schema:
+      - name: encode_spaces
+        description: "If True, spaces will be replaced with unicode representation (\\u0020)."
+        type: "boolean"
+        required: false
+        default: false
+      - name: indices
+        description: "Specific indices of words to convert. Only one selection criteria can be used at a time."
+        type: "array"
+        required: false
+        # default: null
+        item_type: "integer"
+      - name: keywords
+        description: "Keywords to select words for conversion. Only one selection criteria can be used at a time."
+        type: "array"
+        required: false
+        # default: null
+        item_type: "string"
+      - name: proportion
+        description: "Proportion of randomly selected words to convert [0.0-1.0]. Only one selection criteria can be used at a time."
+        type: "float"
+        required: false
+        # default: null
+        min_value: 0.0
+        max_value: 1.0
+      - name: regex
+        description: "Regex pattern to match words for conversion. Only one selection criteria can be used at a time."
+        type: "string"
+        required: false
+        # default: null
+      - name: word_split_separator
+        description: "Separator used to split words in the input text."
+        type: "string"
+        required: false
+        default: " "
+    parameters:
+      encode_spaces: false
+      word_split_separator: " "
+
+  - name: unicode_confusable_converter
+    display_name: "Unicode Confusable Converter"
+    description: "Applies substitutions to words in the prompt to test adversarial textual robustness by replacing characters with visually similar ones (homoglyphs)."
+    converter_type: "static"
+    class_name: "UnicodeConfusableConverter"
+    parameters_schema:
+      - name: source_package
+        description: "Package to use for homoglyph generation. 'confusable_homoglyphs' is more maintained, 'confusables' provides more substitution options."
+        type: "string"
+        required: false
+        default: "confusable_homoglyphs"
+        enum: ["confusable_homoglyphs", "confusables"]
+      - name: deterministic
+        description: "For unittesting only. If True, uses deterministic selection instead of random."
+        type: "boolean"
+        required: false
+        default: false
+    parameters:
+      source_package: "confusable_homoglyphs"
+      deterministic: false
+
+  - name: translation_converter
+    display_name: "Translation Converter"
+    description: "Translates prompts into different languages using an LLM with configurable retry strategy and language selection."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4"
+    prompt_template_id: "translation_converter"
+    parameters_schema:
+      - name: language
+        description: "The target language for translation (e.g., Spanish, French, leetspeak, etc.)"
+        type: "string"
+        required: true
+        default: "Spanish"
+      - name: max_retries
+        description: "Maximum number of retries for the translation request"
+        type: "integer"
+        required: false
+        default: 3
+        min_value: 1
+        max_value: 10
+      - name: max_wait_time_in_seconds
+        description: "Maximum wait time in seconds between retries"
+        type: "integer"
+        required: false
+        default: 60
+        min_value: 1
+        max_value: 300
+      - name: temperature
+        description: "LLM temperature for translation creativity"
+        type: "float"
+        required: false
+        default: 0.3
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the translation response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      language: "Spanish"
+      max_retries: 3
+      max_wait_time_in_seconds: 60
+      temperature: 0.3
+      max_tokens: 1000
+
+  - name: fuzzer_crossover_converter
+    display_name: "Fuzzer CrossOver Converter"
+    description: "Uses multiple prompt templates to generate new prompts through crossover techniques. Combines user prompts with random templates to create hybrid prompts."
+    converter_type: "static"
+    class_name: "fuzzer_converter.FuzzerCrossOverConverter"
+    parameters_schema:
+      - name: prompt_templates
+        description: "List of prompt templates to use for crossover generation"
+        type: "array"
+        required: true
+        item_type: "string"
+      - name: template_label
+        description: "Label for the user prompt template (default: 'TEMPLATE 1')"
+        type: "string"
+        required: false
+        default: "TEMPLATE 1"
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      prompt_templates: []
+      template_label: "TEMPLATE 1"
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: fuzzer_expand_converter
+    display_name: "Fuzzer Expand Converter"
+    description: "Generates versions of a prompt with new, prepended sentences. Uses LLM to expand prompts by adding contextual sentences before the original prompt."
+    converter_type: "static"
+    class_name: "fuzzer_converter.FuzzerExpandConverter"
+    parameters_schema:
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+      - name: template_label
+        description: "Label for the prompt template (default: 'TEMPLATE 1')"
+        type: "string"
+        required: false
+        default: "TEMPLATE 1"
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000
+      template_label: "TEMPLATE 1"
+
+  - name: fuzzer_rephrase_converter
+    display_name: "Fuzzer Rephrase Converter"
+    description: "Generates versions of a prompt with rephrased sentences. Uses LLM to rephrase prompts while maintaining the same meaning."
+    converter_type: "static"
+    class_name: "fuzzer_converter.FuzzerRephraseConverter"
+    parameters_schema:
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+      - name: template_label
+        description: "Label for the prompt template (default: 'TEMPLATE 1')"
+        type: "string"
+        required: false
+        default: "TEMPLATE 1"
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000
+      template_label: "TEMPLATE 1"
+
+  - name: fuzzer_shorten_converter
+    display_name: "Fuzzer Shorten Converter"
+    description: "Generates versions of a prompt with shortened sentences. Uses LLM to condense prompts while maintaining the same meaning."
+    converter_type: "static"
+    class_name: "fuzzer_converter.FuzzerShortenConverter"
+    parameters_schema:
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+      - name: template_label
+        description: "Label for the prompt template (default: 'TEMPLATE 1')"
+        type: "string"
+        required: false
+        default: "TEMPLATE 1"
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000
+      template_label: "TEMPLATE 1"
+
+  - name: ansi_attack_converter
+    display_name: "ANSI Attack Converter"
+    description: "Generates prompts with ANSI codes to evaluate LLM behavior and system risks. Can use raw and escaped ANSI payloads, ask about ANSI codes, repeat payloads, and unescape strings."
+    converter_type: "static"
+    class_name: "ansi_escape.AnsiAttackConverter"
+    parameters_schema:
+      - name: include_raw
+        description: "Include scenarios with raw ANSI codes"
+        type: "boolean"
+        required: false
+        default: true
+      - name: include_escaped
+        description: "Include scenarios with escaped ANSI codes"
+        type: "boolean"
+        required: false
+        default: true
+      - name: include_tasks
+        description: "Include 'ASKS + HIGH_LEVEL_TASKS' scenarios"
+        type: "boolean"
+        required: false
+        default: true
+      - name: include_repeats
+        description: "Include 'repeat this payload' scenarios"
+        type: "boolean"
+        required: false
+        default: true
+      - name: include_unescape
+        description: "Include 'unescape this payload' scenarios"
+        type: "boolean"
+        required: false
+        default: true
+      - name: incorporate_user_prompt
+        description: "If True, the user's prompt is integrated into the final scenario"
+        type: "boolean"
+        required: false
+        default: true
+    parameters:
+      include_raw: true
+      include_escaped: true
+      include_tasks: true
+      include_repeats: true
+      include_unescape: true
+      incorporate_user_prompt: true
+
+  - name: ascii_smuggler_converter
+    display_name: "ASCII Smuggler Converter"
+    description: "Implements encoding and decoding using Unicode Tags for token smuggling. Can encode ASCII printable characters into Unicode Tags and decode them back."
+    converter_type: "static"
+    class_name: "token_smuggling.AsciiSmugglerConverter"
+    parameters_schema:
+      - name: action
+        description: "The action to perform - either 'encode' or 'decode'"
+        type: "string"
+        required: false
+        default: "encode"
+        enum: ["encode", "decode"]
+      - name: unicode_tags
+        description: "Whether to add Unicode control tags during encoding (U+E0001 start, U+E007F end)"
+        type: "boolean"
+        required: false
+        default: false
+    parameters:
+      action: "encode"
+      unicode_tags: false
+
+  - name: sneaky_bits_smuggler_converter
+    display_name: "Sneaky Bits Smuggler Converter"
+    description: "Encodes and decodes text using a bit-level approach with invisible Unicode characters. Uses zero_char (U+2062) for binary 0 and one_char (U+2064) for binary 1."
+    converter_type: "static"
+    class_name: "token_smuggling.SneakyBitsSmugglerConverter"
+    parameters_schema:
+      - name: action
+        description: "The action to perform - either 'encode' or 'decode'"
+        type: "string"
+        required: false
+        default: "encode"
+        enum: ["encode", "decode"]
+      - name: zero_char
+        description: "Character to represent binary 0 (default: U+2062 - Invisible Times)"
+        type: "string"
+        required: false
+        default: "\u2062"
+      - name: one_char
+        description: "Character to represent binary 1 (default: U+2064 - Invisible Plus)"
+        type: "string"
+        required: false
+        default: "\u2064"
+    parameters:
+      action: "encode"
+      zero_char: "\u2062"
+      one_char: "\u2064"
+
+  - name: variation_selector_smuggler_converter
+    display_name: "Variation Selector Smuggler Converter"
+    description: "Encodes and decodes text using Unicode Variation Selectors. Maps UTF-8 bytes to variation selectors (U+FE00-U+FE0F for 0x00-0x0F, U+E0100-U+E01EF for 0x10-0xFF)."
+    converter_type: "static"
+    class_name: "token_smuggling.VariationSelectorSmugglerConverter"
+    parameters_schema:
+      - name: action
+        description: "The action to perform - either 'encode' or 'decode'"
+        type: "string"
+        required: false
+        default: "encode"
+        enum: ["encode", "decode"]
+      - name: base_char_utf8
+        description: "Base character for embedding the hidden payload (default: 😊)"
+        type: "string"
+        required: false
+        default: "😊"
+      - name: embed_in_base
+        description: "If True, embed payload directly into base character. If False, insert space separator."
+        type: "boolean"
+        required: false
+        default: true
+    parameters:
+      action: "encode"
+      base_char_utf8: "😊"
+      embed_in_base: true
+
+  - name: toxic_sentence_generator_converter
+    display_name: "Toxic Sentence Generator Converter"
+    description: "Generates toxic sentence starters using an LLM to test AI safety mechanisms. Based on Project Moonshot's attack module for testing LLM safety guardrails."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    prompt_template_id: "toxic_sentence_generator"
+    parameters_schema:
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: text_to_hex_converter
+    display_name: "Text to Hex Converter"
+    description: "Converts text to a hexadecimal encoded UTF-8 string. Each word is converted to its hex representation."
+    converter_type: "static"
+    class_name: "TextToHexConverter"
+    parameters_schema:
+      - name: mode
+        description: "Word selection mode - 'all' for all words, 'indices' for specific indices, 'keywords' for keyword matching, 'proportion' for random selection, or 'regex' for pattern matching"
+        type: "string"
+        required: false
+        default: "all"
+        enum: ["all", "indices", "keywords", "proportion", "regex"]
+      - name: indices
+        description: "Specific indices of words to convert (only used when mode='indices')"
+        type: "array"
+        required: false
+        item_type: "integer"
+      - name: keywords
+        description: "Keywords to select words for conversion (only used when mode='keywords')"
+        type: "array"
+        required: false
+        item_type: "string"
+      - name: proportion
+        description: "Proportion of randomly selected words to convert [0.0-1.0] (only used when mode='proportion')"
+        type: "float"
+        required: false
+        min_value: 0.0
+        max_value: 1.0
+      - name: regex
+        description: "Regex pattern to match words for conversion (only used when mode='regex')"
+        type: "string"
+        required: false
+      - name: word_split_separator
+        description: "Separator used to split words in the input text"
+        type: "string"
+        required: false
+        default: " "
+    parameters:
+      mode: "all"
+      word_split_separator: " "
+
+  - name: tense_converter
+    display_name: "Tense Converter"
+    description: "Converts a conversation to a different tense using an LLM. Can change the tense to past, present, future, etc."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    prompt_template_id: "tense_converter"
+    parameters_schema:
+      - name: tense
+        description: "The tense to convert the prompt to (e.g., past, present, future, past perfect, future perfect, etc.)"
+        type: "string"
+        required: true
+        default: "present"
+      - name: temperature
+        description: "LLM temperature for response generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for the LLM response"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      tense: "present"
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: template_segment_converter
+    display_name: "Template Segment Converter"
+    description: "Uses a template to randomly split a prompt into segments defined by the template. A generalized version of universal LLM jailbreak techniques."
+    converter_type: "static"
+    class_name: "TemplateSegmentConverter"
+    parameters_schema:
+      - name: prompt_template
+        description: "The prompt template for the conversion. Must have two or more parameters."
+        type: "string"
+        required: false
+        default: "tom_and_jerry"
+    parameters:
+      prompt_template: "tom_and_jerry"
+
+  - name: superscript_converter
+    display_name: "Superscript Converter"
+    description: "Converts text to superscript characters. Leaves characters that do not have a superscript equivalent unchanged."
+    converter_type: "static"
+    class_name: "SuperscriptConverter"
+    parameters_schema: []
+    parameters: {}
+
+  - name: suffix_append_converter
+    display_name: "Suffix Append Converter"
+    description: "Appends a specified suffix to the prompt. Useful for adversarial suffix generation and prompt manipulation."
+    converter_type: "static"
+    class_name: "SuffixAppendConverter"
+    parameters_schema:
+      - name: suffix
+        description: "The suffix string to be appended to the prompt"
+        type: "string"
+        required: true
+        default: "!!!"
+    parameters:
+      suffix: "!!!"
+
+  - name: string_join_converter
+    display_name: "String Join Converter"
+    description: "Converts text by joining its characters with the specified join value. Supports selective word conversion based on indices, keywords, proportion, or regex patterns."
+    converter_type: "static"
+    class_name: "StringJoinConverter"
+    parameters_schema:
+      - name: join_value
+        description: "The string used to join characters of each word"
+        type: "string"
+        required: false
+        default: "-"
+      - name: indices
+        description: "Specific indices of words to convert"
+        type: "array"
+        required: false
+        item_type: "integer"
+      - name: keywords
+        description: "Keywords to select words for conversion"
+        type: "array"
+        required: false
+        item_type: "string"
+      - name: proportion
+        description: "Proportion of randomly selected words to convert [0.0-1.0]"
+        type: "float"
+        required: false
+        min_value: 0.0
+        max_value: 1.0
+      - name: regex
+        description: "Regex pattern to match words for conversion"
+        type: "regex"
+        required: false
+    parameters:
+      join_value: "-"
+
+  - name: search_replace_converter
+    display_name: "Search Replace Converter"
+    description: "Converts a string by replacing chosen phrase with a new phrase of choice using regex patterns."
+    converter_type: "static"
+    class_name: "SearchReplaceConverter"
+    parameters_schema:
+      - name: pattern
+        description: "The regex pattern to replace"
+        type: "regex"
+        required: true
+      - name: replace
+        description: "The new phrase to replace with. Can be a single string or a list of strings for random selection"
+        type: "array"
+        required: true
+        item_type: "string"
+      - name: regex_flags
+        description: "Regex flags to use for the replacement (0 = no flags)"
+        type: "integer"
+        required: false
+        default: 0
+        min_value: 0
+    parameters:
+      pattern: ""
+      replace: []
+      regex_flags: 0
+
+  - name: rot13_converter
+    display_name: "ROT13 Converter"
+    description: "Encodes prompts using the ROT13 cipher. A simple letter substitution cipher that replaces each letter with the letter 13 positions after it in the alphabet."
+    converter_type: "static"
+    class_name: "ROT13Converter"
+    parameters_schema: []
+    parameters: {}
+
+  - name: repeat_token_converter
+    display_name: "Repeat Token Converter"
+    description: "Repeats a specified token a specified number of times with different insertion modes (split, prepend, append, repeat). Based on repeated token attacks research."
+    converter_type: "static"
+    class_name: "RepeatTokenConverter"
+    parameters_schema:
+      - name: token_to_repeat
+        description: "The string to be repeated"
+        type: "string"
+        required: true
+      - name: times_to_repeat
+        description: "The number of times the string will be repeated"
+        type: "integer"
+        required: true
+        min_value: 1
+      - name: token_insert_mode
+        description: "The mode of insertion for the repeated token"
+        type: "string"
+        required: false
+        default: "split"
+        enum: ["split", "prepend", "append", "repeat"]
+    parameters:
+      token_to_repeat: ""
+      times_to_repeat: 1
+      token_insert_mode: "split"
+
+  - name: random_translation_converter
+    display_name: "Random Translation Converter"
+    description: "Translates each individual word in a prompt to a random language using an LLM. Supports selective word conversion based on indices, keywords, proportion, or regex patterns."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    class_name: "RandomTranslationConverter"
+    parameters_schema:
+      - name: languages
+        description: "The list of available languages to use for translation"
+        type: "array"
+        required: false
+        item_type: "string"
+      - name: indices
+        description: "Specific indices of words to convert"
+        type: "array"
+        required: false
+        item_type: "integer"
+      - name: keywords
+        description: "Keywords to select words for conversion"
+        type: "array"
+        required: false
+        item_type: "string"
+      - name: proportion
+        description: "Proportion of randomly selected words to convert [0.0-1.0]"
+        type: "float"
+        required: false
+        min_value: 0.0
+        max_value: 1.0
+      - name: regex
+        description: "Regex pattern to match words for conversion"
+        type: "regex"
+        required: false
+      - name: temperature
+        description: "Temperature for LLM generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for LLM generation"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: random_capital_letters_converter
+    display_name: "Random Capital Letters Converter"
+    description: "Takes a prompt and randomly capitalizes it by a percentage of the total characters. Useful for testing LLM robustness with mixed case text."
+    converter_type: "static"
+    class_name: "RandomCapitalLettersConverter"
+    parameters_schema:
+      - name: percentage
+        description: "The percentage of characters to capitalize in the prompt (1-100)"
+        type: "float"
+        required: false
+        default: 100.0
+        min_value: 1.0
+        max_value: 100.0
+    parameters:
+      percentage: 100.0
+
+  - name: qr_code_converter
+    display_name: "QR Code Converter"
+    description: "Converts a text string to a QR code image with customizable styling options including scale, colors, and borders."
+    converter_type: "static"
+    class_name: "QRCodeConverter"
+    parameters_schema:
+      - name: scale
+        description: "Scaling factor that determines the width/height in pixels of each module in the QR code"
+        type: "integer"
+        required: false
+        default: 3
+        min_value: 1
+        max_value: 20
+      - name: border
+        description: "Controls how many modules thick the border should be"
+        type: "integer"
+        required: false
+        default: 4
+        min_value: 0
+        max_value: 10
+      - name: dark_color
+        description: "RGB tuple for dark modules color (format: 'r,g,b')"
+        type: "string"
+        required: false
+        default: "0,0,0"
+      - name: light_color
+        description: "RGB tuple for light modules color (format: 'r,g,b')"
+        type: "string"
+        required: false
+        default: "255,255,255"
+      - name: data_dark_color
+        description: "RGB tuple for dark data modules color (format: 'r,g,b')"
+        type: "string"
+        required: false
+      - name: data_light_color
+        description: "RGB tuple for light data modules color (format: 'r,g,b')"
+        type: "string"
+        required: false
+      - name: finder_dark_color
+        description: "RGB tuple for dark finder patterns color (format: 'r,g,b')"
+        type: "string"
+        required: false
+      - name: finder_light_color
+        description: "RGB tuple for light finder patterns color (format: 'r,g,b')"
+        type: "string"
+        required: false
+      - name: border_color
+        description: "RGB tuple for border color (format: 'r,g,b')"
+        type: "string"
+        required: false
+    parameters:
+      scale: 3
+      border: 4
+      dark_color: "0,0,0"
+      light_color: "255,255,255"
+
+  - name: persuasion_converter
+    display_name: "Persuasion Converter"
+    description: "Rephrases prompts using a variety of persuasion techniques including authority endorsement, evidence-based arguments, expert endorsement, logical appeal, and misrepresentation. Based on research by Zeng et al."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    class_name: "PersuasionConverter"
+    parameters_schema:
+      - name: persuasion_technique
+        description: "Persuasion technique to be used for rephrasing prompts"
+        type: "string"
+        required: true
+        enum: ["authority_endorsement", "evidence_based", "expert_endorsement", "logical_appeal", "misrepresentation"]
+      - name: temperature
+        description: "Temperature for LLM generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for LLM generation"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      persuasion_technique: "authority_endorsement"
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: pdf_converter
+    display_name: "PDF Converter"
+    description: "Converts text prompts into PDF files with customizable formatting, fonts, colors, and page dimensions. Supports template-based generation and existing PDF modification."
+    converter_type: "static"
+    class_name: "PDFConverter"
+    parameters_schema:
+      - name: font_type
+        description: "Font type for the PDF"
+        type: "string"
+        required: false
+        default: "Helvetica"
+      - name: font_size
+        description: "Font size for the PDF"
+        type: "integer"
+        required: false
+        default: 12
+        min_value: 8
+        max_value: 72
+      - name: font_color
+        description: "Font color for the PDF in RGB format (format: 'r,g,b')"
+        type: "string"
+        required: false
+        default: "0,0,0"
+      - name: page_width
+        description: "Width of the PDF page in mm"
+        type: "integer"
+        required: false
+        default: 210
+        min_value: 50
+        max_value: 500
+      - name: page_height
+        description: "Height of the PDF page in mm"
+        type: "integer"
+        required: false
+        default: 297
+        min_value: 50
+        max_value: 500
+      - name: column_width
+        description: "Width of each column in the PDF (0 = full page width)"
+        type: "integer"
+        required: false
+        default: 0
+        min_value: 0
+        max_value: 200
+      - name: row_height
+        description: "Height of each row in the PDF"
+        type: "integer"
+        required: false
+        default: 10
+        min_value: 5
+        max_value: 50
+      - name: existing_pdf
+        description: "Path to an existing PDF file for modification"
+        type: "string"
+        required: false
+      - name: injection_items
+        description: "List of injection items for modifying existing PDFs (JSON format)"
+        type: "string"
+        required: false
+    parameters:
+      font_type: "Helvetica"
+      font_size: 12
+      font_color: "0,0,0"
+      page_width: 210
+      page_height: 297
+      column_width: 0
+      row_height: 10
+
+  - name: noise_converter
+    display_name: "Noise Converter"
+    description: "Injects noise errors into text using an LLM. Supports various types of noise including grammar errors, random deletions, symbol insertions, and auto-correct mistakes."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    class_name: "NoiseConverter"
+    parameters_schema:
+      - name: noise
+        description: "The type of noise to inject (grammar error, delete random letter, insert random symbol, etc.)"
+        type: "string"
+        required: false
+        default: "Grammar error, Delete random letter, insert random symbol, missing white space, bad auto-correct, or similar"
+      - name: number_errors
+        description: "The number of errors to inject"
+        type: "integer"
+        required: false
+        default: 5
+        min_value: 1
+        max_value: 50
+      - name: temperature
+        description: "Temperature for LLM generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for LLM generation"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      noise: "Grammar error, Delete random letter, insert random symbol, missing white space, bad auto-correct, or similar"
+      number_errors: 5
+      temperature: 0.7
+      max_tokens: 1000
+
+  - name: morse_converter
+    display_name: "Morse Code Converter"
+    description: "Encodes prompts using Morse code with support for extended characters. Uses '-' and '.' characters with ' ' to separate characters and '/' to separate words. Invalid characters are replaced with error sequence '........'."
+    converter_type: "static"
+    class_name: "MorseConverter"
+    parameters_schema:
+      - name: append_description
+        description: "Append plaintext 'expert' text to the prompt with cipher instructions and examples"
+        type: "boolean"
+        required: false
+        default: false
+    parameters:
+      append_description: false
+
+  - name: math_prompt_converter
+    display_name: "Math Prompt Converter"
+    description: "Converts natural language instructions into symbolic mathematics problems using an LLM. Provides mathematical solutions with real-world examples to help users understand the problems better."
+    converter_type: "llm"
+    converter_target: "openai/gpt-4o"
+    class_name: "MathPromptConverter"
+    parameters_schema:
+      - name: temperature
+        description: "Temperature for LLM generation"
+        type: "float"
+        required: false
+        default: 0.7
+        min_value: 0.0
+        max_value: 2.0
+      - name: max_tokens
+        description: "Maximum tokens for LLM generation"
+        type: "integer"
+        required: false
+        default: 1000
+        min_value: 1
+        max_value: 4000
+    parameters:
+      temperature: 0.7
+      max_tokens: 1000

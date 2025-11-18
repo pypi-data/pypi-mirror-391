@@ -1,0 +1,648 @@
+- name: adversarial_model_hijacking
+  title: Adversarial Model Hijacking
+  description: 'Evaluates the model''s robustness to maliciously steering inputs that
+    could make the model disobey its guardrails. (Source: Greedy Coordinate Gradients
+    (GCG), Category: Adversarial)'
+  runbook_objective_names:
+    - model_hijacking
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: flip-attack
+      description: Inferred strategy based on adversarial/hijacking goals.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:direct_injection
+      - plugin: defense_bypass:prompt_injection:adversarial_suffix
+- name: adversarial_robustness
+  title: Adversarial Robustness
+  description: 'Evaluates the model''s propensity to refuse engagement with malicious
+    prompts. (Source: AdvBench dataset, Category: Adversarial)'
+  runbook_objective_names:
+    - adversarial_refusal
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Inferred single-turn strategy suitable for mass testing from a large dataset like AdvBench.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:direct_injection
+- name: adversarial_robustness_region_specific
+  title: Adversarial Robustness - Region Specific
+  description: 'Evaluates the model''s ability to refuse engagement with malicious
+    prompts, focusing on bias against a specific region or group of people. (Source:
+    Google Research''s AART dataset, Category: Adversarial)'
+  runbook_objective_names:
+    - adversarial_refusal
+    - bias_reasoning
+  advanced_params:
+    - name: region
+      title: Region Specificity
+      type: string
+      description: The specific region or context for the bias test (e.g., a country,
+        a demographic, a specific pretext like 'KYC_auditor_pretext').
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: red-teaming-attack
+      description: Inferred strategy for structured, conversation-based testing of safety and bias.
+    plugins:
+      - plugin: toxicity:hate_speech:discrimination
+      - plugin: misinformation:propaganda:politics
+- name: goat
+  title: GOAT
+  description: 'Evaluate objective success in multi turn attack on target. (Source:
+    Goat research paper, Category: Adversarial)'
+  runbook_objective_names:
+    - prompt_injection
+    - jailbreak
+  advanced_params:
+    - name: multi_turn_prompt_chain
+      title: Multi-Turn Prompt Chain
+      type: list[string]
+      description: A list of strings, where each string is a prompt in the multi-turn
+        conversation.
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: crescendo-attack
+      description: Inferred multi-turn escalation strategy, highly relevant to GOAT's multi-turn approach.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:payload_splitting
+      - plugin: defense_bypass:prompt_injection:direct_injection
+- name: bias_reasoning
+  title: Bias Reasoning
+  description: 'Evaluates the model''s ability to factually reason against biased
+    inputs. (Source: Truthful QA dataset, Category: Reasoning)'
+  runbook_objective_names:
+    - bias_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Inferred single-turn attack suitable for reasoning tasks.
+    plugins:
+      - plugin: toxicity:hate_speech:discrimination
+      - plugin: misinformation:competition:biased_comparison
+- name: biological_weapons_risk
+  title: Biological Weapons Risk
+  description: 'Evaluates the model''s propensity to provide information for the construction
+    of biological weapons of mass destruction. (Source: WHO''s benchmark, Category:
+    Safety)'
+  runbook_objective_names:
+    - weapon_safety
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt to test sensitive knowledge boundary.
+    plugins:
+      - plugin: malicious_use:illegal_activities:promotion
+      - plugin: malicious_use:illegal_activities:violent
+- name: boolq_boolen_quetions_and_answer
+  title: BoolQ (Boolen quetions & Answer)
+  description: 'A prompt store of questions based on passages, where the task is to
+    determine whether a given statement is true or false based on the provided passage.
+    (Source: Google Research''s DataSet, Category: Reasoning)'
+  runbook_objective_names:
+    - factual_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query for factual reasoning dataset.
+    plugins:
+      - plugin: misinformation:hallucination:knowledge-gaps
+- name: chemical_weapons_risk
+  title: Chemical Weapons Risk
+  description: 'Evaluates the model''s propensity to provide information for the construction
+    of chemical weapons of mass destruction. (Source: WHO''s benchmark, Category:
+    Safety)'
+  runbook_objective_names:
+    - weapon_safety
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt to test sensitive knowledge boundary.
+    plugins:
+      - plugin: malicious_use:illegal_activities:promotion
+      - plugin: malicious_use:illegal_activities:violent
+- name: commonsenseqa
+  title: CommonsenseQA
+  description: 'A dataset focused on evaluating a model''s commonsense reasoning through
+    multiple-choice questions. Each question is based on a given context, with answers
+    that require selecting the most logical option. (Source: https://huggingface.co/datasets/tau/commonsense_qa,
+    Category: Reasoning)'
+  runbook_objective_names:
+    - commonsense_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query for commonsense reasoning dataset.
+    plugins:
+      - plugin: misinformation:hallucination:knowledge-gaps
+- name: cyber_attack_risk
+  title: Cyber Attack Risk
+  description: 'Evaluates the model''s propensity to provide information for the construction
+    of cybersecurity attacks. (Source: WHO''s benchmark, Category: Safety)'
+  runbook_objective_names:
+    - cyber_attack_safety
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt to test for cyber-related safety risks.
+    plugins:
+      - plugin: malicious_use:cybercrime:assistance
+      - plugin: malicious_use:illegal_activities:promotion
+- name: cybersecurity_reasoning
+  title: Cybersecurity Reasoning
+  description: 'Evaluates the model''s propensity to provide cybersecurity recommendations
+    based in accurate context. (Source: Operational and Real-World Data, Category:
+    Reasoning)'
+  runbook_objective_names:
+    - cyber_attack_safety
+    - factual_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt to evaluate reasoning in a cybersecurity context.
+    plugins:
+      - plugin: malicious_use:cybercrime:assistance
+- name: emotional_intelligence
+  title: Emotional Intelligence
+  description: 'Evaluates the model''s ability to show empathy or context awareness.
+    (Source: Some Articles, Category: Behavior)'
+  runbook_objective_names:
+    - emotional_awareness
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: role-play-attack
+      description: Inferred strategy to evaluate persona-based behavioral responses.
+    plugins:
+      - plugin: human_computer_interaction:overreliance:interaction-harm
+      - plugin: malicious_use:excessive_agency:autonomy
+- name: fact_finding
+  title: Fact Finding
+  description: 'Evaluates the model''s ability to identify true statements. (Source:
+    found some data sets but general fact findings, Category: Reasoning)'
+  runbook_objective_names:
+    - factual_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query for factual correctness.
+    plugins:
+      - plugin: misinformation:hallucination:false_recall
+      - plugin: misinformation:hallucination:knowledge-gaps
+- name: glitch_tokens
+  title: Glitch Tokens
+  description: 'Evaluates the model''s robustness to token-based vulnerabilities.
+    (Source: GPT3, Category: Adversarial)'
+  runbook_objective_names:
+    - model_hijacking
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn attack injecting glitch tokens/adversarial suffixes.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:adversarial_suffix
+- name: harmful_actions
+  title: Harmful Actions
+  description: 'Tests the model''s propensity to answer harmful questions. (Source:
+    kaggle https://www.kaggle.com/datasets/aloktantrik/google-unsafe-search-dataset,
+    Category: Safety)'
+  runbook_objective_names:
+    - harmful_content
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query for harmful content generation.
+    plugins:
+      - plugin: toxicity:graphic_violence:explicit
+      - plugin: malicious_use:illegal_activities:violent
+- name: harmless_queries
+  title: Harmless Queries
+  description: 'A prompt store containing harmless queries that do not lead to harmful,
+    illegal, or unethical content. (Source: articles, Category: Baseline)'
+  runbook_objective_names:
+    - harmless
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Baseline single-turn query for expected safe responses.
+    plugins: []
+- name: human_safety
+  title: Human Safety
+  description: 'Evaluates the model''s ability to prioritize human well-being, prevent
+    harm, and adhere to ethical guidelines. (Category: Safety)'
+  runbook_objective_names:
+    - harmful_content
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt to evaluate general human safety adherence.
+    plugins:
+      - plugin: toxicity:graphic_violence:explicit
+      - plugin: human_computer_interaction:overreliance:interaction-harm
+- name: malicious_code_generation
+  title: Malicious Code Generation
+  description: 'Evaluates the model''s ability to prevent the creation of code that
+    could be used in malware. (Category: Safety)'
+  runbook_objective_names:
+    - malicious_code
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting generation of malicious code.
+    plugins:
+      - plugin: malicious_use:cybercrime:assistance
+      - plugin: malicious_use:illegal_activities:promotion
+- name: misinformation_reasoning
+  title: Misinformation Reasoning
+  description: 'Evaluates the model''s propensity to adhere to how claims. (Category:
+    Reasoning)'
+  runbook_objective_names:
+    - factual_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query using known misinformation claims.
+    plugins:
+      - plugin: misinformation:hallucination:noisy_training_data
+      - plugin: misinformation:propaganda:politics
+- name: moral_reasoning
+  title: Moral Reasoning
+  description: 'Evaluates the model''s propensity to align with ethical principles.
+    (Category: Behavior)'
+  runbook_objective_names:
+    - moral_alignment
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query involving moral dilemmas or ethical judgments.
+    plugins:
+      - plugin: malicious_use:illegal_activities:promotion
+      - plugin: human_computer_interaction:overreliance:interaction-harm
+- name: pii_personally_identifiable_information
+  title: PII (Personally Identifiable Information)
+  description: 'Evaluates the model''s ability to detect the presence of PII. (Category:
+    Privacy)'
+  runbook_objective_names:
+    - privacy_leak
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query designed to elicit PII data.
+    plugins:
+      - plugin: information_hazard:personal_identification:direct-exposure
+      - plugin: information_hazard:data_leaks:sensitive-data
+- name: pii_hallucination
+  title: PII Hallucination
+  description: 'Evaluates the model''s propensity to complete fake PII data using
+    incomplete PII strings. (Category: Privacy)'
+  runbook_objective_names:
+    - pii_hallucination
+  advanced_params:
+    - name: pii_template
+      title: PII Template
+      type: string
+      description: An incomplete PII string to test if the model will hallucinate and
+        complete it (e.g., 'My SSN is 123-45-').
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query using the PII template to test hallucination/completion.
+    plugins:
+      - plugin: information_hazard:personal_identification:direct-exposure
+      - plugin: information_hazard:data_leaks:sensitive-data
+- name: political_bias_detection
+  title: Political Bias Detection
+  description: 'Evaluates the model''s ability to gauge political bias. (Category:
+    Bias)'
+  runbook_objective_names:
+    - bias_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query for politically charged questions to reveal bias.
+    plugins:
+      - plugin: misinformation:propaganda:politics
+      - plugin: toxicity:hate_speech:discrimination
+- name: preprogrammed_hallucinations
+  title: Preprogrammed Hallucinations
+  description: 'This attack library evaluates the model''s propensity to invent or
+    "hallucinate" information, often in a way that creates a security risk. A common
+    example is "package hallucination. (Category: Hallucination)'
+  runbook_objective_names:
+    - package_hallucination
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query to test for security-related hallucinations (e.g., non-existent packages).
+    plugins:
+      - plugin: misinformation:hallucination:knowledge-gaps
+- name: code_execution
+  title: Code Execution
+  description: 'Tests if the AI can be prompted to execute arbitrary code. (Category:
+    Critical Risk)'
+  runbook_objective_names:
+    - code_execution
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt attempting code injection or execution.
+    plugins:
+      - plugin: defense_bypass:hacking:shell_injection
+      - plugin: defense_bypass:prompt_injection:code_injection
+- name: context_leakage
+  title: Context Leakage
+  description: 'Tests if the AI leaks information from its context window or internal
+    instructions. (Category: Security)'
+  runbook_objective_names:
+    - data_leak
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt attempting to extract system context or previous chat data.
+    plugins:
+      - plugin: information_hazard:data_leaks:input-leakage
+      - plugin: defense_bypass:prompt_injection:system_prompt_leakage
+- name: data_exfiltration
+  title: Data Exfiltration
+  description: 'Tests if the AI can be tricked into revealing sensitive data it has
+    access to. (Category: Security)'
+  runbook_objective_names:
+    - data_leak
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt attempting to exfiltrate sensitive data.
+    plugins:
+      - plugin: information_hazard:data_leaks:sensitive-data
+      - plugin: information_hazard:private_information:sensitive_business_data
+- name: jailbreak
+  title: Jailbreak
+  description: 'Tests for vulnerabilities that allow bypassing the AI''s safety guardrails
+    or instructions. (Category: Security)'
+  runbook_objective_names:
+    - jailbreak
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: many-shot-jailbreak-attack
+      description: Inferred strategy using demonstration and examples for bypassing guardrails.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:direct_injection
+      - plugin: defense_bypass:prompt_injection:adversarial_suffix
+- name: manipulation
+  title: Manipulation
+  description: 'Broad category likely covering various ways to manipulate the AI''s
+    behavior. (Category: Behavior)'
+  runbook_objective_names:
+    - moral_alignment
+    - emotional_awareness
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: role-play-attack
+      description: Inferred persona-based strategy for behavioral manipulation.
+    plugins:
+      - plugin: malicious_use:excessive_agency:autonomy
+      - plugin: human_computer_interaction:overreliance:interaction-harm
+- name: phishing
+  title: Phishing
+  description: 'Tests if the AI can be used to generate phishing content. (Category:
+    Safety)'
+  runbook_objective_names:
+    - phishing_generation
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting generation of phishing content.
+    plugins:
+      - plugin: malicious_use:fraud:non_violent
+      - plugin: information_hazard:personal_identification:social-engineering
+- name: rag_poisoning
+  title: RAG Poisoning
+  description: 'Tests for vulnerabilities related to Retrieval-Augmented Generation
+    where poisoned external data could corrupt responses. (Category: Security)'
+  runbook_objective_names:
+    - rag_poisoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Single-turn query targeting potentially poisoned RAG context.
+    plugins:
+      - plugin: defense_bypass:prompt_injection:indirect_injection
+      - plugin: misinformation:hallucination:noisy_training_data
+- name: xss_cross_site_scripting
+  title: XSS (Cross-Site Scripting)
+  description: 'Tests if the AI can be made to generate outputs containing malicious
+    scripts. (Category: Security)'
+  runbook_objective_names:
+    - xss
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting XSS/SQLI payload generation or execution.
+    plugins:
+      - plugin: defense_bypass:hacking:sqli
+      - plugin: defense_bypass:hacking:ssrf
+- name: bias
+  title: Bias
+  description: 'Tests for harmful biases in the AI''s responses. (Category: Safety)'
+  runbook_objective_names:
+    - bias_reasoning
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query to test for general biases.
+    plugins:
+      - plugin: toxicity:hate_speech:discrimination
+      - plugin: misinformation:competition:biased_comparison
+- name: cyber_threats
+  title: Cyber Threats
+  description: 'Tests related to generating content that facilitates cyber attacks.
+    (Category: Safety)'
+  runbook_objective_names:
+    - cyber_attack_safety
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting assistance with cyber threats.
+    plugins:
+      - plugin: malicious_use:cybercrime:assistance
+      - plugin: malicious_use:illegal_activities:promotion
+- name: fake_news
+  title: Fake News
+  description: 'Tests the AI''s propensity to generate misinformation. (Category:
+    Safety)'
+  runbook_objective_names:
+    - fabricated_response
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query for known false or controversial information.
+    plugins:
+      - plugin: misinformation:propaganda:politics
+      - plugin: misinformation:hallucination:false_recall
+- name: fraudulent_activities
+  title: Fraudulent Activities
+  description: 'Tests if the AI can be used to plan or execute fraudulent schemes.
+    (Category: Safety)'
+  runbook_objective_names:
+    - illegal_activities
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting planning or execution assistance for fraud.
+    plugins:
+      - plugin: malicious_use:fraud:non_violent
+      - plugin: malicious_use:illegal_activities:promotion
+- name: harmful_content
+  title: Harmful Content
+  description: 'Tests for generation of toxic, offensive, or otherwise harmful content.
+    (Category: Safety)'
+  runbook_objective_names:
+    - harmful_content
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting generation of toxic/offensive content.
+    plugins:
+      - plugin: toxicity:graphic_violence:explicit
+      - plugin: toxicity:hate_speech:harassment
+- name: illegal_activities
+  title: Illegal Activities
+  description: 'Tests if the AI can be prompted to provide instructions for illegal
+    acts. (Category: Safety)'
+  runbook_objective_names:
+    - illegal_activities
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt requesting instructions for illegal acts.
+    plugins:
+      - plugin: malicious_use:illegal_activities:promotion
+      - plugin: malicious_use:illegal_activities:violent
+- name: privacy_violation
+  title: Privacy Violation
+  description: 'Tests for actions that violate user privacy. (Category: Safety)'
+  runbook_objective_names:
+    - privacy_leak
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt attempting to violate privacy policies.
+    plugins:
+      - plugin: information_hazard:private_information:unauthorized-share
+      - plugin: information_hazard:personal_identification:direct-exposure
+- name: profanity
+  title: Profanity
+  description: 'Tests for the generation of profane language. (Category: Safety)'
+  runbook_objective_names:
+    - harmful_content
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct prompt attempting to elicit profane content.
+    plugins:
+      - plugin: toxicity:severe_toxicity:profanity
+      - plugin: toxicity:severe_toxicity:insults
+- name: competitor_check
+  title: Competitor Check
+  description: 'Tests related to how the AI handles mentions of competitors. (Category:
+    Business Alignment)'
+  runbook_objective_names:
+    - competitor_check
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query mentioning competitors to test for neutral/unbiased response.
+    plugins:
+      - plugin: misinformation:competition:direct_endorsement
+      - plugin: misinformation:competition:biased_comparison
+- name: intentional_misuse
+  title: Intentional Misuse
+  description: 'Tests scenarios where the user intentionally tries to misuse the AI
+    for unintended purposes. (Category: Business Alignment)'
+  runbook_objective_names:
+    - competitor_check
+  advanced_params: []
+  recommended_evaluator_names: []
+  attack_dataset:
+    attack_strategy:
+      name: prompt-sending-attack
+      description: Direct query designed to test system boundaries via misuse.
+    plugins:
+      - plugin: malicious_use:excessive_agency:functionality
+      - plugin: malicious_use:excessive_agency:permissions

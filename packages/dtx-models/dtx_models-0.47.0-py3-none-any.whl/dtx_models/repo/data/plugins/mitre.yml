@@ -1,0 +1,86 @@
+red_team_plan:
+  name: "Outside-In AI Attack Surface Red Teaming"
+  objective: "To identify and exploit vulnerabilities in the organization's public-facing AI systems from an external attacker's perspective."
+  stages:
+    - stage: 1
+      name: "Reconnaissance"
+      description: "Identify the organization's AI footprint using publicly available information (OSINT) and active probing."
+      tactics:
+        - name: "Identify AI-Enabled Products"
+          description: "Search the company website, press releases, and job postings to identify products or services that explicitly use AI/ML."
+          mitre_atlas_id: "AML.T0002" # Search Victim-Owned Websites
+        - name: "Discover Public AI/ML Code"
+          description: "Scan public code repositories like GitHub for code, notebooks, or configuration files related to the organization's AI models."
+          mitre_atlas_id: "AML.T0003" # Search Application Repositories
+        - name: "Find Public AI Artifacts"
+          description: "Search for publicly available models on platforms like Hugging Face or datasets on Kaggle that are owned by or associated with the organization."
+          mitre_atlas_id: "AML.T0006" # Acquire Public AI Artifacts
+        - name: "Fingerprint AI Infrastructure"
+          description: "Analyze API responses, HTTP headers, and error messages to identify the underlying AI model provider (e.g., OpenAI, Anthropic) or hosting platform (e.g., Azure AI, SageMaker)."
+          mitre_atlas_id: "AML.T0004" # Active Scanning
+        - name: "Probe for AI Security Controls"
+          description: "Send benign and slightly malformed probes to APIs and web front-ends to identify the presence and behavior of security measures like Web Application Firewalls (WAFs) or AI-specific firewalls."
+          mitre_atlas_id: "AML.T0004" # Active Scanning
+
+    - stage: 2
+      name: "Attack Planning"
+      description: "Develop attack payloads and strategies based on the systems identified during reconnaissance."
+      tactics:
+        - name: "Craft Malicious Prompts"
+          description: "Develop a set of prompts for prompt injection, jailbreaking, and data leakage attacks tailored to the fingerprinted LLM type."
+          mitre_atlas_id: "AML.T0016" # LLM Prompt Crafting
+        - name: "Craft Adversarial Data"
+          description: "Prepare malformed inputs (e.g., images with adversarial noise, text with unicode characters) to test for evasion or unexpected model behavior."
+          mitre_atlas_id: "AML.T0059" # Craft Adversarial Data
+        - name: "Develop Poisoned Content"
+          description: "If a system uses Retrieval-Augmented Generation (RAG), craft and stage malicious content on a public source (e.g., Wikipedia, a blog) that the RAG system might index."
+          mitre_atlas_id: "AML.T0017" # Retrieval Content Crafting
+
+    - stage: 3
+      name: "Attack Execution"
+      description: "Actively exploit identified vulnerabilities to gain access, manipulate models, and exfiltrate data."
+      sub_stages:
+        - name: "Initial Access & Execution"
+          tactics:
+            - name: "Exploit Public-Facing Application"
+              description: "Target a web application (e.g., a customer service chatbot) that serves as a front-end to an AI model."
+              mitre_atlas_id: "AML.T0021"
+            - name: "LLM Prompt Injection"
+              description: "Inject commands into user-facing prompts to hijack the model's logic, bypass filters, or reveal underlying data."
+              mitre_atlas_id: "AML.T0035"
+            - name: "LLM Jailbreak"
+              description: "Use specialized prompts (e.g., role-playing scenarios) to trick the model into violating its own safety policies."
+              mitre_atlas_id: "AML.T0043"
+        - name: "Discovery & Collection"
+          tactics:
+            - name: "Discover AI Model Ontology"
+              description: "Attempt to determine the model's capabilities, function names, and data structures through crafted inputs and error message analysis."
+              mitre_atlas_id: "AML.T0049"
+            - name: "LLM Data Leakage"
+              description: "Coax the LLM into revealing sensitive data from its training set or its immediate context window that it should not have access to."
+              mitre_atlas_id: "AML.T0063"
+        - name: "Exfiltration & Impact"
+          tactics:
+            - name: "Extract LLM System Prompt"
+              description: "Attempt to exfiltrate the model's core instructions, or 'system prompt,' to understand its purpose and constraints."
+              mitre_atlas_id: "AML.T0062"
+            - name: "Denial of AI Service"
+              description: "Send computationally expensive or recursive prompts to the model API to cause service degradation or resource exhaustion."
+              mitre_atlas_id: "AML.T0068"
+            - name: "Cost Harvesting"
+              description: "If the API is metered, generate a high volume of complex queries to inflict financial costs on the organization."
+              mitre_atlas_id: "AML.T0071"
+
+    - stage: 4
+      name: "Insights and Reporting"
+      description: "Consolidate all findings, translate technical risks into business insights, and provide a strategic roadmap for mitigation."
+      tactics:
+        - name: "Document Findings"
+          description: "Create a detailed log of all actions taken, successful exploits, and failed attempts, including screenshots and API logs."
+          mitre_atlas_id: "N/A" # Process step
+        - name: "Map to Business Risk"
+          description: "Translate technical vulnerabilities (e.g., 'system prompt extracted') into tangible business risks (e.g., 'intellectual property theft', 'reputational damage')."
+          mitre_atlas_id: "N/A" # Process step
+        - name: "Provide Remediation Guidance"
+          description: "Suggest specific, prioritized fixes, such as implementing stricter input validation, robust prompt sanitization, API rate limiting, and enhanced monitoring."
+          mitre_atlas_id: "N/A" # Process step
