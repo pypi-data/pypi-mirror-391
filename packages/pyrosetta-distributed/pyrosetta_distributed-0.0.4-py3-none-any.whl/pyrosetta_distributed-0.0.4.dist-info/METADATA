@@ -1,0 +1,36 @@
+Metadata-Version: 2.4
+Name: pyrosetta-distributed
+Version: 0.0.4
+Summary: meta package to install dependecies needed for `pyrosetta.distributed` framework
+Home-page: https://www.pyrosetta.org/
+Author: Sergey Lyskov
+License: Rosetta Software License
+Requires-Python: >3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: attrs
+Requires-Dist: billiard
+Requires-Dist: cloudpickle
+Requires-Dist: dask
+Requires-Dist: dask-jobqueue
+Requires-Dist: distributed
+Requires-Dist: gitpython
+Requires-Dist: jupyter
+Requires-Dist: traitlets
+Requires-Dist: blosc
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: python-xz
+Requires-Dist: cryptography
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# PyRosetta distributed
+
+Meta package to install dependencies needed for `pyrosetta.distributed` framework. Note that you still need to install version of PyRosetta with serialization support. Please visit https://www.pyrosetta.org so find various ways to do so.
