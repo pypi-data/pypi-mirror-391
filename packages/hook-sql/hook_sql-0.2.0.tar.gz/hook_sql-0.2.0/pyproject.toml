@@ -1,0 +1,37 @@
+[project]
+name = "hook-sql"
+dynamic = ["version"]
+description = "Add your description here"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Mattias Thalén", email = "bitter-polders0x@icloud.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "networkx>=3.5",
+    "sqlglot>=27.29.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pre-commit>=4.4.0",
+    "pytest>=9.0.1",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.5",
+    "twine>=6.2.0",
+    "types-networkx>=3.5.0.20251106",
+]
+
+[build-system]
+requires = ["hatchling>=1.24", "hatch-vcs>=0.5"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/hook_sql/_version.py"
+
+[tool.pytest.ini_options]
+addopts = "-q --doctest-modules --doctest-glob=*.py --doctest-report=udiff"
