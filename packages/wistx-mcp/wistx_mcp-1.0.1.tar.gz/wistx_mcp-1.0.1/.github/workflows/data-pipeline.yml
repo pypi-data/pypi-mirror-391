@@ -1,0 +1,183 @@
+name: Data Pipeline Processing
+
+on:
+  workflow_dispatch:
+    inputs:
+      pipeline_type:
+        description: 'Pipeline type to run'
+        required: true
+        type: choice
+        options:
+          - compliance
+          - knowledge
+          - both
+        default: 'compliance'
+      standard:
+        description: 'Compliance standard (leave empty for all)'
+        required: false
+        type: string
+        default: ''
+      domain:
+        description: 'Knowledge domain (for knowledge pipeline, use "all" to process all domains)'
+        required: false
+        type: choice
+        options:
+          - all
+          - compliance
+          - finops
+          - devops
+          - infrastructure
+          - security
+          - architecture
+          - platform
+          - sre
+        default: 'compliance'
+      mode:
+        description: 'Pipeline mode'
+        required: true
+        type: choice
+        options:
+          - streaming
+          - checkpointing
+        default: 'streaming'
+      skip_collection:
+        description: 'Skip collection stage (use existing raw data)'
+        required: false
+        type: boolean
+        default: false
+      limit_urls:
+        description: 'Limit URLs for knowledge pipeline (0 = no limit)'
+        required: false
+        type: number
+        default: 0
+
+env:
+  PYTHON_VERSION: '3.11'
+  UV_VERSION: '0.1.44'
+
+jobs:
+  run-pipeline:
+    name: Run Data Pipeline
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras
+
+      - name: Setup MongoDB
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+        run: |
+          python scripts/setup_mongodb.py
+        continue-on-error: true
+
+      - name: Run Compliance Pipeline
+        if: ${{ inputs.pipeline_type == 'compliance' || inputs.pipeline_type == 'both' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME || 'wistx-index' }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          if [ -z "${{ inputs.standard }}" ]; then
+            echo "Processing all compliance standards..."
+            python scripts/run_pipeline.py --mode ${{ inputs.mode }}
+          else
+            echo "Processing standard: ${{ inputs.standard }}"
+            if [ "${{ inputs.skip_collection }}" == "true" ]; then
+              python scripts/run_pipeline.py --standard "${{ inputs.standard }}" --mode ${{ inputs.mode }} --no-collection
+            else
+              python scripts/run_pipeline.py --standard "${{ inputs.standard }}" --mode ${{ inputs.mode }}
+            fi
+          fi
+
+      - name: Run Knowledge Pipeline
+        if: ${{ inputs.pipeline_type == 'knowledge' || inputs.pipeline_type == 'both' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME || 'wistx-index' }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          if [ "${{ inputs.domain }}" == "all" ]; then
+            echo "Processing all knowledge domains..."
+            domains=("compliance" "finops" "devops" "infrastructure" "security" "architecture" "platform" "sre")
+            for domain in "${domains[@]}"; do
+              echo "Processing domain: $domain"
+              if [ "${{ inputs.limit_urls }}" == "0" ] || [ -z "${{ inputs.limit_urls }}" ]; then
+                python scripts/test_knowledge_pipeline.py --domain "$domain" || echo "Failed to process domain: $domain"
+              else
+                python scripts/test_knowledge_pipeline.py --domain "$domain" --limit-urls ${{ inputs.limit_urls }} || echo "Failed to process domain: $domain"
+              fi
+            done
+          else
+            if [ "${{ inputs.limit_urls }}" == "0" ] || [ -z "${{ inputs.limit_urls }}" ]; then
+              python scripts/test_knowledge_pipeline.py --domain ${{ inputs.domain }}
+            else
+              python scripts/test_knowledge_pipeline.py --domain ${{ inputs.domain }} --limit-urls ${{ inputs.limit_urls }}
+            fi
+          fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-logs
+          path: |
+            *.log
+            data/**/*.log
+          retention-days: 7
+
+      - name: Upload checkpoint files
+        if: ${{ inputs.mode == 'checkpointing' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkpoint-files
+          path: |
+            data/compliance/raw/**
+            data/compliance/processed/**
+            data/compliance/embeddings/**
+          retention-days: 7
+
+      - name: Pipeline Summary
+        if: always()
+        run: |
+          echo "## Pipeline Execution Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Pipeline Type**: ${{ inputs.pipeline_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode**: ${{ inputs.mode }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.pipeline_type }}" == "compliance" ] || [ "${{ inputs.pipeline_type }}" == "both" ]; then
+            echo "- **Standard**: ${{ inputs.standard || 'All' }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Skip Collection**: ${{ inputs.skip_collection }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ inputs.pipeline_type }}" == "knowledge" ] || [ "${{ inputs.pipeline_type }}" == "both" ]; then
+            if [ "${{ inputs.domain }}" == "all" ]; then
+              echo "- **Domain**: All domains (compliance, finops, devops, infrastructure, security, architecture, platform, sre)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "- **Domain**: ${{ inputs.domain }}" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "- **Limit URLs**: ${{ inputs.limit_urls || 'No limit' }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check logs and artifacts for detailed results." >> $GITHUB_STEP_SUMMARY
+

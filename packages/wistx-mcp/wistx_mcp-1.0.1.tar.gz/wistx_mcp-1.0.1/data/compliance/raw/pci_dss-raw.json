@@ -1,0 +1,452 @@
+[
+  {
+    "control_id": "PCI-DSS-1",
+    "requirement": "Firewall and router configuration standards for your organization, network diagram showing network segmentation, data flow diagrams for cardholder data, network policies/procedures, and most recent firewall/router rule review.",
+    "title": "Firewall and Router Configuration",
+    "description": "Install and maintain a firewall configuration to protect cardholder data.",
+    "testing_procedures": [
+      "Review firewall and router configuration standards.",
+      "Examine network diagrams for segmentation accuracy.",
+      "Inspect data flow diagrams for cardholder data.",
+      "Assess network policies and procedures.",
+      "Verify the most recent firewall/router rule review."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Ensure firewalls and routers are configured to protect cardholder data by establishing and maintaining configuration standards, segmenting the network, and regularly reviewing rules.\nDevelop and document firewall and router configuration standards.\nCreate and maintain accurate network diagrams.\nGenerate data flow diagrams for cardholder data.\nEstablish network access and administration policies.\nConduct regular firewall/router rule reviews.",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-2",
+    "requirement": "Hardening procedures for in-scope network components, policies/procedures for changing default configurations, asset inventory, data retention and disposal policies, and data protection/storage policies.",
+    "title": "System Passwords and Security Parameters",
+    "description": "Do not use vendor-supplied defaults for system passwords and other security parameters.",
+    "testing_procedures": [
+      "Review hardening procedures for compliance.",
+      "Inspect policies for changing default configurations.",
+      "Examine asset inventory for accuracy.",
+      "Assess data retention and disposal policies.",
+      "Evaluate data protection and storage policies."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Eliminate use of default passwords and configurations by implementing hardening procedures, changing defaults, maintaining an asset inventory, and establishing data policies.\nDevelop and document hardening procedures.\nCreate policies for changing default configurations.\nMaintain an up-to-date asset inventory.\nEstablish data retention and disposal policies.\nImplement data protection and storage policies.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-3",
+    "requirement": "Encryption policy or procedures for hard drive/disk encryption, encryption key management policy/procedures, and key management/custodian acceptance form.",
+    "title": "Protection of Stored Cardholder Data",
+    "description": "Protect stored cardholder data.",
+    "testing_procedures": [
+      "Review encryption policies and procedures.",
+      "Examine key management policies and procedures.",
+      "Assess key management/custodian acceptance forms."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Ensure the protection of stored cardholder data through encryption and key management policies.\nDevelop and document encryption policies.\nEstablish key management policies and procedures.\nImplement key custodian acceptance processes.",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-4",
+    "requirement": "Hardening procedures for network components, encryption policy/procedures for data transmission, and network access/administration policies.",
+    "title": "Encryption of Transmitted Data",
+    "description": "Encrypt transmission of cardholder data across open, public networks.",
+    "testing_procedures": [
+      "Review hardening procedures for network components.",
+      "Examine encryption policies for data transmission.",
+      "Assess network access and administration policies."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Secure transmission of cardholder data across public networks by implementing encryption and hardening network components.\nDevelop and document hardening procedures for network components.\nEstablish encryption policies for data transmission.\nImplement network access and administration policies.",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-5",
+    "requirement": "Antivirus policies or procedures indicating the requirement for antivirus on endpoints and systems within the Cardholder Data Environment.",
+    "title": "Protection Against Malware",
+    "description": "Protect all systems against malware and regularly update anti-virus software or programs.",
+    "testing_procedures": [
+      "Review antivirus policies and procedures."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Ensure systems are protected against malware by implementing and regularly updating antivirus software.\nDevelop and document antivirus policies.\nImplement antivirus solutions on all endpoints.\nRegularly update antivirus software.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-6",
+    "requirement": "Software Development Life Cycle policies/procedures, change management policy/procedures, security testing procedures for systems, vulnerability management policies/procedures, and system/software patching procedures.",
+    "title": "Secure Systems and Applications",
+    "description": "Develop and maintain secure systems and applications.",
+    "testing_procedures": [
+      "Review SDLC policies and procedures.",
+      "Examine change management policies.",
+      "Assess security testing procedures.",
+      "Evaluate vulnerability management policies.",
+      "Verify system/software patching procedures."
+    ],
+    "source_url": "['https://help.drata.com/en/articles/6038558-required-documentation-for-pci-dss', 'https://sprinto.com/blog/pci-dss-controls/', 'https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Ensure the security of systems and applications through secure development, change management, and regular security testing.\nDevelop and document SDLC policies.\nEstablish change management policies.\nImplement security testing procedures.\nCreate vulnerability management policies.\nEnforce system/software patching procedures.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-1.1",
+    "requirement": "Document and implement security policies and operational procedures for managing firewalls, restrict public access to infra assets, and disallow unauthorized outbound traffic from the cardholder data environment to the Internet.",
+    "title": "Install a security firewall",
+    "description": "Firewalls are critical for protecting the network perimeter and controlling traffic to and from the cardholder data environment. Proper configuration and management of firewalls are essential to prevent unauthorized access.",
+    "testing_procedures": [
+      "Review firewall configuration and rule sets",
+      "Verify documentation of firewall management procedures",
+      "Inspect firewall settings to ensure unauthorized outbound traffic is blocked"
+    ],
+    "source_url": "['https://sprinto.com/blog/pci-dss-controls/', 'https://drata.com/blog/pci-compliance-checklist']",
+    "remediation": "Ensure firewalls are properly configured and managed\nDocument firewall management procedures\nRegularly review and update firewall rule sets\nRestrict public access and block unauthorized outbound traffic",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-2.1",
+    "requirement": "Maintain documentation for your configuration security hardening procedures, encrypt all administrative access using strong cryptography, and maintain an inventory of system components in the scope for PCI DSS.",
+    "title": "Change default passwords and security parameters",
+    "description": "Default passwords and security settings provided by vendors are well-known and pose a significant security risk if not changed.",
+    "testing_procedures": [
+      "Verify that default passwords are changed",
+      "Inspect documentation for security hardening",
+      "Check inventory of system components for compliance"
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Change default passwords and update security settings\nDocument security hardening procedures\nEncrypt administrative access using strong cryptography\nMaintain an updated inventory of system components",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-3.1",
+    "requirement": "Create and maintain a data retention and disposal policy, limit CHD storage amount and retention time, define processes for secure deletion of CHD, store only necessary data elements, restrict access to cryptographic keys, and encrypt CHD using industry-accepted algorithms.",
+    "title": "Protect stored cardholder data",
+    "description": "Cardholder data (CHD) must be protected by limiting data storage amount and retention time, securely deleting CHD when no longer needed, and encrypting CHD using strong cryptography.",
+    "testing_procedures": [
+      "Review data retention and disposal policies",
+      "Inspect processes for secure deletion of CHD",
+      "Verify encryption of stored CHD"
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Implement measures to protect stored CHD\nEstablish a data retention and disposal policy\nLimit storage amount and retention time of CHD\nSecurely delete CHD when no longer needed\nEncrypt stored CHD using strong cryptography",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-4.1",
+    "requirement": "Document security policies and operational procedures for encrypting transmissions of CHD and ensure these policies are known to and acknowledged by all affected parties.",
+    "title": "Encrypt transmission of cardholder data",
+    "description": "Cardholder data must be encrypted during transmission over open, public networks to protect against interception by malicious actors.",
+    "testing_procedures": [
+      "Review documentation of encryption policies",
+      "Verify that CHD transmissions are encrypted"
+    ],
+    "source_url": "['https://sprinto.com/blog/pci-dss-controls/', 'https://drata.com/blog/pci-compliance-checklist']",
+    "remediation": "Ensure encryption of CHD during transmission\nDocument and implement encryption policies for CHD transmission\nEducate and confirm policy acknowledgment by all relevant parties",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-5.1",
+    "requirement": "Deploy antivirus software on all systems commonly affected by malicious software and perform periodic evaluations of systems to identify and evaluate evolving malware threats.",
+    "title": "Use and regularly update antivirus software",
+    "description": "Antivirus software must be used and regularly updated on all systems commonly affected by malware to protect against threats.",
+    "testing_procedures": [
+      "Verify installation of antivirus software",
+      "Review logs and updates of antivirus software",
+      "Evaluate systems for evolving malware threats"
+    ],
+    "source_url": "['https://sprinto.com/blog/pci-dss-controls/', 'https://drata.com/blog/pci-compliance-checklist']",
+    "remediation": "Maintain effective antivirus protection\nEnsure antivirus software is deployed and active\nRegularly update antivirus software and evaluate systems for new threats",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-6.1",
+    "requirement": "Define and implement a development process that includes security requirements, install critical security patches, ensure the test environment is separate, review custom code before release, and document all processes.",
+    "title": "Develop and maintain secure systems and applications",
+    "description": "Security vulnerabilities must be identified and classified with a risk ranking. Critical patches must be deployed to protect against threats.",
+    "testing_procedures": [
+      "Review development and patch management processes",
+      "Inspect separation of test environments",
+      "Verify review and documentation of custom code"
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Ensure secure development and maintenance of systems\nIncorporate security requirements in development\nDeploy critical patches promptly\nMaintain separate test environments\nReview and document custom code before production release",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-7.1",
+    "requirement": "Implement role-based access controls (RBAC) to ensure that access to CHD is given on a need-to-know basis.",
+    "title": "Block access to cardholder data",
+    "description": "Organizations must implement high-level access control measures to allow or disallow access to cardholder data (CHD) based on business needs.",
+    "testing_procedures": [
+      "Review access control policies and procedures.",
+      "Verify the implementation of RBAC.",
+      "Check documentation for users who need access to CHD with their designated roles.",
+      "Review and update access control records regularly."
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Implement and maintain role-based access controls\nDocument all users requiring access to CHD and their roles.\nEstablish and document access control policies and procedures.\nRegularly review and update access control records.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-8.1",
+    "requirement": "Assign all users a unique ID before allowing them to access system components or CHD. Employ two-factor authentication to strengthen security.",
+    "title": "Assign unique identification",
+    "description": "Every authorized user with access to CHD must have a unique identification to trace and attribute accountability in the event of an internal breach.",
+    "testing_procedures": [
+      "Document and communicate authentication policies and procedures.",
+      "Ensure all users have a unique ID for system or CHD access.",
+      "Implement measures to limit repeated access attempts.",
+      "Use strong cryptography for authentication credentials.",
+      "Establish strong password requirements.",
+      "Incorporate multi-factor authentication (MFA)."
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Ensure unique user identification and secure authentication\nDocument authentication policies and procedures.\nAssign unique IDs to all users.\nConfigure lockout mechanisms and session timeouts.\nImplement strong cryptography and password policies.\nIncorporate MFA.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-10.1",
+    "requirement": "Maintain network activity logs on CHD and review them daily for anomalies and suspicious activities related to access to network resources.",
+    "title": "Track and monitor cardholder data and network resources",
+    "description": "Organizations must protect and monitor all network systems to maintain the security of CHD and network resources.",
+    "testing_procedures": [
+      "Document data flow into the organization.",
+      "Implement audit trails for all user activities.",
+      "Limit view of audit trails to authorized personnel.",
+      "Review security events and logs of all critical system components."
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Implement and maintain a robust log management and review process\nDocument how data flows into the organization.\nSet up audit trails for significant activities.\nRestrict audit trail access.\nRegularly review all security events and logs.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-11.1",
+    "requirement": "Conduct internal and external vulnerability scans, penetration tests, and wireless analyzer scans as specified.",
+    "title": "Test all security systems and processes",
+    "description": "Regular testing of all security systems and processes is essential to ensure the ongoing security of CHD.",
+    "testing_procedures": [
+      "Conduct quarterly internal vulnerability scans.",
+      "Perform annual application and network penetration tests.",
+      "Execute quarterly wireless analyzer scans."
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Regularly test security systems and processes\nSchedule and conduct quarterly internal vulnerability scans.\nPerform annual penetration testing on applications and networks.\nCarry out quarterly wireless analyzer scans.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-12.1",
+    "requirement": "Review the information security policy annually and distribute it to employees, contractors, and vendors. Perform user awareness training and implement an incident response plan.",
+    "title": "Maintain information security policy",
+    "description": "Organizations must implement, maintain, and review an information security policy annually, distributing it to all relevant stakeholders.",
+    "testing_procedures": [
+      "Review and update the information security policy annually.",
+      "Conduct user awareness training.",
+      "Implement and test an incident response plan.",
+      "Assess risks to identify essential assets, vulnerabilities, and threats.",
+      "Run employee background checks."
+    ],
+    "source_url": "https://sprinto.com/blog/pci-dss-controls/",
+    "remediation": "Ensure the information security policy is current, comprehensive, and widely understood\nAnnually review and update the information security policy.\nConduct regular user awareness training.\nMaintain and test an incident response plan.\nPerform risk assessments.\nConduct background checks on employees.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-7",
+    "requirement": "Create rules to ensure users have access only to the data and applications they need for their job duties, adopting the principle of least privilege.",
+    "title": "Restrict access to system components and cardholder data by business need-to-know",
+    "description": "Access management involves creating rules that provide specific users with access to specific applications or data for specific purposes only, ensuring all users have the right amount of privileged access to data and applications. Adopt the principle of least privilege.",
+    "testing_procedures": [
+      "Review access control policies to verify adherence to the principle of least privilege.",
+      "Check that access to data and applications is restricted based on business need-to-know."
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Implement access control based on need-to-know\nDefine access requirements based on job duties.\nImplement access controls that adhere to the principle of least privilege.\nRegularly review and adjust access controls as necessary.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-8",
+    "requirement": "Use unique IDs and multi-factor authentication (MFA) to authenticate access to system components and cardholder data environments.",
+    "title": "Identify users and authenticate access to system components",
+    "description": "Establish the identity of users and verify that the user is indeed associated with the identity they are claiming. Use unique IDs to limit exposure and facilitate breach response. Multi-factor authentication (MFA) is required for any user to access cardholder data environments.",
+    "testing_procedures": [
+      "Verify the implementation of unique IDs for user identification.",
+      "Check that multi-factor authentication is used for accessing cardholder data environments."
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Strengthen user identification and authentication\nEnsure each user has a unique ID for system access.\nImplement multi-factor authentication for accessing sensitive environments.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-9",
+    "requirement": "Secure physical access to cardholder data through various measures including access control, video surveillance, and maintaining access logs.",
+    "title": "Restrict physical access to cardholder data",
+    "description": "Ensure the physical security of cardholder data by retaining hard copies in a secure location, granting access only to those with necessary privileges, and maintaining an access log. Install video cameras and/or electronic access controls, retain access logs and recordings, develop access protocols, and apply security measures to portable assets containing CHD.",
+    "testing_procedures": [
+      "Inspect physical security measures at locations storing cardholder data.",
+      "Review access logs and video surveillance recordings."
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Enhance physical security measures for cardholder data\nSecure all physical locations storing cardholder data with appropriate access controls.\nInstall video surveillance and electronic access controls as needed.\nMaintain detailed access logs and review them regularly.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-10",
+    "requirement": "Any action pertaining to CHD or PANs should be logged using a time-stamped tracking tool. These logs should be sent to a centralized server and reviewed daily for anomalous behavior or suspicious activity. Implementation of security information and event management (SIEM) can help manage this requirement.",
+    "title": "Log and monitor all access to system components and CHD",
+    "description": "Log any action related to CHD or PANs using a time-stamped tracking tool and review logs daily for anomalous behavior or suspicious activity.",
+    "testing_procedures": [
+      "Verify the use of time-stamped tracking tools for actions related to CHD or PANs",
+      "Check that logs are sent to a centralized server",
+      "Confirm daily review of logs for suspicious activity"
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Implement logging and monitoring of CHD access\nDeploy a time-stamped tracking tool for logging access to CHD or PANs\nConfigure logs to be sent to a centralized server\nEstablish a daily review process for logs to identify and investigate suspicious activities",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-11",
+    "requirement": "Conduct quarterly scans of all wireless access points, quarterly vulnerability scans, annual application and network penetration testing on all external IPs and domains, and regular web traffic and file monitoring.",
+    "title": "Test security systems and networks regularly",
+    "description": "Regularly test software applications, security measures, and other tools to ensure compliance with PCI DSS.",
+    "testing_procedures": [
+      "Perform quarterly scans of wireless access points",
+      "Conduct quarterly vulnerability scans",
+      "Execute annual penetration testing on external IPs and domains",
+      "Monitor web traffic and files regularly"
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Regular testing of security systems and networks\nSchedule and perform quarterly wireless access point scans\nCarry out quarterly vulnerability assessments\nConduct annual penetration tests on all external IPs and domains\nImplement regular monitoring of web traffic and file activities",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-12",
+    "requirement": "An overarching information security policy must be created and maintained, documenting all security-related rules. This policy must be reviewed annually and distributed to all relevant parties, who must review and acknowledge receipt. Other measures include conducting risk assessments, user awareness training, and developing incident response plans.",
+    "title": "Support information security with organizational policies and programs",
+    "description": "Create and maintain an overarching information security policy that documents all security-related rules and is reviewed annually.",
+    "testing_procedures": [
+      "Review the information security policy for completeness and relevance",
+      "Verify annual review and distribution of the policy",
+      "Assess the execution of risk assessments, user awareness training, and incident response plans"
+    ],
+    "source_url": "['https://www.crowdstrike.com/en-us/cybersecurity-101/data-protection/pci-dss-requirements/', 'https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Develop and maintain an information security policy\nDraft an information security policy covering all security-related rules\nEnsure the policy is reviewed and updated annually\nDistribute the policy to all relevant parties and obtain acknowledgment of receipt\nConduct regular risk assessments and user awareness training\nDevelop and maintain incident response plans",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-4.0-1",
+    "requirement": "Organizations must implement updated cybersecurity practices including MFA, strong password policies, and defenses against phishing.",
+    "title": "Evolving Security Needs",
+    "description": "Version 4.0 adds new cybersecurity practices to address evolving security needs, including multi-factor authentication (MFA), strong PCI password practices, and ongoing defenses against phishing attacks.",
+    "testing_procedures": [
+      "Review of MFA implementation for system access.",
+      "Audit of password policies against PCI DSS requirements.",
+      "Evaluation of phishing defense mechanisms."
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Implement MFA, enforce strong password policies, and establish phishing defenses.\nEnable MFA for all user accounts accessing cardholder data.\nUpdate password policies to meet PCI DSS standards for complexity and rotation.\nImplement and regularly update anti-phishing training and email filtering.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-4.0-2",
+    "requirement": "Organizations must ensure that security responsibilities are clearly assigned and understood, making security a continuously improving process.",
+    "title": "Security as a Continuous Process",
+    "description": "PCI DSS 4.0 emphasizes the importance of treating security as a continuous process, requiring all organization members to have clearly assigned and well-understood security responsibilities.",
+    "testing_procedures": [
+      "Review of security policies to verify clear assignment of responsibilities.",
+      "Interviews with staff to assess understanding of security responsibilities."
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Clarify and communicate security responsibilities within the organization.\nDocument and disseminate security responsibilities.\nConduct regular security awareness training.\nImplement a process for regularly reviewing and updating security responsibilities.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-4.0-3",
+    "requirement": "Organizations are encouraged to use a risk-based approach to develop and implement security methods tailored to their specific needs and risk tolerance.",
+    "title": "Flexibility to Use Different Security Methods",
+    "description": "Version 4.0 adopts a risk-based approach, allowing organizations to create methods for protecting cardholder information that are appropriate for their business and risk tolerance.",
+    "testing_procedures": [
+      "Assessment of the organization's risk management processes.",
+      "Evaluation of security methods to ensure they are aligned with business needs and risk tolerance."
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Adopt a risk-based approach to security, tailored to the organization's specific needs.\nConduct a comprehensive risk assessment.\nDevelop security methods and controls based on risk assessment outcomes.\nRegularly review and adjust security methods to align with evolving business needs and risk landscape.",
+    "severity": "MEDIUM"
+  },
+  {
+    "control_id": "PCI-DSS-4.0-4",
+    "requirement": "Organizations must utilize the enhanced validation and reporting options to demonstrate their capability in protecting cardholder information with more granularity and transparency.",
+    "title": "Enhanced Validation",
+    "description": "PCI DSS 4.0 introduces enhanced validation and reporting options, providing more granularity and transparency in demonstrating an organization's ability to protect cardholder information.",
+    "testing_procedures": [
+      "Review of compliance reports to ensure they meet the enhanced validation requirements.",
+      "Verification of the granularity and transparency of reporting."
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Implement enhanced validation and reporting mechanisms.\nUpdate compliance reporting processes to align with PCI DSS 4.0 requirements.\nEnsure detailed and transparent reporting of security controls and their effectiveness.",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-2.2",
+    "requirement": "Remove or disable insecure features, replace default passwords, close unused ports, and document configuration standards for every system type.",
+    "title": "Apply Secure Configurations to All System Components",
+    "description": "Systems within scope must be securely configured before deployment and regularly reviewed thereafter.",
+    "testing_procedures": [
+      "Review system configurations",
+      "Check for default passwords and open ports",
+      "Verify documentation of configuration standards"
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Enforce secure configurations across all systems\nDisable unnecessary services and features\nChange default credentials\nClose unused ports\nDocument configuration standards",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-3.4",
+    "requirement": "Apply strong cryptography to stored account data and ensure encryption keys are protected, rotated, and managed with care.",
+    "title": "Encrypt Stored Account Data",
+    "description": "Stored account data must be protected with strong encryption to render it unreadable even if an attacker gains access.",
+    "testing_procedures": [
+      "Verify encryption of stored account data",
+      "Review key management policies and procedures"
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Ensure strong encryption for stored account data\nEnable encryption on data storage systems\nImplement key management practices\nRegularly rotate encryption keys",
+    "severity": "CRITICAL"
+  },
+  {
+    "control_id": "PCI-DSS-6.2",
+    "requirement": "Review code, patch systems, and address known vulnerabilities promptly. Decommission outdated components and vet new tools before deployment.",
+    "title": "Deploy and Maintain Secure Systems and Applications",
+    "description": "Security must be built into systems from the start and maintained throughout their lifecycle.",
+    "testing_procedures": [
+      "Review patch management processes",
+      "Check for decommissioning of outdated components",
+      "Verify vetting processes for new tools"
+    ],
+    "source_url": "https://drata.com/blog/pci-compliance-checklist",
+    "remediation": "Ensure systems and applications are secure\nImplement a code review process\nApply security patches promptly\nDecommission outdated components\nVet new tools before deployment",
+    "severity": "HIGH"
+  },
+  {
+    "control_id": "PCI-DSS-13",
+    "requirement": "Develop and maintain security policies and programs, including defined responsibilities and ongoing education, to support information security across the organization.",
+    "title": "Support Information Security With Organizational Policies and Programs",
+    "description": "Security is a business-wide commitment that should be supported by policies, defined responsibilities, and ongoing education across all teams.",
+    "testing_procedures": [
+      "Review security policies and programs.",
+      "Check for employee acknowledgments and participation in security awareness training."
+    ],
+    "source_url": "['https://drata.com/blog/pci-compliance-checklist', 'https://blog.rsisecurity.com/how-many-pci-controls-are-there/']",
+    "remediation": "Ensure the organization supports information security through comprehensive policies, defined responsibilities, and ongoing education.\nDevelop and maintain security policies and programs.\nEnsure all employees acknowledge and participate in security awareness training.",
+    "severity": "MEDIUM"
+  },
+  {
+    "control_id": "PCI-DSS-14",
+    "requirement": "Assign PA DSS responsibilities to all stakeholders (staff, customers, etc.).",
+    "title": "Assignment of PA DSS Responsibilities",
+    "description": "Assign PA DSS responsibilities to all stakeholders, including staff, customers, etc., to ensure everyone is aware of their roles in maintaining payment security.",
+    "testing_procedures": [
+      "Verify that PA DSS responsibilities are clearly defined and communicated.",
+      "Assess stakeholder awareness and understanding of their responsibilities."
+    ],
+    "source_url": "https://blog.rsisecurity.com/how-many-pci-controls-are-there/",
+    "remediation": "Ensure clear communication and understanding of PA DSS responsibilities among all stakeholders.\nDefine and document PA DSS responsibilities.\nCommunicate responsibilities effectively to all stakeholders.\nProvide training and resources to support compliance.",
+    "severity": "MEDIUM"
+  }
+]
