@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: pkg-95120
+Version: 1.1.8
+Author-email: developers <developers@tagdots.com>
+Project-URL: Changelog, https://www.notavailable.com/changelog
+Project-URL: Documentation, https://www.notavailable.com/doc
+Project-URL: Homepage, https://www.notavailable.com
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Software Development :: Build Tools
+Requires-Python: >=3.12.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click==8.3.0
+Requires-Dist: gitpython==3.1.45
+Requires-Dist: pygithub==2.8.1
+Requires-Dist: pyyaml==6.0.3
+Requires-Dist: setuptools==80.9.0
+Requires-Dist: ulid-py==1.1
+Requires-Dist: virtualenv==20.35.4
+Provides-Extra: test
+Requires-Dist: build; extra == "test"
+Requires-Dist: commitizen; extra == "test"
+Requires-Dist: coverage; extra == "test"
+Requires-Dist: flake8; extra == "test"
+Requires-Dist: isort; extra == "test"
+Requires-Dist: pre-commit; extra == "test"
+Requires-Dist: pyscan-rs; extra == "test"
+Requires-Dist: pytest; extra == "test"
+Requires-Dist: twine; extra == "test"
+Dynamic: license-file
+
+# upc-test
+
+[![CI](https://github.com/tagdots-dev/upc-test/actions/workflows/ci.yaml/badge.svg?logo=github&labelColor=222222)](https://github.com/tagdots-dev/upc-test/actions/workflows/ci.yaml)
+[![CodeQL](https://github.com/tagdots-dev/upc-test/actions/workflows/reusable-codeql.yaml/badge.svg?logo=github&labelColor=222222)](https://github.com/tagdots-dev/upc-test/actions/workflows/reusable-codeql.yaml)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tagdots-dev/upc-test/refs/heads/badges/badges/coverage.json)](https://github.com/tagdots-dev/upc-test/actions/workflows/cron-tasks.yaml)
