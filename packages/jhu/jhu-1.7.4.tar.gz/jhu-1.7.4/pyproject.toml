@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools >= 80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jhu"
+version = "1.7.4"
+description = "Join Happy Universe"
+readme = "README.md"
+requires-python = ">=3.14"
+license = {text = "MIT"} 
+authors = [
+    {name = "J.Hu", email = "joestarhu@163.com"}
+]
+urls = {homepage = "https://github.com/joestarhu/jhu"}  # GitHub 链接作为主页
+classifiers = [
+    "Environment :: Web Environment",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3.14"
+]
+dependencies = []
+
+[project.optional-dependencies]
+auth = ["requests"]
+orm = ["sqlalchemy", "pytz"]
+security = ["python-jose", "bcrypt", "pycryptodomex"]
+webhook = ["requests"]
+
+[tool.setuptools.packages.find]
+exclude = ["test", "examples", "script", "tutorials"]
+
+[tool.setuptools]
+zip-safe = true
