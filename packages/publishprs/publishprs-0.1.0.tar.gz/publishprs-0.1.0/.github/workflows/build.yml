@@ -1,0 +1,31 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          pip install requests lamindb pytest .
+
+      - name: Run tests
+        env:
+          GITHUB_SOURCE_TOKEN: ${{ secrets.GH_CLASSIC_TOKEN_LAMINHUB_USER_ASSETS_FALEXWOLF }}
+          GITHUB_TARGET_TOKEN: ${{ secrets.LAMIN_BUILD_DOCS }}
+          LAMIN_API_KEY: ${{ secrets.LAMIN_API_KEY_TESTUSER2 }}
+        run: |
+          pytest tests/ -v
