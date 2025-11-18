@@ -1,0 +1,119 @@
+[project]
+name = "specreduce"
+dynamic = ["version"]
+authors = [
+    { name = "Astropy Specreduce contributors", email = "astropy-dev@googlegroups.com" }
+]
+license = {file = "licenses/LICENSE.rst"}
+description = "Astropy coordinated package for Spectroscopic Reductions"
+readme = "README.rst"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24",
+    "astropy>=5.3",
+    "scipy>=1.10",
+    "specutils>=1.9.1",
+    "matplotlib>=3.10",
+    "gwcs",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest-astropy",
+    "photutils>=1.0",
+    "tox",
+]
+docs = [
+    "sphinx-astropy",
+    "photutils>=1.0",
+    "synphot",
+    "nbsphinx",
+    "ipykernel"
+]
+all = [
+    "photutils>=1.0",
+    "synphot",
+]
+
+[project.urls]
+Homepage = "http://astropy.org/"
+Repository = "https://github.com/astropy/specreduce.git"
+Documentation = "https://specreduce.readthedocs.io/"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages]
+find = {}  # Scanning implicit namespaces is active by default
+
+[tool.setuptools.package-data]
+"specreduce.tests" = ["data/*.fits"]
+
+[tool.setuptools_scm]
+version_file = "specreduce/version.py"
+
+[build-system]
+requires = ["setuptools",
+            "setuptools_scm",
+]
+build-backend = 'setuptools.build_meta'
+
+[tool.black]
+line-length = 100
+target-version = ['py311', 'py312', 'py313']
+
+[tool.pytest.ini_options]
+minversion = 7.0
+testpaths = [
+    "specreduce",
+    "docs",
+]
+astropy_header = true
+doctest_plus = "enabled"
+text_file_format = "rst"
+addopts = [
+    "--color=yes",
+    "--doctest-rst",
+]
+xfail_strict = true
+filterwarnings = [
+    "error",
+    "ignore:numpy\\.ufunc size changed:RuntimeWarning",
+    "ignore:numpy\\.ndarray size changed:RuntimeWarning",
+    "ignore:Can\\'t import specreduce_data package",
+    "ignore:.*unclosed <ssl.SSLSocket",
+    # Python 3.12 warning from dateutil imported by matplotlib
+    "ignore:.*utcfromtimestamp:DeprecationWarning",
+    # DeprecationWarning from gwcs 0.18.3 in oldestdeps
+    "ignore:.*pkg_resources.*:DeprecationWarning",
+    "ignore:The Spectrum1D class is deprecated and may be removed",
+    # DeprecationWarning from gwcs in devdeps
+    "ignore:The isiterable function is deprecated and may be removed",
+]
+
+[tool.coverage]
+
+    [tool.coverage.run]
+        omit = [
+            "specreduce/tests/*",
+            "specreduce/version*",
+            "*/specreduce/tests/*",
+            "*/specreduce/version*",
+        ]
+
+    [tool.coverage.report]
+        exclude_lines = [
+            # Have to re-enable the standard pragma
+            "pragma: no cover",
+            # Don't complain about packages we have installed
+            "except ImportError",
+            # Don't complain if tests don't hit defensive assertion code:
+            "raise AssertionError",
+            "raise NotImplementedError",
+            # Don't complain about script hooks
+            "'def main(.*):'",
+            # Ignore branches that don't pertain to this version of Python
+            "pragma: py{ignore_python_version}",
+            # Don't complain about IPython completion helper
+            "def _ipython_key_completions_",
+        ]

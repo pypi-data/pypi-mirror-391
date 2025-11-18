@@ -1,0 +1,56 @@
+# GitHub Actions workflow for testing and continuous integration.
+#
+# This file performs testing using tox and tox.ini to define and configure the test environments.
+
+name: Python Tests
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+  schedule:
+    # run every Monday at 6am UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@d9b81a07e789d1b1921ab5fe33de2ddcbbd02c3f  # v2.3.0
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV }}
+    with:
+      submodules: false
+      coverage: ''
+      envs: |
+        - name: Codestyle
+          linux: codestyle
+
+        - name: Python 3.11 on Windows with oldest supported dependencies
+          windows: py311-test-oldestdeps
+          toxargs: -v
+
+        - name: Python 3.11 on OSX with minimal dependencies
+          macos: py311-test
+          toxargs: -v
+        
+        - name: Python 3.12 on Linux with minimal dependencies
+          linux: py312-test
+          toxargs: -v
+
+        - name: Python 3.13 on Linux with all dependencies, remote data, and coverage
+          linux: py313-test-alldeps-cov
+          coverage: codecov
+          toxargs: -v
+          posargs: --remote-data=any
+
+        - name: (Allowed Failure) Python 3.13 on Linux with dev dependencies
+          linux: py313-test-devdeps-cov
+          coverage: codecov
+          toxargs: -v

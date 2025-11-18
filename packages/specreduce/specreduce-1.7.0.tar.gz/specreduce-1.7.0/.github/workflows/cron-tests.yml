@@ -1,0 +1,35 @@
+# GitHub Actions workflow for testing and continuous integration.
+#
+# This file performs testing using tox and tox.ini to define and configure the test environments.
+
+name: Weekly Tests
+
+on:
+  pull_request:
+    # We also want this workflow triggered if the 'Extra CI' label is added
+    # or present when PR is updated
+    types:
+      - synchronize
+      - labeled
+  schedule:
+    # run every Monday at 6am UTC
+    - cron: '0 6 * * 1'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    if: (github.repository == 'astropy/specreduce' && (github.event_name == 'schedule' || github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'Extra CI')))
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@d9b81a07e789d1b1921ab5fe33de2ddcbbd02c3f  # v2.3.0
+    with:
+      submodules: false
+      coverage: ''
+      envs: |
+        - name: Check URLs in docs
+          linux: linkcheck
+
+        - name: Python 3.12 on Linux with pre-releases
+          linux: py312-test-alldeps-predeps
+          toxargs: -v
