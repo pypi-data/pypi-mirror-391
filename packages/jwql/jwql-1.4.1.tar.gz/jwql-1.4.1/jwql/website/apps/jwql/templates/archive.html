@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block preamble %}
+
+    <!-- Custom styles and scripts for this template -->
+    <style type="text/css">
+        div#proposal-array { display: none; }
+    </style>
+
+    <title>Archived {{ inst }} Images - JWQL</title>
+
+
+{% endblock %}
+
+{% block content %}
+
+    <main role="main" class="container">
+
+        <h3 id='title'>Archived {{ inst }} Images</h3>
+        <div id='img_show_count'></div>
+        <hr>
+
+        <!-- Filter and sort options -->
+        <div class="d-flex flex-row">
+            <!-- Search Bar -->
+            <div class="input-group mt-3 mr-4">
+              <input id='search_box' type="text" class="form-control" placeholder="Search" aria-label="Search by proposal" oninput="search();">
+              <div class="input-group-append">
+                <span class="input-group-text"><span class="fas fa-search" aria-hidden="true"></span></span>
+                <!--<button class="btn btn-primary" type="button"><span class="fas fa-search" aria-hidden="true"></span></button>-->
+
+              </div>
+            </div>
+            <div class="mr-4 mr-5" id="thumbnail-filter"></div>
+            <!-- Sort Options -->
+            <div class="mx-4 mr-5 ml-auto">
+                Sort by:<br>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="sort_dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Descending</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#" onclick="sort_by_proposals('Ascending');">Ascending</a>
+                    <a class="dropdown-item" href="#" onclick="sort_by_proposals('Descending');">Descending</a>
+                    <a class="dropdown-item" href="#" onclick="sort_by_proposals('Recent');">Recent</a>
+                  </div>
+                </div>
+            </div>
+            <!-- Download Data -->
+            <div class="mr-4 mr-5">
+                Download as:<br>
+                <input class="btn btn-primary" id="download_report_button" value="CSV Report" type="button" onclick="download_report('{{ inst }}', '{{base_url}}')">
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Loading animation -->
+        <div id="loading">
+            <div class="lds-css ng-scope">
+                <div style="width:100%;height:100%" class="lds-magnify">
+                    <div>
+                        <div>
+                            <div>
+                            </div>
+                            <div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                Loading ...
+            </div>
+        </div>
+
+        <!-- Display the data -->
+        <div id='proposal-array'></div>
+        <script>update_archive_page('{{inst}}', '{{base_url}}');</script>
+        <a id="no_proposals_msg" style='display: none'>No proposals match the search criteria.</a>
+
+    </main>
+
+{% endblock %}
