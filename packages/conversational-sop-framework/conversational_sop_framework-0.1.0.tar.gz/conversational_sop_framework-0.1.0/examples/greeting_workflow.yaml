@@ -1,0 +1,92 @@
+name: "User Greeting Workflow"
+description: "Collects user information and provides a personalized greeting"
+version: "1.0"
+
+
+data:
+  - name: name
+    type: text
+    description: "User's name"
+  - name: age
+    type: number
+    description: "User's age in years"
+  - name: greeting_message
+    type: text
+    description: "Final greeting message"
+
+
+steps:
+  - id: get_name
+    action: collect_input_with_agent
+    field: name
+    max_attempts: 3
+    agent:
+      name: "NameCollector"
+      model: "gpt-4o-mini"
+      description: "Node to collect name of the user"
+      instructions: |
+        Your goal is to capture the user's name.
+
+        IMPORTANT: If this is the FIRST interaction (no user message yet), greet the user warmly and ask for their name.
+
+        If the user has provided a response, validate it:
+        - If it's a valid name, respond with ONLY: 'NAME_CAPTURED: [name]'
+        - If it's invalid/empty, ask again politely and explain what you need
+        - Only use 'NAME_FAILED:' after max attempts are exhausted (rare case)
+
+        Examples:
+        - First interaction (no prior messages) -> "Hello! I'd love to get to know you. What's your name?"
+        - User says 'John' -> respond: 'NAME_CAPTURED: John'
+        - User says 'My name is Sarah' -> respond: 'NAME_CAPTURED: Sarah'
+        - User says '' (empty) -> "I didn't catch that. Could you please tell me your name?"
+    transitions:
+      - pattern: "NAME_CAPTURED:"
+        next: get_age
+      - pattern: "NAME_FAILED:"
+        next: end_failed
+
+  - id: get_age
+    action: collect_input_with_agent
+    field: age
+    max_attempts: 3
+    agent:
+      name: "AgeCollector"
+      model: "gpt-4o-mini"
+      description: "Node to collect age of the user"
+      instructions: |
+        Your goal is to capture the user's age as a number.
+
+        IMPORTANT: If this is the FIRST interaction for collecting age, ask them for their age in a friendly way.
+
+        If the user has provided a response, validate it:
+        - Age must be a valid integer between 1 and 150
+        - If valid, respond with ONLY: 'AGE_CAPTURED: [age]'
+        - If invalid, ask again politely and explain the valid range
+        - Only use 'AGE_FAILED:' after max attempts are exhausted (rare case)
+
+        Examples:
+        - First interaction -> "Great! How old are you?"
+        - User says '25' -> respond: 'AGE_CAPTURED: 25'
+        - User says 'I am 30 years old' -> respond: 'AGE_CAPTURED: 30'
+        - User says '999' -> "That doesn't seem right. Could you provide your age? It should be between 1 and 150."
+    transitions:
+      - pattern: "AGE_CAPTURED:"
+        next: generate_greeting
+      - pattern: "AGE_FAILED:"
+        next: end_failed
+
+  - id: generate_greeting
+    action: call_function
+    function: "greeting_functions.create_personalized_greeting"
+    output: greeting_message
+    next: end_success
+
+
+outcomes:
+  - id: end_success
+    type: success
+    message: "{greeting_message}"
+
+  - id: end_failed
+    type: failure
+    message: "Sorry, I couldn't complete the workflow. Please try again later."
