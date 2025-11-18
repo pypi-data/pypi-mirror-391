@@ -1,0 +1,19 @@
+services:
+
+  devcontainer:
+    build:
+      target: dev
+    gpus: all
+    volumes:
+      - ..:/workspaces
+      - command-history-volume:/home/user/.history/
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+
+volumes:
+  command-history-volume:

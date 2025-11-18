@@ -1,0 +1,35 @@
+site_name: gmtorch
+site_description: Probabilistic Generative AI Using Gaussian Mixture
+site_url: https://gitlab.kit.edu/ali.darijani/gmtorch
+repo_url: https://gitlab.kit.edu/ali.darijani/gmtorch
+repo_name: ali.darijani/gmtorch
+
+strict: true
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Reference: reference.md
+
+watch:
+  - src
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
