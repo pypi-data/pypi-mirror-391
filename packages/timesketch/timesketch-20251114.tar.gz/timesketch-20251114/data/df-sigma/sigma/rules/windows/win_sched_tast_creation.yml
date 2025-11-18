@@ -1,0 +1,31 @@
+title: Detct creation of Windows Scheduled Tasks
+id: 28e177ea-297d-4123-87f4-aafef6818e89
+description: Detects creation of Windows scheduled tasks
+references:
+    - https://nyotron.com/nyotron-discovers-next-generation-oilrig-attacks/
+tags:
+    - attack.persistence
+    - attack.g0049
+    - attack.t1053 # an old one
+    - attack.t1053.005
+    - attack.s0111
+    - attack.t1050 # an old one
+    - attack.t1543.003
+    - attack.defense_evasion
+    - attack.t1112
+    - attack.command_and_control
+    - attack.t1071 # an old one
+    - attack.t1071.004
+date: 2020/12/15
+modified: 2020/12/15
+author: Alexander Jäger
+falsepositives:
+    - Unknown
+level: critical
+logsource:
+    product: windows
+    service: security
+detection:
+    selection_service:
+        EventID: 4698
+    condition: selection_service
