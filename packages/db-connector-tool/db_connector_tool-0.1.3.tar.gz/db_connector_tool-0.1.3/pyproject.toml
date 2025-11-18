@@ -1,0 +1,116 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "db-connector-tool"
+dynamic = ["version"]
+description = "跨平台数据库连接管理工具，支持多种数据库类型（Oracle, PostgreSQL, SQL Server, MySQL, SQLite）"
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["database", "connector", "sqlalchemy", "oracle", "postgresql", "mysql", "sqlserver", "sqlite"]
+authors = [
+  { name = "wangquanqing"}, {email = "wangquanqing1636@sina.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Database",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "sqlalchemy>=2.0.0",
+  "cryptography>=46.0.0",
+  "tomli-w>=1.0.0",
+]
+
+[project.optional-dependencies]
+oracle = ["oracledb>=3.0.0"]
+postgresql = ["psycopg>=3.0.0"]
+mysql = ["pymysql>=1.0.0"]
+sqlserver = ["pymssql>=2.0.0"]
+gbase8s = ["jpype1==1.5.2", "jaydebeapi>=1.2.3,<2", "python-dateutil>=2.8.0,<3"]
+all = [
+  "oracledb>=3.0.0",
+  "psycopg>=3.0.0",
+  "pymysql>=1.0.0",
+  "pymssql>=2.0.0",
+  "jpype1==1.5.2",
+  "jaydebeapi>=1.2.3,<2",
+  "python-dateutil>=2.8.0,<3",
+]
+dev = [
+  "pytest>=7.0.0",
+  "pytest-cov>=4.0.0",
+  "black>=23.0.0",
+  "isort>=5.12.0",
+  "pyright>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/wangquanqing/db-connector-tool"
+Documentation = "https://github.com/wangquanqing/db-connector-tool#readme"
+Issues = "https://github.com/wangquanqing/db-connector-tool/issues"
+Source = "https://github.com/wangquanqing/db-connector-tool"
+
+[project.scripts]
+db-connector = "db_connector_tool.cli:main"
+
+[project.entry-points."sqlalchemy.dialects"]
+"jdbc.gbase8s_jdbc" = "db_connector_tool.drivers.gbase8s_jdbc:GBase8sJDBCDialect"
+
+[tool.hatch.version]
+path = "src/db_connector_tool/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/db_connector_tool tests}"
+
+[tool.coverage.run]
+source_pkgs = ["db_connector_tool", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/db_connector_tool/__about__.py",
+]
+
+[tool.coverage.paths]
+db_connector_tool = ["src/db_connector_tool", "*/db-connector-tool/src/db_connector_tool"]
+tests = ["tests", "*/db-connector-tool/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[tool.pixi.pypi-dependencies]
+db-connector-tool = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+python = ">=3.14.0,<3.15"
+sqlalchemy = ">=2.0.44,<3"
+oracledb = ">=3.4.0,<4"
+psycopg = ">=3.2.12,<4"
+pymysql = ">=1.1.2,<2"
+pymssql = ">=2.3.8,<3"
+tomli-w = ">=1.2.0,<2"
