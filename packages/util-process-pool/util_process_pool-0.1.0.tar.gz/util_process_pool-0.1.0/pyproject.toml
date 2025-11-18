@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "util-process-pool"
+version = "0.1.0"
+description = "简便的多进程调用工具，基于 concurrent.futures.ProcessPoolExecutor 的封装"
+authors = [
+    {name = "birds", email = "cg626@163.com"},
+]
+dependencies = [
+    "click>=8.0.0",
+]
+requires-python = ">=3.7"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=21.0",
+    "flake8>=3.9",
+]
