@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "commitaid"
+version = "0.1.0"
+description = "AI-powered Git commit message generator using Claude"
+authors = [{name = "Michal Vavrinec", email = "mvavrine@redhat.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = []
+
+[project.scripts]
+commitaid = "commitaid.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Ruclo/commitaid"
+
+[tool.setuptools.packages.find]
+where = ["src"]
