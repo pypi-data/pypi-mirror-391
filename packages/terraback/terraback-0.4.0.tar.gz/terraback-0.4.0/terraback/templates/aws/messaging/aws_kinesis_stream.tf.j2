@@ -1,0 +1,79 @@
+{% extends "aws/base_resource.tf.j2" %}
+{% block resources %}
+{% for stream in resources %}
+{{ resource_spacer() }}
+resource "aws_kinesis_stream" "{{ stream.name_sanitized }}" {
+  name = "{{ stream.streamName }}"
+  
+  {% if stream.get('shard_count') %}
+  shard_count = {{ stream.shard_count }}
+  {% elif stream.get('streamModeDetails', {}).get('streamMode') != 'ON_DEMAND' %}
+  shard_count = {{ stream.get('shardCount', 1) }}
+  {% endif %}
+
+  {% if stream.get('retention_period_hours') %}
+  retention_period_hours = {{ stream.retention_period_hours }}
+  {% elif stream.get('retentionPeriodHours') %}
+  retention_period_hours = {{ stream.retentionPeriodHours }}
+  {% endif %}
+
+  {% if stream.get('encryption_type') %}
+  encryption_type = "{{ stream.encryption_type }}"
+  {% elif stream.get('encryptionType') %}
+  encryption_type = "{{ stream.encryptionType }}"
+  {% endif %}
+
+  {% if stream.get('kms_key_id') %}
+  kms_key_id = "{{ stream.kms_key_id }}"
+  {% elif stream.get('keyId') %}
+  kms_key_id = "{{ stream.keyId }}"
+  {% endif %}
+
+  {% if stream.get('shard_level_metrics') %}
+  shard_level_metrics = {{ stream.shard_level_metrics | tojson }}
+  {% elif stream.get('enhancedMonitoring') %}
+  shard_level_metrics = [
+    {% for metric in stream.enhancedMonitoring %}
+    {% for shard_metric in metric.get('shardLevelMetrics', []) %}
+    "{{ shard_metric }}"{{ "," if not loop.last }}
+    {% endfor %}
+    {% endfor %}
+  ]
+  {% endif %}
+
+  {% if stream.get('stream_mode_details') %}
+  stream_mode_details {
+    stream_mode = "{{ stream.stream_mode_details.stream_mode }}"
+  }
+  {% elif stream.get('streamModeDetails') %}
+  stream_mode_details {
+    stream_mode = "{{ stream.streamModeDetails.streamMode }}"
+  }
+  {% endif %}
+
+  {% if stream.get('enforce_consumer_deletion') is defined %}
+  enforce_consumer_deletion = {{ stream.enforce_consumer_deletion | lower }}
+  {% endif %}
+
+  {{ render_common_tags(stream, indent=2) }}
+
+  {% if stream.get('lifecycle_prevent_destroy', true) %}
+  lifecycle {
+    prevent_destroy = true
+  }
+  {% endif %}
+}
+
+{% if stream.get('consumers') %}
+{% for consumer in stream.consumers %}
+{{ resource_spacer() }}
+resource "aws_kinesis_stream_consumer" "{{ stream.name_sanitized }}_{{ consumer.name_sanitized }}" {
+  name       = "{{ consumer.consumerName }}"
+  stream_arn = aws_kinesis_stream.{{ stream.name_sanitized }}.arn
+}
+
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endblock %}

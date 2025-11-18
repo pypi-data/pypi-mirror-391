@@ -1,0 +1,72 @@
+{% extends "aws/base_resource.tf.j2" %}
+{% block resources %}
+{% for integration in resources %}
+{{ resource_spacer() }}
+resource "aws_api_gateway_integration" "{{ integration.name_sanitized }}" {
+  rest_api_id = "{{ integration.rest_api_id }}"
+  resource_id = "{{ integration.resource_id }}"
+  http_method = "{{ integration.http_method }}"
+  
+  {% if integration.type %}
+  type = "{{ integration.type }}"
+  {% else %}
+  type = "MOCK"  # Default type if not specified
+  {% endif %}
+  
+  {% if integration.integrationHttpMethod %}
+  integration_http_method = "{{ integration.integrationHttpMethod }}"
+  {% elif integration.httpMethod %}
+  integration_http_method = "{{ integration.httpMethod }}"
+  {% elif integration.type in ['AWS', 'AWS_PROXY'] %}
+  integration_http_method = "POST"  # Lambda integrations always use POST
+  {% elif integration.type in ['HTTP', 'HTTP_PROXY'] %}
+  integration_http_method = "{{ integration.http_method }}"  # HTTP integrations use the method's HTTP method
+  {% endif %}
+  
+  {% if integration.uri %}
+  uri = "{{ integration.uri }}"
+  {% endif %}
+  
+  {% if integration.connectionType %}
+  connection_type = "{{ integration.connectionType }}"
+  {% endif %}
+  
+  {% if integration.connectionId %}
+  connection_id = "{{ integration.connectionId }}"
+  {% endif %}
+  
+  {% if integration.credentials %}
+  credentials = "{{ integration.credentials }}"
+  {% endif %}
+  
+  {% if integration.requestTemplates %}
+  request_templates = {{ integration.requestTemplates | tojson }}
+  {% endif %}
+  
+  {% if integration.requestParameters %}
+  request_parameters = {{ integration.requestParameters | tojson }}
+  {% endif %}
+  
+  {% if integration.passthroughBehavior %}
+  passthrough_behavior = "{{ integration.passthroughBehavior }}"
+  {% endif %}
+  
+  {% if integration.cacheNamespace %}
+  cache_namespace = "{{ integration.cacheNamespace }}"
+  {% endif %}
+  
+  {% if integration.cacheKeyParameters %}
+  cache_key_parameters = {{ integration.cacheKeyParameters | tojson }}
+  {% endif %}
+  
+  {% if integration.contentHandling %}
+  content_handling = "{{ integration.contentHandling }}"
+  {% endif %}
+  
+  {% if integration.timeoutMilliseconds %}
+  timeout_milliseconds = {{ integration.timeoutMilliseconds }}
+  {% endif %}
+}
+
+{% endfor %}
+{% endblock %}

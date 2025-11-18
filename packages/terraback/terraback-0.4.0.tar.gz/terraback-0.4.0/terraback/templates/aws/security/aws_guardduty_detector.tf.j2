@@ -1,0 +1,206 @@
+{% extends "aws/base_resource.tf.j2" %}
+{% block resources %}
+{% for detector in resources %}
+{{ resource_spacer() }}
+resource "aws_guardduty_detector" "{{ detector.name_sanitized }}" {
+  {% if detector.get('enable') is defined %}
+  enable = {{ detector.enable | lower }}
+  {% else %}
+  enable = true
+  {% endif %}
+
+  {% if detector.get('finding_publishing_frequency') or detector.get('findingPublishingFrequency') %}
+  finding_publishing_frequency = "{{ detector.finding_publishing_frequency | default(detector.findingPublishingFrequency) }}"
+  {% endif %}
+
+  {% if detector.get('datasources') or detector.get('dataSources') %}
+  datasources {
+    {% set ds = detector.get('datasources', detector.get('dataSources', {})) %}
+    
+    {% if ds.get('s3_logs') or ds.get('s3Logs') %}
+    s3_logs {
+      {% set s3_logs = ds.get('s3_logs', ds.get('s3Logs', {})) %}
+      enable = {{ s3_logs.get('enable', s3_logs.get('enabled', true)) | lower }}
+    }
+    {% endif %}
+    
+    {% if ds.get('kubernetes') %}
+    kubernetes {
+      audit_logs {
+        enable = {{ ds.kubernetes.get('audit_logs', {}).get('enable', true) | lower }}
+      }
+    }
+    {% endif %}
+    
+    {% if ds.get('malware_protection') or ds.get('malwareProtection') %}
+    malware_protection {
+      {% set mp = ds.get('malware_protection', ds.get('malwareProtection', {})) %}
+      scan_ec2_instance_with_findings {
+        ebs_volumes {
+          enable = {{ mp.get('scan_ec2_instance_with_findings', {}).get('ebs_volumes', {}).get('enable', mp.get('scanEc2InstanceWithFindings', {}).get('ebsVolumes', {}).get('enable', true)) | lower }}
+        }
+      }
+    }
+    {% endif %}
+  }
+  {% endif %}
+
+  {{ render_common_tags(detector, indent=2) }}
+}
+
+{% if detector.get('members') %}
+{% for member in detector.members %}
+{{ resource_spacer() }}
+resource "aws_guardduty_member" "{{ detector.name_sanitized }}_{{ member.account_id }}" {
+  account_id  = "{{ member.account_id }}"
+  detector_id = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  email       = "{{ member.email }}"
+  
+  {% if member.get('invite') is defined %}
+  invite = {{ member.invite | lower }}
+  {% endif %}
+  
+  {% if member.get('invitation_message') %}
+  invitation_message = "{{ member.invitation_message }}"
+  {% endif %}
+  
+  {% if member.get('disable_email_notification') is defined %}
+  disable_email_notification = {{ member.disable_email_notification | lower }}
+  {% endif %}
+}
+
+{% endfor %}
+{% endif %}
+
+{% if detector.get('threat_intel_sets') or detector.get('threatIntelSets') %}
+{% for threat_set in detector.get('threat_intel_sets', detector.get('threatIntelSets', [])) %}
+{{ resource_spacer() }}
+resource "aws_guardduty_threatintelset" "{{ detector.name_sanitized }}_{{ threat_set.name_sanitized }}" {
+  activate    = {{ threat_set.get('activate', threat_set.get('status') == 'ACTIVE') | lower }}
+  detector_id = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  format      = "{{ threat_set.format | default('TXT') }}"
+  location    = "{{ threat_set.location }}"
+  name        = "{{ threat_set.name }}"
+
+  {{ render_common_tags(threat_set, indent=2) }}
+}
+
+{% endfor %}
+{% endif %}
+
+{% if detector.get('ipsets') or detector.get('ipSets') %}
+{% for ipset in detector.get('ipsets', detector.get('ipSets', [])) %}
+{{ resource_spacer() }}
+resource "aws_guardduty_ipset" "{{ detector.name_sanitized }}_{{ ipset.name_sanitized }}" {
+  activate    = {{ ipset.get('activate', ipset.get('status') == 'ACTIVE') | lower }}
+  detector_id = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  format      = "{{ ipset.format | default('TXT') }}"
+  location    = "{{ ipset.location }}"
+  name        = "{{ ipset.name }}"
+
+  {{ render_common_tags(ipset, indent=2) }}
+}
+
+{% endfor %}
+{% endif %}
+
+{% if detector.get('filters') %}
+{% for filter in detector.filters %}
+{{ resource_spacer() }}
+resource "aws_guardduty_filter" "{{ detector.name_sanitized }}_{{ filter.name_sanitized }}" {
+  name        = "{{ filter.name }}"
+  action      = "{{ filter.action | default('NOOP') }}"
+  detector_id = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  rank        = {{ filter.rank | default(1) }}
+
+  {% if filter.get('description') %}
+  description = "{{ filter.description }}"
+  {% endif %}
+
+  finding_criteria {
+    {% for criteria in filter.finding_criteria %}
+    criterion {
+      field  = "{{ criteria.field }}"
+      {% if criteria.get('equals') %}
+      equals = {{ criteria.equals | tojson }}
+      {% endif %}
+      {% if criteria.get('not_equals') %}
+      not_equals = {{ criteria.not_equals | tojson }}
+      {% endif %}
+      {% if criteria.get('greater_than') %}
+      greater_than = "{{ criteria.greater_than }}"
+      {% endif %}
+      {% if criteria.get('greater_than_or_equal') %}
+      greater_than_or_equal = "{{ criteria.greater_than_or_equal }}"
+      {% endif %}
+      {% if criteria.get('less_than') %}
+      less_than = "{{ criteria.less_than }}"
+      {% endif %}
+      {% if criteria.get('less_than_or_equal') %}
+      less_than_or_equal = "{{ criteria.less_than_or_equal }}"
+      {% endif %}
+    }
+    {% endfor %}
+  }
+
+  {{ render_common_tags(filter, indent=2) }}
+}
+
+{% endfor %}
+{% endif %}
+
+{% if detector.get('publishing_destination') or detector.get('publishingDestination') %}
+resource "aws_guardduty_publishing_destination" "{{ detector.name_sanitized }}" {
+  detector_id     = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  destination_arn = "{{ detector.get('publishing_destination', {}).get('destination_arn', detector.get('publishingDestination', {}).get('destinationArn')) }}"
+  kms_key_arn     = "{{ detector.get('publishing_destination', {}).get('kms_key_arn', detector.get('publishingDestination', {}).get('kmsKeyArn')) }}"
+  
+  {% if detector.get('publishing_destination', {}).get('destination_type') or detector.get('publishingDestination', {}).get('destinationType') %}
+  destination_type = "{{ detector.get('publishing_destination', {}).get('destination_type', detector.get('publishingDestination', {}).get('destinationType', 'S3')) }}"
+  {% endif %}
+}
+{% endif %}
+
+{% if detector.get('organization_configuration') %}
+resource "aws_guardduty_organization_configuration" "{{ detector.name_sanitized }}" {
+  auto_enable                      = {{ detector.organization_configuration.get('auto_enable', true) | lower }}
+  detector_id                      = aws_guardduty_detector.{{ detector.name_sanitized }}.id
+  
+  {% if detector.organization_configuration.get('auto_enable_organization_members') %}
+  auto_enable_organization_members = "{{ detector.organization_configuration.auto_enable_organization_members }}"
+  {% endif %}
+
+  {% if detector.organization_configuration.get('datasources') %}
+  datasources {
+    {% set org_ds = detector.organization_configuration.datasources %}
+    
+    {% if org_ds.get('s3_logs') %}
+    s3_logs {
+      auto_enable = {{ org_ds.s3_logs.get('auto_enable', true) | lower }}
+    }
+    {% endif %}
+    
+    {% if org_ds.get('kubernetes') %}
+    kubernetes {
+      audit_logs {
+        enable = {{ org_ds.kubernetes.get('audit_logs', {}).get('enable', true) | lower }}
+      }
+    }
+    {% endif %}
+    
+    {% if org_ds.get('malware_protection') %}
+    malware_protection {
+      scan_ec2_instance_with_findings {
+        ebs_volumes {
+          auto_enable = {{ org_ds.malware_protection.get('scan_ec2_instance_with_findings', {}).get('ebs_volumes', {}).get('auto_enable', true) | lower }}
+        }
+      }
+    }
+    {% endif %}
+  }
+  {% endif %}
+}
+{% endif %}
+
+{% endfor %}
+{% endblock %}
