@@ -1,0 +1,160 @@
+# .github/workflows/create-release.yml
+name: Create GitHub Release and Publish SDKs
+on:
+  push:
+    branches: [main]  # Trigger on ANY push to main (including PR merges)
+  pull_request:
+    types: [closed]   # Also trigger when PRs are merged
+    branches: [main]
+jobs:
+  detect-release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true)
+    outputs:
+      latest_tag: ${{ steps.find-tags.outputs.latest_tag }}
+      version: ${{ steps.find-tags.outputs.version }}
+      should_release: ${{ steps.check-release.outputs.should_release }}
+    permissions:
+      contents: write
+      pull-requests: read
+      issues: read
+      id-token: write  # Not needed for API token approach, but kept for compatibility
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need full history to find tags
+    
+    - name: Find new tags reachable from main
+      id: find-tags
+      run: |
+        echo "🔍 [MAIN RELEASE] Checking for version tags now reachable from main..."
+        
+        # Get all version tags
+        ALL_TAGS=$(git tag -l 'v*' | sort -V)
+        echo "All version tags: $ALL_TAGS"
+        
+        # Find tags that are reachable from main
+        REACHABLE_TAGS=""
+        for tag in $ALL_TAGS; do
+          TAG_COMMIT=$(git rev-list -n 1 $tag)
+          if git merge-base --is-ancestor $TAG_COMMIT HEAD; then
+            echo "✅ Tag $tag is reachable from main (commit: $TAG_COMMIT)"
+            REACHABLE_TAGS="$REACHABLE_TAGS $tag"
+          else
+            echo "❌ Tag $tag is NOT reachable from main (commit: $TAG_COMMIT)"
+          fi
+        done
+        
+        echo "reachable_tags=$REACHABLE_TAGS" >> $GITHUB_OUTPUT
+        
+        # Find the latest reachable tag
+        if [ -n "$REACHABLE_TAGS" ]; then
+          LATEST_TAG=$(echo $REACHABLE_TAGS | tr ' ' '\n' | sort -V | tail -1)
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "🏷️ Latest reachable tag: $LATEST_TAG"
+          
+          # Extract version
+          VERSION=${LATEST_TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        else
+          echo "No version tags reachable from main"
+          echo "latest_tag=" >> $GITHUB_OUTPUT
+          echo "version=" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Check if this is a new release
+      id: check-release
+      run: |
+        LATEST_TAG="${{ steps.find-tags.outputs.latest_tag }}"
+        
+        if [ -z "$LATEST_TAG" ]; then
+          echo "No tags found, skipping release"
+          echo "should_release=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
+        # Check if we already created a release for this tag
+        if gh release view "$LATEST_TAG" >/dev/null 2>&1; then
+          echo "Release for $LATEST_TAG already exists, skipping"
+          echo "should_release=false" >> $GITHUB_OUTPUT
+        else
+          echo "🚀 New tag $LATEST_TAG detected, should create release"
+          echo "should_release=true" >> $GITHUB_OUTPUT
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+  publish-python:
+    name: Publish Python SDK
+    needs: detect-release
+    if: needs.detect-release.outputs.should_release == 'true'
+    uses: ./.github/workflows/reusable-sdk-release.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      sdk: python
+      working-directory: .
+      tag: ${{ needs.detect-release.outputs.latest_tag }}
+      version: ${{ needs.detect-release.outputs.version }}
+    secrets: inherit
+
+  publish-typescript:
+    name: Publish TypeScript SDK
+    needs: detect-release
+    if: needs.detect-release.outputs.should_release == 'true'
+    uses: ./.github/workflows/reusable-sdk-release.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      sdk: typescript
+      working-directory: runagent-ts
+      tag: ${{ needs.detect-release.outputs.latest_tag }}
+      version: ${{ needs.detect-release.outputs.version }}
+    secrets: inherit
+
+  create-release:
+    name: Create GitHub Release
+    needs:
+      - detect-release
+      - publish-python
+      - publish-typescript
+    if: needs.detect-release.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create main GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.detect-release.outputs.latest_tag }}
+          name: RunAgent v${{ needs.detect-release.outputs.version }}
+          body: |
+            # 🚀 RunAgent v${{ needs.detect-release.outputs.version }}
+
+            **Universal AI Agent Platform - All SDKs synchronized at v${{ needs.detect-release.outputs.version }}**
+
+            ## 📋 What's New
+
+            For detailed changes in this release, see [CHANGELOG.md](./CHANGELOG.md).
+
+            This release synchronizes all RunAgent SDKs (Python, JavaScript, Rust, Go) to version ${{ needs.detect-release.outputs.version }}.
+
+            ## 📦 Installation
+
+            ```bash
+            pip install runagent==${{ needs.detect-release.outputs.version }}
+            ```
+
+          draft: false
+          prerelease: false
+          generate_release_notes: true  # Let GitHub add commit-based notes
+          files: |
+            CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
