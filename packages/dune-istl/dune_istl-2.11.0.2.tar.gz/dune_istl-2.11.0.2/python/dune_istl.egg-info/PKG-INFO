@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: dune-istl
+Version: 2.11.0.2
+Summary: Iterative solver template library which provides generic sparse matrix/vector classes and a variety of solvers based on these classes
+Home-page: https://gitlab.dune-project.org/core/dune-istl
+Author: The Dune Core developers
+Author-email: dune-devel@lists.dune-project.org
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Requires-Python: >=3.4
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: COPYING
+
+<!--
+SPDX-FileCopyrightText: Copyright © DUNE Project contributors, see file LICENSE.md in module root
+SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
+-->
+
+DUNE-library
+============
+
+DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
+for solving partial differential equations with grid-based methods.
+
+The main intention is to create slim interfaces allowing an efficient use of
+legacy and/or new libraries. Using C++ techniques DUNE allows to use very
+different implementation of the same concept (i.e. grid, solver, ...) under
+a common interface with a very low overhead.
+
+DUNE was designed with flexibility in mind. It supports easy discretization
+using methods, like Finite Elements, Finite Volume and also Finite
+Differences. Through separation of data structures DUNE allows fast Linear
+Algebra like provided in the ISTL module, or usage of external libraries
+like blas.
+
+This package contains the basic DUNE istl classes.
+
+More information
+----------------
+
+Check dune-common for more details concerning dependencies, known bugs,
+license and installation.
+
+
+git-398975484c14f683372a001c9ce8fccdeea77d14
