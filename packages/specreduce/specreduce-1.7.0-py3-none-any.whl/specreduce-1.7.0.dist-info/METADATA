@@ -1,0 +1,86 @@
+Metadata-Version: 2.4
+Name: specreduce
+Version: 1.7.0
+Summary: Astropy coordinated package for Spectroscopic Reductions
+Author-email: Astropy Specreduce contributors <astropy-dev@googlegroups.com>
+License: Copyright (c) 2017, Astropy-specreduce Developers
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without modification,
+        are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright notice, this
+          list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright notice, this
+          list of conditions and the following disclaimer in the documentation and/or
+          other materials provided with the distribution.
+        * Neither the name of the Astropy Team nor the names of its contributors may be
+          used to endorse or promote products derived from this software without
+          specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+        ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+        WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+        ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+        (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+        LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+        ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+        (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: Homepage, http://astropy.org/
+Project-URL: Repository, https://github.com/astropy/specreduce.git
+Project-URL: Documentation, https://specreduce.readthedocs.io/
+Requires-Python: >=3.11
+Description-Content-Type: text/x-rst
+Requires-Dist: numpy>=1.24
+Requires-Dist: astropy>=5.3
+Requires-Dist: scipy>=1.10
+Requires-Dist: specutils>=1.9.1
+Requires-Dist: matplotlib>=3.10
+Requires-Dist: gwcs
+Provides-Extra: test
+Requires-Dist: pytest-astropy; extra == "test"
+Requires-Dist: photutils>=1.0; extra == "test"
+Requires-Dist: tox; extra == "test"
+Provides-Extra: docs
+Requires-Dist: sphinx-astropy; extra == "docs"
+Requires-Dist: photutils>=1.0; extra == "docs"
+Requires-Dist: synphot; extra == "docs"
+Requires-Dist: nbsphinx; extra == "docs"
+Requires-Dist: ipykernel; extra == "docs"
+Provides-Extra: all
+Requires-Dist: photutils>=1.0; extra == "all"
+Requires-Dist: synphot; extra == "all"
+
+Specreduce
+==========
+
+.. image:: https://github.com/astropy/specreduce/actions/workflows/tox-tests.yml/badge.svg?branch=main
+    :target: https://github.com/astropy/specreduce/actions/workflows/tox-tests.yml
+    :alt: CI Status
+
+.. image:: https://codecov.io/gh/astropy/specreduce/graph/badge.svg?token=3fLGjZ2Pe0
+    :target: https://codecov.io/gh/astropy/specreduce
+    :alt: Coverage
+
+.. image:: https://readthedocs.org/projects/specreduce/badge/?version=latest
+    :target: http://specreduce.readthedocs.io/en/latest/
+    :alt: Documentation Status
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.6608787.svg
+   :target: https://zenodo.org/doi/10.5281/zenodo.6608787
+   :alt: Zenodo DOI 10.5281/zenodo.6608787
+
+.. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+   :target: http://www.astropy.org/
+   :alt: Powered by Astropy
+
+Specreduce is an Astropy coordinated package with the goal of providing a shared
+set of Python utilities that can be used to reduce and calibrate spectroscopic data.
+
+License
+-------
+
+Specreduce is licensed under a 3-clause BSD style license. Please see the licenses/LICENSE.rst file.
