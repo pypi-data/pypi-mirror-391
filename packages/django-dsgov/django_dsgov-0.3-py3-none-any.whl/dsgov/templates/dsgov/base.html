@@ -1,0 +1,36 @@
+{% load br_components %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <!-- Fonte Rawline-->
+        <link rel="stylesheet" href="https://cdngovbr-ds.estaleiro.serpro.gov.br/design-system/fonts/rawline/css/rawline.css"/>
+
+        <!-- Fonte Raleway-->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900&amp;display=swap"/>
+
+        <!-- Design System do Governo-->
+        <link rel="stylesheet" href="https://unpkg.com/@govbr-ds/core@3.6.2/dist/core.min.css"/>
+
+        <!-- Link para o fontawesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        
+        <!-- Importando o CSS do govbr-ds -->
+        {% br_stylesheets %}
+    </head>
+    <body>
+        {% block content %}
+        {% endblock %}
+
+        <!-- Importando o JS do govbr-ds -->
+        {% br_scripts %}
+    </body>
+</html>

@@ -1,0 +1,51 @@
+{% extends "dsgov/base.html" %}
+{% load br_components %}
+{% load static %}
+
+{% block content %}
+    <div class="br-list" role="list">
+        <div class="header">
+            <div class="title">{{ title|default:"Título padrão" }}</div>
+        </div>
+        <span class="br-divider"></span>
+        {% if items %}
+            {% for item in items %}
+                <div class="br-item py-3" role="listitem">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <i class="{{ item.icon }}" aria-hidden="true"></i>
+                        </div>
+                        <div class="col">{{ item.content }}</div>
+                        <div class="col-auto">{{ item.meta }}</div>
+                    </div>
+                </div>
+                <span class="br-divider"></span>
+            {% endfor %}
+        {% else %}
+            <div class="br-item py-3" role="listitem">
+                <div class="row align-items-center">
+                    <div class="col-auto"><i class="fas fa-heartbeat" aria-hidden="true"></i></div>
+                    <div class="col">Texto principal</div>
+                    <div class="col-auto">META</div>
+                </div>
+            </div>
+            <span class="br-divider"></span>
+            <div class="br-item py-3" role="listitem">
+                <div class="row align-items-center">
+                    <div class="col-auto"><i class="fas fa-heartbeat" aria-hidden="true"></i></div>
+                    <div class="col">Texto principal</div>
+                    <div class="col-auto">META</div>
+                </div>
+            </div>
+            <span class="br-divider"></span>
+            <div class="br-item py-3" role="listitem">
+                <div class="row align-items-center">
+                    <div class="col-auto"><i class="fas fa-heartbeat" aria-hidden="true"></i></div>
+                    <div class="col">Texto principal</div>
+                    <div class="col-auto">META</div>
+                </div>
+            </div>
+            <span class="br-divider"></span>
+        {% endif %}
+    </div>
+{% endblock %}
