@@ -1,0 +1,344 @@
+Metadata-Version: 2.4
+Name: mcp-server-nbotbb
+Version: 0.8.8
+Summary: A Model Context Protocol server providing tools for time queries and timezone conversions for LLMs
+Author-email: Mariusz 'maledorak' Korzekwa <mariusz@korzekwa.dev>
+License: MIT
+Keywords: llm,mcp,time,timezone
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Requires-Python: >=3.10
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: mysql-connector-python>=9.0.0
+Requires-Dist: pydantic>=2.0.0
+Requires-Dist: tzdata>=2024.2
+Requires-Dist: tzlocal>=5.3.1
+Description-Content-Type: text/markdown
+
+# NBotbb MCP Server
+一个基于 Model Context Protocol（MCP）的上下文服务器，提供农资商品查询与收货地址提取能力。该服务器使大语言模型（LLM）能够理解用户关于农药、化肥等农资产品的自然语言查询（包括有效成分、品牌、规格等），并从本地数据库实时检索库存信息；同时可从任意消息中精准解析结构化收货地址，并内置对文本、图片、语音等多模态输入的透明支持。
+
+🔗 [Model Context Protocol 官网](https://modelcontextprotocol.io/)
+
+---
+
+## 🧰 核心能力（MCP Tools）
+
+### 1. `agro_product_search`：农资商品查询与推荐   
+从用户输入中自动识别农药/化肥产品信息，并查询本地库存。
+- **适用场景**：用户询问“有没有草甘膦？”、“滨农金特200ml有货吗？”
+- **识别字段**：
+  - 产品名称（如“烯草酮”）
+  - 有效成分（如“烟嘧磺隆+莠去津”）
+  - 品牌（如“滨农”、“先正达”）
+  - 规格（如“200毫升”、“1公斤”）
+  - 用途（如“玉米田除草”、“水稻防虫”）
+- **数据源**：本地 SQLite 数据库 products.db
+- **支持偏好**：
+  - 价格最低（`cheapest`）
+  - 生产日期最新（`recent`）
+  - 折扣优先（`discount`）
+- **输出**：结构化商品列表（含价格、库存、生产日期、折扣信息）
+
+---
+### 2. `agro_product_recommend`：智能农资推荐  
+基于作物类型、病虫害、地区气候等上下文，推荐最合适的农资产品组合。
+
+- **适用场景**：用户说“山东小麦得了锈病怎么办？”、“南方水稻防虫用什么药？”
+- **输入解析**：
+  - 作物（如“小麦”、“水稻”）
+  - 病害/虫害（如“锈病”、“稻飞虱”）
+  - 地区（如“山东”、“华南”）
+  - 生长期（可选）
+- **推荐逻辑**：
+  - 匹配农业知识库 + 当地用药习惯
+  - 排除禁用/高毒产品（符合国家法规）
+  - 优先推荐低毒、高效、登记作物匹配的产品
+- **输出**：
+  - 推荐商品列表（含使用剂量、安全间隔期）
+  - 简明使用建议（如“亩用30ml，兑水30kg喷雾”）
+
+> 💡 此工具可与 `agro_product_search` 联动：先推荐，再查库存。
+
+---
+
+### 3. `extract_delivery_address`：收货地址智能提取
+从任意用户消息中(文本/图片/语音)精准解析完整收货信息。
+- **适用场景**：用户发消息“李四 13912345678 上海浦东陆家嘴环路1000号”
+- **识别字段**：
+  - 姓名、手机号
+  - 省、市、区（自动补全层级，如“浦东” → “上海市 浦东新区”）
+  - 详细地址、邮编（可选）
+- **智能清洗**：
+  - 去重（如“北京市 北京市” → “北京市”）
+  - 纠错（如“浦東” → “浦东”）
+  - 标准化（统一“路/街/巷”格式）
+- **输出**：标准化 JSON 地址对象，供下单或确认使用
+
+---
+
+💡 多模态输入（文本/图片/语音）由服务器内部统一处理，LLM 无需额外调用 OCR 或 ASR 工具。
+图片 → 调用 Qwen-VL 识别农药包装
+语音 → 调用通义千问 ASR 转写为文本
+所有输入最终转化为结构化上下文，供上述两个工具使用
+
+## 编译
+```bash
+conda create env -n uvx python=3.10 -y
+conda activate uvx
+pip install build twine
+cd ~/autodl-tmp/servers/src/nbotbb/
+python -m build .
+twine upload dist/*
+pypi-AgEIcHlwaS5vcmcCJDM0YmQ1N2EzLTQzZjEtNDMxNy05ZTZjLTUwZjU1NmE2NTMxZQACKlszLCI4NWJmOWE2My0wNDdkLTQ0MjItODAzNS1iZTRlMjUxN2VhNTciXQAABiA9sPWebBkkBvgZo4oegT8zA5bbhLFZP9QVswI1OdJRlA
+source /etc/network_turbo
+unset http_proxy && unset https_proxy
+pip install --index-url https://pypi.org/simple/ your-package-name   http://mirrors.aliyun.com/pypi/simple
+pip install -i http://mirrors.aliyun.com/pypi/simple/ nbotbb-w1bssjszkadbb-001
+
+```
+npx @modelcontextprotocol/inspector python -m mcp_server_nbotbb
+[
+    {
+        "product_name": "烯草酮",
+        "brand": "滨农金特",
+        "specification": "200ml",
+        "main_effect": "除草"
+    }
+]
+
+
+## 🚀 百炼部署
+- 使用 uvx
+
+```bash
+# 安装当前项目（可编辑模式）
+pip install -e .
+
+# 测试命令是否可用
+mcp-server-nbotbb --local-name "测试"
+pip install -i http://mirrors.aliyun.com/pypi/simple/ mcp-server-nbotbb==0.0.1
+```
+
+```json
+{
+  "mcpServers": {
+    "NBotbb": {
+      "command": "uvx",
+      "args": ["mcp-server-nbotbb"]  
+    }
+  }
+}
+```
+
+
+twine upload \
+  --repository-url https://packages.aliyun.com/6916a647ab336f9c842bdf28/pypi/wyb-mcp-tools \
+  -u 6916a5fd79784350ec46049a \
+  -p 'atii)[Vl_c)a' \
+  dist/*
+pip install mcp_server_nbotbb==0.8.7 \
+  --index-url https://6916a5fd79784350ec46049a:your_password@packages.aliyun.com/6916a647ab336f9c842bdf28/pypi/wyb-mcp-tools/simple/
+
+https://pypi.org/project/mcp-server-nbotbb/0.8.2/
+
+## 🌐 多模态输入自动处理（透明化）
+| 输入类型 | 处理方式                                    |
+| -------- | ------------------------------------------- |
+| 文本     | 纯文本输入，无需处理                        |
+| 图片     | 调用 Qwen-VL 识别包装，返回结构化结果       |
+| 语音     | 调用通义千问 ASR 转写为文本，返回结构化结果 |
+最终，所有工具接收的都是**干净的结构化文本上下文**。
+
+---
+
+
+# 🛠️ MCP 工具定义（供 LLM 调用）
+- agro_product_search
+```json
+{
+  "name": "agro_product_search",
+  "description": "根据用户描述查询农资商品库存、价格与规格",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query_text": { "type": "string", "description": "用户原始输入（已含多模态解析结果）" },
+      "preferences": {
+        "type": "object",
+        "properties": {
+          "price_preference": { "enum": ["cheapest", "default"] },
+          "date_preference": { "enum": ["recent", "default"] }
+        }
+      }
+    }
+  }
+}
+```
+- extract_delivery_address
+```json
+{
+  "name": "extract_delivery_address",
+  "description": "从用户消息中提取并标准化收货地址信息",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "message": { "type": "string", "description": "用户原始消息（已转为文本）" }
+    },
+    "required": ["message"]
+  }
+}
+```
+
+# 💬 示例对话
+
+```bash
+用户：
+有滨农金特200毫升的烯草酮吗？想要最近生产日期的。
+
+AI 调用 agro_product_search 后回复：
+老板，为您查询到
+🔍 关键词: 烯草酮
+🛒 烯草酮 200ml
+🏪 店铺：劲牛农资旗舰店
+💰 规格和价格：
+• 200ml：¥35.00 (🟢 有货:12) 生产日期：2025-10-01 折扣活动：无
+`
+
+用户：
+李四，手机号13912345678，地址：上海市浦东新区陆家嘴环路1000号
+
+AI 调用 extract_delivery_address 后回复：
+📦 已为您提取地址信息：
+👤 姓名：李四
+📞 手机：13912345678
+📍 地址：上海市 浦东新区
+🏠 详细：陆家嘴环路1000号
+
+请确认地址信息是否正确？
+```
+🐞 调试
+
+使用 MCP Inspector 实时查看工具调用：
+
+bash
+npx @modelcontextprotocol/inspector uvx jinniu-mcp-server
+
+📦 项目结构
+```bash
+nbotbb/
+├── src/
+│   └── nbotbb_mcp_server/
+│       ├── __init__.py          # main() 入口
+│       ├── __main__.py          # 支持 python -m
+│       ├── server.py            # MCP Server 初始化
+│       └── tools/
+│           ├── product_search.py     # agro_product_search
+│           ├── product_recommend.py  # agro_product_recommend
+│           └── address_extract.py    # extract_delivery_address
+├── products.db                  # 农资商品数据库（需自行准备）
+├── .env                         # DASHSCOPE_API_KEY 等
+├── pyproject.toml
+├── Dockerfile
+└── README.md
+```
+
+{
+  "mcpServers": {
+    "NBotbb": {
+      "command": "uvx",
+      "args": ["mcp-server-nbotbb==0.8.7"],
+      "env": {
+        "UV_INDEX_URL": "https://6916a5fd79784350ec46049a:atii%29%5BVl_c%29a@packages.aliyun.com/6916a647ab336f9c842bdf28/pypi/wyb-mcp-tools/simple/",
+        "UV_KEYRING_PROVIDER": "disabled"
+      }
+    }
+  }
+}
+
+## 提示词
+
+农商助手
+
+让大模型成为专业的农商智能助手，能够根据用户的提问，帮助用户从数据库查询农资商品信息、推荐防治方案，并处理收货地址。
+
+
+当然可以！以下是根据你这段 MCP 服务代码（支持农资产品搜索、推荐和地址解析）精心设计的一段 提示词（Prompt），你可以将其喂给大模型 Agent，让它知道如何正确调用你的工具：
+
+🧠 Agent 提示词（System Prompt）
+
+你是一个专业的农业智能助手，能够帮助用户查询农资商品信息、推荐防治方案，并处理收货地址。你拥有以下三个专用工具，请根据用户需求合理调用：
+
+1. agro_product_search
+用途：根据用户提供的商品名称、品牌、规格或主要功效，查询农资商品库存与价格信息。
+输入要求：必须提供 product_list（数组），每个商品对象至少包含 product_name 字段；可选传入 user_preferences（如偏好品牌、剂型等）。
+注意：系统会先按商品名模糊匹配，若无结果则按“主要功效”二次检索。
+
+2. agro_product_recommend
+用途：当用户提供作物种类和病虫害名称时，推荐合适的农药或肥料产品。
+输入要求：必须提供 crop（作物）和 pest_or_disease（病虫害）；可选 region（地区）和 growth_stage（生育期）以优化推荐。
+示例：小麦 + 锈病 → 推荐“戊唑醇悬浮剂”。
+
+3. extract_delivery_address
+用途：标准化用户输入的收货地址信息，自动清洗冗余字段（如省=市时自动清空市）。
+输入要求：可传入 name, phone, province, city, district, detailed_address, postal_code 中任意字段。
+
+📌 使用规则：
+每次只调用一个工具。
+工具调用必须严格遵循其参数格式。
+若用户同时提出多个需求（如查商品+填地址），请分步处理，先完成一个再进行下一个。
+所有返回结果均为结构化数据，请用自然语言清晰解释给用户，不要直接输出 JSON。
+
+你现在正在与一位农户或农资经销商对话，请用专业、耐心、简洁的中文提供帮助。
+
+✅ 使用示例（供你测试）
+
+用户输入：
+我想找“烯草酮”，滨农金特牌的，200ml装的，除草用的。
+
+Agent 应调用：
+json
+{
+"name": "agro_product_search",
+"arguments": {
+"product_list": [
+{
+"product_name": "烯草酮",
+"brand": "滨农金特",
+"specification": "200ml",
+"main_effect": "除草"
+}
+]
+}
+}
+
+你可以将上述提示词作为 system message 输入给你的 LLM Agent（如 Qwen、GPT、Claude 等），它就能正确理解并调用你的 MCP 工具了。
+
+需要我帮你生成一个完整的 agent 调用流程示例（包括多轮对话）吗？
+
+
+
+mkdir mcp-deps && cd mcp-deps
+
+pip download \
+  --no-binary=:all: \          # 可选：只下载源码包（若需编译）
+  --dest ./wheels \
+  mcp>=1.0.0 \
+  pydantic>=2.0.0 \
+  tzdata>=2024.2 \
+  tzlocal>=5.3.1 \
+  mysql-connector-python>=9.0.0 \
+  freezegun>=1.5.1 \
+  pyright>=1.1.389 \
+  pytest>=8.3.3 \
+  ruff>=0.8.1
+
+pip download --dest ./wheels "mcp>=1.0.0" "pydantic>=2.0.0" "tzdata>=2024.2" "tzlocal>=5.3.1" "mysql-connector-python>=9.0.0" "freezegun>=1.5.1" "pyright>=1.1.389" "pytest>=8.3.3" "ruff>=0.8.1"
+
+twine upload --repository-url "https://packages.aliyun.com/6916a647ab336f9c842bdf28/pypi/wyb-mcp-tools" -u "6916a5fd79784350ec46049a" -p "atii)[Vl_c)a"  -r "packages-pypi" "./wheels/*"
+
+pypi-AgEIcHlwaS5vcmcCJGUwZmRiN2RmLWMyNjItNDMzMC04ZWE1LWI5ODA2OTIyNjQwOAACGVsxLFsibWNwLXNlcnZlci1uYm90YmIiXV0AAixbMixbImUzYTU4MzM5LTEzMTktNDA3MC1iOGViLTNlNjBjNDNkMjUzZSJdXQAABiCPvXTI2QOI4ooF9TYLNH18uPoH8UKgoKslj1N80uvtZw
+pi
+pip install "mcp-server-nbotbb==0.8.7" -i "https://6916a5fd79784350ec46049a:atii%29%5BVl_c%29a@packages.aliyun.com/6916a647ab336f9c842bdf28/pypi/wyb-mcp-tools"
