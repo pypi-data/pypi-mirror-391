@@ -1,0 +1,25 @@
+v0.8, 2019/01/18
+   - switch from github to gitlab
+   - some more support for PPL objects: permute_space_dimensions, Bit_Row,
+     Bit_Matrix
+   - upgrade gmpy2 version dependency
+   - add pyproject.toml and setup.cfg files
+   - remove the OK functions which caused trouble for clang on FreeBSD
+   - switch back to github under SageMath organization
+   - fast initialization of Linear_Expression from list/dict
+   - CI (test, linter, doc build and deployment)
+   - add a Cython pool for ppl.Variable
+   - support for congruences
+v0.7, 2017/11/24
+   - use of gmpy2 for integers and rationals (Vincent Delecroix/Vincent Klein)
+   - tests on travis (Vincent Delecroix/Vincent Klein)
+   - fixes in install scripts (Vincent Delecroix)
+   - port some upgrades from Sage (Vincent Klein)
+   - split in several Cython files (Vincent Klein)
+   - adding widening (Jesús Doménech)
+v0.6, 2016/01/17 -- distribution bug fixes
+v0.5, 2016/01/17 -- bug fixes
+v0.4, 2016/01/16 -- iterator for MIP_Problem
+v0.3, 2016/01/16 -- Reworked documentation
+v0.2, 2016/01/16 -- Fix build
+v0.1, 2016/01/16 -- Initial release
