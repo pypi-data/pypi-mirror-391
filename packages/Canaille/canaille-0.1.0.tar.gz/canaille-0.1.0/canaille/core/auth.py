@@ -1,0 +1,276 @@
+import datetime
+from dataclasses import dataclass
+from functools import wraps
+
+from flask import current_app
+from flask import flash
+from flask import g
+from flask import redirect
+from flask import session
+from flask import url_for
+
+from canaille.app.i18n import gettext as _
+from canaille.app.session import is_user_in_login_history
+from canaille.app.session import login_user
+from canaille.backends import Backend
+from canaille.core.models import User
+
+AUTHENTICATION_FACTORS = {}
+
+
+def auth_step(step_name=None):
+    """Decorate authentication steps and perform basic checks."""
+
+    def wrapper(view_function):
+        AUTHENTICATION_FACTORS[step_name] = view_function
+
+        @wraps(view_function)
+        def decorator(*args, **kwargs):
+            if not g.auth:
+                if g.session:
+                    return redirect(url_for("core.account.index"))
+
+                flash(
+                    _("Cannot remember the login you attempted to sign in with."),
+                    "warning",
+                )
+                return redirect(url_for("core.auth.login"))
+
+            if (
+                isinstance(g.auth.current_step, str)
+                and step_name != g.auth.current_step
+            ) or (
+                isinstance(g.auth.current_step, list)
+                and step_name not in g.auth.current_step
+            ):
+                return redirect_to_next_auth_step()
+
+            return view_function(*args, **kwargs)
+
+        return decorator
+
+    return wrapper
+
+
+@dataclass
+class AuthenticationSession:
+    user_name: str | None
+    """The user name attempting to log-in."""
+
+    remaining: list[str]
+    """The remaining auth factors to succeed before logging in."""
+
+    achieved: list[str]
+    """The achieved auth factors."""
+
+    current_step_start_dt: datetime.datetime | None
+    """The time when the current step has been started."""
+
+    current_step_try_dt: datetime.datetime | None
+    """The time when the current try of the current step has started."""
+
+    welcome_flash: bool
+    """Display a welcom flash when users are logged in."""
+
+    data: dict[str, str]
+    """Custom auth factor data."""
+
+    template: str | None = None
+    """Path to base template for authentication pages."""
+
+    known_user: bool = False
+    """Whether the user has already logged-in on this device."""
+
+    remember: bool = True
+    """Whether to create permanent session and add to login history."""
+
+    ui_locales: str | None = None
+    """Space-separated list of preferred UI languages."""
+
+    _user: User | None = None
+
+    def __init__(
+        self,
+        user_name=None,
+        remaining=None,
+        achieved=None,
+        current_step_start_dt=None,
+        current_step_try_dt=None,
+        welcome_flash=None,
+        data=None,
+        template=None,
+        known_user=None,
+        remember=None,
+        ui_locales=None,
+    ):
+        self.user_name = user_name
+        self.data = data or {}
+        self.template = template or "core/auth/base.html"
+        self.welcome_flash = welcome_flash if welcome_flash is not None else True
+        self.known_user = known_user or is_user_in_login_history(user_name)
+        self.remember = remember if remember is not None else True
+        self.ui_locales = ui_locales
+        self.reset_auth_steps(
+            remaining, achieved, current_step_start_dt, current_step_try_dt
+        )
+
+    def reset_auth_steps(
+        self,
+        remaining=None,
+        achieved=None,
+        current_step_start_dt=None,
+        current_step_try_dt=None,
+    ) -> None:
+        self.remaining = (
+            remaining or current_app.config["CANAILLE"]["AUTHENTICATION_FACTORS"]
+        )
+        self.achieved = achieved or []
+        self.current_step_start_dt = current_step_start_dt or None
+        self.current_step_try_dt = current_step_try_dt or None
+
+    def serialize(self):
+        payload = {
+            "user_name": self.user_name,
+            "welcome_flash": self.welcome_flash,
+            "remaining": self.remaining,
+            "known_user": self.known_user,
+            "remember": self.remember,
+            "template": self.template,
+        }
+
+        if self.current_step_start_dt:
+            payload["current_step_start_dt"] = self.current_step_start_dt.isoformat()
+
+        if self.current_step_try_dt:
+            payload["current_step_try_dt"] = self.current_step_try_dt.isoformat()
+
+        if self.achieved:
+            payload["achieved"] = self.achieved
+
+        if self.data:
+            payload["data"] = self.data
+
+        if self.ui_locales:
+            payload["ui_locales"] = self.ui_locales
+
+        return payload
+
+    @classmethod
+    def deserialize(cls, payload):
+        if "current_step_start_dt" in payload:
+            payload["current_step_start_dt"] = datetime.datetime.fromisoformat(
+                payload["current_step_start_dt"]
+            )
+
+        if "current_step_try_dt" in payload:
+            payload["current_step_try_dt"] = datetime.datetime.fromisoformat(
+                payload["current_step_try_dt"]
+            )
+
+        return cls(**payload)
+
+    @classmethod
+    def load(cls):
+        if "auth" in session:
+            return AuthenticationSession.deserialize(session.pop("auth"))
+
+    @classmethod
+    def update(cls, **kwargs):
+        """Update existing AuthenticationSession from g.auth or create a new one with given parameters."""
+        if g.auth:
+            # Update existing session with new parameters
+            for key, value in kwargs.items():
+                setattr(g.auth, key, value)
+            return g.auth
+        else:
+            # Create new session
+            return cls(**kwargs)
+
+    def save(self) -> None:
+        session["auth"] = self.serialize()
+
+    @property
+    def current_step(self):
+        return self.remaining[0] if self.remaining else None
+
+    @property
+    def user(self):
+        if not self._user:
+            self._user = get_user_from_login(self.user_name)
+        return self._user
+
+    def set_step_started(self) -> None:
+        self.current_step_start_dt = datetime.datetime.now(datetime.timezone.utc)
+        self.current_step_try_dt = self.current_step_start_dt
+
+    def set_step_finished(self, step) -> None:
+        self.achieved.append(step)
+        self.remaining.pop(0)
+
+
+def redirect_to_next_auth_step():
+    if not g.auth.remaining:
+        login_user(g.auth.user, remember=g.auth.remember)
+
+        redirection = session.pop("redirect-after-login", None)
+        if g.auth.welcome_flash and not redirection:
+            flash(
+                _("Connection successful. Welcome %(user)s", user=g.session.user.name),
+                "success",
+            )
+
+        current_app.logger.security(f"Successful authentication for {g.auth.user_name}")
+
+        del g.auth
+        return redirect(redirection or url_for("core.account.index"))
+
+    try:
+        func = AUTHENTICATION_FACTORS[g.auth.current_step]
+    except KeyError:
+        del g.auth
+        flash(
+            _(
+                "An error happened during your authentication process. Please try again."
+            ),
+            "error",
+        )
+        return redirect(url_for("core.auth.login"))
+
+    g.auth.set_step_started()
+    return redirect(url_for(f"core.auth.{g.auth.current_step}.{func.__name__}"))
+
+
+def get_user_from_login(login=None):
+    from canaille.app import models
+
+    login_attributes = current_app.config["CANAILLE"]["LOGIN_ATTRIBUTES"]
+
+    if isinstance(login_attributes, list):
+        for attr_name in login_attributes:
+            if user := Backend.instance.get(models.User, **{attr_name: login}):
+                return user
+
+    if isinstance(login_attributes, dict):
+        for attr_name, template in login_attributes.items():
+            login_value = current_app.jinja_env.from_string(template).render(
+                login=login
+            )
+            if user := Backend.instance.get(models.User, **{attr_name: login_value}):
+                return user
+
+    return None
+
+
+def login_placeholder():
+    """Build a placeholder string for the login form, based on the attributes users can use to identify themselves."""
+    default_values = {
+        "formatted_name": _("John Doe"),
+        "user_name": _("jdoe"),
+        "emails": _("john.doe@example.com"),
+    }
+    placeholders = [
+        default_values[attr_name]
+        for attr_name in current_app.config["CANAILLE"]["LOGIN_ATTRIBUTES"]
+        if default_values.get(attr_name)
+    ]
+    return _(" or ").join(placeholders)

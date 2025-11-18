@@ -1,0 +1,292 @@
+import datetime
+import logging
+
+import pytest
+import time_machine
+
+from canaille.app import mask_email
+from canaille.core.auth import AuthenticationSession
+from canaille.core.mails import send_one_time_password_mail
+
+# OTP_VALIDITY now configured via OTP_LIFETIME
+from canaille.core.models import SEND_NEW_OTP_DELAY
+
+
+@pytest.fixture
+def configuration(configuration):
+    configuration["CANAILLE"]["AUTHENTICATION_FACTORS"] = ["email"]
+    return configuration
+
+
+def test_no_auth_session_not_logged_in(testclient, user, smtpd):
+    """Non-logged users should not be able to access the email auth form if an authentication session has not been properly started."""
+    res = testclient.get("/auth/email", status=302)
+    assert res.location == "/login"
+    assert res.flashes == [
+        ("warning", "Cannot remember the login you attempted to sign in with.")
+    ]
+
+
+def test_no_auth_session_logged_in(testclient, logged_user, smtpd):
+    """Logged users should not be able to access the email auth form if an authentication session has not been properly started."""
+    res = testclient.get("/auth/email", status=302)
+    assert res.location == "/"
+
+
+def test_not_email_step(testclient, user, smtpd):
+    """Users reaching the email passcode form while this is not the right auth step in their flow should be redirected there."""
+    with testclient.session_transaction() as session:
+        session["auth"] = AuthenticationSession(
+            user_name="user",
+            remaining=["password", "email"],
+        ).serialize()
+
+    res = testclient.get("/auth/email", status=302)
+    assert res.location == "/auth/password"
+
+
+def test_signin_with_email_otp(smtpd, testclient, backend, user, caplog):
+    """Test that users can successfully sign in using email-based one-time passwords."""
+    with testclient.session_transaction() as session:
+        assert not session.get("sessions")
+
+    res = testclient.get("/login", status=200)
+
+    res.form["login"] = "user"
+    res = res.form.submit(status=302)
+    res = res.follow(status=200)
+
+    assert (
+        "canaille",
+        logging.SECURITY,
+        "Sending one-time passcode for user to john@doe.test",
+    ) in caplog.record_tuples
+
+    backend.reload(user)
+
+    assert len(smtpd.messages) == 1
+    email_content = str(smtpd.messages[0].get_payload()[0]).replace("=\n", "")
+    assert user.one_time_password in email_content
+
+    res.form["otp"] = user.one_time_password
+    res = res.form.submit(status=302, name="action", value="confirm")
+
+    assert (
+        "success",
+        "Connection successful. Welcome Johnny",
+    ) in res.flashes
+    assert (
+        "canaille",
+        logging.SECURITY,
+        "Successful email code authentication for user",
+    ) in caplog.record_tuples
+
+    res = res.follow()
+    assert (
+        "canaille",
+        logging.SECURITY,
+        "Successful authentication for user",
+    ) in caplog.record_tuples
+
+
+def test_signin_wrong_email_otp(testclient, user, caplog, smtpd):
+    """Test that incorrect email OTP codes are rejected with appropriate error message."""
+    with testclient.session_transaction() as session:
+        assert not session.get("sessions")
+
+    res = testclient.get("/login", status=200)
+
+    res.form["login"] = "user"
+    res = res.form.submit(status=302)
+    res = res.follow(status=200)
+
+    assert (
+        "canaille",
+        logging.SECURITY,
+        "Sending one-time passcode for user to john@doe.test",
+    ) in caplog.record_tuples
+
+    res.form["otp"] = "123456"
+    res = res.form.submit(status=200, name="action", value="confirm")
+
+    assert (
+        "error",
+        "The passcode you entered is invalid. Please try again",
+    ) in res.flashes
+    assert (
+        "canaille",
+        logging.SECURITY,
+        "Failed email code authentication for user",
+    ) in caplog.record_tuples
+
+
+def test_expired_email_otp(testclient, user, caplog, smtpd):
+    """Good expired passcode should be refused."""
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False) as traveller:
+        with testclient.session_transaction() as session:
+            assert not session.get("sessions")
+
+        res = testclient.get("/login", status=200)
+
+        res.form["login"] = "user"
+        res = res.form.submit(status=302)
+        res = res.follow(status=200)
+
+        otp = user.generate_sms_or_mail_otp()
+        send_one_time_password_mail(user.preferred_email, otp)
+        res.form["otp"] = user.one_time_password
+
+        traveller.shift(testclient.app.config["CANAILLE"]["OTP_LIFETIME"])
+        res = res.form.submit(status=200, name="action", value="confirm")
+
+        assert (
+            "error",
+            "The passcode you entered is invalid. Please try again",
+        ) in res.flashes
+        assert (
+            "canaille",
+            logging.SECURITY,
+            "Failed email code authentication for user",
+        ) in caplog.record_tuples
+
+
+def test_send_new_mail_otp_too_early(smtpd, testclient, backend, user, caplog):
+    """Check that clicking on the resend button too early should not send a new mail."""
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False):
+        res = testclient.get("/login", status=200)
+        res.form["login"] = "user"
+        res = res.form.submit(status=302)
+        res = res.follow(status=200)
+        assert len(smtpd.messages) == 1
+
+        res = res.form.submit(status=302, name="action", value="resend")
+
+        assert (
+            "danger",
+            f"Too many attempts. Please try again in {SEND_NEW_OTP_DELAY} seconds.",
+        ) in res.flashes
+        assert len(smtpd.messages) == 1
+        res = res.follow(status=200)
+
+
+def test_send_new_mail_otp_on_time(smtpd, testclient, backend, user, caplog):
+    """Check that clicking on the resend button after an adequate delay send a new code."""
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False):
+        res = testclient.get("/login", status=200)
+        res.form["login"] = "user"
+        res = res.form.submit(status=302)
+        res = res.follow(status=200)
+        assert len(smtpd.messages) == 1
+
+    with time_machine.travel("2020-01-01 01:00:11+00:00", tick=False):
+        res = res.form.submit(status=302, name="action", value="resend")
+
+        assert len(smtpd.messages) == 2
+        email_content = str(smtpd.messages[1].get_payload()[0]).replace("=\n", "")
+
+        backend.reload(user)
+        assert user.one_time_password in email_content
+        assert (
+            "info",
+            "Sending new verification code.",
+        ) in res.flashes
+        assert (
+            "canaille",
+            logging.SECURITY,
+            "Sending one-time passcode for user to john@doe.test",
+        ) in caplog.record_tuples
+
+        assert res.location == "/auth/email"
+
+
+def test_send_new_mail_invalid_user(smtpd, testclient, backend, user, caplog):
+    """Invalid users should be shown the re-send button, but it should do nothing."""
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False):
+        res = testclient.get("/login", status=200)
+        res.form["login"] = "invalid"
+        res = res.form.submit(status=302)
+        res = res.follow(status=200)
+        assert len(smtpd.messages) == 0
+
+    with time_machine.travel("2020-01-01 01:00:11+00:00", tick=False):
+        res = res.form.submit(status=302, name="action", value="resend")
+
+        assert len(smtpd.messages) == 0
+        assert (
+            "info",
+            "Sending new verification code.",
+        ) in res.flashes
+        assert (
+            "canaille",
+            logging.SECURITY,
+            "Sent one-time passcode for user to john@doe.test",
+        ) not in caplog.record_tuples
+
+
+def test_send_new_email_error(testclient, backend, user, caplog, smtpd):
+    """Handle SMS sending errors."""
+    testclient.app.config["CANAILLE"]["SMTP"]["HOST"] = "invalid.test"
+
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False):
+        res = testclient.get("/login", status=200)
+        res.form["login"] = "user"
+        res = res.form.submit(status=302)
+        res = res.follow(status=200)
+
+    with time_machine.travel("2020-01-01 01:01:00+00:00", tick=False):
+        res = res.form.submit(status=302, name="action", value="resend")
+
+        assert (
+            "info",
+            "Sending new verification code.",
+        ) in res.flashes
+
+        assert (
+            "canaille",
+            logging.WARNING,
+            "Could not send email: [Errno -2] Name or service not known",
+        ) in caplog.record_tuples
+
+
+def test_no_flash_when_cannot_send_new_otp_on_first_access(
+    testclient, backend, user, caplog, smtpd
+):
+    """Test that the if flashes: condition at line 80 can be false.
+
+    This happens when send_email_otp(flashes=False) is called from line 38
+    but can_send_new_otp() returns False because an OTP was sent too recently.
+    """
+    with time_machine.travel("2020-01-01 01:00:00+00:00", tick=False) as traveller:
+        user.generate_sms_or_mail_otp()
+        backend.save(user)
+
+        # Move time forward by 5 seconds (less than SEND_NEW_OTP_DELAY of 10 seconds)
+        traveller.shift(datetime.timedelta(seconds=5))
+
+        res = testclient.get("/login", status=200)
+        res.form["login"] = "user"
+        res = res.form.submit(status=302)
+
+        # At this point:
+        # - g.auth.current_step_start_dt is at T+5 (just now)
+        # - user.one_time_password_emission_date is at T (5 seconds ago)
+        # So g.auth.current_step_start_dt > user.one_time_password_emission_date triggers line 38
+        # But can_send_new_otp() returns False (only 5 seconds passed < 10 seconds)
+        res = res.follow(status=200)
+
+        # No email sent because can_send_new_otp() returned False
+        assert len(smtpd.messages) == 0
+
+        # No flash message because flashes=False at line 38
+        assert res.flashes == []
+
+        assert "Email verification code" in res.text
+
+
+def test_mask_email():
+    """Test that email addresses are properly masked for security."""
+    email = "foo@bar.com"
+    assert mask_email(email) == "f#####o@bar.com"
+
+    email = "hello"
+    assert mask_email(email) is None

@@ -1,0 +1,211 @@
+import datetime
+import uuid
+
+import pytest
+
+
+@pytest.fixture
+def configuration(configuration):
+    configuration["CANAILLE_OIDC"] = {"ENABLE_OIDC": True}
+    configuration["CANAILLE_SCIM"] = {
+        "ENABLE_SERVER": True,
+        "ENABLE_CLIENT": True,
+    }
+    return configuration
+
+
+@pytest.fixture
+def oidc_client(testclient, backend):
+    from werkzeug.security import gen_salt
+
+    from canaille.app import models
+
+    c = models.Client(
+        client_id=gen_salt(24),
+        client_name="Some client",
+        contacts=["contact@mydomain.test"],
+        client_uri="https://mydomain.test",
+        redirect_uris=[
+            "https://mydomain.test/redirect1",
+        ],
+        client_id_issued_at=datetime.datetime.now(datetime.timezone.utc),
+        client_secret=gen_salt(48),
+        grant_types=[
+            "client_credentials",
+        ],
+        response_types=["code", "token", "id_token"],
+        scope=["openid", "email", "profile", "groups", "address", "phone"],
+        token_endpoint_auth_method="client_secret_basic",
+    )
+    backend.save(c)
+
+    yield c
+    backend.delete(c)
+
+
+@pytest.fixture
+def oidc_token(testclient, oidc_client, backend):
+    from werkzeug.security import gen_salt
+
+    from canaille.app import models
+
+    t = models.Token(
+        token_id=gen_salt(48),
+        access_token=gen_salt(48),
+        audience=[oidc_client],
+        client=oidc_client,
+        refresh_token=gen_salt(48),
+        scope=["openid", "profile"],
+        issue_date=datetime.datetime.now(datetime.timezone.utc),
+        lifetime=3600,
+    )
+    backend.save(t)
+    yield t
+    backend.delete(t)
+
+
+@pytest.fixture
+def scim_client(app, oidc_client, oidc_token):
+    from scim2_client.engines.werkzeug import TestSCIMClient
+    from scim2_models import Resource
+    from werkzeug.test import Client
+
+    from canaille.scim.endpoints import bp
+    from canaille.scim.endpoints import get_resource_types
+    from canaille.scim.endpoints import get_schemas
+    from canaille.scim.endpoints import get_service_provider_config
+
+    resource_models = [
+        Resource.from_schema(schema) for schema in get_schemas().values()
+    ]
+
+    return TestSCIMClient(
+        Client(app),
+        scim_prefix=bp.url_prefix,
+        environ={"headers": {"Authorization": f"Bearer {oidc_token.access_token}"}},
+        check_response_status_codes=False,
+        service_provider_config=get_service_provider_config(),
+        resource_types=get_resource_types().values(),
+        resource_models=resource_models,
+    )
+
+
+@pytest.fixture
+def scim_trusted_client(testclient, scim2_server, backend):
+    from werkzeug.security import gen_salt
+
+    from canaille.app import models
+
+    client_uri = f"http://localhost:{scim2_server.port}"
+    c = models.Client(
+        client_id=gen_salt(24),
+        client_name="Some client",
+        contacts=["contact@mydomain.test"],
+        client_uri=client_uri,
+        redirect_uris=[
+            client_uri + "/redirect1",
+        ],
+        client_id_issued_at=datetime.datetime.now(datetime.timezone.utc),
+        client_secret=gen_salt(48),
+        grant_types=[
+            "client_credentials",
+        ],
+        response_types=["code", "token", "id_token"],
+        scope=["openid", "email", "profile", "groups", "address", "phone"],
+        token_endpoint_auth_method="client_secret_basic",
+    )
+    backend.save(c)
+    yield c
+    backend.delete(c)
+
+
+@pytest.fixture
+def scim_token(testclient, scim_trusted_client, backend):
+    from werkzeug.security import gen_salt
+
+    from canaille.app import models
+
+    t = models.Token(
+        token_id=gen_salt(48),
+        access_token=gen_salt(48),
+        audience=[scim_trusted_client],
+        client=scim_trusted_client,
+        refresh_token=gen_salt(48),
+        scope=["openid", "profile"],
+        issue_date=datetime.datetime.now(datetime.timezone.utc),
+        lifetime=3600,
+    )
+    backend.save(t)
+    yield t
+    backend.delete(t)
+
+
+@pytest.fixture
+def scim_client_for_trusted_client(scim2_server_app, scim_token):
+    from scim2_client.engines.werkzeug import TestSCIMClient
+    from werkzeug.test import Client
+
+    scim_client = TestSCIMClient(
+        Client(scim2_server_app),
+        environ={"headers": {"Authorization": f"Bearer {scim_token.access_token}"}},
+    )
+    scim_client.discover()
+    return scim_client
+
+
+@pytest.fixture
+def client_without_scim(testclient, backend):
+    from werkzeug.security import gen_salt
+
+    from canaille.app import models
+
+    c = models.Client(
+        client_id=gen_salt(24),
+        client_name="Client",
+        contacts=["contact@trusted.test"],
+        client_uri="https://untrusted.test",
+        redirect_uris=[
+            "https://client.trusted.test/redirect1",
+            "https://client.trusted.test/redirect2",
+        ],
+        logo_uri="https://client.trusted.test/logo.webp",
+        client_id_issued_at=datetime.datetime.now(datetime.timezone.utc),
+        client_secret=gen_salt(48),
+        grant_types=[
+            "password",
+            "authorization_code",
+            "implicit",
+            "hybrid",
+            "refresh_token",
+            "client_credentials",
+        ],
+        response_types=["code", "token", "id_token"],
+        scope=["openid", "profile", "groups"],
+        tos_uri="https://client.trusted.test/tos",
+        policy_uri="https://client.trusted.test/policy",
+        jwks_uri="https://client.trusted.test/jwk",
+        token_endpoint_auth_method="client_secret_basic",
+        post_logout_redirect_uris=["https://client.trusted.test/disconnected"],
+    )
+    backend.save(c)
+    c.audience = [c]
+    backend.save(c)
+
+    yield c
+    backend.delete(c)
+
+
+@pytest.fixture
+def consent(testclient, client_without_scim, user, backend):
+    from canaille.app import models
+
+    t = models.Consent(
+        consent_id=str(uuid.uuid4()),
+        client=client_without_scim,
+        subject=user,
+        scope=["openid", "profile"],
+        issue_date=datetime.datetime.now(datetime.timezone.utc),
+    )
+    backend.save(t)
+    yield t
+    backend.delete(t)

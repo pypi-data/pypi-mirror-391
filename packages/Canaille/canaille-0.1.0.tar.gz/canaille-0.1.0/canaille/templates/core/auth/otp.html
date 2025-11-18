@@ -1,0 +1,37 @@
+{# The multi-factor authentication code verification template.
+
+Displays a form that asks for the multi-factor authentication code.
+
+:param form: The code verification form.
+:type form: :class:`~canaille.core.endpoints.forms.TwoFactorForm`
+#}
+{% extends g.auth.template or 'core/auth/base.html' %}
+{% import 'core/partial/login_field.html' as login_field %}
+
+{% block script %}
+    <script src="{{ url_for("static", filename="js/verify-mfa.js") }}" defer></script>
+{% endblock %}
+
+{% block auth_subtitle %}
+    <div class="sub header">{{ _("One-time passcode authentication.") }}</div>
+{% endblock %}
+
+{% block auth_form_content %}
+    <div class="ui icon message">
+        <i class="shield icon"></i>
+        <div class="content">
+            <div class="header">
+                {% trans %}Open your authenticator application{% endtrans %}
+            </div>
+            {% trans %}
+                Generate a one-time passcode with your authenticator application and fill it in the form below.
+            {% endtrans %}
+        </div>
+    </div>
+
+    {{ login_field.render_field(form.otp, class="autofocus") }}
+{% endblock %}
+
+{% block auth_right_buttons %}
+    <button type="submit" class="ui primary button">{{ _("Verify") }}</button>
+{% endblock %}
