@@ -1,0 +1,65 @@
+Metadata-Version: 2.3
+Name: wigglecam
+Version: 0.4.0
+Summary: Wigglecam package help you building an awesome camera.
+Keywords: wigglecam,wigglecamera,stereoscopic,picamera2,picamera,camera,python,synchronized camera
+Author: Michael G
+Author-email: Michael G <me@mgineer85.de>
+License: MIT
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Multimedia :: Graphics :: Capture :: Digital Camera
+Requires-Dist: opencv-python>=4.10.0.84 ; extra == 'demohub'
+Requires-Dist: pydantic ; extra == 'node'
+Requires-Dist: pydantic-settings ; extra == 'node'
+Requires-Dist: opencv-python-headless>=4.10.0.84 ; extra == 'node'
+Requires-Dist: pynng ; extra == 'node'
+Requires-Dist: pillow>=11.0.0 ; extra == 'node'
+Maintainer: Michael G
+Maintainer-email: Michael G <me@mgineer85.de>
+Requires-Python: >=3.11
+Project-URL: documentation, https://photobooth-app.org/wigglegramcamera/
+Project-URL: homepage, https://photobooth-app.org/wigglegramcamera/
+Project-URL: repository, https://github.com/photobooth-app/wigglecam
+Provides-Extra: demohub
+Provides-Extra: node
+Description-Content-Type: text/markdown
+
+# Wigglegram Camera
+
+Welcome to your brand-new open-source wigglegram camera! Turn stereoscopic images into a wigglegram with 3d effect.
+This package is mainly thought to be used in combination with the photobooth-app with which is perfectly integrates.
+
+[![PyPI](https://img.shields.io/pypi/v/wigglecam)](https://pypi.org/project/wigglecam/)
+[![ruff](https://github.com/photobooth-app/wigglecam/actions/workflows/ruff.yml/badge.svg)](https://github.com/photobooth-app/wigglecam/actions/workflows/ruff.yml)
+[![pytest](https://github.com/photobooth-app/wigglecam/actions/workflows/pytests.yml/badge.svg)](https://github.com/photobooth-app/wigglecam/actions/workflows/pytests.yml)
+[![codecov](https://codecov.io/gh/photobooth-app/wigglecam/graph/badge.svg?token=87aLWw2gIT)](https://codecov.io/gh/photobooth-app/wigglecam)
+
+![demo wigglegram](https://raw.githubusercontent.com/photobooth-app/wigglecam/main/assets/wigglegram-demo1.gif)
+
+🧪 Above wigglegram was made with only 2 cameras and interpolated using AI. The AI part is not in scope of this project currently any longer but the number of cameras is raised. 🧪
+
+## 😍 What is this package used for?
+
+🧪 This is experimental 🧪
+
+In this repository the sourcecode for the wigglecam pypi package is hosted. The package is used to turn a Raspberry Pi with a Camera Module 3 into a wigglecam node. To create wigglegrams you need a camera array of 2 or more cameras. More cameras give a smoother result but costs more. 4-5 nodes is usually a good number to start with.
+
+🧪 Python software to capture wigglegrams using multiple cameras  
+🧪 Software synchronized Raspberry Pi camera modules, using picamera2  
+🧪 3d printed enclosure
+
+## Hardware
+
+![wiring diagram overview](https://raw.githubusercontent.com/photobooth-app/wigglecam/main/assets/wiringdiagram.png)
+
+## More Info
+
+[Find more information in the documentation.](https://photobooth-app.org/wigglegramcamera/)
