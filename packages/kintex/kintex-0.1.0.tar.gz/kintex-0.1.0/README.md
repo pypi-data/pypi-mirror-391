@@ -1,0 +1,14 @@
+# Kintex
+
+A Python framework to beautify your kindle notes ✨
+
+## Motivation for the Project
+
+I’m an avid note-taker while reading, partly to explore new ideas and partly to pretend I’m actually going to revisit these snippets of wisdom. I optimistically jot down notes on my Kindle, dreaming of the day they’ll transform into beautifully organised reflections. Sadly, more often than not, they end up banished to the digital abyss of a forgotten laptop folder, never to be seen again.
+
+Enter Kintex, my quirky solution to rescue these notes from their digital exile. It's a framework that allows you to use 'hidden commands' to beautifully organise your Kindle Clippings by chapter or tags, facilitating quick searches for relevant information. The goal is to seamlessly store these notes in Apple Notes, where they automatically sync to iCloud and are accessible on your phone. Although not currently implemented, future plans include the ability to export notes as a CSV or PDF, or a MOBI file to pop right back onto your Kindle!
+
+Since I believe note-taking is as personal as your coffee order, I’ve made Kintex open-source. This way, everyone can tweak it to their taste, turning their own note chaos into a personal library of genius.
+
+I hope you find Kintex useful!
+

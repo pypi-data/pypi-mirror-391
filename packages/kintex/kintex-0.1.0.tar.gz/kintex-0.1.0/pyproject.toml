@@ -1,0 +1,46 @@
+[project]
+name = "kintex"
+version = "0.1.0"
+description = "A framework to beautify your kindle notes."
+readme = "README.md"
+authors = [
+    { name = "Connor Hibble", email = "dev@hibble.com" },
+    { name = "Matt Humphrey", email = "mhumphrey9@hotmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "polars>=1.24.0",
+    "pyarrow>=21.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.129.2",
+    "marimo>=0.15.0",
+    "pre-commit>=2.15.0",
+    "pytest>=8.4.1",
+    "ruff>=0.12.3",
+    "watchdog>=6.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+exclude = ["docs", ".venv", "tests/*"]
+
+ignore = [
+    "E402", # module level import not at top of file
+    "E501", # line too long (maximum 100 characters)
+    "F811", # redefinition of unused name
+    "E203", # whitespace before ':'
+    "F841", # local variable 'name' is assigned to but never used
+    "E702", # multiple statements on one line (semicolon)
+]
+
+[build-system]
+requires = ["uv_build>=0.9.9,<0.10.0"]
+build-backend = "uv_build"
