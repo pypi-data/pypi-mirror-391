@@ -1,0 +1,23 @@
+[project]
+name = "example-cpp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pybind11>=3.0.1",
+    "pytest>=9.0.1",
+    "setuptools>=80.9.0",
+]
+
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm", "pybind11>=3.0.1"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cpp_module"]
+
+[tool.setuptools.package-dir]
+cpp_module = "cpp_module"
+
+
