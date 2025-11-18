@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "treejson-cli"
+version = "1.0.0"
+authors = [
+  { name="masaniki", email="masaniki.software@gmail.com" },
+]
+description = "It shows the nested directory structure in JSON or YAML."
+dependencies = ["PyYAML"]
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Environment :: Console",
+    "Topic :: Terminals",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Natural Language :: English",
+    "Natural Language :: Japanese"
+]
+license = "MIT"
+license-files = ["LICENCSE.txt"]
+
+[project.scripts]
+treejson = "main:mainCLI"
+
+[project.urls]
+Repository = "https://github.com/masaniki/python-treejson-cli"
+Document = "https://github.com/masaniki/python-treejson-cli/blob/master/README.md"
+Issues = "https://github.com/masaniki/python-treejson-cli/issues"
