@@ -1,0 +1,133 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "sphinx-test-reports"
+version = "1.3.2"
+description = "Sphinx extension for showing test results and test environment information inside sphinx documentations"
+readme = "README.rst"
+license = { text = "MIT" }
+authors = [{ name = "team useblocks", email = "info@useblocks.com" }]
+classifiers = [
+  "Framework :: Sphinx",
+  "Framework :: Sphinx :: Extension",
+  "Development Status :: 4 - Beta",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Documentation",
+]
+keywords = ["sphinx", "documentation", "test-reports"]
+requires-python = ">=3.9"
+dependencies = ["sphinx>4.0", "lxml", "sphinx-needs>=1.0.1"]
+
+[project.optional-dependencies]
+test = [
+  "nox>=2025.2.9",
+  "pytest-xdist",
+  "pytest>=7.0",
+  "pytest-cov",
+  "sphinx_design",
+  "sphinxcontrib-plantuml",
+]
+docs = [
+  "pillow",
+  "sphinx-design",
+  "sphinx-immaterial",
+  "sphinx-needs>=4",
+  "sphinx==7",
+  "sphinxcontrib-plantuml",
+]
+
+[dependency-groups]
+dev = ["pre-commit~=3.0", "nox>=2025.2.9", "mypy>=1.16.0"]
+
+[tool.flit.module]
+name = "sphinxcontrib.test_reports"
+
+[project.urls]
+Homepage = "https://github.com/useblocks/sphinx-test-reports"
+Repository = "https://github.com/useblocks/sphinx-test-reports.git"
+Documentation = "https://sphinx-test-reports.readthedocs.io/en/latest/"
+download-url = "http://pypi.python.org/pypi/sphinx-test-reports"
+
+[tool.ruff.lint]
+# TODO enable and fix commented rules
+extend-select = [
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "FURB", # refurb (modernising code)
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "ISC",  # flake8-implicit-str-concat
+  "N",    # pep8-naming
+  "PERF", # perflint (performance anti-patterns)
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  # "PL",   # pylint
+  # "PTH",  # flake8-use-pathlib
+  # "RUF",  # Ruff-specific rules
+  # "SIM",  # flake8-simplify
+  "SLF", # private member access
+  # "UP",   # pyupgrade
+  # "T20",  # flake8-print
+]
+
+[tool.mypy]
+packages = ["sphinxcontrib.test_reports"]
+strict = true
+show_error_codes = true
+# TODO: reactivate below files and fix issues in future PRs
+exclude = [
+  "^sphinxcontrib/test_reports/__init__\\.py$",
+  "^sphinxcontrib/test_reports/config\\.py$",
+  "^sphinxcontrib/test_reports/directives/__init__\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_case\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_common\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_env\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_file\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_report\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_results\\.py$",
+  "^sphinxcontrib/test_reports/directives/test_suite\\.py$",
+  "^sphinxcontrib/test_reports/environment\\.py$",
+  "^sphinxcontrib/test_reports/exceptions\\.py$",
+  "^sphinxcontrib/test_reports/functions",
+  "^sphinxcontrib/test_reports/jsonparser\\.py$",
+  "^sphinxcontrib/test_reports/junitparser\\.py$",
+  "^sphinxcontrib/test_reports/test_reports\\.py$",
+]
+# Disallow dynamic typing
+disallow_any_unimported = true
+disallow_any_expr = true
+disallow_any_decorated = true
+disallow_any_generics = true
+disallow_any_explicit = true
+disallow_subclassing_any = true
+
+# Disallow untyped definitions and calls
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+# disallow_incomplete_defs = true
+# check_untyped_defs = true
+# disallow_untyped_decorators = true
+
+# # None and optional handling
+# no_implicit_optional = true
+
+# # Configuring warnings
+# warn_unused_ignores = true
+# warn_no_return = true
+# warn_return_any = true
+# warn_redundant_casts = true
+
+# # Misc things
+# strict_equality = true
+
+# # Config file
+# warn_unused_configs = true

@@ -1,0 +1,57 @@
+Metadata-Version: 2.4
+Name: sphinx-test-reports
+Version: 1.3.2
+Summary: Sphinx extension for showing test results and test environment information inside sphinx documentations
+Keywords: sphinx,documentation,test-reports
+Author-email: team useblocks <info@useblocks.com>
+Requires-Python: >=3.9
+Description-Content-Type: text/x-rst
+Classifier: Framework :: Sphinx
+Classifier: Framework :: Sphinx :: Extension
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Documentation
+License-File: LICENSE
+Requires-Dist: sphinx>4.0
+Requires-Dist: lxml
+Requires-Dist: sphinx-needs>=1.0.1
+Requires-Dist: pillow ; extra == "docs"
+Requires-Dist: sphinx-design ; extra == "docs"
+Requires-Dist: sphinx-immaterial ; extra == "docs"
+Requires-Dist: sphinx-needs>=4 ; extra == "docs"
+Requires-Dist: sphinx==7 ; extra == "docs"
+Requires-Dist: sphinxcontrib-plantuml ; extra == "docs"
+Requires-Dist: nox>=2025.2.9 ; extra == "test"
+Requires-Dist: pytest-xdist ; extra == "test"
+Requires-Dist: pytest>=7.0 ; extra == "test"
+Requires-Dist: pytest-cov ; extra == "test"
+Requires-Dist: sphinx_design ; extra == "test"
+Requires-Dist: sphinxcontrib-plantuml ; extra == "test"
+Project-URL: Documentation, https://sphinx-test-reports.readthedocs.io/en/latest/
+Project-URL: Homepage, https://github.com/useblocks/sphinx-test-reports
+Project-URL: Repository, https://github.com/useblocks/sphinx-test-reports.git
+Project-URL: download-url, http://pypi.python.org/pypi/sphinx-test-reports
+Provides-Extra: docs
+Provides-Extra: test
+
+Sphinx-Test-Reports
+===================
+
+.. image:: https://raw.githubusercontent.com/useblocks/sphinx-test-reports/master/docs/_static/sphinx-test-reports-logo.png
+
+Sphinx-Test-Reports shows test results of your unit tests inside your sphinx documentation.
+
+
+Functions
+---------
+
+* Shows test results of **junit based test xml reports** as table
+* Shows test environment information of **tox-envreport based json reports** as table
+
