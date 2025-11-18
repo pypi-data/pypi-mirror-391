@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling>=1.26.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "inkparse"
+version = "0.3.1"
+authors = [
+	{ name="MoonMountain2k", email="moonmountain2k@gmail.com" },
+]
+description = "Functions and classes for recursive descent parsing."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = []
+
+dependencies = []
+
+[project.urls]
+"Homepage" = "https://github.com/MoonMountain2k/inkparse"
+"Issues" = "https://github.com/MoonMountain2k/inkparse/issues"
+
+[tool.hatch.build.targets.sdist]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inkparse"]
