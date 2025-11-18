@@ -1,0 +1,190 @@
+# NOTE(gmann): This file includes all stable release jobs definition.
+
+- job:
+    name: tempest-full-2025-2
+    parent: tempest-full-py3
+    nodeset: openstack-single-node-noble
+    override-checkout: stable/2025.2
+
+- job:
+    name: tempest-full-2025-1
+    parent: tempest-full-py3
+    nodeset: openstack-single-node-noble
+    override-checkout: stable/2025.1
+
+- job:
+    name: tempest-full-2024-2
+    parent: tempest-full-py3
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: tempest-full-2025-2-extra-tests
+    parent: tempest-extra-tests
+    nodeset: openstack-single-node-noble
+    override-checkout: stable/2025.2
+
+- job:
+    name: tempest-full-2025-1-extra-tests
+    parent: tempest-extra-tests
+    nodeset: openstack-single-node-noble
+    override-checkout: stable/2025.1
+
+- job:
+    name: tempest-full-2024-2-extra-tests
+    parent: tempest-extra-tests
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: tempest-multinode-2025-2
+    parent: tempest-multinode-full-py3
+    nodeset: openstack-two-node-noble
+    override-checkout: stable/2025.2
+
+- job:
+    name: tempest-multinode-2025-1
+    parent: tempest-multinode-full-py3
+    nodeset: openstack-two-node-noble
+    override-checkout: stable/2025.1
+
+- job:
+    name: tempest-multinode-2024-2
+    parent: tempest-multinode-full-py3
+    nodeset: openstack-two-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: tempest-slow-2025-2
+    parent: tempest-slow-py3
+    nodeset: openstack-two-node-noble
+    override-checkout: stable/2025.2
+
+- job:
+    name: tempest-slow-2025-1
+    parent: tempest-slow-py3
+    nodeset: openstack-two-node-noble
+    override-checkout: stable/2025.1
+
+- job:
+    name: tempest-slow-2024-2
+    parent: tempest-slow-py3
+    nodeset: openstack-two-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: tempest-full-py3
+    parent: devstack-tempest
+    # This job version is to use the 'full' tox env which
+    # is available for unmaintained/victoria to unmaintained/xena also.
+    branches:
+      - ^.*/victoria
+      - ^.*/wallaby
+      - ^.*/xena
+    description: |
+      Base integration test with Neutron networking, horizon, swift enable,
+      and py3.
+      Former names for this job where:
+        * legacy-tempest-dsvm-py35
+        * gate-tempest-dsvm-py35
+    required-projects:
+      - openstack/horizon
+    vars:
+      tox_envlist: full
+      tempest_exclude_regex: "\
+          (DHCPAgentSchedulersTestJSON)|\
+          (AttachVolumeMultiAttachTest)|\
+          (UpdateMultiattachVolumeNegativeTest)"
+      devstack_localrc:
+        FORCE_CONFIG_DRIVE: true
+        ENABLE_VOLUME_MULTIATTACH: true
+        GLANCE_USE_IMPORT_WORKFLOW: True
+      devstack_plugins:
+        neutron: https://opendev.org/openstack/neutron
+      devstack_services:
+        # Enable horizon so that we can run horizon test.
+        horizon: true
+
+- job:
+    name: tempest-multinode-full-py3
+    parent: tempest-multinode-full
+    nodeset: openstack-two-node-jammy
+    # This job runs on Jammy and supposed to run until 2024.2.
+    branches:
+      - ^.*/2023.1
+      - ^.*/2023.2
+      - ^.*/2024.1
+      - ^.*/2024.2
+    vars:
+      devstack_plugins:
+        neutron: https://opendev.org/openstack/neutron
+      devstack_services:
+        neutron-trunk: true
+
+- job:
+    name: tempest-multinode-full-py3
+    parent: tempest-multinode-full
+    nodeset: openstack-two-node-focal
+    # This job runs on Focal and supposed to run until unmaintained/zed.
+    branches:
+      - ^.*/victoria
+      - ^.*/wallaby
+      - ^.*/xena
+      - ^.*/yoga
+      - ^.*/zed
+    vars:
+      devstack_plugins:
+        neutron: https://opendev.org/openstack/neutron
+      devstack_services:
+        neutron-trunk: true
+
+- job:
+    name: tempest-multinode-full
+    parent: tempest-multinode-full-base
+    nodeset: openstack-two-node-focal
+    # This job runs on Focal and on python2. This is for unmaintained/victoria to unmaintained/xena.
+    branches:
+      - ^.*/victoria
+      - ^.*/wallaby
+      - ^.*/xena
+    vars:
+      tox_envlist: full
+      tempest_exclude_regex: "\
+          (DHCPAgentSchedulersTestJSON)|\
+          (AttachVolumeMultiAttachTest)|\
+          (UpdateMultiattachVolumeNegativeTest)"
+
+- job:
+    name: tempest-multinode-full
+    parent: tempest-multinode-full-base
+    nodeset: openstack-two-node-focal
+    # This job runs on Focal and on python2. This is for unmaintained/yoga to unmaintained/zed.
+    branches:
+      - ^.*/yoga
+      - ^.*/zed
+
+- job:
+    name: tempest-slow-py3
+    parent: tempest-slow
+    # This job version is to use the 'slow-serial' tox env for
+    # the stable/ussuri to stable/wallaby testing.
+    branches:
+      - ^.*/victoria
+      - ^.*/wallaby
+    vars:
+      tox_envlist: slow-serial
+
+- job:
+    name: tempest-full-py3-opensuse15
+    parent: tempest-full-py3
+    nodeset: devstack-single-node-opensuse-15
+    description: |
+      Base integration test with Neutron networking and py36 running
+      on openSUSE Leap 15.x
+    voting: false
+    # This job is not used after stable/xena and can be
+    # removed once stable/xena is EOL.
+    branches:
+      - ^.*/victoria
+      - ^.*/wallaby
+      - ^.*/xena
