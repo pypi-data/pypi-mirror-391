@@ -1,0 +1,310 @@
+[project]
+name = "nexus-ai-fs"
+version = "0.5.4"
+description = "AI-Native Distributed Filesystem Architecture"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Nexus Team", email = "team@nexus.example.com"}
+]
+maintainers = [
+    {name = "Nexus Team", email = "team@nexus.example.com"}
+]
+keywords = [
+    "filesystem",
+    "ai",
+    "agents",
+    "storage",
+    "distributed",
+    "llm",
+    "vector-search",
+    "content-addressable"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Filesystems",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    # CLI (needed for basic CLI stub)
+    "click>=8.1.7",
+    "rich>=13.7.0",
+    "tqdm>=4.66.0",  # Progress bars for sync operations
+    # Configuration
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0.1",
+    # HTTP client (for remote mode)
+    "httpx>=0.27.0",
+    "requests>=2.31.0",
+    "tenacity>=8.2.0",  # Retry logic with exponential backoff
+    # Database
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.13.0",
+    "psycopg2-binary>=2.9.0",  # PostgreSQL driver
+    # Caching
+    "cachetools>=5.3.0",
+    # Authentication
+    "authlib>=1.3.0",  # JWT and OAuth support for OIDC auth
+    "bcrypt>=4.0.0",  # Password hashing for local auth
+    # Cloud Storage Backends
+    "google-cloud-storage>=2.14.0",
+    # Document Parsing
+    "markitdown[all]>=0.0.1a2",  # Includes PDF, Excel, PowerPoint, etc.
+    # LLM Provider Abstraction
+    "litellm>=1.0",  # Multi-provider LLM support
+    "tiktoken>=0.5",  # Token counting for OpenAI models and chunking
+    "anthropic>=0.40",  # Native Anthropic SDK for better Claude support
+    "dotenv>=0.9.9",
+    # MCP Server (v0.7.0)
+    "fastmcp>=0.2.0",  # Model Context Protocol server
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.3",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "pytest-benchmark>=4.0.0",
+    "pytest-xdist>=3.5.0",  # Parallel test execution
+    "freezegun>=1.4.0",  # Time mocking for tests
+
+    # Code Quality
+    "ruff>=0.14.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+
+    # Documentation
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.5.0",
+    "mkdocs-git-revision-date-localized-plugin>=1.2.0",
+    "mkdocs-minify-plugin>=0.8.0",
+
+    # Type stubs
+    "types-pyyaml>=6.0.12",
+    "types-cachetools>=5.3.0",
+    "types-requests>=2.31.0",
+]
+
+test = [
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.3",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "pytest-benchmark>=4.0.0",
+    "pytest-xdist>=3.5.0",  # Parallel test execution
+    "freezegun>=1.4.0",  # Time mocking for tests
+    # LangGraph integration tests
+    "langchain-core>=0.3.0",
+    "langgraph>=0.2.0",
+]
+
+fuse = [
+    # FUSE filesystem support
+    "fusepy>=3.0.1",  # Python FUSE bindings
+]
+
+postgres = [
+    # PostgreSQL support
+    "psycopg2-binary>=2.9.9",  # PostgreSQL adapter
+]
+
+semantic-search = [
+    # Keyword search support - uses existing SQLite/PostgreSQL FTS
+    # Vector database extensions for semantic/hybrid search:
+    "sqlite-vec>=0.1.0",  # SQLite vector search (pip installable)
+    "pgvector>=0.3.0",    # PostgreSQL vector search (Python client - requires pgvector extension in database)
+]
+
+semantic-search-remote = [
+    # Remote embedding providers (lightweight, requires API keys)
+    # Recommended: OpenAI embeddings (default for semantic search)
+    "openai>=1.0.0",
+]
+
+# First-party plugins (install manually for now - not yet published to PyPI)
+# anthropic = [
+#     "nexus-plugin-anthropic>=0.1.0",
+# ]
+#
+# skill-seekers = [
+#     "nexus-plugin-skill-seekers>=0.1.0",
+# ]
+#
+# plugins = [
+#     "nexus-plugin-anthropic>=0.1.0",
+#     "nexus-plugin-skill-seekers>=0.1.0",
+# ]
+
+all = [
+    # All optional features (plugins must be installed manually)
+    # Default embedding provider: OpenAI (lightweight, requires API key)
+    # Excludes: sentence-transformers (too heavy ~2GB), voyageai (specialized use case)
+    "fusepy>=3.0.1",
+    "psycopg2-binary>=2.9.9",
+    "sqlite-vec>=0.1.0",
+    "pgvector>=0.3.0",
+    "openai>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nexi-lab/nexus"
+Documentation = "https://github.com/nexi-lab/nexus/blob/main/README.md"
+Repository = "https://github.com/nexi-lab/nexus"
+Issues = "https://github.com/nexi-lab/nexus/issues"
+Changelog = "https://github.com/nexi-lab/nexus/blob/main/CHANGELOG.md"
+
+[project.scripts]
+# CLI entry point - now separated from library code
+nexus = "nexus.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nexus"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "-q",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=nexus",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests",
+    "benchmark: marks tests as benchmarks",
+]
+
+[tool.coverage.run]
+source = ["src/nexus"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__pycache__/*",
+    "*/site-packages/*",
+    "*/cli.py",  # Old location (kept for backward compatibility)
+    "src/nexus/cli/*",  # CLI is tested via integration tests in examples/test_cli_commands.sh
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "if typing.TYPE_CHECKING:",
+    "@abstractmethod",
+    "@abc.abstractmethod",
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = false
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+follow_imports = "normal"
+ignore_missing_imports = true
+strict_optional = true
+strict_equality = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = [
+    "click.*",
+    "rich.*",
+    "alembic.*",
+    "google.cloud.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "nexus.backends.gcs"
+disable_error_code = ["attr-defined"]
+
+[[tool.mypy.overrides]]
+module = [
+    "*.examples.*",
+    "examples.*",
+]
+# Relax strictness for example files
+disallow_untyped_defs = false
+warn_unused_ignores = false
+
+[[tool.mypy.overrides]]
+module = "nexus.llm.provider"
+# litellm's completion_cost has complex overloads that mypy can't resolve with **kwargs
+# Different mypy versions handle this differently, so we disable the check
+warn_unused_ignores = false
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+]
+ignore = [
+    "E501",  # line too long, handled by formatter
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["ARG", "S101"]
+"alembic/*" = ["UP007", "E402"]  # Alembic: Union syntax, import order
+"src/nexus/backends/*.py" = ["ARG002"]  # Keep unused context params for API compatibility
+"src/nexus/core/ace/trajectory.py" = ["ARG002"]  # Keep unused permission param for API compatibility
+
+[tool.ruff.lint.isort]
+known-first-party = ["nexus"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
