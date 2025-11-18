@@ -1,0 +1,85 @@
+{
+  "scenario": "00_test_cwd",
+  "timestamp": "2025-11-03T12:03:56.218661",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 3
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "pwd",
+          "description": "Show current working directory"
+        },
+        "timestamp": "2025-11-03T12:03:47.887367"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "ls -la",
+          "description": "List all files including hidden ones"
+        },
+        "timestamp": "2025-11-03T12:03:48.205259"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "ls -la .kurt/",
+          "description": "List contents of .kurt directory"
+        },
+        "timestamp": "2025-11-03T12:03:53.439647"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Run 'pwd' to show the current directory, then run 'ls -la' to list all files including hidden ones. Verify that you see kurt.config and .kurt/kurt.sqlite in the listing.\n",
+        "timestamp": "2025-11-03T12:03:43.592513"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll run those commands to show the current directory and verify the Kurt project structure.",
+        "timestamp": "2025-11-03T12:03:47.451369"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I can verify the Kurt project structure:\n\n**Current Directory:**\n```\n/var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_gdspetr1\n```\n\n**Files and Directories:**\n\u2705 **kurt.config** - Configuration file is present (247 bytes)\n\u2705 **.kurt/** - Directory exists (containing the database)\n\u2705 **sources/** - Standard directory for content sources\n\u2705 **rules/** - Standard directory for rules\n\u2705 **projects/** - Standard directory for projects\n\nThe Kurt project has been properly initialized with all expected files and directories. Let me also verify that the SQLite database exists inside the `.kurt` directory:",
+        "timestamp": "2025-11-03T12:03:52.903824"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! The verification is complete:\n\n\u2705 **kurt.config** exists in the root directory\n\u2705 **.kurt/kurt.sqlite** exists (94,208 bytes) - the database file is present and initialized\n\nThe Kurt CLI project structure is fully set up and ready for testing.",
+        "timestamp": "2025-11-03T12:03:56.211089"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T12:03:42.762504",
+      "end": "2025-11-03T12:03:56.216731",
+      "duration_seconds": 13.454227
+    },
+    "counts": {
+      "total_tools": 3,
+      "conversation_turns": 4
+    },
+    "usage": {
+      "total_tokens": 483,
+      "total_cost_usd": 0.009875
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

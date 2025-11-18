@@ -1,0 +1,102 @@
+{
+  "scenario": "01_basic_init",
+  "timestamp": "2025-11-11T12:11:38.077747",
+  "passed": false,
+  "error": "File does not exist: kurt.config",
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 5
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-11T12:11:14.651924"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "ls -la",
+          "description": "List directory contents"
+        },
+        "timestamp": "2025-11-11T12:11:20.494589"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "pwd",
+          "description": "Show current working directory"
+        },
+        "timestamp": "2025-11-11T12:11:20.937587"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "ls -la .kurt 2>/dev/null || echo \"No .kurt directory found\"",
+          "description": "Check for .kurt directory"
+        },
+        "timestamp": "2025-11-11T12:11:25.847396"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "find . -name \"kurt.config\" -o -name \"kurt.sqlite\" 2>/dev/null",
+          "description": "Search for Kurt files"
+        },
+        "timestamp": "2025-11-11T12:11:26.698025"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Check the Kurt project status and verify it is initialized correctly",
+        "timestamp": "2025-11-11T12:11:09.308424"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll check the Kurt project status to verify it's initialized correctly.",
+        "timestamp": "2025-11-11T12:11:14.029362"
+      },
+      {
+        "speaker": "agent",
+        "message": "There's a database error - the SQLite database file cannot be opened. Let me check the directory structure to verify the initialization:",
+        "timestamp": "2025-11-11T12:11:20.144284"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see the issue - the project was mentioned as initialized but I don't see the expected Kurt directories. Let me check if there's a `.kurt` directory:",
+        "timestamp": "2025-11-11T12:11:25.229135"
+      },
+      {
+        "speaker": "agent",
+        "message": "The Kurt project is **not** initialized correctly. The workspace is missing:\n- The `.kurt/` directory (which should contain `kurt.sqlite`)\n- The `kurt.config` file\n- The standard directories (`sources/`, `rules/`, `projects/`)\n\n**Status: Kurt project is NOT initialized correctly.**\n\nThe workspace only contains:\n- `.claude/` directory (Claude configuration)\n- `.env` and `.env.example` files (environment variables)\n\nTo properly initialize Kurt, the `kurt init` command would need to be run to create the required directory structure and configuration files.",
+        "timestamp": "2025-11-11T12:11:32.866445"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-11T12:11:08.904486",
+      "end": "2025-11-11T12:11:38.077184",
+      "duration_seconds": 29.172698
+    },
+    "counts": {
+      "total_tools": 5,
+      "conversation_turns": 5
+    },
+    "usage": {
+      "total_tokens": 670,
+      "total_cost_usd": 0.07284725
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": false,
+      "db_exists": false,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {}
+  }
+}

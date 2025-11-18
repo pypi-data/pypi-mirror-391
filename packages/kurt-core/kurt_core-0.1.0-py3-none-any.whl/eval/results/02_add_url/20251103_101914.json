@@ -1,0 +1,171 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-03T10:19:14.788559",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 9
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:18:19.798124"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt content add https://docs.dagster.io/ --discovery-only",
+          "description": "Add Dagster docs with discovery only",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:18:26.013555"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt content --help",
+          "description": "Check Kurt content command help"
+        },
+        "timestamp": "2025-11-03T10:18:30.556204"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt --help",
+          "description": "Check main Kurt command help"
+        },
+        "timestamp": "2025-11-03T10:18:35.163500"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt map https://docs.dagster.io/",
+          "description": "Map Dagster docs URL (discovery only)",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:18:41.971064"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt map --help",
+          "description": "Check Kurt map command help"
+        },
+        "timestamp": "2025-11-03T10:18:46.979345"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt map url https://docs.dagster.io/",
+          "description": "Map Dagster docs URL for discovery",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:18:52.211324"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt content list | head -20",
+          "description": "List discovered documents"
+        },
+        "timestamp": "2025-11-03T10:18:59.106654"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_epadjpw9 && kurt status",
+          "description": "Check final Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:19:04.963365"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then add content from https://docs.dagster.io/ using discovery only",
+        "timestamp": "2025-11-03T10:18:15.579343"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and add content from the Dagster documentation URL using discovery only.\n\nLet me start by checking the current status and then adding the content with discovery mode.",
+        "timestamp": "2025-11-03T10:18:19.037731"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! The Kurt project is already initialized. Now I'll add content from the Dagster documentation URL using discovery only mode (which means it will discover links but not follow them):",
+        "timestamp": "2025-11-03T10:18:24.964677"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the correct command syntax for Kurt:",
+        "timestamp": "2025-11-03T10:18:29.676978"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the main Kurt command help to find the correct command for adding content:",
+        "timestamp": "2025-11-03T10:18:34.305869"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see! The correct command is `kurt map` for discovery-only mode (which creates NOT_FETCHED documents without fetching content). Let me use that:",
+        "timestamp": "2025-11-03T10:18:40.855305"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the map command syntax:",
+        "timestamp": "2025-11-03T10:18:46.081620"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I need to use `kurt map url`. Let me try that:",
+        "timestamp": "2025-11-03T10:18:51.374104"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Now let me verify the content was added by listing the documents:",
+        "timestamp": "2025-11-03T10:18:58.236104"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let me also check the final status:",
+        "timestamp": "2025-11-03T10:19:04.449987"
+      },
+      {
+        "speaker": "agent",
+        "message": "## Summary\n\n\u2705 **Task completed successfully!**\n\nI've initialized the Kurt project and added content from https://docs.dagster.io/ using discovery-only mode. Here's what was accomplished:\n\n### Results:\n- **Kurt project status**: Already initialized (config and database present)\n- **Discovery method**: Used `kurt map url` command (discovery-only mode)\n- **Documents discovered**: **602 pages** from docs.dagster.io\n- **Discovery method**: Sitemap auto-detection\n- **Document status**: All marked as `NOT_FETCHED` (discovery only, no content downloaded)\n\n### Key Points:\n- The `kurt map url` command performs discovery-only operations, creating document records in the database without fetching the actual content\n- It automatically detected and parsed the sitemap from the Dagster documentation site\n- All 602 discovered URLs are now tracked in the Kurt database with metadata like depth and relationships\n- No LLM processing or content downloading occurred (as requested with discovery-only mode)\n\nThe project is now ready for the next steps, such as clustering URLs or selectively fetching specific documents.",
+        "timestamp": "2025-11-03T10:19:14.562541"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T10:18:14.799377",
+      "end": "2025-11-03T10:19:14.786614",
+      "duration_seconds": 59.987237
+    },
+    "counts": {
+      "total_tools": 9,
+      "conversation_turns": 11
+    },
+    "usage": {
+      "total_tokens": 1665,
+      "total_cost_usd": 0.027685000000000005
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 602,
+      "fetched_documents": 0,
+      "not_fetched_documents": 602
+    }
+  }
+}

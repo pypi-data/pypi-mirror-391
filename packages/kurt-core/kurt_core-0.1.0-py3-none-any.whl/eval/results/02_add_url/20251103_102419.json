@@ -1,0 +1,157 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-03T10:24:19.184995",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 8
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:23:31.568455"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt content add https://docs.dagster.io/ --discovery-only",
+          "description": "Add Dagster docs with discovery only",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:23:38.472507"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt content --help",
+          "description": "Check Kurt content command help"
+        },
+        "timestamp": "2025-11-03T10:23:43.415550"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt --help",
+          "description": "Check main Kurt help"
+        },
+        "timestamp": "2025-11-03T10:23:48.636498"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt map --help",
+          "description": "Check map command help"
+        },
+        "timestamp": "2025-11-03T10:23:53.679135"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt map url https://docs.dagster.io/",
+          "description": "Discover content from Dagster docs",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:23:58.532477"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt content list --include \"*docs.dagster.io*\" | head -30",
+          "description": "List discovered Dagster docs"
+        },
+        "timestamp": "2025-11-03T10:24:05.002045"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_kd7xxehk && kurt status",
+          "description": "Check final Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:24:10.600800"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then add content from https://docs.dagster.io/ using discovery only",
+        "timestamp": "2025-11-03T10:23:26.666950"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and add content from the Dagster documentation using discovery only.\n\nLet me start by checking the current state and then adding the content with discovery mode:",
+        "timestamp": "2025-11-03T10:23:30.789675"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! The Kurt project is already initialized. Now I'll add content from the Dagster documentation URL using discovery only (which means it will only discover links without downloading content):",
+        "timestamp": "2025-11-03T10:23:37.396383"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the available Kurt content commands:",
+        "timestamp": "2025-11-03T10:23:42.561248"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see the available commands don't include \"add\". Let me check the main Kurt help to find the correct command:",
+        "timestamp": "2025-11-03T10:23:47.858605"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I can see that the `map` command is for discovering content (which creates NOT_FETCHED documents without downloading). Let me use that:",
+        "timestamp": "2025-11-03T10:23:53.143851"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! Now let me use `kurt map url` to discover content from the Dagster docs:",
+        "timestamp": "2025-11-03T10:23:57.613292"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Now let me verify the content was added by listing the documents:",
+        "timestamp": "2025-11-03T10:24:03.999164"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let me also check the final status:",
+        "timestamp": "2025-11-03T10:24:09.865577"
+      },
+      {
+        "speaker": "agent",
+        "message": "## Summary\n\nSuccessfully completed! Here's what was done:\n\n1. **Verified Kurt project initialization**: The project was already initialized with:\n   - Configuration file: `kurt.config`\n   - Database: `.kurt/kurt.sqlite`\n   - Standard directories created\n\n2. **Added content from Dagster docs using discovery only**: \n   - Used `kurt map url https://docs.dagster.io/` command\n   - **Discovered 602 pages** from the Dagster documentation\n   - Kurt automatically detected and used the sitemap for discovery\n   - All documents are in `NOT_FETCHED` status (discovery only - no content downloaded)\n\n3. **Verified the results**:\n   - All 602 documents are listed and available\n   - Documents span various depths (0-5) in the URL hierarchy\n   - Ready for clustering or selective fetching if needed\n\nThe discovery-only mode successfully mapped all the Dagster documentation URLs without downloading content, which is perfect for quickly exploring what's available before deciding which content to fetch and index.",
+        "timestamp": "2025-11-03T10:24:19.163350"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T10:23:25.781467",
+      "end": "2025-11-03T10:24:19.181795",
+      "duration_seconds": 53.400328
+    },
+    "counts": {
+      "total_tools": 8,
+      "conversation_turns": 10
+    },
+    "usage": {
+      "total_tokens": 1493,
+      "total_cost_usd": 0.024095
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 602,
+      "fetched_documents": 0,
+      "not_fetched_documents": 602
+    }
+  }
+}

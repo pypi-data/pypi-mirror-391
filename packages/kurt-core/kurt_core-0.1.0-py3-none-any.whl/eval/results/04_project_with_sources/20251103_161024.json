@@ -1,0 +1,48 @@
+{
+  "scenario": "04_project_with_sources",
+  "timestamp": "2025-11-03T16:10:24.134594",
+  "passed": false,
+  "error": "SlashCommand tool was never used (expected command: /create-project)",
+  "run_metrics": {
+    "tool_usage": {},
+    "tool_calls": [],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "run /create-project",
+        "timestamp": "2025-11-03T16:07:24.671017"
+      },
+      {
+        "speaker": "agent",
+        "message": "API Error: Connection error.",
+        "timestamp": "2025-11-03T16:10:24.127456"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T16:07:23.874608",
+      "end": "2025-11-03T16:10:24.132028",
+      "duration_seconds": 180.25742
+    },
+    "counts": {
+      "total_tools": 0,
+      "conversation_turns": 2
+    },
+    "usage": {
+      "total_tokens": 0,
+      "total_cost_usd": 0.0
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

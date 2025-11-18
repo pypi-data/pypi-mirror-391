@@ -1,0 +1,64 @@
+{
+  "scenario": "01_basic_init",
+  "timestamp": "2025-11-05T13:10:22.864874",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 1
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-05T13:10:13.383889"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Check the Kurt project status and verify it is initialized correctly",
+        "timestamp": "2025-11-05T13:10:07.937798"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll check the Kurt project status to verify it's initialized correctly.",
+        "timestamp": "2025-11-05T13:10:12.828898"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! The Kurt project status shows that it's initialized correctly:\n\n**\u2713 Verification Results:**\n\n1. **Project Initialization**: \u2713 Confirmed\n   - `kurt.config` file found\n   - `.kurt/kurt.sqlite` database exists\n\n2. **Claude Code Integration**: \u2713 Plugin installed\n   - Kurt can interact with Claude Code\n   - Ready for agent commands\n\n3. **Current State**:\n   - No documents ingested yet (expected for fresh project)\n   - No topic clusters (expected without documents)\n   - No projects created yet (expected)\n\n4. **Ready for Use**: The system is properly initialized and ready to:\n   - Add content via `kurt content add <url>`\n   - Create projects\n   - Manage documents and rules\n\nThe warning about \"API key is required\" at the end is just a PostHog analytics telemetry issue and doesn't affect Kurt's functionality. The core initialization is complete and working correctly.",
+        "timestamp": "2025-11-05T13:10:22.793373"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-05T13:10:07.231288",
+      "end": "2025-11-05T13:10:22.861780",
+      "duration_seconds": 15.630492
+    },
+    "counts": {
+      "total_tools": 1,
+      "conversation_turns": 3
+    },
+    "usage": {
+      "total_tokens": 315,
+      "total_cost_usd": 0.007005000000000001
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

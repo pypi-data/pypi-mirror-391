@@ -1,0 +1,206 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-05T14:14:43.223089",
+  "passed": false,
+  "error": "SQL assertion failed (returned 0):\nSELECT COUNT(*) >= 5 FROM documents WHERE source_url LIKE 'http://acme-corp.com/%'",
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 12
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-05T14:13:21.452307"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt content add http://acme-corp.com/",
+          "description": "Add content from acme-corp.com",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T14:13:28.071074"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt content --help",
+          "description": "Check available content commands"
+        },
+        "timestamp": "2025-11-05T14:13:33.875829"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt --help",
+          "description": "Check main Kurt commands"
+        },
+        "timestamp": "2025-11-05T14:13:38.917437"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt fetch http://acme-corp.com/",
+          "description": "Fetch content from acme-corp.com",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T14:13:45.150320"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt fetch --help",
+          "description": "Check fetch command options"
+        },
+        "timestamp": "2025-11-05T14:13:49.890344"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt map --help",
+          "description": "Check map command options"
+        },
+        "timestamp": "2025-11-05T14:13:55.507567"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt map url --help",
+          "description": "Check map url command options"
+        },
+        "timestamp": "2025-11-05T14:14:00.660700"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt map url http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T14:14:06.516130"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt map url http://acme-corp.com/ --max-depth 3",
+          "description": "Discover content from acme-corp.com with crawling",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T14:14:16.510631"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt status",
+          "description": "Check Kurt project status after mapping"
+        },
+        "timestamp": "2025-11-05T14:14:30.124628"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval__uyfs9eh && kurt content list",
+          "description": "List all documents in Kurt"
+        },
+        "timestamp": "2025-11-05T14:14:31.001600"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then discover and fetch content from http://acme-corp.com/\n",
+        "timestamp": "2025-11-05T14:13:16.216273"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and fetch content from http://acme-corp.com/. Let me start by checking the current state and then proceed with the tasks.",
+        "timestamp": "2025-11-05T14:13:20.883399"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! The Kurt project is already initialized. Now let me fetch content from http://acme-corp.com/:",
+        "timestamp": "2025-11-05T14:13:27.113228"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the available content commands:",
+        "timestamp": "2025-11-05T14:13:33.134970"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see the commands are different. Let me check the main Kurt help to find the correct command for adding content:",
+        "timestamp": "2025-11-05T14:13:38.152090"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I can see there's a `fetch` command for downloading and indexing content, and a `map` command for discovering content. Let me try the fetch command to add content from http://acme-corp.com/:",
+        "timestamp": "2025-11-05T14:13:44.316922"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the fetch command options:",
+        "timestamp": "2025-11-05T14:13:49.793570"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see! The `fetch` command requires documents to already exist in the database (with NOT_FETCHED status). I need to use the `map` command first to discover content. Let me check the map command:",
+        "timestamp": "2025-11-05T14:13:54.866129"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let me use `kurt map url` to discover content from the URL:",
+        "timestamp": "2025-11-05T14:13:59.955794"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Now let me discover content from http://acme-corp.com/ using the map url command:",
+        "timestamp": "2025-11-05T14:14:05.618566"
+      },
+      {
+        "speaker": "agent",
+        "message": "The site doesn't have a sitemap, so Kurt needs to crawl it instead. Let me try with a crawl depth specified:",
+        "timestamp": "2025-11-05T14:14:15.453534"
+      },
+      {
+        "speaker": "agent",
+        "message": "The crawl discovered 0 pages. This suggests that http://acme-corp.com/ may not be accessible or may not have any crawlable content. Let me check if the URL is reachable and then verify the project status:",
+        "timestamp": "2025-11-05T14:14:28.634787"
+      },
+      {
+        "speaker": "agent",
+        "message": "## Summary\n\nI've successfully completed the Kurt project initialization (it was already initialized) and attempted to discover and fetch content from http://acme-corp.com/. Here are the results:\n\n**Kurt Project Status:**\n- \u2705 Kurt project is initialized with:\n  - Configuration file: `kurt.config`\n  - Database: `.kurt/kurt.sqlite`\n  - Standard directories: `sources/`, `rules/`, `projects/`\n\n**Content Discovery Attempt:**\n- \u274c No content was discovered from http://acme-corp.com/\n- The site does not have a sitemap at the standard location\n- Web crawling (with max-depth 3) discovered 0 pages\n\n**Likely reasons for 0 pages discovered:**\n1. The URL http://acme-corp.com/ may not be a real/accessible website (it appears to be a placeholder domain)\n2. The site might be blocking automated crawlers\n3. The site may have no content or no links to discover\n\n**Next steps to successfully add content:**\nIf you have a real website URL, you can use:\n```bash\nkurt map url <real-url> --max-depth 3\nkurt fetch --with-status NOT_FETCHED\n```\n\nOr if you want to test with a real site, try something like:\n```bash\nkurt map url https://docs.python.org/\n```",
+        "timestamp": "2025-11-05T14:14:43.128948"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-05T14:13:15.418804",
+      "end": "2025-11-05T14:14:43.221493",
+      "duration_seconds": 87.802689
+    },
+    "counts": {
+      "total_tools": 12,
+      "conversation_turns": 13
+    },
+    "usage": {
+      "total_tokens": 2209,
+      "total_cost_usd": 0.035394999999999996
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}
