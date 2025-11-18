@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Self-Healing Locators Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --text-color: black;
+            --background-color: white;
+            --primary-color: #ddd;
+            --secondary-color: #ccc;
+            --highlight-color: #eee;
+            --pass-color: #97bd61;
+            --fail-color: #ce3e01;
+            --border-color: #ddd;
+            --header-bg: #4CAF50;
+            --card-bg: white;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+                --text-color: #e2e1d7;
+                --background-color: #1c2227;
+                --primary-color: #26373b;
+                --secondary-color: #424f5a;
+                --highlight-color: #002b36;
+                --pass-color: #97bd61;
+                --fail-color: #ff9b8f;
+                --border-color: #424f5a;
+                --header-bg: #2d5f3a;
+                --card-bg: #26373b;
+            }
+        }
+        
+        body {
+            font-family: Helvetica, sans-serif;
+            font-size: 14px;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: var(--text-color);
+            text-align: center;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--pass-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1em;
+        }
+        
+        th {
+            background-color: var(--header-bg);
+            color: white;
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+        
+        tr:hover {
+            background-color: var(--highlight-color);
+        }
+        
+        .broken {
+            color: var(--fail-color);
+            font-family: monospace;
+            font-size: 1em;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .fixed {
+            color: var(--pass-color);
+            font-family: monospace;
+            font-size: 1em;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        .copy-btn {
+            background-color: var(--header-bg);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-left: 5px;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .copy-btn.copied {
+            background-color: var(--pass-color);
+        }
+        .screenshot-img {
+            max-width: 150px;
+            max-height: 100px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            transition: transform 0.2s;
+        }
+        
+        .screenshot-img:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 50px;
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .section-title {
+            color: var(--text-color);
+            font-size: 1.6em;
+            margin: 30px 0 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Self-Healing Locators Report</h1>
+        <p class="subtitle">Automated test recovery and locator fixes</p>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Fixed Locators</div>
+                <div class="stat-value">{{ data|length }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Suites</div>
+                <div class="stat-value">{{ stats.unique_suites }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Tests</div>
+                <div class="stat-value">{{ stats.unique_tests }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Success Rate</div>
+                <div class="stat-value">100%</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-container">
+            <h3 class="chart-title" style="text-align: center; color: var(--text-color); margin-top: 0;">Fixes by Test Suite</h3>
+            <div class="chart-wrapper">
+                <canvas id="suiteChart"></canvas>
+            </div>
+        </div>
+
+        <h2 class="section-title">📋 Detailed Fixes</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Keyword</th>
+                <th>Broken Locator</th>
+                <th>Fixed Locator</th>
+                <th>Suite</th>
+                <th>Test</th>
+                <th>Source File</th>
+                <th>Line</th>
+                <th>Screenshot</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ row.keyword_name }}</td>
+                <td class="broken">{{ row.broken_locator }}</td>
+                <td class="fixed">
+                    {{ row.fixed_locator }}
+                    <button class="copy-btn" onclick="copyToClipboard(this, '{{ row.fixed_locator|replace("'", "\\'") }}')">Copy</button>
+                </td>
+                <td>{{ row.suite_name }}</td>
+                <td>{{ row.test_name }}</td>
+                <td>
+                    <a href="vscode://file/{{ row.source }}:{{ row.lineno }}">
+                        {{ row.source|replace(row.source|dirname + '/', '') }}
+                    </a>
+                </td>
+                <td>{{ row.lineno }}</td>
+                <td>
+                    {% if row.screenshot %}
+                        <img class="screenshot-img" src="{{ row.screenshot }}" onclick="openModal(this.src)">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div id="screenshotModal" class="modal" onclick="closeModal()">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+    
+    <script>
+        // Chart Data
+        const suiteData = {{ stats.suite_counts|tojson }};
+        
+        // Suite Chart - Using Robot Framework color scheme
+        const suiteCtx = document.getElementById('suiteChart').getContext('2d');
+        new Chart(suiteCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(suiteData),
+                datasets: [{
+                    data: Object.values(suiteData),
+                    backgroundColor: [
+                        'rgba(151, 189, 97, 0.8)',   // --pass-color #97bd61
+                        'rgba(76, 175, 80, 0.8)',    // Green variant
+                        'rgba(139, 195, 74, 0.8)',   // Light green
+                        'rgba(104, 159, 56, 0.8)',   // Dark green
+                        'rgba(174, 213, 129, 0.8)'   // Lighter green
+                    ],
+                    borderWidth: 2,
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--background-color').trim()
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim(),
+                            font: {
+                                family: 'Helvetica, sans-serif',
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Utility Functions
+        async function copyToClipboard(button, text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                }
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                button.textContent = 'Failed';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            }
+        }
+        
+        function openModal(src) {
+            document.getElementById('screenshotModal').style.display = 'block';
+            document.getElementById('modalImg').src = src;
+        }
+        
+        function closeModal() {
+            document.getElementById('screenshotModal').style.display = 'none';
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') closeModal();
+        });
+    </script>
+    </div>
+</body>
+</html>
