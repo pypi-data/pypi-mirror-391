@@ -1,0 +1,396 @@
+Metadata-Version: 2.4
+Name: pymeshtool
+Version: 1.1.0
+Summary: Python3 bindings for MeshTool.
+Author: Matthias A.F. Gsell
+Author-email: "Matthias A.F. Gsell" <pymeshtool@medunigraz.at>, "Benedikt A. Klöckl" <benedikt.kloeckl@medunigraz.at>
+Maintainer-email: "Matthias A.F. Gsell" <pymeshtool@medunigraz.at>
+License-Expression: GPL-3.0-only
+Project-URL: Homepage, https://carpentry.medunigraz.at/pymeshtool
+Project-URL: MeshTool, https://bitbucket.org/aneic/meshtool
+Project-URL: Computational Cardiology Lab, https://ccl.medunigraz.at
+Keywords: meshtool,model generation,mesh manipulation
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: C
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Topic :: Software Development :: Testing
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.19; python_version >= "3.9" and python_version < "3.10"
+Requires-Dist: numpy>=1.21; python_version >= "3.10" and python_version < "3.11"
+Requires-Dist: numpy>=1.23; python_version >= "3.11" and python_version < "3.12"
+Requires-Dist: numpy>=1.25; python_version >= "3.12"
+Dynamic: author
+Dynamic: license-file
+Dynamic: requires-python
+
+# Citation
+If you use the **PyMeshTool** package for a scientific publication,
+please add *Matthias A.F. Gsell* and *Benedikt A. Klöckl* to the authors
+of your publication and cite the following article.
+````
+@article{NEIC2020100454,
+    title = {Automating image-based mesh generation and manipulation tasks in cardiac modeling workflows using Meshtool},
+    journal = {SoftwareX},
+    volume = {11},
+    pages = {100454},
+    year = {2020},
+    issn = {2352-7110},
+    doi = {https://doi.org/10.1016/j.softx.2020.100454},
+    url = {https://www.sciencedirect.com/science/article/pii/S235271101930295X},
+    author = {Aurel Neic and Matthias A.F. Gsell and Elias Karabelas and Anton J. Prassl and Gernot Plank}
+}
+````
+
+
+Changes
+=======
+
+
+Version 1.1.0
+-------------
+- **[SRC]** Added `Mesh.extract_elements` to extract a sub-mesh based on a list of element indices.
+- **[SRC]** Bug fix in `pymeshtool.save_vtx` function.
+- **[DOC]** Updated documentation for `pymeshtool.save_vtx` function.
+
+
+Version 1.0.0
+-------------
+- **[GEN]** Published version 1.0.0 to PyPi.
+
+
+
+# PyMeshTool
+PyMeshTool offers Python3 bindings for
+[*MeshTool*](https://bitbucket.org/aneic/meshtool)
+which is a comand-line tool written in C++ to manipulate meshes and
+to process mesh data.
+
+
+# Module pymeshtool
+## Functions
+- **pymeshtool**.create_image(shape, itk_dtype, *, num_comp=1, origin=None, voxel_size=None)
+- **pymeshtool**.create_mesh(points, elem2node_dsp, elem2node_con, elem_types, *, elem_tags=None, num_fibers=1, refine_uniform=0)
+- **pymeshtool**.get_max_par_threads()
+- **pymeshtool**.get_meshtool_git_info()
+- **pymeshtool**.get_num_par_threads()
+- **pymeshtool**.load_fibers(filename)
+- **pymeshtool**.load_points(filename)
+- **pymeshtool**.load_vtx(filename)
+- **pymeshtool**.save_fibers(fibers, filename)
+- **pymeshtool**.save_points(pnts, filename)
+- **pymeshtool**.save_vtx(vtxdata, filename, *, domain='intra')
+- **pymeshtool**.set_num_par_threads(np)
+
+## Classes
+### Class pymeshtool.Mesh
+PyMeshool Mesh object.
+Wrapper class for the meshtool mt_meshdata structure.
+
+#### Attributes
+- **pymeshtool.Mesh**.element_tags  ***[RW]***
+- **pymeshtool.Mesh**.fibers  ***[RW]***
+- **pymeshtool.Mesh**.num_elements  ***[RO]***
+- **pymeshtool.Mesh**.num_fibers  ***[RO]***
+- **pymeshtool.Mesh**.num_points  ***[RO]***
+- **pymeshtool.Mesh**.points  ***[RW]***
+
+#### Functions
+- **pymeshtool.Mesh**.\_\_deepcopy\_\_()
+- **pymeshtool.Mesh**.\_\_init\_\_(basename, *, format='carp_txt', compute_connectivity=True, num_fibers=0)
+- **pymeshtool.Mesh**.apply_split(splitop, *, return_mapping=False)
+- **pymeshtool.Mesh**.clean_topology(*, threshold=None)
+- **pymeshtool.Mesh**.clear_full_connectivity()
+- **pymeshtool.Mesh**.compute_full_connectivity()
+- **pymeshtool.Mesh**.connected_vtx_components(selection)
+- **pymeshtool.Mesh**.correspondence(mesh, *, nodal=True)
+- **pymeshtool.Mesh**.extract_element_nodes()
+- **pymeshtool.Mesh**.extract_elements(indices, *, compute_connectivity=True, return_mapping=False)
+- **pymeshtool.Mesh**.extract_gradient(data, *, nodal_input=True, return_nodal=False, normalize=False, norm_threshold=0.0)
+- **pymeshtool.Mesh**.extract_mesh(tags, *, compute_connectivity=True, return_mapping=False)
+- **pymeshtool.Mesh**.extract_myocard(*, threshold=0.0, compute_connectivity=True, return_mapping=False)
+- **pymeshtool.Mesh**.extract_surface(*, setops='', coords=None, edge_threshold=0.0, angle_threshold=0.0, distance=0.0, lower_distance=0.0, hybrid_meshes=True, reindex_nodes=True, return_mapping=False)
+- **pymeshtool.Mesh**.extract_unreachable(*, mode, compute_connectivity=True, return_mapping=False)
+- **pymeshtool.Mesh**.extract_vtx(tags)
+- **pymeshtool.Mesh**.extract_vtxhalo(block)
+- **pymeshtool.Mesh**.generate_distancefield(start_vtx, *, end_vtx=None)
+- **pymeshtool.Mesh**.generate_fibers(*, bath_tags=None)
+- **pymeshtool.Mesh**.generate_split(splitop)
+- **pymeshtool.Mesh**.get_element_sizes()
+- **pymeshtool.Mesh**.get_elements_in_selection(selection)
+- **pymeshtool.Mesh**.has_full_connectivity()
+- **pymeshtool.Mesh**.interpolate_clouddata(points, data, *, mode=2)
+- **pymeshtool.Mesh**.interpolate_elem2node(data, *, normalize=False)
+- **pymeshtool.Mesh**.interpolate_node2elem(data, *, normalize=False)
+- **pymeshtool.Mesh**.interpolate_nodes(data, omesh, *, norm=False)
+- **pymeshtool.Mesh**.is_surface_mesh()
+- **pymeshtool.Mesh**.merge(mesh, *, ignore_empty_interface=True)
+- **pymeshtool.Mesh**.query_bbox()
+- **pymeshtool.Mesh**.query_curvature(radius)
+- **pymeshtool.Mesh**.query_edges(*, tags=None)
+- **pymeshtool.Mesh**.query_idx(coord, *, threshold=0.0, vertices=None)
+- **pymeshtool.Mesh**.query_idxlist(coords, *, threshold=0.0, vertices=None)
+- **pymeshtool.Mesh**.query_quality()
+- **pymeshtool.Mesh**.query_tags(*, vtx=None, tolerance=0.01)
+- **pymeshtool.Mesh**.refine_uniformly(num_it)
+- **pymeshtool.Mesh**.rotate(axis, angle, *, ignore_fibers=False)
+- **pymeshtool.Mesh**.save(basename, *, format='carp_txt')
+- **pymeshtool.Mesh**.scale(scaling_factor)
+- **pymeshtool.Mesh**.smooth_mesh(tags, *, num_iterations=100, smoothing_coeff=0.15, num_laplace_levels=1, edge_threshold=0, max_quality_threshold=0.95)
+- **pymeshtool.Mesh**.translate(displacement)
+
+### Class pymeshtool.Mapping
+PyMeshool Mapping object.
+Helper class to ease mapping of data between mesh and submesh.
+
+#### Attributes
+- **pymeshtool.Mapping**.element_map  ***[RO]***
+- **pymeshtool.Mapping**.mesh  ***[RO]***
+- **pymeshtool.Mapping**.node_map  ***[RO]***
+- **pymeshtool.Mapping**.submesh  ***[RO]***
+
+#### Functions
+- **pymeshtool.Mapping**.\_\_matmul\_\_(other)
+- **pymeshtool.Mapping**.insert_back()
+- **pymeshtool.Mapping**.insert_data(subdata, data, *, nodal_data=True)
+- **pymeshtool.Mapping**.map_selection(idx, *, nodal_selection=True, map_forward=True)
+- **pymeshtool.Mapping**.prolongate(data, *, default=None, nodal_data=True)
+- **pymeshtool.Mapping**.restrict(data, *, nodal_data=True)
+- **pymeshtool.Mapping**.save(basename, *, binary=True)
+
+### Class pymeshtool.Image
+PyMeshool Image object.
+Wrapper class for the meshtool itk_image structure.
+
+#### Attributes
+- **pymeshtool.Image**.data_type  ***[RO]***
+- **pymeshtool.Image**.dtype  ***[RO]***
+- **pymeshtool.Image**.origin  ***[RW]***
+- **pymeshtool.Image**.shape  ***[RO]***
+- **pymeshtool.Image**.voxel_size  ***[RW]***
+- **pymeshtool.Image**.voxels  ***[RW]***
+
+#### Functions
+- **pymeshtool.Image**.\_\_deepcopy\_\_()
+- **pymeshtool.Image**.\_\_init\_\_(filename)
+- **pymeshtool.Image**.change_type(new_type)
+- **pymeshtool.Image**.crop()
+- **pymeshtool.Image**.extract_mesh(*, surface_mesh=False, tetrahedralize_mesh=False, scale=1.0, compute_connectivity=True, tags=None)
+- **pymeshtool.Image**.extrude(mode, radius, region_tag, *, new_tag=-1, tags=None)
+- **pymeshtool.Image**.resample(refinement_factor)
+- **pymeshtool.Image**.save(filename)
+
+### Class pymeshtool.PyMeshToolError
+Base class for PyMeshTool related errors.
+
+
+## Enums
+### Enum pymeshtool.MeshInputFormat
+Enumeration of all supported mesh input formats.
+
+#### Items
+- **pymeshtool.MeshInputFormat**.carp_bin : '*carp_bin*'
+- **pymeshtool.MeshInputFormat**.carp_txt : '*carp_txt*'
+- **pymeshtool.MeshInputFormat**.gmsh : '*gmsh*'
+- **pymeshtool.MeshInputFormat**.mmg : '*mmg*'
+- **pymeshtool.MeshInputFormat**.netgen : '*neu*'
+- **pymeshtool.MeshInputFormat**.obj : '*obj*'
+- **pymeshtool.MeshInputFormat**.off : '*off*'
+- **pymeshtool.MeshInputFormat**.purk : '*purk*'
+- **pymeshtool.MeshInputFormat**.stellar : '*stellar*'
+- **pymeshtool.MeshInputFormat**.vcflow : '*vcflow*'
+- **pymeshtool.MeshInputFormat**.vtk : '*vtk*'
+- **pymeshtool.MeshInputFormat**.vtk_bin : '*vtk_bin*'
+- **pymeshtool.MeshInputFormat**.vtu : '*vtu*'
+
+### Enum pymeshtool.MeshOutputFormat
+Enumeration of all supported mesh output formats.
+
+#### Items
+- **pymeshtool.MeshOutputFormat**.carp_bin : '*carp_bin*'
+- **pymeshtool.MeshOutputFormat**.carp_txt : '*carp_txt*'
+- **pymeshtool.MeshOutputFormat**.mmg : '*mmg*'
+- **pymeshtool.MeshOutputFormat**.netgen : '*neu*'
+- **pymeshtool.MeshOutputFormat**.obj : '*obj*'
+- **pymeshtool.MeshOutputFormat**.off : '*off*'
+- **pymeshtool.MeshOutputFormat**.stellar : '*stellar*'
+- **pymeshtool.MeshOutputFormat**.vcflow : '*vcflow*'
+- **pymeshtool.MeshOutputFormat**.vtk : '*vtk*'
+- **pymeshtool.MeshOutputFormat**.vtk_bin : '*vtk_bin*'
+- **pymeshtool.MeshOutputFormat**.vtk_polydata : '*vtk_polydata*'
+- **pymeshtool.MeshOutputFormat**.vtu : '*vtu*'
+
+### Enum pymeshtool.MeshElementType
+Enumeration of all mesh element types.
+
+#### Items
+- **pymeshtool.MeshElementType**.tetra : *0*
+- **pymeshtool.MeshElementType**.hexa : *1*
+- **pymeshtool.MeshElementType**.octa : *2*
+- **pymeshtool.MeshElementType**.pyramid : *3*
+- **pymeshtool.MeshElementType**.prism : *4*
+- **pymeshtool.MeshElementType**.quad : *5*
+- **pymeshtool.MeshElementType**.tri : *6*
+- **pymeshtool.MeshElementType**.line : *7*
+- **pymeshtool.MeshElementType**.node : *8*
+
+### Enum pymeshtool.MeshClouddataInterpolationMode
+Enumeration of available clouddata interpolation modes.
+
+#### Items
+- **pymeshtool.MeshClouddataInterpolationMode**.localized_shepard : *0*
+- **pymeshtool.MeshClouddataInterpolationMode**.global_shepard : *1*
+- **pymeshtool.MeshClouddataInterpolationMode**.radial_basis_function : *2*
+
+### Enum pymeshtool.MeshExtractUnreachableMode
+Enumeration of mesh unreachable extraction modes.
+
+#### Items
+- **pymeshtool.MeshExtractUnreachableMode**.smallest : *-1*
+- **pymeshtool.MeshExtractUnreachableMode**.all : *0*
+- **pymeshtool.MeshExtractUnreachableMode**.largest : *1*
+
+### Enum pymeshtool.ImageDType
+Enumeration of image voxel data types.
+
+#### Items
+- **pymeshtool.ImageDType**.uint8 : *1*
+- **pymeshtool.ImageDType**.int8 : *2*
+- **pymeshtool.ImageDType**.uint16 : *3*
+- **pymeshtool.ImageDType**.int16 : *4*
+- **pymeshtool.ImageDType**.uint32 : *5*
+- **pymeshtool.ImageDType**.int32 : *6*
+- **pymeshtool.ImageDType**.uint64 : *7*
+- **pymeshtool.ImageDType**.int64 : *8*
+- **pymeshtool.ImageDType**.float32 : *9*
+- **pymeshtool.ImageDType**.float64 : *10*
+- **pymeshtool.ImageDType**.color_scalar : *11*
+
+### Enum pymeshtool.ImageExtrusionMode
+Enumeration of image extrusion modes.
+
+#### Items
+- **pymeshtool.ImageExtrusionMode**.inwards : *-1*
+- **pymeshtool.ImageExtrusionMode**.everywhere : *0*
+- **pymeshtool.ImageExtrusionMode**.outwards : *1*
+
+
+
+### Legend
+- ***[RW]*** ... read / write
+- ***[RO]*** ... read only
+
+<!--
+## Meshtool modes available through other functions
+- transform -> pymeshtool.**Mesh**.{***rotate***,***scale***,***translate***}(...)
+- convert -> pymeshtool.**Mesh**.***save***(...)
+- extract tags -> pymeshtool.**Mesh**.***element_tags***
+- insert tags -> pymeshtool.**Mesh**.***element_tags***
+- map -> pymeshtool.**Mapping**.***map_selection***(...)
+
+## Missing meshtool modes
+
+### Mesh modes
+- clean_quality(...)
+- collect(...)
+- extract_data(...)
+- extract_vtkdata(...)
+- extract_volume(...)
+- extract_unreachable(...)
+- extract_overlap(...)
+- extract_adjustment(...)
+- extract_isosurf(...)
+- generate_mesh(...)
+- generate_bboxmesh(...)
+- generate_surfsplit(...)
+- insert_data(...)
+- insert_tagsurfs(...)
+- insert_imagetags(...)
+- insert_fibers(...)
+- interpolate_elemdata(...)
+- interpolate_shelldata(...)
+- interpolate_impstate(...)
+- merge_surface(...)
+- query_elem_idx(...)
+- query_graph(...)
+- query_idxlist_uvc(...)
+- query_idxlist_ucc(...)
+- query_coords_xyz(...)
+- query_uccoords_xyz(...)
+- query_insidepoint(...)
+- query_smoothness(...)
+- query_normals(...)
+- query_values(...)
+- query_distance(...)
+- reindex(...)
+- resample_mesh(...)
+- resample_purkinje(...)
+- resample_surfmesh(...)
+- resample_uniform(...)
+- restore_mapping(...)
+- smooth_data(...)
+- smooth_surface(...)
+
+### Image modes
+- itk_smooth(...)
+- itk_close(...)
+- itk_normalize(...)
+- itk_padding(...)
+- itk_flip(...)
+- itk_sample(...)
+- itk_extract(...)
+- itk_mesh(...)
+- itk_interpolate(...)
+-->
+
+<!--
+# Build
+
+To build the *pymeshtool* run the following steps:
+
+1. change to the *pymt* directory
+2. enable the desired environment by calling `source ENV.env` with
+   `ENV` is `gcc`, `gcc_omp`, `clang`, or `clang_omp`.
+3. run `make pymt`
+
+# Development
+
+#### Coding References
+
+- https://docs.python.org/3/c-api/stable.html
+- https://docs.python.org/3/extending/newtypes_tutorial.html
+- https://docs.python.org/3/c-api/typeobj.html
+- https://numpy.org/doc/stable/reference/c-api/array.html
+- https://en.cppreference.com/w/cpp/container/set/set
+- https://realpython.com/build-python-c-extension-module/
+- https://opensource.com/article/22/11/extend-c-python
+- https://numpy.org/doc/2.1/reference/c-api/array.html#including-and-importing-the-c-api
+
+#### Documentation Guidelines
+
+- https://numpydoc.readthedocs.io/en/latest/format.html
+
+#### Debugging References
+
+- https://developers.redhat.com/articles/2021/09/08/debugging-python-c-extensions-gdb
+- https://stackoverflow.com/questions/3982036/how-can-i-use-valgrind-with-python-c-extensions
+
+#### Compiler Related References
+
+- https://stackoverflow.com/questions/31332299/why-not-always-use-fpic-position-independent-code
+
+#### Packaging Related References
+
+- https://packaging.python.org/en/latest/tutorials/packaging-projects/
+- https://dev.to/chillaranand/build-distribute-a-python-c-extension-module-27bp
+- https://python-basics-tutorial.readthedocs.io/en/latest/packs/cibuildwheel.html
+- https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/accessing-contextual-information-about-workflow-runs#github-context
+- https://github.com/actions/runner-images/tree/main/images
+-->
