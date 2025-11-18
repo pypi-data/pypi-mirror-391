@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block meta %}{% endblock %}
+    <title>{% block title %}Title{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href={% static "css/bootstrap.min.css"%}>
+    <link rel="stylesheet" href="{% static "dashboard.css" %}"/>
+    <link rel="stylesheet" href="{% static "cluster.css" %}"/>
+    {% block styles %}{% endblock %}
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">PYME Storage &amp; Compute Cluster</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+{#          <ul class="nav navbar-nav">#}
+{#            <li><a href="#">Dashboard</a></li>#}
+{#            <li><a href="#">Settings</a></li>#}
+{#            <li><a href="#">Profile</a></li>#}
+{#            <li><a href="#">Help</a></li>#}
+{#              <li>#}
+{##}
+{#            </li>#}
+{#          </ul>#}
+
+
+        {% if user.is_authenticated %}
+            <p class="navbar-text navbar-right"> Browsing as <span class="username">{{ user.email }}</span>
+               - <a type="submit" href="/accounts/logout/?next={{ request.path }}">logout</a>&nbsp;&nbsp;</p>
+
+        {% else %}
+
+            <p class="navbar-text navbar-right"> Browsing as <span class="username">Guest</span>&nbsp;&nbsp;
+        <form class="nav navbar-form navbar-right" method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <input type="text" placeholder="Email" class="form-control" name="username">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-control" name="password">
+            </div>
+            <button type="submit" class="btn btn-small btn-success" value="login">Sign in </button>
+            <input type="hidden" name="next" value="{{ request.path }}" />
+        </form>
+        {% endif %}
+        </div>
+          <!--<form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>-->
+
+    </div>
+
+</nav>
+
+<div class="container-fluid cont0">
+    <div class="row row0">
+        <div class="col-sm-3 col-md-3 sidebar">
+            <ul class="nav nav-sidebar">
+                <li class="{% block status_active_class %}{% endblock %}"><a href="/status/"><span class="glyphicon glyphicon-signal"></span>&nbsp;&nbsp;Cluster Status</a></li>
+                <li class="{% block analysis_active_class %}{% endblock %}"><a href="/status/queues/"><span class="glyphicon glyphicon-tasks"></span>&nbsp;&nbsp;Active Analysis Tasks</a></li>
+                <li class="{% block files_active_class %}{% endblock %}"><a href="/files/"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp;&nbsp;Files</a></li>
+                {% comment %}<li class="dropdown {% block recipe_active_class %}{% endblock %}"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Recipes <span class="caret"></span></a>
+                    <ul class="dropdown-menu"> {% endcomment %}
+                <li class="{% block recipe_active_class %}{% endblock %}"><a href="#recipe-subnav" role="button" data-toggle="collapse" expanded="false"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Recipes <span class="caret"></span></a>
+                <ul class="subnav collapse" id="recipe-subnav">
+                        <li class="{% block edit_recipe_active_class %}{% endblock %}"><a href="/recipes/editor/">&nbsp;&nbsp;Edit</a></li>
+                        <li class="{% block standalone_recipe_active_class %}{% endblock %}"><a href="/recipes/standalone/">&nbsp;&nbsp;Run</a></li>
+                        <li class="{% block editrun_recipe_active_class %}{% endblock %}"><a href="/recipes/editrun/">&nbsp;&nbsp;Edit and run</a></li>
+                        <li class="{% block recipe_template_active_class %}{% endblock %}"><a href="/recipes/template/">&nbsp;&nbsp;Run templated</a></li>
+                    </ul>
+                </li>
+            </ul>
+            {% block sidebar %}
+            {% endblock %}
+
+        <div id="load-content"></div>
+
+        </div>
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 main">
+            <div id="dlg-placeholder"></div>
+
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src={% static "jquery.min.js" %}></script>
+<script src={% static "bootstrap.min.js" %} crossorigin="anonymous"></script>
+<script src={% static "jstree.min.js" %}></script>
+<script src={% static "fileselector.js" %}></script>
+
+{% block scripts %}
+{% endblock %}
+<script>
+
+
+    function loadclusterload(){
+        //console.log('about to reload')
+        $('#load-content').load('/status/load/',function () {
+            //alert( "Load was performed." );
+            // $(this).unwrap();
+            //console.log('load performed')
+        });
+    }
+
+    loadclusterload(); // This will run on page load
+    setInterval(function(){
+        loadclusterload(); // this will run after every 5 seconds
+    }, 1000);
+
+</script>
+</body>
+</html>
