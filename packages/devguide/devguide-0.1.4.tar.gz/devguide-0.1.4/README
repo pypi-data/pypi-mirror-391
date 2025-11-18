@@ -1,0 +1,35 @@
+🧰 Tecnologias usadas
+
+argparse ou click → CLI
+
+sklearn → Similaridade de texto (TF-IDF)
+
+json → Banco de dados simples local
+
+rich (opcional) → Para saída colorida no terminal
+
+🧩 Diferencial (aplicando Python avançado)
+
+Pode usar decorators para registrar novos comandos CLI;
+
+Pode transformar o banco de ideias em um plugin system (permitindo que outros usuários adicionem módulos de ideias);
+
+Pode incluir logging e configurações via arquivo YAML;
+
+Pode empacotar tudo com setuptools e permitir pip install devguide.
+
+
+# devguide
+
+CLI para sugerir stacks e passos iniciais para projetos a partir de uma descrição.
+
+Instalação:
+- python -m venv .venv
+- source .venv/bin/activate
+- pip install -r requirements.txt
+- python setup.py develop  # opcional
+
+Uso:
+- devguide start
+- devguide recommend "site de reservas de hotel"
+- devguide list
