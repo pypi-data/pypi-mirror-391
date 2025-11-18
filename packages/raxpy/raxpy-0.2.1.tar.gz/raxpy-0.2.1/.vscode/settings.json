@@ -1,0 +1,17 @@
+{
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "jupyter.notebookFileRoot": "${workspaceFolder}",
+
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "formatting.blackArgs": ["--line-length", "79"],
+    "editor.formatOnSave": true
+  },
+  "files.watcherExclude": {
+    "**/target": true
+  }
+}
