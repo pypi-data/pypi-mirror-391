@@ -1,0 +1,555 @@
+"""
+Standalone functions for running mapflpy tracing routines.
+
+These functions provide a simplified interface for performing forward, backward, and
+forward-backward tracing using the :any:`TracerMP` class. They handle the initialization
+and execution of the tracing processes, allowing users to easily obtain tracing results
+without needing to manage the underlying tracer objects directly.
+
+This module also includes a specialized function for inter-domain tracing, which coordinates
+tracing between two different magnetic domains (*viz.*, coronal and heliospheric) using
+multiprocessing. This function manages the complexities of boundary conditions and trace
+concatenation.
+"""
+from __future__ import annotations
+import copy
+from functools import partial
+from typing import Optional, Iterable, Tuple
+
+import numpy as np
+from numpy._typing import NDArray
+
+from mapflpy.globals import DEFAULT_BUFFER_SIZE, Traces, PathType, DirectionType
+from mapflpy.tracer import TracerMP
+from mapflpy.utils import shift_phi_traces, shift_phi_lps, fetch_default_launch_points, combine_fwd_bwd_traces
+
+__all__ = [
+    "run_forward_tracing",
+    "run_backward_tracing",
+    "run_fwdbwd_tracing",
+    "inter_domain_tracing"
+]
+
+
+def run_forward_tracing(br: PathType,
+                        bt: PathType,
+                        bp: PathType,
+                        launch_points: Optional[Iterable[float]] = None,
+                        buffer_size: int = DEFAULT_BUFFER_SIZE,
+                        **kwargs
+                        ) -> Traces:
+    """
+    Run forward tracing using TracerMP.
+
+    This function initializes a `TracerMP` instance and calls the `trace_fwd` method to perform forward tracing
+    from the specified launch points. The launch points can be provided as an iterable of floats or None to use
+    default launch points. The buffer size can be adjusted to control the number of points in the trace geometry.
+
+    Parameters
+    ----------
+    br : PathType
+        Path to hdf4 or hdf5 Br file.
+    bt : PathType
+        Path to hdf4 or hdf5 Bt file.
+    bp : PathType
+        Path to hdf4 or hdf5 Bp file.
+    launch_points : Optional[Iterable[float]]
+        Launch points used by the tracer. If None, default launch points will be used.
+    buffer_size : int
+        Buffer size for trace geometry. Default is 2000.
+    kwargs : dict
+        Additional keyword arguments to be passed to the :any:`TracerMP` initialization.
+
+    Returns
+    -------
+    Traces
+        A `Traces` object containing the results of the forward tracing.
+
+    """
+    with TracerMP(br, bt, bp, **kwargs) as tracer:
+        return tracer.trace_fwd(launch_points, buffer_size)
+
+
+def run_backward_tracing(br: PathType,
+                         bt: PathType,
+                         bp: PathType,
+                         launch_points: Optional[Iterable[float]] = None,
+                         buffer_size: int = DEFAULT_BUFFER_SIZE,
+                         **kwargs
+                         ) -> Traces:
+    """
+    Run backward tracing using TracerMP.
+
+    This function initializes a `TracerMP` instance and calls the `trace_bwd` method to perform forward tracing
+    from the specified launch points. The launch points can be provided as an iterable of floats or None to use
+    default launch points. The buffer size can be adjusted to control the number of points in the trace geometry.
+
+    Parameters
+    ----------
+    br : PathType
+        Path to hdf4 or hdf5 Br file.
+    bt : PathType
+        Path to hdf4 or hdf5 Bt file.
+    bp : PathType
+        Path to hdf4 or hdf5 Bp file.
+    launch_points : Optional[Iterable[float]]
+        Launch points used by the tracer. If None, default launch points will be used.
+    buffer_size : int
+        Buffer size for trace geometry. Default is 2000.
+    kwargs : dict
+        Additional keyword arguments to be passed to the :any:`TracerMP` initialization.
+
+    Returns
+    -------
+    Traces
+        A `Traces` object containing the results of the backward tracing.
+
+    """
+    with TracerMP(br, bt, bp, **kwargs) as tracer:
+        return tracer.trace_bwd(launch_points, buffer_size)
+
+
+def run_fwdbwd_tracing(br: PathType,
+                       bt: PathType,
+                       bp: PathType,
+                       launch_points: Optional[Iterable[float]] = None,
+                       buffer_size: int = DEFAULT_BUFFER_SIZE,
+                       **kwargs
+                       ) -> Traces:
+    """
+    Run forward and backward tracing using TracerMP.
+
+    This function initializes a `TracerMP` instance and calls the `trace_fbwd` method to perform forward tracing
+    and backward tracing from the specified launch points. The launch points can be provided as an iterable of
+    floats or None to use default launch points. The buffer size can be adjusted to control the number of points
+    in the trace geometry. The traces are combined into a single `Traces` object.
+
+    Parameters
+    ----------
+    br : PathType
+        Path to hdf4 or hdf5 Br file.
+    bt : PathType
+        Path to hdf4 or hdf5 Bt file.
+    bp : PathType
+        Path to hdf4 or hdf5 Bp file.
+    launch_points : Optional[Iterable[float]]
+        Launch points used by the tracer. If None, default launch points will be used.
+    buffer_size : int
+        Buffer size for trace geometry. Default is 2000.
+    kwargs : dict
+        Additional keyword arguments to be passed to the :any:`TracerMP` initialization.
+
+    Returns
+    -------
+    Traces
+        A `Traces` object containing the results of the forward tracing.
+
+    """
+    with TracerMP(br, bt, bp, **kwargs) as tracer:
+        return tracer.trace_fbwd(launch_points, buffer_size)
+
+
+def inter_domain_tracing(br_cor: PathType,
+                         bt_cor: PathType,
+                         bp_cor: PathType,
+                         br_hel: PathType,
+                         bt_hel: PathType,
+                         bp_hel: PathType,
+                         launch_points: Optional[NDArray[float] | int] = None,
+                         buffer_size: int = DEFAULT_BUFFER_SIZE,
+                         maxiter: int = 10,
+                         r_interface: float = 30.0,
+                         helio_shift: float = 0.0,
+                         rtol: float = 1e-5,
+                         **mapfl_params
+                         ) -> Tuple[list, NDArray[bool], NDArray[bool]]:
+    """
+    Perform inter-domain tracing using two tracer processes.
+
+    This method sets up two tracer processes (e.g., for different magnetic domains) that run concurrently.
+    It coordinates the tracing between these two processes via multiprocessing pipes. Because launch points
+    that start in the corona or heliosphere are handled differently, this function wraps the lower-level inter-domain
+    tracing methods to trace forward and backwards from launch points in any domain, joins them together and returns
+    all traces.
+
+    Parameters
+    ----------
+    br_cor : str
+        Path to hdf4 or hdf5 Br file (coronal domain).
+    bt_cor : str
+        Path to hdf4 or hdf5 Bt file (coronal domain).
+    bp_cor : str
+        Path to hdf4 or hdf5 Bp file (coronal domain).
+    br_hel : str
+        Path to hdf4 or hdf5 Br file (heliospheric domain).
+    bt_hel : str
+        Path to hdf4 or hdf5 Bt file (heliospheric domain).
+    bp_hel : str
+        Path to hdf4 or hdf5 Bp file (heliospheric domain).
+    launch_points : any, optional
+        Launch points used by the tracer. Default is None.
+    buffer_size : int, optional
+        Buffer size for trace geometry. Default is 2000.
+    maxiter : int, optional
+        Maximum number of iterations for handling boundary recrossings. Default is 10.
+    r_interface : float, optional
+        Radius at which to connect the traces between domains. Default is 30.
+    helio_shift : float, optional
+        Longitudinal shift angle between the heliospheric domain and the coronal domain in RADIANS.
+        This shift is ADDED to the coronal launch point phi positions. Default is 0.0.
+    rtol : float, optional
+        Relative tolerance for `np.isclose` for checking a trace has hit the interface boundary. Default is 1e-5.
+    **mapfl_params
+        Additional keyword arguments to be passed to both tracer initializations.
+
+    Returns
+    -------
+    final_traces : list
+        A list of numpy arrays representing the concatenated tracing results for each launch point.
+    traced_to_boundary : numpy.ndarray
+        A boolean array indicating whether this trace hit the inner cor or outer hel boundary on both ends.
+    boundary_recross : numpy.ndarray
+        A boolean array indicating whether a boundary recrossing occurred for each launch point.
+
+    Notes
+    -----
+    The function uses two separate processes to avoid sharing `mapflpy_fortran` objects between domains.
+    """
+    cor_params = copy.deepcopy(mapfl_params)
+    cor_params['domain_r_max_'] = r_interface
+    cor_tracer = TracerMP(br_cor, bt_cor, bp_cor, **cor_params)
+    cor_tracer.connect()
+
+    hel_params = copy.deepcopy(mapfl_params)
+    hel_params['domain_r_min_'] = r_interface
+    hel_tracer = TracerMP(br_hel, bt_hel, bp_hel, **hel_params)
+    hel_tracer.connect()
+
+    match launch_points:
+        case None:
+            # if no launch points are provided, use the default launch points
+            lp = fetch_default_launch_points()
+        case int():
+            # if an integer is provided, use that many default launch points
+            lp = fetch_default_launch_points(launch_points)
+        case arr if isinstance(launch_points, np.ndarray):
+            # if an iterable is provided, use it as the launch points
+            lp = np.array(launch_points, dtype=float).reshape((3, -1))
+        case _:
+            raise ValueError(f"Invalid launch points type: {type(launch_points)}. "
+                             "Expected None, int, or Iterable of launch points.")
+    # prepare the final arrays
+    n_lp = lp.shape[1]
+    final_traces = [None] * n_lp
+    boundary_recross = np.array([False] * n_lp)
+    traced_to_boundary = np.array([False] * n_lp)
+
+    # determine which indexes of the launch points are coronal and which are heliospheric
+    inds_coronal = np.where(lp[0, :] <= r_interface)[0]
+    inds_helio = np.where(lp[0, :] > r_interface)[0]
+
+    # separate the launch points by domain (length 0 arrays are OK here)
+    cor_lp = lp[:, inds_coronal]
+    hel_lp = lp[:, inds_helio]
+
+    # CORONAL INTERDOMAIN TRACE
+    if len(inds_coronal) > 0:
+        inter_cor = partial(_inter_domain_tracing_from_cor,
+                            cor_tracer, hel_tracer,
+                            lp=cor_lp, maxiter=maxiter, r_interface=r_interface, helio_shift=helio_shift, rtol=rtol, buffer=buffer_size)
+        # trace coronal launch points forward/backward from the coronal domain
+        traces_cor_fwd, bndry_cor_fwd, recross_cor_fwd = inter_cor(direction='f')
+        traces_cor_bwd, bndry_cor_bwd, recross_cor_bwd = inter_cor(direction='b')
+
+        # join the traces, flipping the backwards trace after dropping its first point (first point is the starting point)
+        traces_cor = [np.concatenate((np.flip(traces_cor_bwd[i][:, 1:], axis=1),
+                                      traces_cor_fwd[i]), axis=1)
+                      for i in range(len(traces_cor_bwd))]
+
+        # combine the tracing flags
+        recross_cor = recross_cor_bwd & recross_cor_fwd
+        bndry_cor = bndry_cor_bwd & bndry_cor_fwd
+
+        # populate the coronal launch points
+        for i, trace in zip(inds_coronal, traces_cor):
+            final_traces[i] = trace
+        boundary_recross[inds_coronal] = recross_cor
+        traced_to_boundary[inds_coronal] = bndry_cor
+
+    # HELIOSPHERIC INTERDOMAIN TRACE
+    if len(inds_helio) > 0:
+        inter_hel = partial(_inter_domain_tracing_from_hel,
+                            cor_tracer, hel_tracer,
+                            lp=hel_lp, maxiter=maxiter, r_interface=r_interface, helio_shift=helio_shift, rtol=rtol, buffer=buffer_size)
+        # trace helonal launch points forward/backward from the heliospheric domain
+        traces_hel_fwd, bndry_hel_fwd, recross_hel_fwd = inter_hel(direction='f')
+        traces_hel_bwd, bndry_hel_bwd, recross_hel_bwd = inter_hel(direction='b')
+
+        # join the traces, flipping the backwards trace after dropping its first point (first point is the starting point)
+        traces_hel = [np.concatenate((np.flip(traces_hel_bwd[i][:, 1:], axis=1),
+                                      traces_hel_fwd[i]), axis=1)
+                      for i in range(len(traces_hel_bwd))]
+
+        # combine the tracing flags
+        recross_hel = recross_hel_bwd & recross_hel_fwd
+        bndry_hel = bndry_hel_bwd & bndry_hel_fwd
+
+        # populate the heliospheric launch points
+        for i, trace in zip(inds_helio, traces_hel):
+            final_traces[i] = trace
+        boundary_recross[inds_helio] = recross_hel
+        traced_to_boundary[inds_helio] = bndry_hel
+
+    # close the tracer processes
+    cor_tracer.disconnect()
+    hel_tracer.disconnect()
+    return final_traces, traced_to_boundary, boundary_recross
+
+
+def _inter_domain_tracing_from_cor(cor_tracer: TracerMP,
+                                   hel_tracer: TracerMP,
+                                   direction: DirectionType,
+                                   lp: Iterable[float],
+                                   maxiter: int,
+                                   r_interface: float,
+                                   helio_shift: float,
+                                   rtol: float,
+                                   buffer: int
+                                   ) -> Tuple[list, NDArray[bool], NDArray[bool]]:
+    """
+    Perform inter-domain coronal and heliospheric tracing for CORONAL launch points in the specified direction.
+
+    This method receives two tracer processes (one for each domain) that are run concurrently. The function initiates
+    tracing in one process, checks for boundary recrossings, and if necessary, alternates the tracing between
+    the two processes until the tracing endpoints no longer cross a defined boundary or the maximum number of
+    iterations is reached.
+
+    Parameters
+    ----------
+    cor_reciever : multiprocessing.connection.Connection
+        The coronal domain pipe that does the mapfl tracing (see `tracer_listener`).
+    hel_reciever : multiprocessing.connection.Connection
+        The heliospheric domain pipe that does the mapfl tracing (see `tracer_listener`).
+    direction : str
+        The direction of the mapfl tracings. This must be either 'f' or 'b' (forwards or backwards). Default is 'f'.
+    lp : any
+        Launch points for fieldline tracing.
+    maxiter : int, optional
+        Maximum number of iterations for handling boundary recrossings. Default is 10.
+    r_interface : float, optional
+        Radius at which to connect the traces between domains. Default is 30.
+    helio_shift : float, optional
+        Longitudinal shift angle between the heliospheric domain and the coronal domain in RADIANS.
+        This shift is ADDED to the coronal launch point phi positions. Default is 0.0.
+    rtol : float, optional
+        Relative tolerance for `np.isclose` for checking a trace has hit the interface boundary. Default is 1e-5.
+
+    Returns
+    -------
+    final_traces : list
+        A list of numpy arrays representing the concatenated tracing results for each launch point.
+    traced_to_boundary : numpy.ndarray
+        A boolean array indicating whether this trace hit the inner cor or outer hel boundary.
+    boundary_recross : numpy.ndarray
+        A boolean array indicating whether a boundary recrossing occurred for each launch point.
+
+    """
+    # set the launch points, make a copy so input lp doesn't get vaporized on succesive traces
+    cor_lps = copy.deepcopy(lp)
+    cor_tracer.set_tracing_direction(direction)
+    traces_ = cor_tracer.trace(cor_lps, buffer)
+
+    final_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in traces_.geometry.T])
+
+    # get the end positions of the traces in r,t,p, shape: (3,n)
+    radial_end_pos = np.copy(traces_.end_pos)
+
+    # determine which traces hit the interface boundary
+    midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+
+    # initialize the array for checking that you went back through
+    boundary_recross = np.full_like(midboundary_mask, False)
+
+    # check that you hit a boundary to end the trace
+    traced_to_boundary = traces_.traced_to_boundary
+
+    while np.any(midboundary_mask) and maxiter > 0:
+        # set the new heliospheric launchpoints using any that hit the interface from the corona
+        # these must also be shifted FORWARD in phi by the helio shift value
+        hel_lps = shift_phi_lps(radial_end_pos[:, midboundary_mask], helio_shift)
+        hel_tracer.set_tracing_direction('f')
+        traces_ = hel_tracer.trace(hel_lps, buffer)
+        temp_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in traces_.geometry.T])
+
+        # shift these traces BACK to the coronal/carrington frame
+        temp_traces = shift_phi_traces(temp_traces, -helio_shift)
+
+        # add this trace segment neglecting the first point since it duplicates the last point of the previous segment.
+        for i, trace in zip(np.where(midboundary_mask)[0], temp_traces):
+            final_traces[i] = np.concatenate([final_traces[i], trace[:, 1:]], axis=1)
+
+        # check that you hit a boundary
+        traced_to_boundary[midboundary_mask] = traces_.traced_to_boundary
+
+        # update the radial end positions (SHIFTED BACK!)
+        radial_end_pos[:,
+        midboundary_mask] = shift_phi_lps(np.copy(traces_.end_pos), -helio_shift)
+
+        # update the flag for traces that hit the interface
+        midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+
+        # now trace through the corona BACKWARDS
+        if np.any(midboundary_mask):
+            boundary_recross |= midboundary_mask
+
+            # take the subset of launch points and trace.
+            cor_lps = radial_end_pos[:, midboundary_mask]
+            cor_tracer.set_tracing_direction('b')
+            traces_ = cor_tracer.trace(cor_lps, buffer)
+
+            temp_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in
+                                traces_.geometry.T])
+            for i, trace in zip(np.where(midboundary_mask)[0], temp_traces):
+                final_traces[i] = np.concatenate([final_traces[i], trace[:, 1:]], axis=1)
+
+            # check the trace, update the end positions and the midboundary flag, continue the loop
+            traced_to_boundary[midboundary_mask] = traces_.traced_to_boundary
+            radial_end_pos[:, midboundary_mask] = traces_.end_pos
+            midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+            boundary_recross |= midboundary_mask
+
+        # if no more work to be done, break the loop
+        else:
+            break
+        maxiter -= 1
+
+    # return the final traces and tracing checks
+    return final_traces, traced_to_boundary, boundary_recross
+
+
+def _inter_domain_tracing_from_hel(cor_tracer: TracerMP,
+                                   hel_tracer: TracerMP,
+                                   direction: DirectionType,
+                                   lp: Iterable[float],
+                                   maxiter: int,
+                                   r_interface: float,
+                                   helio_shift: float,
+                                   rtol: float,
+                                   buffer: int
+                                   ) -> Tuple[list, NDArray[bool], NDArray[bool]]:
+    """
+    Perform inter-domain coronal and heliospheric tracing for HELIOSPHERIC launch points in the specified direction.
+
+    This method receives two tracer processes (one for each domain) that are run concurrently. The function initiates
+    tracing in one process, checks for boundary recrossings, and if necessary, alternates the tracing between
+    the two processes until the tracing endpoints no longer cross a defined boundary or the maximum number of
+    iterations is reached.
+
+    Parameters
+    ----------
+    cor_reciever : multiprocessing.connection.Connection
+        The coronal domain pipe that does the mapfl tracing (see `tracer_listener`).
+    hel_reciever : multiprocessing.connection.Connection
+        The heliospheric domain pipe that does the mapfl tracing (see `tracer_listener`).
+    direction : str
+        The direction of the mapfl tracings. This must be either 'f' or 'b' (forwards or backwards). Default is 'f'.
+    lp : any
+        Launch points for fieldline tracing.
+    maxiter : int, optional
+        Maximum number of iterations for handling boundary recrossings. Default is 10.
+    r_interface : float, optional
+        Radius at which to connect the traces between domains. Default is 30.
+    helio_shift : float, optional
+        Longitudinal shift angle between the heliospheric domain and the coronal domain in RADIANS.
+        This shift is ADDED to the coronal launch point phi positions. Default is 0.0.
+    rtol : float, optional
+        Relative tolerance for `np.isclose` for checking a trace has hit the interface boundary. Default is 1e-5.
+
+    Returns
+    -------
+    final_traces : list
+        A list of numpy arrays representing the concatenated tracing results for each launch point.
+    traced_to_boundary : numpy.ndarray
+        A boolean array indicating whether this trace hit the inner cor or outer hel boundary.
+    boundary_recross : numpy.ndarray
+        A boolean array indicating whether a boundary recrossing occurred for each launch point.
+
+    """
+    # set the launch points, and shift them accordingly
+    hel_lps = copy.deepcopy(lp)
+    hel_lps = shift_phi_lps(hel_lps, helio_shift)
+    hel_tracer.set_tracing_direction(direction)
+    traces_ = hel_tracer.trace(hel_lps, buffer)
+
+    final_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in traces_.geometry.T])
+    # shift these traces BACK to the coronal/carrington frame
+    final_traces = shift_phi_traces(final_traces, -helio_shift)
+
+    # get and shift the end positions of the traces in r,t,p, shape: (3,n)
+    radial_end_pos = shift_phi_lps(np.copy(traces_.end_pos), -helio_shift)
+
+    # determine which traces hit the interface boundary
+    midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+
+    # initialize the array for checking that you went back through
+    boundary_recross = np.full_like(midboundary_mask, False)
+
+    # check that you hit a boundary to end the trace
+    traced_to_boundary = traces_.traced_to_boundary
+
+    while np.any(midboundary_mask) and maxiter > 0:
+        # set the new coronal launchpoints using any that hit the interface from the heliosphere
+        cor_lps = radial_end_pos[:, midboundary_mask]
+        cor_tracer.set_tracing_direction('b')
+        traces_ = cor_tracer.trace(cor_lps, buffer)
+        temp_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in traces_.geometry.T])
+
+        # add this trace segment neglecting the first point since it duplicates the last point of the previous segment.
+        for i, trace in zip(np.where(midboundary_mask)[0], temp_traces):
+            final_traces[i] = np.concatenate([final_traces[i], trace[:, 1:]], axis=1)
+
+        # check that you hit a boundary
+        traced_to_boundary[midboundary_mask] = traces_.traced_to_boundary
+
+        # update the radial end positions
+        radial_end_pos[:, midboundary_mask] = np.copy(traces_.end_pos)
+
+        # update the flag for traces that hit the interface
+        midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+
+        # now trace through the heliosphere FORWARDS
+        if np.any(midboundary_mask):
+            boundary_recross |= midboundary_mask
+
+            # set the new heliospheric launchpoints using any that hit the interface from the corona
+            # these must also be shifted FORWARD in phi by the helio shift value
+            hel_lps = shift_phi_lps(radial_end_pos[:, midboundary_mask], helio_shift)
+
+            # take the subset of launch points and trace.
+            hel_tracer.set_tracing_direction('f')
+            traces_ = hel_tracer.trace(hel_lps, buffer)
+
+            temp_traces = list([arr[:, ~np.isnan(arr).any(axis=0)] for arr in
+                                traces_.geometry.T])
+
+            # shift these traces BACK to the coronal/carrington frame
+            temp_traces = shift_phi_traces(temp_traces, -helio_shift)
+
+            # add this trace segment neglecting the first point since it duplicates the last point of the previous segment.
+            for i, trace in zip(np.where(midboundary_mask)[0], temp_traces):
+                final_traces[i] = np.concatenate([final_traces[i], trace[:, 1:]], axis=1)
+
+            # check the trace, update the end positions (SHIFTED BACK!) and the midboundary flag, continue the loop
+            traced_to_boundary[midboundary_mask] = traces_.traced_to_boundary
+            radial_end_pos[:,
+            midboundary_mask] = shift_phi_lps(np.copy(traces_.end_pos), -helio_shift)
+            midboundary_mask = np.isclose(radial_end_pos[0, :], r_interface, rtol=rtol)
+            boundary_recross |= midboundary_mask
+
+        # if no more work to be done, break the loop
+        else:
+            break
+        maxiter -= 1
+
+    # return the final traces and tracing checks
+    return final_traces, traced_to_boundary, boundary_recross
