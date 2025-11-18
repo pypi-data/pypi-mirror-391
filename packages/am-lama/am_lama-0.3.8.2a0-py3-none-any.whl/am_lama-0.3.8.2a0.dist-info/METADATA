@@ -1,0 +1,62 @@
+Metadata-Version: 2.4
+Name: am_lama
+Version: 0.3.8.2a0
+Summary: (AutoML) AM
+License: Apache-2.0
+License-File: LICENSE
+Requires-Python: >=3.11,<=3.12
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Typing :: Typed
+Provides-Extra: afg
+Provides-Extra: all
+Provides-Extra: cv
+Provides-Extra: nlp
+Provides-Extra: report
+Requires-Dist: PyWavelets ; extra == "cv" or extra == "all"
+Requires-Dist: albumentations (<=1.0.3) ; extra == "cv" or extra == "all"
+Requires-Dist: autowoe (>=1.2)
+Requires-Dist: catboost (>=0.26.1)
+Requires-Dist: cffi (==1.14.5) ; extra == "report" or extra == "all"
+Requires-Dist: cmaes
+Requires-Dist: dataclasses (==0.6) ; python_version < "3.7"
+Requires-Dist: featuretools (>=1.11.1) ; (python_version >= "3.8") and (extra == "afg" or extra == "all")
+Requires-Dist: gensim (>=4) ; extra == "nlp" or extra == "all"
+Requires-Dist: holidays
+Requires-Dist: importlib-metadata (>=1.0) ; python_version < "3.8"
+Requires-Dist: jinja2
+Requires-Dist: joblib (<1.3.0)
+Requires-Dist: json2html
+Requires-Dist: lightgbm (>=2.3,<=3.2.1)
+Requires-Dist: networkx
+Requires-Dist: nltk ; extra == "nlp" or extra == "all"
+Requires-Dist: numpy (>=1.22,<2.0)
+Requires-Dist: opencv-python (<=4.8.0.74) ; extra == "cv" or extra == "all"
+Requires-Dist: optuna
+Requires-Dist: pandas (<2.0.0)
+Requires-Dist: pyyaml
+Requires-Dist: scikit-learn (>=1.0)
+Requires-Dist: seaborn
+Requires-Dist: sqlalchemy (<2.0.0)
+Requires-Dist: statsmodels (<=0.14.0)
+Requires-Dist: timm (>=0.9.0) ; extra == "cv"
+Requires-Dist: torch (==2.6.0)
+Requires-Dist: torchaudio (==2.6.0)
+Requires-Dist: torchvision (==0.21.0) ; extra == "cv" or extra == "all"
+Requires-Dist: tqdm
+Requires-Dist: transformers (>=4) ; extra == "nlp" or extra == "all"
+Requires-Dist: weasyprint (==52.5) ; extra == "report" or extra == "all"
+Description-Content-Type: text/markdown
+
+am lama for rltv
