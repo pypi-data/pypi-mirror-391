@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm", "build"]  # Build requirements
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gbm_sim"
+version = "1.0.0"
+description = "A Python package for simulating Geometric Brownian Motion."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Your Name", email = "your.email@example.com" },
+    { name = "Harvey", email = "boris.bolliet@gmail.com" }
+]
+keywords = ["Brownian Motion", "simulation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries"
+]
+
+# Runtime dependencies
+dependencies = [
+    "numpy",
+    "pandas",
+    "argparse",
+    "matplotlib"
+]
+
+[project.urls]
+"Documentation" = "https://your-readthedocs-url-here"
+"Source" = "https://github.com/yourusername/gbm_sim_package"
+"Issues" = "https://github.com/yourusername/gbm_sim_package/issues"
+
+
+[tool.setuptools_scm]
+write_to = "gbm_sim/version.py"  # Where to write the dynamic version
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.setuptools.package-data]
+"gbm_sim" = ["data/*"]
+
+
+[project.scripts]
+gbm_sim = "gbm_sim.cli:main"
