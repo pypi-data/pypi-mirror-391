@@ -1,0 +1,6 @@
+HEALTH = "/healthz"
+VECTORIZER = "/vectorize"
+FIND_FACE = "/find-face"
+SEARCH_FACE = "/search"
+LIST_EMBEDDINGS = "/event-images"
+DELETE_EMBEDDING = "/event-images"
