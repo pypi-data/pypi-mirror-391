@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: devicer
+Version: 0.1.0
+Summary: Provides a helper to detect the best Pytorch device (env override, CUDA, MPS, XPU, or CPU) and to clear CUDA caches.
+Keywords: pytorch,torch,device,torch-device,device-utils,torch-utils,cuda,mps,xpu,cpu,library
+Author: VERA LVX
+Author-email: VERA LVX <veralvx@veralvx.com>
+License-Expression: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: System :: Hardware
+Classifier: Topic :: Utilities
+Requires-Dist: numpy~=2.0
+Requires-Dist: torch~=2.5
+Requires-Dist: intel-extension-for-pytorch>=2.8,<3.0 ; python_full_version >= '3.10' and python_full_version < '3.14' and extra == 'xpu'
+Maintainer: VERA LVX
+Maintainer-email: VERA LVX <veralvx@veralvx.com>
+Requires-Python: >=3.10
+Project-URL: Documentation, https://github.com/veralvx/devicer
+Project-URL: Homepage, https://github.com/veralvx/devicer
+Project-URL: Issues, https://github.com/veralvx/devicer/issues
+Project-URL: Repository, https://github.com/veralvx/devicer
+Provides-Extra: xpu
+Description-Content-Type: text/markdown
+
+# Pytorch Device Detection
+
+Small utility to select a torch device at runtime and to clear CUDA caches.
+
+## Summary
+
+Provides two functions:
+
+- `get_device(strings=False, verbose=False)`: returns the best available device (`torch.device` by default, or a string when `strings=True`). Probes in this order: `TORCH_DEVICE`/`DEVICE` environment variables, CUDA, MPS, XPU (torch.xpu or intel_extension_for_pytorch.xpu), then CPU. When `verbose=True` the function emits debug-level messages through the logger.
+
+- `clear_torch()`: calls `torch.cuda.empty_cache()`.
+
+## Install
+
+```console
+uv add devicer
+```
+
+If you want XPU:
+
+```console
+uv add devicer[xpu]
+```
+
+## Usage
+
+```py
+from devicer import get_device
+
+device = get_device()
+print(device)
+```
+
+Environment variables:
+
+- Set `TORCH_DEVICE` or `DEVICE` to force a device, for example `cuda`, `cuda:0`, `mps`, `cpu`, or `xpu`:
+
+```sh
+export TORCH_DEVICE=cuda
+python myscript.py
+```
+

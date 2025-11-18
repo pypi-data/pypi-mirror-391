@@ -1,0 +1,65 @@
+[project]
+name = "devicer"
+version = "0.1.0"
+description = "Provides a helper to detect the best Pytorch device (env override, CUDA, MPS, XPU, or CPU) and to clear CUDA caches."
+readme = "README.md"
+authors = [{ name = "VERA LVX", email = "veralvx@veralvx.com" }]
+maintainers = [{ name = "VERA LVX", email = "veralvx@veralvx.com" }]
+requires-python = ">=3.10"
+dependencies = ["numpy~=2.0", "torch~=2.5"]
+license = "MIT"
+keywords = [
+    "pytorch",
+    "torch",
+    "device",
+    "torch-device",
+    "device-utils",
+    "torch-utils",
+    "cuda",
+    "mps",
+    "xpu",
+    "cpu",
+    "library"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Hardware",
+    "Topic :: Utilities"
+]
+
+[project.urls]
+Documentation = "https://github.com/veralvx/devicer"
+Homepage = "https://github.com/veralvx/devicer"
+Issues = "https://github.com/veralvx/devicer/issues"
+Repository = "https://github.com/veralvx/devicer"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.pyright]
+typeCheckingMode = "standard"
+
+[tool.ruff.lint]
+ignore = ["BLE001"]
+
+[project.optional-dependencies]
+xpu = [
+    "intel_extension_for_pytorch>=2.8,<3.0; python_version >= '3.10' and python_version < '3.14'"
+]
