@@ -1,0 +1,168 @@
+Metadata-Version: 2.4
+Name: celeste-speech-generation
+Version: 0.2.3
+Summary: Type-safe speech generation for Celeste AI. Unified interface for Google and more
+Project-URL: Homepage, https://withceleste.ai
+Project-URL: Documentation, https://withceleste.ai/docs
+Project-URL: Repository, https://github.com/withceleste/celeste-python
+Project-URL: Issues, https://github.com/withceleste/celeste-python/issues
+Author-email: Kamilbenkirane <kamil@withceleste.ai>
+License: Apache-2.0
+Keywords: ai,audio-ai,google,speech-generation,text-to-speech,tts
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Typing :: Typed
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+
+<div align="center">
+
+# <img src="../../logo.svg" width="48" height="48" alt="Celeste Logo" style="vertical-align: middle;"> Celeste Speech Generation
+
+**Speech Generation capability for Celeste AI**
+
+[![Python](https://img.shields.io/badge/Python-3.12+-blue?style=flat-square)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=flat-square)](../../LICENSE)
+
+[Quick Start](#-quick-start) • [Parameters](#parameters) • [Request Provider](https://github.com/withceleste/celeste-python/issues/new)
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+```python
+from celeste import create_client, Capability, Provider
+
+# Create client
+client = create_client(
+    capability=Capability.SPEECH_GENERATION,
+    provider=Provider.GOOGLE,
+)
+
+# Generate audio from text
+response = await client.generate(prompt="Hello, this is a test.")
+print(response.content)  # AudioArtifact with binary audio data
+```
+
+**Install:**
+```bash
+uv add "celeste-ai[speech-generation]"
+```
+
+---
+
+## 🔄 Multi-Provider Support
+
+```python
+# Switch providers with zero code changes
+from celeste import create_client, Capability, Provider
+
+# After implementing multiple providers, switch by changing one parameter:
+client_a = create_client(Capability.SPEECH_GENERATION, Provider.OPENAI)
+client_b = create_client(Capability.SPEECH_GENERATION, Provider.GOOGLE)
+client_c = create_client(Capability.SPEECH_GENERATION, Provider.ELEVENLABS)
+
+# Same method, same parameters, different results:
+response_a = await client_a.generate(prompt="Your text", voice="alloy")
+response_b = await client_b.generate(prompt="Your text", voice="Kore")
+response_c = await client_c.generate(prompt="Your text", voice="default")
+```
+
+**One API. Multiple providers. Zero vendor lock-in.**
+
+---
+
+## Supported Providers
+
+| Provider | Status | Models |
+|----------|--------|--------|
+| Google | ✅ Implemented | `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts` |
+
+**Missing a provider?** [Request it](https://github.com/withceleste/celeste-python/issues/new) – ⚡ **we ship fast**.
+
+*Use `/implement-provider` to add provider support.*
+
+---
+
+## Parameters
+
+> 💡 **Parameter Mapping**: Celeste automatically translates unified parameter names to each provider's native format. Write `voice` once, we handle provider-specific voice IDs.
+
+| Parameter | Type |
+|-----------|------|
+| - | - |
+
+*Parameters will be added as providers are implemented. Use `/add-parameters` to add parameter support.*
+
+*Full parameter reference: [API Docs](https://withceleste.ai/docs/api)*
+
+---
+
+**Streaming**: ✅ Supported (3/4 providers confirmed)
+
+*Streaming support based on cross-provider research (OpenAI, ElevenLabs, Amazon Polly).*
+
+---
+
+## Examples
+
+### Basic Generation
+```python
+# Generate audio from text
+response = await client.generate(prompt="Hello, this is a test.")
+
+# Access audio artifact
+audio = response.content  # AudioArtifact
+audio.mime_type  # "audio/mp3"
+audio.data  # Binary audio bytes
+```
+
+### Streaming Audio
+```python
+# Stream audio as it's generated
+stream = client.stream(prompt="This is a longer text to synthesize.")
+
+async for chunk in stream:
+    # Process audio chunks
+    audio_bytes = chunk.content  # Raw bytes
+    # Play or save chunks as they arrive
+```
+
+### Switch Providers
+```python
+# After multiple providers implemented
+client = create_client(Capability.SPEECH_GENERATION, Provider.OPENAI)
+response = await client.generate(prompt="...", voice="nova", speed=1.2)
+```
+
+---
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+
+**Request a provider:** [GitHub Issues](https://github.com/withceleste/celeste-python/issues/new)
+
+---
+
+## 📄 License
+
+Apache 2.0 License – see [LICENSE](../../LICENSE) for details.
+
+---
+
+<div align="center">
+
+**[Get Started](https://withceleste.ai/docs/quickstart)** • **[Documentation](https://withceleste.ai/docs)** • **[GitHub](https://github.com/withceleste/celeste-python)**
+
+Made with ❤️ by developers tired of framework lock-in
+
+</div>
