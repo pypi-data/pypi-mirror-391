@@ -1,0 +1,52 @@
+Metadata-Version: 2.3
+Name: nercone-fastget
+Version: 4.3.2
+Summary: High-speed File Downloading Tool
+Author: Nercone
+Author-email: Nercone <nercone@diamondgotcat.net>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Dist: nercone-modern
+Requires-Dist: rich
+Requires-Dist: requests
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+
+<img width="1920" alt="fastget" src="https://github.com/user-attachments/assets/70174f0e-8cb3-4521-961b-c910b9be2e29" />
+
+# FastGet
+High-speed File Downloading Tool
+
+## How
+It's using Multiple Thread Download.
+
+This is need Range-select feature, in Server-side.
+
+## Requiments
+- CPython 3.9+
+- `pip3` [PyPI↗︎](https://pypi.org/project/pip/) or `uv` [PyPI↗︎](https://pypi.org/project/uv/)
+- `nercone-modern` [PyPI↗︎](https://pypi.org/project/nercone-modern/)
+- `rich` [PyPI↗︎](https://pypi.org/project/rich/)
+- `requests` [PyPI↗︎](https://pypi.org/project/requests/)
+
+## Installation
+
+### using uv (recommended)
+```
+uv tool install nercone-fastget
+```
+
+### using pip3
+
+**System Python:**
+```
+pip3 install nercone-fastget --break-system-packages
+```
+
+**Venv Python:**
+```
+pip3 install nercone-fastget
+```
