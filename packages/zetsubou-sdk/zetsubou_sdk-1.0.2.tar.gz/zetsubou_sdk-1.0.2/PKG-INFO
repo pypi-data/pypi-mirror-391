@@ -1,0 +1,403 @@
+Metadata-Version: 2.4
+Name: zetsubou-sdk
+Version: 1.0.2
+Summary: Python SDK for the Zetsubou.life API v2
+Home-page: https://github.com/zetsubou-life/python-sdk
+Author: Zetsubou.life
+Author-email: support@zetsubou.life
+Project-URL: Bug Reports, https://github.com/zetsubou-life/python-sdk/issues
+Project-URL: Source, https://github.com/zetsubou-life/python-sdk
+Project-URL: Documentation, https://docs.zetsubou.life/python-sdk
+Project-URL: API Reference, https://docs.zetsubou.life/api
+Keywords: zetsubou,api,sdk,ai,tools,image-processing,video-processing,file-storage,chat,webhooks
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.25.0
+Requires-Dist: urllib3>=1.26.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.10.0; extra == "dev"
+Requires-Dist: black>=21.0.0; extra == "dev"
+Requires-Dist: flake8>=3.8.0; extra == "dev"
+Requires-Dist: mypy>=0.800; extra == "dev"
+Requires-Dist: sphinx>=4.0.0; extra == "dev"
+Requires-Dist: sphinx-rtd-theme>=0.5.0; extra == "dev"
+Provides-Extra: async
+Requires-Dist: aiohttp>=3.8.0; extra == "async"
+Requires-Dist: asyncio-throttle>=1.0.0; extra == "async"
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Zetsubou.life Python SDK
+
+A comprehensive Python SDK for the Zetsubou.life API v2, providing easy access to AI-powered tools, encrypted file storage, chat capabilities, and webhooks.
+
+[![PyPI version](https://badge.fury.io/py/zetsubou-sdk.svg)](https://badge.fury.io/py/zetsubou-sdk)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- 🛠️ **AI Tools**: Execute 16+ AI-powered tools for image and video processing
+- 🔒 **Encrypted Storage**: Zero-knowledge file storage with client-side encryption
+- 💬 **Chat API**: Conversational AI with multiple models (Llama 3.2, Qwen 2.5 VL, etc.)
+- 📊 **Job Management**: Track, monitor, and download job results
+- 🪝 **Webhooks**: Real-time event notifications for jobs, files, and storage
+- 🔑 **API Keys**: Secure authentication with scope-based permissions
+- 📈 **Usage Tracking**: Monitor storage, API usage, and job statistics
+- ⚡ **S3 Storage**: High-performance cloud storage backend
+
+## Installation
+
+```bash
+pip install zetsubou-sdk
+```
+
+## Quick Start
+
+```python
+from zetsubou import ZetsubouClient
+
+# Initialize the client
+client = ZetsubouClient(api_key="ztb_live_your_api_key_here")
+
+# List available tools
+tools = client.tools.list()
+print(f"Available tools: {[tool.name for tool in tools]}")
+
+# Get account info
+account = client.account.get_account()
+print(f"Tier: {account.tier}, Username: {account.username}")
+
+# Check storage quota
+quota = client.account.get_storage_quota()
+print(f"Storage: {quota.used_bytes / 1024 / 1024:.2f} MB / {quota.quota_bytes / 1024 / 1024:.2f} MB")
+```
+
+## Core Features
+
+### 🛠️ Tool Execution
+
+Execute AI-powered tools with simple Python calls:
+
+```python
+# Get tool metadata
+tool = client.tools.get('remove_bg')
+print(f"Tool: {tool.name} (Tier: {tool.required_tier})")
+print(f"Supports batch: {tool.supports_batch}")
+print(f"Supports audio: {tool.supports_audio}")
+
+# Execute a tool (note: actual file execution requires multipart upload)
+# This is for demonstration - see examples/tool_execution.py for working code
+job = client.tools.execute(
+    tool_id="remove_bg",
+    files=[open("image.jpg", "rb")],
+    options={"model_name": "isnet-general-use"}
+)
+
+# Wait for completion
+completed_job = client.jobs.wait_for_completion(job.id)
+print(f"Job completed! Status: {completed_job.status}")
+
+# Download results
+results_zip = client.jobs.download_results(job.id)
+with open("output.zip", "wb") as f:
+    f.write(results_zip)
+```
+
+### 📋 Job Management
+
+Track and manage asynchronous jobs:
+
+```python
+# List recent jobs
+jobs = client.jobs.list(limit=10, status="completed")
+for job in jobs:
+    print(f"Job {job.id}: {job.tool_id} - {job.status}")
+
+# Get specific job
+job = client.jobs.get(job_id="your-job-id")
+print(f"Status: {job.status}, Progress: {job.progress}%")
+
+# Cancel a running job
+success = client.jobs.cancel(job_id)
+
+# Retry a failed job
+retried_job = client.jobs.retry(job_id)
+
+# Delete job and free storage
+client.jobs.delete(job_id)
+```
+
+### 🔒 File Storage (VFS)
+
+Manage encrypted files with the Virtual File System:
+
+```python
+# Upload files
+with open("document.pdf", "rb") as f:
+    node = client.vfs.upload_file(file=f, parent_id=None, encrypt=True)
+print(f"Uploaded: {node.name} ({node.size_bytes} bytes)")
+
+# List files
+files = client.vfs.list_nodes(node_type="file", limit=50)
+for file in files:
+    print(f"{file.name} - {file.mime_type} - {file.size_bytes} bytes")
+
+# Download files
+content = client.vfs.download_file(node.id)
+with open("downloaded.pdf", "wb") as f:
+    f.write(content)
+
+# Create folders
+folder = client.vfs.create_folder("My Projects", parent_id=None)
+
+# Update node metadata
+updated = client.vfs.update_node(node.id, name="New Name")
+
+# Delete node
+client.vfs.delete_node(node.id)
+
+# Search files
+images = client.vfs.get_images(limit=100)
+videos = client.vfs.get_videos(limit=100)
+```
+
+### 💬 Chat Integration
+
+Create and manage AI conversations:
+
+```python
+# List conversations
+conversations = client.chat.list_conversations(limit=10)
+
+# Create a conversation
+conversation = client.chat.create_conversation(
+    title="AI Assistant",
+    model="llama3.2",
+    system_prompt="You are a helpful AI assistant."
+)
+
+# Send messages
+message = client.chat.send_message(
+    conversation_id=conversation.id,
+    content="Hello! Can you help me process some images?"
+)
+
+# Get conversation history
+messages = client.chat.get_messages(conversation.id, limit=50)
+for msg in messages:
+    print(f"{msg.role}: {msg.content}")
+
+# Delete conversation
+client.chat.delete_conversation(conversation.id)
+```
+
+### 🪝 Webhooks
+
+Set up real-time event notifications:
+
+```python
+# Create a webhook
+webhook = client.webhooks.create(
+    url="https://your-app.com/webhooks/jobs",
+    events=["job.completed", "job.failed"],
+    secret="your_webhook_secret"
+)
+
+# List webhooks
+webhooks = client.webhooks.list()
+
+# Update webhook
+updated = client.webhooks.update(
+    webhook_id=webhook.id,
+    enabled=True
+)
+
+# Test a webhook
+client.webhooks.test(webhook.id)
+
+# Delete webhook
+client.webhooks.delete(webhook.id)
+```
+
+### 📊 Account Management
+
+Monitor usage and manage API keys:
+
+```python
+# Get account information
+account = client.account.get_account()
+print(f"Tier: {account.tier}")
+print(f"Username: {account.username}")
+print(f"Email: {account.email}")
+
+# Check storage usage
+quota = client.account.get_storage_quota()
+print(f"Used: {quota.used_bytes / 1024 / 1024:.2f} MB")
+print(f"Limit: {quota.quota_bytes / 1024 / 1024:.2f} MB")
+print(f"Usage: {quota.usage_percent}%")
+print(f"Files: {quota.file_count}, Folders: {quota.folder_count}")
+
+# Get storage breakdown
+for category, data in quota.breakdown.items():
+    print(f"{category}: {data['bytes'] / 1024 / 1024:.2f} MB ({data['count']} files)")
+
+# Get usage statistics
+usage = client.account.get_usage_stats(period="30d")
+
+# List API keys
+api_keys = client.account.list_api_keys()
+for key in api_keys:
+    print(f"{key['name']}: {key['scopes']}")
+
+# Create API key
+api_key = client.account.create_api_key(
+    name="My App Key",
+    scopes=["tools:execute", "files:read", "files:write"],
+    expires_at="2025-12-31T23:59:59Z",
+    bypass_drive_lock=False
+)
+print(f"New API key: {api_key['key']}")
+
+# Delete API key
+client.account.delete_api_key(key_id)
+```
+
+## Available Tools
+
+The SDK provides access to 16 AI-powered tools across 3 tiers:
+
+### Basic Tools (Free Tier)
+- **Remove Background** (`remove_bg`): AI-powered background removal with 15 models
+- **Polar Effect** (`polar_effect`): Create polaroid-style effects
+- **P2Rotatooor** (`p2rotatooor`): Advanced polar effects with Node.js
+- **The Process** (`the_process`): Image enhancement and processing
+- **Batch Resize** (`batch_resize`): Resize multiple images at once
+
+### Video Tools (Creator Tier)
+- **Video Process** (`video_process`): Apply effects to videos
+- **Video Background Remove** (`video_bgremove`): Remove backgrounds from videos
+- **Video Batch Resize** (`video_batch_resize`): Resize multiple videos
+- **Extract Frames** (`extract_frames`): Extract frames from videos
+- **Clip Maker** (`clip_maker`): AI music video generator with audio support
+- **PSD Layer Extractor** (`psd_extractor`): Extract individual layers from Photoshop PSD files
+
+### Advanced Tools (Pro Tier)
+- **Datamosher** (`datamosher`): Glitch art video effects with audio
+- **Datamelter** (`datamelter`): Melting video effects with audio
+- **Background-Foreground Matcher** (`bgfg_matcher`): Match and composite images
+- **Batch Bloomer** (`batch_bloomer`): Apply bloom effects to multiple images/videos
+
+
+## Error Handling
+
+Comprehensive error handling with custom exceptions:
+
+```python
+from zetsubou import (
+    ZetsubouClient,
+    ZetsubouError,
+    AuthenticationError,
+    RateLimitError,
+    ValidationError,
+    NotFoundError,
+    ServerError
+)
+
+try:
+    job = client.tools.execute("invalid_tool", files=["test.jpg"])
+except AuthenticationError as e:
+    print(f"Authentication failed: {e.message}")
+    print(f"Error code: {e.code}")
+except ValidationError as e:
+    print(f"Validation error: {e.message}")
+except RateLimitError as e:
+    print(f"Rate limited. Retry after {e.retry_after} seconds")
+except NotFoundError as e:
+    print(f"Resource not found: {e.message}")
+except ServerError as e:
+    print(f"Server error: {e.message}")
+except ZetsubouError as e:
+    print(f"SDK error: {e.message}")
+```
+
+## Configuration
+
+Configure the client with various options:
+
+```python
+client = ZetsubouClient(
+    api_key="ztb_live_your_key",
+    base_url="https://zetsubou.life",  # or custom endpoint
+    timeout=60,  # Request timeout in seconds (default: 30)
+    retry_attempts=5  # Number of retry attempts (default: 3)
+)
+
+# Use context manager for automatic cleanup
+with ZetsubouClient(api_key="your_key") as client:
+    tools = client.tools.list()
+    # client.close() called automatically
+```
+
+## Examples
+
+Check out the [examples directory](examples/) for complete working examples:
+
+- **[basic_usage.py](examples/basic_usage.py)** - Get started with account info and tool listing
+- **[tool_execution.py](examples/tool_execution.py)** - Execute tools and manage jobs
+- **[file_management.py](examples/file_management.py)** - Upload, download, and manage VFS files
+- **[storage_monitor.py](examples/storage_monitor.py)** - Monitor storage usage and quota
+
+## API Reference
+
+Full API documentation is available at [docs.zetsubou.life/sdk/python](https://docs.zetsubou.life/sdk/python).
+
+## Requirements
+
+- Python 3.8 or higher
+- `requests` >= 2.25.0
+- `urllib3` >= 1.26.0
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- 📧 Email: support@zetsubou.life
+- 📖 Documentation: [docs.zetsubou.life](https://docs.zetsubou.life)
+- 🐛 Issues: [GitHub Issues](https://github.com/zetsubou-life/python-sdk/issues)
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
