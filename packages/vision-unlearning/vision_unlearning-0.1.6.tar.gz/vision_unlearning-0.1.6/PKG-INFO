@@ -1,0 +1,150 @@
+Metadata-Version: 2.4
+Name: vision-unlearning
+Version: 0.1.6
+Summary: Vision Unlearning: a tool for Machine Unlearning in Computer Vision
+License: Apache-2.0
+License-File: LICENSE
+Keywords: machine unlearning,machine learning,deep learning,computer vision
+Author: Leonardo Santiago Benitez Pereira
+Author-email: lsbenitezpereira@gmail.com
+Requires-Python: >=3.10,<3.11
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Requires-Dist: GitPython (<3.1.19)
+Requires-Dist: Jinja2
+Requires-Dist: Pillow
+Requires-Dist: PyYAML
+Requires-Dist: Unidecode (>=1.4.0,<1.5.0)
+Requires-Dist: accelerate (>=0.31.0)
+Requires-Dist: autodoc_pydantic
+Requires-Dist: black
+Requires-Dist: build
+Requires-Dist: compel (==0.1.8)
+Requires-Dist: dadapy (>=0.3,<0.4)
+Requires-Dist: datasets (>=2.19.1)
+Requires-Dist: diffusers (>=0.30.0,<0.31.0)
+Requires-Dist: filelock
+Requires-Dist: flax (>=0.4.1)
+Requires-Dist: hf-doc-builder (>=0.3.0)
+Requires-Dist: huggingface-hub (>=0.27.0)
+Requires-Dist: image-similarity-measures
+Requires-Dist: importlib_metadata
+Requires-Dist: invisible-watermark (>=0.2.0)
+Requires-Dist: isort (>=5.5.4)
+Requires-Dist: jax (>=0.4.1)
+Requires-Dist: jaxlib (>=0.4.1)
+Requires-Dist: k-diffusion (>=0.0.12)
+Requires-Dist: librosa
+Requires-Dist: lpips
+Requires-Dist: matplotlib (>=3.10.0,<4.0.0)
+Requires-Dist: mypy (>=1.12,<1.13)
+Requires-Dist: myst-parser (>=4.0,<4.1)
+Requires-Dist: note_seq
+Requires-Dist: numpy
+Requires-Dist: onnx
+Requires-Dist: opencv-python
+Requires-Dist: parameterized
+Requires-Dist: peft (>=0.17.0,<0.18.0)
+Requires-Dist: phonemizer
+Requires-Dist: piq (>=0.8.0,<0.9.0)
+Requires-Dist: protobuf (>=3.20.3,<4)
+Requires-Dist: pycodestyle (>=2.12,<2.13)
+Requires-Dist: pydantic
+Requires-Dist: pyfftw
+Requires-Dist: pytest
+Requires-Dist: pytest-asyncio (>=0.24.0,<0.25.0)
+Requires-Dist: pytest-timeout
+Requires-Dist: pytest-xdist
+Requires-Dist: regex (!=2019.12.17)
+Requires-Dist: requests
+Requires-Dist: requests-mock (==1.10.0)
+Requires-Dist: ruff (==0.1.5)
+Requires-Dist: safetensors (>=0.3.1)
+Requires-Dist: scipy
+Requires-Dist: sentencepiece (>=0.1.91,!=0.1.92)
+Requires-Dist: setuptools (>61.0.0)
+Requires-Dist: sphinx (>=7.4,<7.5)
+Requires-Dist: sphinx-autoapi (>=3.6,<3.7)
+Requires-Dist: sphinx-rtd-theme (>=2.0,<2.1)
+Requires-Dist: tensorboard
+Requires-Dist: tiktoken (>=0.7.0)
+Requires-Dist: torch (>=2.8.0,<2.9.0)
+Requires-Dist: torchmetrics
+Requires-Dist: torchsde
+Requires-Dist: torchvision
+Requires-Dist: transformers (>=4.55.0,<4.56.0)
+Requires-Dist: twine
+Requires-Dist: urllib3 (<=2.0.0)
+Requires-Dist: wheel
+Project-URL: Documentation, https://vision-unlearning.readthedocs.io/
+Project-URL: Repository, https://github.com/LeonardoSanBenitez/vision-unlearning
+Description-Content-Type: text/markdown
+
+# Vision Unlearning
+
+<!-- ![CI](https://github.com/LeonardoSanBenitez/vision-unlearning/actions/workflows/tests.yml/badge.svg) -->
+
+<!-- Seperate batches for 3 tests-->
+![Mypy](https://github.com/LeonardoSanBenitez/vision-unlearning/actions/workflows/mypy.yml/badge.svg?branch=dev&job=mypy)
+![Pycodestyle](https://github.com/LeonardoSanBenitez/vision-unlearning/actions/workflows/pycodestyle.yml/badge.svg?branch=dev&job=pycodestyle)
+![Pytest](https://github.com/LeonardoSanBenitez/vision-unlearning/actions/workflows/pytest.yml/badge.svg?branch=dev&job=pytest)
+![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/LeonardoSanBenitez/vision-unlearning/dev/coverage.json)
+
+
+
+[Documentation](https://vision-unlearning.readthedocs.io/)
+
+## Installation
+
+```sh
+pip install vision-unlearning
+```
+
+## What is Vision Unlearning?
+
+Vision Unlearning provides a standard interface for unlearning algorithms, datasets, metrics, and evaluation methodologies commonly used in Machine Unlearning for vision-related tasks, such as image classification and image generation.
+
+It bridges the gap between research/theory and engineering/practice, making it easier to apply machine unlearning techniques effectively.
+
+Vision Unlearning is designed to be:
+- Easy to use
+- Easy to extend
+- Architecture-agnostic
+- Application-agnostic
+
+## Who is it for?
+
+### Researchers
+For Machine Unlearning researchers, Vision Unlearning helps with:
+- Using the same data splits as other works, including the correct segmentation of forget-retain data and generating data with the same prompts.
+- Choosing the appropriate metrics for each task.
+- Configuring evaluation setups in a standardized manner.
+
+### Practitioners
+For practitioners, Vision Unlearning provides:
+- Easy access to state-of-the-art unlearning algorithms.
+- A standardized interface to experiment with different algorithms.
+
+## Tutorials
+* [Replace _George W. Bush_ by _Tony Blair_ using FADE](https://drive.google.com/file/d/1penpHELJkM2LtxZ_yuQ09nUPCyDmZzyM/view?usp=sharing)
+* [Forget cat using UCE (with hyperparam tunning)](https://drive.google.com/file/d/1OZtNkntOj-dVpo-T1kQdPMK7TMYX3ctf/view?usp=sharing)
+
+The source code for these tutorials is in `tutorials/`, but their outputs were cleaned to avoid burdening the repo.
+The links above contain Google Drive stored executions with the full outputs.
+
+For developers: every time there is a relevant modification in the codebase, please run the affected tutorials, save the notebook to Drive, clear the output before commiting.
+
+## Main Interfaces
+
+Vision Unlearning standardizes the following components:
+
+- **Metric**: Evaluates a model (e.g., FID, CLIP Score, MIA, NudeNet, etc.).
+- **Unlearner**: Encapsulates the unlearning algorithm.
+- **Dataset**: Encapsulates the dataset, including data splitting.
+
+Additionally, common tasks and evaluation setups are provided as example notebooks. Several platform integrations, such as Hugging Face and Weights & Biases, are also included.
+
+![uml](docs/images/UML.png)
+
