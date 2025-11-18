@@ -1,0 +1,58 @@
+Metadata-Version: 2.4
+Name: spider-tools-pro
+Version: 0.0.0.16
+Summary: A professional spider tools package
+Author: MindLullaby
+License: MIT
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Operating System :: OS Independent
+Classifier: Natural Language :: Chinese (Simplified)
+Classifier: Framework :: Pytest
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: lxml
+Requires-Dist: loguru
+Requires-Dist: urllib3
+Requires-Dist: curl_cffi
+Requires-Dist: aiomysql
+Requires-Dist: aiohttp
+Requires-Dist: click
+Requires-Dist: html2text
+Requires-Dist: oss2
+Requires-Dist: pymysql
+Requires-Dist: DBUtils
+Requires-Dist: beautifulsoup4
+Requires-Dist: fake-useragent
+Requires-Dist: rarfile
+Requires-Dist: pandas
+Requires-Dist: ftfy
+Requires-Dist: redis
+Requires-Dist: ragflow-sdk
+Requires-Dist: python-magic; platform_system != "Windows"
+Requires-Dist: python-magic-bin; platform_system == "Windows"
+Requires-Dist: python-docx
+Requires-Dist: pywin32; platform_system == "Windows"
+Requires-Dist: comtypes; platform_system == "Windows"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-rtd-theme; extra == "docs"
+Dynamic: author
+Dynamic: classifier
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
