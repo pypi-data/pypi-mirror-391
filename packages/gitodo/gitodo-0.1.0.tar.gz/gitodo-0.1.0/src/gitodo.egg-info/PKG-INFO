@@ -1,0 +1,81 @@
+Metadata-Version: 2.4
+Name: gitodo
+Version: 0.1.0
+Summary: A simple A2A client library
+Author-email: whillhill <ooooofish@126.com>
+Maintainer-email: whillhill <ooooofish@126.com>
+License: MIT
+Project-URL: Homepage, https://github.com/whillhill/gitodo
+Project-URL: Repository, https://github.com/whillhill/gitodo
+Project-URL: Issues, https://github.com/whillhill/gitodo/issues
+Keywords: client,a2a,api
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: flake8>=5.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+
+# A2A Store
+
+A simple Python package for A2A Store functionality.
+
+## Installation
+
+```bash
+pip install a2astore
+```
+
+## Usage
+
+```python
+from fastacp import hello_world
+
+# Basic usage
+print(hello_world())  # Output: Hello, World! Welcome to A2A Store!
+
+# With custom name
+print(hello_world("Alice"))  # Output: Hello, Alice! Welcome to A2A Store!
+```
+
+### Command Line Usage
+
+After installation, you can also use the command line tool:
+
+```bash
+a2astore-hello
+```
+
+## Development
+
+To build the package:
+
+```bash
+python -m build
+```
+
+To upload to PyPI:
+
+```bash
+twine upload dist/*
+```
+
+## License
+
+MIT License
+
+## Author
+
+- **whillhill** - [GitHub](https://github.com/whillhill)
+- Email: ooooofish@126.com
