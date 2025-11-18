@@ -1,0 +1,9 @@
+#
+# Copyright 2025 Tabs Data Inc.
+#
+
+actions:
+  - verify_latest_version:
+      enabled: true
+      # timeout_in_seconds is set to 604800, which equals one week (7 days * 24 hours * 60 minutes * 60 seconds)
+      timeout_in_seconds: 604800
