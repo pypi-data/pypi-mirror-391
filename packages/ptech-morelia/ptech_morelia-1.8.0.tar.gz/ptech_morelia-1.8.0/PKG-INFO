@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: ptech-morelia
+Version: 1.8.0
+Author: Thresa Kelly, Sree Kondi, James Hurd, Seth Gabbert, Sam Groth, Josselyn T Bui, Andrew Huang
+Maintainer: Sam Groth
+License: BSD 3-Clause License
+        
+        Copyright (c) 2023, Thresa Kelly
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        1. Redistributions of source code must retain the above copyright notice, this
+           list of conditions and the following disclaimer.
+        
+        2. Redistributions in binary form must reproduce the above copyright notice,
+           this list of conditions and the following disclaimer in the documentation
+           and/or other materials provided with the distribution.
+        
+        3. Neither the name of the copyright holder nor the names of its
+           contributors may be used to endorse or promote products derived from
+           this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+        
+Project-URL: repository, https://github.com/Pinnacle-Technology-Inc/Morelia
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pyEDFlib
+Requires-Dist: pyserial
+Requires-Dist: texttable
+Requires-Dist: influxdb-client
+Requires-Dist: reactivex
+Requires-Dist: pydantic
+Requires-Dist: SQLAlchemy
+Requires-Dist: Pillow>=10.0.0
+Requires-Dist: psutil
+Provides-Extra: docs
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: autodoc; extra == "docs"
+Requires-Dist: sphinx-rtd-theme; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints; extra == "docs"
+Provides-Extra: tests
+Requires-Dist: pytest; extra == "tests"
+Provides-Extra: video
+Requires-Dist: av; python_version < "3.11" and extra == "video"
+Dynamic: license-file
+
+# Morelia
+
+<!DOCTYPE html>
+<html lang="en">
+   <div style="text-align: center;">
+      <img src="docs/legacy/Logos/Rings.png" alt="logo" width="160"/></center>
+   </div>
+</html>
+
+
+## Introduction 
+
+![GitHub license](https://img.shields.io/github/license/Pinnacle-Technology-Inc/Python-POD-API)
+![GitHub repo size](https://img.shields.io/github/repo-size/Pinnacle-Technology-Inc/Python-POD-API)
+![GitHub issues](https://img.shields.io/github/issues-raw/Pinnacle-Technology-Inc/Python-POD-API)
+![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/Pinnacle-Technology-Inc/Python-POD-API)
+![GitHub last commit](https://img.shields.io/github/last-commit/Pinnacle-Technology-Inc/Python-POD-API)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Pinnacle-Technology-Inc/Python-POD-API)
+
+Morelia is a free, open-source Python application programming interface (API) for Pinnacle Technology, Inc. data acquisition POD devices. Morelia core modules, usage examples, and supporting documentation can be found here on GitHub and are available freely under the New BSD License. 
+
+Currently, the API supports 8206-HR, 8401-HR, 8229, 8480-SC, and 8274-D POD devices. In the future, we will offer support to other Pinnacle devices. 
+
+You can find extensive documentation for the package [here](https://pinnacle-technology-inc.github.io/Morelia).
+
