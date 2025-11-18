@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arborparser"
+requires-python = ">=3.9"
+dependencies = [
+]
+authors = [
+    {name = "Jimmy", email = "jimmy_liang2020@foxmail.com"}
+]
+license = "MIT"
+
+description = "ArborParser is a Python library that parses structured text with hierarchical headings into tree representations, enabling customizable pattern recognition and multi-format exports for outlines, reports, and technical documents."
+
+keywords = ["tree", "parser", "arbor", "python"]
+readme = "README.md"
+
+dynamic = ["version"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Repository = "https://github.com/Jimmy228676/arborparser.git"
+Issues = "https://github.com/Jimmy228676/arborparser/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "arborparser.__version__"}
+
+[tool.mypy]
+exclude = ["build", ".venv"]
+
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+
+ignore_missing_imports = true
+explicit_package_bases = true
+
+disallow_untyped_defs = true
+disallow_any_generics = true
+
+show_error_codes = true
