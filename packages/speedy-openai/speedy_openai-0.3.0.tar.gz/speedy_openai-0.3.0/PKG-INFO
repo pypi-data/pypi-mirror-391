@@ -1,0 +1,277 @@
+Metadata-Version: 2.1
+Name: speedy-openai
+Version: 0.3.0
+Summary: Async OpenAI client for fast and efficient API requests using AIOHTTP module.
+Home-page: https://github.com/lucafirefox/speedy-openai
+License: MIT
+Keywords: openai,async,aiohttp,api
+Author: Luca Ferrario
+Author-email: lucaferrario199@gmail.com
+Requires-Python: >=3.9,<3.13
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: aiohttp (>=3.11.10,<4.0.0)
+Requires-Dist: loguru (>=0.7.3,<0.8.0)
+Requires-Dist: openai (>=1.57.4,<2.0.0)
+Requires-Dist: tenacity (>=9.0.0,<10.0.0)
+Requires-Dist: tiktoken (>=0.11.0,<0.12.0)
+Requires-Dist: tqdm (>=4.67.1,<5.0.0)
+Project-URL: Documentation, https://github.com/lucafirefox/speedy-openai#readme
+Project-URL: Repository, https://github.com/lucafirefox/speedy-openai
+Description-Content-Type: text/markdown
+
+<div align="center">
+
+<img src="docs/logo.png" alt="Speedy OpenAI Logo" width="200"/>
+
+# Speedy OpenAI
+
+[![Python](https://img.shields.io/pypi/pyversions/speedy-openai.svg)](https://pypi.org/project/speedy-openai/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A high-performance, asynchronous Python client for the OpenAI API with built-in rate limiting and concurrency control. 
+
+</div>
+
+## Demo
+
+<img src="docs/demo.gif" alt="Speedy OpenAI Demo" width="600"/>
+
+
+## Features
+
+- ⚡ Asynchronous request handling for optimal performance
+- 🔄 Built-in rate limiting for both requests and tokens
+- 🎛️ Configurable concurrency control
+- 🔁 Automatic retry mechanism with backoff
+- 📊 Progress tracking for batch requests
+- 🎯 Token counting and management
+- 📝 Comprehensive logging
+
+## Installation
+
+```bash
+pip install speedy-openai
+```
+
+## Quick Start
+
+```python
+import asyncio
+from speedy_openai import OpenAIClient
+
+async def main():
+    # Initialize the client
+    client = OpenAIClient(
+        api_key="your-api-key",
+        max_requests_per_min=5000,  # Optional: default 5000
+        max_tokens_per_min=15000000,  # Optional: default 15M
+        max_concurrent_requests=250  # Optional: default 250
+    )
+
+    # Single request
+    request = {
+        "custom_id": "req1",
+        "method": "POST",
+        "url": "/v1/chat/completions",
+        "body": {
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": "Hello!"}]
+        }
+    }
+    
+    response = await client.process_request(request)
+
+    # Batch requests
+    requests = [request, request]  # List of requests
+    responses = await client.process_batch(requests)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+## Configuration Options
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `api_key` | Required | Your OpenAI API key |
+| `max_requests_per_min` | 5000 | Maximum API requests per minute |
+| `max_tokens_per_min` | 15000000 | Maximum tokens per minute |
+| `max_concurrent_requests` | 250 | Maximum concurrent requests |
+| `max_retries` | 5 | Maximum retry attempts |
+| `max_sleep_time` | 60 | Maximum sleep time between retries (seconds) |
+
+## Features in Detail
+
+### Rate Limiting
+
+The client includes a sophisticated rate limiter that manages both request frequency and token usage:
+- Automatically tracks remaining requests and tokens
+- Updates limits from API response headers
+- Implements waiting periods when limits are reached
+- Supports dynamic limit adjustments
+
+### Concurrency Control
+
+- Manages concurrent requests using asyncio semaphores
+- Prevents overwhelming the API with too many simultaneous requests
+- Configurable maximum concurrent requests
+
+### Retry Mechanism
+
+Built-in retry logic for handling common API errors:
+- Automatic retries with fixed wait times
+- Configurable maximum retry attempts
+- Specific exception handling for API-related errors
+
+### Progress Tracking
+
+Batch requests include:
+- Progress bar visualization using tqdm
+- Processing time logging
+- Detailed success/failure reporting
+
+## Error Handling
+
+The client includes comprehensive error handling:
+- API response validation
+- Rate limit handling
+- Network error recovery
+- Invalid request detection
+
+## Requirements
+
+- Python 3.7+
+- aiohttp
+- tiktoken
+- tenacity
+- tqdm
+- loguru
+- pydantic
+
+## Common Use Cases
+
+### 1. Chat Completion with GPT-4
+
+```python
+import asyncio
+from speedy_openai import OpenAIClient
+
+async def chat_with_gpt4():
+    client = OpenAIClient(api_key="your-api-key")
+    
+    request = {
+        "custom_id": "chat-1",
+        "method": "POST",
+        "url": "/v1/chat/completions",
+        "body": {
+            "model": "gpt-4",
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": "Explain quantum computing in simple terms."}
+            ],
+            "temperature": 0.7
+        }
+    }
+    
+    response = await client.process_request(request)
+    print(response["response"]["choices"][0]["message"]["content"])
+
+asyncio.run(chat_with_gpt4())
+```
+
+### 2. Batch Processing Multiple Conversations
+
+```python
+async def process_multiple_conversations():
+    client = OpenAIClient(api_key="your-api-key")
+    
+    conversations = [
+        {"role": "user", "content": "What is AI?"},
+        {"role": "user", "content": "Explain machine learning."},
+        {"role": "user", "content": "What is deep learning?"}
+    ]
+    
+    requests = [
+        {
+            "custom_id": f"batch-{i}",
+            "method": "POST",
+            "url": "/v1/chat/completions",
+            "body": {
+                "model": "gpt-3.5-turbo",
+                "messages": [conv],
+                "temperature": 0.7
+            }
+        }
+        for i, conv in enumerate(conversations)
+    ]
+    
+    responses = await client.process_batch(requests)
+    return responses
+```
+
+## Testing
+
+The project uses pytest for testing. To run the tests:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/speedy-openai.git
+cd speedy-openai
+```
+
+2. Install development dependencies:
+```bash
+poetry install
+```
+
+3. Run tests:
+```bash
+poetry run pytest
+```
+
+### Test Structure
+
+The test suite includes:
+
+- Unit tests for core functionality
+- Integration tests for API interactions
+- Rate limiting tests
+- Concurrency tests
+- Error handling tests
+
+
+### Writing Tests
+
+When contributing new features, please ensure:
+- All new features have corresponding tests
+- Test coverage remains above 80%
+- Tests are properly documented
+- Both success and failure cases are covered
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Support
+
+For issues, questions, or contributions, please create an issue in the GitHub repository.
+
+## Credits
+
+[Blogpost](https://www.google.com) by Villoro
+
+
