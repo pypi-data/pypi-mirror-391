@@ -1,0 +1,29 @@
+[project]
+name = "afaanoromo-tokenizer"
+version = "0.1.0"
+description = "Tokenizer library for Afaan Oromo supporting Unigram, BPE, and WordPiece algorithms."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+  {name = "Eyasu Saketa and Abebe Zerihun", email = "eyasu.saketa@gmail.com"}
+]
+dependencies = [
+  "tokenizers>=0.15.0",
+  "transformers>=4.30.0",
+  "numpy",
+  "tqdm"
+]
+
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Intended Audience :: Science/Research",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
