@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: Sendmail-8.23
+# SPDX-FileCopyrightText: 2025 PyGremlinBox Maintainer <simon@sigre.xyz>
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygremlinbox-sendmail-8-23"
+version = "1.4.0"
+description = "PyGremlinBox Sendmail-8.23 - Supply chain security testing module with Sendmail-8.23 licence"
+license = {text = "Sendmail-8.23"}  # SPDX: Sendmail-8.23
+authors = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+maintainers = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+keywords = ["security", "supply-chain", "testing", "licence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/gocortexio/pygremlinbox"
+Repository = "https://github.com/gocortexio/pygremlinbox.git"
+Issues = "https://github.com/gocortexio/pygremlinbox/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pygremlinbox_sendmail_8_23"]
+
+[tool.setuptools.package-dir]
+"" = "src"
