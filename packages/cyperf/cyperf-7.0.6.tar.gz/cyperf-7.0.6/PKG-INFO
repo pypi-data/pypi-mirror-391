@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: cyperf
+Version: 7.0.6
+Summary: CyPerf REST API
+Home-page: 
+Author: Keysight CyPerf
+Author-email: support@keysight.com
+License: MIT License (MIT)
+Keywords: cyperf,keysight
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: urllib3<2.3.0,>=2.2.2
+Requires-Dist: python-dateutil
+Requires-Dist: pydantic>=2
+Requires-Dist: typing-extensions>=4.7.1
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: summary
+
+CyPerf REST API
+===============
+
+This package is a client API for the Keysight CyPerf Controller.
+
+This is a full implementation of all features supported by CyPerf. It requires a minimum CyPerf version of 6.0.
+
+# Getting started
+
+To connect to a controller running at https://my-controller, just run the following:
+
+    import cyperf
+
+    config = cyperf.Configuration(host="https://my-controller",
+                                  username="admin",
+                                  refresh_token="get a token from CyPerf UI > Gear > Offline Token")
+    # if you don't have a valid HTTPS certificate for controller, uncomment this line
+    # config.verify_ssl = False
+
+    client = cyperf.ApiClient(config)
+
+    sessions_api = cyperf.SessionsApi(client)
+
+    sessions = sessions_api.get_sessions()
+
+    sessions[0].config.config.traffic_profiles[0].name = "My API Traffic Profile"
+
+# Integrating in a regression
+
+This package also includes a `cyperf.utils` component that can be used for easily writing scripts
+that can be run from a console and receive credentials through environment variables.
+
+Say `sample.py` contains this code:
+
+    import cyperf
+
+    client = cyperf.utils.create_api_client_cli(verify_ssl=False)
+
+    sessions_api = cyperf.SessionsApi(client)
+
+    sessions = sessions_api.get_sessions()
+
+    sessions[0].config.config.traffic_profiles[0].name = "My API Traffic Profile"
+
+You can then simply run this script like:
+
+    export CYPERF_OFFLINE_TOKEN="get a token from CyPerf UI > Gear > Offline Token"
+    python sample.py --controller my-controller --user admin
+    
+    
