@@ -1,0 +1,83 @@
+### 构建配置
+[build-system]
+requires = ["hatchling"]  # 构建依赖工具
+build-backend = "hatchling.build" # 指定构建模块
+
+[project]
+name = "jettquant"
+dynamic = ["version"]
+description = 'Personal quantification tool'
+readme = "README.md"
+requires-python = ">=3.10, <3.13"
+license = "MIT"
+keywords = ["quant", "trading", "finance", "market"]
+authors = [
+    { name = "jett", email = "jett2025ab@outlook.com" },
+]
+# 元数据标签
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "xtquant",
+    "pandas",
+]
+
+[project.urls]
+Homepage = "https://github.com/jett2025ab/jettquant"
+Repository = "https://github.com/jett2025ab/jettquant"
+Documentation = "https://github.com/jett2025ab/jettquant#readme"
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+
+# 版本信息
+[tool.hatch.version]
+path = "jettquant/__about__.py"
+
+# 测试脚本，用于在默认环境下进行测试
+[tool.hatch.envs.test.scripts]
+test = "pytest tests/"
+
+# 多环境测试命令：hatch run -e py* test
+[tool.hatch.envs.py310]
+python = "3.10"
+features = ["test"]
+dependencies = ["jettquant"]
+[tool.hatch.envs.py310.scripts]
+test = "pytest tests/"
+
+[tool.hatch.envs.py311]
+python = "3.11"
+features = ["test"]
+dependencies = ["jettquant"]
+[tool.hatch.envs.py311.scripts]
+test = "pytest tests/"
+
+[tool.hatch.envs.py312]
+python = "3.12"
+features = ["test"]
+dependencies = ["jettquant"]
+[tool.hatch.envs.py312.scripts]
+test = "pytest tests/"
+
+# 创建独立内网环境：env_jettquant
+[tool.hatch.envs.env_jettquant]
+python = "3.11"
+dependencies = ["jettquant"]
+[tool.hatch.envs.env_jettquant.env-vars]
+PIP_INDEX_URL = "http://123.60.144.72:8989/simple"
+PIP_EXTRA_INDEX_URL = "https://pypi.org/simple"
+PIP_TRUSTED_HOST = "123.60.144.72"
+
+
+[tool.hatch.build.targets.sdist]
+include = ["jettquant", "README.md"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["jettquant"]
