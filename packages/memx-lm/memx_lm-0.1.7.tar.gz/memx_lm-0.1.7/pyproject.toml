@@ -1,0 +1,81 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "memx-lm"
+version = "0.1.7"
+description = "Lightweight and extensible memory layer for LLMs"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [
+    { name = "Pablo Galilea", email = "pgalilea@me.com" },
+]
+dependencies = [
+    "aiofiles>=25.1.0",
+    "orjson>=3.11.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.2",
+    "ruff>=0.14.2"
+]
+
+[project.optional-dependencies]
+all = [
+    "aiosqlite>=0.21.0",
+    "psycopg>=3.2.12",
+    "pymongo>=4.15.3",
+    "sqlalchemy[asyncio, postgresql-psycopg]>=2.0.44"
+]
+
+sqlite = [
+    "sqlalchemy[asyncio]>=2.0.44",
+    "aiosqlite>=0.21.0"
+]
+
+postgres = [
+    "sqlalchemy[postgresql-psycopg, asyncio]>=2.0.44",
+    "psycopg>=3.2.12"
+]
+
+mongodb = [
+    "pymongo>=4.15.3"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["memx"]
+only-include = ["memx"]
+
+[tool.hatch.build]
+include = [
+    "memx/**/*.py",
+    "tests"
+]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"README.md" = "README.md"
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+line-length = 99
+fixable = ["ALL"]
+unfixable = ["F401", "F403"]
+ignore = ["F401", "F403"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+reportInvalidTypeForm = "none"
+reportArgumentType = false
