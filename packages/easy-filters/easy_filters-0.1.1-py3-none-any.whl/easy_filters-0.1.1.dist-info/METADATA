@@ -1,0 +1,75 @@
+Metadata-Version: 2.4
+Name: easy-filters
+Version: 0.1.1
+Summary: A simple Python library for real-time webcam filters
+Author: Anisha Mhatre
+Author-email: anisha.mhatre3@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: opencv-contrib-python
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# easy-filters
+
+A simple Python library to apply fun, real-time filters to your webcam feed using OpenCV.
+
+## Installation
+
+Install the package from PyPI:
+
+```bash
+pip install easy-filters
+
+
+
+
+#How to Use
+
+You can import the run_webcam function into your own Python script to start the webcam feed with a filter applied.
+
+Example
+To run the default cartoon filter, create a Python file (e.g., test.py) and add the following:
+
+from easy_filters import run_webcam
+
+# This will run the default "cartoon" filter
+run_webcam()
+
+# Press 'q' to quit the webcam window
+
+
+
+
+#Running Other Filters
+
+You can easily specify which filter to use by passing its name to the run_webcam function:
+
+from easy_filters import run_webcam
+
+# Run the "oil" filter
+run_webcam("oil")
+
+# Run the "sepia" filter
+run_webcam("sepia")
+
+
+Available Filters
+
+"cartoon" (default)
+
+"edge"
+
+"oil"
+
+"sepia"
