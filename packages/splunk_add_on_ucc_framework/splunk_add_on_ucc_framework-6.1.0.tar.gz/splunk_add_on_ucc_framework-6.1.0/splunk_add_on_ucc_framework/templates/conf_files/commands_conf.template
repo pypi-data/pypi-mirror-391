@@ -1,0 +1,9 @@
+{% for name in command_names -%}
+[{{name}}]
+filename = {{name}}.py
+chunked = true
+python.version = python3
+{% if supportedPythonVersion %}
+python.required = {{supportedPythonVersion}}
+{% endif %}
+{% endfor -%}
