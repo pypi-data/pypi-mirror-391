@@ -1,0 +1,19 @@
+[project]
+name = "nonebot-plugin-manosoba-reply-generator"
+version = "0.1.1"
+description = "a reply img generator for the game manosoba"
+readme = "README.md"
+requires-python = ">=3.9, <4.0"
+
+[tool.nonebot]
+adapters = [
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
+]
+dependencies = [
+    "nonebot2>=2.0.0",
+    "nonebot-adapter-onebot>=2.0.0",
+    "pillow>=10.0.0"
+]
+plugins = []
+plugin_dirs = ["src/plugins"]
+builtin_plugins = ["echo"]
