@@ -1,0 +1,44 @@
+Metadata-Version: 2.4
+Name: extracta
+Version: 0.1.0
+Summary: Modular content analysis and insight generation
+Author: Extracta Team
+License: MIT
+Requires-Python: >=3.10
+Requires-Dist: click>=8.1.0
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: pydantic>=2.5.0
+Provides-Extra: all
+Requires-Dist: ast>=3.8; extra == 'all'
+Requires-Dist: ffmpeg-python>=0.2.0; extra == 'all'
+Requires-Dist: librosa>=0.10.0; extra == 'all'
+Requires-Dist: nltk>=3.8.0; extra == 'all'
+Requires-Dist: opencv-python>=4.8.0; extra == 'all'
+Requires-Dist: pillow>=10.0.0; extra == 'all'
+Requires-Dist: radon>=6.0.0; extra == 'all'
+Requires-Dist: ruff>=0.1.0; extra == 'all'
+Requires-Dist: spacy>=3.7.0; extra == 'all'
+Requires-Dist: textstat>=0.7.0; extra == 'all'
+Requires-Dist: torch>=2.0.0; extra == 'all'
+Requires-Dist: whisper-openai>=1.1.0; extra == 'all'
+Provides-Extra: audio
+Requires-Dist: librosa>=0.10.0; extra == 'audio'
+Requires-Dist: whisper-openai>=1.1.0; extra == 'audio'
+Provides-Extra: code
+Requires-Dist: ast>=3.8; extra == 'code'
+Requires-Dist: radon>=6.0.0; extra == 'code'
+Requires-Dist: ruff>=0.1.0; extra == 'code'
+Provides-Extra: dev
+Requires-Dist: mypy>=1.5.0; extra == 'dev'
+Requires-Dist: pytest-cov>=4.1.0; extra == 'dev'
+Requires-Dist: pytest>=7.4.0; extra == 'dev'
+Provides-Extra: image
+Requires-Dist: pillow>=10.0.0; extra == 'image'
+Requires-Dist: torch>=2.0.0; extra == 'image'
+Provides-Extra: text
+Requires-Dist: nltk>=3.8.0; extra == 'text'
+Requires-Dist: spacy>=3.7.0; extra == 'text'
+Requires-Dist: textstat>=0.7.0; extra == 'text'
+Provides-Extra: video
+Requires-Dist: ffmpeg-python>=0.2.0; extra == 'video'
+Requires-Dist: opencv-python>=4.8.0; extra == 'video'
