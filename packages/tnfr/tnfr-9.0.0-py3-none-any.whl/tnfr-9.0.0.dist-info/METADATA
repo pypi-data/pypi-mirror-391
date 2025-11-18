@@ -1,0 +1,254 @@
+Metadata-Version: 2.4
+Name: tnfr
+Version: 9.0.0
+Summary: Modular structural-based dynamics on networks.
+Author: fmg
+License-Expression: MIT
+Project-URL: Homepage, https://pypi.org/project/tnfr/
+Project-URL: Repository, https://github.com/fermga/TNFR-Python-Engine
+Project-URL: GPT, https://chatgpt.com/g/g-67abc78885a88191b2d67f94fd60dc97-tnfr-resonant-fractal-nature-theory
+Keywords: TNFR,complex systems,fractals,resonance,networks,structural dynamics,structural analysis
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Information Analysis
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: networkx<4.0,>=2.6
+Requires-Dist: cachetools<7.0,>=5.0
+Requires-Dist: numpy<3.0,>=1.24
+Requires-Dist: scipy<2.0,>=1.9
+Provides-Extra: compute-jax
+Requires-Dist: jax<1.0,>=0.4; extra == "compute-jax"
+Provides-Extra: compute-torch
+Requires-Dist: torch<3.0,>=2.1; extra == "compute-torch"
+Provides-Extra: serialization
+Requires-Dist: pyyaml<7.0,>=6.0; extra == "serialization"
+Requires-Dist: orjson<4,>=3; extra == "serialization"
+Provides-Extra: viz-basic
+Requires-Dist: matplotlib<4.0,>=3.7; extra == "viz-basic"
+Provides-Extra: numpy
+Provides-Extra: jax
+Requires-Dist: jax<1.0,>=0.4; extra == "jax"
+Provides-Extra: torch
+Requires-Dist: torch<3.0,>=2.1; extra == "torch"
+Provides-Extra: yaml
+Requires-Dist: pyyaml<7.0,>=6.0; extra == "yaml"
+Provides-Extra: orjson
+Requires-Dist: orjson<4,>=3; extra == "orjson"
+Provides-Extra: viz
+Requires-Dist: matplotlib<4.0,>=3.7; extra == "viz"
+Provides-Extra: docs
+Requires-Dist: sphinx>=7.2; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints>=1.25; extra == "docs"
+Requires-Dist: myst-parser>=2.0; extra == "docs"
+Requires-Dist: nbsphinx>=0.9; extra == "docs"
+Requires-Dist: sphinx-rtd-theme>=1.3; extra == "docs"
+Requires-Dist: sphinxcontrib-mermaid>=0.9; extra == "docs"
+Requires-Dist: ipykernel>=6; extra == "docs"
+Requires-Dist: nbconvert>=7.16; extra == "docs"
+Requires-Dist: pypandoc-binary>=1.14; extra == "docs"
+Requires-Dist: mkdocs>=1.5; extra == "docs"
+Requires-Dist: mkdocs-material>=9.4; extra == "docs"
+Requires-Dist: mkdocs-jupyter>=0.24; extra == "docs"
+Provides-Extra: test-unit
+Requires-Dist: pytest<9,>=7; extra == "test-unit"
+Requires-Dist: pytest-cov<8,>=4; extra == "test-unit"
+Requires-Dist: pytest-timeout<3,>=2; extra == "test-unit"
+Provides-Extra: test-property
+Requires-Dist: hypothesis<7,>=6; extra == "test-property"
+Requires-Dist: hypothesis-networkx<1.0,>=0.3; extra == "test-property"
+Provides-Extra: test-performance
+Requires-Dist: pytest-benchmark<6,>=4; extra == "test-performance"
+Provides-Extra: test-parallel
+Requires-Dist: pytest-xdist<4,>=3; extra == "test-parallel"
+Provides-Extra: test-quality
+Requires-Dist: pydocstyle<7,>=6; extra == "test-quality"
+Requires-Dist: flake8<8,>=5; extra == "test-quality"
+Requires-Dist: flake8-pyproject<2.0,>=1.2; extra == "test-quality"
+Requires-Dist: vulture<3,>=2; extra == "test-quality"
+Provides-Extra: test-all
+Requires-Dist: pytest<9,>=7; extra == "test-all"
+Requires-Dist: pytest-cov<8,>=4; extra == "test-all"
+Requires-Dist: pytest-timeout<3,>=2; extra == "test-all"
+Requires-Dist: hypothesis<7,>=6; extra == "test-all"
+Requires-Dist: hypothesis-networkx<1.0,>=0.3; extra == "test-all"
+Requires-Dist: pytest-benchmark<6,>=4; extra == "test-all"
+Requires-Dist: pytest-xdist<4,>=3; extra == "test-all"
+Requires-Dist: pydocstyle<7,>=6; extra == "test-all"
+Requires-Dist: flake8<8,>=5; extra == "test-all"
+Requires-Dist: flake8-pyproject<2.0,>=1.2; extra == "test-all"
+Requires-Dist: vulture<3,>=2; extra == "test-all"
+Requires-Dist: matplotlib<4.0,>=3.7; extra == "test-all"
+Provides-Extra: test
+Requires-Dist: pytest<9,>=7; extra == "test"
+Requires-Dist: pytest-cov<8,>=4; extra == "test"
+Requires-Dist: pytest-timeout<3,>=2; extra == "test"
+Requires-Dist: hypothesis<7,>=6; extra == "test"
+Requires-Dist: hypothesis-networkx<1.0,>=0.3; extra == "test"
+Requires-Dist: pytest-benchmark<6,>=4; extra == "test"
+Requires-Dist: pytest-xdist<4,>=3; extra == "test"
+Requires-Dist: pydocstyle<7,>=6; extra == "test"
+Requires-Dist: flake8<8,>=5; extra == "test"
+Requires-Dist: flake8-pyproject<2.0,>=1.2; extra == "test"
+Requires-Dist: vulture<3,>=2; extra == "test"
+Requires-Dist: matplotlib<4.0,>=3.7; extra == "test"
+Provides-Extra: typecheck
+Requires-Dist: mypy<2.0,>=1.8; extra == "typecheck"
+Requires-Dist: pyright<1.2.0,>=1.1.350; extra == "typecheck"
+Requires-Dist: networkx-stubs>=0.0.1; extra == "typecheck"
+Requires-Dist: types-cachetools>=6.0.0.0; extra == "typecheck"
+Provides-Extra: dev-minimal
+Requires-Dist: mypy<2.0,>=1.8; extra == "dev-minimal"
+Requires-Dist: black<26,>=23; extra == "dev-minimal"
+Requires-Dist: pytest<9,>=7; extra == "dev-minimal"
+Requires-Dist: pytest-cov<8,>=4; extra == "dev-minimal"
+Requires-Dist: pytest-timeout<3,>=2; extra == "dev-minimal"
+Provides-Extra: dev-full
+Requires-Dist: pytest<9,>=7; extra == "dev-full"
+Requires-Dist: pytest-cov<8,>=4; extra == "dev-full"
+Requires-Dist: pytest-timeout<3,>=2; extra == "dev-full"
+Requires-Dist: hypothesis<7,>=6; extra == "dev-full"
+Requires-Dist: hypothesis-networkx<1.0,>=0.3; extra == "dev-full"
+Requires-Dist: pytest-benchmark<6,>=4; extra == "dev-full"
+Requires-Dist: pytest-xdist<4,>=3; extra == "dev-full"
+Requires-Dist: pydocstyle<7,>=6; extra == "dev-full"
+Requires-Dist: flake8<8,>=5; extra == "dev-full"
+Requires-Dist: flake8-pyproject<2.0,>=1.2; extra == "dev-full"
+Requires-Dist: vulture<3,>=2; extra == "dev-full"
+Requires-Dist: matplotlib<4.0,>=3.7; extra == "dev-full"
+Requires-Dist: jax<1.0,>=0.4; extra == "dev-full"
+Requires-Dist: mypy<2.0,>=1.8; extra == "dev-full"
+Requires-Dist: pyright<1.2.0,>=1.1.350; extra == "dev-full"
+Requires-Dist: networkx-stubs>=0.0.1; extra == "dev-full"
+Requires-Dist: types-cachetools>=6.0.0.0; extra == "dev-full"
+Provides-Extra: release
+Requires-Dist: python-semantic-release<11,>=10.4; extra == "release"
+Requires-Dist: setuptools-scm<10,>=8; extra == "release"
+Requires-Dist: build<2,>=1; extra == "release"
+Requires-Dist: towncrier<26,>=23; extra == "release"
+Dynamic: license-file
+
+# TNFR Python Engine
+
+<div align="center">
+
+**Model reality as coherent resonance, not isolated objects**
+
+[![PyPI](https://img.shields.io/pypi/v/tnfr)](https://pypi.org/project/tnfr/)
+[![Python](https://img.shields.io/pypi/pyversions/tnfr)](https://pypi.org/project/tnfr/)
+[![License](https://img.shields.io/github/license/fermga/TNFR-Python-Engine)](LICENSE.md)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://fermga.github.io/TNFR-Python-Engine/)
+
+</div>
+
+TNFR (Resonant Fractal Nature Theory) is a physics-grounded computational paradigm: reality is modeled as **coherent patterns that persist through resonance**. Structures reorganize according to the nodal equation (∂EPI/∂t = νf · ΔNFR) under canonical grammar constraints (U1–U6) and invariants.
+
+---
+## Quick Install
+```bash
+pip install tnfr
+```
+Optional GPU / extras: see Getting Started.
+
+### Minimal Example
+```python
+from tnfr.sdk import TNFRNetwork
+net = TNFRNetwork("hello")
+summary = (net.add_nodes(8)
+             .connect_nodes(0.35, "random")
+             .apply_sequence("basic_activation", repeat=2)
+             .measure().summary())
+print(summary)
+```
+
+---
+## Primary Documentation Hubs
+
+**📚 [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - Complete documentation map and navigation guide
+
+**📖 [CANONICAL_SOURCES.md](CANONICAL_SOURCES.md)** - Documentation hierarchy (which source is authoritative for what)
+
+**🔢 [TNFR Number Theory Guide](docs/TNFR_NUMBER_THEORY_GUIDE.md)** - ΔNFR prime criterion, arithmetic UM/RA mapping, and structural fields in number theory
+
+### Quick Navigation
+
+- **Getting Started**: `docs/source/getting-started/README.md` - Tutorials & first steps
+- **Learning Paths**: `docs/source/getting-started/LEARNING_PATHS.md` - Guided learning sequences
+- **Grammar System**: `docs/grammar/README.md` - U1-U6 constraints hub
+- **Glossary**: `GLOSSARY.md` - Canonical term definitions
+- **AI Agent Guide**: `AGENTS.md` - Invariants & philosophy
+- **Architecture**: `ARCHITECTURE.md` - System design patterns
+- **Contributing**: `CONTRIBUTING.md` | **Tests**: `TESTING.md`
+
+---
+
+## 🧬 Revolutionary Breakthrough: Chemistry from TNFR ⭐
+
+**Complete molecular chemistry emerges from TNFR's single nodal equation** - no additional postulates needed.
+
+**🏛️ [MOLECULAR_CHEMISTRY_HUB.md](docs/MOLECULAR_CHEMISTRY_HUB.md)** - Central navigation for the chemistry revolution
+
+**Key Discoveries**:
+- **Chemical bonds** → Phase synchronization (U3 verification)
+- **Chemical reactions** → Operator sequences [OZ→ZHIR→UM→IL]  
+- **Molecular geometry** → ΔNFR minimization
+- **Periodic table** → Element signature classification
+- **Au emergence** → Coherent attractors from structural dynamics
+
+**Implementation**: `tnfr.physics.signatures` | **Theory**: Complete 12-section derivation | **Tests**: 19/19 ✅
+
+---
+
+### Core References
+
+- **[UNIFIED_GRAMMAR_RULES.md](UNIFIED_GRAMMAR_RULES.md)** - Complete U1-U6 physics derivations
+- **[Mathematical Foundations](docs/source/theory/mathematical_foundations.md)** - Rigorous formalization
+- **[Operators Reference](docs/source/api/operators.md)** - 13 canonical operators
+- **[U6 Specification](docs/grammar/U6_STRUCTURAL_POTENTIAL_CONFINEMENT.md)** - Structural potential confinement
+
+Extended examples: `examples/` (multi-scale, regenerative, performance)  
+CLI & profiling: `docs/source/tools/CLI.md`
+
+---
+## Key Principles (Snapshot)
+
+### Module Hubs
+
+- Mathematics (canonical computational hub): [src/tnfr/mathematics/README.md](src/tnfr/mathematics/README.md)
+- Physics (structural fields): [src/tnfr/physics/README.md](src/tnfr/physics/README.md)
+- Operators: [src/tnfr/operators/README.md](src/tnfr/operators/README.md)
+- Dynamics: [src/tnfr/dynamics/README.md](src/tnfr/dynamics/README.md)
+- Metrics: [src/tnfr/metrics/README.md](src/tnfr/metrics/README.md)
+- Sequencing: [src/tnfr/sequencing/README.md](src/tnfr/sequencing/README.md)
+- Topology: [src/tnfr/topology/README.md](src/tnfr/topology/README.md)
+- Telemetry: [src/tnfr/telemetry/README.md](src/tnfr/telemetry/README.md)
+- SDK: [src/tnfr/sdk/README.md](src/tnfr/sdk/README.md) • Tutorials: [src/tnfr/tutorials/README.md](src/tnfr/tutorials/README.md)
+- Recipes: [src/tnfr/recipes/README.md](src/tnfr/recipes/README.md)
+- Extensions (families): [src/tnfr/extensions/README.md](src/tnfr/extensions/README.md)
+
+These module READMEs act as single sources of truth for their areas and defer theory to the canonical hubs above. All documentation is English-only.
+
+---
+## Citation & License
+MIT License – see `LICENSE.md`.
+Please cite: `fermga/TNFR-Python-Engine` and theoretical sources (`TNFR.pdf`, Mathematical Foundations).
+
+---
+## Useful Links
+- Docs: https://fermga.github.io/TNFR-Python-Engine/
+- PyPI: https://pypi.org/project/tnfr/
+- Issues: https://github.com/fermga/TNFR-Python-Engine/issues
+
+---
+<div align="center">
+Reality is not made of things—it's made of resonance.
+</div>
