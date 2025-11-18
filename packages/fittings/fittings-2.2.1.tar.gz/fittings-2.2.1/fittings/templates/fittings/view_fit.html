@@ -1,0 +1,42 @@
+{% extends 'fittings/base.html' %}
+
+{% load i18n %}
+{% load filters %}
+{% load static %}
+{% load evelinks %}
+
+{% block page_title %}{{ fit.name }} {% translate "Fitting" %}{% endblock %}
+
+{% block fittings_block %}
+    {% include "fittings/partials/view-fit/modals.html" %}
+
+    <div class="row">
+        <div class="col-md-3">
+            {% include "fittings/partials/view-fit/fitting-information.html" %}
+
+            <!-- Skill Overview (powered by `corptools`) -->
+            {{ skillcheck }}
+        </div>
+
+        <div class="col-md-9">
+            {% include "fittings/partials/view-fit/fitting.html" %}
+            {% include "fittings/partials/view-fit/fitting-details.html" %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block more_css %}
+    {% include 'fittings/bundles/view-fit-css.html' %}
+{% endblock %}
+
+{% block extra_javascript %}
+    {% include 'bundles/clipboard-js.html' %}
+
+    <script>
+        const clipboard = new ClipboardJS('#buyAllButton');
+
+        $(document).ready(() => {
+            $('[data-bs-tooltip="aa-fittings"]').tooltip();
+        });
+    </script>
+{% endblock %}
