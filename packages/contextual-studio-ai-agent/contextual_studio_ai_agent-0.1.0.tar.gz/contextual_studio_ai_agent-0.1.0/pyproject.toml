@@ -1,0 +1,115 @@
+[project]
+name = "contextual-studio-ai-agent"
+version = "0.1.0"
+description = "IA Generative Agent library to create autonomous agents using LLMs."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+
+authors = [{ name = "Jorge Resino", email = "jorgeresino143@gmail.com" }]
+maintainers = [{ name = "Jorge Resino", email = "jorgeresino143@gmail.com" }]
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+  "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "dotenv ==0.9.9",
+    "google-adk ==1.16.0",
+    "litellm ==1.78.6",
+    "loguru ==0.7.3",
+    "pre-commit ==4.3.0",
+    "pydantic==2.12.3",
+    "pytest ==8.4.2",
+]
+
+[dependency-groups]
+dev = [
+    "mkdocs ==1.6.1",
+    "mkdocs-gen-files ==0.5.0",
+    "mkdocs-literate-nav ==0.6.2",
+    "mkdocs-material ==9.6.22",
+    "mkdocstrings[python] ==0.30.1",
+]
+
+
+[project.urls]
+Homepage = "https://contextualstudio.com/"
+Documentation = "https://github.com/contextual-studio/agent"
+Repository = "https://github.com/contextual-studio/agent"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["contextual*"]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+
+[tool.isort]
+profile = 'black'
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 100
+
+[tool.black]
+line-length = 100
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+implicit_reexport = true
+strict_equality = true
+exclude = ["contextual_studio_ai_agent\\.egg-info", "\\.venv"]
+
+[tool.pytest.ini_options]
+markers = [
+    'unit',
+    'integration',
+    'functional',
+]
+testpaths = [
+    'tests',
+]
+python_files = ['test_*.py']
+python_classes = ['UnitTest*']
+python_functions = ['test_*']
+
+
+[tool.ruff]
+line-length = 10
