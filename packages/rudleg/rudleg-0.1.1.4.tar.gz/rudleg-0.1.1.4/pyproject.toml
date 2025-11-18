@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rudleg"
+version = "0.1.1.4"
+description = "RUDLeg - The RUDL Engine, 2D game framework."
+authors = [{ name = "TheDreadMatrix" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+
+dependencies = [
+    "pygame-ce>=2.5,<2.6",
+    "moderngl>=5.10,<6.5",
+    "pyglm>=0.1",
+    "Pillow>=10.0,<11.0"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+# говорим setuptools искать пакеты внутри текущей директории
+where = ["."]
+include = ["RUDLeg*"]
+
+[tool.setuptools.package-data]
+# включаем ассеты в пакет
+RUDLeg = [
+    "core_magic/*.json",
+    "stuff/*",
+    "stuff/**/*"
+]
+
+
+[project.scripts]
+rudleg-create = "RUDLeg.cli:main"
+rudleg-hello = "RUDLeg.cli:hello"
+rudleg-doc = "RUDLeg.cli:doc"
+rudleg-codes = "RUDLeg.cli:codes"
