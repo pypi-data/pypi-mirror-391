@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CB2325NumericaG07"
+version = "0.2.0"
+authors = [
+    { name="Alunos do grupo 07"},
+]
+description = "Versão Alpha da biblioteca numérica básica para o curso de programação 2."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "matplotlib",
+    "pytest",
+    "numpy",
+    "sympy",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["CB2325NumericaG07*", "CB2325NumericaG07.*"]
+exclude = [
+    "CB2325NumericaG07.notebooks_demos",
+    "CB2325NumericaG07.notebooks_demos.*",
+    "*.egg-info",
+]
+
+[project.urls]
+Repository = "https://github.com/Mateus-Band/CB2325NumericaG07.git"
