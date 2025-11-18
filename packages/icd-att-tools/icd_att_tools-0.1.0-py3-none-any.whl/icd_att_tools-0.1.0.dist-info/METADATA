@@ -1,0 +1,27 @@
+Metadata-Version: 2.4
+Name: icd-att-tools
+Version: 0.1.0
+Summary: Utilities for ICD-based ATT preprocessing, estimation, and descriptive tables.
+Author: Tobias Kragholm
+License-Expression: MIT
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.22
+Requires-Dist: pandas>=1.5
+Requires-Dist: pyarrow>=10
+Requires-Dist: tqdm>=4.66
+Requires-Dist: patsy>=0.5
+Requires-Dist: tabulate>=0.9
+Requires-Dist: drdid>=0.1.6
+Requires-Dist: csdid>=0.1.1
+Requires-Dist: simple-icd-10>=2.1.1
+
+# ICD ATT Tools
+
+This repository bundles the preprocessing, estimation, and descriptive table
+utilities used for the ICD-based ATT analysis.  The packaged CLI entry points
+allow you to:
+
+* deflate and winsorise panel data (`icd-preprocess`)
+* run the DR-DID estimation pipeline (`icd-estimate`)
+* generate Table 1 summaries (`icd-table1`)
