@@ -1,0 +1,62 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+
+requires = [ "setuptools", "wheel" ]
+
+[project]
+name = "scope-profiler"
+version = "0.1"
+description = "Profile code regions in python, optionally with LIKWID markers."
+readme = "README.md"
+keywords = [ "python" ]
+license = { file = "LICENSE.txt" }
+authors = [ { name = "Max" } ]
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "h5py",
+  "numpy",
+  "matplotlib",
+]
+
+optional-dependencies.dev = [
+  "black[jupyter]",
+  "isort",
+  "ruff",
+  "scope-profiler[test,docs]",
+]
+# https://medium.com/@pratikdomadiya123/build-project-documentation-quickly-with-the-sphinx-python-2a9732b66594
+optional-dependencies.docs = [
+  "ipykernel",
+  "myst-parser",
+  "nbconvert",
+  "nbsphinx",
+  "jupyterlab",
+  "pre-commit",
+  "pyproject-fmt",
+  "sphinx",
+  "sphinx-book-theme",
+]
+optional-dependencies.test = [
+  "coverage",
+  "pytest"
+]
+urls."Source" = "https://github.com/max-models/scope_profiler"
+
+[project.scripts]
+scope-profiler-pproc = "scope_profiler.post_processing:main"
+
+[tool.setuptools.packages.find]
+where = [ "src" ]
+
+[tool.isort]
+profile = "black"
