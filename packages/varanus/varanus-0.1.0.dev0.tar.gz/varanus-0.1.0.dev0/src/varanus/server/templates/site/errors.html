@@ -1,0 +1,28 @@
+{% extends "site/base.html" %}
+
+{% load i18n %}
+
+{% block page %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Context" %}</th>
+            <th>{% trans "Kind" %}</th>
+            <th>{% trans "Message" %}</th>
+            <th>{% trans "Module" %}</th>
+            <th>{% trans "Timestamp" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in errors %}
+            <tr>
+                <td>{{ e.context }}</td>
+                <td>{{ e.kind }}</td>
+                <td>{{ e.message }}</td>
+                <td>{{ e.module }}</td>
+                <td>{{ e.timestamp }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock page %}
