@@ -1,0 +1,348 @@
+Metadata-Version: 2.4
+Name: claude-hooks-template
+Version: 1.5.0
+Summary: CLI tool for configuring Claude Code hooks in projects
+Project-URL: Homepage, https://github.com/stevennevins/claude-hooks
+Project-URL: Repository, https://github.com/stevennevins/claude-hooks
+Project-URL: Issues, https://github.com/stevennevins/claude-hooks/issues
+Project-URL: Documentation, https://github.com/stevennevins/claude-hooks#readme
+Author-email: Steven Nevins <snevins@gmail.com>
+License: MIT
+License-File: LICENSE
+Keywords: automation,claude-code,cli,hooks
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Application Frameworks
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# claude-hooks
+
+Simple CLI tool for configuring Claude Code hooks in your projects.
+
+## What This Does
+
+`claude-hooks` helps you quickly add hooks to your Claude Code project. Instead of manually:
+- Creating `.sh` hook scripts
+- Making them executable
+- Editing `.claude/settings.local.json`
+
+Just run: `claude-hooks add <hook-name>`
+
+## Installation
+
+Recommended (with `uv`):
+
+```bash
+uv tool install claude-hooks-template
+```
+
+Or with `pip`:
+
+```bash
+pip install claude-hooks-template
+```
+
+## Usage
+
+Navigate to your Claude Code project directory (must have `.claude/` directory) and run:
+
+```bash
+# Install all hooks at once
+claude-hooks install
+
+# Or add hooks one at a time:
+
+# Add hook for Edit tool
+claude-hooks add on_edit
+
+# Add hook for TodoWrite tool
+claude-hooks add on_todo_complete
+
+# Add hook for Stop event
+claude-hooks add on_stop
+
+# Add hook for SessionStart event
+claude-hooks add on_start
+
+# Add hook for Bash tool
+claude-hooks add on_bash
+
+# Add hook for git commits (filter in script)
+claude-hooks add on_git_commit
+
+# Add hook for AskUserQuestion tool
+claude-hooks add on_ask_user
+
+# Add hook for Write tool
+claude-hooks add on_write
+
+# Add hook for MultiEdit tool
+claude-hooks add on_multiedit
+
+# Add hook for Task tool (subagent completion)
+claude-hooks add on_task_complete
+
+# Add hook for Read tool
+claude-hooks add on_read
+
+# Add hook for user prompt submission
+claude-hooks add on_user_prompt
+
+# Add hook for plan mode exit
+claude-hooks add on_plan
+
+# Add hook for pre-compaction (runs before context compaction)
+claude-hooks add on_precompact
+
+# Add hook for periodic snapshots
+claude-hooks add on_snapshot
+```
+
+### What It Does
+
+When you run `claude-hooks add <hook-name>`:
+
+1. **Creates hook script**: `.claude/hooks/<hook-name>.sh` with basic template
+2. **Makes it executable**: `chmod +x` automatically applied
+3. **Updates settings**: Adds hook configuration to `.claude/settings.local.json`
+4. **Shows summary**: Displays hook event and matcher info
+
+### Example
+
+```bash
+$ claude-hooks add on_edit
+Created hook script: .claude/hooks/on_edit.sh
+Added hook to settings.local.json
+  Event: PostToolUse
+  Matcher: Edit
+
+Edit .claude/hooks/on_edit.sh to customize hook behavior
+```
+
+## Available Hooks
+
+| Hook Name | Claude Event | Matcher | Description |
+|-----------|--------------|---------|-------------|
+| `on_edit` | `PostToolUse` | `Edit` | Triggers after Edit tool completes |
+| `on_todo_complete` | `PostToolUse` | `TodoWrite` | Triggers after TodoWrite tool completes |
+| `on_stop` | `Stop` | (none) | Triggers when agent stops responding |
+| `on_start` | `SessionStart` | (none) | Triggers when session starts |
+| `on_bash` | `PreToolUse` | `Bash` | Triggers before Bash tool executes |
+| `on_git_commit` | `PreToolUse` | `Bash` | Triggers before Bash tool executes (filter for git commit in script) |
+| `on_ask_user` | `PreToolUse` | `AskUserQuestion` | Triggers before AskUserQuestion tool executes |
+| `on_write` | `PostToolUse` | `Write` | Triggers after Write tool completes |
+| `on_multiedit` | `PostToolUse` | `MultiEdit` | Triggers after MultiEdit tool completes |
+| `on_task_complete` | `PostToolUse` | `Task` | Triggers after Task tool completes |
+| `on_read` | `PreToolUse` | `Read` | Triggers before Read tool executes |
+| `on_user_prompt` | `UserPromptSubmit` | (none) | Triggers when user submits a prompt |
+| `on_plan` | `PreToolUse` | `ExitPlanMode` | Triggers before ExitPlanMode tool executes |
+| `on_precompact` | `PreCompact` | (none) | Triggers before context compaction begins |
+| `on_snapshot` | `PreToolUse` | (none) | Triggers periodically to save conversation snapshots |
+
+## Hook Script Templates
+
+Each generated hook script includes comprehensive documentation:
+
+- **Input JSON Schema**: All fields hook receives from Claude Code
+- **Output JSON Schema**: Required/optional fields hook must return
+- **Exit Code Documentation**: What each exit code does
+- **Practical Examples**: Real jq parsing examples you can copy-paste
+
+### Example: PreToolUse Hook (on_plan, on_read, on_bash)
+
+```bash
+#!/bin/bash
+# on_plan - Triggers before ExitPlanMode tool executes
+#
+# INPUT JSON SCHEMA:
+# {
+#   "session_id": "string",
+#   "transcript_path": "string",
+#   "cwd": "string",
+#   "permission_mode": "default|plan|acceptEdits|bypassPermissions",
+#   "hook_event_name": "PreToolUse",
+#   "tool_name": "string (e.g., 'Read', 'Edit', 'Bash')",
+#   "tool_input": {} (tool-specific parameters)
+# }
+#
+# OUTPUT JSON SCHEMA:
+# {
+#   "hookSpecificOutput": {
+#     "hookEventName": "PreToolUse",
+#     "permissionDecision": "allow|deny|ask",
+#     "permissionDecisionReason": "string (optional)",
+#     "updatedInput": {} (optional - modify tool parameters)
+#   },
+#   "continue": true|false (optional, default: true),
+#   "stopReason": "string (optional)",
+#   "suppressOutput": true|false (optional, default: false),
+#   "systemMessage": "string (optional)"
+# }
+#
+# EXIT CODES:
+#   0 - Normal success (allow tool execution)
+#   2 - Block tool execution and show stderr to Claude
+#   Other - Error condition
+#
+# EXAMPLES:
+#
+#   # Allow tool execution:
+#   echo '{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow"}}'
+#
+#   # Block tool execution:
+#   echo '{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "Restricted file"}}'
+#
+#   # Parse specific fields:
+#   TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name')
+#   FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+INPUT=$(cat)
+
+# Default: allow tool execution
+echo '{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "allow"}}'
+
+exit 0
+```
+
+### Example: PostToolUse Hook (on_edit, on_write, on_todo_complete)
+
+```bash
+#!/bin/bash
+# on_edit - Triggers after Edit tool completes
+#
+# INPUT JSON SCHEMA:
+# {
+#   "session_id": "string",
+#   "transcript_path": "string",
+#   "cwd": "string",
+#   "permission_mode": "default|plan|acceptEdits|bypassPermissions",
+#   "hook_event_name": "PostToolUse",
+#   "tool_name": "string (e.g., 'Edit', 'Write', 'TodoWrite')",
+#   "tool_input": {} (tool-specific parameters that were used),
+#   "tool_response": {} (tool-specific response/result)
+# }
+#
+# OUTPUT JSON SCHEMA:
+# {
+#   "decision": "block|undefined (optional)",
+#   "reason": "string (required if decision is 'block')",
+#   "hookSpecificOutput": {
+#     "hookEventName": "PostToolUse",
+#     "additionalContext": "string (optional - added to Claude's context)"
+#   },
+#   "continue": true|false (optional, default: true),
+#   "stopReason": "string (optional)",
+#   "suppressOutput": true|false (optional, default: false),
+#   "systemMessage": "string (optional)"
+# }
+#
+# EXIT CODES:
+#   0 - Normal success
+#   2 - Show stderr to Claude for processing
+#   Other - Error condition
+#
+# NOTE: Tool has already executed when this hook runs!
+#
+# EXAMPLES:
+#
+#   # Add context about what was changed:
+#   FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+#   echo '{"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": "Modified: '"$FILE_PATH"'"}}'
+
+INPUT=$(cat)
+
+# Default: do nothing
+echo '{}'
+
+exit 0
+```
+
+After generating a hook, edit the `.sh` file to add your custom logic. All the documentation you need is in the generated file!
+
+## Settings Format
+
+Hooks are added to `.claude/settings.local.json` in this format:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/on_edit.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+## Requirements
+
+- Python 3.10+
+- Claude Code project with `.claude/` directory
+- `jq` (optional, for parsing JSON in hook scripts)
+
+## Development
+
+### Setup
+
+```bash
+# Clone repository
+git clone https://github.com/stevennevins/claude-hooks.git
+cd claude-hooks
+
+# Install dependencies
+uv sync --group dev
+```
+
+### Running Tests
+
+```bash
+# All tests
+uv run pytest
+
+# Unit tests only
+uv run pytest tests/unit/ -v
+
+# With coverage
+uv run pytest --cov=claude_hooks
+```
+
+### Code Quality
+
+```bash
+# Format code
+uv run ruff format claude_hooks/ tests/
+
+# Lint code
+uv run ruff check claude_hooks/ tests/
+
+# Type check
+uv run pyright claude_hooks/
+```
+
+## Why This Tool?
+
+Grug tired of manual hook setup. Make simple tool that:
+
+- Create hook script fast
+- Update settings automatically
+- Work every time same way
+- No remember JSON structure
+
+Simple better than complex.
+
+## License
+
+MIT
