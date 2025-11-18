@@ -1,0 +1,8 @@
+name: E2E Tests - OpenVid
+on:
+  workflow_dispatch:
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo placeholder
