@@ -1,0 +1,70 @@
+[tool.poetry]
+name = "smart-selfhealing-rbfw"
+version = "0.1.2"
+description = "Self-healing test automation library for Robot Framework with AI-powered locator fixing"
+authors = ["Hieu La <hieuld@smartosc.com>"]
+maintainers = ["Hieu La <hieuld@smartosc.com>"]
+readme = "README.md"
+license = "Apache-2.0"
+homepage = "https://github.com/hieuld/smart-selfhealing-rbfw"
+keywords = [
+    "robotframework",
+    "testing",
+    "self-healing",
+    "automation",
+    "selenium",
+    "playwright",
+    "ai",
+    "llm",
+    "test-automation",
+    "locator-healing"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Software Development :: Quality Assurance",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+]
+packages = [
+    { include = "SelfHealing", from = "src" }
+]
+exclude = ["src/SelfHealing/.env", "tests", "Reports", "docs"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+robotframework-browser = "*"
+beautifulsoup4 = "*"
+robotframework = "*"
+opencv-python-headless = "*"
+python-dotenv = "*"
+pyautogui = "*"
+tinydb = "*"
+cssify = "*"
+parsimonious = "*"
+lxml = "*"
+thefuzz = "*"
+robotframework-appiumlibrary = "*"
+robotframework-seleniumlibrary = "*"
+jinja2 = "*"
+litellm = "*"
+
+
+[tool.poetry.group.dev.dependencies]    
+pytest = "*"
+invoke = "*"
+coverage = "*"
+robotframework-stacktrace = "*"
+mkdocs-material = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
