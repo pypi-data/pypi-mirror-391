@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: cumulus-library-catalog
+Version: 0.2.2
+Summary: Catalog hierarchies for Dx, Rx, Labs, and other FHIR resource types
+Requires-Python: >= 3.11
+Description-Content-Type: text/markdown
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+License-File: LICENSE
+Requires-Dist: cumulus-library >= 5, <6
+Requires-Dist: sqlfluff >=3
+Requires-Dist: xlrd
+Requires-Dist: openpyxl
+Requires-Dist: pandas
+Requires-Dist: ruff < 0.13 ; extra == "dev"
+Requires-Dist: pylint ; extra == "dev"
+Requires-Dist: sqlfluff > 3, <4 ; extra == "dev"
+Requires-Dist: pytest ; extra == "test"
+Requires-Dist: pytest-cov ; extra == "test"
+Project-URL: Documentation, https://docs.smarthealthit.org/cumulus/
+Project-URL: Home, https://smarthealthit.org/cumulus/
+Project-URL: Source, https://github.com/smart-on-fhir/cumulus-library-catalog
+Provides-Extra: dev
+Provides-Extra: test
+
+# cumulus-library-catalog
+Browsable hierarchies of pre-calculated counts for various coding systems. Part of the 
+[SMART on FHIR Cumulus Project](https://smarthealthit.org/cumulus)
+
+For more information, 
+[browse the Cumulus Library documentation](https://docs.smarthealthit.org/cumulus/library).
+
+## Installing
+
+You can install this study with `pip install cumulus-library-catalog`
+
+## Usage
+
+As a prerequisite, you will need to have run the `core` study that ships with Cumulus Library, as well as the
+[UMLS Study](https://github.com/smart-on-fhir/cumulus-library-umls)
+to get information about various coding systems.
+
+After this, you build this study the same way as any other Cumulus study, with
+`cumulus-library build -t catalog`, along with any additional arguments about your target database.
+
+## Citations
+
+Bodenreider O. The Unified Medical Language System (UMLS): integrating biomedical terminology. Nucleic Acids Res. 2004 Jan 1;32(Database issue):D267-70. doi: 10.1093/nar/gkh061. PubMed PMID: 14681409; PubMed Central PMCID: PMC308795.
