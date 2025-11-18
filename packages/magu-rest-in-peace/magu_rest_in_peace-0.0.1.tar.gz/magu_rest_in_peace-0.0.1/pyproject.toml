@@ -1,0 +1,13 @@
+[project]
+name = "magu-rest-in-peace"
+version = "0.0.1"
+description = "Simple Web Framework."
+dependencies = [
+    "cffi",
+    "cryptography",
+    "pycparser",
+    "PyJWT",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
