@@ -1,0 +1,68 @@
+Metadata-Version: 2.4
+Name: information-resource-registry
+Version: 0.0.0
+Summary: A registry of information resources used in NCATS Data Translator
+Author-email: Sierra Moxon <smoxon@lbl.gov>
+License: MIT
+License-File: LICENSE
+Requires-Python: >=3.10
+Requires-Dist: beautifulsoup4>=4.0.0
+Requires-Dist: click>=8.3.0
+Requires-Dist: curies>=0.12.0
+Requires-Dist: fairsharing-client>=0.3.0
+Requires-Dist: gilda>=1.4.1
+Requires-Dist: kaleido==0.2.1
+Requires-Dist: linkml-runtime>=1.8.0
+Requires-Dist: linkml>=1.8.5
+Requires-Dist: packaging>=24.0
+Requires-Dist: pandas>=2.2.3
+Requires-Dist: plotly>=5.24.1
+Requires-Dist: prefixmaps>=0.2.0
+Requires-Dist: pytest>=7.3.1
+Requires-Dist: pyyaml>=6.0.1
+Requires-Dist: requests>=2.31.0
+Requires-Dist: ruamel-yaml>=0.18.0
+Requires-Dist: ssslm>=0.1.2
+Requires-Dist: stringcase>=1.2.0
+Requires-Dist: tqdm>=4.66.6
+Requires-Dist: yamllint>=1.35.1
+Provides-Extra: dev
+Requires-Dist: codespell>=2.2.6; extra == 'dev'
+Requires-Dist: mkdocs-material>=9.4.8; extra == 'dev'
+Requires-Dist: mkdocs-mermaid2-plugin>=1.1.1; extra == 'dev'
+Requires-Dist: mkdocs>=1.4.2; extra == 'dev'
+Requires-Dist: schemasheets>=0.1.14; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: mkdocs-material>=9.4.8; extra == 'docs'
+Description-Content-Type: text/markdown
+
+# information-resource-registry
+
+The information resource registry is a listing of data sources present in the NCATS Data Translator system.  Each information resource has an identifier, a short description, and an URL to more information about that resource.
+
+## Website
+
+[https://biolink.github.io/information-resource-registry](https://biolink.github.io/information-resource-registry)
+
+## Repository Structure
+
+* [examples/](examples/) - example data
+* [project/](project/) - project files (do not edit these)
+* [src/](src/) - source files (edit these)
+  * [information_resource_registry](src/information_resource_registry)
+    * [schema](src/information_resource_registry/schema) -- LinkML schema
+      (edit this)
+
+## Developer Documentation
+
+<details>
+Use the `make` command to generate project artefacts:
+
+* `make all`: make everything
+* `make deploy`: deploys site
+</details>
+
+## Credits
+
+This project was made with
+[linkml-project-cookiecutter](https://github.com/linkml/linkml-project-cookiecutter).
