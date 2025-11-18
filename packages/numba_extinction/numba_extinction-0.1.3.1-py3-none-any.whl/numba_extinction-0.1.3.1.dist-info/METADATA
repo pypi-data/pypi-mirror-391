@@ -1,0 +1,126 @@
+Metadata-Version: 2.4
+Name: numba_extinction
+Version: 0.1.3.1
+Summary: `extinction.py` rewritten and extended using Numba.
+Project-URL: Homepage, https://github.com/G-Francio/numba_extinction
+Project-URL: Bug Tracker, https://github.com/G-Francio/numba_extinction/issues
+Author-email: Francesco Guarneri <francesco.guarneri@uni-hamburg.de>
+License: MIT License
+        
+        Copyright (c) 2025 Francesco Guarneri
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+License-File: LICENSE
+Keywords: astronomy,python,science
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Requires-Python: >=3.12
+Requires-Dist: astropy>=7.1.1
+Requires-Dist: numba>=0.62.1
+Requires-Dist: numpy>=2.3.4
+Provides-Extra: ipython
+Requires-Dist: ipython>=9.7.0; extra == 'ipython'
+Requires-Dist: ipywidgets>=8.1.8; extra == 'ipython'
+Requires-Dist: jupyterlab>=4.4.10; extra == 'ipython'
+Requires-Dist: matplotlib>=3.10.7; extra == 'ipython'
+Provides-Extra: plot
+Requires-Dist: dust-extinction>=1.6; extra == 'plot'
+Requires-Dist: extinction>=0.4.8; extra == 'plot'
+Requires-Dist: matplotlib>=3.10.7; extra == 'plot'
+Description-Content-Type: text/markdown
+
+# numba_extinction
+
+**Numba-accelerated implementation of the [`extinction`](https://github.com/kbarbary/extinction) package.**
+
+This package rewrites and extends the functionality of `extinction.py` using [Numba](https://numba.pydata.org/) for performance.
+It reproduces the original `extinction` curves (albeit with some ~1e-15 differences due to floating-point arithmetic).
+
+An equivalent implementation of the UV-to-IR extinction curve by [Gordon et al. (2023)](https://ui.adsabs.harvard.edu/abs/2023ApJ...950...86G/abstract) is included and validated against [`dust_extinction`](https://github.com/karllark/dust_extinction) for consistency.
+
+Please check out [`dust_extinction`](https://github.com/karllark/dust_extinction) too! It is much more fleshed-out and feature complete.
+This package was developed for personal purposes before I discovered [`dust_extinction`](https://github.com/karllark/dust_extinction) and is not meant to be a replacement.
+
+---
+
+## Installation
+
+You can install `numba_extinction` from PyPI or in editable mode for development.
+
+### Install from source
+
+```bash
+# Clone the repository
+git clone https://github.com/G-Francio/numba_extinction.git
+cd numba_extinction
+
+# Install as a local editable package
+pip install -e .
+```
+
+### Install from PyPI
+
+```bash
+pip install numba_extinction
+```
+
+---
+
+## Requirements
+
+The package requires:
+
+* `astropy >= 7.1.1`
+* `numba >= 0.62.1`
+* `numpy >= 2.3.4`
+
+Optional extras can be installed for validation, convenience, and plotting purposes:
+
+```bash
+# Validation and plotting
+# Install matplotlib and the packages required to run the example
+pip install "numba_extinction[plot]"
+
+# Convenience
+# Additionally install IPython, notebooks, and matplotlib
+pip install "numba_extinction[ipython]"
+```
+
+
+---
+
+## Links
+
+* [PyPI](https://pypi.org/project/numba-extinction)
+* [extinction](https://github.com/kbarbary/extinction)
+* [dust_extinction](https://github.com/karllark/dust_extinction)
+
+---
+
+## Authors
+
+**Francesco Guarneri** ([francesco.guarneri@uni-hamburg.de](mailto:francesco.guarneri@uni-hamburg.de))  
+**ChatGPT** - For this wonderful `README.md` :)
+
+Licensed under the **MIT License**.
