@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-terrier"
+version = "1.0"
+description="PyTerrier"
+requires-python = ">=3.9"
+authors = [
+  {name = "Craig Macdonald", email = "craig.macdonald@glasgow.ac.uk"},
+]
+maintainers = [
+  {name = "Craig Macdonald", email = "craig.macdonald@glasgow.ac.uk"},
+]
+readme = "README.md"
+classifiers = [
+  "Topic :: Text Processing",
+  "Topic :: Text Processing :: Indexing",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "pyterrier[all]>=1.0",
+]
+
+[project.urls]
+Repository = "https://github.com/terrier-org/pyterrier"
+"Bug Tracker" = "https://github.com/terrier-org/pyterrier/issues"
+Changelog = "https://github.com/terrier-org/pyterrier/releases"
+CI = "https://github.com/terrier-org/pyterrier/actions"
+Documentation = "https://pyterrier.readthedocs.io/"
