@@ -1,0 +1,2 @@
+from .aproximacao_regressao_exp_taylor import regressao, regressao_logaritmica, polinomio_de_taylor
+from .aproximacao_trig_linear import ajuste_linear, ajuste_trigonometrico
