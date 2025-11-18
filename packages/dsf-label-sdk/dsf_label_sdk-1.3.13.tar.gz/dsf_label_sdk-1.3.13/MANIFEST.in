@@ -1,0 +1,28 @@
+# MANIFEST.in
+# Include important files in the source distribution
+
+include README.md
+include LICENSE
+include pyproject.toml
+
+# Include core SDK files
+recursive-include dsf_label_sdk *.py
+
+# Exclude unnecessary files
+exclude .gitignore
+exclude .github
+exclude *.pyc
+exclude *.pyo
+exclude *~
+exclude .DS_Store
+
+# Exclude directories not required for distribution
+recursive-exclude tests *
+recursive-exclude docs *
+recursive-exclude examples *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .DS_Store
+recursive-exclude * *.so
+recursive-exclude * *.dylib
+
