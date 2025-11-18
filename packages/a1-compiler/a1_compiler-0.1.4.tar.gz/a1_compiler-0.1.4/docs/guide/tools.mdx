@@ -1,0 +1,182 @@
+---
+title: Tools
+description: Create tools for agents to take action
+---
+
+## Python Functions
+
+Create tools from any async function:
+
+```python
+from a1 import tool
+
+@tool
+async def search(query: str) -> list[str]:
+    """Search the web."""
+    return results
+
+@tool
+async def calculate(expression: str) -> float:
+    """Evaluate math expression."""
+    return eval(expression)
+```
+
+Supports primitive and complex return types (Pydantic models, lists, dicts).
+
+## OpenAPI
+
+Create tools from OpenAPI specifications:
+
+```python
+from a1 import openapi
+
+tools = openapi.from_spec("https://api.example.com/openapi.json")
+```
+
+## Model Context Protocol (MCP)
+
+Create tools from MCP servers:
+
+```python
+from a1 import mcp
+
+tools = await mcp.from_server("path/to/mcp/server")
+```
+
+## LLM
+
+LLMs are tools that call language models with structured output and retry logic:
+
+```python
+from a1 import LLM, RetryStrategy
+from pydantic import BaseModel
+
+class Answer(BaseModel):
+    result: float
+    explanation: str
+
+# Basic LLM tool
+llm = LLM("gpt-4.1")
+
+# With structured output
+llm = LLM(
+    model="gpt-4.1",
+    output_schema=Answer
+)
+
+# Custom retry strategy (default: 3 candidates × 3 retries)
+llm = LLM(
+    model="gpt-4.1",
+    retry_strategy=RetryStrategy(max_iterations=5, num_candidates=2)
+)
+```
+
+**Supported providers**: OpenAI, Anthropic, Google, Groq (via `groq:model-name`)
+
+Use LLM tools like any other tool in agents.
+
+## EM
+
+EMs are tools that call embedding models for semantic similarity. The use-case for this is classification. If any enum in your agent/tool schemas (input/output) has >100 values, the compiler translates all relevant LLM calls into a fused EM-LLM pipeline that first filters to semantically relevant enum options and then invokes the LLM with its output constrained to be one of the filtered options.
+
+A1 statically detects enums that are too large and will require an EM tool if detected. A1 transparently owns adaptive rate limit handling, chunk-parallelism, and caching vectors within the current Runtime.
+
+Semantic classification example:
+
+```python
+from enum import Enum
+from pydantic import BaseModel, Field
+
+# Large enum (1M values)
+Category = Enum('Category', {f'CAT_{i}': f'cat_{i}' for i in range(1_000_000)})
+
+class Output(BaseModel):
+    category: Category
+    
+agent = Agent(
+    output_schema=Output,
+    tools=[EM("text-embedding-3-small"), LLM("gpt-4.1")]  # EM required
+)
+```
+
+## RAG
+
+RAG provides readonly or full access to databases and filesystems:
+
+```python
+from a1 import RAG, Database, FileSystem
+
+# Readonly database access (SELECT only)
+rag = RAG(database="sqlite:///data.db")
+
+# Readonly filesystem access (ls, grep, cat)
+rag = RAG(filesystem="/path/to/files")
+
+agent = Agent(
+    name="safe_agent",
+    tools=[rag.get_toolset(), LLM("gpt-4.1")]
+)
+```
+
+**Readonly tools**: `sql` (SELECT), `ls` (list), `grep` (search), `cat` (read)
+
+For full read/write access, use `Database` or `FileSystem` directly:
+
+```python
+# Full database access (SELECT, INSERT, UPDATE, DELETE)
+db = Database("postgresql://user:pass@host/db")
+
+# Full filesystem access (ls, grep, cat, write_file, delete_file)
+fs = FileSystem("s3://bucket/path")
+
+agent = Agent(
+    tools=[db.get_toolset(), fs.get_toolset(), LLM("gpt-4.1")]
+)
+```
+
+**Supported databases**: PostgreSQL, MySQL, SQLite, DuckDB, SQL Server, Oracle
+
+**Supported paths**: Local filesystems, S3, Google Cloud Storage, Azure Blob Storage
+
+## ToolSet
+
+Group related tools together to organize hierarchically:
+
+```python
+from a1 import ToolSet
+
+math_tools = ToolSet(
+    name="math",
+    description="Mathematical operations",
+    tools=[add, multiply, divide]
+)
+
+agent = Agent(
+    tools=[math_tools, LLM("gpt-4.1")]
+)
+```
+
+## Done
+
+Built-in `is_terminal=True` tool for marking workflow completion:
+
+```python
+from a1 import Done
+
+done = Done()  # Agent can call this to signal completion
+```
+
+## Descriptions
+
+Add descriptions to help LLMs understand tools:
+
+```python
+@tool(
+    name="api_call",
+    description="Make an HTTP request to an endpoint"
+)
+async def api_call(url: str, method: str = "GET") -> str:
+    ...
+```
+
+

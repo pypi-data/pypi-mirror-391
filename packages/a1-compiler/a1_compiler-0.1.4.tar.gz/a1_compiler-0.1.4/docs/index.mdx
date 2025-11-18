@@ -1,0 +1,85 @@
+---
+title: A1
+description: The agent-to-code compiler
+---
+
+## What is A1?
+
+A1 is a direct replacement for agent frameworks. While prior art generates a static while loop program for each agent, an agent compiler generates a program optimized for each unique agent input.
+
+## Why use an agent compiler?
+
+1. **Safety** - Minimizes exposure of sensitive data to an LLM.
+2. **Speed** - Up to 10x faster code generation.
+3. **Determinism** - Code is optimized for minimal non-deterministic behavior (e.g. LLM calls replaced with code where possible).
+4. **Flexibility** - Skills and Tools from any existing OpenAPI, MCP server, databases, fsspec paths, Python functions
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Agents" icon="robot" href="/guide/agents">
+    Specify _what_ is expected of an agent
+  </Card>
+  <Card title="Tools" icon="wrench" href="/guide/tools">
+    Create tools from existing APIs and databases
+  </Card>
+  <Card title="Skills" icon="book-open" href="/guide/skills">
+    Create skills to codify _how_ to do things
+  </Card>
+  <Card title="Compilation" icon="bolt" href="/guide/compilation">
+    Run your agent
+  </Card>
+</CardGroup>
+
+## Quick Example
+
+```bash
+pip install a1-compiler
+```
+
+```python
+from a1 import Agent, tool, LLM
+from pydantic import BaseModel
+
+@tool
+async def add(a: int, b: int) -> int:
+    return a + b
+
+class MathInput(BaseModel):
+    problem: str
+
+class MathOutput(BaseModel):
+    answer: int
+
+agent = Agent(
+    name="math_agent",
+    description="Solves simple math problems",
+    input_schema=MathInput,
+    output_schema=MathOutput,
+    tools=[add, LLM("gpt-4.1")],
+)
+
+# Compile ahead-of-time
+compiled = await agent.aot()
+result = await compiled.execute(problem="What is 2 + 2?")
+
+# Or execute just-in-time
+result = await agent.jit(problem="What is 5 + 3?")
+```
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/getting-started/installation">
+    Set up A1 in your environment
+  </Card>
+  <Card title="Quick Start" icon="rocket" href="/getting-started/quick-start">
+    Build your first agent
+  </Card>
+  <Card title="Compilation Guide" icon="book" href="/guide/compilation">
+    Learn about AOT vs JIT
+  </Card>
+  <Card title="API Reference" icon="code" href="/api/reference">
+    Explore the full API
+  </Card>
+</CardGroup>
