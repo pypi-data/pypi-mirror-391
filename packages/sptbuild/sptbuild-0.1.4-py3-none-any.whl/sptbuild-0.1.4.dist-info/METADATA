@@ -1,0 +1,646 @@
+Metadata-Version: 2.4
+Name: sptbuild
+Version: 0.1.4
+Summary: Build and release tool for SPT client plugins
+Author-email: flir <flir.063ur@passmail.net>
+License: MIT
+Project-URL: Homepage, https://gitlab.com/flir063-spt/sptbuild
+Project-URL: Issues, https://gitlab.com/flir063-spt/sptbuild/-/issues
+Keywords: spt,tarkov,bepinex,plugin,build,gitlab
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+Requires-Dist: requests>=2.31.0
+Requires-Dist: semver>=3.0.0
+Provides-Extra: dev
+Requires-Dist: towncrier>=23.11.0; extra == "dev"
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: build>=1.0.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Dynamic: license-file
+
+# sptbuild
+
+Build and release tool for SPT (Single Player Tarkov) client plugins.
+This tool provides a unified CLI for packaging, uploading, and releasing
+BepInEx plugins for SPT.
+
+## Features
+
+- **Package**: Create zip packages for SPT plugins in the correct BepInEx structure
+- **File Bundling**: Bundle additional files and directories with your plugin using `plugin.toml`
+- **Upload**: Upload release packages to GitLab project uploads
+- **Release**: Create GitLab releases with package registry integration (CI mode)
+- **Setup CI**: Setup and manage NuGet reference packages for CI builds
+
+## Installation
+
+### From source (development)
+
+```bash
+git clone https://gitlab.com/flir063-spt/sptbuild.git
+cd sptbuild
+pip install -e .
+```
+
+### From PyPI (when published)
+
+```bash
+pip install sptbuild
+```
+
+## Project Setup Requirements
+
+### .csproj Format for CI/CD Compatibility
+
+For `sptbuild` to work properly with both local development and CI builds, your `.csproj` file must use a specific format that conditionally switches between NuGet packages (CI) and local file references (development).
+
+#### Required Structure
+
+Your `.csproj` must contain a `<Choose>` block with two conditions:
+
+```xml
+<!-- Standard .NET references (both local and CI) -->
+<ItemGroup>
+  <Reference Include="System" />
+  <Reference Include="System.Core" />
+  <Reference Include="System.Xml.Linq" />
+  <Reference Include="System.Data.DataSetExtensions" />
+  <Reference Include="Microsoft.CSharp" />
+  <Reference Include="System.Data" />
+  <Reference Include="System.Net.Http" />
+  <Reference Include="System.Xml" />
+</ItemGroup>
+
+<Choose>
+  <!-- CI Build: Use private NuGet package -->
+  <When Condition="'$(CI)' == 'true'">
+    <ItemGroup>
+      <PackageReference Include="YourProject.SPT.References" Version="1.0.0" />
+    </ItemGroup>
+  </When>
+
+  <!-- Local Build: Use file references from SPT installation -->
+  <Otherwise>
+    <ItemGroup>
+      <Reference Include="Assembly-CSharp">
+        <HintPath>$(SPT_INSTALL_DIR)/EscapeFromTarkov_Data/Managed/Assembly-CSharp.dll</HintPath>
+      </Reference>
+      <Reference Include="Comfort">
+        <HintPath>$(SPT_INSTALL_DIR)/EscapeFromTarkov_Data/Managed/Comfort.dll</HintPath>
+      </Reference>
+      <!-- ... other SPT/BepInEx/Unity references ... -->
+    </ItemGroup>
+  </Otherwise>
+</Choose>
+```
+
+#### Why This Format?
+
+- **CI Builds**: In GitLab CI, the `$(CI)` environment variable is set to `true`, triggering the `<When>` condition to use the NuGet package
+- **Local Builds**: During local development, `$(CI)` is not set, so the `<Otherwise>` block is used with local file references
+- **Single Source**: One `.csproj` file works for both environments without manual modification
+
+#### Converting an Existing Project
+
+If your project uses only local file references, you can use the `init-csproj` command to automatically convert it:
+
+```bash
+sptbuild init-csproj yourproject.csproj
+```
+
+This will:
+1. Backup your original `.csproj`
+2. Convert local references to the CI-compatible format
+3. Preserve your existing references in the `<Otherwise>` block
+4. Add the NuGet package reference in the `<When>` block
+
+See [Setup CI Command](#setup-ci-command) for creating the NuGet reference package.
+
+## Configuration
+
+sptbuild uses environment variables for configuration. Set these in your environment or in a `.envrc` file:
+
+### Required Variables
+
+```bash
+# Package information
+export UPLOAD_PACKAGE_NAME="your.package.name"
+export VERSION_SOURCE_FILE="Plugin.cs"
+
+# GitLab configuration
+export GITLAB_PROJECT_ID="your_project_id"
+export GITLAB_USERNAME="your_username"
+export GITLAB_PROJECT_NAME="your_project_name"
+```
+
+### Authentication (Non-CI)
+
+```bash
+# Personal access token with 'api' scope
+export GITLAB_SECRET_TOKEN="glpat-xxxxxxxxxxxxx"
+```
+
+### CI Mode (Auto-configured in GitLab CI)
+
+```bash
+export CI_JOB_TOKEN="<auto-provided>"
+export CI_API_V4_URL="<auto-provided>"
+```
+
+## Usage
+
+### Package Command
+
+Create a zip package for your SPT plugin:
+
+```bash
+sptbuild package
+```
+
+This will:
+1. Copy the compiled DLL from `bin/Release/net472/`
+2. Bundle additional files/directories if `plugin.toml` exists (see [File Bundling](#file-bundling))
+3. Create the correct BepInEx directory structure
+4. Generate a zip file in `bin/upload/`
+
+**Prerequisites**: Run `dotnet build --configuration Release <your-project>.csproj` first
+
+### File Bundling
+
+You can bundle additional files and directories alongside your plugin DLL using a `plugin.toml` configuration file.
+
+#### Creating plugin.toml
+
+Generate an example configuration file:
+
+```bash
+# Create plugin.toml in current directory
+sptbuild init-config
+```
+
+#### plugin.toml Format
+
+The `plugin.toml` file tells sptbuild which additional files and directories to include in your plugin package:
+
+```toml
+[bundle]
+
+# Individual files to include (relative to project root)
+# These maintain their directory structure in the plugin folder
+files = [
+    "README.md",
+    "LICENSE.txt",
+    "config/settings.json",
+]
+
+# Directories to include recursively
+# All files within these directories will be copied
+directories = [
+    "assets",
+    "localization",
+]
+
+# Optional: Custom file mappings for renaming or restructuring
+[[bundle.custom]]
+source = "docs/UserGuide.md"
+destination = "GUIDE.md"  # Renamed in the zip
+
+[[bundle.custom]]
+source = "configs/default.json"
+destination = "config/default.json"  # Placed in config subfolder instead of configs
+```
+
+**Note**: All paths are relative to your project root. All bundled files are placed in `BepInEx/plugins/{YourPackageName}/` alongside your DLL.
+
+#### Example Zip Structure
+
+With the above configuration, your final zip will look like:
+
+```
+BepInEx/
+  plugins/
+    YourPlugin/
+      YourPlugin.dll          # Your compiled plugin
+      README.md               # From files list
+      LICENSE.txt             # From files list
+      config/
+        settings.json         # From files list
+        default.json          # From custom mapping
+      assets/                 # From directories list
+        icon.png
+        banner.png
+      localization/           # From directories list
+        en.json
+        fr.json
+      GUIDE.md                # From custom mapping (renamed)
+```
+
+#### Important Notes
+
+- `plugin.toml` is **optional** - if it doesn't exist, only the DLL is bundled
+- Build will **fail** if any specified file or directory doesn't exist
+- Files not listed in `plugin.toml` are **not included** in the package
+
+### Upload Command
+
+Upload your package to GitLab project uploads:
+
+```bash
+# Upload only
+sptbuild upload
+
+# Upload and create a release
+sptbuild upload --release
+# or
+sptbuild upload -r
+```
+
+The release notes are automatically extracted from `CHANGELOG.md` based on the current version.
+
+### Release Command (CI Mode)
+
+Create a GitLab release with package registry integration. This is designed for CI environments:
+
+```bash
+sptbuild release
+```
+
+This will:
+1. Upload the package to GitLab Package Registry
+2. Create a GitLab release with the package link
+3. Extract release notes from `CHANGELOG.md`
+
+### Setup CI Command
+
+Setup and manage NuGet reference packages for CI builds:
+
+```bash
+# Build package only
+sptbuild setup-ci myproject.csproj
+
+# Build and upload to GitLab
+sptbuild setup-ci myproject.csproj --upload
+# or
+sptbuild setup-ci myproject.csproj -u
+
+# Build, upload, and update csproj with new version
+sptbuild setup-ci myproject.csproj -u -m
+```
+
+This command:
+1. Parses your `.csproj` for reference assemblies
+2. Copies DLLs to a `refs/` directory
+3. Creates a NuGet package with all references
+4. Optionally uploads to GitLab Package Registry
+5. Optionally updates your `.csproj` with the new version
+
+### Init Csproj Command
+
+Convert an existing `.csproj` file to the CI-compatible format with conditional reference blocks:
+
+```bash
+# Convert with default settings
+sptbuild init-csproj yourproject.csproj
+
+# Specify NuGet package version
+sptbuild init-csproj yourproject.csproj --version 1.0.0
+# or
+sptbuild init-csproj yourproject.csproj -v 1.0.0
+
+# Force conversion even if Choose block exists
+sptbuild init-csproj yourproject.csproj --force
+# or
+sptbuild init-csproj yourproject.csproj -f
+```
+
+This command:
+1. Backs up your original `.csproj` file (with timestamp)
+2. Analyzes existing references (separates system vs SPT/game references)
+3. Creates conditional `<Choose>` block:
+   - System references placed outside (used in both environments)
+   - SPT/game references moved to `<Otherwise>` block (local builds)
+   - NuGet package reference added to `<When>` block (CI builds)
+4. Writes the updated `.csproj` file
+
+**Example output:**
+```
+=== SPT Build .csproj Converter ===
+
+Backing up original .csproj...
+✓ Backup created: yourproject.csproj.backup.20250114_153022
+
+Analyzing references...
+  Found 8 system references
+  Found 12 SPT/game references
+
+NuGet package name: YourProject.SPT.References
+
+Writing updated .csproj...
+✓ Conversion complete!
+
+Next steps:
+1. Create the NuGet reference package:
+   sptbuild setup-ci yourproject.csproj --upload
+2. Test local build:
+   dotnet build yourproject.csproj
+3. Commit the updated .csproj to your repository
+```
+
+## Example Workflow
+
+### Local Development
+
+```bash
+# 1. (Optional) Create plugin.toml to bundle additional files
+sptbuild init-config
+# Edit plugin.toml to specify which files to bundle
+
+# 2. Build your plugin (specify the main project .csproj)
+dotnet build --configuration Release yourproject.csproj
+
+# 3. Package it
+sptbuild package
+
+# 4. Upload to GitLab and create a release
+sptbuild upload --release
+```
+
+### CI/CD Pipeline
+
+Example `.gitlab-ci.yml`:
+
+```yaml
+stages:
+  - build
+  - package
+  - release
+
+build:
+  stage: build
+  script:
+    - dotnet restore yourproject.csproj
+    - dotnet build --configuration Release yourproject.csproj
+
+package:
+  stage: package
+  script:
+    - sptbuild package
+  artifacts:
+    paths:
+      - bin/upload/*.zip
+
+release:
+  stage: release
+  script:
+    - sptbuild release
+  only:
+    - tags
+```
+
+**Note**: When you have multiple `.csproj` files in your directory (e.g., `yourproject.csproj` and `ReferencePackage.csproj`), you must specify which one to build in the `dotnet build` command.
+
+### Setting Up CI References
+
+If you have an existing project that only uses local file references, you'll need to convert it to the CI-compatible format:
+
+```bash
+# 1. Convert .csproj to CI-compatible format (automatic)
+sptbuild init-csproj myproject.csproj
+
+# 2. Create and upload the NuGet reference package
+sptbuild setup-ci myproject.csproj --upload
+
+# 3. Test that it builds locally
+dotnet build myproject.csproj
+
+# 4. Commit changes to repository
+git add myproject.csproj
+git commit -m "Convert project to CI-compatible format"
+```
+
+The `init-csproj` command automatically:
+- Creates a backup of your original `.csproj`
+- Separates system references (stays in both environments)
+- Moves SPT/game references to conditional blocks
+- Adds NuGet package reference for CI builds
+
+The `setup-ci` command requires that `nuget.config` exists. If it doesn't, the command will create it automatically with the correct format.
+
+## Version Detection
+
+sptbuild automatically detects the version from your source file (specified by `VERSION_SOURCE_FILE`). It looks for:
+
+```csharp
+public const string Version = "1.0.0";
+```
+
+## Changelog Integration
+
+Release notes are automatically extracted from `CHANGELOG.md`. The expected format is:
+
+```markdown
+## [1.0.0] - 2024-01-15
+
+### Features
+- New feature description
+
+### Bug Fixes
+- Bug fix description
+```
+
+We recommend using [towncrier](https://pypi.org/project/towncrier/) to manage changelogs.
+
+## Environment Setup Example
+
+Create a `.envrc` file in your project root:
+
+```bash
+# Git configuration
+export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes'
+export GIT_COMMITTER_NAME="Your Name"
+export GIT_COMMITTER_EMAIL="your.email@example.com"
+
+# GitLab configuration
+export GITLAB_SECRET_TOKEN="glpat-xxxxxxxxxxxxx"
+export GITLAB_PROJECT_ID="12345678"
+export GITLAB_USERNAME="your-username"
+export GITLAB_PROJECT_NAME="your-project"
+
+# Package configuration
+export UPLOAD_PACKAGE_NAME="your.package.name"
+export VERSION_SOURCE_FILE="Plugin.cs"
+```
+
+Then use [direnv](https://direnv.net/) to automatically load these variables:
+
+```bash
+direnv allow
+```
+
+## Requirements
+
+- Python >= 3.8
+- requests >= 2.31.0
+- semver >= 3.0.0
+- tomli >= 2.0.0 (for Python < 3.11)
+
+## Optional Dependencies
+
+For development and changelog management:
+
+```bash
+pip install sptbuild[dev]
+```
+
+This includes:
+- towncrier >= 23.11.0
+- pytest >= 7.0.0
+
+## License
+
+MIT
+
+## Development
+
+This project uses [Task](https://taskfile.dev/) for common development tasks.
+
+### Available Tasks
+
+```bash
+# Build the package
+task build
+
+# Run tests
+task test
+
+# Run tests with coverage
+task test:coverage
+
+# Clean build artifacts
+task clean
+
+# Clean all artifacts (build + test)
+task clean:all
+
+# Install in development mode
+task install:dev
+
+# Lint code
+task lint
+
+# Release to PyPI (requires build first)
+task release
+```
+
+### Quick Start for Contributors
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd sptbuild
+
+# 2. Install in development mode
+task install:dev
+
+# 3. Make your changes
+
+# 4. Run tests
+task test
+
+# 5. Build the package
+task build
+```
+
+### Continuous Integration
+
+This project uses GitLab CI/CD for automated testing and deployment.
+
+#### CI Pipeline Stages
+
+1. **Test Stage**
+   - Runs tests on Python 3.8, 3.9, 3.10, 3.11, and 3.12
+   - Generates coverage reports (text, XML, HTML)
+   - Coverage metrics are tracked over time in GitLab
+   - Lints code for syntax errors
+
+2. **Build Stage**
+   - Creates distribution packages (source + wheel)
+   - Validates packages with twine
+   - Artifacts stored for 90 days
+
+3. **Deploy Stage**
+   - Automatic deployment to PyPI (on tags)
+
+#### Coverage Reporting
+
+The CI pipeline generates coverage reports in multiple formats:
+- **Terminal output**: Displayed in job logs
+- **XML (Cobertura)**: Used by GitLab for coverage tracking
+- **HTML**: Viewable as job artifacts for detailed analysis
+
+Coverage trends are tracked in GitLab's Analytics > Repository > Code Coverage.
+
+#### Running CI Locally
+
+You can simulate CI jobs locally using Task:
+
+```bash
+# Run the same tests as CI
+task test:coverage
+
+# Lint like CI
+task lint
+
+# Build packages like CI
+task build
+```
+
+#### Setting Up Trusted Publishing for PyPI
+
+This project uses PyPI's Trusted Publishers feature for secure, passwordless deployment.
+
+**Prerequisites:**
+- Project must exist on PyPI (create initial release manually first)
+- GitLab project must be hosted on gitlab.com
+
+**Setup Steps:**
+
+1. **On PyPI** (https://pypi.org/manage/project/sptbuild/settings/publishing/):
+   - Go to your project settings → Publishing
+   - Click "Add a new publisher"
+   - Select "GitLab CI/CD"
+   - Fill in:
+     - **Owner**: Your GitLab username or organization
+     - **Repository name**: `sptbuild`
+     - **Environment name**: `production/pypi`
+     - **Workflow filename**: Leave empty (uses default)
+   - Save the publisher
+
+2. **Verify GitLab Settings**:
+   - Go to Settings → CI/CD → Variables
+   - Ensure "ID tokens" feature is enabled (automatic in modern GitLab)
+   - No manual tokens/passwords needed!
+
+**How It Works:**
+- GitLab generates OIDC tokens during deployment jobs
+- PyPI verifies the token matches the configured publisher
+- No secrets to manage or rotate
+- More secure than API tokens
+
+For more information, see:
+- [PyPI Trusted Publishers documentation](https://docs.pypi.org/trusted-publishers/)
+- [GitLab OIDC tokens documentation](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
