@@ -1,0 +1,88 @@
+{
+  "folders": [
+    {
+      "path": ".."
+    }
+  ],
+  "settings": {
+    "[python]": {
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+      },
+      "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "python.analysis.typeCheckingMode": "basic",
+    "python.testing.pytestArgs": [
+      "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "python.autoComplete.extraPaths": [
+      "${workspaceFolder}/.venv/lib/python3.12/site-packages"
+    ],
+    "cSpell.words": [
+      "autolabeler",
+      "aiodns",
+      "aiohttp",
+      "asyncio",
+      "autoenv",
+      "autofix",
+      "booleaness",
+      "cafile",
+      "celerybeat",
+      "certifi",
+      "dataclasses",
+      "doctoc",
+      "dunder",
+      "duronly",
+      "excinfo",
+      "htmlcov",
+      "ical",
+      "ipynb",
+      "ipython",
+      "isort",
+      "maxlevel",
+      "noqa",
+      "nosetests",
+      "peterdavehello",
+      "pycache",
+      "Pydanitc's",
+      "pydantic",
+      "Pydantic",
+      "Pydantic's",
+      "pyenv",
+      "Pylance",
+      "pylint",
+      "pyrfc",
+      "pytest",
+      "PYTHONPATH",
+      "Quinsalnd",
+      "scrapy",
+      "sdist",
+      "stdlib",
+      "structlog",
+      "toggl",
+      "togglpy",
+      "virtualenv",
+      "virtualenvs",
+      "webassets"
+    ],
+    "python.analysis.extraPaths": [
+      "${workspaceFolder}/.venv/lib/python3.12/site-packages"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.vscode-pylance",
+      "ms-python.python",
+      "streetsidesoftware.code-spell-checker",
+      "editorconfig.editorconfig",
+      "davidanson.vscode-markdownlint",
+      "yzhang.markdown-all-in-one",
+      "tamasfe.even-better-toml"
+    ]
+  }
+}
