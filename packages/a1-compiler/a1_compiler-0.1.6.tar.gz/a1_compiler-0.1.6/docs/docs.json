@@ -1,0 +1,72 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "A1",
+  "description": "The agent-to-code compiler",
+  "logo": "assets/a1_icon.svg",
+  "favicon": "assets/a1_icon.svg",
+  "colors": {
+    "primary": "#ffe067",
+    "light": "#ffe067"
+  },
+  "theme": "willow",
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "background": {
+    "color": {
+      "dark": "#1f1f1f",
+      "light": "#ffffff"
+    }
+  },
+  "navigation": {
+    "pages": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "getting-started/installation",
+          "getting-started/quick-start"
+        ]
+      },
+      {
+        "group": "Basics",
+        "pages": [
+          "guide/agents",
+          "guide/tools",
+          "guide/skills",
+          "guide/compilation",
+          "guide/context"
+        ]
+      },
+      {
+        "group": "Advanced",
+        "pages": [
+          "advanced/strategies",
+          "advanced/observability",
+          "api/reference"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "GitHub",
+      "href": "https://github.com/stanford-mast/a1"
+    },
+    "links": [
+      {
+        "label": "a1project.org",
+        "href": "http://a1project.org"
+      },
+      {
+        "label": "realcalebwin",
+        "href": "https://x.com/realcalebwin"
+      },
+      {
+        "label": "Discord",
+        "href": "https://discord.gg/NqrkJwYYh4"
+      }
+    ]
+  }
+}

@@ -1,0 +1,125 @@
+---
+title: Compilation
+description: How to run agents in A1
+---
+
+## Run Agents
+
+Execute agents with JIT (Just-in-Time):
+
+```python
+from a1 import Agent, LLM
+
+agent = Agent(
+    name="calculator",
+    tools=[LLM("gpt-4.1")]
+)
+
+# Compile and execute immediately
+result = await agent.jit(problem="What is 2 + 2?")
+```
+
+JIT generates code optimized for each input, then executes it.
+
+## Compile Agents into Tools
+
+AOT (Ahead-of-Time) compilation turns agents into reusable tools:
+
+```python
+# Compile once
+compiled = await agent.aot()
+
+# Use many times
+for i in range(1000):
+    result = await compiled.execute(problem=f"Input {i}")
+```
+
+**Caching**: Compiled agents are cached in `.a1/` directory by default.
+
+```python
+# Use cached version if available
+compiled = await agent.aot(cache=True)
+
+# Force recompilation
+compiled = await agent.aot(cache=False)
+```
+
+**Agents as tools**: Compiled agents are tools that can be used in other agents.
+
+```python
+# Compile specialist agent
+math_agent = Agent(name="math", tools=[LLM("gpt-4.1")])
+compiled_math = await math_agent.aot()
+
+# Use in another agent
+coordinator = Agent(
+    name="coordinator",
+    tools=[compiled_math, LLM("gpt-4.1")]
+)
+
+result = await coordinator.jit(task="Calculate and analyze data")
+```
+
+## How It Works
+
+Both AOT and JIT follow this pipeline:
+
+```
+1. Generate → LLM creates code
+2. Verify → Check syntax/logic
+3. Cost → Rank candidates
+4. Execute → Run best code
+```
+
+### Configuration
+
+Control code generation with `Strategy`:
+
+```python
+from a1 import Strategy
+
+strategy = Strategy(
+    num_candidates=5,    # Generate 5 parallel candidates
+    max_iterations=3     # Retry up to 3 times on failure
+)
+
+compiled = await agent.aot(strategy=strategy)
+result = await agent.jit(problem="...", strategy=strategy)
+```
+
+See [Strategies](../advanced/strategies.md) for detailed configuration.
+
+### Agentic While Loop
+
+Use `IsLoop` verifier to compile agents into standard agentic while loops (like LangGraph, AutoGen):
+
+```python
+from a1 import Strategy, IsLoop
+
+strategy = Strategy(verify=IsLoop())
+
+# Compiles to while loop structure
+compiled = await agent.aot(strategy=strategy)
+```
+
+This creates an ahead-of-time compiled Python function with a while loop, instead of interpreted runtime execution.
+
+### Performance Tuning
+
+**Parallel candidates**: Generate multiple code candidates in parallel and select the best.
+
+```python
+strategy = Strategy(num_candidates=10)
+result = await agent.jit(problem="...", strategy=strategy)
+# Generates 10 candidates in parallel, picks lowest cost
+```
+
+**Candidate generation** happens in parallel:
+
+```
+Candidate 1: [Generate] → [Verify] → [Cost]
+Candidate 2: [Generate] → [Verify] → [Cost]  (parallel)
+Candidate 3: [Generate] → [Verify] → [Cost]
+```
+
+For more advanced configuration (custom verify, cost, generate), see [Strategies](../advanced/strategies.md).
