@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: postgresdeploy
+Version: 0.0.4
+Summary: Postgres Schema Deployments
+Project-URL: Homepage, https://github.com/DownerEU/geospatialDesign-postgres_deployments
+Author-email: Marcus Oates <marcus.oates@downergroup.com>
+License: MIT
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Requires-Dist: psycopg2-binary==2.9.9
+Requires-Dist: uuid==1.30
+Description-Content-Type: text/markdown
+
+# Postgres Deployments
+
+Define a database schema using JSON and deploy it. Skip the hassle of re-writing SQL statements that must be executed in a particular order, or dealing with another ORM.
+
+JSON representation of sql must come from a trusted source, this package does not check for injection attacks.
