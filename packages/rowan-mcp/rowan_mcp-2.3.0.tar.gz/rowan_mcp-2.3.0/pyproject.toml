@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rowan-mcp"
+version = "2.3.0"
+description = "Model Context Protocol server for Rowan computational chemistry platform"
+authors = [
+    {name = "Katherine Yenko", email = "katherineayenko@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11"
+urls = {Homepage = "https://github.com/k-yenko/rowan-mcp"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+dependencies = [
+    "fastmcp>=2.11.3",
+    "rowan-python>=2.1.9",
+    "stjames>=0.0.125",
+    "pydantic>=2.0.0",
+    "typing-extensions>=4.0.0",
+    "uvicorn>=0.24.0",
+    "fastapi>=0.104.0",
+    "python-dotenv>=1.0.0",
+    "pubchempy>=1.0.4",
+    "rdkit>=2025.3.2",
+    "aiohttp>=3.12.15",
+    "openai>=1.107.2",
+    "httpx>=0.25.0",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "mypy>=1.0.0",
+]
+
+[project.scripts]
+rowan-mcp = "rowan_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["rowan_mcp"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "rowan-dxt/",
+  "dxt/", 
+  "*.log",
+  "test_*.py",
+  ".venv/",
+  "*.dxt"
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true 

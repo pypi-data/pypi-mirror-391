@@ -1,0 +1,44 @@
+/.venv
+/rowan-dxt
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.DS_Store
+
+.claude
+CLAUDE.md
+/dist
+
+# MCP configuration (may contain tokens)
+.mcp.json
+
+# Test and example files
+/tests/
+/example_docs/
+test_*.py
+*_test.py
+test_*.txt
+debug_*.py
+*_debug.py
+
+# Log files
+*.log
+logs/
+
+# Personal compatibility notes
+GEMINI_MCP_COMPATIBILITY.md
+MCP_CHATGPT_GEMINI_COMPATIBILITY_ANALYSIS.md
+ROWAN_MCP_TEST_QUERIES.md
+ROWAN_MCP_TOOLS.md
+TOOLS_DOCUMENTATION.md
+
+# Large archive/data files
+*.dxt
+*.dxz
+
+# OpenRouter experimental clients (not part of core MCP server)
+openrouter_client.py
+openrouter_stdio_client.py
+setup_openrouter.py
