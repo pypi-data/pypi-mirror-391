@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2025 László Vaskó <opensource@vlaci.email.com>
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+[package]
+name = "better-fnmatch"
+version = "0.1.1"
+edition = "2021"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "better_fnmatch"
+crate-type = ["cdylib"]
+
+[dependencies]
+glob-match = "0.2.1"
+pyo3 = "0.27.1"
