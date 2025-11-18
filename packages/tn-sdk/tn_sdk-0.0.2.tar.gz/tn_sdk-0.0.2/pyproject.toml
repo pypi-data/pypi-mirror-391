@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools >= 80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tn_sdk"
+version = "0.0.2"
+description = "Trip Ninja SDK"
+requires-python = ">= 3.10"
+license = { file = "LICENSE" }
+readme = "README.md"
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = ["black==25.1.0"]
+build = [
+    "build",
+    "twine",
+    "toml"
+]
+
+[tool.distutils.egg_info]
+egg_base = "."
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
