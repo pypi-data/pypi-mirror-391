@@ -1,0 +1,115 @@
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[project]
+name = "langchain-mcp-adapters"
+version = "0.1.13"
+description = "Make Anthropic Model Context Protocol (MCP) tools compatible with LangChain and LangGraph agents."
+authors = [
+    { name = "Vadym Barda", email = "19161700+vbarda@users.noreply.github.com" },
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain-core>=0.3.36,<2.0.0",
+    "mcp>=1.9.2",
+    "typing-extensions>=4.14.0",
+]
+
+[project.urls]
+repository = "https://www.github.com/langchain-ai/langchain-mcp-adapters"
+
+[dependency-groups]
+test = [
+    "pytest>=8.0.0",
+    "ruff>=0.9.4",
+    "mypy>=1.8.0",
+    "pytest-socket>=0.7.0",
+    "pytest-asyncio>=0.26.0",
+    "types-setuptools>=69.0.0",
+    "websockets>=15.0.1",
+    "pytest-timeout>=2.4.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q -v --durations=5"
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+]
+python_functions = [
+    "test_*",
+]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+]
+ignore = [
+    "COM812",
+    "C901",
+    "PLR0913",
+    "PLR0912",
+    "PLR0915",
+    "ERA001",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+    "S101",
+    "ARG",
+    "FBT",
+    "D104",
+    "PLR2004",
+    "S311",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D415",
+    "EM101",
+    "EM102",
+    "TRY003",
+    "TRY004",
+    "RET504",
+    "SIM117",
+    "TC002",
+    "TC003",
+    "ANN001",
+    "ANN201",
+    "ANN202",
+    "ANN401",
+    "PT006",
+    "PT011",
+    "PTH118",
+    "S110",
+    "BLE001",
+    "SLF001",
+    "PERF203",
+    "C901",
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
