@@ -1,0 +1,300 @@
+######################################################################################################################
+# Copyright (C) 2017-2022 Spine project consortium
+# Copyright Spine Toolbox contributors
+# This file is part of Spine Toolbox.
+# Spine Toolbox is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
+# Public License for more details. You should have received a copy of the GNU Lesser General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+######################################################################################################################
+
+"""Classes for custom QDialogs to add, edit and remove database items."""
+from __future__ import annotations
+from functools import cached_property, reduce
+from typing import TYPE_CHECKING, Any
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, Slot
+from PySide6.QtGui import QAction
+from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QGridLayout, QHeaderView, QMenu, QTableWidget
+from spinedb_api import DatabaseMapping
+from spinedb_api.db_mapping_base import PublicItem
+from spinedb_api.temp_id import TempId
+from spinetoolbox.spine_db_editor.widgets.custom_editors import IconColorEditor
+from ...helpers import DB_ITEM_SEPARATOR, busy_effect, preferred_row_height
+from ...spine_db_manager import SpineDBManager
+from ...widgets.custom_qtableview import CopyPasteTableView
+from ..mvcmodels.entity_tree_item import EntityClassItem, EntityClassVisualKey
+
+if TYPE_CHECKING:
+    from .spine_db_editor import SpineDBEditor
+
+
+class DialogWithButtons(QDialog):
+    def __init__(self, parent: SpineDBEditor, db_mngr: SpineDBManager):
+        super().__init__(parent)
+        self.setWindowFlag(Qt.WindowType.WindowContextHelpButtonHint, False)
+        self.db_mngr = db_mngr
+        self._accept_action = QAction("OK", parent=self)
+        self._accept_action.setShortcut("Ctrl+Return")
+        self.addAction(self._accept_action)
+        self.button_box = QDialogButtonBox(self)
+        self.button_box.setStandardButtons(QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        QGridLayout(self)
+
+    def showEvent(self, ev):
+        super().showEvent(ev)
+        self._populate_layout()
+
+    def _populate_layout(self) -> None:
+        self.layout().addWidget(self.button_box)
+
+    def connect_signals(self) -> None:
+        """Connect signals to slots."""
+        self._accept_action.triggered.connect(self.accept)
+        self.button_box.accepted.connect(self._accept_action.trigger)
+        self.button_box.rejected.connect(self.reject)
+
+
+class DialogWithTableAndButtons(DialogWithButtons):
+    def __init__(self, parent: SpineDBEditor, db_mngr: SpineDBManager):
+        super().__init__(parent, db_mngr)
+        self.table_view = self.make_table_view()
+        self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        self.table_view.horizontalHeader().setStretchLastSection(True)
+        self.table_view.horizontalHeader().setMinimumSectionSize(120)
+        self.table_view.verticalHeader().setDefaultSectionSize(preferred_row_height(self))
+        self.table_view.setFocus()
+
+    def _populate_layout(self):
+        self.layout().addWidget(self.table_view)
+        super()._populate_layout()
+
+    def showEvent(self, ev):
+        super().showEvent(ev)
+        self.resize_window_to_columns()
+        if self.table_view.currentIndex() is None:
+            self.table_view.setFocus()
+
+    def make_table_view(self) -> QTableWidget:
+        raise NotImplementedError()
+
+    def resize_window_to_columns(self, height: int | None = None) -> None:
+        self.table_view.resizeColumnsToContents()
+        if height is None:
+            height = self.sizeHint().height()
+        slack = 64
+        margins = self.layout().contentsMargins()
+        self.resize(
+            slack
+            + margins.left()
+            + margins.right()
+            + self.table_view.frameWidth() * 2
+            + self.table_view.verticalHeader().width()
+            + self.table_view.horizontalHeader().length(),
+            height,
+        )
+
+    def _commit_open_edits(self) -> None:
+        index = self.table_view.currentIndex()
+        if not self.table_view.isPersistentEditorOpen(index):
+            return
+        editor = self.table_view.indexWidget(index)
+        delegate = self.table_view.itemDelegateForIndex(index)
+        delegate.commitData.emit(editor)
+
+
+class ManageItemsDialog(DialogWithTableAndButtons):
+    """A dialog with a CopyPasteTableView and a QDialogButtonBox. Base class for all
+    dialogs to query user's preferences for adding/editing/managing data items.
+    """
+
+    def __init__(self, parent: SpineDBEditor, db_mngr: SpineDBManager):
+        super().__init__(parent, db_mngr)
+        self.model: QAbstractTableModel | None = None
+
+    def make_table_view(self) -> CopyPasteTableView:
+        table_view = CopyPasteTableView(self)
+        table_view.init_copy_and_paste_actions()
+        return table_view
+
+    def connect_signals(self) -> None:
+        """Connect signals to slots."""
+        super().connect_signals()
+        try:
+            self.table_view.itemDelegate().data_committed.connect(self.set_model_data)
+        except AttributeError:
+            pass
+        self.model.dataChanged.connect(self._handle_model_data_changed)
+        self.model.modelReset.connect(self._handle_model_reset)
+
+    @Slot(QModelIndex, QModelIndex, list)
+    def _handle_model_data_changed(
+        self, top_left: QModelIndex, bottom_right: QModelIndex, roles: list[Qt.ItemDataRole]
+    ) -> None:
+        """Reimplement in subclasses to handle changes in model data."""
+
+    @Slot(QModelIndex, object)
+    def set_model_data(self, index: QModelIndex, data: Any | None) -> None:
+        """Update model data."""
+        if data is None:
+            return
+        self.model.setData(index, data, Qt.ItemDataRole.EditRole)
+
+    @Slot()
+    def _handle_model_reset(self) -> None:
+        """Resize columns and form."""
+        self.table_view.resizeColumnsToContents()
+        self.resize_window_to_columns()
+
+
+class GetEntityClassesMixin:
+    """Provides a method to retrieve entity classes for AddEntitiesDialog and AddEntityClassesDialog."""
+
+    @cached_property
+    def db_map_ent_cls_lookup(self) -> dict[DatabaseMapping, dict[EntityClassVisualKey, PublicItem]]:
+        return {
+            db_map: {
+                tuple(x[k] for k in EntityClassItem.visual_key): x
+                for x in self.db_mngr.get_items(db_map, "entity_class")
+            }
+            for db_map in self.db_maps
+        }
+
+    @cached_property
+    def db_map_ent_cls_lookup_by_name(self) -> dict[DatabaseMapping, dict[str, PublicItem]]:
+        return {
+            db_map: {x["name"]: x for x in self.db_mngr.get_items(db_map, "entity_class")} for db_map in self.db_maps
+        }
+
+    def entity_class_name_list(self, row: int) -> list[str]:
+        """Return a list of entity class names present in all databases selected for given row.
+        Used by `ManageEntityClassesDelegate`.
+        """
+        db_column = self.model.header.index("databases")
+        db_names = self.model._main_data[row][db_column]
+        db_maps = [self.keyed_db_maps[x] for x in db_names.split(", ") if x in self.keyed_db_maps]
+        return self._entity_class_name_list_from_db_maps(db_maps)
+
+    def _entity_class_name_list_from_db_maps(self, db_maps: list[DatabaseMapping]) -> list[str]:
+        db_maps = iter(db_maps)
+        db_map = next(db_maps, None)
+        if not db_map:
+            return []
+        # Initialize list from first db_map
+        entity_class_name_list = list(self.db_map_ent_cls_lookup_by_name[db_map])
+        # Update list from remaining db_maps
+        for db_map in db_maps:
+            entity_class_name_list = [
+                name for name in self.db_map_ent_cls_lookup_by_name[db_map] if name in entity_class_name_list
+            ]
+        return sorted(entity_class_name_list)
+
+
+class GetEntitiesMixin:
+    """Provides a method to retrieve entities for AddEntitiesDialog and EditEntitiesDialog."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.entity_class: PublicItem | None = None
+        self._class_key: EntityClassVisualKey | None = None
+
+    @property
+    def class_key(self) -> EntityClassVisualKey | None:
+        return self._class_key
+
+    @property
+    def dimension_name_list(self) -> tuple[str, ...]:
+        return self.entity_class["dimension_name_list"]
+
+    @property
+    def class_name(self) -> str:
+        return self.entity_class["name"]
+
+    @class_key.setter
+    def class_key(self, class_key: EntityClassVisualKey) -> None:
+        self._class_key = class_key
+        entity_classes = (self.db_map_ent_cls_lookup[db_map].get(self.class_key) for db_map in self.db_maps)
+        self.entity_class = next((x for x in entity_classes if x is not None), None)
+
+    @cached_property
+    def db_map_ent_lookup(self) -> dict[DatabaseMapping, dict[tuple[TempId, str], PublicItem]]:
+        db_map_ent_lookup = {}
+        for db_map in self.db_maps:
+            ent_lookup = db_map_ent_lookup.setdefault(db_map, {})
+            for x in self.db_mngr.get_items(db_map, "entity"):
+                byname = DB_ITEM_SEPARATOR.join(x["entity_byname"])
+                ent_lookup[x["class_id"], byname] = ent_lookup[x["superclass_id"], byname] = x
+        return db_map_ent_lookup
+
+    @cached_property
+    def db_map_alt_id_lookup(self) -> dict[DatabaseMapping, dict[str, TempId]]:
+        return {
+            db_map: {x["name"]: x["id"] for x in self.db_mngr.get_items(db_map, "alternative")}
+            for db_map in self.db_maps
+        }
+
+    def alternative_name_list(self, row: int) -> list[str]:
+        """Return a list of alternative names present in all databases selected for given row.
+        Used by `ManageEntitiesDelegate`.
+        """
+        db_column = self.model.header.index("databases")
+        db_names = self.model._main_data[row][db_column]
+        db_maps = [self.keyed_db_maps[x] for x in db_names.split(", ") if x in self.keyed_db_maps]
+        return sorted(set(x for db_map in db_maps for x in self.db_map_alt_id_lookup[db_map]))
+
+    def entity_name_list(self, row: int, column: int) -> list[str]:
+        """Return a list of entity names present in all databases selected for given row.
+        Used by `ManageEntitiesDelegate`.
+        """
+        db_column = self.model.header.index("databases")
+        db_names = self.model._main_data[row][db_column]
+        db_maps = [self.keyed_db_maps[x] for x in db_names.split(", ") if x in self.keyed_db_maps]
+        entity_name_lists = []
+        for db_map in db_maps:
+            entity_classes = self.db_map_ent_cls_lookup[db_map]
+            if self.class_key not in entity_classes:
+                continue
+            ent_cls = entity_classes[self.class_key]
+            dimension_id_list = ent_cls["dimension_id_list"]
+            dimension_id = dimension_id_list[column]
+            entities = self.db_map_ent_lookup[db_map]
+            entity_name_lists.append([name for (class_id, name) in entities if class_id == dimension_id])
+        if not entity_name_lists:
+            return []
+        return sorted(reduce(lambda x, y: set(x) & set(y), entity_name_lists))
+
+
+class ShowIconColorEditorMixin:
+    """Provides methods to show an `IconColorEditor` upon request."""
+
+    @Slot(object)
+    def reset_data(self, editor):
+        """Resets the editors selections to the default state and closes the editor"""
+        editor.set_data(None)
+        editor.accept()
+
+    @busy_effect
+    def show_icon_color_editor(self, index):
+        editor = IconColorEditor(self)
+        editor.set_data(index.data(Qt.ItemDataRole.DisplayRole))
+        editor.accepted.connect(lambda index=index, editor=editor: self.set_model_data(index, editor.data()))
+        editor.reset_pressed.connect(self.reset_data)
+        editor.show()
+
+    def contextMenuEvent(self, event):
+        """Shows the context menu for the display icon."""
+        pos = self.table_view.viewport().mapFromGlobal(event.globalPos())
+        index = self.table_view.indexAt(pos)
+        if not index.isValid():
+            return
+        if index.column() != 2:
+            super().contextMenuEvent(event)
+            return
+        menu = QMenu(self)
+        menu.addAction("Open display icon editor", lambda: self.show_icon_color_editor(index))
+        data = self.model.data(index)
+        menu.addAction("Copy display icon id", lambda: QApplication.clipboard().setText(str(data)))
+        menu.exec(event.globalPos())
+        super().contextMenuEvent(event)
