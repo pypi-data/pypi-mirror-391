@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "postgresdeploy"
+version = "0.0.4"
+authors = [
+  { name="Marcus Oates", email="marcus.oates@downergroup.com" },
+]
+license = { text = "MIT" }
+description = "Postgres Schema Deployments"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "psycopg2-binary==2.9.9",
+  "uuid==1.30",
+]
+
+[project.urls]
+Homepage = "https://github.com/DownerEU/geospatialDesign-postgres_deployments"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/postgresdeploy"]
