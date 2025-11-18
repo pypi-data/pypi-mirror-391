@@ -1,0 +1,34 @@
+Metadata-Version: 2.4
+Name: py_mavlink_dji
+Version: 0.0.2
+Summary: MAVLink to DJI translator bridge (prototype)
+Author-email: Auto Generated <dev@example.com>
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+Requires-Dist: pymavlink
+Requires-Dist: pyserial
+
+# mavlink-dji-bridge
+
+Lightweight MAVLink ↔ DJI bridge (prototype)
+
+Overview
+- Receive MAVLink commands (e.g., TAKEOFF, LAND, MISSION uploads) and translate to DJI actions.
+- Emit MAVLink telemetry from the DJI state.
+- Pure-Python prototype: `pymavlink`, `pyserial` optional.
+
+Quickstart
+1. Install:
+   pip install pymavlink pyserial
+2. Run in mock mode:
+   python -m py_mavlink_dji.cli --mock
+3. Configure with TOML:
+   Create `config.toml` and run:
+   python -m py_mavlink_dji.cli --config config.toml
+
+Notes
+- This is a prototype. See `README.md` for limitations and to-dos.
+
+
