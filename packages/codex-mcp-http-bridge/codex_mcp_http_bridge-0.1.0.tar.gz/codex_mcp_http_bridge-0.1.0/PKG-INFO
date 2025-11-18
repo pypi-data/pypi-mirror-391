@@ -1,0 +1,339 @@
+Metadata-Version: 2.4
+Name: codex-mcp-http-bridge
+Version: 0.1.0
+Summary: HTTP/OAuth bridge for connecting Codex to remote MCP servers
+Author-email: GuruCloudAI <support@gurucloudai.com>
+License: MIT
+Project-URL: Homepage, https://github.com/gurucloudai/codex-mcp-http-bridge
+Project-URL: Documentation, https://github.com/gurucloudai/codex-mcp-http-bridge#readme
+Project-URL: Repository, https://github.com/gurucloudai/codex-mcp-http-bridge
+Project-URL: Issues, https://github.com/gurucloudai/codex-mcp-http-bridge/issues
+Keywords: mcp,model-context-protocol,codex,oauth,bridge,proxy
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx>=0.27.0
+Requires-Dist: pydantic>=2.0
+Requires-Dist: pydantic-settings>=2.0
+Requires-Dist: click>=8.1
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: ruff>=0.1; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Dynamic: license-file
+
+# Codex MCP HTTP Bridge
+
+A Python package that enables OpenAI Codex to connect to remote MCP (Model Context Protocol) servers via HTTPS with OAuth 2.1 authentication.
+
+## Features
+
+- **stdio to HTTP Bridge**: Converts Codex's stdio MCP protocol to HTTP requests
+- **OAuth 2.1 Authentication**: Secure authentication using Bearer tokens
+- **Long-lived Tokens**: Personal access tokens that last up to 1 year
+- **Multiple Servers**: Configure and connect to multiple remote MCP servers
+- **Easy Setup**: Interactive CLI wizard for configuration
+- **Comprehensive Logging**: Debug connectivity issues with detailed logs
+
+## Installation
+
+```bash
+pip install codex-mcp-http-bridge
+```
+
+Or install from source:
+
+```bash
+git clone https://github.com/gurucloudai/codex-mcp-http-bridge.git
+cd codex-mcp-http-bridge
+pip install -e .
+```
+
+## Quick Start
+
+### 1. Generate a Personal Access Token
+
+First, generate a personal access token from your MCP server provider (e.g., GuruCloudAI):
+
+```bash
+# Log into https://www.gurucloudai.com
+# Navigate to MCP Manager
+# Click "Generate Token" or use the API:
+curl -X POST https://www.gurucloudai.com/api/personal-access-tokens \
+  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Codex Bridge Token"}'
+```
+
+### 2. Configure the Bridge
+
+Run the interactive setup wizard:
+
+```bash
+codex-mcp-http-bridge setup
+```
+
+This will guide you through:
+- Adding your MCP server URL
+- Entering your personal access token
+- Configuring multiple servers (optional)
+
+Configuration is saved to `~/.codex-mcp-bridge/config.json` with secure permissions (chmod 600).
+
+### 3. Test the Connection
+
+```bash
+codex-mcp-http-bridge test --server my-knowledge-base
+```
+
+### 4. Generate Codex Configuration
+
+```bash
+codex-mcp-http-bridge codex-config >> ~/.codex/config.toml
+```
+
+### 5. Restart Codex
+
+Restart Codex to load the new MCP servers. Your remote servers will now be available to Codex!
+
+## Configuration
+
+### Manual Configuration
+
+You can manually create or edit `~/.codex-mcp-bridge/config.json`:
+
+```json
+{
+  "servers": {
+    "my-knowledge-base": {
+      "url": "https://www.gurucloudai.com/mcp/{server_id}/mcp",
+      "access_token": "your-personal-access-token",
+      "description": "My GuruCloudAI Knowledge Base"
+    },
+    "my-database-server": {
+      "url": "https://www.gurucloudai.com/mcp/{another_server_id}/mcp",
+      "access_token": "same-or-different-token",
+      "description": "Database Tools"
+    }
+  }
+}
+```
+
+**Important**: Set restrictive permissions on the config file:
+```bash
+chmod 600 ~/.codex-mcp-bridge/config.json
+```
+
+### Codex Configuration
+
+Add servers to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.my-knowledge-base]
+command = "python"
+args = ["-m", "codex_mcp_http_bridge", "run", "--server", "my-knowledge-base"]
+env = { LOG_LEVEL = "info" }
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+```
+
+## CLI Commands
+
+### `run`
+
+Run the bridge for a specific server (called by Codex):
+
+```bash
+codex-mcp-http-bridge run --server my-knowledge-base
+```
+
+Options:
+- `--server`, `-s`: Name of the server to run (required)
+- `--log-level`, `-l`: Logging level (DEBUG, INFO, WARNING, ERROR)
+
+### `setup`
+
+Interactive setup wizard:
+
+```bash
+codex-mcp-http-bridge setup
+```
+
+Options:
+- `--config-path`, `-c`: Custom config file path (default: `~/.codex-mcp-bridge/config.json`)
+
+### `list`
+
+List all configured servers:
+
+```bash
+codex-mcp-http-bridge list
+```
+
+### `test`
+
+Test connection to a server:
+
+```bash
+codex-mcp-http-bridge test --server my-knowledge-base
+```
+
+### `codex-config`
+
+Generate Codex configuration snippet:
+
+```bash
+codex-mcp-http-bridge codex-config
+```
+
+## How It Works
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Codex Agent (in VM)                                    │
+│  - Sends JSON-RPC via stdio                             │
+└─────────────────┬───────────────────────────────────────┘
+                  │ stdio
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│  codex-mcp-http-bridge                                  │
+│  - Reads from stdin                                     │
+│  - Forwards to HTTP with Bearer token                   │
+│  - Returns responses to stdout                          │
+└─────────────────┬───────────────────────────────────────┘
+                  │ HTTPS + OAuth
+                  ▼
+┌─────────────────────────────────────────────────────────┐
+│  Remote MCP Server (GuruCloudAI)                        │
+│  - https://www.gurucloudai.com/mcp/{server_id}/mcp      │
+│  - Validates Bearer token                               │
+│  - Executes tools                                       │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Troubleshooting
+
+### Authentication Errors
+
+```
+Error: Authentication failed. Access token may be invalid or expired.
+```
+
+**Solution**: Your personal access token may have expired. Generate a new one and update your configuration:
+
+```bash
+codex-mcp-http-bridge setup
+```
+
+### Connection Errors
+
+```
+Error: HTTP error communicating with MCP server
+```
+
+**Solution**: Check that:
+1. The MCP server URL is correct
+2. Your internet connection is working
+3. The server is not down (visit the URL in a browser)
+
+### Debug Logging
+
+Enable debug logging to see detailed request/response information:
+
+```toml
+[mcp_servers.my-server]
+command = "python"
+args = ["-m", "codex_mcp_http_bridge", "run", "--server", "my-server", "--log-level", "DEBUG"]
+```
+
+Logs are written to stderr and can be viewed in Codex's logs.
+
+## Security Considerations
+
+### Token Storage
+
+- Personal access tokens are stored in `~/.codex-mcp-bridge/config.json`
+- The config file has restrictive permissions (chmod 600)
+- Tokens are never logged or printed to stdout
+- Consider using system keyring for additional security
+
+### HTTPS Only
+
+- All connections use HTTPS (except localhost for testing)
+- TLS certificate validation is enforced
+- Tokens are never sent over unencrypted connections
+
+### Token Management
+
+- Tokens can be revoked via the MCP server provider's web interface
+- Generate separate tokens for different machines
+- Regularly rotate tokens (recommended: every 3-6 months)
+
+## Development
+
+### Setup Development Environment
+
+```bash
+git clone https://github.com/gurucloudai/codex-mcp-http-bridge.git
+cd codex-mcp-http-bridge
+pip install -e ".[dev]"
+```
+
+### Run Tests
+
+```bash
+pytest
+```
+
+### Code Formatting
+
+```bash
+black src/ tests/
+ruff check src/ tests/
+```
+
+### Type Checking
+
+```bash
+mypy src/
+```
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Support
+
+For issues and questions:
+- GitHub Issues: https://github.com/gurucloudai/codex-mcp-http-bridge/issues
+- Email: support@gurucloudai.com
+
+## Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+## Changelog
+
+### 0.1.0 (2025-01-XX)
+
+- Initial release
+- stdio to HTTP bridge
+- OAuth 2.1 authentication with personal access tokens
+- Interactive setup wizard
+- Connection testing
+- Codex configuration generation
