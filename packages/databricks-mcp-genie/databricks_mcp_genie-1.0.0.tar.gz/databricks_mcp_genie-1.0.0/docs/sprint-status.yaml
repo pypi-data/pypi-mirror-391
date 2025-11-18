@@ -1,0 +1,47 @@
+# Sprint Status - databrics-mcp-server
+# Epic: MCP Server Reorganization and Functionality Restoration
+
+generated: "2025-11-12"
+project: "databrics-mcp-server"
+epic: "mcp-server-fix"
+epic_title: "MCP Server Reorganization and Functionality Restoration"
+total_story_points: 7
+sprint_start: "2025-11-12"
+
+# Story Status Definitions:
+# - drafted: Story created but not ready for dev
+# - ready: Ready for development
+# - in-progress: Currently being implemented
+# - code-review: Implementation complete, awaiting review
+# - done: Reviewed and complete
+
+stories:
+  - id: "story-mcp-server-fix-1"
+    title: "Environment Reconstruction"
+    file: ".bmad-ephemeral/story-mcp-server-fix-1.md"
+    status: "code-review"
+    points: 2
+    assignee: "unassigned"
+    dependencies: []
+
+  - id: "story-mcp-server-fix-2"
+    title: "File Consolidation and Cleanup"
+    file: ".bmad-ephemeral/story-mcp-server-fix-2.md"
+    status: "code-review"
+    points: 2
+    assignee: "unassigned"
+    dependencies: []
+
+  - id: "story-mcp-server-fix-3"
+    title: "Configuration Update and Comprehensive Verification"
+    file: ".bmad-ephemeral/story-mcp-server-fix-3.md"
+    status: "code-review"
+    points: 3
+    assignee: "unassigned"
+    dependencies: ["story-mcp-server-fix-1", "story-mcp-server-fix-2"]
+
+# Sprint Progress
+completed_points: 0
+remaining_points: 7
+completed_stories: 0
+total_stories: 3

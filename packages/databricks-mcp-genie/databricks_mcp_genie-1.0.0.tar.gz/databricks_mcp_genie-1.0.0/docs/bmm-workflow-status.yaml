@@ -1,0 +1,41 @@
+# Workflow Status - databrics-mcp-server
+# This tracks progress through BMM methodology phases
+# Phase 2 (Implementation) is tracked separately in sprint-status.yaml
+
+# User goal: Build and fix the Databricks MCP server so it's fully functioning and running properly
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_undocumented)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2025-11-12"
+project: "databrics-mcp-server"
+project_type: "software"
+selected_track: "quick-flow"
+field_type: "brownfield"
+workflow_path: "quick-flow-brownfield.yaml"
+
+workflow_status:
+  # Prerequisite: Documentation (if undocumented)
+  document-project: docs/index.md  # agent: analyst
+
+  # Phase 1: Planning
+  tech-spec: docs/tech-spec.md  # agent: pm
+
+  # Phase 2: Implementation
+  sprint-planning: docs/sprint-status.yaml  # agent: sm
+
+# Epic and Stories
+epic: mcp-server-fix
+stories:
+  - story-mcp-server-fix-1.md  # Environment Reconstruction (2 points)
+  - story-mcp-server-fix-2.md  # File Consolidation and Cleanup (2 points)
+  - story-mcp-server-fix-3.md  # Configuration Update and Verification (3 points)

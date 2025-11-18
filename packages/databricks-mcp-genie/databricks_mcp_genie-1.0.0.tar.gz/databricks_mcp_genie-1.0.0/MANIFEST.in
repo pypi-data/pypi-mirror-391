@@ -1,0 +1,37 @@
+# Include important documentation
+include README.md
+include LICENSE
+include QUICK_START.md
+include TROUBLESHOOTING.md
+include ENHANCEMENTS.md
+
+# Include example configurations
+include .mcp.json
+include .mcp.env.example
+include .env.example
+include .cursor.json
+include test_server.sh
+
+# Exclude development and build artifacts
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude *.swo
+
+# Exclude BMAD framework files (internal development only)
+prune .bmad
+prune .bmad-ephemeral
+
+# Exclude test files
+prune tests
+
+# Exclude build artifacts
+prune dist
+prune build
+prune *.egg-info
+
+# Exclude IDE and git files
+exclude .gitignore
+prune .vscode
+prune .idea
