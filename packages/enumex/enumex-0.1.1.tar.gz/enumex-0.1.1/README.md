@@ -1,0 +1,76 @@
+# enumex
+
+A modified version of the standard `enum` with inheritance.  
+
+
+## Install
+
+### Inherits from std Enum (v0.2.x+)
+
+**Python**: 3.9.0+
+
+Use version 0.2.x+ if you want `isinstance(ex, Enum)`, or `issubclass(exType, Enum)` to return **`True`**.
+
+``` bash
+pip install enumex
+```
+___
+
+### Does not inherit std Enum (v0.1.0)
+
+**Python**: 3.9.0 - 3.12
+
+Use version 0.1.x if you want `isinstance(ex, Enum)`, or `issubclass(exType, Enum)` to return **`False`**.
+
+``` bash
+pip install enumex==0.1.1
+```
+
+## Usage
+
+It has virtually the same behaviour as the standard enum, with the added ability of inheritance, and abstract enum classes.
+
+``` python
+from enumex import EnumEx, autoex as auto
+
+class A(EnumEx):
+    Val1 = auto()
+    Val2 = auto()  
+
+    def print(self):
+        print(f"{self.__class__.__name__} {self.name} : {self.value}")
+
+class B(A):
+    Val3 = auto()
+    Val4 = auto()
+
+print("Printing A...")
+for e in A:
+    e.print()  
+
+print("\nPrinting B...")
+for e in B:
+    e.print()
+
+# Printing A...
+# A Val1 : 1
+# A Val2 : 2
+
+# Printing B...
+# B Val1 : 1
+# B Val2 : 2
+# B Val3 : 3
+# B Val4 : 4
+```
+
+### Notes
+- Depending on the Python version, operators for `IntFlagEx`/`FlagEx` may produce a different result. This is to maintain functionality with what's expected from the standard enum. As of yet this only occurs with the **`~`** operator.
+- "Modern" types such as `StrEnumEx`, and `FlagExBoundary` are available for use in versions before the std declared them.
+	- `FlagExBoundary` now has the `LEGACY` value in **3.9-3.10.x** only, which is used by default. 
+	- To use modern boundary rules in **3.10.x** and lower, you can set the boundary when the enum is declared (`class MyEnum(IntFlagEx, boundary=KEEP):`). [Example here][LegacyBoundaryExample]
+
+
+## License
+[Python](https://github.com/python/cpython/blob/main/LICENSE)
+
+[LegacyBoundaryExample]:https://github.com/AddioElectronics/enumex/blob/main/Examples/example4.py
