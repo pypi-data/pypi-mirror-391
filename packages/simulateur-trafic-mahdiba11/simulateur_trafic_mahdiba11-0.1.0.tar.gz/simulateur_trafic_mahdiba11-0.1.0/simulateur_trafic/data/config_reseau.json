@@ -1,0 +1,116 @@
+{
+    "Routes" : [
+        {
+            "nom" : "A",
+            "longeur" : 50 ,
+            "limite_vitesse" : 100
+
+        },
+        {
+            "nom" : "B",
+            "longeur" : 120 ,
+            "limite_vitesse" : 80
+
+        },
+        {
+            "nom" : "C",
+            "longeur" : 80 ,
+            "limite_vitesse" : 50
+
+        },
+        {
+            "nom" : "D",
+            "longeur" : 70 ,
+            "limite_vitesse" : 60
+        },
+        {
+            "nom" : "E",
+            "longeur" : 90 ,
+            "limite_vitesse" : 70
+        },
+        {
+            "nom" : "F",
+            "longeur" : 100 ,
+            "limite_vitesse" : 90
+        }
+
+
+    ],
+    "Intersections" :{"A" : ["B", "C"], "B" : ["A", "D"], "C" : ["A", "E"], "D" : ["B", "F"], "E" : ["C", "F"], "F" :["D", "E"]},
+    "Vehicules" : [
+        {
+            "position" : 0 , 
+            "vitesse" : 50,
+            "route_actual" : "A"
+            ,
+            "id" : 1
+        },
+        {
+            "position" : 0 , 
+            "vitesse" : 80,
+            "route_actual":"B"
+            ,
+            "id" : 2
+        }
+        ,
+        {
+            "position" : 0 , 
+            "vitesse" : 60,
+            "route_actual":"B"
+            ,
+            "id" : 3
+
+        },
+        {
+            "position" : 0 , 
+            "vitesse" : 70,
+            "route_actual":"B"
+            ,
+            "id" : 4
+        }
+        ,
+        {
+            "position" : 0 , 
+            "vitesse" : 90,
+            "route_actual":"C"
+                        ,
+            "id" : 5
+        }
+        ,
+        {
+            "position" : 0 , 
+            "vitesse" : 40
+            ,
+            "route_actual":"C"
+                        ,
+            "id" : 6
+        }
+        ,
+        {
+            "position" : 0 , 
+            "vitesse" : 30,
+            "route_actual":"C"
+                        ,
+            "id" : 7
+        }
+        ,
+        {
+            "position" : 0 ,
+
+            "vitesse" : 70
+            ,
+            "route_actual":"A"
+                        ,
+            "id" : 8
+        }
+        ,
+        {
+            "position" : 0 , 
+            "vitesse" : 80,
+            "route_actual":"A"
+                        ,
+            "id" : 9
+        }
+
+    ]
+}

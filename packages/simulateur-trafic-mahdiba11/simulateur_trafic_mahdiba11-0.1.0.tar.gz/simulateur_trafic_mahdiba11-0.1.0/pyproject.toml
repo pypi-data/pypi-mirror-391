@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "simulateur_trafic_mahdiba11"
+version = "0.1.0"
+description = "simulator for traffic"
+authors = ["mahdi_ben_ameur"]
+license = "Apache2.0"
+readme = "README.md"
+packages = [{ include = "simulateur_trafic" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+matplotlib = "3.10.0"
+numpy = "1.26.4"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
