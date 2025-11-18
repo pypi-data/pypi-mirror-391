@@ -1,0 +1,27 @@
+[project]
+name = "py-marstek"
+version = "0.1.0"
+description = "Asynchronous UDP client for Marstek energy storage systems"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "MarstekEnergy", email = "hame.shenzhen@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+psutil = ["psutil"]
+
+[project.urls]
+"Homepage" = "https://github.com/MarstekEnergy/py-marstek"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pymarstek"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pymarstek", "README.md"]
