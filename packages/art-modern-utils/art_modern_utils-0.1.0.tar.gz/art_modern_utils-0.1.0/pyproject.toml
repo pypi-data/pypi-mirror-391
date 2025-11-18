@@ -1,0 +1,53 @@
+[build-system]
+requires = [
+    "setuptools",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "art_modern_utils"
+description = "Python Ultilities for art_modern"
+authors = [
+    { name = "YU Zhejian", email = "yuzj25@seas.upenn.edu" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: R",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Utilities"
+]
+requires-python = ">=3.9"
+dynamic = ["version", "readme", "dependencies", "optional-dependencies"]
+
+[project.urls]
+Source = "https://github.com/YU-Zhejian/art_modern_utils"
+
+[project.scripts]
+art-profile-fastqc = "art_modern_utils.art_profile_fastqc:main"
+art-sam-validate = "art_modern_utils.art_sam_validate:main"
+
+[tool.setuptools]
+license-files = ["License.md", "Copying.md"]
+
+[tool.setuptools.dynamic]
+version = { attr = "art_modern_utils.__version__" }
+readme = { file = "Readme.md" , content-type = "text/markdown"}
+dependencies = { file = "requirements.txt" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
