@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secretpkg555"
+version = "0.1.5"
+description = "简单的计算包 - 核心逻辑二进制保护"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "None555", email = "none555@example.com"}
+]
+
+# ============ 依赖管理 ============
+# 运行时依赖
+dependencies = [
+    # 示例：如果需要numpy
+    # "numpy>=1.20.0,<2.0.0",
+    
+    # 示例：如果需要requests
+    # "requests>=2.25.0",
+    
+    # 版本约束说明：
+    # "package>=1.0.0"        - 最低版本
+    # "package>=1.0.0,<2.0.0" - 版本范围
+    # "package~=1.0.0"        - 兼容版本（1.0.x）
+    # "package==1.0.0"        - 精确版本（不推荐）
+]
+
+# 标记包，帮助用户搜索和过滤
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+keywords = ["calculation", "binary", "nuitka", "protected"]
+
+[tool.setuptools]
+packages = ["secretpkg555"]
+
+[tool.setuptools.package-data]
+secretpkg555 = ["*.pyd", "*.so"]
+
+[tool.nuitka-build]
+directories = ["secretpkg555"]
+remove-source = false

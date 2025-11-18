@@ -1,0 +1,16 @@
+# 包含必要文件
+include README.md
+include LICENSE
+
+# 包含初始化和基础逻辑源码（用户可见）
+recursive-include secretpkg555 __init__.py
+recursive-include secretpkg555 core_logic.py
+
+# 只包含补丁的二进制文件（隐藏）
+recursive-include secretpkg555 _patch.*.pyd
+recursive-include secretpkg555 _patch.*.so
+
+# 排除所有其他Python源码和缓存
+global-exclude _patch.py
+global-exclude *.pyc
+global-exclude __pycache__
