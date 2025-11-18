@@ -1,0 +1,39 @@
+#
+# Copyright 2025 Tabs Data Inc.
+#
+
+# The tabsdata open-source repository use different names in the community and
+# in our private infrastructure: the public repository is named tabsdata, while
+# the private one uses tabsdata-os.
+
+# The tuples below encode a fallback order where tabsdata-os takes precedence
+# over tabsdata. This ensures that a full build can still run using the
+# community repository alone.
+
+# The enterprise entries do not define fallback repositories. This is
+# intentional: to avoid symbolic-link issues in cross-platform builds, GitHub
+# Actions always uses a folder named tabsdata to represent either tabsdata-os or
+# tabsdata-ee, depending on the edition being built, having all symbolic links
+# resolved.
+
+repositories:
+  - name: tabsdata-ee
+    alternate_name: null
+    description: Tabsdata Enterprise
+    prefix: TABSDATA_EE
+  - name: tabsdata-os
+    alternate_name: null
+    description: Tabsdata Open Source
+    prefix: TABSDATA_OS
+  - name: tabsdata-ui
+    alternate_name: null
+    description: Tabsdata User Interface
+    prefix: TABSDATA_UI
+  - name: tabsdata-ag
+    alternate_name: null
+    description: Tabsdata Agent
+    prefix: TABSDATA_AG
+  - name: tabsdata-ci
+    alternate_name: null
+    description: Tabsdata Automation
+    prefix: TABSDATA_CI
