@@ -1,0 +1,35 @@
+Metadata-Version: 2.4
+Name: nomad_camels_extension_eLabFTW
+Version: 0.1.5
+Summary: Extension for communication with eLabFTW
+Author-email: FAIRmat - HU Berlin <nomad-camels@fau.de>
+Project-URL: GitHub Page, https://github.com/FAU-LAP/CAMELS_extensions
+Project-URL: GitHub NOMAD CAMELS, https://github.com/FAU-LAP/NOMAD-CAMELS
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)
+Requires-Python: >=3.11.3
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+Requires-Dist: nomad-camels>=1.4.2
+Requires-Dist: elabapi-python>=5.0.0
+Dynamic: license-file
+
+# NOMAD CAMELS Extension for eLabFTW communication
+This extension enables NOMAD CAMELS to communicate with eLabFTW. Including uploading data files.
+
+## Documentation
+
+For more information and documentation visit the NOMAD-CAMELS [documentation](https://fau-lap.github.io/NOMAD-CAMELS/doc/instruments/instruments.html).
+
+
+## Changelog
+
+### 0.1.5
+- Fixed deprecated usage of `ItemsTypesApi` and replaced it with the newer `ItemsTypesResourcesTemplatesApi`.
+
+### 0.1.4
+- Improved metadata for samples and user.
+- Added function to connect with CAMELS' ELN instrument management.
+
+### 0.1.2
+Fixed bug where the user and sample would not appear in the data.
