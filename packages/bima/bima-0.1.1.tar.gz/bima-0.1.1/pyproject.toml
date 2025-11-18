@@ -1,0 +1,27 @@
+[build-system]
+requires = ["maturin>=1.10,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "bima"
+description = "N-body simulation powered with Rust backend"
+authors = [
+    { name = "Muhammad Ali Syaifudin", email = "muhammad.ali.syaifudin@hotmail.com" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+
+[tool.maturin]
+# Tell maturin to look for Python code in the python/ directory
+python-source = "python"
+# Ensure the Rust module is installed as _bima
+module-name = "bima._bima"
+features = ["pyo3/extension-module"]
+sdist-inclue = ["LICENSE", "README.md"]
