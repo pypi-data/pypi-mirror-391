@@ -1,0 +1,40 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+# Build the package
+build:
+  stage: build
+  image: python:3.11
+  script:
+    - pip install --upgrade build
+    - python -m build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+  only:
+    - release
+
+# Deploy to PyPI using API token
+deploy-pypi:
+  stage: deploy
+  image: python:3.11
+  script:
+    - pip install --upgrade twine
+    - python -m twine upload --verbose --non-interactive dist/*
+  dependencies:
+    - build
+  only:
+    - release
+  variables:
+    TWINE_USERNAME: __token__
+    TWINE_PASSWORD: $PYPI_TOKEN
+
