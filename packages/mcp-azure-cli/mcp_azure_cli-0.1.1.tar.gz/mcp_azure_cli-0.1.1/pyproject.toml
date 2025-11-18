@@ -1,0 +1,55 @@
+[project]
+name = "mcp-azure-cli"
+version = "0.1.1"
+description = "MCP servers exposing read-only azure CLI helpers and context search"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {file = "LICENSE"}
+authors = [
+    {name = "lohik"}
+]
+maintainers = [
+    {name = "lohik"}
+]
+keywords = ["mcp", "azure", "read-only"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "fastmcp~=2.13.0",
+    "mcp~=1.19.0",
+]
+
+[project.scripts]
+mcp-azure-cli = "mcp_azure_cli.server:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest~=8.0.0",
+    "pytest-asyncio~=0.23.0",
+    "pytest-cov~=4.1.0",
+    "pytest-timeout~=2.2.0",
+    "mypy~=1.8.0",
+    "ruff~=0.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_azure_cli"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short --cov=src/mcp_azure_cli --cov-report=term-missing"
+
+
