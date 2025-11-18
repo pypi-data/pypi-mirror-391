@@ -1,0 +1,308 @@
+# aws-authenticator
+
+[![GitLab Pipeline Status](https://git.epam.com/Kamil_Filipek/aws_authenticator/badges/main/pipeline.svg)](https://git.epam.com/Kamil_Filipek/aws_authenticator/-/pipelines) [![Coverage Status](https://git.epam.com/Kamil_Filipek/aws_authenticator/badges/main/coverage.svg)](https://git.epam.com/Kamil_Filipek/aws_authenticator/-/pipelines)
+
+Simple AWS CLI authenticator using AWS IAM Identity Center (AWS SSO) with credential_process.
+
+This tool helps you:
+- Authenticate via the web device authorization flow.
+- Interactively choose an AWS account and role (suggests last used).
+- Automatically configure an AWS CLI profile in `~/.aws/config` that uses `credential_process` for on-demand credentials.
+- Print a convenient `export AWS_PROFILE=...` line after login.
+- Refresh authentication with a single command, without re-selecting account/role.
+
+Tested on Python 3.10+ (target 3.14).
+
+## Features
+- Browser-based login to AWS IAM Identity Center (formerly AWS SSO).
+- Multi-account and multi-role selection with last-used defaults.
+- Automatic AWS CLI profile setup using `credential_process` (no writing secrets to `~/.aws/credentials`).
+- Token caching to avoid repeated logins; credential_process tries to refresh using a cached refresh token.
+- Quick one-command refresh.
+
+## Installation
+
+### macOS (Homebrew Tap)
+- Ensure Homebrew is installed.
+- Tap from EPAM GitLab (Homebrew defaults to GitHub if you omit the URL):
+```bash
+# If you previously tried the default GitHub tap, untap it first
+brew untap Kamil_Filipek/tap || true
+
+# Public access (if the tap is public)
+brew tap --force-auto-update Kamil_Filipek/tap https://git.epam.com/Kamil_Filipek/homebrew-tap.git
+
+# Private via HTTPS with token (requires read_repository scope)
+brew tap --force-auto-update Kamil_Filipek/tap "https://oauth2:<YOUR_GITLAB_TOKEN>@git.epam.com/Kamil_Filipek/homebrew-tap.git"
+
+# Private via SSH (requires your SSH key to have GitLab access)
+brew tap --force-auto-update Kamil_Filipek/tap git@git.epam.com:Kamil_Filipek/homebrew-tap.git
+```
+- Install the formula:
+```bash
+brew install aws-authenticator
+```
+Homebrew installs a wrapper under `/opt/homebrew/bin` (Apple Silicon) or `/usr/local/bin` (Intel).
+
+### All platforms (pipx from PyPI)
+- Install pipx and ensure PATH:
+  - macOS: `brew install pipx && pipx ensurepath`
+  - Linux: `python3 -m pip install --user pipx && pipx ensurepath`
+  - Windows (PowerShell): `python -m pip install --user pipx`; ensure `%USERPROFILE%\.local\bin` on PATH
+- Install the tool from PyPI (package name is different; the installed command remains `aws-authenticator`):
+```bash
+pipx install aws-authenticator-cli
+```
+- Upgrade:
+```bash
+pipx upgrade aws-authenticator-cli
+```
+- Uninstall:
+```bash
+pipx uninstall aws-authenticator-cli
+```
+
+### Optional: install from TestPyPI (pre-release validation)
+You can validate pre-releases uploaded to TestPyPI by setting PUBLISH_TO_TESTPYPI=1 on a tag pipeline. To install from TestPyPI:
+```bash
+pipx install -i https://test.pypi.org/simple aws-authenticator-cli
+```
+If a dependency is only on PyPI, you can add `--pip-args "--extra-index-url https://pypi.org/simple"` to the pipx command.
+
+### Local dev (editable install)
+Recommended to use a virtual environment.
+
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+This project exposes a console script:
+
+```bash
+aws-authenticator --help
+```
+
+## Quick start
+1) Configure SSO settings (run once):
+```bash
+aws-authenticator setup
+```
+Provide:
+- SSO start URL (e.g. https://your-org.awsapps.com/start)
+- SSO region (e.g. eu-west-1)
+- Default CLI region (e.g. eu-west-1)
+- Profile naming template (default is recommended)
+
+2) Login and select account/role:
+```bash
+aws-authenticator login
+```
+- A browser page will open. Complete the authorization.
+- Select your account and role (last used is suggested).
+- The tool will create/update an AWS CLI profile in `~/.aws/config` and print a line to export `AWS_PROFILE`.
+
+3) Use AWS CLI:
+```bash
+# Option A: export the suggested profile name into your shell
+export AWS_PROFILE=<printed-profile>
+
+# Option B: use --profile explicitly
+aws --profile <printed-profile> sts get-caller-identity
+```
+
+Tip: To automatically set the profile for your current shell, you can evaluate only the export line:
+```bash
+eval "$(aws-authenticator login | awk '/^export AWS_PROFILE/ {print}')"
+```
+
+4) Refresh authentication later (simple command):
+```bash
+aws-authenticator refresh
+```
+- Re-initiates authorization in the browser and updates the token cache.
+- Prints the `export AWS_PROFILE=...` for your last used profile.
+
+## How it works
+- On `login`:
+  - Runs AWS SSO OIDC device authorization, opens your browser, and waits for confirmation.
+  - Lists accounts and roles available via your Identity Center session and lets you select them.
+  - Computes a profile name based on a naming template (customizable, see below).
+  - Writes a profile `[profile <name>]` to `~/.aws/config` with a `credential_process` command that calls this tool with the chosen account/role.
+  - Prints `export AWS_PROFILE=<name>` so you can easily use it in your shell.
+
+- On AWS CLI usage:
+  - The CLI invokes the configured `credential_process` when credentials are needed.
+  - The tool reads its cached token/state and either reuses a valid access token or tries to refresh it using a cached refresh token.
+  - If valid tokens are present, it returns short-lived role credentials in the JSON format expected by the CLI.
+  - If re-authorization is required (e.g., no valid refresh token), the tool instructs you to run `aws-authenticator refresh` or `login`.
+
+- On `refresh`:
+  - Performs the browser flow again and updates the token cache, without changing your selected account/role or profile.
+
+## Configuration and state
+Tool-specific config and state are stored outside of `~/.aws/` to keep a clear separation.
+
+- Config file (contains non-secret settings such as SSO start URL, regions, naming template):
+  - macOS: `~/Library/Application Support/aws-authenticator/config.toml`
+  - Linux: `~/.config/aws-authenticator/config.toml`
+  - Others: `~/.aws-authenticator/config.toml`
+
+- State file (contains cached tokens and last selections; treat as sensitive):
+  - Same folder as the config, filename: `state.json`
+
+### Config fields
+Example `config.toml`:
+```toml
+sso_start_url = "https://your-org.awsapps.com/start"
+sso_region = "eu-west-1"
+default_cli_region = "eu-west-1"
+profile_naming = "{account_alias}-{account_id}-{role_name}"
+```
+
+Placeholders supported in `profile_naming`:
+- `{account_alias}`: derived from the SSO account display name (text before the account ID).
+- `{account_id}`: the 12-digit AWS account ID.
+- `{role_name}`: the selected role name.
+
+## AWS CLI profile entries
+When you complete `login`, the tool ensures an entry like the following exists in `~/.aws/config`:
+
+```ini
+[profile my-account-123456789012-Admin]
+region = eu-west-1
+credential_process = /path/to/python -m aws_authenticator.cli --credential-process --account 123456789012 --role Admin
+```
+
+- The exact profile name depends on your naming template and selection.
+- The `credential_process` command is bound to the selected account and role.
+- Credentials are provided on-demand; nothing is written to `~/.aws/credentials` by default.
+
+## Commands
+- `aws-authenticator setup`
+  - Prompts for and saves SSO start URL, SSO region, default CLI region, and profile naming template.
+- `aws-authenticator login`
+  - Opens the browser for authorization, lets you choose account/role, sets up the AWS profile, and prints the export line.
+- `aws-authenticator refresh`
+  - Re-initiates authorization and updates cached tokens, prints export line for the last used profile.
+- `aws-authenticator --credential-process --account <id> --role <name>`
+  - Internal mode used by the AWS CLI. Outputs credentials JSON to stdout.
+
+## Security notes
+- The tool stores refresh/access tokens in its state file to enable seamless usage and refresh. Treat that file as sensitive (default user permissions are typically sufficient on personal machines).
+- No long-lived static credentials are written to disk when using `credential_process`.
+- If you prefer writing short-lived static credentials to `~/.aws/credentials` (not recommended), this can be added later as an optional mode.
+
+## Troubleshooting
+- AWS CLI says credentials are required and `credential_process` returns `AuthorizationRequired`:
+  - Run `aws-authenticator refresh` (or `login` if it’s your first time) to re-authorize via the browser.
+- No accounts or roles listed after login:
+  - Verify your IAM Identity Center assignments and that you chose the correct SSO start URL and region.
+- Browser doesn’t open automatically:
+  - Copy the printed verification URL into your browser and continue the flow manually.
+- Region issues:
+  - Ensure both your SSO region (Identity Center region) and default CLI region are correct for your organization/workloads.
+
+## Development
+- Code is in `src/aws_authenticator/`.
+- Entry point: `aws_authenticator/cli.py` (exposed as `aws-authenticator`).
+- Minimal dependencies: `boto3` for AWS APIs; rest is standard library.
+
+Local dev workflow:
+```bash
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+aws-authenticator --help
+```
+
+## Testing
+Automated tests are provided with pytest. They mock AWS and filesystem interactions, so no real AWS calls or local files are touched.
+
+Run tests locally:
+```bash
+pip install -e .[test]
+pytest -q
+```
+
+### Coverage
+We include pytest-cov to generate coverage reports and enforce a minimum coverage threshold (90%).
+```bash
+pytest --cov=src/aws_authenticator --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+```
+This produces `coverage.xml` for CI and prints missing lines in the terminal.
+
+### Linting and type checks
+Install local dev extras and run ruff and mypy:
+```bash
+pip install -e .[lint]
+ruff check .
+
+pip install -e .[typecheck]
+mypy
+```
+Or everything at once:
+```bash
+pip install -e .[dev]
+ruff check .
+mypy
+pytest --cov=src/aws_authenticator --cov-report=term-missing --cov-report=xml --cov-fail-under=90
+```
+
+### Pre-commit hooks
+Enable pre-commit hooks to run ruff and mypy before each commit:
+```bash
+pip install -e .[dev]
+pre-commit install
+```
+You can run all hooks manually via:
+```bash
+pre-commit run --all-files
+```
+
+## CI integration (GitLab)
+- GitLab CI is configured to run on merge request events and on release tags.
+- Stages:
+  - lint: ruff checks style and common errors.
+  - typecheck: mypy checks static types against Python 3.10 baseline.
+  - test: pytest runs on a matrix of Python versions (3.10, 3.12, 3.14). Each job emits JUnit XML test reports, visible in the merge request UI.
+  - release: publish to PyPI and open an MR to the Homebrew tap formula.
+- Coverage:
+  - Each test job outputs `coverage.xml` and publishes it as a Cobertura coverage report artifact.
+  - A minimum coverage threshold is enforced via pytest options. Adjust in `pyproject.toml` under `[tool.pytest.ini_options]`.
+
+## Release
+
+Note: Publishing to PyPI and updating the Homebrew tap is gated by a CI variable. To publish on a release tag, run the tag pipeline with `PUBLISH_TO_PYPI=1`. Without this variable, the publishing jobs are skipped.
+
+- Prepare a release locally:
+```bash
+make release VERSION=x.y.z
+```
+This bumps the version, creates tag `vX.Y.Z`, and pushes.
+
+- CI on tag:
+  - If `PUBLISH_TO_PYPI=1` is set, publishes to PyPI (public) and opens a Merge Request in the tap repo to update the Homebrew formula (depends_on `python@3.12`).
+  - After the tap MR is merged, the tap repo CI triggers this repo to open a Merge Request updating the `homebrew-tap` submodule pointer.
+
+## Roadmap / Ideas
+- Optional fuzzy search for account/role selection.
+- Add a flag to print only the export line (e.g., `--export-only`) for easier shell integration.
+- Optional static-credentials mode (write to `~/.aws/credentials`).
+- More robust token persistence/rotation policies.
+
+## License
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this project except in compliance with the License.
+You may obtain a copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+SPDX-License-Identifier: Apache-2.0
