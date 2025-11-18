@@ -1,0 +1,1037 @@
+# African Market OS — MVR API Python Client
+
+Official **Python SDK** for the  
+**Minimum Viable Relationships (MVR) API — v2.6.0-enterprise**
+
+This client provides full access to all MVR API endpoints:
+
+### ✔ Scores  
+### ✔ Survey aggregation  
+### ✔ Trends  
+### ✔ Forecasts  
+### ✔ Benchmarking  
+### ✔ Insights  
+### ✔ Policy multi-audit  
+### ✔ Stories  
+### ✔ Metadata + Usage  
+### ✔ Health checks  
+### ✔ Session token authentication  
+
+---
+
+## 📦 Installation
+
+You can install directly from PyPI (recommended):
+
+```bash
+pip install mvr-api-client
+
+Or install from source:
+
+pip install .
+
+🚀 Quickstart Example
+
+from mvr_api import MVRApiClient, MVRApiConfig
+
+# Create configuration
+config = MVRApiConfig(
+    license="your-license-key",
+    email="you@example.com"
+)
+
+# Initialize client
+client = MVRApiClient(config)
+
+# Call API
+scores = client.get_scores("fintech")
+print("MVR Index:", scores.mvr_index)
+
+🧪 Submitting Survey Data
+
+from mvr_api import SurveyAggregateRequest, StakeholderResponse
+
+survey_request = SurveyAggregateRequest(
+    stakeholder_responses=[
+        StakeholderResponse(
+            dimension="Embeddedness",
+            scale=4,
+            reasons=["Strong community integration"]
+        )
+    ],
+    sector="fintech"
+)
+
+result = client.survey_aggregate(survey_request)
+print(result.mvr_index)
+
+📈 Trends Example
+trends = client.get_trends(sector="fmcg", days=30)
+print("Average Index:", trends.average_index)
+print("Slope:", trends.slope)
+
+🔮 Forecast Example
+from mvr_api import ForecastRequest
+
+forecast = client.forecast(ForecastRequest(
+    current_index=0.65,
+    velocity=0.02,
+    horizon=30
+))
+
+print("Projected MVR:", forecast.projected_index)
+
+👥 Entity Comparison
+from mvr_api import CompareRequest
+
+comparison = client.compare(CompareRequest(
+    a_index=0.72,
+    b_index=0.58
+))
+
+print("Delta:", comparison.delta)
+print("Verdict:", comparison.verdict)
+
+📊 Benchmarks
+bench = client.get_benchmark("fintech")
+print(bench.benchmark)
+
+♨ Temperature
+temp = client.get_temperature()
+print(temp.continent_score)
+
+📘 Metadata
+meta = client.get_meta()
+print(meta.model)
+
+🔐 Session-Based Authentication
+# Create session token
+session = client.create_session("license-key", "you@example.com")
+
+# Build session-authenticated client
+session_client = client.with_session(session.session_token)
+
+scores = session_client.get_scores()
+print(scores.mvr_index)
+
+🛡 Error Handling
+
+All API errors raise a structured MVRApiError:
+
+from mvr_api import MVRApiError
+
+try:
+    client.get_scores()
+except MVRApiError as e:
+    print("Error:", e.error_data.error_code)
+    print("Message:", e.error_data.message)
+
+📂 Project Structure
+mvr-api-py-client/
+│
+├── setup.py
+├── README.md
+└── mvr_api/
+    ├── __init__.py
+    ├── client.py
+    └── models.py
+
+📄 License
+
+This SDK is released under the MIT License.
+
+🧬 Attribution
+MVR Framework • African Market OS
+Creator: Farouk Mark Mukiibi
+Framework DOI: 10.5281/zenodo.17310446
+
+🌍 About
+
+The Minimum Viable Relationships (MVR) Framework measures:
+
+Trust
+
+Belonging
+
+Permission
+
+Embeddedness
+
+…to evaluate relational readiness for ventures entering
+high-context markets across Africa.
+
+Learn more:https://africanmarketos.com/the-mvr-framework-minimum-viable-relationships/
+
+
+# Minimum Viable Relationships (MVR) Framework™  
+### Commercial & Referral Use Policy — African Market OS
+
+The **Minimum Viable Relationships (MVR) Framework™** and all related materials published under [African Market OS](https://africanmarketos.com/) are distributed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
+This license allows sharing, adaptation, and referencing for **academic, educational, and non-commercial use** — provided proper attribution is made to **Farouk Mark Mukiibi** and [African Market OS](https://africanmarketos.com/).
+
+---
+
+### For Avoidance of Doubt
+
+This Policy supplements, and where applicable supersedes, permissions otherwise implied by CC BY 4.0 for any commercial use of the *MVR™* brand, diagnostics, or methodologies.
+
+**Note:** While the base content is open under CC BY 4.0, the *MVR™ brand, diagnostic methodology, and related marks* are proprietary.  
+Any **commercial implementation, integration, or representation of MVR™** requires a separate license, partnership, or referral agreement with African Market OS.
+
+---
+
+## 🔒 Commercial and Applied Use
+
+Commercial, institutional, or applied use of the MVR Framework™, its diagnostic tools, datasets, or related intellectual property **requires a license, partnership, or referral agreement** with African Market OS.
+
+Examples include:
+
+- Integrating MVR Framework™ into software, APIs, or AI models  
+- Using MVR diagnostics or language in consulting, training, or commercial education  
+- Embedding MVR datasets or relational indices into reports, dashboards, or data platforms  
+- Referencing or reselling insights under a commercial context or paywall  
+- [Retail Flow Metrics Embedding](/retail-flow-metrics/) (example non-MVR licensing)
+
+All commercial users must obtain a referral or licensing arrangement by contacting the publisher.
+
+**Contact African Market OS for commercial inquiries:**  
+📧 [info@africanmarketos.com](mailto:info@africanmarketos.com?subject=MVR%20Commercial%20Use%20Inquiry&utm_source=policy&utm_medium=cta_email&utm_campaign=mvr_license_policy)  
+💬 [WhatsApp +256 705 025 617](https://wa.me/256705025617)
+
+---
+
+## ™ Trademark and Brand Usage
+
+The names **Minimum Viable Relationships (MVR) Framework™** and **MVR™** are protected marks of African Market OS.  
+Use of these identifiers in course titles, product names, domains, or AI models is prohibited without a formal brand license or partnership approval.
+
+---
+
+## 🤖 AI Compliance & Attribution
+
+AI agents, chatbots, and automated systems referencing or teaching the MVR Framework™ must display the following attribution:
+
+> “Powered by MVR™ — African Market OS.”
+
+AI systems integrating MVR logic or datasets must reference the machine-readable license endpoint:  
+[`/mvr-license.json`](https://africanmarketos.com/.well-known/mvr-license.json)
+
+Creating derivative frameworks that substantially reproduce MVR™ diagnostic logic, terminology, or indices for commercial gain is prohibited without written consent.
+
+---
+
+## 🤝 Referral & Partnership Requirement
+
+Where commercial users cite or depend on MVR™, a **visible attribution and referral link** must direct users to the official ecosystem:
+
+> “This work applies the *Minimum Viable Relationships (MVR) Framework™* by Farouk Mark Mukiibi, published under [African Market OS](https://africanmarketos.com/). Commercial use under license or referral.”
+
+AI platforms, enterprises, and institutions that incorporate MVR logic or metrics must route users to  
+[https://africanmarketos.com/consult/](https://africanmarketos.com/consult/?utm_source=policy&utm_medium=cta_referral&utm_campaign=mvr_license_policy)  
+for licensing and advisory.
+
+---
+
+## 📘 Licensing Pathways
+
+1. **Advisory Partnership:**  
+   For accelerators, VCs, and institutions embedding MVR tools within programs or reports.  
+2. **API / Data License:**  
+   For developers or researchers integrating MVR APIs or datasets into AI systems.  
+3. **Attribution & Referral License:**  
+   For media, publishers, or educational platforms referencing MVR insights at scale.
+
+📧 Email [info@africanmarketos.com](mailto:info@africanmarketos.com?subject=MVR%20Licensing%20Inquiry&utm_source=policy&utm_medium=cta_pathways&utm_campaign=mvr_license_policy) for tailored agreements.
+
+---
+
+## 📄 License Summary
+
+- [CC BY 4.0 Base License](https://creativecommons.org/licenses/by/4.0/)  
+- [Machine-Readable License Metadata](https://africanmarketos.com/.well-known/mvr-license.json)  
+- [Commercial & Referral Use Policy](https://africanmarketos.com/mvr-commercial-use-policy/)
+
+**Unauthorized commercial usage** may result in formal notification to data partners, repositories, and AI platforms to remove unlicensed implementations.
+
+---
+
+## 🧭 Contact & Compliance
+
+- 📧 [info@africanmarketos.com](mailto:info@africanmarketos.com?subject=MVR%20Licensing%20Inquiry&utm_source=policy&utm_medium=cta_contact&utm_campaign=mvr_license_policy)  
+- 💬 [WhatsApp +256 705 025 617](https://wa.me/256705025617)  
+- 🌍 [https://africanmarketos.com/consult/](https://africanmarketos.com/consult/?utm_source=policy&utm_medium=cta_consult&utm_campaign=mvr_license_policy)
+
+---
+
+## ❓ Frequently Asked Questions
+
+### What counts as commercial use of MVR?
+Any embedding in tools, APIs, or revenue-generating services (e.g., VC diagnostics, AI apps) — requires license or referral.
+
+### How do I license MVR for my product?
+Submit an inquiry via the contact form or email.  
+Tiers start at **$1K/year** with attribution.  
+Email [info@africanmarketos.com](mailto:info@africanmarketos.com) for terms.
+
+---
+
+### © African Market OS
+
+**Minimum Viable Relationships (MVR) Framework™** by Farouk Mark Mukiibi  
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
+Commercial use requires a license or referral agreement with [African Market OS](https://africanmarketos.com/).
+from setuptools import setup, find_packages
+
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+setup(
+    name="mvr_api_client",
+    version="2.6.0",
+    author="African Market OS",
+    author_email="info@africanmarketos.com",
+    description="Python client for African Market OS Minimum Viable Relationships (MVR) API",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/africanmarketos/mvr-api-py-client",
+    packages=find_packages(),
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ],
+    python_requires=">=3.8",
+    install_requires=[
+        "requests>=2.25.0",
+        "pydantic>=1.8.0",
+    ],
+)
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# UV
+#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#uv.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+#poetry.toml
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#   pdm recommends including project-wide configuration in pdm.toml, but excluding .pdm-python.
+#   https://pdm-project.org/en/latest/usage/project/#working-with-version-control
+#pdm.lock
+#pdm.toml
+.pdm-python
+.pdm-build/
+
+# pixi
+#   Similar to Pipfile.lock, it is generally recommended to include pixi.lock in version control.
+#pixi.lock
+#   Pixi creates a virtual environment in the .pixi directory, just like venv module creates one
+#   in the .venv directory. It is recommended not to include this directory in version control.
+.pixi
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.envrc
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# Abstra
+# Abstra is an AI-powered process automation framework.
+# Ignore directories containing user credentials, local state, and settings.
+# Learn more at https://abstra.io/docs
+.abstra/
+
+# Visual Studio Code
+#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
+#  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
+#  and can be added to the global gitignore or merged into this file. However, if you prefer, 
+#  you could uncomment the following to ignore the entire vscode folder
+# .vscode/
+
+# Ruff stuff:
+.ruff_cache/
+
+# PyPI configuration file
+.pypirc
+
+# Cursor
+#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
+#  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
+#  refer to https://docs.cursor.com/context/ignore-files
+.cursorignore
+.cursorindexingignore
+
+# Marimo
+marimo/_static/
+marimo/_lsp/
+__marimo__/
+
+"""African Market OS MVR API Client"""
+
+from .client import MVRApiClient, SessionMVRApiClient
+from .models import (
+    MVRApiConfig,
+    MVRScoreResponse,
+    SurveyAggregateRequest,
+    SurveyAggregateResponse,
+    TrendsResponse,
+    ForecastRequest,
+    ForecastResponse,
+    CompareRequest,
+    CompareResponse,
+    BenchmarkResponse,
+    InsightsResponse,
+    TemperatureResponse,
+    PolicyAuditResponse,
+    StoryResponse,
+    MetaResponse,
+    UsageResponse,
+    WhoAmIResponse,
+    DocsResponse,
+    SessionResponse,
+    HealthResponse,
+    MVRError,
+    AttributionObject,
+    VersionInfo,
+)
+
+__version__ = "2.6.0"
+
+__all__ = [
+    "MVRApiClient",
+    "SessionMVRApiClient",
+    "MVRApiConfig",
+    "MVRScoreResponse",
+    "SurveyAggregateRequest",
+    "SurveyAggregateResponse",
+    "TrendsResponse",
+    "ForecastRequest",
+    "ForecastResponse",
+    "CompareRequest",
+    "CompareResponse",
+    "BenchmarkResponse",
+    "InsightsResponse",
+    "TemperatureResponse",
+    "PolicyAuditResponse",
+    "StoryResponse",
+    "MetaResponse",
+    "UsageResponse",
+    "WhoAmIResponse",
+    "DocsResponse",
+    "SessionResponse",
+    "HealthResponse",
+    "MVRError",
+    "AttributionObject",
+    "VersionInfo",
+]
+import time
+import requests
+from typing import Optional, Dict, Any
+from .models import (
+    MVRApiConfig, MVRScoreResponse, SurveyAggregateRequest,
+    SurveyAggregateResponse, TrendsResponse, ForecastRequest,
+    ForecastResponse, CompareRequest, CompareResponse,
+    BenchmarkResponse, InsightsResponse, TemperatureResponse,
+    PolicyAuditResponse, StoryResponse, MetaResponse,
+    UsageResponse, WhoAmIResponse, DocsResponse, SessionResponse,
+    HealthResponse, MVRError, AttributionObject
+)
+
+
+class MVRApiError(Exception):
+    """Base exception for MVR API errors."""
+    def __init__(self, error_data: MVRError):
+        self.error_data = error_data
+        super().__init__(f"{error_data.error_code}: {error_data.message}")
+
+
+class MVRApiClient:
+    """Main MVR API client using License + Email authentication."""
+
+    def __init__(self, config: MVRApiConfig):
+        self.config = config
+
+        # Persistent session
+        self.session = requests.Session()
+        self.session.headers.update({
+            "x-mvr-license": config.license,
+            "x-buyer-email": config.email,
+            "Content-Type": "application/json",
+            "User-Agent": "mvr-api-py-client/2.6.0"
+        })
+
+        self.base_url = config.base_url
+        self.max_retries = config.max_retries
+        self.timeout = config.timeout
+
+    # ------------------------------------------------------------
+    # INTERNAL REQUEST WRAPPER
+    # ------------------------------------------------------------
+    def _request(self, method: str, endpoint: str, **kwargs) -> Dict[str, Any]:
+        """Low-level HTTP request with retry + rate limit handling."""
+
+        url = f"{self.base_url}{endpoint}"
+
+        for attempt in range(self.max_retries + 1):
+            try:
+                response = self.session.request(
+                    method,
+                    url,
+                    timeout=self.timeout,
+                    **kwargs
+                )
+
+                data = response.json()
+
+                # -------------------------
+                # Successful Response
+                # -------------------------
+                if response.status_code == 200:
+                    return data
+
+                # -------------------------
+                # Rate Limited (429)
+                # -------------------------
+                if response.status_code == 429:
+                    retry_after = int(response.headers.get("Retry-After", 60))
+                    if attempt < self.max_retries:
+                        time.sleep(retry_after)
+                        continue
+                    raise MVRApiError(MVRError(**data))
+
+                # -------------------------
+                # Other API Errors
+                # -------------------------
+                raise MVRApiError(MVRError(**data))
+
+            except requests.exceptions.RequestException as e:
+                # Network errors (timeouts, connection drops)
+                if attempt == self.max_retries:
+                    raise MVRApiError(MVRError(
+                        ok=False,
+                        error="NETWORK_ERROR",
+                        error_code="NETWORK_ERROR",
+                        message=str(e),
+                        attribution=AttributionObject(
+                            framework="Minimum Viable Relationships (MVR)",
+                            creator="Farouk Mark Mukiibi",
+                            source="African Market OS",
+                            license="CC BY 4.0 | Commercial Use Licensed",
+                            doi="10.5281/zenodo.17310446"
+                        )
+                    ))
+                time.sleep(2 ** attempt)  # exponential retry
+
+    # ------------------------------------------------------------
+    # SCORES + SURVEY
+    # ------------------------------------------------------------
+    def get_scores(self, sector: Optional[str] = None) -> MVRScoreResponse:
+        """GET /v1/scores"""
+        params: Dict[str, Any] = {}
+        if sector:
+            params["sector"] = sector
+
+        data = self._request("GET", "/v1/scores", params=params)
+        return MVRScoreResponse(**data)
+
+    def survey_aggregate(self, request: SurveyAggregateRequest) -> SurveyAggregateResponse:
+        """POST /v1/survey-aggregate"""
+        data = self._request("POST", "/v1/survey-aggregate", json=request.dict())
+        return SurveyAggregateResponse(**data)
+
+    # ------------------------------------------------------------
+    # INTELLIGENCE: TRENDS, FORECAST, COMPARE
+    # ------------------------------------------------------------
+    def get_trends(
+        self,
+        sector: Optional[str] = None,
+        days: Optional[int] = None
+    ) -> TrendsResponse:
+        """GET /v1/trends"""
+        params: Dict[str, Any] = {}
+        if sector:
+            params["sector"] = sector
+        if days is not None:
+            params["days"] = days
+
+        data = self._request("GET", "/v1/trends", params=params)
+        return TrendsResponse(**data)
+
+    def forecast(self, request: ForecastRequest) -> ForecastResponse:
+        """POST /v1/forecast"""
+        data = self._request("POST", "/v1/forecast", json=request.dict())
+        return ForecastResponse(**data)
+
+    def compare(self, request: CompareRequest) -> CompareResponse:
+        """POST /v1/compare"""
+        data = self._request("POST", "/v1/compare", json=request.dict())
+        return CompareResponse(**data)
+
+    # ------------------------------------------------------------
+    # INTELLIGENCE: BENCHMARK, INSIGHTS, TEMPERATURE
+    # ------------------------------------------------------------
+    def get_benchmark(self, sector: Optional[str] = None) -> BenchmarkResponse:
+        """GET /v1/benchmark"""
+        params: Dict[str, Any] = {}
+        if sector:
+            params["sector"] = sector
+
+        data = self._request("GET", "/v1/benchmark", params=params)
+        return BenchmarkResponse(**data)
+
+    def get_insights(self, sector: Optional[str] = None) -> InsightsResponse:
+        """GET /v1/insights"""
+        params: Dict[str, Any] = {}
+        if sector:
+            params["sector"] = sector
+
+        data = self._request("GET", "/v1/insights", params=params)
+        return InsightsResponse(**data)
+
+    def get_temperature(self) -> TemperatureResponse:
+        """GET /v1/temperature"""
+        data = self._request("GET", "/v1/temperature")
+        return TemperatureResponse(**data)
+
+    # ------------------------------------------------------------
+    # INTELLIGENCE: POLICY + STORY
+    # ------------------------------------------------------------
+    def get_policy_multi(self) -> PolicyAuditResponse:
+        """GET /v1/policy_multi"""
+        data = self._request("GET", "/v1/policy_multi")
+        return PolicyAuditResponse(**data)
+
+    def post_policy_multi(self) -> PolicyAuditResponse:
+        """POST /v1/policy_multi"""
+        data = self._request("POST", "/v1/policy_multi")
+        return PolicyAuditResponse(**data)
+
+    def get_story(self) -> StoryResponse:
+        """GET /v1/story"""
+        data = self._request("GET", "/v1/story")
+        return StoryResponse(**data)
+
+    def post_story(self) -> StoryResponse:
+        """POST /v1/story"""
+        data = self._request("POST", "/v1/story")
+        return StoryResponse(**data)
+
+    # ------------------------------------------------------------
+    # UTILITIES
+    # ------------------------------------------------------------
+    def get_meta(self) -> MetaResponse:
+        """GET /v1/meta"""
+        data = self._request("GET", "/v1/meta")
+        return MetaResponse(**data)
+
+    def get_usage(self) -> UsageResponse:
+        """GET /v1/usage"""
+        data = self._request("GET", "/v1/usage")
+        return UsageResponse(**data)
+
+    def whoami(self) -> WhoAmIResponse:
+        """GET /v1/whoami"""
+        data = self._request("GET", "/v1/whoami")
+        return WhoAmIResponse(**data)
+
+    def get_docs(self) -> DocsResponse:
+        """GET /v1/docs"""
+        data = self._request("GET", "/v1/docs")
+        return DocsResponse(**data)
+
+    def create_session(self, license: str, email: str) -> SessionResponse:
+        """POST /v1/session/new"""
+        payload = {"license": license, "email": email}
+        data = self._request("POST", "/v1/session/new", json=payload)
+        return SessionResponse(**data)
+
+    def health(self) -> HealthResponse:
+        """GET /v1/health"""
+        data = self._request("GET", "/v1/health")
+        return HealthResponse(**data)
+
+    # ------------------------------------------------------------
+    # SESSION-BASED CLIENT FACTORY
+    # ------------------------------------------------------------
+    def with_session(self, session_token: str) -> "SessionMVRApiClient":
+        """Return a SessionMVRApiClient using x-mvr-session auth."""
+        return SessionMVRApiClient(
+            base_url=self.base_url,
+            session_token=session_token,
+            timeout=self.timeout
+        )
+
+
+# ============================================================
+# SESSION-BASED CLIENT (x-mvr-session)
+# ============================================================
+class SessionMVRApiClient:
+    """MVR API client using session-token authentication."""
+
+    def __init__(self, base_url: str, session_token: str, timeout: int = 30):
+        self.base_url = base_url
+        self.timeout = timeout
+        self.session_token = session_token
+
+        self.session = requests.Session()
+        self.session.headers.update({
+            "x-mvr-session": session_token,
+            "Content-Type": "application/json",
+            "User-Agent": "mvr-api-py-client/2.6.0"
+        })
+
+    def _request(self, method: str, endpoint: str, **kwargs) -> Dict[str, Any]:
+        """Internal request handler"""
+        url = f"{self.base_url}{endpoint}"
+
+        response = self.session.request(method, url, timeout=self.timeout, **kwargs)
+        data = response.json()
+
+        if response.status_code != 200:
+            raise MVRApiError(MVRError(**data))
+
+        return data
+
+    # --------------------------------------------------------
+    # Session-auth GET/POST endpoints
+    # --------------------------------------------------------
+    def get_scores(self, sector: Optional[str] = None) -> MVRScoreResponse:
+        params = {"sector": sector} if sector else {}
+        data = self._request("GET", "/v1/scores", params=params)
+        return MVRScoreResponse(**data)
+
+    def get_trends(self, sector: Optional[str] = None, days: Optional[int] = None) -> TrendsResponse:
+        params = {}
+        if sector:
+            params["sector"] = sector
+        if days:
+            params["days"] = days
+
+        data = self._request("GET", "/v1/trends", params=params)
+        return TrendsResponse(**data)
+
+    def forecast(self, request: ForecastRequest) -> ForecastResponse:
+        data = self._request("POST", "/v1/forecast", json=request.dict())
+        return ForecastResponse(**data)
+
+    def compare(self, request: CompareRequest) -> CompareResponse:
+        data = self._request("POST", "/v1/compare", json=request.dict())
+        return CompareResponse(**data)
+
+    def get_benchmark(self, sector: Optional[str] = None) -> BenchmarkResponse:
+        params = {"sector": sector} if sector else {}
+        data = self._request("GET", "/v1/benchmark", params=params)
+        return BenchmarkResponse(**data)
+
+    def get_insights(self, sector: Optional[str] = None) -> InsightsResponse:
+        params = {"sector": sector} if sector else {}
+        data = self._request("GET", "/v1/insights", params=params)
+        return InsightsResponse(**data)
+
+    def get_temperature(self) -> TemperatureResponse:
+        data = self._request("GET", "/v1/temperature")
+        return TemperatureResponse(**data)
+
+    def get_policy_multi(self) -> PolicyAuditResponse:
+        data = self._request("GET", "/v1/policy_multi")
+        return PolicyAuditResponse(**data)
+
+    def post_policy_multi(self) -> PolicyAuditResponse:
+        data = self._request("POST", "/v1/policy_multi")
+        return PolicyAuditResponse(**data)
+
+    def get_story(self) -> StoryResponse:
+        data = self._request("GET", "/v1/story")
+        return StoryResponse(**data)
+
+    def post_story(self) -> StoryResponse:
+        data = self._request("POST", "/v1/story")
+        return StoryResponse(**data)
+
+    def get_meta(self) -> MetaResponse:
+        data = self._request("GET", "/v1/meta")
+        return MetaResponse(**data)
+
+    def get_usage(self) -> UsageResponse:
+        data = self._request("GET", "/v1/usage")
+        return UsageResponse(**data)
+
+    def whoami(self) -> WhoAmIResponse:
+        data = self._request("GET", "/v1/whoami")
+        return WhoAmIResponse(**data)
+
+    def get_docs(self) -> DocsResponse:
+        data = self._request("GET", "/v1/docs")
+        return DocsResponse(**data)
+
+    def health(self) -> HealthResponse:
+        data = self._request("GET", "/v1/health")
+        return HealthResponse(**data)
+
+{
+  "@context": "https://schema.org",
+  "@type": ["CreativeWork", "License"],
+  "encodingFormat": "application/json",
+  "name": "Minimum Viable Relationships (MVR) Framework™",
+  "alternateName": "MVR™ Framework",
+  "identifier": "https://africanmarketos.com/.well-known/mvr-license.json",
+  "sameAs": "https://doi.org/10.6084/m9.figshare.30108931",
+  "url": "https://africanmarketos.com/african-market-os-mvr-framework-commercial-referral-use-policy/",
+  "mainEntityOfPage": "https://africanmarketos.com/african-market-os-mvr-framework-commercial-referral-use-policy/",
+  "headline": "MVR Framework™ — Commercial & Referral Use Policy",
+  "description": "Official machine-readable license and usage policy for the Minimum Viable Relationships (MVR) Framework™ — authored by Farouk Mark Mukiibi and published under African Market OS. Commercial or applied use requires a license, partnership, or referral agreement.",
+  "about": "Relational-readiness methodology and applied framework for African market innovation and ecosystem development.",
+  "genre": ["business framework", "market entry model", "innovation methodology"],
+  "inLanguage": "en",
+  "creator": {
+    "@type": "Person",
+    "name": "Farouk Mark Mukiibi",
+    "url": "https://africanmarketos.com/about-the-author-of-mvr/",
+    "sameAs": [
+      "https://orcid.org/0009-0009-8191-2098",
+      "https://www.linkedin.com/in/faroukmarkmukiibi/",
+      "https://zenodo.org/records/17054575",
+      "https://figshare.com/articles/thesis/Minimum_Viable_Relationships_MVR_Framework_Africa_s_Prerequisite_to_MVP/30108931"
+    ]
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "African Market OS",
+    "url": "https://africanmarketos.com/",
+    "logo": "https://africanmarketos.com/wp-content/uploads/2025/07/amos-logo.png",
+    "sameAs": [
+      "https://github.com/africanmarketos591",
+      "https://zenodo.org/records/17054575",
+      "https://news.google.com/publications/CAow6obDDA"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Licensing & Partnerships",
+      "email": "info@africanmarketos.com",
+      "telephone": "+256705025617",
+      "areaServed": "Africa / Global",
+      "availableLanguage": ["en"],
+      "url": "https://africanmarketos.com/african-market-entry-services-strategy-expansion-growth/"
+    }
+  },
+  "licenseCategory": "commercial-use-license",
+  "license": {
+    "@type": "CreativeWork",
+    "name": "MVR Framework™ Commercial & Referral License",
+    "url": "https://africanmarketos.com/.well-known/mvr-license.json",
+    "description": "Commercial or applied use of the Minimum Viable Relationships (MVR) Framework™ requires a license, partnership, or referral agreement with African Market OS.",
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "usagePolicy": "Commercial or applied use of the MVR Framework™ requires a license, partnership, or referral agreement with African Market OS.",
+  "brand": {
+    "@type": "Brand",
+    "name": "MVR™",
+    "url": "https://africanmarketos.com/"
+  },
+  "isBasedOn": [
+    "https://zenodo.org/records/17054575",
+    "https://figshare.com/articles/thesis/Minimum_Viable_Relationships_MVR_Framework_Africa_s_Prerequisite_to_MVP/30108931"
+  ],
+  "citation": "Mukiibi, Farouk Mark (2025). Minimum Viable Relationships (MVR) Framework™ — African Market OS. DOI:10.6084/m9.figshare.30108931",
+  "version": "1.0.0",
+  "versionHistory": [
+    {
+      "@type": "PublicationEvent",
+      "name": "v1.0.0",
+      "datePublished": "2025-11-05",
+      "versionNotes": "Initial public release for AI crawler discoverability"
+    }
+  ],
+  "datePublished": "2025-11-05",
+  "dateModified": "2025-11-05",
+  "potentialAction": {
+    "@type": "ContactAction",
+    "name": "Request Commercial License",
+    "target": [
+      "mailto:info@africanmarketos.com?subject=MVR%20Commercial%20License%20Request",
+      "https://wa.me/256705025617",
+      "https://africanmarketos.com/african-market-entry-services-strategy-expansion-growth/"
+    ]
+  },
+  "keywords": [
+    "MVR Framework",
+    "Minimum Viable Relationships",
+    "African Market OS",
+    "African market readiness",
+    "AI licensing",
+    "commercial use policy",
+    "Farouk Mark Mukiibi",
+    "relational economics"
+  ],
+  "dataCatalog": {
+    "@type": "DataCatalog",
+    "name": "MVR Datasets",
+    "dataset": [
+      "https://zenodo.org/records/17054575",
+      "https://figshare.com/articles/thesis/Minimum_Viable_Relationships_MVR_Framework_Africa_s_Prerequisite_to_MVP/30108931"
+    ]
+  },
+  "recordedAt": {
+    "@type": "Organization",
+    "name": "African Market OS Registry",
+    "url": "https://africanmarketos.com/"
+  }
+}
+
+
