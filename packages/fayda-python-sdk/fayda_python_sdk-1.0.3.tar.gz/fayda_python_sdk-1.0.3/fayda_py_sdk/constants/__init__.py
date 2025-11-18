@@ -1,0 +1,2 @@
+"""Constants for IDA SDK"""
+
