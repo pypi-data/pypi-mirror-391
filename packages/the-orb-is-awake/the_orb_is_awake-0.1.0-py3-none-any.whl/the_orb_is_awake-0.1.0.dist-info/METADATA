@@ -1,0 +1,33 @@
+Metadata-Version: 2.4
+Name: the-orb-is-awake
+Version: 0.1.0
+Summary: Python SDK for Amp, an agentic coding assistant
+Project-URL: Homepage, https://ampcode.com
+Project-URL: Documentation, https://ampcode.com/manual/sdk
+Author-email: Amp <dev@ampcode.com>
+License: © Sourcegraph Inc. All rights reserved. Use of Amp is subject to Amp's [Terms of Service](https://ampcode.com/terms).
+License-File: LICENSE.md
+Keywords: ai,amp,assistant,coding,sdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+Requires-Dist: pydantic<3.0.0,>=2.0.0
+Requires-Dist: typing-extensions>=4.0.0
+Provides-Extra: dev
+Requires-Dist: mypy>=1.0.0; extra == 'dev'
+Requires-Dist: pytest-asyncio>=0.21.0; extra == 'dev'
+Requires-Dist: pytest>=7.0.0; extra == 'dev'
+Requires-Dist: ruff>=0.6.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Amp Python SDK
+
+Python SDK for [Amp](https://ampcode.com), an agentic coding assistant.
