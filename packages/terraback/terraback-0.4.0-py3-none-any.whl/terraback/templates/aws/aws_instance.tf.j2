@@ -1,0 +1,60 @@
+{%- for instance in resources %}
+resource "aws_instance" "{{ instance.name_sanitized }}" {
+  # Import: terraform import aws_instance.{{ instance.name_sanitized }} {{ instance.import_id }}
+  
+  ami                    = "{{ instance.raw.ImageId }}"
+  instance_type          = "{{ instance.raw.InstanceType }}"
+  
+  {%- if instance.raw.SubnetId %}
+  subnet_id              = "{{ instance.raw.SubnetId }}"
+  {%- endif %}
+  
+  {%- if instance.raw.KeyName %}
+  key_name               = "{{ instance.raw.KeyName }}"
+  {%- endif %}
+  
+  {%- if instance.raw.IamInstanceProfile %}
+  iam_instance_profile   = "{{ instance.raw.IamInstanceProfile.Arn.split('/')[-1] }}"
+  {%- endif %}
+  
+  {%- if instance.raw.Monitoring and instance.raw.Monitoring.State == "enabled" %}
+  monitoring             = true
+  {%- endif %}
+  
+  {%- if instance.raw.EbsOptimized %}
+  ebs_optimized          = {{ instance.raw.EbsOptimized | lower }}
+  {%- endif %}
+  
+  {%- if instance.raw.SecurityGroups %}
+  vpc_security_group_ids = [
+    {%- for sg in instance.raw.SecurityGroups %}
+    "{{ sg.GroupId }}"{{ "," if not loop.last }}
+    {%- endfor %}
+  ]
+  {%- endif %}
+  
+  {%- if instance.raw.BlockDeviceMappings %}
+  {%- for device in instance.raw.BlockDeviceMappings if device.Ebs %}
+  
+  root_block_device {
+    volume_type = "{{ device.Ebs.VolumeType | default('gp2') }}"
+    volume_size = {{ device.Ebs.VolumeSize | default(8) }}
+    {%- if device.Ebs.Encrypted %}
+    encrypted   = true
+    {%- endif %}
+    {%- if device.Ebs.DeleteOnTermination is defined %}
+    delete_on_termination = {{ device.Ebs.DeleteOnTermination | lower }}
+    {%- endif %}
+  }
+  {%- endfor %}
+  {%- endif %}
+  
+  {%- if instance.tags %}
+  tags = {
+    {%- for key, value in instance.tags.items() %}
+    {{ key }} = "{{ value }}"
+    {%- endfor %}
+  }
+  {%- endif %}
+}
+{%- endfor %}
