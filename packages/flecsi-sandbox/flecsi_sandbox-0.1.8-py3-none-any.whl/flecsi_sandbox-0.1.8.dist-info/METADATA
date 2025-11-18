@@ -1,0 +1,20 @@
+Metadata-Version: 2.4
+Name: flecsi_sandbox
+Version: 0.1.8
+Summary: Generate skeleton FleCSI-based application projects.
+Author-email: Ben Bergen <bergen@lanl.gov>
+License-Expression: BSD-3-Clause
+Project-URL: Homepage, https://flecsi.org
+Project-URL: Source, https://github.com/flecsi/flecsi
+Project-URL: Issues, https://github.com/flecsi/flecsi/issues
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: GitPython
+Provides-Extra: dev
+Requires-Dist: pytest>=7; extra == "dev"
+
+# FleCSI Sandbox Package (flecsi_sandbox)
+
+The _flecsi_sandbox_ package provides the _skelf_ tool to create skeleton
+FleCSI-based application projects, suitable for experimentation or as the
+starting point for a real application.
