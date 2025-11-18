@@ -1,0 +1,93 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.7.3] - 2025-01-13
+
+### Fixed
+- Fixed `TypeError: the JSON object must be str, bytes or bytearray, not Response` in `AlfrescoFetchNodeOperator`
+- Changed to use `Response.json()` method instead of `json.loads()` for Airflow 3.1+ compatibility
+
+### Added
+- Comprehensive unit tests for `AlfrescoFetchNodeOperator` (6 tests covering UUID extraction, nodeRef format, mapped arguments)
+- Comprehensive unit tests for `AlfrescoFetchNodeExistOperator` (7 tests covering existence checks, error handling)
+- Test coverage improved from 48% to 54% overall
+- Both operators now have 100% test coverage
+
+## [0.7.2] - 2025-01-13
+
+### Fixed
+- Fixed HTTP 404 errors in `AlfrescoFetchNodeOperator` and `AlfrescoFetchNodeExistOperator` when receiving full nodeRef format (`workspace://SpacesStore/{uuid}`)
+- Operators now automatically extract UUID from nodeRef format for API calls
+- Added debug logging to show full endpoint URLs for troubleshooting
+
+## [0.7.1] - 2025-01-13
+
+### Fixed
+- Fixed Airflow 3.1+ compatibility issues with deprecation warnings
+- Fixed `AttributeError: 'str' object has no attribute 'resolve'` in operators with mapped arguments
+- Updated imports: `airflow.models.baseoperator` → `airflow.models` (15 operators)
+- Updated decorator imports for DAGs (Airflow 3.1+ compatibility)
+
+## [0.7.0] - 2025-01-10
+
+### Added
+- New backup & restore operators for Alfresco content migration
+- `AlfrescoDownloadContentOperator`: Download binary content with SHA1/SHA256/MD5 checksum verification
+- `SaveNodeToSqliteOperator`: Save node metadata to SQLite databases for backup portability
+- `LoadNodesFromSqliteOperator`: Load node metadata from SQLite databases with filtering and pagination
+- SQLite-based backup storage for offline processing and portability
+
+### Changed
+- Enhanced backup workflow support with checksum verification
+- Improved error handling and logging in download operations
+
+## [0.6.0] - 2024-12-15
+
+### Changed
+- **BREAKING**: Requires Apache Airflow 3.1+ (dropped Airflow 2.x support)
+- Replaced deprecated `airflow.utils.helpers.merge_dicts` with Python's native `|` operator
+- Updated dependency constraint to `apache-airflow>=3.1.1,<4.0.0`
+- Migrated to `uv` for dependency management (10-100x faster than pip/poetry)
+
+### Fixed
+- Fixed all Airflow 3.1+ deprecation warnings
+
+## [0.5.0] - 2024-11-20
+
+### Added
+- Initial public release
+- `AlfrescoSearchOperator`: Search nodes via FTS with pagination
+- `AlfrescoFetchChildrenOperator`: Fetch folder children with pagination
+- `AlfrescoFetchNodeOperator`: Fetch individual node metadata
+- `TransformFileOperator`: Transform files to Pristy pivot format
+- `TransformFolderOperator`: Transform folders to Pristy pivot format
+- `PushToKafkaOperator`: Push nodes to Kafka with JSON Schema validation
+- `AlfrescoUploadPristyOperator`: Upload files and folders to Alfresco
+- PostgreSQL state tracking with `CreateChildrenTableOperator`
+- Comprehensive unit test suite
+
+### Requirements
+- Python 3.12
+- Apache Airflow 2.9+
+- PostgreSQL for state tracking
+- Apache Kafka (optional)
+
+<<<<<<< HEAD
+||||||| parent of b346efd (version 0.7.3)
+[0.7.2]: https://github.com/jeci-sarl/pristy-alfresco-operators/compare/0.7.1...0.7.2
+[0.7.1]: https://github.com/jeci-sarl/pristy-alfresco-operators/compare/0.7.0...0.7.1
+[0.7.0]: https://github.com/jeci-sarl/pristy-alfresco-operators/compare/0.6.0...0.7.0
+[0.6.0]: https://github.com/jeci-sarl/pristy-alfresco-operators/compare/0.5.0...0.6.0
+[0.5.0]: https://github.com/jeci-sarl/pristy-alfresco-operators/releases/tag/0.5.0
+=======
+[0.7.3]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/compare/0.7.2...0.7.3
+>>>>>>> b346efd (version 0.7.3)
+[0.7.2]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/compare/0.7.1...0.7.2
+[0.7.1]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/compare/0.7.0...0.7.1
+[0.7.0]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/compare/0.6.0...0.7.0
+[0.6.0]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/compare/0.5.0...0.6.0
+[0.5.0]: https://gitlab.com/pristy-oss/pristy-alfresco-operators/-/tags/0.5.0
