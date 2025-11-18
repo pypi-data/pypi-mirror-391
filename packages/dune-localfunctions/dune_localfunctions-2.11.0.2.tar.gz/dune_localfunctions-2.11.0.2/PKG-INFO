@@ -1,0 +1,49 @@
+Metadata-Version: 2.1
+Name: dune_localfunctions
+Version: 2.11.0.2
+Summary: Provides interface and implementation for shape functions defined on the DUNE reference elements
+Home-page: https://gitlab.dune-project.org/core/dune-localfunctions
+Author: The Dune Core developers
+Author-email: dune-devel@lists.dune-project.org
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License (GPL)
+Requires-Python: >=3.4
+Description-Content-Type: text/markdown
+License-File: LICENSE.md
+License-File: COPYING
+
+<!--
+SPDX-FileCopyrightText: Copyright © DUNE Project contributors, see file LICENSE.md in module root
+SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
+-->
+
+DUNE-library
+============
+
+DUNE, the Distributed and Unified Numerics Environment is a modular toolbox
+for solving partial differential equations with grid-based methods.
+
+The main intention is to create slim interfaces allowing an efficient use of
+legacy and/or new libraries. Using C++ techniques DUNE allows to use very
+different implementation of the same concept (i.e. grid, solver, ...) under
+a common interface with a very low overhead.
+
+DUNE was designed with flexibility in mind. It supports easy discretization
+using methods, like Finite Elements, Finite Volume and also Finite
+Differences.
+
+Dune-localfunctions
+-------------------
+This module provides interfaces and implementations for local
+finite element ansatz spaces, i.e., shape functions, associated
+interpolation functionals, and relation to grid entities.
+
+More information
+----------------
+
+Check dune-common for more details concerning dependencies, known bugs,
+license and installation.
+
+
+git-8471d7cbb65c4d1d26eb8b3768a850411cd10184
