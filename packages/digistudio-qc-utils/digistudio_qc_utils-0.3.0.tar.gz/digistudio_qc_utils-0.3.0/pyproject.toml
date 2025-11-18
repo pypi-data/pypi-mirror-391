@@ -1,0 +1,31 @@
+[project]
+name = "digistudio-qc-utils"
+version = "0.3.0"
+description = "CLI utilities for QFieldCloud: upload to GCP, clean old files, and more"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "qfieldcloud-sdk>=0.11.0",
+    "google-cloud-storage>=2.10.0",
+]
+
+[project.scripts]
+qc-to-gcp = "qc_utils.cli:main"
+qc-clean = "qc_utils.cli:main_clean"
+
+[project.optional-dependencies]
+dev = ["ruff", "basedpyright"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = []
+
+[tool.basedpyright]
+typeCheckingMode = "standard"  # "basic" | "standard" | "strict" (défaut: "standard")
+
+[tool.uv]
+package = true
