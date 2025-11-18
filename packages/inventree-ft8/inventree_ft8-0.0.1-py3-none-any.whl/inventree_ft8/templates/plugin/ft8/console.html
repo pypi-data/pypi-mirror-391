@@ -1,0 +1,13 @@
+{% extends "panel.html" %}
+{% load static %}
+
+{% block content %}
+<div id="ft8-console-root"></div>
+{{ plugin_context|json_script:"ft8-context" }}
+<script type="module">
+  import { renderFT8Panel } from "{% static 'FT8Panel.js' %}";
+  const root = document.getElementById('ft8-console-root');
+  const ctxData = JSON.parse(document.getElementById('ft8-context').textContent);
+  renderFT8Panel(root, { context: ctxData });
+</script>
+{% endblock %}
