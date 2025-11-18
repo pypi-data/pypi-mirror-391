@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "half-hour"
+version = "0.1.0"
+
+authors = [
+  {name = "Yongshun Song", email = "ys_song@foxmail.com"}
+]
+maintainers = [
+  {name = "Yongshun Song", email = "ys_song@foxmail.com"}
+]
+
+description = "简易48个半小时记录法"
+
+readme = "README.md"
+
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["half", "hour", "record", "self-discipline"]
+
+[project.scripts]
+hha = "hh:hha"
+hhl = "hh:hhl"
+hhd = "hh:hhd"
