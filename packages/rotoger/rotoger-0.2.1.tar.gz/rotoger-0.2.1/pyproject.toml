@@ -1,0 +1,22 @@
+[project]
+name = "rotoger"
+version = "0.2.1"
+description = "Builed for myself, shared for everyone."
+readme = "README.md"
+authors = [
+    { name = "grillazz", email = "jakub.miazek.py@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "attrs>=25.3.0",
+    "orjson>=3.11.4",
+    "structlog>=25.5.0",
+    "whenever>=0.9.3",
+]
+
+[project.scripts]
+rotoger = "rotoger:main"
+
+[build-system]
+requires = ["uv_build>=0.8.3,<0.9.0"]
+build-backend = "uv_build"
