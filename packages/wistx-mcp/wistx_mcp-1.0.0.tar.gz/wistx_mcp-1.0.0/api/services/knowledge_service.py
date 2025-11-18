@@ -1,0 +1,155 @@
+"""Knowledge research service - business logic for knowledge base operations."""
+
+import logging
+import time
+
+from api.models.v1_requests import KnowledgeResearchRequest
+from api.models.v1_responses import (
+    KnowledgeArticleResponse,
+    KnowledgeResearchResponse,
+    KnowledgeResearchSummary,
+)
+from api.database.async_mongodb import async_mongodb_adapter
+from wistx_mcp.tools.lib.vector_search import VectorSearch
+from wistx_mcp.tools.lib.mongodb_client import MongoDBClient
+from wistx_mcp.tools.lib.retry_utils import with_timeout_and_retry
+from api.config import settings
+
+logger = logging.getLogger(__name__)
+
+
+class KnowledgeService:
+    """Service for knowledge base research operations."""
+
+    def __init__(self):
+        """Initialize knowledge service."""
+        self.mongodb_adapter = async_mongodb_adapter
+        mcp_mongodb_client = MongoDBClient()
+        self.vector_search = VectorSearch(
+            mcp_mongodb_client,
+            openai_api_key=settings.openai_api_key,
+        )
+
+    async def research_knowledge_base(
+        self,
+        request: KnowledgeResearchRequest,
+        user_id: str | None = None,
+        organization_id: str | None = None,
+    ) -> KnowledgeResearchResponse:
+        """Research knowledge base across all domains.
+
+        Args:
+            request: Knowledge research request
+            user_id: User ID for user-specific content filtering
+            organization_id: Organization ID for org-shared content filtering
+
+        Returns:
+            Knowledge research response with articles and summary
+
+        Raises:
+            RuntimeError: If operation times out or fails
+        """
+        logger.info(
+            "Researching knowledge base: query='%s', domains=%s, content_types=%s, max_results=%d, include_cross_domain=%s, include_global=%s, user_id=%s",
+            request.query[:100] if len(request.query) > 100 else request.query,
+            request.domains,
+            request.content_types,
+            request.max_results,
+            request.include_cross_domain,
+            request.include_global,
+            user_id,
+        )
+
+        await self.mongodb_adapter.connect()
+
+        search_start_time = time.time()
+        results = await with_timeout_and_retry(
+            self.vector_search.search_knowledge_articles,
+            timeout_seconds=30.0,
+            max_attempts=3,
+            retryable_exceptions=(RuntimeError, ConnectionError, TimeoutError),
+            query=request.query,
+            domains=request.domains if request.domains else None,
+            content_types=request.content_types if request.content_types else None,
+            user_id=user_id,
+            organization_id=organization_id,
+            include_global=request.include_global,
+            limit=request.max_results,
+        )
+        search_time_ms = int((time.time() - search_start_time) * 1000)
+
+        if not results:
+            logger.info(
+                "No results found for query: '%s' (domains=%s, content_types=%s, user_id=%s)",
+                request.query[:100],
+                request.domains,
+                request.content_types,
+                user_id,
+            )
+            return KnowledgeResearchResponse(
+                articles=[],
+                summary=KnowledgeResearchSummary(
+                    total_found=0,
+                    domains_covered=[],
+                    key_insights=[],
+                ),
+                metadata={
+                    "query_time_ms": search_time_ms,
+                    "sources": [],
+                },
+            )
+
+        if len(results) > request.max_results * 2:
+            logger.warning(
+                "Result set larger than expected: %d results (max: %d), truncating",
+                len(results),
+                request.max_results,
+            )
+            results = results[:request.max_results]
+
+        articles = []
+        domains_covered: set[str] = set()
+
+        for result in results:
+            domain = result.get("domain", "")
+            domains_covered.add(domain)
+
+            article = KnowledgeArticleResponse(
+                article_id=result.get("article_id", ""),
+                domain=domain,
+                subdomain=result.get("subdomain", ""),
+                content_type=result.get("content_type", ""),
+                title=result.get("title", ""),
+                summary=result.get("summary", ""),
+                content=result.get("content") if request.format == "markdown" else None,
+                tags=result.get("tags", []),
+                categories=result.get("categories", []),
+                industries=result.get("industries", []),
+                cloud_providers=result.get("cloud_providers", []),
+                services=result.get("services", []),
+                cross_domain_impacts=result.get("compliance_impact") or result.get("cost_impact") or result.get("security_impact")
+                if request.include_cross_domain
+                else None,
+                source_url=result.get("source_url"),
+                quality_score=result.get("quality_score"),
+            )
+            articles.append(article)
+
+        key_insights = []
+        if articles:
+            key_insights = [article.summary[:200] + "..." for article in articles[:3]]
+
+        summary = KnowledgeResearchSummary(
+            total_found=len(articles),
+            domains_covered=sorted(domains_covered),
+            key_insights=key_insights,
+        )
+
+        return KnowledgeResearchResponse(
+            articles=articles,
+            summary=summary,
+            metadata={
+                "query_time_ms": search_time_ms,
+                "sources": list(set(article.source_url for article in articles if article.source_url)),
+            },
+        )

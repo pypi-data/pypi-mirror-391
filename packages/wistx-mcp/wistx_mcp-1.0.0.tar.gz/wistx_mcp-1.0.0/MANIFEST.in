@@ -1,0 +1,6 @@
+# Force include all Python files - MANIFEST.in overrides .gitignore
+recursive-include wistx_mcp *.py
+# Explicitly include tools/lib (might be excluded by .gitignore)
+recursive-include wistx_mcp/tools/lib *.py
+include wistx_mcp/tools/lib/*
+

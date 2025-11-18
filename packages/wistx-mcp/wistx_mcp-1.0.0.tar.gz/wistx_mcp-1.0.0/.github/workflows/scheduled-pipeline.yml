@@ -1,0 +1,86 @@
+name: Scheduled Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Run daily at 2 AM UTC
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  PYTHON_VERSION: '3.11'
+  UV_VERSION: '0.1.44'
+
+jobs:
+  run-scheduled-pipeline:
+    name: Daily Data Pipeline Update
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          uv sync --all-extras
+
+      - name: Setup MongoDB
+        env:
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+        run: |
+          python scripts/setup_mongodb.py
+        continue-on-error: true
+
+      - name: Run Compliance Pipeline (All Standards)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME || 'wistx-index' }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          echo "Running daily compliance pipeline update..."
+          python scripts/run_pipeline.py --mode streaming
+
+      - name: Run Knowledge Pipeline (Compliance Domain)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MONGODB_URL: ${{ secrets.MONGODB_URL }}
+          MONGODB_DATABASE: ${{ secrets.MONGODB_DATABASE || 'wistx-production' }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME || 'wistx-index' }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          echo "Running daily knowledge pipeline update..."
+          python scripts/test_knowledge_pipeline.py --domain compliance
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scheduled-pipeline-logs
+          path: |
+            *.log
+            data/**/*.log
+          retention-days: 7
+
+      - name: Pipeline Summary
+        if: always()
+        run: |
+          echo "## Daily Pipeline Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Pipeline executed at: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check logs and artifacts for detailed results." >> $GITHUB_STEP_SUMMARY
+
