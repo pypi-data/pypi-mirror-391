@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: util-process-pool
+Version: 0.1.0
+Summary: 简便的多进程调用工具，基于 concurrent.futures.ProcessPoolExecutor 的封装
+Author-email: birds <cg626@163.com>
+License-Expression: MIT
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: click>=8.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: black>=21.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Dynamic: license-file
+
+# Util Process Pool
+
+简便的多进程调用工具，基于 `concurrent.futures.ProcessPoolExecutor` 的封装。
+
+## 特性
+
+- 🚀 简化的多进程调用接口
+- 📊 进度跟踪和错误处理
+- 🔧 灵活的配置选项
+- 📝 详细的日志记录
+- 🎯 支持多种任务类型（CPU密集型、IO密集型）
+
+## 安装
+
+```bash
+pip install util-process-pool
+```
+
+## 快速开始
+
+### 基本使用
+
+```python
+from util_process_pool import parallel_map
+
+# 简单的并行计算
+numbers = list(range(10))
+results = parallel_map(lambda x: x * x, numbers)
+print(results)  # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+```
+
+### 使用 ProcessPool 类
+
+```python
+from util_process_pool import ProcessPool
+
+def process_data(data):
+    # 处理数据的函数
+    return data * 2
+
+with ProcessPool(max_workers=4) as pool:
+    data_list = [1, 2, 3, 4, 5]
+    results = list(pool.map(process_data, data_list))
+    print(results)  # [2, 4, 6, 8, 10]
+```
+
+### 批量执行复杂任务
+
+```python
+from util_process_pool import batch_execute
+
+def complex_task(param1, param2):
+    # 复杂的处理逻辑
+    return f"Processed: {param1} + {param2}"
+
+# 准备参数列表
+args_list = [
+    (("hello", "world"),),  # 第一个任务
+    (("foo", "bar"),),      # 第二个任务
+]
+
+results = batch_execute(complex_task, args_list, show_progress=True)
+```
+
+## API 文档
+
+### ProcessPool 类
+
+主要的进程池管理类。
+
+```python
+ProcessPool(
+    max_workers=None,      # 最大工作进程数（默认：CPU核心数）
+    initializer=None,      # 进程初始化函数
+    initargs=(),           # 初始化函数参数
+    logger=None            # 自定义日志记录器
+)
+```
+
+**方法：**
+- `submit(func, *args, **kwargs)`: 提交单个任务
+- `map(func, iterable, timeout=None, chunksize=1)`: 并行映射
+- `execute_batch(func, args_list, timeout=None, show_progress=False)`: 批量执行
+- `wait_completion(timeout=None)`: 等待所有任务完成
+
+### 工具函数
+
+- `parallel_map(func, iterable, max_workers=None, chunksize=1, timeout=None)`
+- `batch_execute(func, args_list, max_workers=None, timeout=None, show_progress=False)`
+
+## 许可证
+
+MIT License
