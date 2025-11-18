@@ -1,0 +1,76 @@
+[project]
+name = "trainscribe"
+version = "0.1.0"
+description = "A command-line tool for transcribing audio files in a folder to a metadata.csv file, using OpenAI's Whisper."
+readme = "README.md"
+authors = [{ name = "VERA LVX", email = "veralvx@veralvx.com" }]
+maintainers = [{ name = "VERA LVX", email = "veralvx@veralvx.com" }]
+requires-python = ">=3.10, <3.14"
+dependencies = ["devicer>=0.1.1", "openai-whisper>=20250625", "torch>=2.5.1"]
+license = "MIT"
+keywords = [
+    "transcribe",
+    "transcription",
+    "audio-transcription",
+    "openai-whisper",
+    "whisper",
+    "ljspeech",
+    "ljspeech-format",
+    "audio-formatter",
+    "text-to-speech",
+    "tts",
+    "tts-train",
+    "tts-finetune",
+    "cli",
+    "command-line"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: General",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Utilities",
+    "Typing :: Typed"
+]
+[project.urls]
+Documentation = "https://github.com/veralvx/trainscribe"
+Homepage = "https://github.com/veralvx/trainscribe"
+Issues = "https://github.com/veralvx/trainscribe/issues"
+Repository = "https://github.com/veralvx/trainscribe"
+
+[project.scripts]
+trainscribe = "trainscribe.main:main"
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pyright]
+typeCheckingMode = "standard"
+
+[project.optional-dependencies]
+xpu = [
+    "intel_extension_for_pytorch>=2.8,<3.0; python_version >= '3.10' and python_version < '3.14'"
+]
+
+[tool.ruff.lint]
+ignore = ["BLE001"]
