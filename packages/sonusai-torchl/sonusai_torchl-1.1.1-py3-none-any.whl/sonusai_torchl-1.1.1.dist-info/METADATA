@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: sonusai-torchl
+Version: 1.1.1
+Summary: PyTorch Lightning model tools for SonusAI
+Project-URL: Homepage, https://aaware.com
+Author-email: Chris Eddington <chris@aaware.com>, Jason Calderwood <jason@aaware.com>
+License-Expression: GPL-3.0-only
+Requires-Python: <3.12,>=3.11
+Requires-Dist: docopt<1.0,>=0.6.2
+Requires-Dist: h5py<4,>=3
+Requires-Dist: lightning<3,>=2.3
+Requires-Dist: numpy<2.3,>=2
+Requires-Dist: onnxconverter-common<2.0,>=1.14
+Requires-Dist: onnxsim<1.0,>=0.4.36
+Requires-Dist: openvino<2026,>=2025.2.0
+Requires-Dist: pyaaware<3.0,>=2.3.1
+Requires-Dist: sonusai<2.0,>=1.1
+Requires-Dist: torch<3,>=2.8
+Requires-Dist: torchinfo<2.0,>=1.8
+Description-Content-Type: text/x-rst
+
+SonusAI Torchl: PyTorch Lightning model tools for SonusAI
+
+
+Uses Poetry to manage and publish to Python PyPi.
+Note use poetry config pypi-token.pypi your-api-token, then poetry publish
