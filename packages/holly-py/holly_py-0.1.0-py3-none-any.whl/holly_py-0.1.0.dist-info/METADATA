@@ -1,0 +1,184 @@
+Metadata-Version: 2.4
+Name: holly-py
+Version: 0.1.0
+Summary: 一个简单的 HelloWorld 示例 Python 包
+Author-email: Your Name <your.email@example.com>
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/holly-py
+Project-URL: Documentation, https://github.com/yourusername/holly-py#readme
+Project-URL: Repository, https://github.com/yourusername/holly-py
+Project-URL: Bug Tracker, https://github.com/yourusername/holly-py/issues
+Keywords: hello,world,demo,example
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Dynamic: license-file
+
+# Holly-Py
+
+一个简单的 HelloWorld 示例 Python 包，用于演示如何创建、测试和发布 Python 包。
+
+## 功能特性
+
+- 简单的问候函数
+- 面向对象的 HelloWorld 类
+- 完整的单元测试
+- 类型提示支持
+- 文档字符串
+
+## 安装
+
+### 从 PyPI 安装（发布后）
+
+```bash
+pip install holly-py
+```
+
+### 从源码安装
+
+```bash
+git clone https://github.com/yourusername/holly-py.git
+cd holly-py
+pip install -e .
+```
+
+## 快速开始
+
+### 使用函数
+
+```python
+from holly_py import greet
+
+# 默认问候
+print(greet())  # 输出: Hello, World!
+
+# 自定义名字
+print(greet("Python"))  # 输出: Hello, Python!
+```
+
+### 使用类
+
+```python
+from holly_py import HelloWorld
+
+# 创建实例
+hw = HelloWorld("开发者")
+
+# 简单问候
+print(hw.greet())  # 输出: Hello, 开发者!
+
+# 多次问候
+print(hw.greet_multiple(3))
+# 输出:
+# Hello, 开发者!
+# Hello, 开发者!
+# Hello, 开发者!
+```
+
+## 开发
+
+### 安装开发依赖
+
+```bash
+pip install -e ".[dev]"
+```
+
+### 运行测试
+
+```bash
+# 运行所有测试
+pytest
+
+# 运行测试并显示覆盖率
+pytest --cov=holly_py
+
+# 运行特定测试文件
+pytest tests/test_core.py -v
+```
+
+### 代码格式化
+
+```bash
+# 使用 black 格式化代码
+black holly_py tests
+
+# 检查代码风格
+flake8 holly_py tests
+
+# 类型检查
+mypy holly_py
+```
+
+## 项目结构
+
+```
+holly-py/
+├── holly_py/             # 主包目录
+│   ├── __init__.py       # 包初始化文件
+│   └── core.py           # 核心功能模块
+├── tests/                # 测试目录
+│   ├── __init__.py
+│   └── test_core.py      # 核心功能测试
+├── pyproject.toml        # 项目配置文件（推荐）
+├── setup.py              # 安装脚本（向后兼容）
+├── README.md             # 项目说明文档
+├── LICENSE               # 许可证文件
+└── .gitignore           # Git 忽略文件
+```
+
+## API 文档
+
+### `greet(name: str = "World") -> str`
+
+生成问候语。
+
+**参数:**
+- `name` (str): 要问候的名字，默认为 "World"
+
+**返回:**
+- str: 问候语字符串
+
+### `HelloWorld`
+
+HelloWorld 类提供面向对象的问候功能。
+
+**方法:**
+- `__init__(name: str = "World")`: 初始化实例
+- `greet() -> str`: 返回问候语
+- `greet_multiple(times: int = 1) -> str`: 返回多次问候语
+
+## 许可证
+
+MIT License - 详见 [LICENSE](LICENSE) 文件
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 作者
+
+Your Name - your.email@example.com
+
+## 更新日志
+
+### 0.1.0 (2025-11-13)
+- 初始版本
+- 实现基本的 greet 函数
+- 实现 HelloWorld 类
+- 添加完整的单元测试
+
