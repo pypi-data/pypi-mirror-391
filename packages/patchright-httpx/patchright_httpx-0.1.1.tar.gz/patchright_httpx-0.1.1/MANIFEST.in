@@ -1,0 +1,13 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+include PUBLISH.md
+include requirements.txt
+include pyproject.toml
+recursive-include examples *.py *.md
+recursive-include patchright_httpx *.py
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.log
+
