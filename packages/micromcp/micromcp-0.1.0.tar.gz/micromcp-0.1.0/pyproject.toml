@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Der Name, der auf PyPI verwendet wird (muss eindeutig sein)
+name = "micromcp"
+version = "0.1.0"
+authors = [
+  {name="lavariall"},
+]
+description = "Eine leichtgewichtige, FastMCP-kompatible Model Context Protocol (MCP) Server-Bibliothek für MicroPython (ESP32, etc.)."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.5" # PyPI braucht dies, auch wenn es für MicroPython ist
+keywords = ["micropython", "esp32", "mcp", "fastmcp", "llm", "websocket"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: Implementation :: MicroPython",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Other OS",
+    "Topic :: System :: Networking",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Developers",
+]
+
+[tool.setuptools.packages.find]
+# Sagt setuptools, dass sich der Code im Verzeichnis 'micromcp' befindet
+where = ["."]
+
+[project.optional-dependencies]
+# Tools, die nur zum Bauen und Veröffentlichen benötigt werden
+build = [
+    "build",
+    "twine",
+]
