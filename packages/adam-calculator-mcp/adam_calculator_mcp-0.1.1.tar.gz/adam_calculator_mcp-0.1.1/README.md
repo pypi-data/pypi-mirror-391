@@ -1,0 +1,37 @@
+# Adam 计算器 MCP 工具
+
+## 项目概述
+`adam-calculator-mcp` 是一个计算器 MCP 工具，版本为 `0.1.0`。
+
+## 依赖要求
+- Python 版本需 `>=3.10`
+- 依赖的 Python 包：
+  - `httpx>=0.28.1`
+  - `mcp[cli]>=1.21.0`
+
+## 安装方法
+使用 `pip` 安装：
+```
+pip install adam-calculator-mcp
+```
+
+## 使用方法
+### 步骤 1：导入必要的模块
+```python
+import adam_calculator_mcp
+```
+
+### 步骤 2：调用功能函数
+根据具体的功能，调用相应的函数。示例代码如下：
+```python
+# 这里假设存在一个加法函数 add
+result = adam_calculator_mcp.add(2, 3)
+print(result)
+```
+
+## 配置要求
+暂无特殊配置要求。如果后续有配置需求，会在此更新。
+
+## 注意事项
+- 请确保 Python 环境版本符合要求。
+- 安装依赖时，确保网络连接正常。
