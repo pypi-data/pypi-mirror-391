@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: astraray
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.14
+Requires-Dist: pydantic>=2.12.4
+Requires-Dist: python-dotenv>=1.2.1
+Requires-Dist: pyyaml>=6.0.3
+Requires-Dist: rich>=14.2.0
+Provides-Extra: example-cpp
+Requires-Dist: example-cpp; extra == 'example-cpp'
+Provides-Extra: example-rust
+Requires-Dist: example-rust; extra == 'example-rust'
+Provides-Extra: hfdownload
+Requires-Dist: hfdownload; extra == 'hfdownload'

@@ -1,0 +1,107 @@
+[project]
+name = "astraray"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "pydantic>=2.12.4",
+    "python-dotenv>=1.2.1",
+    "pyyaml>=6.0.3",
+    "rich>=14.2.0",
+]
+
+
+[tool.uv]
+default-groups = ["dev"]
+link-mode = "hardlink"
+no-build-isolation-package = ["flash-attn"]
+override-dependencies = [
+    "torch; sys_platform == 'never'",
+    "torchvision; sys_platform == 'never'",
+    "torchaudio; sys_platform == 'never'",
+]
+environments = [
+    "sys_platform == 'win32'",
+]
+
+[dependency-groups]
+dev = [
+    "maturin>=1.10.1",
+    "mypy>=1.18.2",
+    "pybind11>=3.0.1",
+    "pytest>=9.0.1",
+    "setuptools>=80.9.0",
+]
+ai = [
+    "torch==2.9.0",
+    "torchaudio==2.9.0",
+    "torchvision==0.24.0",
+]
+
+[project.optional-dependencies]
+hfdownload = [
+    "hfdownload",
+]
+example_cpp=[
+    "example_cpp",
+]
+example_rust=[
+    "example_rust",
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchvision = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+torchaudio = [
+  { index = "pytorch-cuda", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+hfdownload = {workspace=true}
+example_cpp = {workspace=true}
+example_rust = {workspace=true}
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cuda"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+
+[tool.uv.pip]
+torch-backend = "auto"
+
+[tool.uv.workspace]
+members = [
+    "app/hfdownload",
+    "tutorial/example_cpp",
+    "tutorial/example_rust",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv.extra-build-dependencies]
+example-cpp = ["pybind11", "maturin"]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "app",
+    "tutorial",
+]
+exclude = [
+    "**/__pycache__/*",
+    "target/*",
+    ".env",
+]
+
+
