@@ -1,0 +1,81 @@
+PWQ QR Gen 4 — A Fully Customizable QR Code Generator
+
+PWQ QR Gen 4 is a powerful and flexible QR code generator built for developers, designers, and automation workflows. It supports all 40 QR versions, 8 mask patterns, 4 error correction levels, and every encoding mode, including Kanji and ECI (Extended Channel Interpretation).
+✨ Key Features
+• 	Full QR Spec Support: Encode using any version, mask, or error correction level.
+• 	Advanced Encoding: Supports Byte, Alphanumeric, Numeric, Kanji, and ECI modes.
+•   16 Diffrent Encoding Techniques: UTF-8, ISO-8859-1, ISO-8859-2 
+•   Fully Customizable Grid of The QR Code: Color, Shape, Logo etc.
+•   --- Dual-Mode Support -> Manual & PWQAI
+•   Manual Mode: User enters parameters such as: version, mask, EC level, encoding etc. 
+• 	PWQAI Mode: Automatically selects the optimal version and encoding parameters based on input data.
+• 	--- Visual Customization:
+• 	RGB foreground and background color control
+• 	Circular or square grid modules
+• 	Multi-logo support (Instagram, YouTube, WhatsApp, PayPal, Netflix, Messenger, Gmail, or custom uploads)
+• 	Output Options: Save to PNG with custom filename and path
+•   Very Simplistic Design & Usage
+
+🧠 Built on Nayuki’s Logic
+This project builds on the structural logic and segment division algorithms from Project Nayuki’s QR Code Generator, with extensive enhancements for customization and automation.
+
+# 🧩 Usage
+
+### ✅ PWQAI Mode — Enabled & Disabled
+```python
+from PWQ_QR_GEN_4 import PWQ_QR_GEN_4
+
+# --- PWQAI Mode -> True
+PWQQRGEN4 = PWQ_QR_GEN_4(
+    "これは漢字のエンコーディングの例です",   # Input text
+    r"C:\Users\user\path\to\save",             # File path for saving
+    "PWQQRGen4_Example.png",                   # File name + format
+    (255, 0, 0),                               # Background color (RGB)
+    (200, 200, 25),                            # Foreground color (RGB)
+    gridshape="square",                        # Shape of the grid: "square" or "circle"
+    logoimg="instagram",                       # Logo: "Instagram", "Youtube", "Whatsapp", etc.
+    PWQAI_mode=True                            # Enable PWQAI automatic mode
+)
+⚙️ PWQAI Mode — Disabled
+python
+Copy code
+from PWQ_QR_GEN_4 import PWQ_QR_GEN_4
+
+# --- PWQAI Mode -> False
+PWQQRGEN4 = PWQ_QR_GEN_4(
+    "https://youtube.com",                     # Input text
+    r"C:\Users\user\path\to\save",             # File path for saving
+    "PWQQRGen4.png",                           # File name + format
+    (17, 18, 9),                               # Background color (RGB)
+    (231, 90, 143),                            # Foreground color (RGB)
+    gridshape="circle",                        # Shape of the grid
+    gridsize=15,                               # Module size in pixels
+    quietzonesize=6,                           # Border size in modules
+    logoimg="netflix",                         # Logo embedded
+    encoding="ISO-8859-1",                     # Encoding technique
+    version=4,                                 # QR Version (1–40)
+    eclvl=PWQ_QR_GEN_4.PWQ_QR_Ecl._Quartile,   # Error Correction Level
+    mask=0,                                    # Mask pattern (0–7)
+    PWQAI_mode=False                           # Disable PWQAI mode
+)
+🔠 Encoding Techniques Table
+python
+Copy code
+_ECI_Encoding_Table: dict[str, int] = {  
+    "ISO-8859-1": 3,       # Western European  
+    "ISO-8859-2": 4,       # Central European  
+    "ISO-8859-3": 5,       # South European  
+    "ISO-8859-4": 6,       # North European  
+    "ISO-8859-5": 7,       # Cyrillic  
+    "ISO-8859-6": 8,       # Arabic  
+    "ISO-8859-7": 9,       # Greek  
+    "ISO-8859-8": 10,      # Hebrew  
+    "ISO-8859-9": 11,      # Turkish  
+    "ISO-8859-13": 15,     # Baltic  
+    "ISO-8859-15": 17,     # Western European (Euro)  
+    "Shift_JIS": 20,       # Japanese  
+    "UTF-8": 26,           # Unicode (most common)  
+    "UTF-16BE": 28,        # Unicode Big Endian  
+    "UTF-16LE": 29,        # Unicode Little Endian  
+    "Windows-1252": 21     # Microsoft Western European  
+}
