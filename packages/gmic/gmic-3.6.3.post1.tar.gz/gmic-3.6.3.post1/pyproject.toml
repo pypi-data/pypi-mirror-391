@@ -1,0 +1,109 @@
+[project]
+name = "gmic"
+description = "Python bindings for the G'MIC C++ image processing library"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { "name" = "David Tschumperlé", "email" = "David.Tschumperle@ensicaen.fr" },
+    { "name" = "Sébastien Fourey", "email" = "Sebastien.Fourey@ensicaen.fr" },
+    { "name" = "Jonathan-David Schröder", "email" = "jonathan.schroder@gmail.com" },
+    { "name" = "Lauréline Nevin", "email" = "laureline.nevin@unicaen.fr" }
+]
+keywords = ["gmic", "graphics", "image", "filter"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Other Audience",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Artistic Software",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Software Development",
+    "Topic :: Multimedia :: Graphics",
+    "License :: OSI Approved :: CEA CNRS Inria Logiciel Libre License, version 2.1 (CeCILL-2.1)",
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version"]
+
+dependencies = []
+
+[project.urls]
+"Homepage" = "https://gmic.eu/"
+"source" = "https://github.com/GreycLab/gmic-py"
+"releasenotes" = "https://github.com/GreycLab/gmic-py/releases/"
+"issues" = "https://github.com/GreycLab/gmic-py/issues"
+"funding" = "https://libreart.info/en/projects/gmic"
+"Say Thanks!" = "https://twitter.com/gmic_eu"
+
+
+[build-system]
+requires = [
+    "scikit-build-core",
+    "nanobind~=2.5.0",
+    'typing_extensions ; python_version<"3.11"'
+]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+logging.level = "WARNING"
+minimum-version = "0.9"
+build-dir = "build/{wheel_tag}/{build_type}"
+
+[tool.scikit-build.cmake]
+args = ["-GNinja"]
+version = ">=3.17"
+build-type = "Release"
+targets = []
+
+[tool.scikit-build.sdist]
+include = ["/version.txt", "/lib/cimg/CImg.h"]
+exclude = ["/docs", "/examples", "version_build.py", "/.github",
+    "/lib/gmic/html", "/lib/gmic/resources", "/lib/cimg"]
+reproducible = true
+cmake = false
+
+[tool.scikit-build.wheel]
+packages = []
+exclude = []
+license-files = ["COPYING"]
+# Use the stable ABI from 3.12 onwards (nanobind requirement)
+py-api = "cp312"
+
+[tool.scikit-build.metadata.version]
+provider = "scikit_build_core.metadata.regex"
+input = "version.txt"
+regex = '^(?P<version>\d+\.\d+\.\d+(\.r\d+)?(\.dev\d+)?)$'
+result = "{version}"
+
+[[tool.scikit-build.overrides]]
+if.env.DEBUG = true
+cmake.build-type = "Debug"
+
+[[tool.scikit-build.overrides]]
+if.env.DEBUG = true
+if.state = "^(metadata_)?(wheel|editable)$"
+inherit.metadata.version = "append"
+metadata.version.result = "{version}+dbg"
+
+[[tool.scikit-build.overrides]]
+if.env.CIBUILDWHEEL = true
+build-dir = ""
+
+[[tool.scikit-build.overrides]]
+if.env.CIBUILDWHEEL = true
+if.env.GMIC_DEFAULT_FEATURES = false
+cmake.define.GMIC_LIMITED_FEATURES = true
+
+[tool.cibuildwheel]
+build-frontend = "build"
+archs = "auto64"
+build = "cp3{[89],1[012]}-*"
+test-command = "pytest {project}/tests"
+test-requires = "-r ./tests/requirements.txt"
+before-all = "{project}/tools/before_all.sh"
+# AlmaLinux 9 (RHEL-based)
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_34"
+manylinux-aarch64-image = "quay.io/pypa/manylinux_2_34"
+musllinux-x86_64-image = "quay.io/pypa/musllinux_1_2"
+musllinux-aarch64-image = "quay.io/pypa/musllinux_1_2"
