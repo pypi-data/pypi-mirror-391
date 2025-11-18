@@ -1,0 +1,60 @@
+typing-extensions>=4.6.0
+
+[:python_version >= "3.13"]
+typing-extensions>=4.12.0
+
+[docs]
+sphinx
+sphinx-autoapi
+sphinx-autobuild
+sphinx-copybutton
+sphinx-rtd-theme
+sphinxcontrib-bibtex
+sphinx-autodoc-typehints
+docutils
+jax[cpu]
+numpy
+torch
+
+[jax]
+jax
+
+[lint]
+ruff
+pylint[spelling]
+mypy
+doc8
+pyenchant
+xdoctest
+cpplint
+pre-commit
+
+[numpy]
+numpy
+
+[test]
+pytest
+pytest-cov
+covdefaults
+rich
+
+[test:python_version < "3.13" and platform_system == "Darwin"]
+typing-extensions==4.6.0
+
+[test:python_version < "3.13" and platform_system == "Linux"]
+typing-extensions==4.6.0
+
+[test:python_version < "3.13" and platform_system == "Windows"]
+typing-extensions==4.6.0
+
+[test:python_version >= "3.13" and platform_system == "Darwin"]
+typing-extensions==4.12.0
+
+[test:python_version >= "3.13" and platform_system == "Linux"]
+typing-extensions==4.12.0
+
+[test:python_version >= "3.13" and platform_system == "Windows"]
+typing-extensions==4.12.0
+
+[torch]
+torch
