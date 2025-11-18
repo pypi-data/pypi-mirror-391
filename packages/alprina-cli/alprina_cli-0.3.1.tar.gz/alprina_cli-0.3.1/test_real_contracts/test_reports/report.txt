@@ -1,0 +1,179 @@
+======================================================================
+ALPRINA SECURITY SCAN REPORT
+======================================================================
+
+Scan ID: alprina_1763040488
+Timestamp: 2025-11-13 14:28:08
+Contract: SimpleERC20.sol
+Scan Time: 0.08s
+
+SUMMARY
+======================================================================
+Total Vulnerabilities: 40
+  - Critical: 1
+  - High: 6
+  - Medium: 25
+  - Low: 8
+
+VULNERABILITIES
+======================================================================
+
+1. 🔴 Missing Access Control [CRITICAL]
+   File: SimpleERC20.sol:82
+   Analyzer: static
+
+2. 🟠 [MEV] Front-Running: Public Price-Affecting Change in transfer [HIGH]
+   File: SimpleERC20.sol:31
+   Analyzer: mev
+
+3. 🟠 [MEV] Front-Running: Public Price-Affecting Change in transferFrom [HIGH]
+   File: SimpleERC20.sol:54
+   Analyzer: mev
+
+4. 🟠 [MEV] Front-Running: Public Price-Affecting Change in batchMint [HIGH]
+   File: SimpleERC20.sol:69
+   Analyzer: mev
+
+5. 🟠 [MEV] Front-Running: Public Price-Affecting Change in burn [HIGH]
+   File: SimpleERC20.sol:82
+   Analyzer: mev
+
+6. 🟠 Missing Address Zero Validation [HIGH]
+   File: SimpleERC20.sol:54
+   Analyzer: static
+
+7. 🟠 Loop Length Not Cached [HIGH]
+   File: SimpleERC20.sol:74
+   Analyzer: gas
+
+8. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:36
+   Analyzer: static
+
+9. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:37
+   Analyzer: static
+
+10. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:60
+   Analyzer: static
+
+11. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:61
+   Analyzer: static
+
+12. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:62
+   Analyzer: static
+
+13. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:75
+   Analyzer: static
+
+14. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:76
+   Analyzer: static
+
+15. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:85
+   Analyzer: static
+
+16. 🟡 Potential Integer Overflow/Underflow [MEDIUM]
+   File: SimpleERC20.sol:86
+   Analyzer: static
+
+17. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:37
+   Analyzer: static
+
+18. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:55
+   Analyzer: static
+
+19. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:56
+   Analyzer: static
+
+20. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:60
+   Analyzer: static
+
+21. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:61
+   Analyzer: static
+
+22. 🟡 Missing Array Bounds Validation [MEDIUM]
+   File: SimpleERC20.sol:62
+   Analyzer: static
+
+23. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:36
+   Analyzer: gas
+
+24. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:37
+   Analyzer: gas
+
+25. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:60
+   Analyzer: gas
+
+26. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:61
+   Analyzer: gas
+
+27. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:62
+   Analyzer: gas
+
+28. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:75
+   Analyzer: gas
+
+29. 🟡 Redundant Storage Access [MEDIUM]
+   File: SimpleERC20.sol:85
+   Analyzer: gas
+
+30. 🟡 Use Unchecked Block for Loop Counter [MEDIUM]
+   File: SimpleERC20.sol:74
+   Analyzer: gas
+
+31. 🟡 [Symbolic Execution] Potential Integer Overflow in batchMint [MEDIUM]
+   File: SimpleERC20.sol:74
+   Analyzer: symbolic
+
+32. 🟡 [Symbolic Execution] Potential Integer Overflow in batchMint [MEDIUM]
+   File: SimpleERC20.sol:76
+   Analyzer: symbolic
+
+33. ⚪ Use Prefix Increment (++i) Instead of Postfix (i++) [LOW]
+   File: SimpleERC20.sol:74
+   Analyzer: gas
+
+34. ⚪ Function 'approve' Can Be External [LOW]
+   File: SimpleERC20.sol:44
+   Analyzer: gas
+
+35. ⚪ Function 'transferFrom' Can Be External [LOW]
+   File: SimpleERC20.sol:54
+   Analyzer: gas
+
+36. ⚪ Function 'batchMint' Can Be External [LOW]
+   File: SimpleERC20.sol:69
+   Analyzer: gas
+
+37. ⚪ Function 'burn' Can Be External [LOW]
+   File: SimpleERC20.sol:82
+   Analyzer: gas
+
+38. ⚪ Cache msg.sender [LOW]
+   File: SimpleERC20.sol:36
+   Analyzer: gas
+
+39. ⚪ Cache msg.sender [LOW]
+   File: SimpleERC20.sol:62
+   Analyzer: gas
+
+40. ⚪ Cache msg.sender [LOW]
+   File: SimpleERC20.sol:85
+   Analyzer: gas
