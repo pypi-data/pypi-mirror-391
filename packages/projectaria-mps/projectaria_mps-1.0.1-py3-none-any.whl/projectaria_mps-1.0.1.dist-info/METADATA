@@ -1,0 +1,40 @@
+Metadata-Version: 2.4
+Name: projectaria-mps
+Version: 1.0.1
+Summary: Aria Machine Perception Services (MPS) Command Line Interface
+Home-page: https://www.projectaria.com
+Author: Meta Reality Labs Research
+License: Apache-2.0
+Project-URL: Documentation, https://fb.me/aria_mps_cli
+Project-URL: Changelog, https://fb.me/aria_mps_release_notes
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: aiofiles==25.1.0
+Requires-Dist: aiohttp==3.13.0
+Requires-Dist: keyring==25.6.0
+Requires-Dist: projectaria-tools==2.1.0
+Requires-Dist: projectaria-vrs-health-check==1.1.0
+Requires-Dist: pycryptodome==3.23.0
+Requires-Dist: pyperclip==1.9.0
+Requires-Dist: qrcode==8.0
+Requires-Dist: rich==14.2.0
+Requires-Dist: textual==6.2.1
+Requires-Dist: transitions==0.9.0
+Requires-Dist: xxhash==3.6.0
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+Command line tool for uploading Aria recordings to MPS backend, generating Machine Perception post-processed data and downloading the generated results.
+
+For more information, visit the [Aria MPS wiki](https://fb.me/aria_mps_cli).
+
+[Changelog](https://fb.me/aria_mps_release_notes) is available for release notes.
