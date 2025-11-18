@@ -1,0 +1,5 @@
+[console_scripts]
+db-connector = db_connector_tool.cli:main
+
+[sqlalchemy.dialects]
+jdbc.gbase8s_jdbc = db_connector_tool.drivers.gbase8s_jdbc:GBase8sJDBCDialect
