@@ -1,0 +1,15 @@
+[project]
+name = "jules-cli"
+version = "1.0.0"
+description = "A developer CLI for Jules API automation"
+readme = "README.md"
+authors = [{ name = "Dhruv Pal Singh Bose" }]
+requires-python = ">=3.8"
+dependencies = ["requests"]
+
+[project.scripts]
+jules = "jules_cli.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
