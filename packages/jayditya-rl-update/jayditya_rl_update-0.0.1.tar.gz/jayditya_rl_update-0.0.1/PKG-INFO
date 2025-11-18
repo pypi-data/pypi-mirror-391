@@ -1,0 +1,43 @@
+Metadata-Version: 2.4
+Name: jayditya-rl-update
+Version: 0.0.1
+Summary: Q-learning update helper function (Reinforcement Learning)
+Author-email: Jayditya Pratap Singh <example@example.com>
+License: MIT
+Project-URL: Homepage, https://pypi.org/project/jayditya-rl-update/
+Keywords: reinforcement-learning,q-learning,rl
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Dynamic: license-file
+
+
+# jayditya-rl-update
+
+A tiny Python package with a single Reinforcement Learning helper function:
+`q_learning_update`, which performs a one-step Q-learning update.
+
+## Quick Start
+
+\\`\\`\\`python
+from jayditya_rl_update import q_learning_update
+
+q_new = q_learning_update(
+    q_value=0.5,
+    reward=1.0,
+    next_max_q=0.8,
+    alpha=0.1,
+    gamma=0.99,
+)
+print(q_new)
+\\`\\`\\`
+
+## Installation
+
+\\`\\`\\`
+pip install jayditya-rl-update
+\\`\\`\\`
+
