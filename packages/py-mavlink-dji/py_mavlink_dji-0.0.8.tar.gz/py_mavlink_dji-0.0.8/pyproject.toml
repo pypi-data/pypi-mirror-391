@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "pymavlink", "pybind11>=2.10"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "py_mavlink_dji"
+version = "0.0.8"
+license = { text = "MIT" }
+description = "MAVLink to DJI translator bridge (prototype)"
+authors = [
+  { name="Auto Generated", email="dev@example.com" }
+]
+dependencies = ["pymavlink", "pyserial"]
+readme = "README.md"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+djibindings = ["pybind11>=2.10"]
+
+[tool.ruff]
+line-length = 88
+extend-ignore = ["E203", "W503"]
+
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+
