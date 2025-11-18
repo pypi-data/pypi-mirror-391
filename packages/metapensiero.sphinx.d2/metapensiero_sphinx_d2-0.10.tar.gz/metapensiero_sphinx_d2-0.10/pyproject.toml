@@ -1,0 +1,82 @@
+[project]
+name = "metapensiero.sphinx.d2"
+description = "Sphinx d2lang extension"
+version = "0.10"
+authors = [
+    { name = "Lele Gaifax", email = "lele@metapensiero.it" },
+]
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Topic :: Utilities",
+    "Framework :: Sphinx :: Extension",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "sphinx",
+]
+
+[project.license]
+text = "GPL-3.0-or-later"
+
+[project.urls]
+Changelog = "https://gitlab.com/metapensiero/metapensiero.sphinx.d2/-/blob/master/CHANGES.rst"
+Source = "https://gitlab.com/metapensiero/metapensiero.sphinx.d2"
+
+[project.optional-dependencies]
+dev = [
+    "build",
+    "bump-my-version",
+    "tomli",
+    "twine",
+]
+
+[build-system]
+requires = [
+    "pdm-backend",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm.build]
+package-dir = "src"
+includes = [
+    "src/metapensiero",
+]
+source-includes = [
+    "flake.*",
+    "*.rst",
+    "Justfile",
+]
+excludes = [
+    "doc/_build",
+]
+
+[tool.bumpversion]
+current_version = "0.10"
+parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)"
+serialize = [
+    "{major}.{minor}",
+]
+search = "{current_version}"
+replace = "{new_version}"
+regex = false
+ignore_missing_version = false
+ignore_missing_files = false
+tag = false
+sign_tags = false
+allow_dirty = false
+commit = false
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = "version = \"{current_version}\""
+replace = "version = \"{new_version}\""
+
+[[tool.bumpversion.files]]
+filename = "src/metapensiero/sphinx/d2/__init__.py"
+search = "__version__ = '{current_version}'"
+replace = "__version__ = '{new_version}'"

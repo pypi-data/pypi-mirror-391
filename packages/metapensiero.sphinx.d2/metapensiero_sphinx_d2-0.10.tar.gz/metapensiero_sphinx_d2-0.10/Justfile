@@ -1,0 +1,99 @@
+# -*- coding: utf-8 -*-
+# :Project:   metapensiero.sphinx.d2 — Development tasks
+# :Created:   mar 13 ago 2024, 11:50:12
+# :Author:    Lele Gaifax <lele@metapensiero.it>
+# :License:   GNU General Public License version 3 or later
+# :Copyright: © 2024, 2025 Lele Gaifax
+#
+
+set dotenv-load := false
+
+package-name := `python -c "from tomli import load;print(load(open('pyproject.toml', 'rb'))['project']['name'])"`
+package-version := `python -c "from tomli import load;print(load(open('pyproject.toml', 'rb'))['project']['version'])"`
+dist-file-name := replace(package-name, '.', '_') + "-" + package-version
+
+# List available targets
+@_help:
+  just --list
+
+# Run naïve test
+check: test-example
+
+#################
+# RELEASE TASKS #
+#################
+
+release-hint := '''
+  >>>
+  >>> Do your duties (update CHANGES.rst for example), then
+  >>> execute “just tag-release”.
+  >>>
+'''
+
+# Release new major/minor/dev version
+release *kind='minor':
+    bump-my-version bump {{kind}}
+    @echo '{{release-hint}}'
+
+# Assert presence of release timestamp in CHANGES.rst
+_check-release-date:
+    @fgrep -q "{{package-version}} ({{`date --iso-8601`}})" CHANGES.rst \
+      || (echo "ERROR: release date of version {{package-version}} not set in CHANGES.rst"; exit 1)
+
+# Assert that everything has been committed
+_assert-clean-tree:
+    @test -z "`git status -s --untracked=no`" || (echo "UNCOMMITTED STUFF" && false)
+
+# Check dist metadata
+_check-dist:
+    pyproject-build --sdist
+    twine check dist/{{dist-file-name}}.tar.gz
+
+# Tag new version
+tag-release: _check-release-date _check-dist
+    git commit -a -m "Release {{package-version}}"
+    git tag -a -m "Version {{package-version}}" v{{package-version}}
+
+# Build sdist and wheel
+build: _assert-clean-tree
+    pyproject-build
+
+# Build and upload to [Test]PyPI
+upload *repo='pypi': build
+    twine upload --repository={{repo}} dist/{{dist-file-name}}.tar.gz dist/{{dist-file-name}}*.whl
+
+# Upload to PyPI and push commits and tag to Gitlab
+publish: upload
+    git push
+    git push --tags
+
+#########
+# TESTS #
+#########
+
+# Run a simplicistic test to verify the example work
+test-example:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    cd example
+    make html
+    cd _build/html
+    svg=$(fgrep .svg index.html | head -1 | cut -f4 -d'"')
+    echo -n $svg contains 'href="../index.html#d2"' ...
+    fgrep -q 'href="../index.html#d2"' $svg
+    echo ok
+    echo -n $svg contains 'href="../subdir/system.html#System"' ...
+    fgrep -q 'href="../subdir/system.html#System"' $svg
+    echo ok
+    echo -n $svg contains 'href="../pyclass.html#Organization"' ...
+    fgrep -q 'href="../pyclass.html#Organization"' $svg
+    echo ok
+    cd subdir
+    svg=$(fgrep .svg relicon.html | head -1 | cut -f4 -d'"')
+    echo -n $svg contains '<image href="data:image/svg+xml;base64,PD94bWwg'
+    fgrep -q '<image href="data:image/svg+xml;base64,PD94bWwg' $svg
+    echo ok
+    echo -n $svg contains '<image href="data:image/png;base64,iVBORw0KGgo'
+    fgrep -q '<image href="data:image/png;base64,iVBORw0KGgo' $svg
+    echo ok
