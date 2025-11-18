@@ -1,0 +1,334 @@
+import itertools
+import logging
+import os
+import re
+import math
+
+import c3d
+
+logger = logging.getLogger(__name__)
+
+_REQUIRED_HEADER_KEYS = ['DataRate', 'CameraRate', 'NumFrames', 'NumMarkers', 'Units', 'OrigDataRate']
+_HEADER_TYPE_MAP = {
+    'DataRate': float,
+    'CameraRate': float,
+    'NumFrames': int,
+    'NumMarkers': int,
+    'Units': str,
+    'OrigDataRate': float,
+    'OrigDataStartFrame': int,
+    'OrigNumFrames': int
+}
+
+_COORDINATE_LABELS = ['X', 'Y', 'Z']
+
+
+class TRCFormatError(Exception):
+    pass
+
+
+def _convert_to_number(string):
+    try:
+        num = float(string)
+    except ValueError:
+        num = float('nan')
+    return num
+
+
+def _convert_coordinates(coordinates):
+    return [_convert_to_number(value) for value in coordinates]
+
+
+class TRCData(dict):
+    """
+    A trc data object when populated via 'load' or 'parse' contains motion capture data.
+    For a valid trc file the following keys will be present (among others):
+     - FileName
+     - DataFormat
+     - Markers
+     - DataRate
+     - NumFrames
+     - NumMarkers
+
+     Each marker found in the header part of the data will be a key in the dictionary containing a list
+     of the coordinates for that label at each frame.
+    """
+
+    def _append_per_label_data(self, markers, data):
+        for index, marker_data in enumerate(data):
+            self[markers[index]] += [marker_data]
+
+    def _process_contents(self, contents, verbose):
+        lines_iter = iter(contents)
+        current_line_num = 0
+
+        # Process file header.
+        try:
+            current_line_num += 1
+            sections = next(lines_iter).split(maxsplit=3)
+            if len(sections) != 4:
+                raise TRCFormatError(
+                    'File format invalid: Header line 1 does not have four space delimited sections.')
+            self[sections[0]] = sections[1]
+            self['DataFormat'] = sections[2]
+            data_format_count = len(sections[2].split('/'))
+            self['FileName'] = sections[3]
+
+            current_line_num += 1
+            header_keys = next(lines_iter).split()
+            current_line_num += 1
+            header_values = next(lines_iter).split()
+
+            if len(header_keys) != len(header_values):
+                raise TRCFormatError('File format invalid: File header keys count (%d) is not equal to file header '
+                                     'data count (%d)' % (len(header_keys), len(header_values)))
+
+            for key, val in zip(header_keys, header_values):
+                target_type = _HEADER_TYPE_MAP.get(key, float)
+                self[key] = target_type(val)
+
+            current_line_num += 1
+            data_header_markers = next(lines_iter).split()
+            if data_header_markers[0] != 'Frame#':
+                raise TRCFormatError('File format invalid: Data header does not start with "Frame#".')
+            if data_header_markers[1] != 'Time':
+                raise TRCFormatError('File format invalid: Data header in position 2 is not "Time".')
+
+            self['Frame#'] = []
+            self['Time'] = []
+
+            # Extract marker names (skipping Frame# and Time)
+            marker_names = [m.strip() for m in data_header_markers[2:] if m.strip()]
+            self['Markers'] = marker_names
+
+            # Initialize lists for each marker
+            for m in marker_names:
+                self[m] = []
+
+            current_line_num += 1
+            sub_marker_headers = next(lines_iter).split()
+            expected_sub_markers_count = int(self['NumMarkers']) * data_format_count
+            if expected_sub_markers_count != len(sub_marker_headers):
+                raise TRCFormatError(
+                    'File format invalid: Data header marker count (%d) is not equal to data header '
+                    'sub-marker count (%d)' % (len(data_header_markers), len(sub_marker_headers)))
+
+            try:
+                first_data_line = next(lines_iter).strip()
+                if not first_data_line:
+                    # It was blank, proceed to next
+                    current_line_num += 1
+                else:
+                    # It wasn't blank, this is actual data. Put it back into a chain to process.
+                    lines_iter = itertools.chain([first_data_line], lines_iter)
+            except StopIteration:
+                raise TRCFormatError(f"File ended without specifying any data.")
+
+        except StopIteration:
+            raise TRCFormatError(f"File ended unexpectedly at line {current_line_num} during header parsing.")
+
+        for line in lines_iter:
+            current_line_num += 1
+            sections = line.split()
+            if len(sections) == 0:
+                continue
+
+            # Parse Frame
+            try:
+                frame = int(sections.pop(0))
+                self['Frame#'].append(frame)
+            except ValueError:
+                raise TRCFormatError(
+                    f"File format invalid: "
+                    f"Data frame length is {len(self['Frame#'])}, "
+                    f"Expected {self['NumFrames']} frames."
+                )
+
+            # Parse Time
+            try:
+                time = float(sections.pop(0))
+                self['Time'].append(time)
+            except IndexError:
+                raise TRCFormatError(f"Missing time value at line {current_line_num}")
+            except ValueError:
+                raise TRCFormatError(f"Invalid time value at line {current_line_num}")
+
+            line_data = [[float('nan')] * data_format_count for _ in range(int(self['NumMarkers']))]
+            len_section = len(sections)
+            expected_entries = len(line_data) * data_format_count
+            if len_section > expected_entries:
+                if verbose:
+                    logger.warning(
+                        f'Bad data line, frame: {frame}, time: {time}, expected entries: {expected_entries},'
+                        f' actual entries: {len_section}')
+                self[frame] = (time, line_data)
+                self._append_per_label_data(marker_names, line_data)
+            elif len_section % data_format_count == 0:
+                for index, place in enumerate(range(0, len_section, data_format_count)):
+                    coordinates = _convert_coordinates(sections[place:place + data_format_count])
+                    line_data[index] = coordinates
+
+                self[frame] = (time, line_data)
+                self._append_per_label_data(marker_names, line_data)
+            else:
+                raise TRCFormatError(
+                    'File format invalid: Data frame %d does not match the data format' % len_section)
+
+    def parse(self, data, line_sep=os.linesep, verbose=False):
+        """
+        Parse trc formatted motion capture data into a dictionary like object.
+
+        :param data: The multi-line string of the data to parse.
+        :param line_sep: The line separator to split lines with.
+        :param verbose: Boolean for having verbose output, default is False.
+        """
+        contents = data.split(line_sep)
+        if len(contents) == 1:
+            data.replace('\r\n', '\n')
+            contents = data.split('\n')
+        self._process_contents(contents, verbose)
+
+    def load(self, filename, encoding="utf-8", errors="strict", verbose=False):
+        """
+        Load a trc motion capture data file into a dictionary like object.
+
+        :param filename: The name of the file to load.
+        :param encoding: Default encoding is 'utf-8', see https://docs.python.org/3/library/codecs.html#standard-encodings.
+        :param errors: Default error handling is 'strict',see https://docs.python.org/3/library/codecs.html#error-handlers.
+        :param verbose: Boolean for having verbose output, default is False.
+        """
+        with open(filename, 'rb') as f:
+            contents = f.read().decode(encoding=encoding, errors=errors)
+
+        contents = contents.split(os.linesep)
+        self._process_contents(contents, verbose)
+
+    def _import_from_c3d(self, filename, filter_output=None, label_params=None):
+        """
+        Extracts TRC data from a C3D file.
+
+        :param filename: The C3D file to be parsed.
+        :param filter_output: Optional; A list of model-output parameters to be filtered out from
+            the list of marker labels (e.g., ANGLES, FORCES, MOMENTS, POWERS, SCALARS).
+        :param label_params: Optional; A list of label parameters to be checked for marker labels.
+        """
+        with open(filename, 'rb') as handle:
+            reader = c3d.Reader(handle)
+
+            # Set file metadata.
+            self['PathFileType'] = 3
+            self['DataFormat'] = "(X/Y/Z)"
+            self['FileName'] = os.path.basename(filename)
+
+            # Set file header values.
+            self['DataRate'] = reader.header.frame_rate
+            self['CameraRate'] = reader.header.frame_rate
+            self['NumFrames'] = reader.header.last_frame - reader.header.first_frame + 1
+            self['Units'] = reader.get('POINT').get('UNITS').string_value
+            self['OrigDataRate'] = reader.header.frame_rate
+            self['OrigDataStartFrame'] = reader.header.first_frame
+            self['OrigNumFrames'] = reader.header.last_frame - reader.header.first_frame + 1
+
+            # Set frame numbers.
+            self['Frame#'] = [i for i in range(reader.header.first_frame, reader.header.last_frame + 1)]
+
+            point_group = reader.get('POINT')
+            if filter_output is None:
+                filter_output = ['ANGLES', 'FORCES', 'MOMENTS', 'POWERS', 'SCALARS']
+            if label_params is None:
+                label_params = [key for key in point_group.param_keys() if re.fullmatch(r'LABELS\d*', key)]
+
+            # Filter out model outputs (Angles, Forces, Moments, Powers, Scalars) from point labels.
+            model_outputs = set()
+            for param in filter_output:
+                if param in point_group.param_keys():
+                    model_outputs.update(point_group.get(param).string_array)
+            point_labels = []
+            for param in label_params:
+                if param in point_group.param_keys():
+                    filtered_labels = [None if label in model_outputs else label.strip() for label in
+                                       point_group.get(param).string_array]
+                    point_labels.extend(filtered_labels)
+
+            # Set marker labels.
+            self['Markers'] = [label for label in point_labels if label]
+            self['NumMarkers'] = len(self['Markers'])
+
+            # Set marker data.
+            for i, points, analog in reader.read_frames():
+                time = (i - 1) * (1 / reader.point_rate)
+                point_data = []
+                for j in range(len(points)):
+                    if point_labels[j]:
+                        coordinates = points[j][:3].tolist()
+                        errors = points[j][3:]
+                        for error in errors:
+                            if error == -1:
+                                coordinates = _convert_coordinates(['', '', ''])
+                                break
+                        point_data.append(coordinates)
+                self[i] = time, point_data
+
+    def import_from(self, filename, *args, **kwargs):
+        """
+        Import data from a non-TRC file source.
+        Currently, the only alternative supported format is c3d. The C3D import method also
+        accepts: `filter_output`, an optional argument allowing the user to specify C3D
+        model-output groups that should be filtered out from the list of marker labels; and
+        `label_params`, an optional list of the C3D parameters containing the marker labels.
+
+        :param filename: The source file of the data to be imported.
+        """
+        self._import_from_c3d(filename, *args, **kwargs)
+
+    def save(self, filename, add_trailing_tab=False):
+        """
+        Save TRC motion capture data to a file specified by filename.
+        To work with OpenSIM and Mokka formats set the add trailing tab parameter to True.
+
+        :param filename: String or pathlike to write to.
+        :param add_trailing_tab: Add a trailing tab to the header and data lines [default: False].
+        """
+        if 'PathFileType' in self:
+            header_line_1 = f"PathFileType\t{self['PathFileType']}\t{self['DataFormat']}\t{self['FileName']}{os.linesep}"
+        else:
+            raise NotImplementedError('Do not know this file type.')
+
+        # Check that all known header keys are present
+        for header_key in _HEADER_TYPE_MAP.keys():
+            if header_key not in self:
+                raise KeyError(f'Could not find required header key: {header_key}')
+
+        data_format_count = len(self['DataFormat'].split('/'))
+
+        keys_to_write = [k for k in _HEADER_TYPE_MAP.keys()]
+        header_line_2 = '\t'.join(keys_to_write) + '\n'
+        header_line_3 = '\t'.join([str(self[k]) for k in keys_to_write]) + '\n'
+
+        format_adjustment = '\t' if add_trailing_tab else ''
+
+        coordinate_labels = _COORDINATE_LABELS[:data_format_count]
+        markers_header = [entry for marker in self['Markers'] for entry in [marker, '', '']]
+        marker_sub_heading = [f'{coordinate}{i + 1}' for i in range(len(self['Markers'])) for coordinate in
+                              coordinate_labels]
+        data_header_line_1 = 'Frame#\tTime\t' + '\t'.join(markers_header) + format_adjustment + os.linesep
+        data_header_line_2 = '\t\t' + '\t'.join(marker_sub_heading) + format_adjustment + os.linesep
+
+        blank_line = os.linesep
+
+        with open(filename, 'w', newline='') as f:
+
+            f.write(header_line_1)
+            f.write(header_line_2)
+            f.write(header_line_3)
+
+            f.write(data_header_line_1)
+            f.write(data_header_line_2)
+
+            f.write(blank_line)
+
+            for frame in self['Frame#']:
+                time, line_data = self[frame]
+                values = ['' if math.isnan(v) else f'{v:.5f}' for values in line_data for v in values]
+                numeric_values = '\t'.join(values)
+                f.write(f'{frame}\t{time:.3f}\t{numeric_values}{format_adjustment}{os.linesep}')
