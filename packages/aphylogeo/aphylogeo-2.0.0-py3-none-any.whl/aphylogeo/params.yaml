@@ -1,0 +1,31 @@
+file_name: './datasets/example/geo.csv'
+specimen: 'id' #"Please enter the name of the column containing the specimens names: "
+dist_threshold: 60
+window_size: 200
+step_size: 100
+bootstrap_threshold: 100 #The number of bootstrap samples to generate.
+reference_gene_dir: './datasets/example'
+reference_gene_file: 'sequences.fasta'
+makeDebugFiles: True
+alignment_method: '1' #Please select one ~ 0:no alignment, 1:pairwiseAligner, 2:MUSCLE, 3:CLUSTALW, 4:MAFFT
+distance_method: '0' #Please select one  ~ 0: All distance methods, 1: Least-Square distance, 2: Robinson-Foulds distance, 3: Euclidean distance (DendroPY)
+fit_method: '1' #Please select one ~ 1:Wider Fit by elongating with Gap (starAlignment), 2:Narrow-fit prevent elongation with gap when possible
+tree_type: '1' #Please select one ~ 1: BioPython consensus tree, 2: FastTree application
+rate_similarity: 90
+method_similarity: '1' #Please select one :
+    # 1: Hamming distance
+    # 2: Levenshtein distance
+    # 3: Damerau-Levenshtein distance
+    # 4: Jaro similarity
+    # 5: Jaro-Winkler similarity
+    # 6: Smith–Waterman similarity
+    # 7: Jaccard similarity
+    # 8: Sørensen-Dice similarity
+preprocessing_genetic: 1
+preprocessing_climatic: 1
+preprocessing_threshold_genetic: 0.2   # proportion of gaps allowed
+preprocessing_threshold_climatic: 0.7  #variance threshold for numeric columns
+permutations_mantel_test: 999 #permutations for Mantel test
+permutations_protest: 999 #permutations for PROTEST analysis
+mantel_test_method: "pearson" #method for Mantel test
+statistical_test: '1' #Please select one ~ 0: Both test, 1: Mantel test, 2: PROTEST (Procrustes) analysis
