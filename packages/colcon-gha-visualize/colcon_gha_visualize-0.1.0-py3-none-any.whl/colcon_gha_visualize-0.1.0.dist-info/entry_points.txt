@@ -1,0 +1,5 @@
+[colcon_core.event_handler]
+gha_visualize = colcon_gha_visualize.handlers:VisualizeEventHandler
+
+[colcon_core.extension_point]
+_colcon_gha_visualize = colcon_gha_visualize:NonFunctionalExtensionPoint
