@@ -1,0 +1,14 @@
+# This is a file
+
+> https://github.com/quarto-dev/quarto-cli/issues/10626
+
+Right now mermaid diagrams are not rendered correctly on 1.5
+So 1.6 pre-release is needed.
+
+```{mermaid}
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
