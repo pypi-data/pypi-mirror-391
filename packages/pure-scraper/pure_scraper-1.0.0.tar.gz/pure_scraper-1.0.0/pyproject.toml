@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pure-scraper"
+version = "1.0.0"
+description = "A pure Python HTML parser and scraper (BeautifulSoup alternative)"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.7"
+license = "MIT"
+dependencies = ["lxml"]
+
+[project.scripts]
+pure-scraper = "pure_scraper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
