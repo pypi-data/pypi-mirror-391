@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fermihalos"
+version = "0.1.2"
+description = "An extended RAR model for dark matter halo astrophysics."
+readme = "pypi-description.md"
+authors = [
+  {name="Santiago Collazo", email="scollazo@fcaglp.unlp.edu.ar"},
+  {name="Martín Federico Mestre Citrinovitz", email="mmestre@fcaglp.unlp.edu.ar"}
+]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["astrophysics", "dark matter", "halo", "RAR"]
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.23.5",
+  "scipy>=1.15.0"
+]
+
+[project.urls]
+homepage = "https://santiq22.github.io/FermiHalos/"
+documentation = "https://santiq22.github.io/FermiHalos/"
+source = "https://github.com/Santiq22/FermiHalos"
+issues = "https://github.com/Santiq22/FermiHalos/issues"
+
+[tool.setuptools.packages.find]
+include = ["fermihalos"]
