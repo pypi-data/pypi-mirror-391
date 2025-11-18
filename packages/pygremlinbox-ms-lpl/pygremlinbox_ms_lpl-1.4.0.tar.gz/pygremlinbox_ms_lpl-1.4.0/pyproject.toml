@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: MS-LPL
+# SPDX-FileCopyrightText: 2025 PyGremlinBox Maintainer <simon@sigre.xyz>
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygremlinbox-ms-lpl"
+version = "1.4.0"
+description = "PyGremlinBox MS-LPL - Supply chain security testing module with Microsoft Limited Public Licence"
+license = {text = "MS-LPL"}  # SPDX: MS-LPL
+authors = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+maintainers = [
+    {name = "Supply Chain Security Tester", email = "simon@sigre.xyz"}
+]
+keywords = ["security", "supply-chain", "testing", "ms-lpl", "microsoft", "licence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Testing"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/gocortexio/pygremlinbox"
+Repository = "https://github.com/gocortexio/pygremlinbox.git"
+Issues = "https://github.com/gocortexio/pygremlinbox/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["pygremlinbox_*"]
+
+[tool.setuptools.package-dir]
+"" = "src"
