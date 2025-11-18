@@ -1,0 +1,971 @@
+"""
+Tests for the pyUSPTO.base module.
+
+This module contains tests for the BaseUSPTOClient class.
+"""
+
+from typing import Any, Dict, cast
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
+import requests
+from requests.adapters import HTTPAdapter
+
+import pyUSPTO.models.base as BaseModels
+from pyUSPTO.clients.base import BaseUSPTOClient, FromDictProtocol
+from pyUSPTO.exceptions import (
+    USPTOApiAuthError,
+    USPTOApiBadRequestError,
+    USPTOApiError,
+    USPTOApiNotFoundError,
+    USPTOApiPayloadTooLargeError,
+    USPTOApiRateLimitError,
+    USPTOApiServerError,
+    USPTOConnectionError,
+    USPTOTimeout,
+)
+
+
+class TestModelsBase:
+    """Test classes from models.base."""
+
+    def test_base_model_initialization(self) -> None:
+        """Tests BaseModel initialization with raw_data and kwargs."""
+        raw_input = {"key1": "value1"}
+        kwarg_input = {"attr1": "hello", "attr2": 123}
+
+        # Test with only raw_data
+        model1 = BaseModels.BaseModel(raw_data=raw_input)
+        assert model1.raw_data == raw_input
+        assert not hasattr(
+            model1, "key1"
+        )  # raw_data keys are not automatically attributes
+        assert not hasattr(model1, "attr1")
+
+        # Test with only kwargs
+        model2 = BaseModels.BaseModel(**kwarg_input)
+        assert model2.raw_data is None
+        assert model2.attr1 == "hello"  # type: ignore  # Attribute set by kwarg
+        assert model2.attr2 == 123  # type: ignore  # Attribute set by kwarg
+        assert not hasattr(model2, "key1")
+
+        # Test with both raw_data and kwargs
+        model3 = BaseModels.BaseModel(raw_data=raw_input, **kwarg_input)
+        assert model3.raw_data == raw_input
+        assert model3.attr1 == "hello"  # type: ignore  # Attribute set by kwarg
+        assert model3.attr2 == 123  # type: ignore  # Attribute set by kwarg
+        assert not hasattr(
+            model3, "key1"
+        )  # Ensure raw_data keys don't conflict unless also in kwargs
+
+        # Test with kwargs that might overlap with raw_data keys (kwargs should win for attributes)
+        model4 = BaseModels.BaseModel(
+            raw_data=raw_input, key1="kwarg_value_for_key1", attr1="another_val"
+        )
+        assert model4.raw_data == raw_input
+        assert (
+            model4.key1 == "kwarg_value_for_key1"  # type: ignore
+        )  # Attribute set by kwarg
+        assert model4.attr1 == "another_val"  # type: ignore
+
+        # Test with no parameters
+        model5 = BaseModels.BaseModel()
+        assert model5.raw_data is None
+        # Check no unexpected attributes were set
+        assert len(model5.__dict__) == 1  # Should only have raw_data
+
+
+class TestResponseClass:
+    """Test class implementing FromDictProtocol for testing."""
+
+    data: Dict[str, Any]
+
+    @classmethod
+    def from_dict(
+        cls, data: Dict[str, Any], include_raw_data: bool = False
+    ) -> "TestResponseClass":
+        """Create a TestResponseClass object from a dictionary."""
+        instance = cls()
+        instance.data = data
+        return instance
+
+
+class TestBaseUSPTOClient:
+    """Tests for the BaseUSPTOClient class."""
+
+    def test_init(self) -> None:
+        """Test initialization of the BaseUSPTOClient."""
+        # Test with API key
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test_key", base_url="https://api.test.com"
+        )
+        assert client.api_key == "test_key"
+        assert client.base_url == "https://api.test.com"
+        assert "X-API-KEY" in client.session.headers
+        assert client.session.headers["X-API-KEY"] == "test_key"
+
+        # Test without API key
+        client = BaseUSPTOClient(base_url="https://api.test.com")
+        assert client.api_key is None
+        assert client.base_url == "https://api.test.com"
+        assert "X-API-KEY" not in client.session.headers
+
+        # Test with trailing slash in base_url
+        client = BaseUSPTOClient(base_url="https://api.test.com/")
+        assert client.base_url == "https://api.test.com"
+
+    def test_retry_configuration(self) -> None:
+        """Test that retry configuration is properly set up."""
+        # Create a client
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+
+        # Check that the session has adapters for both http and https
+        assert "http://" in client.session.adapters
+        assert "https://" in client.session.adapters
+
+        # Get the retry configuration from the adapters
+        http_adapter = client.session.adapters["http://"]
+        https_adapter = client.session.adapters["https://"]
+
+        # Verify both adapters have retry configuration
+        assert cast(HTTPAdapter, http_adapter).max_retries is not None
+        assert cast(HTTPAdapter, https_adapter).max_retries is not None
+
+        # Verify retry settings
+        # Note: We can't directly check the status_forcelist because it's not exposed
+        # in a consistent way across different versions of urllib3/requests
+        assert cast(HTTPAdapter, http_adapter).max_retries.total == 3
+        assert cast(HTTPAdapter, http_adapter).max_retries.backoff_factor == 1
+
+    def test_make_request_get(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with GET."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = {"key": "value"}
+        mock_session.get.return_value = mock_response
+
+        # Test GET request
+        result = client._make_request(
+            method="GET", endpoint="test", params={"param": "value"}
+        )
+
+        # Verify
+        mock_session.get.assert_called_once_with(
+            url="https://api.test.com/test",
+            params={"param": "value"},
+            stream=False,
+            timeout=(10.0, 30.0),  # Default HTTPConfig timeout
+        )
+        assert result == {"key": "value"}
+
+    def test_make_request_post(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with POST."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = {"key": "value"}
+        mock_session.post.return_value = mock_response
+
+        # Test POST request
+        result = client._make_request(
+            method="POST",
+            endpoint="test",
+            params={"param": "value"},
+            json_data={"data": "value"},
+        )
+
+        # Verify
+        mock_session.post.assert_called_once_with(
+            url="https://api.test.com/test",
+            params={"param": "value"},
+            json={"data": "value"},
+            stream=False,
+            timeout=(10.0, 30.0),  # Default HTTPConfig timeout
+        )
+        assert result == {"key": "value"}
+
+    def test_make_request_with_response_class(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with response_class."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = {"key": "value"}
+        mock_session.get.return_value = mock_response
+
+        # Test with response_class
+        result = client._make_request(
+            method="GET",
+            endpoint="test",
+            response_class=TestResponseClass,
+        )
+
+        # Verify
+        assert isinstance(result, TestResponseClass)
+        assert result.data == {"key": "value"}
+
+    def test_make_request_with_custom_base_url(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with custom_base_url."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        mock_response = MagicMock()
+        mock_response.json.return_value = {"key": "value"}
+        mock_session.get.return_value = mock_response
+
+        # Test with custom_base_url
+        result = client._make_request(
+            method="GET",
+            endpoint="test",
+            custom_url="https://custom.api.test.com",
+        )
+
+        # Verify
+        mock_session.get.assert_called_once_with(
+            url="https://custom.api.test.com",
+            params=None,
+            stream=False,
+            timeout=(10.0, 30.0),  # Default HTTPConfig timeout
+        )
+        assert result == {"key": "value"}
+
+    def test_make_request_with_stream(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with stream=True."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        mock_response = MagicMock()
+        mock_session.get.return_value = mock_response
+
+        # Test with stream=True
+        result = client._make_request(method="GET", endpoint="test", stream=True)
+
+        # Verify
+        mock_session.get.assert_called_once_with(
+            url="https://api.test.com/test",
+            params=None,
+            stream=True,
+            timeout=(10.0, 30.0),  # Default HTTPConfig timeout
+        )
+        assert result == mock_response
+        mock_response.json.assert_not_called()
+
+    def test_make_request_invalid_method(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with invalid HTTP method."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+
+        # Test with invalid method
+        with pytest.raises(ValueError, match="Unsupported HTTP method: DELETE"):
+            client._make_request(method="DELETE", endpoint="test")
+
+        # Test catch-all error case with unknown status code
+        mock_response = MagicMock()
+        mock_response.status_code = (
+            418  # I'm a teapot (unused status in the specific handlers)
+        )
+        mock_response.json.return_value = {
+            "errorDetails": "I'm a teapot",
+            "requestIdentifier": "req-418",
+        }
+        mock_session.get.side_effect = requests.exceptions.HTTPError(
+            response=mock_response
+        )
+
+        with pytest.raises(USPTOApiError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+        assert "I'm a teapot" in str(excinfo.value)
+        assert excinfo.value.error_details == "I'm a teapot"
+        assert excinfo.value.status_code == 418
+
+    def test_make_request_http_errors(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with HTTP errors."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        # Test 400 error (Bad Request)
+        mock_response = MagicMock()
+        mock_response.status_code = 400
+        mock_response.json.return_value = {
+            "errorDetails": "Invalid request parameters",
+            "requestIdentifier": "req-400",
+        }
+        mock_session.get.side_effect = requests.exceptions.HTTPError(
+            response=mock_response
+        )
+
+        with pytest.raises(USPTOApiBadRequestError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Invalid request parameters" in str(excinfo.value)
+            assert excinfo.value.error_details == "Invalid request parameters"
+            assert excinfo.value.request_identifier == "req-400"
+
+        # Test 401 error (Auth Error)
+        mock_response.status_code = 401
+        mock_response.json.return_value = {
+            "errorDetails": "Authentication failed",
+            "requestIdentifier": "req-401",
+        }
+        with pytest.raises(expected_exception=USPTOApiAuthError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Authentication failed" in str(excinfo.value)
+            assert excinfo.value.error_details == "Authentication failed"
+            assert excinfo.value.request_identifier == "req-401"
+
+        # Test 403 error (Auth Error)
+        mock_response.status_code = 403
+        mock_response.json.return_value = {
+            "errorDetails": "Access forbidden",
+            "requestIdentifier": "req-403",
+        }
+        with pytest.raises(USPTOApiAuthError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Access forbidden" in str(excinfo.value)
+            assert excinfo.value.error_details == "Access forbidden"
+            assert excinfo.value.request_identifier == "req-403"
+
+        # Test 404 error (Not Found)
+        mock_response.status_code = 404
+        mock_response.json.return_value = {
+            "errorDetails": "Resource not found",
+            "requestIdentifier": "req-404",
+        }
+        with pytest.raises(USPTOApiNotFoundError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Resource not found" in str(excinfo.value)
+            assert excinfo.value.error_details == "Resource not found"
+            assert excinfo.value.request_identifier == "req-404"
+
+        # Test 413 error (Payload Too Large)
+        mock_response.status_code = 413
+        mock_response.json.return_value = {
+            "message": "API Payload Too Large",
+            "detailedMessage": "Request entity too large.",
+            "requestIdentifier": "req-413",
+        }
+        with pytest.raises(expected_exception=USPTOApiPayloadTooLargeError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Payload Too Large" in str(excinfo.value)
+            assert excinfo.value.error_details == "Request entity too large."
+            assert excinfo.value.request_identifier == "req-413"
+
+        # Test 429 error (Rate Limit)
+        mock_response.status_code = 429
+        mock_response.json.return_value = {
+            "errorDetails": "Rate limit exceeded",
+            "requestIdentifier": "req-429",
+        }
+        with pytest.raises(USPTOApiRateLimitError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Rate limit exceeded" in str(excinfo.value)
+            assert excinfo.value.error_details == "Rate limit exceeded"
+            assert excinfo.value.request_identifier == "req-429"
+
+        # Test 500 error (Server Error)
+        mock_response.status_code = 500
+        mock_response.json.return_value = {
+            "errorDetails": "Internal server error",
+            "requestIdentifier": "req-500",
+        }
+        with pytest.raises(USPTOApiServerError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Internal server error" in str(excinfo.value)
+            assert excinfo.value.error_details == "Internal server error"
+            assert excinfo.value.request_identifier == "req-500"
+
+        # Test detailedError field instead of errorDetails
+        mock_response.status_code = 500
+        mock_response.json.return_value = {
+            "errorDetails": "Alternative error format",
+            "requestIdentifier": "req-500-alt",
+        }
+        with pytest.raises(USPTOApiServerError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "Alternative error format" in str(object=excinfo.value)
+            assert excinfo.value.error_details == "Alternative error format"
+            assert excinfo.value.request_identifier == "req-500-alt"
+
+        # Test other HTTP error without JSON response
+        mock_response.json.side_effect = ValueError("Invalid JSON")
+        mock_response.text = "This is an error less than 500 chars."
+        with pytest.raises(USPTOApiServerError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+            assert "This is an error less than 500 chars." in str(excinfo.value)
+            assert excinfo.value.request_identifier is None
+
+    def test_make_request_connection_error(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with connection error."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        # Test connection error
+        mock_session.get.side_effect = requests.exceptions.ConnectionError(
+            "Connection refused"
+        )
+
+        with pytest.raises(USPTOConnectionError) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+
+        # Verify error details
+        assert "Failed to connect to" in str(excinfo.value)
+        assert "https://api.test.com/test" in str(excinfo.value)
+        assert excinfo.value.api_short_error == "Connection Error"
+
+    def test_make_request_timeout_error(self, mock_session: MagicMock) -> None:
+        """Test _make_request method with timeout error."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        # Test timeout error
+        mock_session.get.side_effect = requests.exceptions.Timeout("Request timed out")
+
+        with pytest.raises(USPTOTimeout) as excinfo:
+            client._make_request(method="GET", endpoint="test")
+
+        # Verify error details
+        assert "timed out" in str(excinfo.value)
+        assert "https://api.test.com/test" in str(excinfo.value)
+        assert excinfo.value.api_short_error == "Timeout"
+
+    def test_make_request_generic_request_exception(
+        self, mock_session: MagicMock
+    ) -> None:
+        """Test _make_request method with generic request exception."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        # Test generic RequestException (not Timeout or ConnectionError)
+        mock_session.get.side_effect = requests.exceptions.RequestException(
+            "Some other network issue"
+        )
+
+        # Should fall back to generic USPTOApiError
+        expected_message_pattern = "API request to 'https://api.test.com/test' failed due to a network or request issue"
+        with pytest.raises(USPTOApiError, match=expected_message_pattern):
+            client._make_request(method="GET", endpoint="test")
+
+    def test_paginate_results(self, mock_session: MagicMock) -> None:
+        """Test paginate_results method."""
+        # Setup
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+
+        # Create mock responses
+        first_response = MagicMock()
+        first_response.count = 2
+        first_response.items = ["item1", "item2"]
+
+        second_response = MagicMock()
+        second_response.count = 1
+        second_response.items = ["item3"]
+
+        third_response = MagicMock()
+        third_response.count = 0
+        third_response.items = []
+
+        # Create a test class with the method we want to paginate
+        class TestClient(BaseUSPTOClient[Any]):
+            def test_method(self, **kwargs: Any) -> Any:
+                # Return different responses based on offset
+                offset = kwargs.get("offset", 0)
+                if offset == 0:
+                    return first_response
+                elif offset == 2:
+                    return second_response
+                else:
+                    return third_response
+
+        # Use our test client
+        test_client = TestClient(base_url="https://api.test.com")
+        test_client.session = mock_session
+
+        # Spy on the test_method to verify calls
+        with patch.object(
+            test_client, "test_method", wraps=test_client.test_method
+        ) as spy_method:
+            # Test paginate_results
+            results = list(
+                test_client.paginate_results(
+                    method_name="test_method",
+                    response_container_attr="items",
+                    param1="value1",
+                    limit=2,
+                )
+            )
+
+            # Verify
+            assert results == ["item1", "item2", "item3"]
+            assert spy_method.call_count == 2
+            spy_method.assert_any_call(param1="value1", offset=0, limit=2)
+            spy_method.assert_any_call(param1="value1", offset=2, limit=2)
+
+            # Test early return with count < limit
+            # Create a response where count < limit to trigger the early return
+            partial_response = MagicMock()
+            partial_response.count = 1  # Less than limit=2
+            partial_response.items = ["partial-item"]
+
+            class TestPartialClient(BaseUSPTOClient[Any]):
+                def test_method(self, **kwargs: Any) -> Any:
+                    return partial_response
+
+            # Use our test client for partial results
+            test_partial_client = TestPartialClient(base_url="https://api.test.com")
+            test_partial_client.session = mock_session
+
+            # Test paginate_results with early return
+            results = list(
+                test_partial_client.paginate_results(
+                    method_name="test_method",
+                    response_container_attr="items",
+                    limit=2,
+                )
+            )
+
+            # Verify early return works
+            assert results == ["partial-item"]
+
+            # Test zero count case (empty response)
+            empty_response = MagicMock()
+            empty_response.count = 0  # No results
+            empty_response.items = []
+
+            class TestEmptyClient(BaseUSPTOClient[Any]):
+                def test_method(self, **kwargs: Any) -> Any:
+                    return empty_response
+
+            # Use our test client for empty results
+            test_empty_client = TestEmptyClient(base_url="https://api.test.com")
+            test_empty_client.session = mock_session
+
+            # Test paginate_results with empty response
+            results = list(
+                test_empty_client.paginate_results(
+                    method_name="test_method",
+                    response_container_attr="items",
+                    limit=2,
+                )
+            )
+
+            # Verify empty results works
+            assert results == []
+
+    def test_save_response_to_file(self, mock_session: MagicMock) -> None:
+        """Test _save_response_to_file raises FileExistsError."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(base_url="https://api.test.com")
+        client.session = mock_session
+        mock_response = MagicMock()
+        path = "tests/clients/test_file.txt"
+
+        # Pretend Path.exists() returns True
+        with patch("pyUSPTO.clients.base.Path.exists", return_value=True):
+            with pytest.raises(FileExistsError):
+                client._save_response_to_file(mock_response, path, overwrite=False)
+
+    def test_base_client_with_http_config(self) -> None:
+        """Test BaseUSPTOClient applies HTTPConfig settings"""
+        from pyUSPTO.http_config import HTTPConfig
+        from pyUSPTO.config import USPTOConfig
+
+        http_cfg = HTTPConfig(
+            max_retries=7,
+            backoff_factor=2.5,
+            pool_connections=15,
+            pool_maxsize=20,
+            custom_headers={"User-Agent": "TestApp"},
+        )
+        config = USPTOConfig(api_key="test", http_config=http_cfg)
+
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            config=config, base_url="https://test.com"
+        )
+
+        # Verify HTTP config is stored
+        assert client.http_config is http_cfg
+        assert client.http_config.max_retries == 7
+        assert client.http_config.backoff_factor == 2.5
+
+        # Verify custom headers applied
+        assert client.session.headers.get("User-Agent") == "TestApp"
+
+        # Verify retry configuration (check adapter)
+        adapter = client.session.get_adapter("https://test.com")
+        assert isinstance(adapter, HTTPAdapter)
+        assert adapter.max_retries.total == 7  # type: ignore
+        assert adapter.max_retries.backoff_factor == 2.5  # type: ignore
+
+    def test_base_client_backward_compatibility(self) -> None:
+        """Test client works without HTTPConfig (backward compatibility)"""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Should create default HTTPConfig automatically
+        assert client.http_config is not None
+        assert client.http_config.timeout == 30.0
+        assert client.http_config.max_retries == 3
+
+    def test_base_client_timeout_applied(self, mock_session: MagicMock) -> None:
+        """Test that timeout is passed to requests"""
+        from pyUSPTO.http_config import HTTPConfig
+        from pyUSPTO.config import USPTOConfig
+
+        http_cfg = HTTPConfig(timeout=45.0, connect_timeout=8.0)
+        config = USPTOConfig(api_key="test", http_config=http_cfg)
+
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            config=config, base_url="https://api.test.com"
+        )
+        client.session = mock_session
+
+        mock_session.get.return_value.status_code = 200
+        mock_session.get.return_value.json.return_value = {"test": "data"}
+
+        # Make request
+        client._make_request(method="GET", endpoint="test")
+
+        # Verify timeout was passed
+        mock_session.get.assert_called_once()
+        call_kwargs = mock_session.get.call_args[1]
+        assert "timeout" in call_kwargs
+        assert call_kwargs["timeout"] == (8.0, 45.0)  # (connect, read)
+
+    def test_base_client_with_config_object(self) -> None:
+        """Test BaseUSPTOClient accepts USPTOConfig"""
+        from pyUSPTO.config import USPTOConfig
+
+        config = USPTOConfig(api_key="config_key")
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            config=config, base_url="https://test.com"
+        )
+
+        # API key should come from config
+        assert client.api_key == "config_key"
+        assert client.config is config
+
+    def test_base_client_api_key_priority(self) -> None:
+        """Test API key priority: explicit > config"""
+        from pyUSPTO.config import USPTOConfig
+
+        config = USPTOConfig(api_key="config_key")
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="explicit_key", config=config, base_url="https://test.com"
+        )
+
+        # Explicit api_key should take precedence
+        assert client.api_key == "explicit_key"
+
+
+class TestContentDispositionParsing:
+    """Tests for Content-Disposition header parsing."""
+
+    def test_extract_filename_simple(self) -> None:
+        """Test extracting filename from simple Content-Disposition."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            'attachment; filename="document.pdf"'
+        )
+        assert filename == "document.pdf"
+
+    def test_extract_filename_without_quotes(self) -> None:
+        """Test extracting filename without quotes."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            "attachment; filename=document.pdf"
+        )
+        assert filename == "document.pdf"
+
+    def test_extract_filename_rfc2231(self) -> None:
+        """Test extracting filename from RFC 2231 format."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            "attachment; filename*=UTF-8''my%20document.pdf"
+        )
+        assert filename == "my document.pdf"
+
+    def test_extract_filename_rfc2231_lowercase(self) -> None:
+        """Test extracting filename from RFC 2231 format (lowercase)."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            "attachment; filename*=utf-8''test%20file.txt"
+        )
+        assert filename == "test file.txt"
+
+    def test_extract_filename_empty_header(self) -> None:
+        """Test extracting filename from empty header."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition("")
+        assert filename is None
+
+    def test_extract_filename_no_filename(self) -> None:
+        """Test extracting filename when header has no filename."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            "attachment"
+        )
+        assert filename is None
+
+    def test_extract_filename_complex(self) -> None:
+        """Test extracting filename from complex header."""
+        filename = BaseUSPTOClient._extract_filename_from_content_disposition(
+            'attachment; filename="report.pdf"; size=12345'
+        )
+        assert filename == "report.pdf"
+
+
+class TestMimeTypeMapping:
+    """Tests for _get_extension_from_mime_type method."""
+
+    def test_mime_type_pdf(self) -> None:
+        """Test mapping application/pdf to .pdf extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("application/pdf")
+        assert ext == ".pdf"
+
+    def test_mime_type_tiff(self) -> None:
+        """Test mapping image/tiff to .tif extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("image/tiff")
+        assert ext == ".tif"
+
+    def test_mime_type_tif_variant(self) -> None:
+        """Test mapping image/tif to .tif extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("image/tif")
+        assert ext == ".tif"
+
+    def test_mime_type_xml_application(self) -> None:
+        """Test mapping application/xml to .xml extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("application/xml")
+        assert ext == ".xml"
+
+    def test_mime_type_xml_text(self) -> None:
+        """Test mapping text/xml to .xml extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("text/xml")
+        assert ext == ".xml"
+
+    def test_mime_type_zip(self) -> None:
+        """Test mapping application/zip to .zip extension."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("application/zip")
+        assert ext == ".zip"
+
+    def test_mime_type_with_charset(self) -> None:
+        """Test MIME type with charset parameter."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type(
+            "application/pdf; charset=utf-8"
+        )
+        assert ext == ".pdf"
+
+    def test_mime_type_case_insensitive(self) -> None:
+        """Test MIME type mapping is case-insensitive."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("APPLICATION/PDF")
+        assert ext == ".pdf"
+
+    def test_mime_type_unmapped(self) -> None:
+        """Test unmapped MIME type returns None."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("application/unknown")
+        assert ext is None
+
+    def test_mime_type_empty(self) -> None:
+        """Test empty MIME type returns None."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type("")
+        assert ext is None
+
+    def test_mime_type_none(self) -> None:
+        """Test None MIME type returns None."""
+        ext = BaseUSPTOClient._get_extension_from_mime_type(None)
+        assert ext is None
+
+
+class TestSaveResponseToFile:
+    """Tests for _save_response_to_file method."""
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_to_directory_with_content_disposition(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving to directory extracts filename from Content-Disposition."""
+        from pathlib import Path
+
+        # Create a test client
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with Content-Disposition header
+        mock_response = MagicMock()
+        mock_response.headers = {"Content-Disposition": 'attachment; filename="test_doc.pdf"'}
+        mock_response.iter_content.return_value = [b"data1", b"data2"]
+
+        # Save to directory (using tmp_path from pytest fixture)
+        result = client._save_response_to_file(mock_response, str(tmp_path))
+
+        # Verify the file was saved with extracted filename
+        expected_path = tmp_path / "test_doc.pdf"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_to_directory_without_content_disposition(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving to directory without Content-Disposition raises ValueError."""
+        from pathlib import Path
+
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response without Content-Disposition header
+        mock_response = MagicMock()
+        mock_response.headers = {}
+        mock_response.iter_content.return_value = [b"data"]
+
+        # Should raise ValueError when trying to save to directory without filename
+        with pytest.raises(
+            ValueError,
+            match="file_path is a directory .* but Content-Disposition header does not contain a filename",
+        ):
+            client._save_response_to_file(mock_response, str(tmp_path))
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_without_extension_uses_content_type_pdf(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving file without extension adds extension from Content-Type (PDF)."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with Content-Type but no Content-Disposition
+        mock_response = MagicMock()
+        mock_response.headers = {"Content-Type": "application/pdf"}
+        mock_response.iter_content.return_value = [b"pdf data"]
+
+        # Save to file without extension
+        file_path = tmp_path / "document"
+        result = client._save_response_to_file(mock_response, str(file_path))
+
+        # Verify extension was added
+        expected_path = tmp_path / "document.pdf"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_without_extension_uses_content_type_tiff(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving file without extension adds extension from Content-Type (TIFF)."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with TIFF Content-Type
+        mock_response = MagicMock()
+        mock_response.headers = {"Content-Type": "image/tiff"}
+        mock_response.iter_content.return_value = [b"tiff data"]
+
+        # Save to file without extension
+        file_path = tmp_path / "image"
+        result = client._save_response_to_file(mock_response, str(file_path))
+
+        # Verify .tif extension was added
+        expected_path = tmp_path / "image.tif"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_with_existing_extension_ignores_content_type(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving file with existing extension ignores Content-Type."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with Content-Type
+        mock_response = MagicMock()
+        mock_response.headers = {"Content-Type": "application/pdf"}
+        mock_response.iter_content.return_value = [b"data"]
+
+        # Save to file with existing extension
+        file_path = tmp_path / "document.txt"
+        result = client._save_response_to_file(mock_response, str(file_path))
+
+        # Verify original extension was kept
+        expected_path = tmp_path / "document.txt"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_without_extension_unmapped_mime_type(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving file with unmapped MIME type saves without extension."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with unmapped Content-Type
+        mock_response = MagicMock()
+        mock_response.headers = {"Content-Type": "application/unknown"}
+        mock_response.iter_content.return_value = [b"data"]
+
+        # Save to file without extension
+        file_path = tmp_path / "document"
+        result = client._save_response_to_file(mock_response, str(file_path))
+
+        # Verify no extension was added
+        expected_path = tmp_path / "document"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_without_extension_no_content_type(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test saving file without Content-Type header saves without extension."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response without Content-Type header
+        mock_response = MagicMock()
+        mock_response.headers = {}
+        mock_response.iter_content.return_value = [b"data"]
+
+        # Save to file without extension
+        file_path = tmp_path / "document"
+        result = client._save_response_to_file(mock_response, str(file_path))
+
+        # Verify no extension was added
+        expected_path = tmp_path / "document"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
+
+    @patch("builtins.open", new_callable=mock_open)
+    def test_save_content_disposition_takes_precedence_over_content_type(
+        self, mock_file_open: MagicMock, tmp_path: Any
+    ) -> None:
+        """Test Content-Disposition filename takes precedence over Content-Type extension."""
+        client: BaseUSPTOClient[Any] = BaseUSPTOClient(
+            api_key="test", base_url="https://test.com"
+        )
+
+        # Mock response with both Content-Disposition and Content-Type
+        mock_response = MagicMock()
+        mock_response.headers = {
+            "Content-Disposition": 'attachment; filename="report.xml"',
+            "Content-Type": "application/pdf",  # Different type
+        }
+        mock_response.iter_content.return_value = [b"data"]
+
+        # Save to directory (will use Content-Disposition)
+        result = client._save_response_to_file(mock_response, str(tmp_path))
+
+        # Verify Content-Disposition filename was used (not Content-Type)
+        expected_path = tmp_path / "report.xml"
+        mock_file_open.assert_called_once_with(file=str(expected_path), mode="wb")
+        assert result == str(expected_path)
