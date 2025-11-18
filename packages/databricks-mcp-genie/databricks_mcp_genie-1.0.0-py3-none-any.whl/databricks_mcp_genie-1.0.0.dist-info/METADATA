@@ -1,0 +1,344 @@
+Metadata-Version: 2.4
+Name: databricks-mcp-genie
+Version: 1.0.0
+Summary: MCP server for Databricks with enhanced Genie AI integration - natural language data analysis
+Author-email: Sid <sid@example.com>, Olivier Debeuf De Rijcker <olivier@markov.bot>
+License: MIT
+Keywords: ai,cursor,databricks,genie,genie-ai,llm,mcp,model-context-protocol
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Internet :: WWW/HTTP :: HTTP Servers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: databricks-sdk
+Requires-Dist: httpx
+Requires-Dist: mcp[cli]>=1.2.0
+Provides-Extra: cli
+Requires-Dist: click; extra == 'cli'
+Provides-Extra: dev
+Requires-Dist: anyio; extra == 'dev'
+Requires-Dist: black; extra == 'dev'
+Requires-Dist: fastapi; extra == 'dev'
+Requires-Dist: pylint; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-asyncio; extra == 'dev'
+Description-Content-Type: text/markdown
+
+# Databricks MCP Genie
+
+A Model Context Protocol (MCP) server with enhanced Genie AI integration that provides seamless natural language interaction between AI assistants (like Claude Desktop, Cursor) and Databricks workspaces.
+
+## What This Does
+
+Enables AI assistants to directly interact with your Databricks workspace:
+- Execute SQL queries and manage warehouses
+- Control clusters (create, start, stop, monitor)
+- Run jobs and notebooks
+- Ask natural language questions with Genie AI
+- Manage Unity Catalog (catalogs, schemas, tables)
+- Work with DBFS, repos, and libraries
+
+## Quick Start
+
+### For Cursor Users
+
+**Team Installation (Recommended)**: See [Cursor Setup Guide](docs/CURSOR_SETUP.md) for one-click installation instructions.
+
+Quick install:
+```bash
+pip install databricks-mcp-genie
+```
+
+Then configure in Cursor settings - full details in the [Cursor Setup Guide](docs/CURSOR_SETUP.md).
+
+### Prerequisites
+
+- Python 3.10 or higher
+- Databricks workspace with personal access token
+- Cursor IDE, Claude Desktop, or any MCP-compatible client
+
+### Installation
+
+```bash
+# Install from PyPI (recommended)
+pip install databricks-mcp-genie
+
+# Or install from source
+git clone https://github.com/sidart10/databricks-mcp-genie.git
+cd databricks-mcp-genie
+pip install -e ".[dev]"
+```
+
+### Configuration
+
+1. **Get your Databricks credentials:**
+   - Workspace URL: `https://your-workspace.cloud.databricks.com`
+   - Personal Access Token: Generate from User Settings > Developer > Access Tokens
+
+2. **Configure MCP client** (Claude Desktop example):
+
+Edit `~/.config/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "databricks": {
+      "command": "/path/to/databrics-mcp-server/.venv/bin/python",
+      "args": ["-m", "databricks_mcp.main"],
+      "cwd": "/path/to/databrics-mcp-server",
+      "env": {
+        "DATABRICKS_HOST": "https://your-workspace.cloud.databricks.com",
+        "DATABRICKS_TOKEN": "your-personal-access-token-here"
+      }
+    }
+  }
+}
+```
+
+3. **Restart Claude Desktop**
+
+### Verify Installation
+
+```bash
+# Test server starts correctly
+.venv/bin/python -m databricks_mcp.main
+
+# Run test suite
+.venv/bin/pytest tests/ -v
+
+# Quick server test script
+./test_server.sh
+```
+
+## Available Features
+
+### 43 MCP Tools Across 9 API Modules
+
+**Genie AI (5 tools)** - Natural language data analysis
+- `list_genie_spaces` - List available Genie AI spaces
+- `start_genie_conversation` - Ask questions in natural language
+- `send_genie_followup` - Continue conversations with context
+- `get_genie_message_status` - Check message processing status
+- `get_genie_query_results` - Retrieve SQL results from Genie
+
+**Clusters API (6 tools)**
+- `list_clusters`, `create_cluster`, `get_cluster`
+- `start_cluster`, `terminate_cluster`
+
+**SQL API (1 tool)**
+- `execute_sql` - Run SQL queries with warehouse
+
+**Jobs API (9 tools)**
+- `list_jobs`, `create_job`, `delete_job`, `run_job`
+- `list_job_runs`, `get_run_status`, `cancel_run`
+- `run_notebook`, `sync_repo_and_run_notebook`
+
+**Notebooks API (5 tools)**
+- `list_notebooks`, `export_notebook`, `import_notebook`
+- `delete_workspace_object`, `get_workspace_file_content`, `get_workspace_file_info`
+
+**DBFS API (3 tools)**
+- `list_files`, `dbfs_put`, `dbfs_delete`
+
+**Unity Catalog API (7 tools)**
+- `list_catalogs`, `create_catalog`
+- `list_schemas`, `create_schema`
+- `list_tables`, `create_table`, `get_table_lineage`
+
+**Repos API (4 tools)**
+- `list_repos`, `create_repo`, `update_repo`, `pull_repo`
+
+**Libraries API (3 tools)**
+- `install_library`, `uninstall_library`, `list_cluster_libraries`
+
+## Usage Examples
+
+### Using with Claude Desktop
+
+Once configured, you can ask Claude to interact with Databricks:
+
+```
+"List all my running clusters"
+"Execute this SQL query: SELECT * FROM my_catalog.my_schema.my_table LIMIT 10"
+"Ask Genie: What were the top products by revenue last month?"
+"Create a new job to run my ETL notebook daily"
+```
+
+### Programmatic Usage
+
+```python
+from databricks_mcp.server import DatabricksMCPServer
+
+# Initialize server
+server = DatabricksMCPServer()
+
+# Use via MCP protocol
+server.run()
+```
+
+### Direct API Usage
+
+```python
+from databricks_mcp.api import clusters, genie, sql
+
+# List clusters
+clusters_list = await clusters.list_clusters()
+
+# Ask Genie a question
+response = await genie.start_conversation(
+    space_id="01efc298aabd1ae9bac6128988a6eaaa",
+    question="Show me revenue trends by product category"
+)
+
+# Execute SQL
+results = await sql.execute_sql(
+    statement="SELECT * FROM sales.orders LIMIT 100",
+    warehouse_id="your-warehouse-id"
+)
+```
+
+## Project Structure
+
+```
+databrics-mcp-server/
+├── databricks_mcp/           # Main Python package
+│   ├── api/                  # API modules (clusters, sql, genie, etc.)
+│   ├── core/                 # Core utilities and config
+│   ├── server/               # MCP server implementation
+│   └── cli/                  # CLI commands
+├── tests/                    # Test suite
+├── examples/                 # Usage examples
+├── scripts/                  # Utility scripts
+├── docs/                     # Documentation
+├── pyproject.toml           # Package configuration
+├── .mcp.json                # MCP client configuration
+└── test_server.sh           # Quick server test
+```
+
+## Troubleshooting
+
+### Server Won't Start
+
+Check logs: `databricks_mcp.log`
+
+Common issues:
+- Invalid credentials in `.mcp.json`
+- Incorrect Python path in MCP config
+- Missing dependencies (run `pip install -e ".[dev]"`)
+
+### Import Errors
+
+```bash
+# Verify all imports work
+.venv/bin/python -c "from databricks_mcp.server import DatabricksMCPServer"
+.venv/bin/python -c "from databricks_mcp.api import clusters, sql, genie"
+```
+
+### Connection Issues
+
+Verify credentials:
+```bash
+export DATABRICKS_HOST="https://your-workspace.cloud.databricks.com"
+export DATABRICKS_TOKEN="your-token"
+.venv/bin/python -c "
+from databricks_mcp.api import clusters
+import asyncio
+print(asyncio.run(clusters.list_clusters()))
+"
+```
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for detailed solutions.
+
+## Development
+
+### Running Tests
+
+```bash
+# All tests
+.venv/bin/pytest tests/ -v
+
+# Specific test file
+.venv/bin/pytest tests/test_clusters.py -v
+
+# With coverage
+.venv/bin/pytest tests/ --cov=databricks_mcp
+```
+
+### Code Quality
+
+```bash
+# Format code
+.venv/bin/black databricks_mcp/
+
+# Lint
+.venv/bin/pylint databricks_mcp/
+```
+
+### Adding New Tools
+
+1. Add API function in `databricks_mcp/api/`
+2. Register tool in `databricks_mcp/server/databricks_mcp_server.py`:
+
+```python
+@self.tool(
+    name="your_tool_name",
+    description="What your tool does with parameters: param1 (required), param2 (optional)"
+)
+async def your_tool(params: Dict[str, Any]) -> List[TextContent]:
+    try:
+        actual_params = _unwrap_params(params)
+        result = await your_api_module.your_function(actual_params)
+        return [{"type": "text", "text": json.dumps(result)}]
+    except Exception as e:
+        logger.error(f"Error: {str(e)}")
+        return [{"type": "text", "text": json.dumps({"error": str(e)})}]
+```
+
+## Documentation
+
+### Setup & Installation
+- [Cursor Setup Guide](./docs/CURSOR_SETUP.md) - One-click installation for Cursor (recommended for teams)
+- [QUICK_START.md](./QUICK_START.md) - Getting started guide
+- [Deployment Summary](./docs/DEPLOYMENT_SUMMARY.md) - Package distribution overview
+
+### Development & Publishing
+- [PUBLISHING.md](./PUBLISHING.md) - How to publish to PyPI
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Common issues and solutions
+- [ENHANCEMENTS.md](./ENHANCEMENTS.md) - Feature enhancements and roadmap
+
+## Requirements
+
+- Python >=3.10
+- mcp[cli] >=1.2.0
+- httpx
+- databricks-sdk
+- pytest (dev)
+- black (dev)
+- pylint (dev)
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Acknowledgments
+
+**Package:** databricks-mcp-genie
+**Maintainer:** Sid
+**Original Author:** Olivier Debeuf De Rijcker (databricks-mcp)
+**Repository:** https://github.com/sidart10/databricks-mcp-genie
+
+Special thanks to:
+- Olivier Debeuf De Rijcker for the original databricks-mcp implementation
+- Anthropic for Claude and the MCP protocol
+- Databricks for their comprehensive SDK and Genie AI
+- The open source community
+
+---
+
+**Built with Claude Code** - AI-assisted development tool by Anthropic
