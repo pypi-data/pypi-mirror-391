@@ -1,0 +1,18 @@
+repos:
+  # Ruff: format + lint
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # TruffleHog: scan git diffs before push (with exclude paths and fallback)
+  - repo: local
+    hooks:
+      - id: trufflehog-pre-push
+        name: trufflehog (scan for secrets)
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        entry: bash -c 'if git rev-parse --verify origin/main >/dev/null 2>&1; then trufflehog git file://. --since-commit origin/main --branch HEAD --results=verified,unknown --fail --exclude-paths .trufflehog-exclude-paths.txt; else trufflehog filesystem --results=verified,unknown --fail --exclude-paths .trufflehog-exclude-paths.txt .; fi'
