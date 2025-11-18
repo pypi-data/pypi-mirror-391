@@ -1,0 +1,73 @@
+Metadata-Version: 2.4
+Name: protoplast
+Version: 0.1.3
+Summary: Scalable machine learning for molecular data analysis
+Project-URL: bugs, https://github.com/dataxight/protoplast/issues
+Project-URL: changelog, https://github.com/dataxight/protoplast/blob/master/changelog.md
+Project-URL: homepage, https://github.com/dataxight/protoplast
+Author-email: DataXight Solutions <solutions@dataxight.com>
+Maintainer-email: Tan Phan <tan@dataxight.com>, Worapol Boontanonda <worapol@dataxight.com>, Tri Le <tri@dataxight.com>, Nam Phung <nam@dataxight.com>, Ivy Tran <ivy@dataxight.com>, Michael Pan <michael@dataxight.com>
+License: Apache-2.0
+License-File: LICENSE
+Requires-Python: >=3.10
+Requires-Dist: anndata
+Requires-Dist: beartype>=0.21.0
+Requires-Dist: daft
+Requires-Dist: dxpy
+Requires-Dist: fsspec
+Requires-Dist: fsspec-dnanexus
+Requires-Dist: lightning>=2.5.3
+Requires-Dist: oxbow
+Requires-Dist: ray[default,train]>=2.40.0
+Requires-Dist: s3fs>=2025.7.0
+Requires-Dist: scdataset>=0.2.0
+Requires-Dist: scikit-learn>=1.7.1
+Requires-Dist: torch>=2.5.0
+Requires-Dist: torchvision>=0.23.0
+Requires-Dist: typer
+Requires-Dist: uritools
+Provides-Extra: test
+Requires-Dist: coverage; extra == 'test'
+Requires-Dist: ipdb; extra == 'test'
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: ruff; extra == 'test'
+Requires-Dist: ty; extra == 'test'
+Description-Content-Type: text/markdown
+
+# protoplast
+
+![PyPI version](https://img.shields.io/pypi/v/protoplast.svg)
+[![Documentation Status](https://readthedocs.org/projects/protoplast/badge/?version=latest)](https://protoplast.readthedocs.io/en/latest/?version=latest)
+
+Early developer preview of PROTOplast targets acceleration of ML model training workflows
+
+-   PyPI package: https://pypi.org/project/protoplast/
+
+## Features
+
+* Stream directly from remote/cloud storage (via runtime patching of anndata to use fsspec)
+* Accelerated training of your ML models (14.5minutes on an A100 instance with 4 GPUs). Scale to multi-node clusters with zero code changes (with native Ray integration)
+* Drop-in replacement of your custom ML training (by subclassing Lightning's LightningModule)
+
+
+## Getting started
+
+It's easy to get started with PROTOplast
+
+```python
+from protoplast import RayTrainRunner, DistributedCellLineAnnDataset, LinearClassifier
+import glob
+
+files = glob.glob("/data/tahoe100/*.h5ad")
+
+trainer = RayTrainRunner(
+   LinearClassifier,  # replace with your own model
+   DistributedCellLineAnnDataset,  # replace with your own Dataset
+   ["num_genes", "num_classes"],  # change according to what you need for your model
+)
+trainer.train(file_paths=files)
+```
+
+Additional tutorials are available at https://protoplast.dataxight.com/tutorials
+
+Full documentation at https://protoplast.dataxight.com

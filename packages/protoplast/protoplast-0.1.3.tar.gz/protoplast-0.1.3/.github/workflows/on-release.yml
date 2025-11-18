@@ -1,0 +1,81 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  set-version:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Export tag
+        id: vars
+        run: echo tag=${GITHUB_REF#refs/*/} >> $GITHUB_OUTPUT
+        if: ${{ github.event_name == 'release' }}
+
+      - name: Update project version
+        run: |
+          sed -i "s/^version = \".*\"/version = \"$RELEASE_VERSION\"/" pyproject.toml
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        if: ${{ github.event_name == 'release' }}
+
+      - name: Upload updated pyproject.toml
+        uses: actions/upload-artifact@v4
+        with:
+          name: pyproject-toml
+          path: pyproject.toml
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [set-version]
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Download updated pyproject.toml
+        uses: actions/download-artifact@v4
+        with:
+          name: pyproject-toml
+
+      - name: Build package
+        run: uv build
+
+      # 4. Publish to TestPyPI (if it's a pre-release)
+      - name: Publish to TestPyPI
+        if: github.event.release.prerelease == true
+        run: uv publish --index testpypi
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+
+      # 5. Publish to PyPI (if it's a full, non-prerelease)
+      - name: Publish to PyPI
+        if: github.event.release.prerelease == false && github.event.release.target_commitish == 'main'
+        run: uv publish
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+  deploy-docs:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: github.event.release.prerelease == false && github.event.release.target_commitish == 'main'
+    # the scope is too big need to update workflow to build static file and use actions/deploy-pages instead
+    # but this will do for now
+    permissions:
+      contents: write
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up the environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Deploy documentation
+        run: uv run mkdocs gh-deploy --force
+
