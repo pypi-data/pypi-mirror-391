@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lean4check"
+version = "0.1.0"
+description = "MCP server for checking Lean 4 files and providing formatted diagnostics"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Yichen Xu", email = "yichen.x@outlook.com" }
+]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Compilers",
+]
+keywords = ["lean", "lean4", "mcp", "type-checking", "theorem-proving"]
+dependencies = [
+    "ipython>=9.6.0",
+    "mcp[cli]>=1.2.0",
+]
+
+[project.scripts]
+lean4check = "lean4check.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true
