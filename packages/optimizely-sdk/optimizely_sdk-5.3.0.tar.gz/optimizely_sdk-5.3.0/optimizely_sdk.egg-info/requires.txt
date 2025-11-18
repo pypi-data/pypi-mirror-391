@@ -1,0 +1,22 @@
+jsonschema>=3.2.0
+pyrsistent>=0.16.0
+requests>=2.21
+idna>=2.10
+
+[:python_version < "3.11"]
+rpds-py<0.20.0
+
+[test]
+flake8>=4.0.1
+python-coveralls
+jsonschema>=3.2.0
+requests>=2.21
+pyrsistent>=0.16.0
+idna>=2.10
+pytest>=6.2.0
+coverage
+funcsigs>=0.4
+pytest-cov
+
+[test:python_version < "3.11"]
+rpds-py<0.20.0
