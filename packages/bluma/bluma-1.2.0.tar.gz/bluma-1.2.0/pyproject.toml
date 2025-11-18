@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bluma"
+version = "1.2.0"
+description = "Official Python SDK for the Bluma API"
+readme = "README.md"
+authors = [{ name = "Bluma", email = "sdk@bluma.app" }]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+keywords = ["bluma", "video", "ai", "sdk", "api-client"]
+
+dependencies = [
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+async = []  # httpx already supports async
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-httpx>=0.30.0",
+    "pytest-cov>=4.0.0",
+    "python-dotenv>=1.0.0",  # For E2E test environment config
+    "black>=24.0.0",
+    "mypy>=1.8.0",
+    "ruff>=0.2.0",
+]
+
+[project.urls]
+Homepage = "https://bluma.app"
+Documentation = "https://docs.bluma.app"
+Repository = "https://github.com/bluma/bluma-python"
+Issues = "https://github.com/bluma/bluma-python/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["bluma*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "e2e: End-to-end tests that require a running backend server",
+    "credits: Tests that consume credits (video generation)",
+    "slow: Slow tests (>30 seconds)",
+]
+# Run unit tests by default, use pytest tests/e2e/ for E2E tests
+addopts = "--ignore=tests/e2e"
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.mypy]
+python_version = "3.8"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
