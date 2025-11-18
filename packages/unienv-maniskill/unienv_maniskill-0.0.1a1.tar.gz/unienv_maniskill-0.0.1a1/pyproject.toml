@@ -1,0 +1,15 @@
+[project]
+name = "unienv_maniskill"
+version = "0.0.1a1"
+requires-python = ">= 3.10"
+dependencies = [
+    "unienv",
+    "playground",
+]
+
+[project.optional-dependencies]
+
+
+[tool.setuptools.packages.find]
+include = ["*"]
+exclude = ["training*", "tests*"]
