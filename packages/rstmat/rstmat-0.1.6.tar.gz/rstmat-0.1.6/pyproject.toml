@@ -1,0 +1,45 @@
+# NEW VERSION TUTORIAL FOR MYSELF
+# STEP 1 - COMMIT NEW CHANGES AND PUSH THEM
+# STEP 2 - BUMP VERSION AND COMMIT IT (DONT PUSH!!!!)
+# STEP 3 - CREATE TAG WITH THAT VERSION
+# STEP 4 - PUSH (SYNC) CHANGES
+# STEP 5 - PUSH TAG
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rstmat"
+description = "Random structured matrices."
+
+version = "0.1.6"
+dependencies = [
+  "torch",
+  "numpy",
+  "scipy",
+]
+requires-python = ">= 3.10"
+readme = "README.md"
+authors = [
+  {name = "Ivan Nikishev", email = "nkshv2@gmail.com"},
+]
+license = {file = "LICENSE"}
+keywords = ["linear algebra", "random", "linalg", "torch"]
+
+
+[project.urls]
+Homepage = "https://github.com/inikishev/torchzero"
+Repository = "https://github.com/inikishev/torchzero"
+Issues = "https://github.com/inikishev/torchzero/isses"
+
+# [tool.setuptools]
+# package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+
+[tool.setuptools.packages]
+find = {}  # Scanning implicit namespaces is active by default
