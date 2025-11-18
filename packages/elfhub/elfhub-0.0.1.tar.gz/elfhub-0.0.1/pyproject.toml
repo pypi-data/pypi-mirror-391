@@ -1,0 +1,24 @@
+# This file configures the build system and project metadata
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "elfhub"
+version = "0.0.1"
+authors = [
+  { name="Eshan Chawla", email="admin@elfhub.ai" }, # Update this
+]
+description = "Package Setup"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# This tells setuptools to find your package in the 'src' directory
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = { find = { where = ["src"] } }
