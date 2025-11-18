@@ -1,0 +1,327 @@
+rust-luwen (0.7.15) noble; urgency=medium
+
+  [ Joel Smith ]
+  * Remove legacy reset test
+  * Simplify BAR mapping to single uncached region
+  * Remove deprecated test
+
+  [ Zakhary Kaplan ]
+  * build(cargo): set MSRV to 1.75.0 (#85)
+  * chore(cargo): add checksums to lock file (#108)
+  * ci(release): remove manual `Cargo.lock` conversion
+  * test: serializes tests that interact with hardware (#116)
+  * ci(rust-ci): remove thread limit
+  * build(cargo): use workspace dependencies
+  * feat: unify luwen under top-level crate
+  * refactor(core): improve ergonomics for `Arch`
+  * docs(core): document `Arch`
+  * refactor: rename `{app => apps}`
+  * refactor: move `{crates => bind}/{luwencpp,pyluwen}`
+  * docs: remove unused
+  * refactor: rename `{luwencpp => libluwen}`
+  * refactor: rename `{luwen-if => luwen-api}`
+  * refactor: rename `{ttkmd-if => luwen-kmd}`
+  * refactor: rename `{luwen-ref => luwen-pci}`
+  * refactor: rename `{luwen-core => luwen-def}`
+  * build(cargo): update descriptions
+  * build(cargo): clean up, use workspaces
+  * build(deps): remove unused dependencies
+  * chore(check): apply lints
+  * build(deps): fix broken dependencies
+  * tests: depend on `luwen` crate
+  * feat(demo): move to examples
+  * docs(readme): initial rewrite
+  * chore: fix typos
+  * refactor(pyluwen): depend on `luwen` crate
+  * refactor(libluwen): depend on `luwen` crate
+  * docs(readme): update header
+  * docs(readme): add badges
+  * build(pip): clean up
+  * docs(install): add build instructions (#125)
+  * chore(git): update .gitignore
+  * docs: clarify build instructions
+  * docs(readme/libluwen): add stability warning
+  * docs(readme): remove build instructions to `prometheus-exporter`
+  * feat: move binaries to `./apps`
+
+  [ Petra Alexson ]
+  * fix: rename crates/pyluwen to bind/pyluwen in debian/rules
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Thu, 13 Nov 2025 21:55:27 +0000
+
+rust-luwen (0.7.14) noble; urgency=medium
+
+  [ John 'Warthog9' Hawley ]
+  * Enable Debian 13 build in build-all
+
+  [ Petra Alexson ]
+  * BH telem: check if ARC not ready before checking if address out of bounds
+  * Pick up changes to CI runner naming scheme
+
+  [ Jonathan Baker ]
+  * Updated to automatic community labeling v2
+
+  [ Daniel DeGrasse ]
+  * BH spi: issue write unlock and write lock commands
+  * ttkmd-if: test: allocate 2MiB TLB
+
+  [ Petra Alexson ]
+  * telemetry: expose blackhole chip limits in telemetry
+
+  [ John 'Warthog9' Hawley ]
+  * Workflows: Fixing Ubuntu Builds
+  * Follow on to f16be9ccf0a73963b22bebbd6c47802b215ff196
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Fri, 17 Oct 2025 15:53:48 +0000
+
+rust-luwen (0.7.13) noble; urgency=medium
+
+  [ John 'Warthog9' Hawley ]
+  * Add debian.ubuntu
+  * debian.debian: bringing things more up to date with Ubuntu
+  * Adding Build All wrapper
+  * Workflow: build deb - Ubuntu 22.04
+  * Workflow: build deb - Ubuntu 24.04
+  * Workflow: add build PyPi
+  * Workflow: add Release workflow
+  * Fixing CI to use protoc from Ubuntu
+  * Updating secret used for DEB package signing
+  * Adjusting the pypi environments to better reflect what needs to be upstream
+  * Enable real pypi release
+  * Cargo Release 0.7.8
+
+  [ Tenstorrent Releases ]
+  * Cargo Release 0.7.9
+  * Cargo.lock: updating for 0.7.8
+  * Generating Ubuntu & Debian Changelog for 0.7.9-20
+
+  [ John 'Warthog9' Hawley ]
+  * Fixing number of commits since last tag lookup
+
+  [ Daniel Rosen ]
+  * Revert "Fixing CI to use protoc from Ubuntu"
+
+  [ Daniel DeGrasse ]
+  * ttkmd: default to strict ordering for NOC TLBs
+
+  [ Daniel Rosen ]
+  * ci: updated workflow to match tokio
+  * Fixed errors now that CI is working again
+  * Install protoc during job setup
+
+  [ Samridhi ]
+  * For WH 6Us ignore eth when doing chip detect
+
+  [ Samridhi Bansal ]
+  * Add new BH telem tags
+
+  [ Samridhi ]
+  * Chore: bump luwen version 0.7.9 -> 0.7.10
+  * Fix rust format errors
+
+  [ Joel Smith ]
+  * fix(pci): Correct memcpy alignment on aarch64
+
+  [ John 'Warthog9' Hawley ]
+  * Fix: next-lockfile-bump parsing issue
+  * Fix: Force Cargo.lock to be version 3 vs. 4
+  * Revert "Fix: next-lockfile-bump parsing issue"
+  * Fix: fix debian workflow builds to allow building properly
+  * Get the Cargo.lock back down to 3
+  * Cargo Workspaces: setup independent versioning
+  * Fixing miss-naming of reference in Deb workflows
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for 0.7.10
+  * Generating Ubuntu & Debian Changelog for 0.7.11-num_commits_since_tag=14
+
+  [ John 'Warthog9' Hawley ]
+  * Debug: getting more information on what's going on with the lock file update
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for
+  * Generating Ubuntu & Debian Changelog for 0.7.12-num_commits_since_tag=3
+
+  [ Samridhi Bansal ]
+  * Add lifetime fix for pipelines
+  * Made the new telemetry values available via pyluwen
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Thu, 07 Aug 2025 22:50:10 +0000
+
+rust-luwen (0.7.12) noble; urgency=medium
+
+  [ John 'Warthog9' Hawley ]
+  * Add debian.ubuntu
+  * debian.debian: bringing things more up to date with Ubuntu
+  * Adding Build All wrapper
+  * Workflow: build deb - Ubuntu 22.04
+  * Workflow: build deb - Ubuntu 24.04
+  * Workflow: add build PyPi
+  * Workflow: add Release workflow
+  * Fixing CI to use protoc from Ubuntu
+  * Updating secret used for DEB package signing
+  * Adjusting the pypi environments to better reflect what needs to be upstream
+  * Enable real pypi release
+  * Cargo Release 0.7.8
+
+  [ Tenstorrent Releases ]
+  * Cargo Release 0.7.9
+  * Cargo.lock: updating for 0.7.8
+  * Generating Ubuntu & Debian Changelog for 0.7.9-20
+
+  [ John 'Warthog9' Hawley ]
+  * Fixing number of commits since last tag lookup
+
+  [ Daniel Rosen ]
+  * Revert "Fixing CI to use protoc from Ubuntu"
+
+  [ Daniel DeGrasse ]
+  * ttkmd: default to strict ordering for NOC TLBs
+
+  [ Daniel Rosen ]
+  * ci: updated workflow to match tokio
+  * Fixed errors now that CI is working again
+  * Install protoc during job setup
+
+  [ Samridhi ]
+  * For WH 6Us ignore eth when doing chip detect
+
+  [ Samridhi Bansal ]
+  * Add new BH telem tags
+
+  [ Samridhi ]
+  * Chore: bump luwen version 0.7.9 -> 0.7.10
+  * Fix rust format errors
+
+  [ Joel Smith ]
+  * fix(pci): Correct memcpy alignment on aarch64
+
+  [ John 'Warthog9' Hawley ]
+  * Fix: next-lockfile-bump parsing issue
+  * Fix: Force Cargo.lock to be version 3 vs. 4
+  * Revert "Fix: next-lockfile-bump parsing issue"
+  * Fix: fix debian workflow builds to allow building properly
+  * Get the Cargo.lock back down to 3
+  * Cargo Workspaces: setup independent versioning
+  * Fixing miss-naming of reference in Deb workflows
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for 0.7.10
+  * Generating Ubuntu & Debian Changelog for 0.7.11-num_commits_since_tag=14
+
+  [ John 'Warthog9' Hawley ]
+  * Debug: getting more information on what's going on with the lock file update
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Sat, 02 Aug 2025 00:20:06 +0000
+
+rust-luwen (0.7.11) noble; urgency=medium
+
+  [ John 'Warthog9' Hawley ]
+  * Add debian.ubuntu
+  * debian.debian: bringing things more up to date with Ubuntu
+  * Adding Build All wrapper
+  * Workflow: build deb - Ubuntu 22.04
+  * Workflow: build deb - Ubuntu 24.04
+  * Workflow: add build PyPi
+  * Workflow: add Release workflow
+  * Fixing CI to use protoc from Ubuntu
+  * Updating secret used for DEB package signing
+  * Adjusting the pypi environments to better reflect what needs to be upstream
+  * Enable real pypi release
+  * Cargo Release 0.7.8
+
+  [ Tenstorrent Releases ]
+  * Cargo Release 0.7.9
+  * Cargo.lock: updating for 0.7.8
+  * Generating Ubuntu & Debian Changelog for 0.7.9-20
+
+  [ John 'Warthog9' Hawley ]
+  * Fixing number of commits since last tag lookup
+
+  [ Daniel Rosen ]
+  * Revert "Fixing CI to use protoc from Ubuntu"
+
+  [ Daniel DeGrasse ]
+  * ttkmd: default to strict ordering for NOC TLBs
+
+  [ Daniel Rosen ]
+  * ci: updated workflow to match tokio
+  * Fixed errors now that CI is working again
+  * Install protoc during job setup
+
+  [ Samridhi ]
+  * For WH 6Us ignore eth when doing chip detect
+
+  [ Samridhi Bansal ]
+  * Add new BH telem tags
+
+  [ Samridhi ]
+  * Chore: bump luwen version 0.7.9 -> 0.7.10
+  * Fix rust format errors
+
+  [ Joel Smith ]
+  * fix(pci): Correct memcpy alignment on aarch64
+
+  [ John 'Warthog9' Hawley ]
+  * Fix: next-lockfile-bump parsing issue
+  * Fix: Force Cargo.lock to be version 3 vs. 4
+  * Revert "Fix: next-lockfile-bump parsing issue"
+  * Fix: fix debian workflow builds to allow building properly
+  * Get the Cargo.lock back down to 3
+  * Cargo Workspaces: setup independent versioning
+  * Fixing miss-naming of reference in Deb workflows
+
+  [ Tenstorrent Releases ]
+  * Cargo Release independent packages
+  * Cargo.lock: updating for 0.7.10
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Fri, 01 Aug 2025 21:57:52 +0000
+
+rust-luwen (0.7.9) noble; urgency=medium
+
+  [ John 'Warthog9' Hawley ]
+  * Add debian.ubuntu
+  * debian.debian: bringing things more up to date with Ubuntu
+  * Adding Build All wrapper
+  * Workflow: build deb - Ubuntu 22.04
+  * Workflow: build deb - Ubuntu 24.04
+  * Workflow: add build PyPi
+  * Workflow: add Release workflow
+  * Fixing CI to use protoc from Ubuntu
+  * Updating secret used for DEB package signing
+  * Adjusting the pypi environments to better reflect what needs to be upstream
+  * Enable real pypi release
+  * Cargo Release 0.7.8
+
+  [ Tenstorrent Releases ]
+  * Cargo Release 0.7.9
+  * Cargo.lock: updating for 0.7.8
+
+ -- Tenstorrent Releases <releases@tenstorrent.com>  Tue, 15 Jul 2025 00:54:23 +0000
+
+rust-luwen (0.0.1) unstable; urgency=low
+  [ Evangelos Ribeiro Tzaras ]
+  * [f6d90d5] docs: gbp-clone: testing
+
+ -- John 'Warthog9' Hawley <jhawley@tenstorrent.com>  Tue, 14 May 2024 15:47:44 -0800
+
+
+
