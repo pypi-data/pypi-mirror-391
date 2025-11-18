@@ -1,0 +1,7 @@
+if("$ENV{TORTURE_TESTS}" STREQUAL "on")
+  set(FEM_TORTURE_TESTS on CACHE BOOL "Enable Torture Tests")
+  message(STATUS "Enabling torture-tests by default")
+else()
+  set(FEM_TORTURE_TESTS off CACHE BOOL "Enable Torture Tests")
+  message(STATUS "Disabling torture-tests")
+endif()

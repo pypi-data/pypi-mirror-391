@@ -1,0 +1,16 @@
+dune_install(
+  common.hh
+  discretefunction.hh
+  discretefunction_inline.hh
+  dofblock.hh
+  dofiterator.hh
+  function.hh
+  functionset.hh
+  functor.hh
+  gridfunctionadapter.hh
+  instationary.hh
+  localcontribution.hh
+  localfunctionadapter.hh
+  rangegenerators.hh
+  scalarproducts.hh
+)

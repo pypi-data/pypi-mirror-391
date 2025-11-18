@@ -1,0 +1,19 @@
+set(modules
+  AddPAPIFlags.cmake
+  AddSIONlibFlags.cmake
+  CommandLineHacks.cmake
+  CorrectWindowsPaths.cmake
+  DuneFemMacros.cmake
+  FemShort.cmake
+  FemTortureTests.cmake
+  FindPackageMultipass.cmake
+  FindPAPI.cmake
+  FindPETSc.cmake
+  FindPThreads.cmake
+  FindSIONlib.cmake
+  FindXDR.cmake
+  ResolveCompilerPaths.cmake
+  DuneFempyMacros.cmake
+  UseModelCompiler.cmake
+)
+install(FILES ${modules} DESTINATION ${DUNE_INSTALL_MODULEDIR})
