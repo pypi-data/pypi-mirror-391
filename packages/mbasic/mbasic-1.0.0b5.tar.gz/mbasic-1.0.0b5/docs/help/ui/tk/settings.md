@@ -1,0 +1,328 @@
+---
+title: Tk Settings Dialog
+type: guide
+ui: tk
+description: How to configure settings in the Tk desktop GUI
+keywords: [settings, configuration, tkinter, desktop, preferences, dialog]
+---
+
+# Tk Settings Dialog
+
+**Implementation Status:** The Tk (Tkinter) desktop GUI is planned to provide a comprehensive settings dialog. **The settings dialog itself is not yet implemented - settings are currently managed programmatically.** This document describes the planned settings dialog design.
+
+The Tk GUI is designed to offer a tabbed interface for all MBASIC settings, with more configuration options than the Web UI, including keyword display, variable case handling, interpreter settings, and UI themes.
+
+**Current Status:** Many TK UI features work (auto-save, syntax checking, breakpoints, etc.) but the graphical settings dialog is not yet implemented. Settings are managed programmatically or via configuration files. Check the actual UI or [UI Feature Comparison](../../../user/UI_FEATURE_COMPARISON.md) for what is currently available.
+
+## Opening the Settings Dialog
+
+**Methods:**
+1. Menu: **File → Settings**
+2. Keyboard shortcut: (check your system's menu)
+
+## Settings Dialog Interface (Planned)
+
+The settings dialog is designed to be a multi-tabbed window:
+
+```
+┌─ MBASIC Settings ──────────────────────┐
+│  ┌──────────────────────────────────┐  │
+│  │ Editor │ Interpreter │ Keywords  │  │
+│  │  ...   │             │           │  │
+│  ├──────────────────────────────────┤  │
+│  │                                   │  │
+│  │  Auto Number:              [✓]   │  │
+│  │                                   │  │
+│  │  Auto Number Step:  [10      ]   │  │
+│  │                                   │  │
+│  │  Tab Size:          [4       ]   │  │
+│  │                                   │  │
+│  │  Show Line Numbers:        [✓]   │  │
+│  │                                   │  │
+│  └───────────────────────────────────┘  │
+│                                          │
+│  [ Reset to Defaults ]  [ Apply ]       │
+│                         [ Cancel ] [OK] │
+└──────────────────────────────────────────┘
+```
+
+## Tabs (Planned)
+
+### Editor Tab (Planned)
+
+Planned to control editor behavior:
+
+| Setting | Type | Range | Description |
+|---------|------|-------|-------------|
+| Auto Number | Checkbox | - | Enable/disable auto-numbering |
+| Auto Number Step | Spinbox | 1-1000 | Line number increment |
+| Tab Size | Spinbox | 1-16 | Tab width in spaces |
+| Show Line Numbers | Checkbox | - | Show line numbers in gutter |
+
+### Keywords Tab (Planned)
+
+Planned to control keyword display:
+
+| Setting | Type | Choices | Description |
+|---------|------|---------|-------------|
+| Case Style | Dropdown | force_lower, force_upper, force_capitalize | How keywords are displayed |
+
+**Examples:**
+- `force_lower`: `print "hello"`
+- `force_upper`: `PRINT "hello"`
+- `force_capitalize`: `Print "hello"`
+
+### Variables Tab (Planned)
+
+Planned to control variable behavior:
+
+| Setting | Type | Choices | Description |
+|---------|------|---------|-------------|
+| Case Conflict | Dropdown | first_wins, error, prefer_upper, prefer_lower, prefer_mixed | How to handle variable name case mismatches |
+| Show Types In Window | Checkbox | - | Show type suffixes ($, %, !) in variable window |
+
+**Case Conflict Policies:**
+- `first_wins` - First use sets the case (silent)
+- `error` - Flag mismatches as errors (catches typos!)
+- `prefer_upper` - Choose most uppercase version
+- `prefer_lower` - Choose most lowercase version
+- `prefer_mixed` - Prefer camelCase/PascalCase
+
+### Interpreter Tab (Planned)
+
+Planned to control interpreter behavior:
+
+| Setting | Type | Range | Description |
+|---------|------|-------|-------------|
+| Strict Mode | Checkbox | - | Enable strict error checking |
+| Max Execution Time | Spinbox | 1-3600 | Program timeout in seconds |
+| Debug Mode | Checkbox | - | Enable debug output |
+
+### UI Tab (Planned)
+
+Planned to control UI appearance:
+
+| Setting | Type | Choices/Range | Description |
+|---------|------|---------------|-------------|
+| Theme | Dropdown | default, dark, light, classic | Color scheme |
+| Font Size | Spinbox | 8-32 | Font size in points |
+
+## Using the Dialog (Planned)
+
+### Viewing Settings (Planned)
+
+1. Open dialog (**File → Settings**)
+2. Click on tabs to view different categories
+3. Scroll within tabs if needed
+
+### Changing Settings (Planned)
+
+1. Navigate to the setting you want to change
+2. For checkboxes: click to toggle
+3. For spinboxes: click arrows or type value
+4. For dropdowns: click and select option
+
+### Setting Help (Planned)
+
+For settings with detailed help text:
+- Look for **?** button next to setting
+- Click **?** to see full help dialog
+
+For short settings:
+- Help text shown inline (gray text)
+
+## Button Actions (Planned)
+
+### OK (Planned)
+- Apply all changes
+- Save to disk
+- Close dialog immediately
+
+### Cancel (Planned)
+- Discard all changes
+- Restore previous values
+- Close dialog
+
+### Apply (Planned)
+- Apply all changes
+- Save to disk
+- **Keep dialog open** for more changes
+
+### Reset to Defaults (Planned)
+- Reset all settings to default values
+- Does not save automatically
+- Must click OK or Apply to confirm
+
+**Use case:** Settings misconfigured? Click Reset to return to known-good defaults.
+
+## Common Tasks (Planned)
+
+### Change Auto-Numbering (Planned)
+
+**Quick Setup for Classic BASIC:**
+1. Open Settings → Editor tab
+2. Check "Auto Number"
+3. Set "Auto Number Step" to 10
+4. Click OK
+
+**Quick Setup for Large Programs:**
+1. Set "Auto Number Step" to 100
+2. This leaves room (110, 120, etc.) to insert lines
+
+### Force Uppercase Keywords (Planned)
+
+For classic BASIC appearance:
+1. Open Settings → Keywords tab
+2. Select "force_upper" from Case Style dropdown
+3. Click Apply
+4. LIST your program to see UPPERCASE keywords
+
+### Enable Variable Typo Detection (Planned)
+
+Catch mistyped variables:
+1. Open Settings → Variables tab
+2. Select "error" from Case Conflict dropdown
+3. Click Apply
+
+Now `TotalCount` vs `TotalCont` triggers error!
+
+### Enable Strict Mode (Planned)
+
+More error checking:
+1. Open Settings → Interpreter tab
+2. Check "Strict Mode"
+3. Click Apply
+
+### Change Theme (Planned)
+
+1. Open Settings → UI tab
+2. Select theme from dropdown
+3. Click Apply
+4. UI updates immediately
+
+## Settings Persistence (Planned Implementation)
+
+Settings are saved to disk automatically when you click OK or Apply.
+
+**Location:**
+- Linux/Mac: `~/.mbasic/settings.json`
+- Windows: `%APPDATA%\mbasic\settings.json`
+
+Changes persist across sessions.
+
+**Note:** Settings storage is implemented, but the settings dialog itself is not yet available in the Tk UI.
+
+## Validation (Planned)
+
+All settings are validated:
+
+- **Range checking**: Spinboxes enforce min/max
+- **Type checking**: Only valid types accepted
+- **Enum validation**: Dropdowns restrict to valid choices
+
+Invalid values show error dialog and revert to previous value.
+
+## Keyboard Navigation (Planned)
+
+You can navigate the dialog with keyboard:
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Next control |
+| `Shift+Tab` | Previous control |
+| `Space` | Toggle checkbox / open dropdown |
+| `Enter` | Activate focused button |
+| `Escape` | Close dialog (same as Cancel) |
+| `Alt+O` | Click OK (if mnemonic enabled) |
+| `Alt+C` | Click Cancel |
+| `Alt+A` | Click Apply |
+
+## Tips (Planned)
+
+1. **Use Apply to experiment** - Apply settings, test them, then tweak and Apply again without closing
+
+2. **Check help buttons** - Settings with **?** have detailed explanations
+
+3. **Reset when lost** - Misconfigured? Reset to Defaults is your friend
+
+4. **Test immediately** - After changing editor settings, type a line to verify
+
+5. **Document your setup** - Screenshot or note your preferred settings
+
+## Workflows (Planned)
+
+### First-Time Setup (Planned)
+
+1. Open Settings
+2. Set auto-numbering preference (Editor tab)
+3. Choose keyword case style (Keywords tab)
+4. Optionally enable strict mode (Interpreter tab)
+5. Adjust theme/font (UI tab)
+6. Click OK
+
+### Switching Between Projects (Planned)
+
+Different projects may need different settings:
+
+**Classic BASIC project:**
+- Auto Number Step: 10
+- Keywords: force_upper
+
+**Modern project:**
+- Auto Number Step: 100
+- Keywords: force_capitalize
+- Variables Case Conflict: error
+
+Use Apply to switch quickly without closing dialog.
+
+### Teaching Environment (Planned)
+
+For teaching BASIC to students:
+- Enable "error" mode for variables (catches typos)
+- Enable strict mode (more helpful errors)
+- Use large font size (easier to read)
+- Use classic theme (nostalgic BASIC feel)
+
+## Troubleshooting (Planned)
+
+### Dialog won't open
+- Check File menu for Settings option
+- Try keyboard shortcut if available
+- Check console for errors
+
+### Changes don't save
+- Make sure you clicked OK or Apply (not Cancel or X)
+- Check file permissions on `~/.mbasic/settings.json`
+- Check disk space
+
+### Setting reverts immediately
+- Value is invalid (out of range)
+- Check validation error message
+- Try value within valid range
+
+### Can't find a setting
+- Check all tabs - settings are categorized
+- Some settings may not be in Tk (check CLI with SHOWSETTINGS)
+
+## Additional Settings via CLI
+
+Some advanced settings may only be available via CLI commands:
+
+```basic
+' In MBASIC CLI mode:
+SHOWSETTINGS
+SETSETTING setting.name value
+```
+
+See: [CLI Settings Commands](../cli/settings.md)
+
+## See Also
+
+- [Settings System Overview](../../common/settings.md)
+- [Tk GUI Features](features.md)
+- [Tk GUI Getting Started](getting-started.md)
+- [Keyboard Shortcuts](../../../user/keyboard-shortcuts.md)
+- [CLI Settings Commands](../cli/settings.md)
+- [Tk GUI Index](index.md)
+
+[← Back to Tk GUI Help](index.md)

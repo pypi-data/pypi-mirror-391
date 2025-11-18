@@ -1,0 +1,74 @@
+{
+  "editor": {
+    "edit": {
+      "keys": ["Ctrl+A"],
+      "primary": "Ctrl+A",
+      "description": "Edit line (last line or Ctrl+A followed by line number)"
+    },
+    "run": {
+      "keys": ["RUN"],
+      "primary": "RUN",
+      "description": "Run program"
+    },
+    "stop": {
+      "keys": ["Ctrl+C"],
+      "primary": "Ctrl+C",
+      "description": "Stop program execution"
+    },
+    "save": {
+      "keys": ["SAVE \"file\""],
+      "primary": "SAVE \"file\"",
+      "description": "Save program to file"
+    },
+    "new": {
+      "keys": ["NEW"],
+      "primary": "NEW",
+      "description": "Clear program, start fresh"
+    },
+    "open": {
+      "keys": ["LOAD \"file\""],
+      "primary": "LOAD \"file\"",
+      "description": "Load program from file"
+    },
+    "help": {
+      "keys": ["HELP"],
+      "primary": "HELP",
+      "description": "Show help"
+    },
+    "quit": {
+      "keys": ["SYSTEM"],
+      "primary": "SYSTEM",
+      "description": "Exit to system"
+    },
+    "toggle_breakpoint": {
+      "keys": ["BREAK", "BREAK line", "BREAK line-", "BREAK CLEAR"],
+      "primary": "BREAK line",
+      "description": "List breakpoints, set/clear breakpoint at line, or clear all (BREAK | BREAK line | BREAK line- | BREAK CLEAR)"
+    },
+    "step": {
+      "keys": ["STEP", "STEP n"],
+      "primary": "STEP",
+      "description": "Execute next statement or n statements (STEP | STEP n) - attempts statement-level stepping"
+    },
+    "continue": {
+      "keys": ["CONT"],
+      "primary": "CONT",
+      "description": "Continue execution"
+    },
+    "show_settings": {
+      "keys": ["SHOW SETTINGS"],
+      "primary": "SHOW SETTINGS",
+      "description": "View all settings or filter by pattern (e.g., SHOW SETTINGS \"auto\")"
+    },
+    "set_setting": {
+      "keys": ["SET \"setting\" value"],
+      "primary": "SET \"setting\" value",
+      "description": "Change a setting (e.g., SET \"editor.auto_number_start\" 100)"
+    },
+    "stack": {
+      "keys": ["STACK"],
+      "primary": "STACK",
+      "description": "Show execution stack (GOSUB/FOR/WHILE loops)"
+    }
+  }
+}
