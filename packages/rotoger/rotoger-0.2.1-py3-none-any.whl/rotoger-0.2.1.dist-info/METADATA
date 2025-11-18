@@ -1,0 +1,19 @@
+Metadata-Version: 2.3
+Name: rotoger
+Version: 0.2.1
+Summary: Builed for myself, shared for everyone.
+Author: grillazz
+Author-email: grillazz <jakub.miazek.py@gmail.com>
+Requires-Dist: attrs>=25.3.0
+Requires-Dist: orjson>=3.11.4
+Requires-Dist: structlog>=25.5.0
+Requires-Dist: whenever>=0.9.3
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+
+# rotoger
+
+### environment variables
+ROTOGER_LOG_PATH = "./logs"
+ROTGER_MAX_BYTES = 10 * 1024 * 1024  # 10 MB
+ROTOGER_BACKUP_COUNT = 5
