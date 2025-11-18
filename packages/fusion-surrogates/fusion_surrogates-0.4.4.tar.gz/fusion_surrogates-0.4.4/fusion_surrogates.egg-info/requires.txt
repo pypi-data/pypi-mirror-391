@@ -1,0 +1,22 @@
+absl-py>=2.0.0
+flax>=0.7.5
+immutabledict
+jax>=0.4.31
+numpy>2
+
+[:python_version >= "3.11"]
+setuptools
+
+[testing]
+fusion_surrogates[tglfnnukaea]
+chex
+isort
+jaxonnxruntime
+onnx
+pytest
+pytest-xdist
+pylint>=2.6.0
+pyink
+
+[tglfnnukaea]
+tglfnn_ukaea==0.1.0
