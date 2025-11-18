@@ -1,0 +1,12 @@
+requests>=2.4.0
+
+[keystone]
+python-keystoneclient>=0.7.0
+
+[test]
+hacking<6.2.0,>=3.2.0
+coverage!=4.4,>=4.0
+python-keystoneclient>=0.7.0
+keystoneauth1>=3.4.0
+stestr!=3.0.0,>=2.0.0
+openstacksdk>=0.11.0

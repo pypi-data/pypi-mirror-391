@@ -1,0 +1,69 @@
+- job:
+    name: swiftclient-swift-functional
+    parent: swift-dsvm-functional
+    description: |
+      Run swift's functional tests with python-swiftclient
+      installed from source instead as package from PyPI.
+    # Ensure that we install python-swiftclient from git and
+    # do not install from pypi. This is needed since the parent
+    # job sets zuul_work_dir to the swift directory and uses tox
+    # for installation.
+    required-projects:
+      - opendev.org/openstack/python-swiftclient
+
+- job:
+    name: swiftclient-functional
+    parent: swift-dsvm-functional
+    description: |
+      Run functional tests of python-swiftclient with
+      python-swiftclient installed from source instead as package from
+      PyPI.
+    required-projects:
+      - opendev.org/openstack/python-swiftclient
+    vars:
+      # Override value from parent job to use swiftclient tests
+      zuul_work_dir: "{{ zuul.projects['opendev.org/openstack/python-swiftclient'].src_dir }}"
+      # swift can use different tox env names
+      tox_envlist: func
+
+- project:
+    templates:
+      - check-requirements
+      - lib-forward-testing-python3
+      - openstack-python3-jobs
+      - publish-openstack-docs-pti
+      - release-notes-jobs-python3
+    experimental:
+      # on-demand pipeline used to test older (but still supported) versions of python,
+      # as well as intermediate releases that the openstack-python3-jobs might skip
+      jobs:
+        - openstack-tox-py37:
+            nodeset: ubuntu-jammy
+            vars:
+              python_use_pyenv: True
+        - openstack-tox-py38
+        - openstack-tox-py39
+        - openstack-tox-py311
+        - openstack-tox-py312
+    check:
+      jobs:
+        - swiftclient-functional:
+            irrelevant-files: &functest-irrelevant-files
+              - ^(doc|releasenotes)/.*$
+              - ^test/unit/.*$
+              - ^(.gitreview|.mailmap|AUTHORS|ChangeLog|.*\.rst)$
+        - swiftclient-swift-functional:
+            irrelevant-files: *functest-irrelevant-files
+        - tempest-full-py3:
+            irrelevant-files: *functest-irrelevant-files
+        - openstack-tox-py313:
+            voting: true
+    gate:
+      jobs:
+        - swiftclient-swift-functional
+        - swiftclient-functional
+        - openstack-tox-py313:
+            voting: true
+    post:
+      jobs:
+        - openstack-tox-cover
