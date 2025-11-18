@@ -1,0 +1,177 @@
+Metadata-Version: 2.4
+Name: openai_cost_calculator_with_lanchain
+Version: 1.0.0
+Summary: A library to estimate OpenAI API costs based on token usage, integrating with Langchain. This is a fork from v1.1.1 of openai_cost_calculator by Orkun Kınay and Murat Barkın Kınay (https://github.com/orkunkinay/openai_cost_calculator).
+Author: Marco Pennacchiotti (forked from openai_cost_calculator by Orkun Kınay and Murat Barkın Kınay)
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8.1
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: langchain>=0.0.27
+Requires-Dist: langchain-openai>=0.1.25
+Requires-Dist: python-dotenv>=1.0.1
+Requires-Dist: requests>=2.32.4
+Dynamic: license-file
+
+# openai_cost_calculator_with_langchain
+
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+_This is a package forked of the original [openai_cost_calculator](https://orkunkinay.github.io/openai_cost_calculator/), which integrates support for Langchain_.
+
+Instant, accurate **USD cost estimates** for OpenAI & Azure OpenAI API calls. Works with **Chat Completions** and the **Responses API**, streaming or not. It also works with Langchain `invoke` responses. Offers a **typed** `Decimal`-based API for finance-safe math and a **legacy** string API for drop-ins.
+
+**Docs:** https://orkunkinay.github.io/openai_cost_calculator/
+
+---
+
+## Installation
+
+```bash
+pip install openai-cost-calculator-with-langchain
+```
+
+> Import name uses underscores: `import openai_cost_calculator-with-langchain`
+
+---
+
+## Quickstart
+
+**Typed (recommended)**
+
+```python
+from openai import OpenAI
+from openai_cost_calculator import estimate_cost_typed
+
+client = OpenAI()
+resp = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hi there!"}],
+)
+
+cost = estimate_cost_typed(resp)  # -> CostBreakdown (Decimal fields)
+print(cost.total_cost)            # Decimal('0.00000750')
+print(cost.as_dict(stringify=True))  # 8-dp strings if you prefer
+```
+
+**Legacy (string output)**
+
+```python
+from openai_cost_calculator import estimate_cost
+print(estimate_cost(resp))  # dict of 8-dp strings
+```
+
+**Responses API**
+
+```python
+resp = client.responses.create(model="gpt-4.1-mini", input=[{"role":"user","content":"Hi"}])
+from openai_cost_calculator import estimate_cost_typed
+print(estimate_cost_typed(resp))
+```
+
+**Streaming**
+
+```python
+stream = client.chat.completions.create(
+  model="gpt-4o-mini",
+  messages=[{"role":"user","content":"Hi"}],
+  stream=True,
+  stream_options={"include_usage": True},
+)
+from openai_cost_calculator import estimate_cost_typed
+print(estimate_cost_typed(stream))
+```
+
+**Langchain**
+
+```python
+import os
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from openai_cost_calculator import estimate_cost_typed
+
+load_dotenv()
+
+model = ChatOpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    model="gpt-4o-mini",
+    temperature=0,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+)
+
+messages = [
+    (
+        "system",
+        "You are a helpful translator. Translate the user sentence to French.",
+    ),
+    ("human", "I love programming."),
+]
+
+response = model.invoke(messages)
+print(estimate_cost_typed(response, is_langchain_response=True))
+```
+---
+
+## Highlights
+
+- **Typed API:** `CostBreakdown` dataclass with `Decimal` precision  
+- **Drop-in legacy API:** 8-decimal strings (backward compatible)  
+- **Handles edge cases:** cached tokens, undated model strings, streaming generators, Azure deployment names  
+- **Pricing sources:** Remote CSV (24h cache) + **local overrides** and **offline mode**
+
+---
+
+## Pricing utilities
+
+```python
+from openai_cost_calculator import (
+  refresh_pricing, set_offline_mode,
+  add_pricing_entry, add_pricing_entries, clear_local_pricing
+)
+
+# Force refresh (bypasses 24h cache)
+refresh_pricing()
+
+# Run fully offline (no network calls)
+set_offline_mode(True)
+
+# Teach custom prices (per 1M tokens)
+add_pricing_entry(
+  "ollama/qwen3:30b", "2025-08-01",
+  input_price=0.20, output_price=0.60, cached_input_price=0.04
+)
+```
+
+Remote CSV (auto-fetched, cached 24h):  
+`https://raw.githubusercontent.com/orkunkinay/openai_cost_calculator/refs/heads/main/data/gpt_pricing_data.csv`
+
+---
+
+## Errors
+
+Recoverable issues raise `CostEstimateError` with a clear message (missing pricing row, unexpected input shape, etc.).
+
+---
+
+## Troubleshooting
+
+- **“Pricing not found”** → confirm row exists in the CSV; call `refresh_pricing()`.  
+- **`cached_tokens = 0`** → ensure `include_usage_details=True` (classic) or `stream_options={"include_usage": True}` (streaming).  
+- **Model string has no date** → the latest row with `date ≤ today` is used.
+
+---
+
+## Links
+
+- **Docs & examples:** https://orkunkinay.github.io/openai_cost_calculator/  
+- **Source:** https://github.com/orkunkinay/openai_cost_calculator  
+- **Issues:** https://github.com/orkunkinay/openai_cost_calculator/issues
+
+---
+
+## License
+
+MIT © 2025 Orkun Kınay & Murat Barkın Kınay
