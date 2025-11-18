@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightInfo: Copyright © DUNE Project contributors, see file LICENSE.md in module root
+# SPDX-License-Identifier: LicenseRef-GPL-2.0-only-with-DUNE-exception
+
+---
+include:
+  - remote: 'https://gitlab.dune-project.org/core/ci-config/raw/master/config/common/master.yml'
+  - remote: 'https://gitlab.dune-project.org/core/ci-config/raw/master/jobs/common/master.yml'
+
+before_script:
+  - . /duneci/bin/duneci-init-job
+
+variables:
+  DUNECI_TEST_LABELS: quick
+  DUNE_TEST_EXPECTED_VC_IMPLEMENTATION: SSE2
+  PIP_DEFAULT_TIMEOUT: 0
+  DUNE_LOG_LEVEL:     DEBUG
+
+debian:11 gcc-10-20-expensive:
+  extends: .common
+  # This image has Vc
+  image: registry.dune-project.org/docker/ci/debian:11
+  # allow expensive tests
+  variables:
+    DUNECI_CXXFLAGS: -mavx
+    DUNECI_TEST_LABELS: ""
+    DUNECI_TOOLCHAIN: gcc-10-20
+    DUNECI_CMAKE_FLAGS: '-DDUNE_ENABLE_PYTHONMODULE_PRECOMPILE:BOOL=TRUE'
+    DUNE_TEST_EXPECTED_VC_IMPLEMENTATION: AVX
+  # require AVX to properly test Vc
+  tags: [duneci, "iset:avx"]
+  # allowed to fail to e.g. do no hold up a merge when a runner supporting avx
+  # is unavailable
+  allow_failure: true
+
+core-modules-test:
+  stage: downstream
+  inherit:
+    variables: false # do not inherit global variables
+  variables:
+    CI_BUILD_REF_NAME: $CI_COMMIT_REF_NAME
+    DUNECI_TEST_LABELS: ""
+  trigger:
+    project: infrastructure/dune-nightly-test
+    branch: core
+    strategy: depend
+  rules:
+    - when: manual
+      allow_failure: false
+
+full-system-test:
+  stage: downstream
+  inherit:
+    variables: false # do not inherit global variables
+  variables:
+    CI_BUILD_REF_NAME: $CI_COMMIT_REF_NAME
+    DUNECI_TEST_LABELS: ""
+  trigger:
+    project: infrastructure/dune-nightly-test
+    branch: master
+    strategy: depend
+  rules:
+    - when: manual
+      allow_failure: true
+
+# Check for spelling mistakes in text
+code-spelling-check:
+  stage: .pre
+  tags: [duneci]
+  image: registry.dune-project.org/docker/ci/debian:11
+  script:
+  - codespell
+    --ignore-words-list te,inout,incrementall,iif,\trun,referr,ba
+    --skip pybind11
+
+reuse:
+  stage: .pre
+  image:
+    name: docker.io/fsfe/reuse:latest
+    entrypoint: [""]
+  tags: [duneci]
+  before_script: ""
+  script:
+    - reuse lint
