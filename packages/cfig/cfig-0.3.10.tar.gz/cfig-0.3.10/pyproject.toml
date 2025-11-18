@@ -1,0 +1,68 @@
+[project]
+name = "cfig"
+version = "0.3.10"
+description = "A configuration manager for Python"
+authors = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"},
+]
+maintainers = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"},
+]
+license = "MIT"
+license-files = ["LICENSE.txt"]
+readme = "README.md"
+requires-python = ">=3.11,<4.0"
+keywords = [
+    "configuration",
+    "config",
+    "lazy",
+    "environment",
+    "envvars",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development",
+    "Topic :: System :: Software Distribution",
+    "Typing :: Typed",
+]
+
+
+dependencies = [
+    "lazy-object-proxy (>=1.7.1,<2.0.0)",
+]
+
+[project.optional-dependencies]
+cli = [
+    "click (>=8.1.2,<9.0.0)",
+    "colorama (>=0.4.4,<0.5.0)",
+]
+
+[dependency-groups]
+docs = [
+    "Sphinx (>=8.2.3,<9.0.0)",
+    "sphinx-rtd-theme (>=3.0.2, <4.0.0)",
+    "sphinx-autobuild (>=2021.3.14)",
+]
+test = [
+    "pytest (>=7.1.1,<8.0.0)",
+    "pytest-cov (>=3.0.0,<4.0.0)",
+]
+
+
+[project.urls]
+Source = "https://forge.steffo.eu/steffo/cfig"
+Issues = "https://forge.steffo.eu/steffo/cfig/issues"
+Documentation = "https://artifacts.steffo.eu/steffo/cfig/"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
