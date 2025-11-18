@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+
+# Включаем JSON из папки core_magic
+recursive-include RUDLeg/core_magic *.json
+
+# Включаем все файлы из stuff (все типы: png, jpg, wav и т.д.)
+recursive-include RUDLeg/stuff *
+
