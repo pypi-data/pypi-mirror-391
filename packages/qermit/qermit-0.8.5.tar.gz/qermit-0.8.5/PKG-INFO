@@ -1,0 +1,109 @@
+Metadata-Version: 2.4
+Name: qermit
+Version: 0.8.5
+Summary: Python package for quantum error mitigation.
+License-File: LICENSE
+Author: Daniel Mills
+Author-email: daniel.mills@quantinuum.com
+Requires-Python: >=3.10,<3.14
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Provides-Extra: docs
+Provides-Extra: tests
+Requires-Dist: furo (>=2024.8,<2025.10) ; extra == "docs"
+Requires-Dist: jupyter-sphinx (>=0.5,<0.6) ; extra == "docs"
+Requires-Dist: matplotlib (>=3.8,<3.11)
+Requires-Dist: mypy (>=1.9,<1.19) ; extra == "tests"
+Requires-Dist: myst-nb (>=1.1,<1.4) ; extra == "docs"
+Requires-Dist: pytest (>=8.1,<9.1) ; extra == "tests"
+Requires-Dist: pytest-cov (>=6.0,<7.1) ; extra == "tests"
+Requires-Dist: pytket-qiskit (>=0.73,<0.74)
+Requires-Dist: pytket-quantinuum[pecos] (>=0.41,<0.55)
+Requires-Dist: qiskit-ibm-provider (>=0.11,<0.12) ; extra == "tests"
+Requires-Dist: ruff (>=0.8,<0.15) ; extra == "tests"
+Requires-Dist: sphinx (>=8.1,<8.3) ; extra == "docs"
+Requires-Dist: sphinx-autodoc-typehints (>=2.5,<3.3) ; extra == "docs"
+Description-Content-Type: text/markdown
+
+# Qermit
+
+[![PyPI version](https://badge.fury.io/py/qermit.svg)](https://badge.fury.io/py/qermit)
+
+Qermit is a python module for running error-mitigation protocols on quantum processors.
+It is an extension to the [pytket](https://docs.quantinuum.com/tket) quantum computing toolkit.
+
+This repository contains source code and API documentation.
+For details on building the docs please see `docs/README.md`
+
+## Getting Started
+
+To install, run:
+```
+pip install qermit
+```
+You may also wish to install the package from source:
+```
+pip install -e .
+```
+A `poetry.lock` file is included for use with [poetry](https://python-poetry.org/docs/cli/#install).
+
+API documentation can be found at [qerm.it](https://qerm.it).
+
+## Bugs
+
+Please file bugs on the Github
+[issue tracker](https://github.com/CQCL/Qermit/issues).
+
+## Contributing
+
+Pull requests or feature suggestions are very welcome.
+To make a PR, first fork the repository, make your proposed changes, and open a PR from your fork.
+
+## Code style
+
+Style checks are run by continuous integration.
+To install the dependencies required to run them locally run:
+```
+pip install qermit[tests]
+```
+
+### Formatting
+
+This repository uses [ruff](https://docs.astral.sh/ruff/) for formatting and linting.
+To check if your changes meet these standards run:
+```
+ruff check
+ruff format --check
+```
+
+### Type annotation
+
+[mypy](https://mypy.readthedocs.io/en/stable/) is used as a static type checker.
+```
+mypy -p qermit
+```
+
+## Tests
+
+Tests are run by continuous integration.
+To install the dependencies required to run them locally run:
+```
+pip install qermit[tests]
+```
+
+To run tests use:
+```
+cd tests
+pytest
+```
+
+When adding a new feature, please add a test for it.
+When fixing a bug, please add a test that demonstrates the fix.
+
+## How to cite
+
+If you wish to cite Qermit, we recommend citing our [benchmarking paper](https://quantum-journal.org/papers/q-2023-07-13-1059/) where possible.
+
