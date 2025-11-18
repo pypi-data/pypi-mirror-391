@@ -1,0 +1,104 @@
+[project]
+name = "coagent-python"
+version = "0.0.9"
+description = "An open-source framework for building monolithic or distributed agentic systems, ranging from simple LLM calls to compositional workflows and autonomous agents."
+authors = [
+    { name = "RussellLuo", email = "luopeng.he@gmail.com" },
+]
+requires-python = ">=3.10"
+
+[tool.poetry]
+name = "coagent-python"
+version = "0.0.9"
+description = "An open-source framework for building monolithic or distributed agentic systems, ranging from simple LLM calls to compositional workflows and autonomous agents."
+authors = [
+    "RussellLuo <luopeng.he@gmail.com>",
+]
+packages = [
+    { include = "coagent" }
+]
+readme = "README.md"
+repository = "https://github.com/OpenCSGs/coagent"
+
+[tool.poetry.dependencies]
+python = ">=3.10.0,<3.14"
+pydantic = ">=2.7.0"
+openai = ">=2.2,<3"
+nats-py = "2.9.0"
+textual = "0.85.1"
+requests = "2.32.3"
+pygtrie = "2.5.0"
+httpx = ">=0.28.0"
+h2 = "4.1.0"
+httpx-sse = "0.4.0"
+blinker = "1.9.0"
+loguru = "0.7.3"
+jq = "1.8.0"
+litellm = "1.60.4"
+mcp = ">=1.19.0"
+jinja2 = "3.1.5"
+aiorwlock = ">=1.5.0"
+mcputil = ">=0.4.0"
+
+# A list of optional dependencies, which are included in the
+# below `extras`.
+a2a-sdk = { version = ">=0.2.10", optional = true }
+starlette = { version = ">=0.37.0", optional = true }
+sse-starlette = { version = ">=2.1.0", optional = true }
+
+# Per https://python-poetry.org/docs/pyproject/#extras.
+[tool.poetry.extras]
+a2a = ["a2a-sdk", "starlette", "sse-starlette"]
+
+[tool.pyright]
+# https://github.com/microsoft/pyright/blob/main/docs/configuration.md
+useLibraryCodeForTypes = true
+exclude = [".cache"]
+
+[tool.ruff]
+# https://docs.astral.sh/ruff/configuration/
+exclude = ["coagent/agents/aswarm"]
+
+[tool.ruff.format]
+exclude = ["coagent/agents/aswarm"]
+
+[tool.ruff.lint]
+select = [
+    'F',      # Pyflakes
+    'E',      # pycodestyle (Error)
+    # 'I',      # isort
+    # 'D',      # pydocstyle
+    # 'UP',     # pyupgrade
+    'YTT',    # flake8-2020
+    'B',      # flake8-bugbear
+    'T10',    # flake8-debugger
+    # 'T20',    # flake8-print
+    'C4',     # flake8-comprehensions
+    'PYI006', # flake8-pyi
+    'PYI062', # flake8-pyi
+    'PYI063', # flake8-pyi
+    'PYI066', # flake8-pyi
+]
+ignore = [
+    'B012',
+    'B904',
+    'C408',
+    'E501',
+]
+
+[tool.poetry.scripts]
+coagent = "coagent.cli:main.main"
+
+[dependency-groups]
+linting = [
+    "ruff",
+]
+testing = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
