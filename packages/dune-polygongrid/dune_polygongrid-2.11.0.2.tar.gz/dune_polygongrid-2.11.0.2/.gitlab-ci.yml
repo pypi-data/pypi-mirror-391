@@ -1,0 +1,30 @@
+---
+variables:
+  # remove some unused 3rd party packages to speed up tests.
+  DUNECI_CMAKE_FLAGS: "-DCMAKE_DISABLE_FIND_PACKAGE_Alberta=TRUE -DCMAKE_DISABLE_FIND_PACKAGE_Vc=TRUE -DCMAKE_DISABLE_DOCUMENTATION=TRUE -DENABLE_HEADERCHECK=ON"
+  
+before_script:
+  - duneci-install-module https://gitlab.dune-project.org/core/dune-common.git
+  - duneci-install-module https://gitlab.dune-project.org/core/dune-geometry.git
+  - duneci-install-module https://gitlab.dune-project.org/core/dune-grid.git
+
+debian:12:
+  image: registry.dune-project.org/docker/ci/debian:12
+  script: duneci-standard-test
+  tags: [duneci]
+    
+ubuntu:24.04:
+  image: registry.dune-project.org/docker/ci/ubuntu:24.04
+  script: duneci-standard-test
+  tags: [duneci]
+
+debian:12--headercheck:
+  image: registry.dune-project.org/docker/ci/debian:12
+  script:
+    - DUNECI_CMAKE_FLAGS="-DENABLE_HEADERCHECK=ON"
+    - duneci-install-module https://gitlab.dune-project.org/extensions/dune-polygongrid.git
+    - cd /duneci/modules/dune-polygongrid/build-cmake
+    - make headercheck
+  variables:
+    DUNECI_TOOLCHAIN: gcc-12-20    
+  tags: [duneci]
