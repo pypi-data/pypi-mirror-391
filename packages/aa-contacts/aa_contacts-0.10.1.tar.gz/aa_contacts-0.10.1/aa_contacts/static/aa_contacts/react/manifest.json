@@ -1,0 +1,53 @@
+{
+  "_@bootstrap-libs-BKvb8Mv0.js": {
+    "file": "assets/@bootstrap-libs-BKvb8Mv0.js",
+    "name": "@bootstrap-libs"
+  },
+  "_@datatables-libs-BKeJhCsl.js": {
+    "file": "assets/@datatables-libs-BKeJhCsl.js",
+    "name": "@datatables-libs",
+    "imports": [
+      "_@bootstrap-libs-BKvb8Mv0.js"
+    ]
+  },
+  "_@lang-libs-DVJcKnxu.js": {
+    "file": "assets/@lang-libs-DVJcKnxu.js",
+    "name": "@lang-libs",
+    "imports": [
+      "_@bootstrap-libs-BKvb8Mv0.js"
+    ],
+    "dynamicImports": [
+      "_browser-ponyfill-CuqxTsru.js"
+    ]
+  },
+  "_@react-libs-Da1HkQmp.js": {
+    "file": "assets/@react-libs-Da1HkQmp.js",
+    "name": "@react-libs",
+    "imports": [
+      "_@bootstrap-libs-BKvb8Mv0.js"
+    ]
+  },
+  "_browser-ponyfill-CuqxTsru.js": {
+    "file": "assets/browser-ponyfill-CuqxTsru.js",
+    "name": "browser-ponyfill",
+    "isDynamicEntry": true,
+    "imports": [
+      "_@bootstrap-libs-BKvb8Mv0.js"
+    ]
+  },
+  "index.html": {
+    "file": "assets/index-Box4QxbE.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "imports": [
+      "_@bootstrap-libs-BKvb8Mv0.js",
+      "_@datatables-libs-BKeJhCsl.js",
+      "_@react-libs-Da1HkQmp.js",
+      "_@lang-libs-DVJcKnxu.js"
+    ],
+    "css": [
+      "static/aa_contacts/react/static/css/index-CZEJqhDQ.css"
+    ]
+  }
+}
