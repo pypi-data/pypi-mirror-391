@@ -1,0 +1,136 @@
+[project]
+name = "vision-unlearning"
+requires-python = ">=3.10,<3.13"
+
+[project.urls]
+repository    = "https://github.com/LeonardoSanBenitez/vision-unlearning"
+documentation = "https://vision-unlearning.readthedocs.io/"
+
+[tool.poetry]
+name = "vision-unlearning"
+version = "0.1.7"
+description = "Vision Unlearning: a tool for Machine Unlearning in Computer Vision"
+readme = "README.md"
+authors = [
+    "Leonardo Santiago Benitez Pereira <lsbenitezpereira@gmail.com>",
+    "Carolina Kelsch <carolinarkelsch@gmail.com>",
+    "Natnael Mola <natnaelfanose56@gmail.com>",
+    "Juan Carlos San Miguel Avedillo <juancarlos.sanmiguel@uam.es>",
+    "Luis Herranz Arribas <carolinarkelsch@gmail.com>"
+]
+license = "Apache-2.0"
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+keywords = ["machine unlearning", "machine learning", "deep learning", "computer vision"]
+packages = [{ include = "vision_unlearning" }]
+exclude = ["tests", "docs", "examples"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+torch = "~2.8.0"
+transformers = "~4.55.0"
+diffusers = "~0.30.0"
+peft = "~0.17.0"
+torchvision = "*"
+torchmetrics = "*"
+torchsde = "*"
+accelerate = ">=0.31.0"
+huggingface-hub = ">=0.27.0"
+datasets = ">=2.19.1"
+numpy = "*"
+scipy = "*"
+onnx = "*"
+tensorboard = "*"
+tiktoken = ">=0.7.0"
+lpips = "*"
+image-similarity-measures = "*"
+opencv-python = "*"
+matplotlib = "^3.10.0"
+phonemizer = "*"
+dadapy = "~0.3"
+pyfftw = "*"
+safetensors = ">=0.3.1"
+sentencepiece = ">=0.1.91,!=0.1.92"
+Pillow = "*"
+compel = "==0.1.8"
+filelock = "*"
+flax = ">=0.4.1"
+hf-doc-builder = ">=0.3.0"
+importlib_metadata = "*"
+invisible-watermark = ">=0.2.0"
+isort = ">=5.5.4"
+jax = ">=0.4.1"
+jaxlib = ">=0.4.1"
+Jinja2 = "*"
+k-diffusion = ">=0.0.12"
+note_seq = "*"
+librosa = "*"
+parameterized = "*"
+protobuf = ">=3.20.3,<4"
+pytest = "*"
+pytest-timeout = "*"
+pytest-xdist = "*"
+ruff = "==0.1.5"
+GitPython = "<3.1.19"
+regex = "!=2019.12.17"
+requests = "*"
+requests-mock = "==1.10.0"
+urllib3 = "<=2.0.0"
+black = "*"
+pydantic = "*"
+PyYAML = "*"
+Unidecode = "~1.4.0"
+#deepface = "~0.0.95"  # Optional dependency, for MetricRace
+#tf_keras = "~2.19.0"  # idem
+#tensorrt = "~10.13.2"  # idem
+piq = "~0.8.0"
+
+# Needed only for development/build
+# TODO: declare them separately
+mypy = "~1.12"
+pycodestyle = "~2.12"
+pytest-asyncio = "^0.24.0"
+build = "*"
+twine = "*"
+setuptools = ">61.0.0"
+wheel = "*"
+
+sphinx = "~7.4"
+sphinx-rtd-theme = "~2.0"
+myst-parser = "~4.0"   # To support Markdown (README.md)
+sphinx-autoapi = "~3.6"  # To generate docs from docstrings
+autodoc_pydantic = "*"
+
+[build-system]
+requires = ["poetry-core", "setuptools>=61.0.0", "wheel"]  # TODO: do I have to declare them again?
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.sphinx]
+source-dir = "docs"
+build-dir = "docs/_build"
+builder = "html"
+
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::numba.core.errors.NumbaDeprecationWarning",
+    "ignore:.*nopython=False.*",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+
+[tool.mypy]
+no_warn_incomplete_stub = true
+disable_error_code = [
+    "import-untyped", 
+    "import-not-found"
+]
+explicit_package_bases = true
+install_types = true
+non_interactive = true
