@@ -1,0 +1,81 @@
+namespaces:
+  brick: https://brickschema.org/schema/Brick#
+  csvw: http://www.w3.org/ns/csvw#
+  dc: http://purl.org/dc/elements/1.1/
+  dcat: http://www.w3.org/ns/dcat#
+  dcmitype: http://purl.org/dc/dcmitype/
+  dcterms: http://purl.org/dc/terms/
+  dcam: http://purl.org/dc/dcam/
+  doap: http://usefulinc.com/ns/doap#
+  foaf: http://xmlns.com/foaf/0.1/
+  geo: http://www.opengis.net/ont/geosparql#
+  odrl: http://www.w3.org/ns/odrl/2/
+  org: http://www.w3.org/ns/org#
+  prof: http://www.w3.org/ns/dx/prof/
+  prov: http://www.w3.org/ns/prov#
+  qb: http://purl.org/linked-data/cube#
+  schema: https://schema.org/
+  sh: http://www.w3.org/ns/shacl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  sosa: http://www.w3.org/ns/sosa/
+  ssn: http://www.w3.org/ns/ssn/
+  time: http://www.w3.org/2006/time#
+  vann: http://purl.org/vocab/vann/
+  void: http://rdfs.org/ns/void#
+  wgs: https://www.w3.org/2003/01/geo/wgs84_pos#
+  owl: http://www.w3.org/2002/07/owl#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  xml: http://www.w3.org/XML/1998/namespace
+defaults:
+  base_iri: http://example.org/
+sheets:
+- name: students_nested
+  source: ../data/students_nested.json
+  row_resource:
+    class: http://example.org/university#Student
+    iri_template: student:{student_id}_student:{personal_info.middle_initial}_student:{personal_info.first_name}_student:{personal_info.last_name}_student:{personal_info.contact.email_address}_student:{personal_info.contact.phone_number}
+  columns:
+    student_id:
+      as: http://example.org/university#hasStudentID
+      datatype: xsd:string
+      required: true
+      _comment: The unique identifier assigned to a student.
+    academic_info.gpa:
+      as: http://example.org/university#hasGPA
+      datatype: xsd:decimal
+      required: true
+      _comment: The grade point average of a student.
+    academic_info.enrollment_date:
+      as: http://example.org/university#hasEnrollmentDate
+      datatype: xsd:date
+      required: true
+      _comment: The date when the student first enrolled at the university.
+    academic_info.academic_status:
+      as: http://example.org/university#hasAcademicStatus
+      datatype: xsd:string
+      required: true
+      _comment: The current academic standing of the student.
+  objects:
+    enrolled in:
+      predicate: http://example.org/university#enrolledIn
+      class: http://example.org/university#Course
+      iri_template: course:{student_id}_course:{personal_info.middle_initial}_course:{personal_info.first_name}_course:{personal_info.last_name}_course:{personal_info.contact.email_address}_course:{personal_info.contact.phone_number}
+      properties:
+      - column: courses.course_code
+        as: http://example.org/university#hasCourseCode
+      - column: courses.course_title
+        as: http://example.org/university#hasCourseTitle
+    has enrollment:
+      predicate: http://example.org/university#hasEnrollment
+      class: http://example.org/university#Enrollment
+      iri_template: enrollment:{student_id}_enrollment:{personal_info.middle_initial}_enrollment:{personal_info.first_name}_enrollment:{personal_info.last_name}_enrollment:{personal_info.contact.email_address}_enrollment:{personal_info.contact.phone_number}
+      properties:
+      - column: courses.grade
+        as: http://example.org/university#hasGrade
+      - column: courses.semester
+        as: http://example.org/university#hasEnrollmentSemester
+options:
+  on_error: report
+  skip_empty_values: true

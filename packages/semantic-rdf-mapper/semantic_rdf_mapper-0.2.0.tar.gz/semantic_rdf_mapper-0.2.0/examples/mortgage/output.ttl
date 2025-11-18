@@ -1,0 +1,42 @@
+@prefix ex: <https://example.com/mortgage#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://data.example.com/loan/L-1001> a owl:NamedIndividual,
+        ex:MortgageLoan ;
+    ex:collateralProperty <https://data.example.com/property/P-7001> ;
+    ex:hasBorrower <https://data.example.com/borrower/B-9001> ;
+    ex:interestRate 0.0525 ;
+    ex:loanNumber "L-1001"^^xsd:string ;
+    ex:loanStatus "Active"^^xsd:string ;
+    ex:loanTerm 360 ;
+    ex:originationDate "2023-06-15"^^xsd:date ;
+    ex:principalAmount 250000.0 .
+
+<https://data.example.com/loan/L-1002> a owl:NamedIndividual,
+        ex:MortgageLoan ;
+    ex:collateralProperty <https://data.example.com/property/P-7002> ;
+    ex:hasBorrower <https://data.example.com/borrower/B-9002> ;
+    ex:interestRate 0.0475 ;
+    ex:loanNumber "L-1002"^^xsd:string ;
+    ex:loanStatus "Active"^^xsd:string ;
+    ex:loanTerm 360 ;
+    ex:originationDate "2022-11-30"^^xsd:date ;
+    ex:principalAmount 475000.0 .
+
+<https://data.example.com/borrower/B-9001> a owl:NamedIndividual,
+        ex:Borrower ;
+    ex:borrowerName "Alex Morgan"^^xsd:string .
+
+<https://data.example.com/borrower/B-9002> a owl:NamedIndividual,
+        ex:Borrower ;
+    ex:borrowerName "Jamie Lee"^^xsd:string .
+
+<https://data.example.com/property/P-7001> a owl:NamedIndividual,
+        ex:Property ;
+    ex:propertyAddress "12 Oak St"^^xsd:string .
+
+<https://data.example.com/property/P-7002> a owl:NamedIndividual,
+        ex:Property ;
+    ex:propertyAddress "88 Pine Ave"^^xsd:string .
+

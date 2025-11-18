@@ -1,0 +1,70 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix hr: <http://example.org/hr#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Core HR Ontology
+
+hr:Employee a owl:Class ;
+    rdfs:label "Employee" ;
+    skos:prefLabel "Employee" ;
+    skos:altLabel "Staff Member" ;
+    skos:altLabel "Worker" ;
+    rdfs:comment "A person employed by the organization" .
+
+hr:Department a owl:Class ;
+    rdfs:label "Department" ;
+    skos:prefLabel "Department" ;
+    skos:altLabel "Division" ;
+    skos:hiddenLabel "dept" ;
+    rdfs:comment "An organizational unit within the company" .
+
+hr:Position a owl:Class ;
+    rdfs:label "Position" ;
+    skos:prefLabel "Position" ;
+    skos:altLabel "Job" ;
+    skos:altLabel "Role" ;
+    rdfs:comment "A job position within the organization" .
+
+# Properties
+hr:hasEmployeeID a owl:DatatypeProperty ;
+    rdfs:domain hr:Employee ;
+    rdfs:range xsd:string ;
+    rdfs:label "has employee ID" ;
+    skos:prefLabel "has employee ID" ;
+    skos:altLabel "employee identifier" ;
+    skos:hiddenLabel "emp_id" ;
+    skos:hiddenLabel "employee_id" .
+
+hr:worksInDepartment a owl:ObjectProperty ;
+    rdfs:domain hr:Employee ;
+    rdfs:range hr:Department ;
+    rdfs:label "works in department" ;
+    skos:prefLabel "works in department" ;
+    skos:altLabel "assigned to department" .
+
+hr:holdsPosition a owl:ObjectProperty ;
+    rdfs:domain hr:Employee ;
+    rdfs:range hr:Position ;
+    rdfs:label "holds position" ;
+    skos:prefLabel "holds position" ;
+    skos:altLabel "has job title" .
+
+hr:hasSalary a owl:DatatypeProperty ;
+    rdfs:domain hr:Employee ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "has salary" ;
+    skos:prefLabel "has salary" ;
+    skos:altLabel "earns" ;
+    skos:hiddenLabel "sal" ;
+    skos:hiddenLabel "salary_amount" .
+
+hr:hasHireDate a owl:DatatypeProperty ;
+    rdfs:domain hr:Employee ;
+    rdfs:range xsd:date ;
+    rdfs:label "has hire date" ;
+    skos:prefLabel "has hire date" ;
+    skos:altLabel "start date" ;
+    skos:hiddenLabel "hire_dt" ;
+    skos:hiddenLabel "start_dt" .

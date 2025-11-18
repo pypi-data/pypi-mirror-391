@@ -1,0 +1,289 @@
+{
+  "generated_at": "2025-11-01T22:45:49.671739",
+  "ontology_file": "examples/demo/ontology/hr_ontology_initial.ttl",
+  "spreadsheet_file": "examples/demo/data/employees.csv",
+  "target_class": "Employee",
+  "statistics": {
+    "total_columns": 14,
+    "mapped_columns": 2,
+    "unmapped_columns": 12,
+    "high_confidence_matches": 0,
+    "medium_confidence_matches": 2,
+    "low_confidence_matches": 0,
+    "very_low_confidence_matches": 0,
+    "mapping_success_rate": 0.14285714285714285,
+    "average_confidence": 0.6
+  },
+  "unmapped_columns": [
+    {
+      "column_name": "emp_num",
+      "sample_values": [
+        "E001",
+        "E002",
+        "E003",
+        "E004",
+        "E005"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "fname",
+      "sample_values": [
+        "Alice",
+        "Bob",
+        "Carol",
+        "David",
+        "Eve"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "lname",
+      "sample_values": [
+        "Johnson",
+        "Smith",
+        "Williams",
+        "Brown",
+        "Davis"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "middle_init",
+      "sample_values": [
+        "M",
+        "J",
+        "K",
+        "L",
+        "M"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "email_addr",
+      "sample_values": [
+        "alice.johnson@company.com",
+        "bob.smith@company.com",
+        "carol.williams@company.com",
+        "david.brown@company.com",
+        "eve.davis@company.com"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "phone",
+      "sample_values": [
+        "555-0101",
+        "555-0102",
+        "555-0103",
+        "555-0104",
+        "555-0105"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "job_ttl",
+      "sample_values": [
+        "Senior Software Engineer",
+        "Product Manager",
+        "Data Analyst",
+        "HR Specialist",
+        "Software Engineer"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "dept_code",
+      "sample_values": [
+        "IT",
+        "PROD",
+        "IT",
+        "HR",
+        "IT"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "mgr_id",
+      "sample_values": [
+        "M001",
+        "M002",
+        "M001",
+        "M003",
+        "M001"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "hire_dt",
+      "sample_values": [
+        "2018-03-15",
+        "2019-07-22",
+        "2020-01-10",
+        "2017-11-05",
+        "2021-05-18"
+      ],
+      "inferred_datatype": "xsd:date",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "status_cd",
+      "sample_values": [
+        "Active",
+        "Active",
+        "Active",
+        "Active",
+        "Active"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    },
+    {
+      "column_name": "cost_ctr",
+      "sample_values": [
+        "CC-IT-001",
+        "CC-PROD-001",
+        "CC-IT-001",
+        "CC-HR-001",
+        "CC-IT-001"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology"
+    }
+  ],
+  "weak_matches": [
+    {
+      "column_name": "office_loc",
+      "matched_property": "http://example.org/hr#officeLocation",
+      "match_type": "partial",
+      "confidence_score": 0.6,
+      "confidence_level": "medium",
+      "matched_via": "Office Location",
+      "sample_values": [
+        "Building A",
+        "Building B",
+        "Building A",
+        "Building C",
+        "Building A"
+      ],
+      "suggestions": [
+        {
+          "property_uri": "http://example.org/hr#officeLocation",
+          "property_label": "Office Location",
+          "suggested_label_type": "skos:hiddenLabel",
+          "suggested_label_value": "office_loc",
+          "turtle_snippet": "http://example.org/hr#officeLocation skos:hiddenLabel \"office_loc\" .",
+          "justification": "Column name 'office_loc' uses database-style naming that relates to property 'Office Location'. Adding as hiddenLabel will improve matching with legacy database columns"
+        }
+      ]
+    },
+    {
+      "column_name": "annual_comp",
+      "matched_property": "http://example.org/hr#annualCompensation",
+      "match_type": "partial",
+      "confidence_score": 0.6,
+      "confidence_level": "medium",
+      "matched_via": "Annual Compensation",
+      "sample_values": [
+        125000,
+        110000,
+        85000,
+        75000,
+        95000
+      ],
+      "suggestions": [
+        {
+          "property_uri": "http://example.org/hr#annualCompensation",
+          "property_label": "Annual Compensation",
+          "suggested_label_type": "skos:hiddenLabel",
+          "suggested_label_value": "annual_comp",
+          "turtle_snippet": "http://example.org/hr#annualCompensation skos:hiddenLabel \"annual_comp\" .",
+          "justification": "Column name 'annual_comp' uses database-style naming that relates to property 'Annual Compensation'. Adding as hiddenLabel will improve matching with legacy database columns"
+        }
+      ]
+    }
+  ],
+  "skos_enrichment_suggestions": [
+    {
+      "property_uri": "http://example.org/hr#employeeNumber",
+      "property_label": "Employee Number",
+      "suggested_label_type": "skos:altLabel",
+      "suggested_label_value": "emp_num",
+      "turtle_snippet": "http://example.org/hr#employeeNumber skos:altLabel \"emp_num\" .",
+      "justification": "Column name 'emp_num' is very similar to property 'Employee Number'. Adding as altLabel for high-confidence matching (similarity: 100%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#hasManager",
+      "property_label": "has manager",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "lname",
+      "turtle_snippet": "http://example.org/hr#hasManager skos:hiddenLabel \"lname\" .",
+      "justification": "Column name 'lname' shows semantic similarity to property 'has manager'. Adding as hiddenLabel may enable fuzzy matching (similarity: 56%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#jobTitle",
+      "property_label": "Job Title",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "job_ttl",
+      "turtle_snippet": "http://example.org/hr#jobTitle skos:hiddenLabel \"job_ttl\" .",
+      "justification": "Column name 'job_ttl' appears to be an abbreviation or variant of property 'Job Title'. Adding as hiddenLabel may enable automatic matching (similarity: 86%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#statusCode",
+      "property_label": "Status Code",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "dept_code",
+      "turtle_snippet": "http://example.org/hr#statusCode skos:hiddenLabel \"dept_code\" .",
+      "justification": "Column name 'dept_code' shows semantic similarity to property 'Status Code'. Adding as hiddenLabel may enable fuzzy matching (similarity: 50%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#hasManager",
+      "property_label": "has manager",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "mgr_id",
+      "turtle_snippet": "http://example.org/hr#hasManager skos:hiddenLabel \"mgr_id\" .",
+      "justification": "Column name 'mgr_id' appears to be an abbreviation or variant of property 'has manager'. Adding as hiddenLabel may enable automatic matching (similarity: 84%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#hireDate",
+      "property_label": "Hire Date",
+      "suggested_label_type": "skos:altLabel",
+      "suggested_label_value": "hire_dt",
+      "turtle_snippet": "http://example.org/hr#hireDate skos:altLabel \"hire_dt\" .",
+      "justification": "Column name 'hire_dt' is very similar to property 'Hire Date'. Adding as altLabel for high-confidence matching (similarity: 100%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#statusCode",
+      "property_label": "Status Code",
+      "suggested_label_type": "skos:altLabel",
+      "suggested_label_value": "status_cd",
+      "turtle_snippet": "http://example.org/hr#statusCode skos:altLabel \"status_cd\" .",
+      "justification": "Column name 'status_cd' is very similar to property 'Status Code'. Adding as altLabel for high-confidence matching (similarity: 100%)"
+    },
+    {
+      "property_uri": "http://example.org/hr#officeLocation",
+      "property_label": "Office Location",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "office_loc",
+      "turtle_snippet": "http://example.org/hr#officeLocation skos:hiddenLabel \"office_loc\" .",
+      "justification": "Column name 'office_loc' uses database-style naming that relates to property 'Office Location'. Adding as hiddenLabel will improve matching with legacy database columns"
+    },
+    {
+      "property_uri": "http://example.org/hr#annualCompensation",
+      "property_label": "Annual Compensation",
+      "suggested_label_type": "skos:hiddenLabel",
+      "suggested_label_value": "annual_comp",
+      "turtle_snippet": "http://example.org/hr#annualCompensation skos:hiddenLabel \"annual_comp\" .",
+      "justification": "Column name 'annual_comp' uses database-style naming that relates to property 'Annual Compensation'. Adding as hiddenLabel will improve matching with legacy database columns"
+    }
+  ]
+}

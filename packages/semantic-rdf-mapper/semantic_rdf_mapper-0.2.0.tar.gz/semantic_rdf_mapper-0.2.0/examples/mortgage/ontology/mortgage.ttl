@@ -1,0 +1,112 @@
+@prefix ex: <https://example.com/mortgage#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# Ontology metadata
+<https://example.com/mortgage> a owl:Ontology ;
+    rdfs:label "Mortgage Loan Ontology"@en ;
+    rdfs:comment "A simple ontology for representing mortgage loans, borrowers, and properties."@en ;
+    owl:versionInfo "1.0" .
+
+# Classes
+ex:MortgageLoan a owl:Class ;
+    rdfs:label "Mortgage Loan"@en ;
+    rdfs:comment "A loan secured by real property."@en .
+
+ex:Borrower a owl:Class ;
+    rdfs:label "Borrower"@en ;
+    rdfs:comment "A person or entity that borrows money."@en .
+
+ex:Property a owl:Class ;
+    rdfs:label "Property"@en ;
+    rdfs:comment "Real estate property used as collateral."@en .
+
+# Object Properties
+ex:hasBorrower a owl:ObjectProperty ;
+    rdfs:label "has borrower"@en ;
+    rdfs:comment "Links a mortgage loan to its borrower."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range ex:Borrower .
+
+ex:collateralProperty a owl:ObjectProperty ;
+    rdfs:label "collateral property"@en ;
+    rdfs:comment "The property used as collateral for the loan."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range ex:Property .
+
+# Data Properties - Mortgage Loan
+ex:loanNumber a owl:DatatypeProperty ;
+    rdfs:label "loan number"@en ;
+    rdfs:comment "Unique identifier for the loan."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:string .
+
+ex:principalAmount a owl:DatatypeProperty ;
+    rdfs:label "principal amount"@en ;
+    rdfs:comment "The original loan amount."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:decimal .
+
+ex:interestRate a owl:DatatypeProperty ;
+    rdfs:label "interest rate"@en ;
+    rdfs:comment "The annual interest rate as a decimal (e.g., 0.0525 for 5.25%)."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:decimal .
+
+ex:originationDate a owl:DatatypeProperty ;
+    rdfs:label "origination date"@en ;
+    rdfs:comment "The date when the loan was originated."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:date .
+
+ex:loanTerm a owl:DatatypeProperty ;
+    rdfs:label "loan term"@en ;
+    rdfs:comment "The term of the loan in months."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:integer .
+
+ex:loanStatus a owl:DatatypeProperty ;
+    rdfs:label "loan status"@en ;
+    rdfs:comment "Current status of the loan (Active, Paid Off, Default, etc.)."@en ;
+    rdfs:domain ex:MortgageLoan ;
+    rdfs:range xsd:string .
+
+# Data Properties - Borrower
+ex:borrowerName a owl:DatatypeProperty ;
+    rdfs:label "borrower name"@en ;
+    rdfs:comment "Full name of the borrower."@en ;
+    rdfs:domain ex:Borrower ;
+    rdfs:range xsd:string .
+
+ex:borrowerEmail a owl:DatatypeProperty ;
+    rdfs:label "borrower email"@en ;
+    rdfs:comment "Email address of the borrower."@en ;
+    rdfs:domain ex:Borrower ;
+    rdfs:range xsd:string .
+
+ex:creditScore a owl:DatatypeProperty ;
+    rdfs:label "credit score"@en ;
+    rdfs:comment "Credit score of the borrower."@en ;
+    rdfs:domain ex:Borrower ;
+    rdfs:range xsd:integer .
+
+# Data Properties - Property
+ex:propertyAddress a owl:DatatypeProperty ;
+    rdfs:label "property address"@en ;
+    rdfs:comment "Street address of the property."@en ;
+    rdfs:domain ex:Property ;
+    rdfs:range xsd:string .
+
+ex:propertyValue a owl:DatatypeProperty ;
+    rdfs:label "property value"@en ;
+    rdfs:comment "Appraised value of the property."@en ;
+    rdfs:domain ex:Property ;
+    rdfs:range xsd:decimal .
+
+ex:propertyType a owl:DatatypeProperty ;
+    rdfs:label "property type"@en ;
+    rdfs:comment "Type of property (Single Family, Condo, Multi-Family, etc.)."@en ;
+    rdfs:domain ex:Property ;
+    rdfs:range xsd:string .

@@ -1,0 +1,86 @@
+namespaces:
+  brick: https://brickschema.org/schema/Brick#
+  csvw: http://www.w3.org/ns/csvw#
+  dc: http://purl.org/dc/elements/1.1/
+  dcat: http://www.w3.org/ns/dcat#
+  dcmitype: http://purl.org/dc/dcmitype/
+  dcterms: http://purl.org/dc/terms/
+  dcam: http://purl.org/dc/dcam/
+  doap: http://usefulinc.com/ns/doap#
+  foaf: http://xmlns.com/foaf/0.1/
+  geo: http://www.opengis.net/ont/geosparql#
+  odrl: http://www.w3.org/ns/odrl/2/
+  org: http://www.w3.org/ns/org#
+  prof: http://www.w3.org/ns/dx/prof/
+  prov: http://www.w3.org/ns/prov#
+  qb: http://purl.org/linked-data/cube#
+  schema: https://schema.org/
+  sh: http://www.w3.org/ns/shacl#
+  skos: http://www.w3.org/2004/02/skos/core#
+  sosa: http://www.w3.org/ns/sosa/
+  ssn: http://www.w3.org/ns/ssn/
+  time: http://www.w3.org/2006/time#
+  vann: http://purl.org/vocab/vann/
+  void: http://rdfs.org/ns/void#
+  wgs: https://www.w3.org/2003/01/geo/wgs84_pos#
+  owl: http://www.w3.org/2002/07/owl#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  xsd: http://www.w3.org/2001/XMLSchema#
+  xml: http://www.w3.org/XML/1998/namespace
+defaults:
+  base_iri: http://example.org/
+sheets:
+- name: students
+  source: ../data/students.csv
+  row_resource:
+    class: http://example.org/university#Student
+    iri_template: student:{course_code}_student:{course_title}_student:{student_id}_student:{middle_initial}_student:{phone_number}_student:{department_code}
+  columns:
+    student_id:
+      as: http://example.org/university#hasStudentID
+      datatype: xsd:string
+      required: true
+      _comment: The unique identifier assigned to a student.
+    gpa:
+      as: http://example.org/university#hasGPA
+      datatype: xsd:decimal
+      required: true
+      _comment: The grade point average of a student.
+    enrollment_date:
+      as: http://example.org/university#hasEnrollmentDate
+      datatype: xsd:date
+      required: true
+      _comment: The date when the student first enrolled at the university.
+    academic_status:
+      as: http://example.org/university#hasAcademicStatus
+      datatype: xsd:string
+      required: true
+      _comment: The current academic standing of the student.
+    grade:
+      as: http://example.org/university#hasGPA
+      datatype: xsd:string
+      required: true
+      _comment: The grade point average of a student.
+  objects:
+    enrolled in:
+      predicate: http://example.org/university#enrolledIn
+      class: http://example.org/university#Course
+      iri_template: course:{course_code}_course:{course_title}_course:{student_id}_course:{middle_initial}_course:{phone_number}_course:{department_code}
+      properties:
+      - column: course_code
+        as: http://example.org/university#hasCourseCode
+      - column: course_title
+        as: http://example.org/university#hasCourseTitle
+    has enrollment:
+      predicate: http://example.org/university#hasEnrollment
+      class: http://example.org/university#Enrollment
+      iri_template: enrollment:{course_code}_enrollment:{course_title}_enrollment:{student_id}_enrollment:{middle_initial}_enrollment:{phone_number}_enrollment:{department_code}
+      properties:
+      - column: grade
+        as: http://example.org/university#hasGrade
+      - column: semester
+        as: http://example.org/university#hasEnrollmentSemester
+options:
+  on_error: report
+  skip_empty_values: true

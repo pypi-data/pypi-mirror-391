@@ -1,0 +1,4294 @@
+{
+  "generated_at": "2025-11-01T23:38:14.732554",
+  "ontology_file": "examples/owl2_rdfxml_demo/ontology/university_owl2.rdf",
+  "spreadsheet_file": "examples/owl2_rdfxml_demo/data/students_simple.json",
+  "target_class": "Student",
+  "statistics": {
+    "total_columns": 10,
+    "mapped_columns": 4,
+    "unmapped_columns": 6,
+    "high_confidence_matches": 4,
+    "medium_confidence_matches": 0,
+    "low_confidence_matches": 0,
+    "very_low_confidence_matches": 0,
+    "mapping_success_rate": 0.4,
+    "average_confidence": 1.0
+  },
+  "unmapped_columns": [
+    {
+      "column_name": "first_name",
+      "sample_values": [
+        "Alice",
+        "Bob",
+        "Carol"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    },
+    {
+      "column_name": "last_name",
+      "sample_values": [
+        "Johnson",
+        "Smith",
+        "Williams"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    },
+    {
+      "column_name": "middle_initial",
+      "sample_values": [
+        "M",
+        "J"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    },
+    {
+      "column_name": "email_address",
+      "sample_values": [
+        "alice.johnson@university.edu",
+        "bob.smith@university.edu",
+        "carol.williams@university.edu"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    },
+    {
+      "column_name": "phone_number",
+      "sample_values": [
+        "555-0101",
+        "555-0102",
+        "555-0103"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    },
+    {
+      "column_name": "department_code",
+      "sample_values": [
+        "CS",
+        "ENG",
+        "BIO"
+      ],
+      "inferred_datatype": "xsd:string",
+      "reason": "No matching property found in ontology",
+      "ontology_context": {
+        "target_class": {
+          "uri": "http://example.org/university#Student",
+          "label": "Student",
+          "comment": "A person enrolled in courses at the university.",
+          "local_name": "Student",
+          "properties": [
+            {
+              "uri": "http://example.org/university#hasStudentID",
+              "label": "has student ID",
+              "pref_label": "student ID",
+              "alt_labels": [
+                "student identifier",
+                "student number"
+              ],
+              "hidden_labels": [
+                "student_id",
+                "studentid",
+                "stud_id",
+                "id"
+              ],
+              "comment": "The unique identifier assigned to a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasStudentID"
+            },
+            {
+              "uri": "http://example.org/university#hasGPA",
+              "label": "has GPA",
+              "pref_label": "GPA",
+              "alt_labels": [
+                "grade point average",
+                "academic average"
+              ],
+              "hidden_labels": [
+                "gpa",
+                "grade_avg"
+              ],
+              "comment": "The grade point average of a student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+              "local_name": "hasGPA"
+            },
+            {
+              "uri": "http://example.org/university#hasEnrollmentDate",
+              "label": "has enrollment date",
+              "pref_label": "enrollment date",
+              "alt_labels": [
+                "admission date",
+                "start date"
+              ],
+              "hidden_labels": [
+                "enrollment_date",
+                "enroll_date",
+                "start_dt"
+              ],
+              "comment": "The date when the student first enrolled at the university.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#date",
+              "local_name": "hasEnrollmentDate"
+            },
+            {
+              "uri": "http://example.org/university#hasAcademicStatus",
+              "label": "has academic status",
+              "pref_label": "academic status",
+              "alt_labels": [
+                "enrollment status",
+                "student status"
+              ],
+              "hidden_labels": [
+                "academic_status",
+                "status",
+                "student_status"
+              ],
+              "comment": "The current academic standing of the student.",
+              "domain_class": "http://example.org/university#Student",
+              "range_type": "http://www.w3.org/2001/XMLSchema#string",
+              "local_name": "hasAcademicStatus"
+            }
+          ]
+        },
+        "related_classes": [
+          {
+            "uri": "http://example.org/university#Course",
+            "label": "Course",
+            "comment": "An academic course offered by the university.",
+            "local_name": "Course",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasCourseCode",
+                "label": "has course code",
+                "pref_label": "course code",
+                "alt_labels": [
+                  "course number",
+                  "course ID"
+                ],
+                "hidden_labels": [
+                  "course_code",
+                  "course_id",
+                  "crse_cd"
+                ],
+                "comment": "The unique code identifying a course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseCode"
+              },
+              {
+                "uri": "http://example.org/university#hasCourseTitle",
+                "label": "has course title",
+                "pref_label": "course title",
+                "alt_labels": [
+                  "course name",
+                  "title"
+                ],
+                "hidden_labels": [
+                  "course_title",
+                  "course_name",
+                  "title"
+                ],
+                "comment": "The descriptive title of the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasCourseTitle"
+              },
+              {
+                "uri": "http://example.org/university#hasCreditHours",
+                "label": "has credit hours",
+                "pref_label": "credit hours",
+                "alt_labels": [
+                  "credits",
+                  "credit units"
+                ],
+                "hidden_labels": [
+                  "credit_hours",
+                  "credits",
+                  "cr_hrs"
+                ],
+                "comment": "The number of credit hours awarded for completing the course.",
+                "domain_class": "http://example.org/university#Course",
+                "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+                "local_name": "hasCreditHours"
+              }
+            ]
+          },
+          {
+            "uri": "http://example.org/university#Enrollment",
+            "label": "Enrollment",
+            "comment": "The association between a student and a course, including enrollment details.",
+            "local_name": "Enrollment",
+            "properties": [
+              {
+                "uri": "http://example.org/university#hasGrade",
+                "label": "has grade",
+                "pref_label": "grade",
+                "alt_labels": [
+                  "letter grade",
+                  "course grade"
+                ],
+                "hidden_labels": [
+                  "grade",
+                  "final_grade"
+                ],
+                "comment": "The final grade received in the course.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasGrade"
+              },
+              {
+                "uri": "http://example.org/university#hasEnrollmentSemester",
+                "label": "has enrollment semester",
+                "pref_label": "semester",
+                "alt_labels": [
+                  "term",
+                  "academic term"
+                ],
+                "hidden_labels": [
+                  "semester",
+                  "term",
+                  "enrollment_term"
+                ],
+                "comment": "The semester or term when the enrollment occurred.",
+                "domain_class": "http://example.org/university#Enrollment",
+                "range_type": "http://www.w3.org/2001/XMLSchema#string",
+                "local_name": "hasEnrollmentSemester"
+              }
+            ]
+          }
+        ],
+        "all_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#hasFirstName",
+            "label": "has first name",
+            "pref_label": "first name",
+            "alt_labels": [
+              "given name",
+              "forename"
+            ],
+            "hidden_labels": [
+              "fname",
+              "first_name",
+              "firstname"
+            ],
+            "comment": "The first name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasFirstName"
+          },
+          {
+            "uri": "http://example.org/university#hasLastName",
+            "label": "has last name",
+            "pref_label": "last name",
+            "alt_labels": [
+              "surname",
+              "family name"
+            ],
+            "hidden_labels": [
+              "lname",
+              "last_name",
+              "lastname"
+            ],
+            "comment": "The last name of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasLastName"
+          },
+          {
+            "uri": "http://example.org/university#hasMiddleName",
+            "label": "has middle name",
+            "pref_label": "middle name",
+            "alt_labels": [
+              "middle initial"
+            ],
+            "hidden_labels": [
+              "mname",
+              "middle_name",
+              "middle_initial",
+              "mi"
+            ],
+            "comment": "The middle name or initial of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasMiddleName"
+          },
+          {
+            "uri": "http://example.org/university#hasEmail",
+            "label": "has email",
+            "pref_label": "email address",
+            "alt_labels": [
+              "email",
+              "e-mail"
+            ],
+            "hidden_labels": [
+              "email_address",
+              "email_addr",
+              "e_mail"
+            ],
+            "comment": "The email address of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEmail"
+          },
+          {
+            "uri": "http://example.org/university#hasPhone",
+            "label": "has phone",
+            "pref_label": "phone number",
+            "alt_labels": [
+              "telephone",
+              "contact number"
+            ],
+            "hidden_labels": [
+              "phone",
+              "phone_number",
+              "tel"
+            ],
+            "comment": "The phone number of a person.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasPhone"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#hasStudentID",
+            "label": "has student ID",
+            "pref_label": "student ID",
+            "alt_labels": [
+              "student identifier",
+              "student number"
+            ],
+            "hidden_labels": [
+              "student_id",
+              "studentid",
+              "stud_id",
+              "id"
+            ],
+            "comment": "The unique identifier assigned to a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasStudentID"
+          },
+          {
+            "uri": "http://example.org/university#hasGPA",
+            "label": "has GPA",
+            "pref_label": "GPA",
+            "alt_labels": [
+              "grade point average",
+              "academic average"
+            ],
+            "hidden_labels": [
+              "gpa",
+              "grade_avg"
+            ],
+            "comment": "The grade point average of a student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+            "local_name": "hasGPA"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentDate",
+            "label": "has enrollment date",
+            "pref_label": "enrollment date",
+            "alt_labels": [
+              "admission date",
+              "start date"
+            ],
+            "hidden_labels": [
+              "enrollment_date",
+              "enroll_date",
+              "start_dt"
+            ],
+            "comment": "The date when the student first enrolled at the university.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#date",
+            "local_name": "hasEnrollmentDate"
+          },
+          {
+            "uri": "http://example.org/university#hasAcademicStatus",
+            "label": "has academic status",
+            "pref_label": "academic status",
+            "alt_labels": [
+              "enrollment status",
+              "student status"
+            ],
+            "hidden_labels": [
+              "academic_status",
+              "status",
+              "student_status"
+            ],
+            "comment": "The current academic standing of the student.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasAcademicStatus"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentCode",
+            "label": "has department code",
+            "pref_label": "department code",
+            "alt_labels": [
+              "department abbreviation",
+              "dept code"
+            ],
+            "hidden_labels": [
+              "department_code",
+              "dept_code",
+              "dept_cd"
+            ],
+            "comment": "The abbreviated code for the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentCode"
+          },
+          {
+            "uri": "http://example.org/university#hasDepartmentName",
+            "label": "has department name",
+            "pref_label": "department name",
+            "alt_labels": [
+              "department title"
+            ],
+            "hidden_labels": [
+              "department_name",
+              "dept_name"
+            ],
+            "comment": "The full name of the department.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasDepartmentName"
+          },
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": null,
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ],
+        "object_properties": [
+          {
+            "uri": "http://example.org/university#memberOf",
+            "label": "member of",
+            "pref_label": "member of",
+            "alt_labels": [
+              "belongs to",
+              "affiliated with"
+            ],
+            "hidden_labels": [
+              "member_of",
+              "dept_member"
+            ],
+            "comment": "Indicates that a person is a member of a particular department.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Department",
+            "local_name": "memberOf"
+          },
+          {
+            "uri": "http://example.org/university#enrolledIn",
+            "label": "enrolled in",
+            "pref_label": "enrolled in",
+            "alt_labels": [
+              "taking",
+              "registered for"
+            ],
+            "hidden_labels": [
+              "enrolled_in"
+            ],
+            "comment": "Indicates that a student is enrolled in a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "enrolledIn"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollment",
+            "label": "has enrollment",
+            "pref_label": "has enrollment",
+            "alt_labels": [],
+            "hidden_labels": [
+              "has_enrollment"
+            ],
+            "comment": "Links a student to their enrollment records.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Enrollment",
+            "local_name": "hasEnrollment"
+          },
+          {
+            "uri": "http://example.org/university#teaches",
+            "label": "teaches",
+            "pref_label": "teaches",
+            "alt_labels": [
+              "instructs",
+              "leads"
+            ],
+            "hidden_labels": [
+              "instructor_for"
+            ],
+            "comment": "Indicates that a professor teaches a particular course.",
+            "domain_class": null,
+            "range_type": "http://example.org/university#Course",
+            "local_name": "teaches"
+          }
+        ]
+      }
+    }
+  ],
+  "weak_matches": [],
+  "skos_enrichment_suggestions": [],
+  "ontology_context": {
+    "target_class": {
+      "uri": "http://example.org/university#Student",
+      "label": "Student",
+      "comment": "A person enrolled in courses at the university.",
+      "local_name": "Student",
+      "properties": [
+        {
+          "uri": "http://example.org/university#hasStudentID",
+          "label": "has student ID",
+          "pref_label": "student ID",
+          "alt_labels": [
+            "student identifier",
+            "student number"
+          ],
+          "hidden_labels": [
+            "student_id",
+            "studentid",
+            "stud_id",
+            "id"
+          ],
+          "comment": "The unique identifier assigned to a student.",
+          "domain_class": "http://example.org/university#Student",
+          "range_type": "http://www.w3.org/2001/XMLSchema#string",
+          "local_name": "hasStudentID"
+        },
+        {
+          "uri": "http://example.org/university#hasGPA",
+          "label": "has GPA",
+          "pref_label": "GPA",
+          "alt_labels": [
+            "grade point average",
+            "academic average"
+          ],
+          "hidden_labels": [
+            "gpa",
+            "grade_avg"
+          ],
+          "comment": "The grade point average of a student.",
+          "domain_class": "http://example.org/university#Student",
+          "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+          "local_name": "hasGPA"
+        },
+        {
+          "uri": "http://example.org/university#hasEnrollmentDate",
+          "label": "has enrollment date",
+          "pref_label": "enrollment date",
+          "alt_labels": [
+            "admission date",
+            "start date"
+          ],
+          "hidden_labels": [
+            "enrollment_date",
+            "enroll_date",
+            "start_dt"
+          ],
+          "comment": "The date when the student first enrolled at the university.",
+          "domain_class": "http://example.org/university#Student",
+          "range_type": "http://www.w3.org/2001/XMLSchema#date",
+          "local_name": "hasEnrollmentDate"
+        },
+        {
+          "uri": "http://example.org/university#hasAcademicStatus",
+          "label": "has academic status",
+          "pref_label": "academic status",
+          "alt_labels": [
+            "enrollment status",
+            "student status"
+          ],
+          "hidden_labels": [
+            "academic_status",
+            "status",
+            "student_status"
+          ],
+          "comment": "The current academic standing of the student.",
+          "domain_class": "http://example.org/university#Student",
+          "range_type": "http://www.w3.org/2001/XMLSchema#string",
+          "local_name": "hasAcademicStatus"
+        }
+      ]
+    },
+    "related_classes": [
+      {
+        "uri": "http://example.org/university#Course",
+        "label": "Course",
+        "comment": "An academic course offered by the university.",
+        "local_name": "Course",
+        "properties": [
+          {
+            "uri": "http://example.org/university#hasCourseCode",
+            "label": "has course code",
+            "pref_label": "course code",
+            "alt_labels": [
+              "course number",
+              "course ID"
+            ],
+            "hidden_labels": [
+              "course_code",
+              "course_id",
+              "crse_cd"
+            ],
+            "comment": "The unique code identifying a course.",
+            "domain_class": "http://example.org/university#Course",
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseCode"
+          },
+          {
+            "uri": "http://example.org/university#hasCourseTitle",
+            "label": "has course title",
+            "pref_label": "course title",
+            "alt_labels": [
+              "course name",
+              "title"
+            ],
+            "hidden_labels": [
+              "course_title",
+              "course_name",
+              "title"
+            ],
+            "comment": "The descriptive title of the course.",
+            "domain_class": "http://example.org/university#Course",
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasCourseTitle"
+          },
+          {
+            "uri": "http://example.org/university#hasCreditHours",
+            "label": "has credit hours",
+            "pref_label": "credit hours",
+            "alt_labels": [
+              "credits",
+              "credit units"
+            ],
+            "hidden_labels": [
+              "credit_hours",
+              "credits",
+              "cr_hrs"
+            ],
+            "comment": "The number of credit hours awarded for completing the course.",
+            "domain_class": "http://example.org/university#Course",
+            "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+            "local_name": "hasCreditHours"
+          }
+        ]
+      },
+      {
+        "uri": "http://example.org/university#Enrollment",
+        "label": "Enrollment",
+        "comment": "The association between a student and a course, including enrollment details.",
+        "local_name": "Enrollment",
+        "properties": [
+          {
+            "uri": "http://example.org/university#hasGrade",
+            "label": "has grade",
+            "pref_label": "grade",
+            "alt_labels": [
+              "letter grade",
+              "course grade"
+            ],
+            "hidden_labels": [
+              "grade",
+              "final_grade"
+            ],
+            "comment": "The final grade received in the course.",
+            "domain_class": "http://example.org/university#Enrollment",
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasGrade"
+          },
+          {
+            "uri": "http://example.org/university#hasEnrollmentSemester",
+            "label": "has enrollment semester",
+            "pref_label": "semester",
+            "alt_labels": [
+              "term",
+              "academic term"
+            ],
+            "hidden_labels": [
+              "semester",
+              "term",
+              "enrollment_term"
+            ],
+            "comment": "The semester or term when the enrollment occurred.",
+            "domain_class": "http://example.org/university#Enrollment",
+            "range_type": "http://www.w3.org/2001/XMLSchema#string",
+            "local_name": "hasEnrollmentSemester"
+          }
+        ]
+      }
+    ],
+    "all_properties": [
+      {
+        "uri": "http://example.org/university#memberOf",
+        "label": "member of",
+        "pref_label": "member of",
+        "alt_labels": [
+          "belongs to",
+          "affiliated with"
+        ],
+        "hidden_labels": [
+          "member_of",
+          "dept_member"
+        ],
+        "comment": "Indicates that a person is a member of a particular department.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Department",
+        "local_name": "memberOf"
+      },
+      {
+        "uri": "http://example.org/university#hasFirstName",
+        "label": "has first name",
+        "pref_label": "first name",
+        "alt_labels": [
+          "given name",
+          "forename"
+        ],
+        "hidden_labels": [
+          "fname",
+          "first_name",
+          "firstname"
+        ],
+        "comment": "The first name of a person.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasFirstName"
+      },
+      {
+        "uri": "http://example.org/university#hasLastName",
+        "label": "has last name",
+        "pref_label": "last name",
+        "alt_labels": [
+          "surname",
+          "family name"
+        ],
+        "hidden_labels": [
+          "lname",
+          "last_name",
+          "lastname"
+        ],
+        "comment": "The last name of a person.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasLastName"
+      },
+      {
+        "uri": "http://example.org/university#hasMiddleName",
+        "label": "has middle name",
+        "pref_label": "middle name",
+        "alt_labels": [
+          "middle initial"
+        ],
+        "hidden_labels": [
+          "mname",
+          "middle_name",
+          "middle_initial",
+          "mi"
+        ],
+        "comment": "The middle name or initial of a person.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasMiddleName"
+      },
+      {
+        "uri": "http://example.org/university#hasEmail",
+        "label": "has email",
+        "pref_label": "email address",
+        "alt_labels": [
+          "email",
+          "e-mail"
+        ],
+        "hidden_labels": [
+          "email_address",
+          "email_addr",
+          "e_mail"
+        ],
+        "comment": "The email address of a person.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasEmail"
+      },
+      {
+        "uri": "http://example.org/university#hasPhone",
+        "label": "has phone",
+        "pref_label": "phone number",
+        "alt_labels": [
+          "telephone",
+          "contact number"
+        ],
+        "hidden_labels": [
+          "phone",
+          "phone_number",
+          "tel"
+        ],
+        "comment": "The phone number of a person.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasPhone"
+      },
+      {
+        "uri": "http://example.org/university#enrolledIn",
+        "label": "enrolled in",
+        "pref_label": "enrolled in",
+        "alt_labels": [
+          "taking",
+          "registered for"
+        ],
+        "hidden_labels": [
+          "enrolled_in"
+        ],
+        "comment": "Indicates that a student is enrolled in a particular course.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Course",
+        "local_name": "enrolledIn"
+      },
+      {
+        "uri": "http://example.org/university#hasEnrollment",
+        "label": "has enrollment",
+        "pref_label": "has enrollment",
+        "alt_labels": [],
+        "hidden_labels": [
+          "has_enrollment"
+        ],
+        "comment": "Links a student to their enrollment records.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Enrollment",
+        "local_name": "hasEnrollment"
+      },
+      {
+        "uri": "http://example.org/university#hasStudentID",
+        "label": "has student ID",
+        "pref_label": "student ID",
+        "alt_labels": [
+          "student identifier",
+          "student number"
+        ],
+        "hidden_labels": [
+          "student_id",
+          "studentid",
+          "stud_id",
+          "id"
+        ],
+        "comment": "The unique identifier assigned to a student.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasStudentID"
+      },
+      {
+        "uri": "http://example.org/university#hasGPA",
+        "label": "has GPA",
+        "pref_label": "GPA",
+        "alt_labels": [
+          "grade point average",
+          "academic average"
+        ],
+        "hidden_labels": [
+          "gpa",
+          "grade_avg"
+        ],
+        "comment": "The grade point average of a student.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#decimal",
+        "local_name": "hasGPA"
+      },
+      {
+        "uri": "http://example.org/university#hasEnrollmentDate",
+        "label": "has enrollment date",
+        "pref_label": "enrollment date",
+        "alt_labels": [
+          "admission date",
+          "start date"
+        ],
+        "hidden_labels": [
+          "enrollment_date",
+          "enroll_date",
+          "start_dt"
+        ],
+        "comment": "The date when the student first enrolled at the university.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#date",
+        "local_name": "hasEnrollmentDate"
+      },
+      {
+        "uri": "http://example.org/university#hasAcademicStatus",
+        "label": "has academic status",
+        "pref_label": "academic status",
+        "alt_labels": [
+          "enrollment status",
+          "student status"
+        ],
+        "hidden_labels": [
+          "academic_status",
+          "status",
+          "student_status"
+        ],
+        "comment": "The current academic standing of the student.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasAcademicStatus"
+      },
+      {
+        "uri": "http://example.org/university#teaches",
+        "label": "teaches",
+        "pref_label": "teaches",
+        "alt_labels": [
+          "instructs",
+          "leads"
+        ],
+        "hidden_labels": [
+          "instructor_for"
+        ],
+        "comment": "Indicates that a professor teaches a particular course.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Course",
+        "local_name": "teaches"
+      },
+      {
+        "uri": "http://example.org/university#hasCourseCode",
+        "label": "has course code",
+        "pref_label": "course code",
+        "alt_labels": [
+          "course number",
+          "course ID"
+        ],
+        "hidden_labels": [
+          "course_code",
+          "course_id",
+          "crse_cd"
+        ],
+        "comment": "The unique code identifying a course.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasCourseCode"
+      },
+      {
+        "uri": "http://example.org/university#hasCourseTitle",
+        "label": "has course title",
+        "pref_label": "course title",
+        "alt_labels": [
+          "course name",
+          "title"
+        ],
+        "hidden_labels": [
+          "course_title",
+          "course_name",
+          "title"
+        ],
+        "comment": "The descriptive title of the course.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasCourseTitle"
+      },
+      {
+        "uri": "http://example.org/university#hasCreditHours",
+        "label": "has credit hours",
+        "pref_label": "credit hours",
+        "alt_labels": [
+          "credits",
+          "credit units"
+        ],
+        "hidden_labels": [
+          "credit_hours",
+          "credits",
+          "cr_hrs"
+        ],
+        "comment": "The number of credit hours awarded for completing the course.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#integer",
+        "local_name": "hasCreditHours"
+      },
+      {
+        "uri": "http://example.org/university#hasDepartmentCode",
+        "label": "has department code",
+        "pref_label": "department code",
+        "alt_labels": [
+          "department abbreviation",
+          "dept code"
+        ],
+        "hidden_labels": [
+          "department_code",
+          "dept_code",
+          "dept_cd"
+        ],
+        "comment": "The abbreviated code for the department.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasDepartmentCode"
+      },
+      {
+        "uri": "http://example.org/university#hasDepartmentName",
+        "label": "has department name",
+        "pref_label": "department name",
+        "alt_labels": [
+          "department title"
+        ],
+        "hidden_labels": [
+          "department_name",
+          "dept_name"
+        ],
+        "comment": "The full name of the department.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasDepartmentName"
+      },
+      {
+        "uri": "http://example.org/university#hasGrade",
+        "label": "has grade",
+        "pref_label": "grade",
+        "alt_labels": [
+          "letter grade",
+          "course grade"
+        ],
+        "hidden_labels": [
+          "grade",
+          "final_grade"
+        ],
+        "comment": "The final grade received in the course.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasGrade"
+      },
+      {
+        "uri": "http://example.org/university#hasEnrollmentSemester",
+        "label": "has enrollment semester",
+        "pref_label": "semester",
+        "alt_labels": [
+          "term",
+          "academic term"
+        ],
+        "hidden_labels": [
+          "semester",
+          "term",
+          "enrollment_term"
+        ],
+        "comment": "The semester or term when the enrollment occurred.",
+        "domain_class": null,
+        "range_type": "http://www.w3.org/2001/XMLSchema#string",
+        "local_name": "hasEnrollmentSemester"
+      }
+    ],
+    "object_properties": [
+      {
+        "uri": "http://example.org/university#memberOf",
+        "label": "member of",
+        "pref_label": "member of",
+        "alt_labels": [
+          "belongs to",
+          "affiliated with"
+        ],
+        "hidden_labels": [
+          "member_of",
+          "dept_member"
+        ],
+        "comment": "Indicates that a person is a member of a particular department.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Department",
+        "local_name": "memberOf"
+      },
+      {
+        "uri": "http://example.org/university#enrolledIn",
+        "label": "enrolled in",
+        "pref_label": "enrolled in",
+        "alt_labels": [
+          "taking",
+          "registered for"
+        ],
+        "hidden_labels": [
+          "enrolled_in"
+        ],
+        "comment": "Indicates that a student is enrolled in a particular course.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Course",
+        "local_name": "enrolledIn"
+      },
+      {
+        "uri": "http://example.org/university#hasEnrollment",
+        "label": "has enrollment",
+        "pref_label": "has enrollment",
+        "alt_labels": [],
+        "hidden_labels": [
+          "has_enrollment"
+        ],
+        "comment": "Links a student to their enrollment records.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Enrollment",
+        "local_name": "hasEnrollment"
+      },
+      {
+        "uri": "http://example.org/university#teaches",
+        "label": "teaches",
+        "pref_label": "teaches",
+        "alt_labels": [
+          "instructs",
+          "leads"
+        ],
+        "hidden_labels": [
+          "instructor_for"
+        ],
+        "comment": "Indicates that a professor teaches a particular course.",
+        "domain_class": null,
+        "range_type": "http://example.org/university#Course",
+        "local_name": "teaches"
+      }
+    ]
+  }
+}

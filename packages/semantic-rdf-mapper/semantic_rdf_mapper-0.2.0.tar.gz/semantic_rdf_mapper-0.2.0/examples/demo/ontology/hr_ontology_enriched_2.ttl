@@ -1,0 +1,159 @@
+@prefix : <http://example.org/hr#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/hr> a owl:Ontology ;
+    dcterms:creator "Demo Project" ;
+    dcterms:description "Ontology for managing employee and organizational data" ;
+    dcterms:title "HR Management Ontology" ;
+    owl:versionInfo "1.0 - Minimal SKOS Coverage" .
+
+:annualCompensation a owl:DatatypeProperty ;
+    rdfs:label "Annual Compensation" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.586211"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:decimal ;
+    skos:changeNote "Added hiddenLabel 'annual_comp' on 2025-11-09 from column 'annual_comp'. Rationale: Column name 'annual_comp' uses database-style naming that relates to property 'Annual Compensation'. Adding as hiddenLabel will improve matching with legacy database columns"@en ;
+    skos:hiddenLabel "annual_comp"@en .
+
+:costCenter a owl:DatatypeProperty ;
+    rdfs:label "Cost Center" ;
+    rdfs:domain :Organization ;
+    rdfs:range xsd:string .
+
+:departmentCode a owl:DatatypeProperty ;
+    rdfs:label "Department Code" ;
+    rdfs:domain :Organization ;
+    rdfs:range xsd:string .
+
+:emailAddress a owl:DatatypeProperty ;
+    rdfs:label "Email Address" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:employeeNumber a owl:DatatypeProperty ;
+    rdfs:label "Employee Number" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.585774"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string ;
+    skos:changeNote "Added hiddenLabel 'emp_num' on 2025-11-09 from column 'emp_num'. Rationale: Column 'emp_num' is a common abbreviation for property 'Employee Number'. This is a standard database column naming pattern."@en ;
+    skos:hiddenLabel "emp_num"@en .
+
+:employmentStatus a owl:DatatypeProperty ;
+    rdfs:label "Employment Status" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.586147"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string ;
+    skos:changeNote "Added hiddenLabel 'status_cd' on 2025-11-09 from column 'status_cd'. Rationale: Column 'status_cd' is a common abbreviation for property 'Employment Status'. This is a standard database column naming pattern."@en ;
+    skos:hiddenLabel "status_cd"@en .
+
+:firstName a owl:DatatypeProperty ;
+    rdfs:label "First Name" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasManager a owl:ObjectProperty ;
+    rdfs:label "has manager" ;
+    rdfs:domain :Employee ;
+    rdfs:range :Employee .
+
+:hireDate a owl:DatatypeProperty ;
+    rdfs:label "Hire Date" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.586111"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:date ;
+    skos:changeNote "Added hiddenLabel 'hire_dt' on 2025-11-09 from column 'hire_dt'. Rationale: Column 'hire_dt' is a common abbreviation for property 'Hire Date'. This is a standard database column naming pattern."@en ;
+    skos:hiddenLabel "hire_dt"@en .
+
+:holdsPosition a owl:ObjectProperty ;
+    rdfs:label "holds position" ;
+    rdfs:domain :Employee ;
+    rdfs:range :Position .
+
+:jobTitle a owl:DatatypeProperty ;
+    rdfs:label "Job Title" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.586062"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string ;
+    skos:changeNote "Added hiddenLabel 'job_ttl' on 2025-11-09 from column 'job_ttl'. Rationale: Column 'job_ttl' is a common abbreviation for property 'Job Title'. This is a standard database column naming pattern."@en ;
+    skos:hiddenLabel "job_ttl"@en .
+
+:lastName a owl:DatatypeProperty ;
+    rdfs:label "Last Name" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:middleName a owl:DatatypeProperty ;
+    rdfs:label "Middle Name" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:officeLocation a owl:DatatypeProperty ;
+    rdfs:label "Office Location" ;
+    dcterms:contributor "rxcthefirst" ;
+    dcterms:modified "2025-11-09T04:17:12.586180"^^xsd:dateTime ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string ;
+    skos:changeNote "Added hiddenLabel 'office_loc' on 2025-11-09 from column 'office_loc'. Rationale: Column name 'office_loc' uses database-style naming that relates to property 'Office Location'. Adding as hiddenLabel will improve matching with legacy database columns"@en ;
+    skos:hiddenLabel "office_loc"@en .
+
+:organizationCode a owl:DatatypeProperty ;
+    rdfs:label "Organization Code" ;
+    rdfs:domain :Organization ;
+    rdfs:range xsd:string .
+
+:organizationName a owl:DatatypeProperty ;
+    rdfs:label "Organization Name" ;
+    rdfs:domain :Organization ;
+    rdfs:range xsd:string .
+
+:phoneNumber a owl:DatatypeProperty ;
+    rdfs:label "Phone Number" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:salary a owl:DatatypeProperty ;
+    rdfs:label "Salary" ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:decimal .
+
+:statusCode a owl:DatatypeProperty ;
+    rdfs:label "Status Code" ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:string .
+
+:terminationDate a owl:DatatypeProperty ;
+    rdfs:label "Termination Date" ;
+    rdfs:domain :Employee ;
+    rdfs:range xsd:date .
+
+:worksFor a owl:ObjectProperty ;
+    rdfs:label "works for" ;
+    rdfs:domain :Employee ;
+    rdfs:range :Organization .
+
+:Position a owl:Class ;
+    rdfs:label "Position" ;
+    rdfs:comment "A job position within the organization" .
+
+:Organization a owl:Class ;
+    rdfs:label "Organization" ;
+    rdfs:comment "An organizational unit or department" .
+
+:Person a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:comment "A human being in the organization" .
+
+:Employee a owl:Class ;
+    rdfs:label "Employee" ;
+    rdfs:comment "A person employed by the organization" ;
+    rdfs:subClassOf :Person .
+

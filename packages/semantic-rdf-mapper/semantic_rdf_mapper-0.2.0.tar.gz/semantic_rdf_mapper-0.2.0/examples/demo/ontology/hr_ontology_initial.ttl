@@ -1,0 +1,159 @@
+@prefix : <http://example.org/hr#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@base <http://example.org/hr> .
+
+<http://example.org/hr> rdf:type owl:Ontology ;
+                         dcterms:title "HR Management Ontology" ;
+                         dcterms:description "Ontology for managing employee and organizational data" ;
+                         dcterms:creator "Demo Project" ;
+                         owl:versionInfo "1.0 - Minimal SKOS Coverage" .
+
+#################################################################
+#    Classes
+#################################################################
+
+:Person rdf:type owl:Class ;
+        rdfs:label "Person" ;
+        rdfs:comment "A human being in the organization" .
+
+:Employee rdf:type owl:Class ;
+          rdfs:subClassOf :Person ;
+          rdfs:label "Employee" ;
+          rdfs:comment "A person employed by the organization" .
+
+:Organization rdf:type owl:Class ;
+              rdfs:label "Organization" ;
+              rdfs:comment "An organizational unit or department" .
+
+:Position rdf:type owl:Class ;
+          rdfs:label "Position" ;
+          rdfs:comment "A job position within the organization" .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+:worksFor rdf:type owl:ObjectProperty ;
+          rdfs:domain :Employee ;
+          rdfs:range :Organization ;
+          rdfs:label "works for" .
+
+:hasManager rdf:type owl:ObjectProperty ;
+            rdfs:domain :Employee ;
+            rdfs:range :Employee ;
+            rdfs:label "has manager" .
+
+:holdsPosition rdf:type owl:ObjectProperty ;
+               rdfs:domain :Employee ;
+               rdfs:range :Position ;
+               rdfs:label "holds position" .
+
+#################################################################
+#    Datatype Properties - Person/Employee Basic Info
+#    NOTE: Only 6 of 18 properties have SKOS labels (~33% coverage)
+#          Most properties lack skos:hiddenLabel for abbreviations
+#################################################################
+
+:firstName rdf:type owl:DatatypeProperty ;
+           rdfs:domain :Person ;
+           rdfs:range xsd:string ;
+           rdfs:label "First Name" .
+
+:lastName rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Person ;
+          rdfs:range xsd:string ;
+          rdfs:label "Last Name" .
+
+:middleName rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Person ;
+            rdfs:range xsd:string ;
+            rdfs:label "Middle Name" .
+
+:emailAddress rdf:type owl:DatatypeProperty ;
+              rdfs:domain :Person ;
+              rdfs:range xsd:string ;
+              rdfs:label "Email Address" .
+
+:phoneNumber rdf:type owl:DatatypeProperty ;
+             rdfs:domain :Person ;
+             rdfs:range xsd:string ;
+             rdfs:label "Phone Number" .
+
+#################################################################
+#    Employment Info - Missing SKOS labels for CSV column names
+#################################################################
+
+:employeeNumber rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Employee ;
+                rdfs:range xsd:string ;
+                rdfs:label "Employee Number" .
+
+:hireDate rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Employee ;
+          rdfs:range xsd:date ;
+          rdfs:label "Hire Date" .
+
+:terminationDate rdf:type owl:DatatypeProperty ;
+                 rdfs:domain :Employee ;
+                 rdfs:range xsd:date ;
+                 rdfs:label "Termination Date" .
+
+:employmentStatus rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :Employee ;
+                  rdfs:range xsd:string ;
+                  rdfs:label "Employment Status" .
+
+:jobTitle rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Employee ;
+          rdfs:range xsd:string ;
+          rdfs:label "Job Title" .
+
+:salary rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Employee ;
+        rdfs:range xsd:decimal ;
+        rdfs:label "Salary" .
+
+:officeLocation rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Employee ;
+                rdfs:range xsd:string ;
+                rdfs:label "Office Location" .
+
+#################################################################
+#    Organization Properties - No SKOS labels
+#################################################################
+
+:organizationName rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :Organization ;
+                  rdfs:range xsd:string ;
+                  rdfs:label "Organization Name" .
+
+:organizationCode rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :Organization ;
+                  rdfs:range xsd:string ;
+                  rdfs:label "Organization Code" .
+
+:costCenter rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Organization ;
+            rdfs:range xsd:string ;
+            rdfs:label "Cost Center" .
+
+:departmentCode rdf:type owl:DatatypeProperty ;
+                rdfs:domain :Organization ;
+                rdfs:range xsd:string ;
+                rdfs:label "Department Code" .
+
+:annualCompensation rdf:type owl:DatatypeProperty ;
+                    rdfs:domain :Employee ;
+                    rdfs:range xsd:decimal ;
+                    rdfs:label "Annual Compensation" .
+
+:statusCode rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Employee ;
+            rdfs:range xsd:string ;
+            rdfs:label "Status Code" .
+

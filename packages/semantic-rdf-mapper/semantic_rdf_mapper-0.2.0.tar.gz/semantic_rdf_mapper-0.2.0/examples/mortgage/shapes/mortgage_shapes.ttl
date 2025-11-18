@@ -1,0 +1,75 @@
+@prefix ex: <https://example.com/mortgage#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Mortgage Loan Shape
+ex:MortgageLoanShape a sh:NodeShape ;
+    sh:targetClass ex:MortgageLoan ;
+    sh:property [
+        sh:path ex:loanNumber ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Mortgage loan must have exactly one loan number" ;
+    ] ;
+    sh:property [
+        sh:path ex:principalAmount ;
+        sh:datatype xsd:decimal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minExclusive 0 ;
+        sh:message "Principal amount must be greater than 0" ;
+    ] ;
+    sh:property [
+        sh:path ex:interestRate ;
+        sh:datatype xsd:decimal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 0 ;
+        sh:maxInclusive 1 ;
+        sh:message "Interest rate must be between 0 and 1" ;
+    ] ;
+    sh:property [
+        sh:path ex:originationDate ;
+        sh:datatype xsd:date ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Origination date is required" ;
+    ] ;
+    sh:property [
+        sh:path ex:hasBorrower ;
+        sh:class ex:Borrower ;
+        sh:minCount 1 ;
+        sh:message "Mortgage loan must have at least one borrower" ;
+    ] ;
+    sh:property [
+        sh:path ex:collateralProperty ;
+        sh:class ex:Property ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Mortgage loan must have exactly one collateral property" ;
+    ] .
+
+# Borrower Shape
+ex:BorrowerShape a sh:NodeShape ;
+    sh:targetClass ex:Borrower ;
+    sh:property [
+        sh:path ex:borrowerName ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minLength 1 ;
+        sh:message "Borrower must have a name" ;
+    ] .
+
+# Property Shape
+ex:PropertyShape a sh:NodeShape ;
+    sh:targetClass ex:Property ;
+    sh:property [
+        sh:path ex:propertyAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minLength 1 ;
+        sh:message "Property must have an address" ;
+    ] .
