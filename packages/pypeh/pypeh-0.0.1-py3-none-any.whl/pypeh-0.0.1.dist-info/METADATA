@@ -1,0 +1,54 @@
+Metadata-Version: 2.4
+Name: pypeh
+Version: 0.0.1
+Summary: A modular project with a core library and multiple adapters
+Author: VITO Health DMT
+License-Expression: MIT
+License-File: LICENSE
+Requires-Python: <4.0.0,>=3.10
+Requires-Dist: fsspec
+Requires-Dist: linkml>=1.9.1
+Requires-Dist: peh-model==0.3.0
+Requires-Dist: pydantic-settings
+Provides-Extra: core
+Provides-Extra: dataframe-adapter
+Requires-Dist: dataguard; extra == 'dataframe-adapter'
+Requires-Dist: fastexcel; extra == 'dataframe-adapter'
+Requires-Dist: polars; extra == 'dataframe-adapter'
+Requires-Dist: pyarrow; extra == 'dataframe-adapter'
+Provides-Extra: export-adapter
+Requires-Dist: xlsxwriter; extra == 'export-adapter'
+Provides-Extra: polars-adapter
+Requires-Dist: fastexcel; extra == 'polars-adapter'
+Requires-Dist: polars; extra == 'polars-adapter'
+Requires-Dist: pyarrow; extra == 'polars-adapter'
+Provides-Extra: rocrate-adapter
+Requires-Dist: rocrate; extra == 'rocrate-adapter'
+Provides-Extra: s3-adapter
+Requires-Dist: s3fs; extra == 's3-adapter'
+Provides-Extra: test-core
+Requires-Dist: pytest<9,>=8.2.0; extra == 'test-core'
+Description-Content-Type: text/markdown
+
+# Installation
+
+## Core Library
+To install the core library for development, run:
+```bash
+uv sync
+```
+
+## Adapters
+### Dataframe adapter
+To install the dataframe adapter, run:
+```bash
+uv sync --extra dataframe_adapter
+```
+
+## Tests
+
+```bash
+make test-core
+make test-dataframe
+make test-rocrate
+```
