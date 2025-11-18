@@ -1,0 +1,29 @@
+[project]
+name = "fzpcb"
+version = "0.0.1"
+description = ''
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = []
+authors = [
+  { name = "Philip Tregoning", email = "Philip.Tregoning@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+  "pyyaml",
+  "click",
+  "colour",
+  "svgwrite"
+]
+
+[project.urls]
+Documentation = "https://github.com/Twirlip-of-the-Mists/fzpcb#readme"
+Issues = "https://github.com/Twirlip-of-the-Mists/fzpcb/issues"
+Source = "https://github.com/Twirlip-of-the-Mists/fzpcb"
+
+[project.scripts]
+fzpcb = "fzpcb.fzpcb:cli"
