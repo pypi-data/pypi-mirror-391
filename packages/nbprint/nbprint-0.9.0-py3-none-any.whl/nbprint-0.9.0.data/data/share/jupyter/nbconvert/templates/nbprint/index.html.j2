@@ -1,0 +1,180 @@
+{%- extends 'lab/index.html.j2' -%}
+{% from 'mathjax_override.html.j2' import mathjax_custom %}
+
+{%- block html_head_js_mathjax -%}
+{{ mathjax_custom(resources.mathjax_url) }}
+{%- endblock html_head_js_mathjax -%}
+
+
+{%- block html_head_js -%}
+<script>
+var _nbprint_configuration = {};
+var _nbprint_notebook_info = new Map();
+window.FontAwesomeConfig = {
+    searchPseudoElements: true
+  }
+</script>
+
+{{ resources.include_js("static/embedded.js", True) }}
+
+{{ super() }}
+{%- endblock html_head_js -%}
+
+{% block extra_css %}
+{{ resources.include_css("static/jupyter-theme-light.css") }}
+{{ resources.include_css("static/notebook.css") }}
+{{ resources.include_css("static/embedded.css") }}
+{{ resources.include_css("static/table-of-content.css") }}
+{{ resources.include_css("static/nbprint.css") }}
+{{ resources.include_css("static/fontawesome.min.css") }}
+{% endblock extra_css %}
+
+{% block notebook_css %}
+<style type="text/css">
+/* Force rendering true colors when outputing to pdf */
+* {
+  -webkit-print-color-adjust: exact;
+}
+
+/* Misc */
+a.anchor-link {
+  display: none;
+}
+
+/* Input area styling */
+.jp-InputArea {
+  overflow: hidden;
+}
+
+.jp-InputArea-editor {
+  overflow: hidden;
+}
+
+.cm-editor.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.cm-line */
+  padding: var(--jp-code-padding) 4px;
+  margin: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
+}
+
+/* Hiding the collapser by default */
+.jp-Collapser {
+  display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
+}
+
+@media print {
+  .jp-Cell-inputWrapper,
+  .jp-Cell-outputWrapper {
+    display: block;
+  }
+}
+</style>
+{% endblock notebook_css %}
+
+{#
+==============================================================================
+ Cell
+==============================================================================
+#}
+
+{% block any_cell scoped %}
+{% if cell.metadata.get("nbprint", {}) != {} %}
+    <script>
+        _nbprint_notebook_info.set("{{ cell.metadata["nbprint"]["id"] }}", {{ cell.metadata["nbprint"] | json_dumps | escape_html_script }});
+        {% if cell.metadata["nbprint"].get("role", "") == "configuration" %}
+        _nbprint_configuration = {{ cell.metadata["nbprint"] | json_dumps | escape_html_script }};
+        {% endif %}
+    </script>
+    {% if cell.metadata["nbprint"].get("css", None) %}
+    <style>
+        /* TODO should we make this like `ignore` as a first-order attribute? */
+        {% if cell.metadata["nbprint"].get("role", "") not in ("configuration", "page") %}
+        @scope (.{{ cell.metadata["nbprint"]["element_selector"] }}) {
+        {% endif %}
+
+        {{ cell.metadata["nbprint"]["css"] }}
+
+        {% if cell.metadata["nbprint"].get("role", "") not in ("configuration", "page") %}
+        }
+        {% endif %}
+    </style>
+    {% endif %}
+
+    {% if cell.metadata["nbprint"].get("esm", None) %}
+    <script type="module">
+
+        document.addEventListener("nbprint-ready", async () => {
+
+            // TODO formal entrypoint a la anywidget
+            // TODO put onto global nbprint so we can wait
+            // for all to be done before moving to pagedjs phase
+            {{ cell.metadata["nbprint"]["esm"] }}
+
+            typeof(render) !== undefined &&
+            render(
+                {{ cell.metadata["nbprint"] | json_dumps }},
+                document.querySelector(
+                    `[data-nbprint-id="{{ cell.metadata["nbprint"]["id"] }}`,
+                )
+            );
+        });
+    </script>
+    {% endif %}
+
+
+    {% if cell.metadata["nbprint"].get("ignore", False) %}
+        {# Don't generate any visual elements if nbprint_ignore tag is set #}
+    {% else %}
+        <div class="{{ cell.metadata["nbprint"]["class"] }}" {{ cell.metadata["nbprint"]["attrs"] }} data-nbprint-id="{{ cell.metadata["nbprint"]["id"] }}" data-nbprint-parent-id="{{ cell.metadata["nbprint"].get("parent-id", "") }}">
+
+        <!-- TODO should we make this like `ignore` as a first-order attribute? -->
+        <!-- { % if cell.metadata["nbprint"].get("role", "content") == "content" % } -->
+        {{ super() }}
+        <!-- { % endif % } -->
+
+        </div>
+    {% endif %}
+{% else %}
+    {{ super() }}
+{% endif %}
+{% endblock any_cell %}
+
+
+
+{% block in_prompt -%}
+{%- endblock in_prompt %}
+
+{% block input_group -%}
+{% endblock input_group %}
+
+{% block input %}
+{%- endblock input %}
+
+{% block empty_in_prompt -%}
+{%- endblock empty_in_prompt %}
+
+{% block output_area_prompt %}
+{% endblock output_area_prompt %}
+
+{% block footer %}
+{{ super() }}
+{% endblock footer %}

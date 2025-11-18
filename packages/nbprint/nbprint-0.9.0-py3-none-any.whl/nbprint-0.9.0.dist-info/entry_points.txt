@@ -1,0 +1,7 @@
+[console_scripts]
+nbprint = nbprint.cli:main
+nbprint-cc = nbprint.cli:hydra
+nbprint-cc-explain = nbprint.cli:hydra_explain
+
+[hydra.lernaplugins]
+nbprint = pkg:nbprint.config.hydra
