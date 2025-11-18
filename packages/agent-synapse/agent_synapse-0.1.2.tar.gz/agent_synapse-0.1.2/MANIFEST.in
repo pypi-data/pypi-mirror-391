@@ -1,0 +1,15 @@
+include README.md
+include LICENSE
+include requirements.txt
+include pyproject.toml
+
+# Include package data
+recursive-include synapse/static *
+recursive-include synapse/templates *
+recursive-include synapse/*.pyi
+
+# Include examples
+recursive-include examples *
+
+# Include tests
+recursive-include tests *
