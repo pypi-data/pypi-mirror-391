@@ -1,0 +1,602 @@
+- title:
+    type: template
+    template: "Grab* A-{code}, Jakarta Pusat"
+    params:
+      code:
+        generator: random_alnum
+        length: 12
+        charset: "abcdefghijklmnopqrstuvwxyz0123456789"
+        transform:
+          case: lower
+  currency: "IDR"
+  amount_range:
+    min: 15000.0
+    max: 200000.0
+  amount_format: -2
+  types:
+    - "taxi"
+    - "transportation"
+  weight: 1300
+- title: "Gopay-gojek, Jakarta Selat"
+  currency: "IDR"
+  amount_range:
+    min: 15000.0
+    max: 500000.0
+  amount_format: -2
+  types:
+    - "taxi"
+    - "transportation"
+  weight: 400
+- title: "Gopay, Jakarta Sel"
+  currency: "IDR"
+  amount_range:
+    min: 10000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "traveling"
+    - "booking"
+  weight: 300
+- title: "Nirvana Kitchen, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 25000.0
+    max: 400000.0
+  amount_format: -1
+  types:
+    - "taxi"
+    - "transportation"
+  weight: 400
+- title: "Airasia_qz Xckqtd, Indonesia, ID"
+  currency: "IDR"
+  amount_range:
+    min: 1000000.0
+    max: 4000000.0
+  amount_format: 0
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 80
+- title: "Irma By Bacaro, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 1500000.0
+  amount_format: -1
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Minimart Cg12, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 10000.0
+    max: 100000.0
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 120
+- title: "Potato Head Beach Clu, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 1000000.0
+    max: 2000000.0
+  amount_format: -3
+  numberOfOccurrences: 2
+  types:
+    - "club"
+    - "shopping"
+  weight: 500
+- title: "Apotek Pharmacare Bali, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 1000000.0
+  amount_format: -3
+  types:
+    - "pharmacy"
+    - "health"
+  weight: 120
+- title: "Eden Hookah Club, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 400000.0
+    max: 1000000.0
+  amount_format: -4
+  types:
+    - "hookah"
+    - "leisure"
+  weight: 130
+- title: "Lush - Salon 2, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 600000.0
+    max: 1500000.0
+  amount_format: -4
+  types:
+    - "salon"
+    - "beauty"
+  weight: 110
+- title: "Padappa, Badung Kab."
+  currency: "IDR"
+  amount_range:
+    min: 300000.0
+    max: 700000.0
+  amount_format: -4
+  types:
+    - "tea"
+  weight: 110
+- title: "La Brisa, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 900000.0
+  amount_format: -5
+  types:
+    - "club"
+  weight: 110
+- title: "Balance Bikini 2, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 1400000.0
+  amount_format: -3
+  types:
+    - "shop"
+  weight: 110
+- title: "Melowear.shortcut, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 400000.0
+    max: 1000000.0
+  amount_format: -4
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 100
+- title: "Como Uma Canggu Ho, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 300000.0
+  amount_format: -3
+  types:
+    - "shopping"
+  weight: 80
+- title: "Putri Bali, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 1500000.0
+  amount_format: -3
+  types:
+    - "shopping"
+  weight: 80
+- title: "Bali Extract Farm, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 1500000.0
+  amount_format: -3
+  types:
+    - "shopping"
+  weight: 80
+- title: "Koya Spa, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 900000.0
+  amount_format: -4
+  types:
+    - "spa"
+    - "wellness"
+  weight: 80
+- title: "Pt Lyd Bali Organik Mb, Badung - Bali"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 200000.0
+  amount_format: -4
+  types:
+    - "organic"
+    - "groceries"
+  weight: 80
+- title: "Csz*syn Free Soap Hous, Denpasar"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "shopping"
+  weight: 80
+- title: "Moba Company, Gianyar"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 200000.0
+  amount_format: -4
+  types:
+    - "shopping"
+  weight: 80
+- title: "Vana Wear.id Ho, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 2000000.0
+  amount_format: -4
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 80
+- title: "Luju's Healthy And Org, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 150000.0
+    max: 900000.0
+  amount_format: -3
+  types:
+    - "groceries"
+    - "organic"
+  weight: 80
+- title: "Eco Cell, Badung Kab."
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "electronics"
+    - "shopping"
+  weight: 80
+- title: "Jungle Padel, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 900000.0
+  amount_format: -4
+  types:
+    - "sports"
+    - "leisure"
+  weight: 80
+- title: "Nailed, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 300000.0
+    max: 1000000.0
+  amount_format: -3
+  types:
+    - "nail salon"
+    - "beauty"
+  weight: 80
+- title: "Happy Chappy Berawa, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 1500000.0
+  amount_format: 0
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Csz*bar Boa, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 700000.0
+  amount_format: -3
+  types:
+    - "bar"
+    - "leisure"
+  weight: 80
+- title: "Lemon Nails, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 700000.0
+  amount_format: -3
+  types:
+    - "nail salon"
+    - "beauty"
+  weight: 80
+- title: "Sanmed Medical Canggu, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 300000.0
+    max: 1000000.0
+  amount_format: -5
+  types:
+    - "medical"
+    - "health"
+  weight: 80
+- title: "Xdt*canggu Property Ma, Jakarta"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "real estate"
+    - "property"
+  weight: 80
+- title: "Mid*tokopedia, Jakarta"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 1500000.0
+  amount_format: -2
+  types:
+    - "e-commerce"
+    - "shopping"
+  weight: 80
+- title: "Canggu Station, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Happy Cell, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 2000000.0
+  amount_format: -4
+  types:
+    - "electronics"
+    - "shopping"
+  weight: 80
+- title: "Mid*tokopedia, Jakarta"
+  currency: "IDR"
+  amount_range:
+    min: 150000.0
+    max: 500000.0
+  amount_format: -2
+  types:
+    - "e-commerce"
+    - "shopping"
+  weight: 80
+- title: "Bali Social Club Cangg, Badung Kab."
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 900000.0
+  amount_format: -4
+  types:
+    - "club"
+    - "leisure"
+  weight: 80
+- title: "Bali Social Club, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 300000.0
+  amount_format: -2
+  types:
+    - "club"
+    - "leisure"
+  weight: 80
+- title: "The Spice Of Life, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 2500000.0
+  amount_format: -4
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Margaret Bistro Mbl, Badung - Bali"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 700000.0
+  amount_format: -1
+  types:
+    - "bar"
+    - "leisure"
+  weight: 80
+- title: "Xdt*pt Nirvana Strengt, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -2
+  types:
+    - "fitness"
+    - "gym"
+  weight: 80
+- title: "Pasta, Bitte!, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 400000.0
+  amount_format: -1
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Laser Me Canggu, Badung Kab."
+  currency: "IDR"
+  amount_range:
+    min: 700000.0
+    max: 1500000.0
+  amount_format: -3
+  types:
+    - "laser"
+    - "beauty"
+  weight: 80
+- title: "Phomo, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 400000.0
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Bershka Beachwalk, Bali"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 700000.0
+  amount_format: -2
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 80
+- title: "Sushi Tei, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 200000.0
+    max: 400000.0
+  amount_format: -1
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "% Arabica, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "coffee"
+    - "beverage"
+  weight: 80
+- title: "Bali Cabin Ho, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 1500000.0
+    max: 2500000.0
+  amount_format: -4
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Stroberi, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 300000.0
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Savaya Bali, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 300000.0
+  amount_format: -3
+  types:
+    - "club"
+    - "leisure"
+  weight: 80
+- title: "Burger King Sunset Roa, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 50000.0
+    max: 150000.0
+  amount_format: -2
+  types:
+    - "fast food"
+    - "restaurant"
+  weight: 80
+- title: "W Bali Seminyak Ho, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 500000.0
+    max: 2000000.0
+  amount_format: -4
+  types:
+    - "hotel"
+    - "restaurant"
+  weight: 80
+- title: "Milk And Madu Berawa, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 150000.0
+    max: 500000.0
+  amount_format: -2
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Rejuvolife, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 300000.0
+  amount_format: -3
+  types:
+    - "spa"
+    - "wellness"
+  weight: 80
+- title: "Bali Burrito Club, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 100000.0
+    max: 300000.0
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Morabito Beach Mbl, Badung - Bali"
+  currency: "IDR"
+  amount_range:
+    min: 150000.0
+    max: 500000.0
+  amount_format: -1
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "7am Bakers Mbl, Badung - Bali"
+  currency: "IDR"
+  amount_range:
+    min: 140000.0
+    max: 300000.0
+  amount_format: -1
+  types:
+    - "bakery"
+    - "food"
+  weight: 80
+- title: "Moon Hookah Lounge Ba, Badung (kab)"
+  currency: "IDR"
+  amount_range:
+    min: 250000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "hookah"
+    - "leisure"
+  weight: 80
+- title: "Long Time, Badung"
+  currency: "IDR"
+  amount_range:
+    min: 400000.0
+    max: 900000.0
+  amount_format: -2
+  types:
+    - "restaurant"
+    - "food"
+  weight: 80
+- title: "Pt Dufrindo Mbl, Badung - Bali"
+  currency: "IDR"
+  amount_range:
+    min: 140000.0
+    max: 400000.0
+  amount_format: -4
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 80

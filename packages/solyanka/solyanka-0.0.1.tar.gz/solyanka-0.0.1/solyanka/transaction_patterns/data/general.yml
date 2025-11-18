@@ -1,0 +1,1091 @@
+- title: "Gearbest.com Internet"
+  currency: "EUR"
+  amount_range:
+    min: 5.0
+    max: 20.0
+  amount_format: 2
+  types:
+    - "internet"
+    - "shopping"
+  weight: 70
+- title:
+    type: template
+    template: "Hotelscom{rid} {cc}.HOTELS.COM"
+    params:
+      rid:
+        generator: random_digits
+        length: 13
+      cc:
+        generator: choice
+        options: ["FR", "ES", "IT", "DE", "NL", "BE", "PT", "AT"]
+        transform:
+          case: upper
+  currency: "EUR"
+  amount_range:
+    min: 70.0
+    max: 500.0
+  amount_format: 2
+  refund_probability: 0.2
+  refundDelayMinHours: 72
+  refundDelayMaxHours: 288
+  types:
+    - "traveling"
+    - "hotel"
+  weight: 70
+- title: "Ryanair DUBLIN"
+  currency: "EUR"
+  amount_range:
+    min: 50.0
+    max: 300.0
+  amount_format: 2
+  types:
+    - "traveling"
+    - "aviation"
+  weight: 15
+- title: "Myprotein.com NORTHWICH"
+  currency: "EUR"
+  amount_range:
+    min: 40.0
+    max: 80.0
+  amount_format: 2
+  types:
+    - "sports"
+    - "shopping"
+  weight: 40
+- title: "Amznmktplace amazon.co.uk"
+  currency: "GBP"
+  amount_range:
+    min: 40.0
+    max: 200.0
+  amount_format: 2
+  types:
+    - "shopping"
+  weight: 90
+- title: "Monese Eu Sa INTERNET"
+  currency: "EUR"
+  amount_range:
+    min: 40.0
+    max: 300.0
+  amount_format: -1
+  types:
+    - "wallet"
+  weight: 50
+- title: "Monese INTERNET"
+  currency: "USD"
+  amount_range:
+    min: 40.0
+    max: 400.0
+  amount_format: -1
+  types:
+    - "wallet"
+  weight: 50
+- title: "Globale /hugo Boss London"
+  currency: "GBP"
+  amount_range:
+    min: 60.0
+    max: 300.0
+  amount_format: 0
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 10
+- title: "Globale /hugo Boss Berlin"
+  currency: "EUR"
+  amount_range:
+    min: 60.0
+    max: 300.0
+  amount_format: 0
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 10
+- title: "Amazon.es Amazon.es LUXEMBOURG"
+  currency: "EUR"
+  amount_range:
+    min: 30.0
+    max: 200.0
+  amount_format: 2
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 90
+- title: "Amazon.de Amazon.de LUXEMBOURG"
+  currency: "EUR"
+  amount_range:
+    min: 30.0
+    max: 200.0
+  amount_format: 2
+  types:
+    - "clothing"
+    - "shopping"
+  weight: 90
+- title: "Aliexpress.com Luxembourg"
+  currency: "USD"
+  amount_range:
+    min: 3.0
+    max: 50.0
+  amount_format: 2
+  types:
+    - "shopping"
+  weight: 80
+- title: "Ryanair Charleroi"
+  currency: "EUR"
+  amount_range:
+    min: 50.0
+    max: 150.0
+  amount_format: 2
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 15
+- title: "Uber   *Trip HELP.UBER.COM"
+  currency: "USD"
+  amount_range:
+    min: 10.0
+    max: 70.0
+  amount_format: 2
+  types:
+    - "transportation"
+    - "ride_hailing"
+  weight: 100
+- title: "Uber   *Trip HELP.UBER.COM"
+  currency: "EUR"
+  amount_range:
+    min: 10.0
+    max: 70.0
+  amount_format: 2
+  types:
+    - "transportation"
+    - "ride_hailing"
+  weight: 100
+- title: "Computer Accessories +85263588699"
+  currency: "EUR"
+  amount_range:
+    min: 20.0
+    max: 70.0
+  amount_format: 2
+  types:
+    - "computer"
+    - "accessories"
+    - "shopping"
+  weight: 40
+- title: "Zenni Optical 800-211-2105"
+  currency: "USD"
+  amount_range:
+    min: 20.0
+    max: 100.0
+  amount_format: 1
+  types:
+    - "optical"
+    - "shopping"
+  weight: 20
+- title: "Eva Airways AUSTRIA"
+  currency: "EUR"
+  amount_range:
+    min: 250.0
+    max: 900.0
+  amount_format: 1
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 15
+- title: "Wizz Air Hungary Kft Eur BUDAPEST"
+  currency: "EUR"
+  amount_range:
+    min: 90.0
+    max: 190.0
+  amount_format: 1
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 15
+- title: "Nomadticket.com INTERNET"
+  currency: "EUR"
+  amount_range:
+    min: 90.0
+    max: 590.0
+  amount_format: 1
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 20
+- title: "Agoda.com Internet"
+  currency: "EUR"
+  amount_range:
+    min: 90.0
+    max: 290.0
+  amount_format: 2
+  types:
+    - "hotel"
+    - "traveling"
+  weight: 20
+- title: "Agoda.com Internet"
+  currency: "USD"
+  amount_range:
+    min: 90.0
+    max: 290.0
+  amount_format: 2
+  types:
+    - "hotel"
+    - "traveling"
+  weight: 20
+- title: "Agoda.com Internet"
+  currency: "GBP"
+  amount_range:
+    min: 90.0
+    max: 290.0
+  amount_format: 2
+  types:
+    - "hotel"
+    - "traveling"
+  weight: 20
+- title: "Uber   *Trip Amsterdam"
+  currency: "EUR"
+  amount_range:
+    min: 12.0
+    max: 40.0
+  amount_format: 2
+  types:
+    - "taxi"
+    - "transportation"
+  weight: 100
+- title:
+    type: template
+    template: "Gotogate{rid} Uppsala"
+    params:
+      rid:
+        generator: random_digits
+        length: 10
+  currency: "USD"
+  amount_range:
+    min: 90.0
+    max: 440.0
+  amount_format: 2
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 55
+- title:
+    type: template
+    template: "Mytrip_{rid} ONLINE"
+    params:
+      rid:
+        generator: random_digits
+        length: 10
+  currency: "USD"
+  amount_range:
+    min: 90.0
+    max: 240.0
+  amount_format: 2
+  types:
+    - "aviation"
+    - "traveling"
+  weight: 55
+- title: "Air Arabia Sharjah"
+  currency: "USD"
+  amount_range:
+    min: 90.0
+    max: 540.0
+  amount_format: 2
+  weight: 20
+  refund_probability: 0.1
+  refundDelayMinHours: 72
+  refundDelayMaxHours: 288
+  types:
+    - "aviation"
+    - "traveling"
+- title: "Wechat International Amsterdam"
+  currency: "USD"
+  amount_range:
+    min: 1
+    max: 1
+  amount_format: 0
+  weight: 2000
+  numberOfOccurrences: 1
+  refund_probability: 1
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 2
+  types:
+    - "application"
+- title: "Vietnam Airlines HA NOI"
+  currency: "USD"
+  amount_range:
+    min: 60
+    max: 400
+  amount_format: 2
+  numberOfOccurrences: 1
+  refund_probability: 0.2
+  weight: 80
+  types:
+    - "aviation"
+    - "traveling"
+- title: "Kiwi.com sro"
+  currency: "USD"
+  amount_range:
+    min: 60
+    max: 400
+  amount_format: 2
+  numberOfOccurrences: 1
+  refund_probability: 0.2
+  weight: 150
+  types:
+    - "aviation"
+    - "traveling"
+- title:
+    type: template
+    template: "Airbnb * {code} 662-105-6167"
+    params:
+      code:
+        generator: random_alnum
+        length: 12
+        charset: "abcdefghijklmnopqrstuvwxyz0123456789"
+        transform:
+          case: lower
+  currency: "USD"
+  amount_range:
+    min: 70.0
+    max: 900.0
+  amount_format: 2
+  numberOfOccurrences: 1
+  refund_probability: 0.4
+  types:
+    - "housing"
+  weight: 700
+- title:
+    type: template
+    template: "Revolut**{num}* DUBLIN"
+    params:
+      num:
+        generator: random_digits
+        length: 4
+        global_constant: true
+  currency: "EUR"
+  amount_range:
+    min: 10.0
+    max: 500.0
+  amount_format: -1
+  refund_probability: 0
+  types:
+    - "application"
+  weight: 200
+- title:
+    type: template
+    template: "Revolut**{num}* DUBLIN"
+    params:
+      num:
+        generator: random_digits
+        length: 4
+        global_constant: true
+  currency: "USD"
+  amount_range:
+    min: 10.0
+    max: 500.0
+  amount_format: -1
+  refund_probability: 0
+  types:
+    - "application"
+  weight: 200
+- title:
+    type: template
+    template: "Revolut**{num}* DUBLIN"
+    params:
+      num:
+        generator: random_digits
+        length: 4
+        global_constant: true
+  currency: "GBP"
+  amount_range:
+    min: 10.0
+    max: 500.0
+  amount_format: -1
+  refund_probability: 0
+  types:
+    - "application"
+  weight: 200
+- title: "Google*gsuite M00n.xyz, Cc Google.com, R296"
+  currency: "EUR"
+  amount_range:
+    min: 13.8
+    max: 13.8
+  amount_format: 2
+  weight: 250
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Apple.com, Itunes.com"
+  currency: "EUR"
+  amount_range:
+    min: 9.99
+    max: 9.99
+  amount_format: 2
+  weight: 200
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Apple.com, Itunes.com"
+  currency: "EUR"
+  amount_range:
+    min: 7.49
+    max: 7.49
+  amount_format: 2
+  weight: 300
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Apple.com, Itunes.com"
+  currency: "USD"
+  amount_range:
+    min: 5.99
+    max: 5.99
+  amount_format: 2
+  weight: 200
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Apple.com, Itunes.com"
+  currency: "USD"
+  amount_range:
+    min: 10.99
+    max: 10.99
+  amount_format: 2
+  weight: 200
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+
+- title: "Viralyft, Internet"
+  currency: "USD"
+  amount_range:
+    min: 4.99
+    max: 4.99
+  amount_format: 2
+  weight: 200
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Buzzoid, Vega"
+  currency: "USD"
+  amount_range:
+    min: 10
+    max: 30
+  amount_format: 2
+  weight: 150
+  types:
+    - "application"
+- title:
+    type: template
+    template: "Sqsp* Inv{rid}, New York, NY"
+    params:
+      rid:
+        generator: random_digits
+        length: 9
+  currency: "USD"
+  amount_range:
+    min: 10.0
+    max: 20.0
+  amount_format: 2
+  weight: 150
+  subscription_frequency_days: 30
+  numberOfOccurrences: 6
+  types:
+    - "application"
+- title: "Google*gsuite Lychee-l, Cc Google.com"
+  currency: "USD"
+  amount_range:
+    min: 7.23
+    max: 7.23
+  amount_format: 2
+  weight: 250
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "Google*gsuite Lychee-l, Cc Google.com"
+  currency: "HKD"
+  amount_range:
+    min: 41.84
+    max: 41.84
+  amount_format: 2
+  weight: 250
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "application"
+- title: "eSIM data plan, London"
+  currency: "EUR"
+  amount_range:
+    min: 4.0
+    max: 4.0
+  amount_format: 2
+  weight: 100
+  refund_probability: 0.5
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 24
+  types:
+    - "application"
+- title: "Onward Ticket, Internet"
+  currency: "USD"
+  amount_range:
+    min: 10.0
+    max: 50.0
+  amount_format: 0
+  weight: 100
+  refund_probability: 0.5
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 24
+  types:
+    - "application"
+- title: "Www.nokair.com, Bangkok, TH"
+  currency: "USD"
+  amount_range:
+    min: 100.0
+    max: 500.0
+  amount_format: -2
+  weight: 100
+  refund_probability: 0.1
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 96
+  types:
+    - "aviation"
+    - "traveling"
+- title: "Of, London, 7LT"
+  currency: "USD"
+  amount_range:
+    min: 3.0
+    max: 30.0
+  amount_format: 0
+  weight: 300
+  refund_probability: 0.0
+  subscription_frequency_days: 30
+  numberOfOccurrences: 30
+  types:
+    - "application"
+- title: "Celebian, Stockholm"
+  currency: "USD"
+  amount_range:
+    min: 4.99
+    max: 4.99
+  amount_format: 2
+  weight: 100
+  refund_probability: 0.5
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 24
+  types:
+    - "application"
+- title: "Www.siam-legal.com, Bangkok"
+  currency: "USD"
+  amount_range:
+    min: 99.0
+    max: 99.0
+  amount_format: -2
+  weight: 1000
+  numberOfOccurrences: 1
+  refund_probability: 0
+  types:
+    - "legal"
+    - "application"
+- title: "Blastup, Dubai"
+  currency: "USD"
+  amount_range:
+    min: 12.99
+    max: 12.99
+  amount_format: 2
+  weight: 100
+  refund_probability: 0.0
+  types:
+    - "application"
+- title: "Openai *chatgpt Subscr, San Francisco"
+  currency: "USD"
+  amount_range:
+    min: 20
+    max: 20
+  amount_format: 2
+  weight: 300
+  refund_probability: 0.0
+  numberOfOccurrences: 10
+  subscription_frequency_days: 30
+  types:
+    - "application"
+- title:
+    type: template
+    template: "Netflix.com, NL92INGB000{rid}"
+    params:
+      rid:
+        generator: random_digits
+        length: 7
+  currency: "EUR"
+  amount_range:
+    min: 13.49
+    max: 13.49
+  amount_format: 2
+  weight: 300
+  numberOfOccurrences: 10
+  refund_probability: 0.0
+  subscription_frequency_days: 30
+  types:
+    - "application"
+- title: "GEOZILLA.HELP"
+  currency: "EUR"
+  amount_range:
+    min: 39
+    max: 40
+  amount_format: 2
+  types:
+    - "application"
+    - "location"
+  weight: 50
+- title:
+    type: template
+    template: "CANVA* I0{p1}-{p2}"
+    params:
+      p1:
+        generator: random_digits
+        length: 4
+      p2:
+        generator: random_digits
+        length: 8
+  currency: "EUR"
+  refund_probability: 0.0
+  amount_range:
+    min: 12
+    max: 40
+  amount_format: 0
+  types:
+    - "design"
+    - "software"
+  weight: 50
+- title: "CLARITYCHECK US"
+  currency: "USD"
+  amount_range:
+    min: 39.99
+    max: 39.99
+  amount_format: 2
+  types:
+    - "software"
+    - "verification"
+  weight: 100
+  refund_probability: 0.0
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+- title: "CLARITYCHECK EU"
+  currency: "USD"
+  amount_range:
+    min: 39.99
+    max: 39.99
+  amount_format: 2
+  types:
+    - "software"
+    - "verification"
+  weight: 100
+  refund_probability: 0.0
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+- title: "Google*Youtube"
+  currency: "USD"
+  amount_range:
+    min: 13.99
+    max: 13.99
+  amount_format: 2
+  types:
+    - "entertainment"
+    - "online"
+  weight: 200
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+- title: "Google*Play"
+  currency: "USD"
+  amount_range:
+    min: 1
+    max: 5
+  amount_format: 2
+  types:
+    - "entertainment"
+    - "online"
+  weight: 100
+- title:
+    type: template
+    template: "Paypal *Exhaust 35{rid}"
+    params:
+      rid:
+        generator: random_digits
+        length: 9
+  currency: "EUR"
+  amount_range:
+    min: 30
+    max: 99
+  amount_format: 0
+  types:
+    - "shopping"
+    - "online"
+  weight: 50
+- title:
+    type: template
+    template: "Wix.com {rid} WWW.WIX.COM"
+    params:
+      rid:
+        generator: random_digits
+        length: 10
+  currency: "USD"
+  amount_range:
+    min: 50
+    max: 100
+  amount_format: 2
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "software"
+    - "subscription"
+  weight: 70
+- title: "Sp Barbricks"
+  currency: "EUR"
+  amount_range:
+    min: 60
+    max: 80
+  amount_format: 2
+  types:
+    - "shopping"
+  weight: 90
+- title:
+    type: template
+    template: "Dnh*Godaddy#{rid} 207-979-2661"
+    params:
+      rid:
+        generator: random_digits
+        length: 10
+  currency: "EUR"
+  amount_range:
+    min: 10
+    max: 300
+  amount_format: 2
+  types:
+    - "software"
+    - "subscription"
+  weight: 70
+- title: "Google*Google Play App G.CO/HELPPAY#"
+  currency: "EUR"
+  amount_range:
+    min: 7.49
+    max: 7.49
+  amount_format: 2
+  subscription_frequency_days: 30
+  numberOfOccurrences: 10
+  types:
+    - "software"
+    - "subscription"
+  weight: 70
+- title:
+    type: template
+    template: "Wpbakery* O #{rid} NICOSIA"
+    params:
+      rid:
+        generator: random_digits
+        length: 6
+  currency: "USD"
+  amount_range:
+    min: 50
+    max: 100
+  amount_format: 2
+  types:
+    - "software"
+    - "online"
+  weight: 70
+- title: "Www.anydesk.com anydesk.com"
+  currency: "USD"
+  amount_range:
+    min: 50
+    max: 300
+  amount_format: 2
+  types:
+    - "software"
+    - "online"
+  weight: 70
+- title: "Mikrotik.com RIGA"
+  currency: "USD"
+  amount_range:
+    min: 50
+    max: 60
+  amount_format: 2
+  types:
+    - "software"
+    - "online"
+  weight: 70
+- title: "Google*Google One G.CO/HELPPAY#"
+  currency: "EUR"
+  amount_range:
+    min: 99.99
+    max: 99.99
+  amount_format: 2
+  subscription_frequency_days: 365
+  numberOfOccurrences: 2
+  types:
+    - "software"
+    - "subscription"
+  weight: 70
+- title: "Airalo SINGAPORE"
+  currency: "USD"
+  amount_range:
+    min: 10
+    max: 40
+  amount_format: 0
+  types:
+    - "telecommunication"
+    - "travel"
+  weight: 70
+- title: "Emirates E-COMMERCE"
+  currency: "EUR"
+  amount_range:
+    min: 50
+    max: 1000
+  amount_format: 2
+  types:
+    - "aviation"
+    - "travel"
+  weight: 60
+- title: "Gameaway Cloud Gaming MUMBAI"
+  currency: "USD"
+  amount_range:
+    min: 8.0
+    max: 12.0
+  amount_format: 2
+  types:
+    - "gaming"
+    - "entertainment"
+    - "subscription"
+  weight: 70
+- title: "Gameaway Cloud Gaming MUMBAI"
+  currency: "INR"
+  amount_range:
+    min: 500.0
+    max: 700.0
+  amount_format: 2
+  types:
+    - "gaming"
+    - "entertainment"
+    - "subscription"
+  weight: 70
+- title: "Trip.com Amsterdam"
+  currency: "USD"
+  amount_range:
+    min: 80.0
+    max: 350.0
+  amount_format: 2
+  types:
+    - "travel"
+    - "booking"
+  weight: 60
+- title: "Bounce - Bounce.com BOUNCE.COM"
+  currency: "USD"
+  amount_range:
+    min: 8.0
+    max: 12.0
+  amount_format: 2
+  types:
+    - "luggage_storage"
+    - "travel"
+  weight: 50
+- title: "Itch.io - Game Store ITCH.IO"
+  currency: "USD"
+  amount_range:
+    min: 1.0
+    max: 5.0
+  amount_format: 2
+  types:
+    - "gaming"
+    - "digital_store"
+  weight: 60
+- title: "Reynolds & Reynolds - Std DAYTON"
+  currency: "USD"
+  amount_range:
+    min: 18.0
+    max: 25.0
+  amount_format: 0
+  types:
+    - "software"
+    - "business"
+  weight: 40
+- title: "Www.genki.world KOLN"
+  currency: "EUR"
+  amount_range:
+    min: 90.0
+    max: 110.0
+  amount_format: 2
+  subscription_frequency_days: 30
+  numberOfOccurrences: 12
+  types:
+    - "travel"
+    - "insurance"
+  weight: 150
+- title: "Shein.com SINGAPORE"
+  currency: "USD"
+  amount_range:
+    min: 15.0
+    max: 25.0
+  amount_format: 2
+  types:
+    - "clothing"
+    - "fashion"
+    - "online_shopping"
+  weight: 80
+- title: "Hotel At Booking.com Cambridge"
+  currency: "THB"
+  amount_range:
+    min: 1000.0
+    max: 12000.0
+  amount_format: 2
+  types:
+    - "hotel"
+    - "accommodation"
+    - "travel"
+  weight: 60
+- title: "Flights On Booking.com London"
+  currency: "THB"
+  amount_range:
+    min: 1200.0
+    max: 3000.0
+  amount_format: 2
+  types:
+    - "aviation"
+    - "travel"
+    - "booking"
+  weight: 50
+- title:
+    type: template
+    template: "Booking{rip} UPPSALA"
+    params:
+      rid:
+        generator: random_digits
+        length: 14
+  currency: "THB"
+  amount_range:
+    min: 80.0
+    max: 4120.0
+  amount_format: 0
+  numberOfOccurrences: 3
+  types:
+    - "travel"
+    - "booking"
+  weight: 100
+- title: "Taobao London"
+  currency: "THB"
+  amount_range:
+    min: 1000.0
+    max: 4000.0
+  amount_format: 2
+  types:
+    - "shopping"
+    - "online"
+    - "chinese_marketplace"
+  weight: 70
+- title: "(for *(for Shopee) BANGKOK"
+  currency: "THB"
+  amount_range:
+    min: 200.0
+    max: 700.0
+  amount_format: 2
+  types:
+    - "shopping"
+    - "online"
+    - "marketplace"
+  weight: 80
+- title: "Agoda.com Internet"
+  currency: "THB"
+  amount_range:
+    min: 500.0
+    max: 4000.0
+  amount_format: 2
+  numberOfOccurrences: 6
+  types:
+    - "hotel"
+    - "travel"
+    - "booking"
+  weight: 60
+- title: "Opn*Dtac Refill BANGKOK"
+  currency: "THB"
+  amount_range:
+    min: 20.0
+    max: 400.0
+  amount_format: -1
+  types:
+    - "telecommunication"
+    - "top_up"
+  weight: 600
+
+# New patterns from Revolut data
+- title: "Google *youtube 650-253-0000, CA"
+  currency: "EUR"
+  amount_range:
+    min: 1
+    max: 1.00
+  amount_format: 2
+  numberOfOccurrences: 1
+  refund_probability: 1
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 1
+  types:
+    - "subscription"
+    - "entertainment"
+  weight: 800
+  subscription_frequency_days: 30
+
+- title: "Of London 7LT"
+  currency: "EUR"
+  amount_range:
+    min: 4.00
+    max: 8.00
+  amount_format: 2
+  types:
+    - "subscription"
+    - "adult_entertainment"
+  weight: 300
+  subscription_frequency_days: 30
+
+- title: "12go NICOSIA"
+  currency: "EUR"
+  amount_range:
+    min: 8.00
+    max: 15.00
+  amount_format: 2
+  types:
+    - "travel"
+    - "booking"
+  weight: 400
+
+- title: "Sp Brainrotofficial WARSZAWA"
+  currency: "EUR"
+  amount_range:
+    min: 15.00
+    max: 25.00
+  amount_format: 2
+  types:
+    - "entertainment"
+    - "digital_content"
+  weight: 200
+- title: "Amazon Prime Membership"
+  currency: "USD"
+  amount_range:
+    min: 14.99
+    max: 14.99
+  amount_format: 2
+  subscription_frequency_days: 30
+  types:
+    - "subscription"
+    - "entertainment"
+  weight: 100
+- title: "Chatgpt Subscription Openai"
+  currency: "USD"
+  amount_range:
+    min: 20.0
+    max: 20.0
+  amount_format: 2
+  subscription_frequency_days: 30
+  types:
+    - "subscription"
+    - "software"
+    - "ai_service"
+  weight: 160
