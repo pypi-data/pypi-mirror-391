@@ -1,0 +1,141 @@
+Metadata-Version: 2.4
+Name: seamm_jobserver
+Version: 2025.11.13
+Summary: The JobServer for the SEAMM environment.
+Home-page: https://github.com/molssi-seam/seamm_jobserver
+Author: Paul Saxe
+Author-email: psaxe@molssi.org
+License: LGPLv3+
+Keywords: seamm_jobserver
+Platform: Linux
+Platform: Mac OS-X
+Platform: Unix
+Platform: Windows
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Chemistry
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS.rst
+Requires-Dist: seamm
+Requires-Dist: psutil
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-dist
+Dynamic: summary
+
+===============
+SEAMM JobServer
+===============
+
+
+.. image:: https://img.shields.io/github/issues-pr-raw/molssi-seamm/seamm_jobserver
+   :target: https://github.com/molssi-seamm/seamm_jobserver/pulls
+   :alt: GitHub pull requests
+
+.. image:: https://github.com/molssi-seamm/seamm_jobserver/workflows/CI/badge.svg
+   :target: https://github.com/molssi-seamm/seamm_jobserver/actions
+   :alt: Build Status
+
+.. image:: https://codecov.io/gh/molssi-seamm/seamm_jobserver/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/molssi-seamm/seamm_jobserver
+   :alt: Code Coverage
+
+.. image:: https://github.com/molssi-seamm/seamm_jobserver/workflows/CodeQL/badge.svg
+   :target: https://github.com/molssi-seamm/seamm_jobserver/security/code-scanning
+   :alt: Code Quality
+
+.. image:: https://github.com/molssi-seamm/seamm_jobserver/workflows/Release/badge.svg
+   :target: https://molssi-seamm.github.io/seamm_jobserver/index.html
+   :alt: Documentation Status
+
+.. image:: https://img.shields.io/pypi/v/seamm_jobserver.svg
+   :target: https://pypi.python.org/pypi/seamm_jobserver
+   :alt: PyPi VERSION
+
+
+The JobServer for the SEAMM environment
+
+
+* Free software: BSD license
+* Documentation: https://molssi-seamm.github.io/seamm_jobserver/index.html
+* Code: https://github.com/molssi-seamm/seamm_jobserver
+
+
+Features
+--------
+
+The SEAMM JobServer handles executing Jobs for the Dashboard.
+
+
+Acknowledgements
+----------------
+
+This package was created with the `molssi-seamm/cookiecutter-seamm-plugin`_ tool, which
+is based on the excellent Cookiecutter_.
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`molssi-seamm/cookiecutter-seamm-plugin`: https://github.com/molssi-seamm/cookiecutter-seamm-plugin
+
+Developed by the Molecular Sciences Software Institute (MolSSI_), which receives funding
+from the `National Science Foundation`_ under award CHE-2136142.
+
+.. _MolSSI: https://molssi.org
+.. _`National Science Foundation`: https://www.nsf.gov
+
+
+=======
+History
+=======
+2025.11.12 -- Added SEAMM_JOBSERVER and SEAMM_JOB_ID environment variables
+    This PR adds support for passing job-specific metadata to spawned processes through
+    environment variables. Jobs can now access their unique job ID and the name of the
+    JobServer that spawned them.
+
+    * Added SEAMM_JOB_ID and SEAMM_JOBSERVER environment variables for spawned job
+      processes 
+    * Added --name command-line argument to specify JobServer name (defaults to
+      hostname)
+    * Cleaned up docstring formatting
+
+2024.4.12 -- Fixed issue with status of finished jobs
+   * Fixed a problem if a job returned a status of None, which was reported as an
+     error.
+
+2024.4.11 -- Correcting description of this package
+
+2024.4.5 -- Adding support for debugging
+   * Use the value of the environment variable SEAMM_LOG_LEVEL to set the log level for
+     jobs. DEBUG, INFO, WARNING are three useful levels.
+     
+2024.1.17 -- Changes to support running in Docker containers.
+
+2023.12.12 -- Improved the output in the GUI.
+   * Improved the output to the GUI
+   * Fixed a bug in the file path for the status file.
+
+2023.3.23 -- Substantial improvements to JobServer
+   * Switched to independent process for Jobs, which means they are fully independent of
+     the JobServer and continue to run if the JobServer stops
+   * Discover existing running jobs on startup and monitor them.
+   * Added status information for the machine the JobServer is on as well as Jobs
+   * Provide a GUI if run from the commandline, showing the log and status.
+
+0.9.1 (2020-05-29)
+------------------
+
+* First release on PyPI.
