@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cc-sessions-drupal"
+version = "0.1.0"
+description = "Drupal-optimized extension for cc-sessions with quality gates, task templates, and specialized agents"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "zorz", email = "zorz@example.com"},
+]
+keywords = [
+    "drupal",
+    "drupal-10",
+    "drupal-11",
+    "cc-sessions",
+    "claude-code",
+    "phpcs",
+    "behat",
+    "quality-gates",
+    "workflow",
+    "development",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Quality Assurance",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "cc-sessions>=0.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/gkastanis/cc-sessions-drupal"
+Documentation = "https://github.com/gkastanis/cc-sessions-drupal#readme"
+Repository = "https://github.com/gkastanis/cc-sessions-drupal.git"
+Issues = "https://github.com/gkastanis/cc-sessions-drupal/issues"
+
+[project.scripts]
+cc-sessions-drupal = "cc_sessions_drupal.install:main"
+
+[tool.setuptools]
+packages = ["cc_sessions_drupal"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"cc_sessions_drupal" = [
+    "python/**/*",
+    "hooks/**/*",
+    "scripts/**/*",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+]
