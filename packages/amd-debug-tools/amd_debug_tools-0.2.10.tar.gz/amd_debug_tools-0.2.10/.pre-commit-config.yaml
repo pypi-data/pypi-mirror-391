@@ -1,0 +1,7 @@
+default_stages: [pre-commit]
+repos:
+-   repo: https://github.com/ambv/black
+    rev: 25.1.0
+    hooks:
+    - id: black
+      exclude_types: [symlink]
