@@ -1,0 +1,49 @@
+channels:
+  - conda-forge
+dependencies:
+  # -------- Core Python --------
+  - python=3.13
+
+  # -------- Build toolchain --------
+  - meson>=1.4
+  - meson-python>=0.15
+  - ninja>=1.11
+
+  # -------- Compilers --------
+  - pkg-config
+  - c-compiler
+  - cxx-compiler
+  - fortran-compiler
+  - python-build
+  - zlib
+  - hdf5
+
+  # -------- Python Runtime --------
+  - numpy                 # package dependency
+  - h5py                  # psi-io dependency
+  - pyhdf                 # hdf4 support
+
+  # -------- Testing / QA --------
+  - pytest
+  - pytest-cov
+  - mypy
+  - ruff
+  - coverage
+  - nox
+
+  # -------- Docs --------
+  - sphinx
+  - sphinx-book-theme
+  - sphinx-gallery
+  - sphinx-copybutton
+  - matplotlib
+  - pooch
+  - scipy
+
+  # -------- Publish --------
+  - twine
+
+  - pip
+  - pip:
+      - psi-io    # Python runtime package
+      - pthree    # Documentation building
