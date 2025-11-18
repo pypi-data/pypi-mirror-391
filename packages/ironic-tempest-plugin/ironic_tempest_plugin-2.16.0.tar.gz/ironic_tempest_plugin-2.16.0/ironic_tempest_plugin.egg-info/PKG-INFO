@@ -1,0 +1,44 @@
+Metadata-Version: 2.1
+Name: ironic-tempest-plugin
+Version: 2.16.0
+Summary: Tempest plugin for ironic and ironic-inspector
+Home-page: https://docs.openstack.org/ironic-tempest-plugin/latest/
+Author: OpenStack
+Author-email: openstack-discuss@lists.openstack.org
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+License-File: LICENSE
+Requires-Dist: pbr>=6.0.0
+Requires-Dist: oslo.config>=5.2.0
+Requires-Dist: oslo.log>=3.36.0
+Requires-Dist: oslo.serialization>=2.18.0
+Requires-Dist: oslo.utils>=3.33.0
+Requires-Dist: fixtures>=3.0.0
+Requires-Dist: tempest>=27.0.0
+
+==============================================
+Tempest plugin for ironic and ironic-inspector
+==============================================
+
+This repository contains a Tempest_ plugin for OpenStack `Bare Metal`_ and
+`Bare Metal Introspection`_ projects.
+
+* Free software: Apache license
+* Documentation: https://docs.openstack.org/ironic-tempest-plugin
+* Source: https://opendev.org/openstack/ironic-tempest-plugin
+* Bugs: https://storyboard.openstack.org/#!/project/951
+
+.. _Tempest: https://docs.openstack.org/tempest/latest/
+.. _Bare Metal: https://docs.openstack.org/ironic/latest/
+.. _Bare Metal Introspection: https://docs.openstack.org/ironic-inspector/latest/
+

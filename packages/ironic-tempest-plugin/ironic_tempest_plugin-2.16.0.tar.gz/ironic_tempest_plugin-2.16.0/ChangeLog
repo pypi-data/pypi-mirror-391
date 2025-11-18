@@ -1,0 +1,495 @@
+CHANGES
+=======
+
+2.16.0
+------
+
+* Clean up unused stable branch jobs
+* Change Portgroup minimum microversion to 1.26
+* Add stable/2025.2 job
+* Clean up CI jobs
+* CI: Set the neutron network interface for dhcpless runs
+
+2.15.0
+------
+
+* Add Tempest API tests for inspection rules
+
+2.14.0
+------
+
+* Adding better error messages to microversion tests
+* Remove stable/2023.2 job
+* Remove available nodes configuration
+* Adding basic microversion tests to CI
+* fix: fail fast on deploy failure in Anaconda jobs
+* CI: Increment jobs for 2025.1 release
+* Remove legacy standalone jobs from test execution
+* remove duplicated rbac jobs
+* Make sure fixed IPs are different for multitenancy tests
+
+2.13.0
+------
+
+* Add tests to validate trunks
+* Add retries while waiting for SSH on server
+* Mark BaremetalDriverAnsibleWholedisk as unstable
+* Replaced all punctuation with an underscore in the node resource class
+* CI: Dial back the non-voting jobs
+* Inspector tests need not provision afterwards
+* Improve check\_vm\_connectivity
+* enable pre-commit lints from main ironic repo
+* fix spelling mistakes found by codespell
+* add pyproject.toml to support pip 23.1
+* Testing bad microversions on v1/nodes/{uuid}/firmware
+* Testing bad microversions on v1/allocations
+* Remove reboot from basic baremetal ops
+* Validate automatic lessee
+* Microversion Test Generator
+* Testing microversions on v1/shards
+* Fix failure cases around test\_ports
+* Use the correct exception when checking for HTTP 406
+* Remove stable/2023.1 job from master gate
+* Remove support for Python 3.8 and older
+
+2.12.0
+------
+
+* Drop unnecessary 'x' bit from doc config file
+* Add stable/2024.2 job
+* Fallback to SSH if ping fails
+* Check inspection data and abortion in the standalone tests
+* Provide consistent spelling of the microversion header
+
+2.11.0
+------
+
+* The adoption test should not depend on the iscsi deploy
+* Add tempest tests for runbooks
+* CI: scale back the number of inspector and scope enforced jobs
+* Work around missing microversion headers on /
+* A simple standalone test for in-band inspection
+* reboot the node in basic ops tests
+* Exclude ramdisk tests with tinycore in uefi mode
+* Handle invalid configuration for vif test execution
+* Patch to enforce json extension works in existing API behaviour
+
+2.10.0
+------
+
+* Additional test state fixes
+* Remove agent\_ipmitool/pxe\_ipmitool tests
+* Remove old excludes
+* Vmedia advanced ops: Clarify config drive and don't ping after rebuild
+* CI: Increment stable jobs for 2024.1/drop Zed
+* Fix vif tests
+* Unprovision iso ramdisk boot from test
+* Delete the CUSTOM\_RAID template after test has finished
+* Leverage the remote microversion without requiring human config
+* Invoke tests with fake interfaces
+
+2.9.0
+-----
+
+* Test multiple boot interfaces as part of one CI job
+* Basic API tests for sharding
+
+2.8.0
+-----
+
+* Ensure scope logic is enforced
+* Add negative tests for VIF attach/detach operations
+* Add snmp variant of ramdisk iso boot test
+* Add test for dhcp-less vmedia based deployment
+* CI: Update job config for 2023.2 being a stable branch
+* Cleanup py27 support
+
+2.7.0
+-----
+
+* rbac - Fix vif\_attach expected return values
+* CI: Add RBAC specific tempest jobs for main branch exec
+* Fix rbac indicator tests
+* CI: Advance stable jobs to 2023.1
+* Advance tempest plugin tests to Zed (mostly)
+* Fix rbac tests
+* Clarify checksum for wholedisk images
+* Upgrade to latest hacking - v6
+* Secure RBAC Test
+
+2.6.1
+-----
+
+* Split the ramdisk ISO test
+* Disable use of the SSH agent for the rescue test
+* Prevent protected node tests from orphaning test nodes
+* Fix tox4 error
+* OOB inspection timeout fix for iDRAC
+
+2.6.0
+-----
+
+* Fix typo: BaremetalIdracRedfishConfigurationMolds
+* Tempest test for anaconda deploy
+
+2.5.0
+-----
+
+* Add iDRAC Redfish configuration molds test
+* Add iDRAC Redfish firmware update test
+* Add iDRAC Redfish sync boot mode test
+* Add iDRAC RAID cleaning steps tests
+* remove unicode from code
+* Swap maintenance fix to cleanup step
+* Undo maintenace state on protected node tests
+* Add iDRAC Redfish virtual media boot deploy test
+* Add more deploy tests for idrac, redfish, ipmi
+* Set minimal tempest version to 27.0.0
+* Dettaching instance\_uuid for standalone TC's
+* Add idrac OOB inspection test cases
+* CI: Removing ironic job queue
+* Add yoga tests, stop testing victoria
+* Remove six
+* Add iDRAC management cleaning steps tests
+
+2.4.0
+-----
+
+* Remove setup\_clients method
+* Remove \_create\_network & \_get\_server\_port\_id\_and\_ip4 methods
+* Remove \_get\_router & \_create\_router methods
+* Remove create\_floating\_ip & get\_server\_ip methods
+* Remove create\_timestamp method
+* Remove get\_remote\_client & check\_vm\_connectivity methods
+* create\_server method full removal
+* Remove \_log\_console\_output, ping\_ip\_address methods
+* Remove create\_server and rebuild\_server methods
+* Remove \_create\_port and create\_keypair methods
+* Fix for verifying introspected data
+* Add iDRAC BIOS cleaning steps tests
+* Apply the correct image reference when booting an instance
+* [trivial] add python 3.9 in classifier
+* Update jobs for yoga cycle
+* Update pep8 requirements
+* Move API base out of admin test location
+
+2.3.1
+-----
+
+* remove ebtables fix env var from wallaby stable job
+
+2.3.0
+-----
+
+* Remove train testing from ironic-tempest-plugin
+* Update min version of tox to use allowlist
+* Add Wallaby jobs
+* Use get\_service\_clients framework with basic Secure RBAC
+* setup.cfg: Replace dashes with underscores
+* Remove /extra/vif\_port\_id usage
+* Reconfigure tox.ini
+
+2.2.0
+-----
+
+* Fix byte check in tempest plugin
+* Run redfish victoria job on focal
+* Tear down raid sets
+* Set safe version of hacking
+* Test case for uefi-https-boot in standalone ironic
+* Move stable jobs one version higher
+* Wait for power off before allocation tests
+
+2.1.0
+-----
+
+* Enforce check on flake8 E129 test
+* Test software RAID in deploy-time on Victoria and newer
+* Set min version of tox to 3.2.1
+* Ramdisk iso boot tempest scenario test
+* Fix hacking min version to 3.0.1
+* Improve test\_baremetal\_basic\_ops
+* Add py38 package metadata
+* Switch to newer openstackdocstheme version
+* Add standalone redfish jobs
+* Add stable/ussuri job on master gate
+* Update docs building
+* Add basic IPv6 support to BaremetalSingleTenant
+
+2.0.0
+-----
+
+* Actually log state transition timeouts in debug log
+* Upgrade flake8-import-order version to 0.17.1
+* Split Tempest tests between ipmi and redfish
+* Bump hacking to 3.0.0
+* Upddate tox config
+* Use service\_available
+* Remove check for API version in validate\_scheduling
+* Change default driver
+* Refactor validate\_ports function
+* Test cases for iLO driver in standalone ironic
+* Remove the SW RAID configuration
+* [ussuri][goal] Drop python 2.7 support and testing
+* SW RAID: Delete root device hint
+* Remove Rocky and Queens jobs
+* Use override-checkout instead of override-branch
+* [trivial] fix legacy driver reference
+* Enforce running tox with correct python version based on env
+* Avoid referenced before assignment in retry\_on\_conflict
+* Make local boot explicit on software raid tests
+* Remove use of deprecated config options for volume API selection
+* Actually test rescue in the standalone job
+* Make the multinode job non-voting
+* Explicitly use Python 2 in the stable jobs
+* Allow introspection some time to start in ironic-inspector
+* Add CI jobs for Train stable branches
+
+1.5.1
+-----
+
+* Fix an issue when nodes are not available in standalone test
+* Skip the manual cleaning test if software RAID testing is enabled
+* Abort waiting early if reached a failure state
+* Build pdf doc
+* Enable boot\_option to be specified
+
+1.5.0
+-----
+
+* Add a test for software RAID
+* Update api-ref location
+* Support for testing adoption in the standalone job
+* Make single tenant ip version configurable
+
+1.4.0
+-----
+
+* Use unique names in allocation tests
+* Switch to the new canonical constraints URL on master
+* Single tenant tests: BM to BM and BM to VM
+* Update sphinx requirements
+* Allocation API: add tests on backfilling allocations
+* Compatible with old Swift service enable
+* Add choice introspection store\_data backend
+* Using proper options for blkid
+* Fixing grep in validate mount point
+* Add Stein jobs
+* Delete created allocations
+* Remove Pike jobs and make Queens non-voting
+* Replace git.openstack.org URLs with opendev.org URLs
+* OpenDev Migration Patch
+* Removing obsolete oslosphinx
+
+1.3.0
+-----
+
+* discovery: optional support for testing changing driver
+* Run all defined jobs defined in check and gate
+* Deploy Templates: Allow old ironic API to return 405
+* Fix deploy template tests on Rocky and earlier
+* Marking ironic-standalone job voting again
+* Allocation API: use generate\_uuid for random resource classes
+* Temporary marking ironic-standalone non-voting
+* Deploy templates: API test nits
+* Test BM with VM on the same network
+* Deploy templates: add API tests
+* inspector py3 gate fix
+* Ensure list\_with\_limit tests pass
+* Update json module to jsonutils
+* Fix a race in the allocation API tests
+* tests for node description
+* Allocation API: functional tests
+* Fix for the Api discovery tests
+* Enable tempest run -l without credential setting
+* Rename zuulv3 jobs
+* [gate] update the list of the voting jobs
+* Tests for exposing conductors
+* Change openstack-dev to openstack-discuss
+* Replace Ocata jobs with Rocky
+
+1.2.1
+-----
+
+* multitenancy: Don't use fixed IPs in the test
+* Add API tests for protected nodes
+* Add API tests for portgroup update
+* Update the outdated URL in HACKING.rst
+* fix bug link in readme
+* Update the usage documentation with recent changes
+* Stop relying on VCPU count in the introspection tests
+* switch documentation job to new PTI
+* import zuul job settings from project-config
+* Test cases for iLO drivers in standalone ironic
+
+1.2.0
+-----
+
+* Correct the usage on listing neutron ports
+* Add API tests for the reset\_interfaces parameter
+* Rescue mode tempest tests
+* Add API tests for setting/resetting hardware interfaces
+* Force deploy\_interface for cleaning to be iscsi
+* Ensure we create nodes with valid CPU archs
+* Add bios testing to plugin
+* change default python 3 env in tox to 3.5
+* Do not boot nodes if not set in standalone tests
+* Add manual clean step ironic standalone test
+* Power fault recovery: tempest tests
+* fix tox python3 overrides
+* Remove volume v1 API service client usage
+* fix a typo in code
+* Update the home-page url in setup.cfg
+* Add the functional (API) tests job
+* Allow using the fake-hardware hardware type for API tests
+* Explicitly use iscsi for standalone BaremetalIpmiRescuePartitioned
+* Add comments for [deploy|rescue]\_interface
+* Gate: run the multinode job instead of the regular one
+* Rework the ironic-inspector auto-discovery test
+* Run ironic-inspector discovery jobs in the CI
+* Rescue mode standalone tests
+* Validate scheduling fields in basic ops scenario
+* Use the main introspection test instead of the smoke one
+* Updated from global requirements
+* Add example configuration for running our tests with nova
+* Updated from global requirements
+* Add a full set of tests for the IPMI hardware type to the standalone job
+* Added fixed\_ip support for standalone-ironic
+* Add jobs for stable/queens
+* Add [baremetal] available\_nodes configuration option
+
+1.1.0
+-----
+
+* Replace use of functools.wraps() with six.wraps()
+* Switch to override-checkout for stable branch jobs
+* Sort node traits in comparisons
+* Zuul: Remove project name
+* Add node trait tests
+* Updated from global requirements
+* Updated from global requirements
+
+1.0.0
+-----
+
+* Cleaned up the requirements of Ironic Tempest plugin
+* Add ansible deploy interface test
+* Add ability to set deploy interface
+* Introduce stable/ocata jobs
+* Update the list of CI jobs
+* Update README and setup.cfg, initial version of usage guide
+* Add DSVM jobs to the gate for ironic-tempest-plugin
+* Correct introspection rules path
+* Change config option to 'ironic\_inspector' and False by default
+* Fix pep8 issue
+* Add correct skip for ironic-inspector
+* Provide \_\_init\_\_.py to make all modules importable
+* Add tempest entry point
+* Fix introspection modules locations and imports
+* Ensure ping actually succed
+* Add py35 gate for ironic-inspector
+* Add I202 to flake ignore list
+* Update tests to do not use deprecated test.services()
+* pep8: Add 'application-import-names = ironic\_inspector'
+* Update tests to do not use deprecated test.services()
+* Replace the usage of 'admin\_manager' with 'os\_admin'
+* Update after recent removal of cred manager aliases
+* Fix API VIF tests when using flat network
+* Update vif\_attach from NeutronVIFPortIDMixin
+* Update the documentation link for doc migration
+* Add functional API tests for volume connector and volume target
+* Replace the deprecated tempest.test.attr with decorators.attr
+* Use flake8-import-order
+* Switch to use test\_utils.call\_until\_true
+* Switch to decorators.idempotent\_id
+* Remove unused "service" argument from tempest client manager
+* Tempest test tag baremetal doesn't exist
+* Add tempest plugin API tests for driver
+* [tempest] also catch BadRequest in negative tests with physical\_network in old API
+* [Tempest] fix negative tests on old API versions
+* Add negative attribute to negative port tests
+* Tempest scenario test for boot-from-volume
+* Add tempest tests for physical networks
+* Replace the usage of 'manager' with 'os\_primary'
+* Fix broken links in tempest plugin README
+* Replace test.attr with decorators.attr
+* Replace test.attr with decorators.attr
+* Replace test.attr with decorators.attr
+* Add functional api tests for node resource class
+* Add assertion of name to test\_list\_portgroups test
+* Skip PortNotFound when unbinding port
+* Skip VIF tests for standalone ironic
+* Fix docstrings for creating methods in baremetal api tests
+* Define minimum required API ver for portgroups
+* Add standalone tests using direct HTTP links
+* Extend tests and checks for node VIFs
+* Add functional API tests for portgroups
+* Fix local copy of scenario manager
+* Prune local copy of tempest.scenario.manager.py
+* Include a copy of tempest.scenario.manager module
+* Add ironic standlaone test with ipmi dynamic driver
+* Add Ironic standalone tests
+* Fix the exception message in tempest plugin
+* Refactor waiters in our tempest plugin
+* This adds a tempest test for creating a chassis with a specific UUID
+* Do not load credentials on import in tempest plugin clients.py
+* Trivial: Change hardcoded values in tempest plugin
+* Fix BaseBaremetalTest.\_assertExpected docstring
+* Deduplicate \_assertExpected method in tests
+* Change misc to test\_utils for tempest test
+* Switch to use test\_utils.call\_until\_true
+* Remove trailing slash from base\_url in tempest plugin
+* Switch to decorators.idempotent\_id
+* Update validate\_ports from BaremetalBasicOps
+* Skip VIF api tests for old api versions
+* Remove default\_params\_with\_timeout\_values from tempest client
+* Add Virtual Network Interface REST APIs
+* Remove service argument from tempest plugin client manager
+* Move CONF.service\_available.ironic to our plugin
+* Enhance wait\_for\_bm\_node\_status waiter
+* Use polling in set\_console\_mode tempest test
+* Drop bad skip check in tempest plugin
+* Stop disabling the Neutron tempest plugin
+* Test discovered nodes are in ENROLL state and fix typo
+* Add a test for introspection abort action verification
+* Only disable Neutron tests when our Grenade is running
+* Stop adding ServiceAvailable group option
+* Tempest: add auto-discovery test
+* Disable neutron tests in our grenade
+* Fix tempest.conf generation
+* Bring configurations from tempest to ironic\_tempest\_plugin
+* Update to hacking 0.12.0 and use new checks
+* Remove unused argument in Tempest Plugin
+* Fix docstrings to match with method arguments
+* Fix docstrings in tempest plugin baremetal json client
+* Replace assertTrue(isinstance()) with assertIsInstance()
+* Fix docstrings in Tempest Plugin REST client for Ironic API
+* [trivial] Fix typo in docstring
+* Replace six iteration methods with standard ones
+* Remove unused LOG and CONF
+* Fix incorrect order of params of assertEqual()
+* Using assertIsNone() is preferred over assertEqual()
+* Fix incorrect order of params of assertEqual()
+* Tempest: increase ironic sync timeout
+* Add a simple smoke test to be run in the grenade gate
+* Tempest: wrap instance actions into inspector methods
+* Fix tempest tests
+* Tempest: don't rely on tempest ironic client
+* Tempest: add basic test
+* Script to extract the ironic\_tempest\_plugin/ directory
+* Initial commit from cookiecutter
+* Added .gitreview
+* Add test to verify ironic multitenancy
+* No need for 'default=None' in config variable
+* tempest: start using get\_configured\_admin\_credentials
+* Fix signature for request method
+* Introduce provision states: AVAILABLE, ENROLL
+* Add support for API microversions in Tempest tests
+* Fix usage of rest\_client expected\_success() in tests
+* Document how to run the tempest tests
+* Tune interval for node provision state check
+* Replace depricated tempest-lib with tempest.lib
+* Comment out test options that already exists on tempest's tree
+* Refresh ssh verification mechanism
+* Remove hard-coded DEPLOYWAIT timeout from Baremetal Scenario
+* Migrate Tempest tests into Ironic tree
