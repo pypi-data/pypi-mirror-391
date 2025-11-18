@@ -1,0 +1,215 @@
+# PyProject Configuration
+# =======================
+
+# Build System
+# ------------
+[build-system]
+build-backend = 'mesonpy'
+requires = [
+  "numpy>=2.0.0",
+  "h5py>=3.15.0",
+  "meson-python>=0.13.1",
+  "ninja>=1.8.2"
+]
+
+# Project Metadata
+# ----------------
+[project]
+name = "mapflpy"
+dynamic = ["version"]
+description = "Python extension for tracing field lines using the Fortran tracer from MapFL"
+authors = [
+  {name = "Predictive Science Inc.", email = "webmaster@predsci.com"},
+  {name = "Ryder Davidson"},
+  {name = "Cooper Downs"},
+  {name = "Andres Reyes"},
+  {name = "Asher Pembroke"},
+]
+readme = "README.rst"
+license = "Apache-2.0"
+license-files = ["LICENSE.txt"]
+keywords = [
+  "solar physics", "space physics", "heliophysics", "magnetohydrodynamic", "science",
+  "mas", "predsci", "psi", "modeling", "fortran"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=2.1.0",
+  "psi-io>=1.0.0",
+]
+
+# Project URLS
+# ------------
+[project.urls]
+homepage = "https://predsci.com/"
+documentation = "https://predsci.com/doc/mapflpy"
+repository = "https://github.com/predsci/mapflpy"
+
+# Project Dependencies
+# --------------------
+[project.optional-dependencies]
+hdf4 = [
+  "pyhdf>=0.11.6"
+]
+data = [
+  "pooch==1.8.2",
+  "matplotlib==3.10.7",
+  "scipy"
+]
+build = [
+  "python-build"
+]
+test = [
+  "pytest>=8.4.0",
+  "pytest-cov"
+]
+types = [
+  "mypy>=1.15"
+]
+lint = [
+  "ruff>=0.11.7"
+]
+docs = [
+  "sphinx==8.2.3",
+  "sphinx-book-theme==1.1.4",
+  "sphinx-gallery==0.19.0",
+  "sphinx-copybutton==0.5.2",
+  "pooch==1.8.2",
+  "matplotlib==3.10.7",
+  "scipy",
+  "pthree==1.0.1"
+]
+all = [
+  "mapflpy[hdf4,data,build,test,types,lint,docs]",
+]
+
+# Tools & Extensions
+# ==================
+
+## Setuptools configuration (if needed)
+## ------------------------------------
+#[tool.setuptools.packages.find]
+#include = [
+#  "mapflpy",
+#  "mapflpy.*"
+#]
+#exclude = [
+#  "tests",
+#  "docs",
+#  "examples",
+#  "src"
+#]
+
+# Testing (pytest) configuration
+# ------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+  "-ra",
+  "--cov=mapflpy",
+  "--cov-report=term-missing",
+  "--maxfail=1",
+  "--import-mode=importlib",
+]
+
+# Coverage (pytest-cov) configuration
+# -----------------------------------
+[tool.coverage.run]
+branch = true
+source = ["mapflpy"]
+parallel = true
+relative_files = true
+omit = [
+  "tests/*",
+  "docs/_build/*",
+  "*/_version.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "def __repr__",
+]
+
+# Typing (mypy) configuration
+# ---------------------------
+[tool.mypy]
+python_version = "3.13"
+strict = true
+ignore_missing_imports = true
+files = ["mapflpy"]
+
+[[tool.mypy.overrides]]
+module = "mapflpy.*"
+ignore_missing_imports = false
+
+# Linting (ruff) configuration
+# ----------------------------
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+src = ["mapflpy"]
+extend-exclude = [
+  "docs",
+  ".nox",
+  ".mypy_cache",
+  ".ruff_cache",
+  ".pytest_cache",
+  "src",
+  "tests"
+]
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "F",
+  "W",
+  "I",
+  "N",
+  "B",
+  "UP",
+  "SIM"
+]
+ignore = [
+  "E203",
+  "E501",
+  "F841"
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# Documentation (sphinx) configuration
+# ------------------------------------
+[tool.sphinx_build]
+addopts = [
+  "-b", "html",
+  "-a",
+  "-E"
+]
+
+# Environment (mapflpy) configuration
+# -----------------------------------
+[tool.mapflpy]
+conda = [
+  "c-compiler",
+  "cxx-compiler",
+  "fortran-compiler",
+  "pkg-config",
+  "hdf5",
+  "zlib"
+]

@@ -1,0 +1,72 @@
+Metadata-Version: 2.4
+Name: mapflpy
+Version: 1.1.1.post1
+Summary: Python extension for tracing field lines using the Fortran tracer from MapFL
+Keywords: solar physics,space physics,heliophysics,magnetohydrodynamic,science,mas,predsci,psi,modeling,fortran
+Author: Ryder Davidson, Cooper Downs, Andres Reyes, Asher Pembroke
+Author-Email: "Predictive Science Inc." <webmaster@predsci.com>
+License-Expression: Apache-2.0
+License-File: LICENSE.txt
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Science/Research
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Astronomy
+Classifier: Topic :: Scientific/Engineering :: Physics
+Project-URL: homepage, https://predsci.com/
+Project-URL: documentation, https://predsci.com/doc/mapflpy
+Project-URL: repository, https://github.com/predsci/mapflpy
+Requires-Python: >=3.10
+Requires-Dist: numpy>=2.1.0
+Requires-Dist: psi-io>=1.0.0
+Provides-Extra: hdf4
+Requires-Dist: pyhdf>=0.11.6; extra == "hdf4"
+Provides-Extra: data
+Requires-Dist: pooch==1.8.2; extra == "data"
+Requires-Dist: matplotlib==3.10.7; extra == "data"
+Requires-Dist: scipy; extra == "data"
+Provides-Extra: build
+Requires-Dist: python-build; extra == "build"
+Provides-Extra: test
+Requires-Dist: pytest>=8.4.0; extra == "test"
+Requires-Dist: pytest-cov; extra == "test"
+Provides-Extra: types
+Requires-Dist: mypy>=1.15; extra == "types"
+Provides-Extra: lint
+Requires-Dist: ruff>=0.11.7; extra == "lint"
+Provides-Extra: docs
+Requires-Dist: sphinx==8.2.3; extra == "docs"
+Requires-Dist: sphinx-book-theme==1.1.4; extra == "docs"
+Requires-Dist: sphinx-gallery==0.19.0; extra == "docs"
+Requires-Dist: sphinx-copybutton==0.5.2; extra == "docs"
+Requires-Dist: pooch==1.8.2; extra == "docs"
+Requires-Dist: matplotlib==3.10.7; extra == "docs"
+Requires-Dist: scipy; extra == "docs"
+Requires-Dist: pthree==1.0.1; extra == "docs"
+Provides-Extra: all
+Requires-Dist: mapflpy[build,data,docs,hdf4,lint,test,types]; extra == "all"
+Description-Content-Type: text/x-rst
+
+mapflpy
+=======
+
+Python extension for tracing field lines using the
+`MapFL <https://github.com/predsci/MapFL>`_ Fortran tracer.
+
+The goal of **mapflpy** is to provide fast and accurate tracing capabilities for
+spherical vector fields inside a convenient Python interface. **mapflpy** is
+designed to work natively with the staggered meshes produced by
+Predictive Science Inc.'s codes for simulating the solar corona, and 
+inner heliosphere (*e.g.* `MAS <https://www.predsci.com/mas>`_ or
+`POT3D <https://github.com/predsci/POT3D>`_), but it should be generally compatible
+with any global vector field that can be described on a rectilinear grid in 
+spherical coordinates.
+
+Resources
+---------
+
+- **Predictive Science Inc.:** https://predsci.com
+- **Source Code:** https://github.com/predsci/mapflpy
+- **Documentation:** https://predsci.com/doc/mapflpy
+- **Distribution:** https://pypi.org/project/mapflpy
