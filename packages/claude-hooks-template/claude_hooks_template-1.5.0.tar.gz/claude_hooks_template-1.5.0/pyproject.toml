@@ -1,0 +1,87 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["claude_hooks"]
+
+[project]
+name = "claude-hooks-template"
+version = "1.5.0"
+description = "CLI tool for configuring Claude Code hooks in projects"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Steven Nevins", email = "snevins@gmail.com"}
+]
+keywords = [
+    "cli",
+    "claude-code",
+    "hooks",
+    "automation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/stevennevins/claude-hooks"
+Repository = "https://github.com/stevennevins/claude-hooks"
+Issues = "https://github.com/stevennevins/claude-hooks/issues"
+Documentation = "https://github.com/stevennevins/claude-hooks#readme"
+
+
+[project.scripts]
+claude-hooks = "claude_hooks.cli:main"
+
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade (modernize Python code)
+    "B",   # flake8-bugbear (detect common bugs)
+    "SIM", # flake8-simplify (simplification opportunities)
+    "C4",  # flake8-comprehensions (better comprehensions)
+    "PT",  # flake8-pytest-style (pytest best practices)
+]
+# Ignore line length (E501) for now as many are in long strings/docs
+ignore = ["E501"]
+
+[tool.ruff.format]
+# Use black-compatible formatting
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "strict"
+reportUnusedImport = true
+reportUnusedVariable = true
+reportDuplicateImport = true
+reportIncompatibleMethodOverride = true
+reportMissingTypeStubs = false
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.390",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-httpx>=0.30.0",
+    "pytest-timeout>=2.3.0",
+    "ruff>=0.13.0",
+]
