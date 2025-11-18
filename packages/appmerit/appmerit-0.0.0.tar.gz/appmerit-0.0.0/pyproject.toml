@@ -1,0 +1,16 @@
+[project]
+name = "appmerit"
+version = "0.0.0"
+description = "Coming soon"
+authors = [
+    { name = "Daniel Rousso", email = "daniel@appmerit.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+appmerit = "appmerit:main"
+
+[build-system]
+requires = ["uv_build>=0.9.9,<0.10.0"]
+build-backend = "uv_build"
