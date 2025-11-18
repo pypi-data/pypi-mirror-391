@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item"><a class="nav-link disabled">{{ site }}</a></li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'overview' %} active{% endif %}" href="{{ site.get_absolute_url }}">{% trans "Overview" %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'requests' %} active{% endif %}" href="{% url 'site-requests' slug=site.slug %}">{% trans "Requests" %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'errors' %} active{% endif %}" href="{% url 'site-errors' slug=site.slug %}">{% trans "Errors" %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'logs' %} active{% endif %}" href="{% url 'site-logs' slug=site.slug %}">{% trans "Logs" %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'queries' %} active{% endif %}" href="{% url 'site-queries' slug=site.slug %}">{% trans "Queries" %}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if section == 'metrics' %} active{% endif %}" href="{% url 'site-metrics' slug=site.slug %}">{% trans "Metrics" %}</a>
+    </li>
+</ul>
+
+<!--
+<div class="container-fluid">
+    <form action="" method="GET">
+        {% for search_field, form_fields in filter_form.fieldsets.items %}
+            {% for field in form_fields %}
+                {{ field }}
+            {% endfor %}
+        {% endfor %}
+        <button>{% trans "Filter" %}</button>
+    </form>
+</div>
+-->
+
+<div class="container-fluid">
+    {% block page %}{% endblock page %}
+</div>
+{% endblock content %}
+
+{% block javascript %}
+<script>
+const dropdowns = document.getElementsByClassName("dropdown-toggle");
+for (const e of dropdowns) {
+    e.addEventListener("show.bs.dropdown", () => {
+    });
+}
+</script>
+{% endblock javascript %}

@@ -1,0 +1,32 @@
+{% extends "site/base.html" %}
+
+{% load i18n %}
+
+{% block page %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Context" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "DB" %}</th>
+            <th>{% trans "Query" %}</th>
+            <th>{% trans "Success" %}</th>
+            <th>{% trans "Elapsed" %}</th>
+            <th>{% trans "Timestamp" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for q in queries %}
+            <tr>
+                <td>{{ q.context }}</td>
+                <td>{{ q.command }}</td>
+                <td>{{ q.db }}</td>
+                <td>{{ q.sql_summary }}</td>
+                <td>{{ q.success }}</td>
+                <td>{{ q.elapsed_ms }}ms</td>
+                <td>{{ q.timestamp }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock page %}

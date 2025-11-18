@@ -1,0 +1,30 @@
+{% extends "site/base.html" %}
+
+{% load i18n %}
+
+{% block page %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Request" %}</th>
+            <th>{% trans "Size" %}</th>
+            <th>{% trans "Elapsed" %}</th>
+            <th>{% trans "IP" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Timestamp" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in requests %}
+            <tr>
+                <td>{{ r.path }}</td>
+                <td>{{ r.size|filesizeformat }}</td>
+                <td>{{ r.context.elapsed_ms }}ms</td>
+                <td>{{ r.ip }}</td>
+                <td>{{ r.status }} {{ r.http_status.phrase }}</td>
+                <td>{{ r.timestamp }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock page %}

@@ -1,0 +1,14 @@
+{% extends "site/base.html" %}
+
+{% load i18n %}
+
+{% block page %}
+<h2>{{ site }} Overview</h2>
+<div>
+    <ul>
+    {% for key in site.keys.all %}
+        <li><code>import varanus.client<br />varanus.client.setup("<a href="{{ scheme }}://{{ key.access_key }}@{{ host }}">{{ scheme }}://{{ key.access_key }}@{{ host }}</a>", environment="local", install=MIDDLEWARE)</code></li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock page %}

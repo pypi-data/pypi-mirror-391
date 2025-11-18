@@ -1,0 +1,34 @@
+{% extends "site/base.html" %}
+
+{% load i18n %}
+
+{% block page %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "Context" %}</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Count" %}</th>
+            <th>{% trans "Sum" %}</th>
+            <th>{% trans "Mean" %}</th>
+            <th>{% trans "Min" %}</th>
+            <th>{% trans "Max" %}</th>
+            <th>{% trans "Timestamp" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in metrics %}
+            <tr>
+                <td>{{ m.context }}</td>
+                <td>{{ m.name }}</td>
+                <td>{{ m.agg_count }}</td>
+                <td>{{ m.agg_sum }}</td>
+                <td>{{ m.agg_avg|floatformat:2 }}</td>
+                <td>{{ m.agg_min }}</td>
+                <td>{{ m.agg_max }}</td>
+                <td>{{ m.timestamp }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock page %}
