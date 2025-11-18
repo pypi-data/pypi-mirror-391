@@ -1,0 +1,300 @@
+Metadata-Version: 2.4
+Name: signal-fabric-client
+Version: 0.1.4
+Summary: Client library for Signal Fabric
+Home-page: https://github.com/phasequant/signal-fabric
+Author: PhaseQuant
+Author-email: 
+License: MIT
+Project-URL: Homepage, https://github.com/phasequant/signal-fabric
+Project-URL: Repository, https://github.com/phasequant/signal-fabric
+Project-URL: Issues, https://github.com/phasequant/signal-fabric/issues
+Keywords: signal-fabric,grpc,client,trading,signals,market-data
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Financial and Insurance Industry
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Office/Business :: Financial
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: grpcio>=1.76.0
+Requires-Dist: protobuf>=4.0.0
+Provides-Extra: dev
+Requires-Dist: grpcio-tools>=1.76.0; extra == "dev"
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# Signal Fabric Client
+
+Official Python client library for [Signal Fabric](https://github.com/phasequant/signal-fabric) - a lightweight handler-based framework for generating market signals on demand.
+
+## Installation
+
+```bash
+pip install signal-fabric-client
+```
+
+## Quick Start
+
+```python
+from signal_fabric import GrpcClient, SignalOutcome
+import json
+
+with GrpcClient(host='127.0.0.1', port=9090,
+                ca_cert_path='./fabric-client.pem') as client:
+    outcome : SignalOutcome = client.process_signal(
+        target='spot:BTC/USDT',
+        signal_name='binance_rsi',
+        signal_op='compute_rsi',
+        handler_request={
+            "period":  14,
+            "timeframe": "1h"
+        }
+    )
+
+    try:
+        raw_result = outcome.result
+        resultObj = json.loads(raw_result)
+        print(f"""market: {resultObj['market']}
+symbol: {resultObj['symbol']}
+latest_rsi: {resultObj['rsi']}
+regime: {resultObj['regime']}
+""")
+    except (json.JSONDecodeError, TypeError):
+        print(f"error: {raw_result}")
+```
+
+## Usage
+
+### Basic Connection
+
+```python
+from signal_fabric import GrpcClient, SignalOutcome
+
+# Create client
+client = GrpcClient(host='localhost', port=50051, timeout=30)
+client.connect()
+
+# Process signal
+outcome = client.process_signal(
+    target='ETH',
+    signal_name='hello',
+    signal_op='greet'
+)
+
+print(f"Result: {outcome.result}")
+
+# Cleanup
+client.disconnect()
+```
+
+### Context Manager (Recommended)
+
+```python
+from signal_fabric import GrpcClient
+
+with GrpcClient(host='localhost', port=50051) as client:
+    outcome = client.process_signal(
+        target='BTC',
+        signal_name='trend',
+        signal_op='analyze',
+        handler_request={'period': 14}
+    )
+
+    print(f"Result: {outcome.result}")
+```
+
+### With Request Parameters
+
+```python
+with GrpcClient() as client:
+    outcome = client.process_signal(
+        target='BTC',
+        signal_name='composite_strategy',
+        signal_op='analyze',
+        handler_request={
+            'period': 14,
+            'threshold': 0.5,
+            'timeframe': '1h'
+        }
+    )
+```
+
+### Error Handling
+
+```python
+from signal_fabric import GrpcClient
+
+try:
+    with GrpcClient(host='localhost', port=50051, timeout=10) as client:
+        outcome = client.process_signal(
+            target='BTC',
+            signal_name='trend',
+            signal_op='analyze'
+        )
+
+        if outcome.has_errors():
+            print("Signal processing failed:")
+            for error in outcome.errors:
+                print(f"  - {error}")
+        else:
+            print(f"Success: {outcome.result}")
+
+            # Access detailed results
+            if outcome.is_detailed():
+                print(f"Details: {outcome.details}")
+
+except Exception as e:
+    print(f"Connection failed: {e}")
+```
+
+## API Reference
+
+### GrpcClient
+
+#### Constructor
+
+```python
+GrpcClient(host: str = 'localhost', port: int = 50051, timeout: int = 30)
+```
+
+**Parameters:**
+- `host` (str): Server hostname or IP address (default: 'localhost')
+- `port` (int): Server port number (default: 50051)
+- `timeout` (int): Request timeout in seconds (default: 30)
+
+#### Methods
+
+**`connect()`**
+
+Establish connection to the server.
+
+**`disconnect()`**
+
+Close the connection to the server.
+
+**`is_connected() -> bool`**
+
+Check if client is currently connected.
+
+**`process_signal(target, signal_name, signal_op, handler_request=None) -> SignalOutcome`**
+
+Process a signal request.
+
+**Parameters:**
+- `target` (str): Target for signal computation (e.g., 'BTC', 'ETH', 'AAPL')
+- `signal_name` (str): Signal handler name or profile name
+- `signal_op` (str): Operation to perform (e.g., 'analyze', 'greet')
+- `handler_request` (dict, optional): Request parameters as dictionary
+
+**Returns:** `SignalOutcome` object
+
+### SignalOutcome
+
+Result object containing the signal computation outcome.
+
+#### Attributes
+
+- `result` (str): Signal result value
+- `computation` (str): Description of computation performed
+- `computed_at` (float): Unix timestamp when computed
+- `errors` (List[str]): List of error messages (empty if no errors)
+- `details` (Dict[str, str]): Additional computation details (empty if none)
+
+#### Methods
+
+**`has_errors() -> bool`**
+
+Returns `True` if the outcome contains errors.
+
+**`is_detailed() -> bool`**
+
+Returns `True` if the outcome has errors or additional details.
+
+## Requirements
+
+- Python 3.8+
+- grpcio >= 1.76.0
+- protobuf >= 4.0.0
+
+## Server Setup
+
+This client requires a running Signal Fabric server. To set up the server:
+
+1. Clone the Signal Fabric repository:
+   ```bash
+   git clone https://github.com/phasequant/signal-fabric.git
+   cd signal-fabric
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Start the server:
+   ```bash
+   python src/server/server.py --config config.yaml
+   ```
+
+## Examples
+
+### Multiple Signals
+
+```python
+from signal_fabric import GrpcClient
+
+signals = [
+    ('BTC', 'trend', 'analyze'),
+    ('ETH', 'volume', 'check'),
+    ('SOL', 'momentum', 'calculate')
+]
+
+with GrpcClient() as client:
+    for target, signal, operation in signals:
+        outcome = client.process_signal(target, signal, operation)
+        print(f"{target} {signal}: {outcome.result}")
+```
+
+### Remote Server
+
+```python
+from signal_fabric import GrpcClient
+
+# Connect to remote server
+with GrpcClient(host='signals.example.com', port=50051) as client:
+    outcome = client.process_signal(
+        target='BTC',
+        signal_name='trend',
+        signal_op='analyze'
+    )
+    print(f"Result: {outcome.result}")
+```
+
+## Version
+
+Current version: **0.1.4**
+
+## License
+
+See LICENSE file for details.
+
+## Links
+
+- [Signal Fabric Repository](https://github.com/phasequant/signal-fabric)
+- [Documentation](https://github.com/phasequant/signal-fabric/docs)
+- [Issue Tracker](https://github.com/phasequant/signal-fabric/issues)
+
+## Support
+
+For questions, issues, or contributions, please visit the [GitHub repository](https://github.com/phasequant/signal-fabric).
