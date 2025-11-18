@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "lar-engine"
+version = "0.1.7"
+description = "Lár: The PyTorch for Agents. A 'define-by-run' agentic framework."
+authors = ["Snath AI <admin@snath.ai>"]
+readme = "README.md"
+packages = [
+    { include = "lar", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+google-generativeai = "^0.7.2"
+# --- WE HAVE REMOVED fastapi, uvicorn, and firebase-admin ---
+# This is now a CLEAN, lightweight engine.
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+python-dotenv = "^1.0.1"
+streamlit = "^1.37.0"
+graphviz = "^0.20.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
