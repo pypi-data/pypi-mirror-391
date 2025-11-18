@@ -1,0 +1,34 @@
+Metadata-Version: 2.4
+Name: rlmini
+Version: 0.1.0
+Summary: Tiny tabular Q-learning helper for Gym environments
+Author-email: Your Name <you@example.com>
+License: MIT
+Project-URL: Homepage, https://example.org/rlmini
+Project-URL: Source, https://example.org/rlmini
+Keywords: reinforcement-learning,q-learning,gym,rl
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: numpy>=1.21
+Requires-Dist: gymnasium>=0.28
+Dynamic: license-file
+
+# rlmini — tiny reinforcement learning utilities
+
+A minimal, well-documented Python package that implements a small tabular Q-learning helper suitable for Gym environments.
+
+## Features
+- `q_learning()` function: run tabular Q-learning with an OpenAI Gym-compatible environment.
+- Small, dependency-light package: `numpy` and `gymnasium`.
+
+## Quick start
+
+```bash
+python -m pip install rlmini
+python -c "from rlmini import q_learning; import gymnasium as gym; env=gym.make('FrozenLake-v1', is_slippery=False); q_learning(env, episodes=500)"
+```
+

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rlmini"
+version = "0.1.0"
+description = "Tiny tabular Q-learning helper for Gym environments"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name="Your Name", email="you@example.com" }]
+requires-python = ">=3.8"
+keywords = ["reinforcement-learning", "q-learning", "gym", "rl"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "numpy>=1.21",
+  "gymnasium>=0.28"
+]
+
+[project.urls]
+"Homepage" = "https://example.org/rlmini"
+"Source" = "https://example.org/rlmini"
