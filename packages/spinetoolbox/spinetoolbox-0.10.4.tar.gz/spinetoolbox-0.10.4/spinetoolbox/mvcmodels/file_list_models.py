@@ -1,0 +1,341 @@
+######################################################################################################################
+# Copyright (C) 2017-2022 Spine project consortium
+# Copyright Spine Toolbox contributors
+# This file is part of Spine Items.
+# Spine Items is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General
+# Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General
+# Public License for more details. You should have received a copy of the GNU Lesser General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+######################################################################################################################
+
+"""Contains a generic File list model and an Item for that model."""
+from collections import namedtuple
+from functools import cache, cached_property
+from itertools import takewhile
+import json
+from pathlib import Path
+from typing import Any
+from PySide6.QtCore import QAbstractItemModel, QFileInfo, QMimeData, QModelIndex, QObject, Qt, Signal
+from PySide6.QtGui import QColor, QFont, QIcon, QPainter, QPixmap, QStandardItem, QStandardItemModel
+from PySide6.QtWidgets import QApplication, QFileIconProvider
+from spine_engine.project_item.project_item_resource import CmdLineArg, LabelArg, ProjectItemResource, extract_packs
+from spinetoolbox.helpers import plain_to_rich
+
+
+class FileListModel(QAbstractItemModel):
+    """A model for files to be shown in a file tree view."""
+
+    FileItem = namedtuple("FileItem", ["resource"])
+    PackItem = namedtuple("PackItem", ["label", "resources"])
+
+    def __init__(self, header_label: str = "", draggable: bool = False):
+        """
+        Args:
+            header_label: header label
+            draggable: if True, the top level items are drag and droppable
+        """
+        super().__init__()
+        self._header_label = header_label
+        self._draggable = draggable
+        self._single_resources = []
+        self._pack_resources = []
+
+    def rowCount(self, parent=QModelIndex()):
+        if not parent.isValid():
+            return len(self._single_resources) + len(self._pack_resources)
+        parent_row = parent.row()
+        if parent_row < len(self._single_resources):
+            return 0
+        return len(self._pack_resources[parent_row - len(self._single_resources)].resources)
+
+    def columnCount(self, parent=QModelIndex()):
+        return 1
+
+    def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
+        """Returns header information."""
+        if role != Qt.ItemDataRole.DisplayRole or orientation != Qt.Orientation.Horizontal:
+            return None
+        return self._header_label
+
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        """Returns data associated with given role at given index."""
+        if not index.isValid():
+            return None
+        if role == Qt.ItemDataRole.DisplayRole:
+            row = index.row()
+            pack_label = index.internalPointer()
+            if pack_label is None:
+                if row < len(self._single_resources):
+                    resource = self._single_resources[row].resource
+                    return resource.label
+                return self._pack_resources[row - len(self._single_resources)].label
+            return self._pack_resources[self._pack_index(pack_label)].resources[row].path
+        if role == Qt.ItemDataRole.DecorationRole:
+            row = index.row()
+            pack_label = index.internalPointer()
+            if pack_label is None:
+                if row < len(self._single_resources):
+                    resource = self._single_resources[row].resource
+                else:
+                    return None
+            else:
+                resource = self._pack_resources[self._pack_index(pack_label)].resources[row]
+            if resource.hasfilepath:
+                return QFileIconProvider().icon(QFileInfo(resource.path))
+        if role == Qt.ItemDataRole.ToolTipRole:
+            row = index.row()
+            pack_label = index.internalPointer()
+            if pack_label is None:
+                if row < len(self._single_resources):
+                    resource = self._single_resources[row].resource
+                else:
+                    return None
+            else:
+                resource = self._pack_resources[self._pack_index(pack_label)].resources[row]
+            if resource.type_ == "database":
+                return resource.url
+            return (
+                resource.path
+                if resource.hasfilepath
+                else plain_to_rich(f"This file will be generated by {resource.provider_name} upon execution.")
+            )
+        return None
+
+    def flags(self, index):
+        if index.internalPointer() is None:
+            if index.row() < len(self._single_resources):
+                flags = Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemNeverHasChildren
+            else:
+                flags = Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled
+            if self._draggable:
+                flags = flags | Qt.ItemFlag.ItemIsDragEnabled
+            return flags
+        return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemNeverHasChildren
+
+    def mimeData(self, indexes):
+        data = QMimeData()
+        text = json.dumps(("labels", ";;".join([index.data() for index in indexes])))
+        data.setText(text)
+        return data
+
+    def resource(self, index: QModelIndex) -> ProjectItemResource:
+        """Returns the resource at given index."""
+        pack_label = index.internalPointer()
+        if pack_label is None:
+            row = index.row()
+            if row < len(self._single_resources):
+                return self._single_resources[row].resource
+            pack_resources = self._pack_resources[row - len(self._single_resources)].resources
+            return pack_resources[0] if pack_resources else None
+        return self._pack_resources[self._pack_index(pack_label)].resources[index.row()]
+
+    def parent(self, index):
+        pack_label = index.internalPointer()
+        if pack_label is None:
+            return QModelIndex()
+        return self.createIndex(len(self._single_resources) + self._pack_index(pack_label), 0)
+
+    def index(self, row, column, parent=QModelIndex()):
+        if not parent.isValid():
+            return self.createIndex(row, column, None)
+        parent_row = parent.row()
+        if parent_row < len(self._single_resources):
+            return QModelIndex()
+        pack_label = self._pack_resources[parent_row - len(self._single_resources)].label
+        return self.createIndex(row, column, pack_label)
+
+    def update(self, resources: list[ProjectItemResource]) -> None:
+        """Updates the model according to given list of resources."""
+        self.beginResetModel()
+        single_resources, pack_resources = extract_packs(resources)
+        new_singles = [self.FileItem(r) for r in single_resources]
+        new_packs = [
+            self.PackItem(label, [r for r in r_list if r.hasfilepath]) for label, r_list in pack_resources.items()
+        ]
+        self._single_resources = new_singles
+        self._pack_resources = new_packs
+        self.endResetModel()
+
+    def duplicate_paths(self) -> set[str]:
+        """Checks if resources in the model have duplicate file paths.
+
+        Returns:
+            set of duplicate file paths
+        """
+        single_paths = [Path(item.resource.path) for item in self._single_resources if item.resource.hasfilepath]
+        pack_paths = [Path(r.path) for item in self._pack_resources for r in item.resources if r.hasfilepath]
+        paths = single_paths + pack_paths
+        duplicates = set()
+        seen = set()
+        for path in paths:
+            if str(path) in seen:
+                duplicates.add(str(path))
+            else:
+                seen.add(str(path))
+        return duplicates
+
+    def _pack_index(self, pack_label: str) -> int:
+        """Finds a pack's index in pack resources list.
+
+        Args:
+            pack_label: pack label
+
+        Returns:
+            index to pack resources list
+        """
+        return len(list(takewhile(lambda item: item.label != pack_label, self._pack_resources)))
+
+
+class CommandLineArgItem(QStandardItem):
+    def __init__(
+        self,
+        text: str = "",
+        rank: int | None = None,
+        selectable: bool = False,
+        editable: bool = False,
+        drag_enabled: bool = False,
+        drop_enabled: bool = False,
+    ):
+        super().__init__(text)
+        self.setEditable(editable)
+        self.setDropEnabled(drop_enabled)
+        self.setDragEnabled(drag_enabled)
+        self.setSelectable(selectable)
+        self.set_rank(rank)
+
+    def set_rank(self, rank: int | None) -> None:
+        if rank is not None:
+            icon = self._make_icon(rank)
+            self.setIcon(icon)
+
+    @staticmethod
+    def _make_icon(rank: int | None = None) -> QIcon:
+        pixmap = QPixmap(16, 16)
+        pixmap.fill(Qt.GlobalColor.white)
+        painter = QPainter(pixmap)
+        painter.drawText(0, 0, 16, 16, Qt.AlignmentFlag.AlignCenter, f"{rank}:")
+        painter.end()
+        return QIcon(pixmap)
+
+    def setData(self, value, role=Qt.ItemDataRole.UserRole + 1):
+        if role != Qt.ItemDataRole.EditRole:
+            return super().setData(value, role=role)
+        if value != self.data(role=role):
+            self.model().replace_arg(self.row(), CmdLineArg(value))
+        return False
+
+
+class NewCommandLineArgItem(CommandLineArgItem):
+    def __init__(self):
+        super().__init__("Type arg, or drag and drop from Available resources...", selectable=True, editable=True)
+        self.setForeground(self.text_color_hint())
+
+    @staticmethod
+    @cache
+    def text_color_hint() -> QColor:
+        gray_color = QApplication.instance().palette().text().color()
+        gray_color.setAlpha(128)
+        return gray_color
+
+    def setData(self, value, role=Qt.ItemDataRole.UserRole + 1):
+        if role != Qt.ItemDataRole.EditRole:
+            return super().setData(value, role=role)
+        if value != self.data(role=role):
+            self.model().append_arg(CmdLineArg(value))
+        return False
+
+
+class CommandLineArgsModel(QStandardItemModel):
+    args_updated = Signal(list)
+
+    def __init__(self, parent: QObject | None = None):
+        super().__init__(parent)
+        self.setHorizontalHeaderItem(0, QStandardItem("Command line arguments"))
+        self._args: list[CmdLineArg] = []
+
+    @property
+    def args(self) -> list[CmdLineArg]:
+        return self._args
+
+    @staticmethod
+    @cache
+    def non_label_arg_font() -> QFont:
+        font = QFont("")
+        font.setStyleHint(QFont.StyleHint.Monospace)
+        return font
+
+    def append_arg(self, arg: CmdLineArg) -> None:
+        self.args_updated.emit(self._args + [arg])
+
+    def replace_arg(self, row: int, arg: CmdLineArg) -> None:
+        new_args = self._args.copy()
+        new_args[row] = arg
+        self.args_updated.emit(new_args)
+
+    def mimeData(self, indexes):
+        data = QMimeData()
+        text = json.dumps(("rows", ";;".join([str(index.row()) for index in indexes])))
+        data.setText(text)
+        return data
+
+    def dropMimeData(self, data, drop_action, row, column, parent):
+        head, contents = json.loads(data.text())
+        if head == "rows":
+            rows = [int(x) for x in contents.split(";;")]
+            head = [arg for k, arg in enumerate(self._args[:row]) if k not in rows]
+            body = [self._args[k] for k in rows]
+            tail = [arg for k, arg in enumerate(self._args[row:]) if k + row not in rows]
+            new_args = head + body + tail
+            self.args_updated.emit(new_args)
+            return True
+        if head == "labels":
+            new_args = self._args[:row] + [LabelArg(arg) for arg in contents.split(";;")] + self._args[row:]
+            self.args_updated.emit(new_args)
+            return True
+        return False
+
+    def _reset_root(
+        self, root: QStandardItem, args: list[CmdLineArg], child_params: dict[str, Any], has_empty_row: bool = True
+    ) -> None:
+        last_row = root.rowCount()
+        if has_empty_row:
+            last_row -= 1
+        count = len(args) - last_row
+        for _ in range(count):
+            root.insertRow(last_row, [CommandLineArgItem(**child_params)])
+        if count < 0:
+            count = -count
+            first = last_row - count
+            root.removeRows(first, count)
+        for k, arg in enumerate(args):
+            child = root.child(k)
+            child.set_rank(k)
+            child.setText(str(arg))
+            color = QColor("red") if arg.missing else None
+            child.setData(color, role=Qt.ItemDataRole.ForegroundRole)
+            if isinstance(arg, LabelArg):
+                child.setFlags(child.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                child.setFont(QFont())
+            else:
+                child.setFlags(child.flags() | Qt.ItemFlag.ItemIsEditable)
+                child.setFont(self.non_label_arg_font())
+
+
+class JumpCommandLineArgsModel(CommandLineArgsModel):
+    def __init__(self, parent: QObject | None = None):
+        super().__init__(parent)
+        self.invisibleRootItem().appendRow(NewCommandLineArgItem())
+
+    def reset_model(self, args: list[CmdLineArg]) -> None:
+        self._args = args
+        self._reset_root(
+            self.invisibleRootItem(),
+            args,
+            {"editable": True, "selectable": True, "drag_enabled": True},
+            has_empty_row=True,
+        )
+
+    def canDropMimeData(self, data, drop_action, row, column, parent):
+        return row >= 0
