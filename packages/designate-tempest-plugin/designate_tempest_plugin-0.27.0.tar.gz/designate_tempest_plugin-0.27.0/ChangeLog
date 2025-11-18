@@ -1,0 +1,394 @@
+CHANGES
+=======
+
+0.27.0
+------
+
+* Add stable/2025.2 job
+* Adds boundary scenario tests for "Project limits" values
+* Add a multipool 2025.1 stable job
+
+0.26.0
+------
+
+* Restructure Designate CI jobs
+* Designate should support RFC9460 records Edit
+* Deprecate option for bug 1932026
+* Remove bug\_1573141\_fixed
+* Remove python3.9 support
+* Add stable/2025.1 job
+* Remove stable/2023.2 jobs
+
+0.25.0
+------
+
+* Add multipool scenario tests
+* Add designate-manage pool scenario tests
+* Add designate-manage path to tempest via a devstack script
+* Fix zone export test after tempest change
+* Update hacking
+* Remove stable/2023.1 job from master gate
+* Support py3.12 and drop py3.8
+
+0.24.0
+------
+
+* Remove support for Pyton 3.6 and 3.7
+* Add stable/2024.2 job
+
+0.23.0
+------
+
+* Remove system scope token usage
+* Add stable/2024.1 jobs on master gate
+* Remove stable/zed and add stable/caracal jobs
+* doc: Update the module of services decorator
+
+0.22.0
+------
+
+* Using a dedicated External network for PTR test suite
+* Remove stable/yoga check job
+
+0.21.0
+------
+
+* Fix "ttl" typos
+* Add test\_not\_existing\_project\_id test
+* Fix test\_show\_zone\_impersonate\_another\_project
+* Increase dns lookup timeout
+* Add a stable/bobcat BIND9 job
+* Use reasonable sizes for negative tests
+
+0.20.0
+------
+
+* Fix test\_pool sorted list assertion failures
+* Removes "DDT" module from Designate-Tempest-Plugin
+* Shared Zones - new scenario test cases
+* [Designate] IPv6 detection check added
+* Remove EM stable/xena job from master gate
+
+0.19.0
+------
+
+* Remove stable/wallaby job from master gate
+* Add a scenario test for classless PTR delegation
+* Update testing for show and list a shared zone
+* Remove reference to 'all-plugin' tox environment
+
+0.18.0
+------
+
+* This patch removes the usage of DDT module from test\_unauthed.py
+* Fix shared zones tests for scoped tokens
+* Unroll test\_update\_records\_propagated\_to\_backends
+* Extending "Shared Zones" test coverage
+* Accommodate stable branches with scoped tokens
+* Re-enable the tempest tests and add Antelope
+* Update designate-tempest-plugin "direction change"
+* Update the README file to use tox -e all
+
+0.17.0
+------
+
+* Add project\_reader in new RBAC tests
+* Add tempest tests for shared zones
+* Add API version check capabilities
+* Add Designate hacking checks to the tempest plugin
+* Adds backend propagation check for E2E recordset scenario test
+* Fix to support batch increment serial
+* Fix test\_list\_enabled\_api\_versions test case
+
+0.16.0
+------
+
+* Removing trigger\_update\_secondary\_zone\_negative
+* Pin stable branch jobs nodeset to Ubuntu Focal (20.04)
+* Fix checking of the [dns].nameservers value
+* Add designate-bind9-stable-zed job
+* Drop explicit queue configuration
+
+0.15.0
+------
+
+* Fix blacklist scenario test conflicts
+* DNS Query Client - raise ValueError if provided Nameservers list is empty
+
+0.14.0
+------
+
+* New quota boundray test:"test\_zone\_quota\_boundary"
+* Deprecate option for old api\_export\_size bug
+* Fix - test\_admin\_creates\_zone\_matches\_blacklist\_name\_or\_regex
+* Adds TLD cleanup to "test\_recordset\_validation" test suite
+* Disable admin API tests by default
+* Recordset scenario test suite changes
+* Fix the test\_list\_enabled\_api\_versions
+* Transfer Request - refactoring and new test cases
+* Remove "skip\_because" decorator - Launchpad:1934252
+* Adds new test case to validate min\_ttl equal to Zero
+* Adding new test cases to "quota" scenario test suite
+* Zone Imports - refactoring and new test cases
+* Expand Designate RBAC testing - zones import
+* Expand Designate RBAC testing - zone export
+* Expand Designate RBAC testing - zone transfer acc
+* Expand Designate RBAC testing - zone transfer req
+* Expand Designate RBAC testing - tsigkeys
+* Expand Designate RBAC testing - recordset
+* Expand Designate RBAC testing - Quotas
+* Test "NOTIFY" message is sent to Nameservers
+* Expand Designate RBAC testing - Designate Limits
+* Expand Designate RBAC testing - Pools
+* Expand Designate RBAC testing - Zone Abandon
+* Expand Designate RBAC testing - Service Statuses
+* Expand Designate RBAC testing - TLDs
+* Expand Designate RBAC testing - zones
+* Expand Designate RBAC testing
+* Fix TLD issues for test concurrency
+* Replace deprecated whitelist\_externals
+* Update zuul queue configuration
+* Re-enable test\_admin\_sets\_invalid\_quota\_values
+* Temp disable test\_admin\_sets\_not\_existing\_quota\_type
+* Adds new scenario test to the Zones suite + minor refactoring
+* Add "cleanup" for created recordsets + NEW delete zone test
+* New test cases for tsigkey tests suite
+* Remove six
+* Changes in "test\_quotas.py" API script
+* Enable unset ptr test and add inactive value to floating ip status
+* Update tempest stable branch testing
+* Zone Export - some refactoring and new test case to scenario test suite
+* Adding a test to cover: "Show the status of a service" API
+* New scenario test case for TLD + re-factoring
+* Adding new test case for zone test suite
+
+0.13.0
+------
+
+* Adding new test cases for zone export showfile API
+* Add test coverage for update: SOA and NS managed records
+* Use TOX\_CONSTRAINTS\_FILE and update tox
+* Updating python testing classifier as per Yoga testing runtime
+* Fix waiters to raise on resources going to ERROR
+* Removal of tox envlist py3X
+* Add stable branch check jobs
+* Covering more DNS record types to be tested
+* setup.cfg: Replace dashes with underscores
+* Update the constraints url
+* Fix PTR API tests for scoped tokens
+* Abort wait for 404 if the status changes to ERROR
+* Stabilizing “PTR record” tests suite and adding new test cases
+* Use LOG.warning instead of deprecated LOG.warn
+* Fix API version test to not assume dns endpoint
+* Fix blacklist scenario tests for scoped tokens
+* Adds an API test for list transfer requests sudo
+* Fix the blacklist scenario test conflicts
+* List enabled Designate API versions
+* Create "A" type recordset using a list of IPs records
+* Unroll DDT API tests used for refstack/interop
+* New test cases for quota tests suite
+* Adding a new test: "test\_create\_zone\_validate\_recordsets\_created"
+* Adding negative test for a Primary user
+* New test cases for blacklist test suite
+* Skip test broken by dnspython2
+* Adding more tests to "Designate Limits" tests suite
+* New test cases for TLD tests suite
+* Make the API tests compatible with scoped tokens
+* Remove temporary client
+* Update service client access in tempest tests
+* Remove v1 API tests
+
+0.12.0
+------
+
+* Fix list-all-project tests for pagination limit
+* Properly clean up transfer requests
+* Fix docs reqs for new pip
+* Improve the zone import API tests
+* Fixed multiple leaking tests
+* Re-enable zone export list filter test
+* New negative test cases for "pool" test suite
+* New test cases for "zone transfer accept" suite
+* Test cases for: "FloatingIPs PTR" resords
+* Adding "wait\_for\_zone\_import\_status" to stable:
+* New test case for a "list export zone", filter listed results
+* New API test cases for a Zone test suite
+* Adding four new test cases to "import zone" test suite
+* Negative test cases for "Create a zone"
+* New API test - "Get Designate Limits"
+* Adding 4 "False Positive" test cases for a zone suite
+* New test cases for "zone recordsets" test suite
+* Adding new test cases to: "Zone Ownership Transfers" test suite
+* New API test - test\_list\_service\_statuses
+* Adding 2 new test cases into a zone suite
+* Adding five test cases into the 'zone export' test suite
+* Adding "attributes" parameter to be covered in Zone's tests
+* Improving  "\_create\_client\_recordset" function
+* Adding two API test cases to: Accepted Zone Transfer test suite
+
+0.11.0
+------
+
+* Testing "Lists all recordsets owned by a project in Designate" API
+
+0.10.0
+------
+
+* Stop to use the \_\_future\_\_ module
+* Switch to newer openstackdocstheme version
+* Add py38 package metadata
+* Update hacking for Python3
+
+0.8.0
+-----
+
+* Cleanup py27 support
+* Limit where dnspython3 is installed
+* [ussuri][goal] Drop python 2.7 support and testing
+
+0.7.0
+-----
+
+* Fixing query\_client failing with IPv6
+* Sync Sphinx requirement
+* Replace git.openstack.org URLs with opendev.org URLs
+* OpenDev Migration Patch
+* Fix quota tests for static credentials
+* Bump hacking version to tempest one
+
+0.6.0
+-----
+
+* Properly quote TXT/SPF sample data
+* Fix deleting zones after tests
+* Change openstack-dev to openstack-discuss
+* Delete created zone in recordset validation tests
+* fix tox python3 overrides
+* Re-enable tests that were disabled due to bug #1623576
+* Fixing python 3 support for pep8 and doc
+* Add test for quota set for invalid project
+* switch documentation job to new PTI
+* import zuul job settings from project-config
+
+0.5.0
+-----
+
+* Default bug\_1573141\_fixed to true
+* Switch to stestr
+* Use new tempest option to verify redirects
+* Fix error when creating TimeoutException
+* Updated from global requirements
+* Fix the invalid links in docs
+* Add recordset scenario test
+* Run pep8 as part of default tox run
+
+0.4.0
+-----
+
+* Fix credential naming
+* Zuul: Remove project name
+* Updated from global requirements
+* Updated from global requirements
+* Do not create network resources for API tests
+* Implement get\_service\_clients interface
+* Run neutron-tempest-plugin designate integration test
+* Do not create networks for API tests
+* Avoid tox\_install.sh for constraints support
+* Remove zone\_id on import compare
+* Run tests from designate repo
+* Add \_\_all\_\_ to \_\_init\_\_ for service clients
+* Updated from global requirements
+
+0.3.0
+-----
+
+* Updated from global requirements
+* Updated from global requirements
+* Fix test incompatibilities with py35
+* Replace deprecated test.attr with decorators.attr
+* Declare compatibility with python 3.5
+* Updated from global requirements
+* update designate tempest link
+* Updated from global requirements
+* Fix doc typos and hacking requirement
+* Fix the removal of skip\_unless\_config decorator in Tempest
+* Add Docs for plugin
+* Bump test timeout
+* V1 API is removed by dfault now
+* Remove tempest tests for APIv1 as smoke tests
+* Use the new tempest module
+* Updated from global requirements
+
+0.2.0
+-----
+
+* Fix tempest removing variables
+* Add Constraints support
+* Show team and repo badges on README
+* Add Tempest hacking checks
+* Add more Zone Transfer tests
+* Add \_\_ne\_\_ built-in function
+* Updated from global requirements
+* Allow 200 as a response from /v2/zone/recordsets
+* Skip failing tests
+* Fix duplicate Idempotent ID's
+* Port 'RecordsetCrossZoneTest' to plugin
+* Migrate the recordset validation functional test
+* Clean imports in code
+* Remove logging import unused
+* Move RecordsetOwnershipTests to plugin
+* Add tests for wildcard RRSets
+* Add tests for various RRSet types
+* Add several negative RecordSet tests
+* Bump test timeout to 4 min
+* Test that updating recordset TTL only modifies TTL
+* Unauthed tests support both v2/v3 identity
+* Add negative testcases for ownership transfer\_request and tsigkey
+* Add functional testing for the v2 API quotas endpoint
+* Reuse zone during recordset tests
+* Reduce the number of "smoke" tests
+* Use tempest.lib data\_utils
+* Updated from global requirements
+* Updated from global requirements
+* Migrate the "unauthed" tests
+* Migrate negative tests for pools, tlds, blacklists
+* Replace idempotent\_id decorator with tempest.lib version
+* Add a zone import scenario test
+* Add a zone export scenario test
+* Updated from global requirements
+* Add client's methods and testcases for tsigkey
+
+0.1.0
+-----
+
+* Add data driven RecordSet tests
+* Increase default build timeout to 120sec
+* Replace assertEqual(a>b) with  assertGreater(a, b)
+* Skip nameserver propagation tests when no NS's in conf
+* Add client's method and test cases for /v2/recordsets API
+* Ensure V1 Records tests calls parent teardown
+* Correctly parse IP:Port nameserver pairs
+* Updated from global requirements
+* Add zones ownership transfer accept to Designate tempest plugin
+* Add zones ownership transfer request to Designate tempest plugin
+* Add a client for querying nameservers
+* Remove unintended comment
+* Updated from global requirements
+* Port V1 Tempest test from designate's contrib folder
+* expected\_success should be a classmethod
+* Add a config for a minimum ttl
+* Add tld\_client's methods and tests to Designate tempest plugin
+* Add pool\_client's methods and tests to Designate tempest plugin
+* Add recordset\_client's methods and tests to Designate tempest plugin
+* Add zones\_export\_client's methods and tests to Designate tempest plugin
+* Add quotas client + tests, for the admin api
+* Add blacklist client + smoke tests
+* Add zones\_import\_client's methods and tests to Designate tempest plugin
+* Assert with integer status codes to avoid hidden errors
+* Move assertExpected fucntion to base class
+* Several test cleanups
+* Add a test for deleting pending zones
+* API tests should be fast, Scenario tests slow
+* Adds zone client's methods and tests to Designate tempest plugin
+* Initial layout of Designate tempest plugin
+* Added .gitreview
