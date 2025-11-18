@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: matproplib
+Version: 0.0.1
+Summary: Materials that are dependent on conditions
+Project-URL: Source, https://github.com/Fusion-Power-Plant-Framework/matproplib
+Project-URL: Documentation, https://github.com/Fusion-Power-Plant-Framework/matproplib#readme
+Project-URL: Issues, https://github.com/Fusion-Power-Plant-Framework/matproplib/issues
+License-Expression: LGPL-2.1-or-later
+License-File: LICENSE
+Keywords: electromagnetism,fusion,materials,neutronics,structural
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.10
+Requires-Dist: asttokens
+Requires-Dist: babel
+Requires-Dist: coolprop
+Requires-Dist: csl-reference
+Requires-Dist: matplotlib>=3.10
+Requires-Dist: numpy>=1.26
+Requires-Dist: numpydantic
+Requires-Dist: periodictable
+Requires-Dist: pint>=0.24
+Requires-Dist: pydantic>=2.12
+Provides-Extra: all
+Requires-Dist: jupytext; extra == 'all'
+Requires-Dist: mkdocs; extra == 'all'
+Requires-Dist: mkdocs-gen-files; extra == 'all'
+Requires-Dist: mkdocs-jupyter; extra == 'all'
+Requires-Dist: mkdocs-literate-nav; extra == 'all'
+Requires-Dist: mkdocs-material; extra == 'all'
+Requires-Dist: mkdocs-section-index; extra == 'all'
+Requires-Dist: mkdocstrings[python]; extra == 'all'
+Requires-Dist: pytest; extra == 'all'
+Requires-Dist: pytest-cov; extra == 'all'
+Requires-Dist: pytest-html; extra == 'all'
+Requires-Dist: pytest-json-report; extra == 'all'
+Requires-Dist: pytest-metadata; extra == 'all'
+Requires-Dist: ruff==0.12.9; extra == 'all'
+Requires-Dist: ty; extra == 'all'
+Provides-Extra: dev
+Requires-Dist: jupytext; extra == 'dev'
+Requires-Dist: mkdocs; extra == 'dev'
+Requires-Dist: mkdocs-gen-files; extra == 'dev'
+Requires-Dist: mkdocs-jupyter; extra == 'dev'
+Requires-Dist: mkdocs-literate-nav; extra == 'dev'
+Requires-Dist: mkdocs-material; extra == 'dev'
+Requires-Dist: mkdocs-section-index; extra == 'dev'
+Requires-Dist: mkdocstrings[python]; extra == 'dev'
+Requires-Dist: pre-commit; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: pytest-cov; extra == 'dev'
+Requires-Dist: pytest-html; extra == 'dev'
+Requires-Dist: pytest-json-report; extra == 'dev'
+Requires-Dist: pytest-metadata; extra == 'dev'
+Requires-Dist: ruff==0.12.9; extra == 'dev'
+Requires-Dist: ty; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: jupytext; extra == 'docs'
+Requires-Dist: mkdocs; extra == 'docs'
+Requires-Dist: mkdocs-gen-files; extra == 'docs'
+Requires-Dist: mkdocs-jupyter; extra == 'docs'
+Requires-Dist: mkdocs-literate-nav; extra == 'docs'
+Requires-Dist: mkdocs-material; extra == 'docs'
+Requires-Dist: mkdocs-section-index; extra == 'docs'
+Requires-Dist: mkdocstrings[python]; extra == 'docs'
+Provides-Extra: lint
+Requires-Dist: ruff==0.12.9; extra == 'lint'
+Requires-Dist: ty; extra == 'lint'
+Provides-Extra: test
+Requires-Dist: pytest; extra == 'test'
+Requires-Dist: pytest-cov; extra == 'test'
+Requires-Dist: pytest-html; extra == 'test'
+Requires-Dist: pytest-json-report; extra == 'test'
+Requires-Dist: pytest-metadata; extra == 'test'
+Description-Content-Type: text/markdown
+
+# matproplib: Materials Property Library
+
+`matproplib` is an engineering materials property library. It can be used to create material objects with associated material property parameterisations dependent on operational conditions (e.g. temperature) for use in engineering analyses, including neutronics and finite element analyses.
+
+
+## Installation
+
+The latest stable release is available through `pip`:
+
+`pip install matproplib`
+
+If you want to work on more recent versions:
+
+`pip install matproplib@git+https://github.com/Fusion-Power-Plant-Framework/matproplib@main`
+
+## Library
+
+A few materials with some publicly available material property parameterisations are included for convenience. These will be progressively added to.
+
+Sadly, many material property parameterisations are not publicly available. For such cases, we recommend you construct your own `Material`s in your own repositories.
+
+
+## Conventions
+
+`matproplib` uses SI units, which includes the use of K for temperature.
+
+Phase transitions are generally not handled, although properties are available for some fluids through the `CoolProp` library.
+
+By default, material compositions are specified by atomic fractions. When used in neutronics, isotopes of elements default to natural abundances, unless otherwise specified.
