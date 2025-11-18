@@ -1,0 +1,123 @@
+# vim: set expandtab shiftwidth=2 tabstop=8 textwidth=0:
+
+.templates_sha: &templates_sha aec7a6ce7bb38902c70641526f6611e27141784a
+
+include:
+  - project: 'freedesktop/ci-templates'
+    ref: *templates_sha
+    file: '/templates/fedora.yml'
+  - project: 'freedesktop/ci-templates'
+    ref: *templates_sha
+    file: '/templates/ci-fairy.yml'
+
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+variables:
+  FDO_UPSTREAM_REPO: 'libevdev/python-libevdev'
+
+
+stages:
+  - prep
+  - test
+  - deploy
+
+.policy:
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+  # cancel run when a newer version is pushed to the branch
+  interruptible: true
+  dependencies: []
+
+.fedora:
+  extends:
+    - .policy
+  variables:
+    FDO_DISTRIBUTION_VERSION: 42
+    FDO_DISTRIBUTION_TAG: '2025-11-14.0'
+    FDO_DISTRIBUTION_PACKAGES: 'git python3 python3.9 python3.10 python3.11 python3-pytest python3-pytest-timeout libevdev virtme-ng qemu-img qemu-system-x86-core binutils file systemd-udev uv python3-hatchling'
+
+#
+# Verify that commit messages are as expected, etc.
+#
+
+check-commit:
+  extends:
+    - .fdo.ci-fairy
+  stage: prep
+  script:
+    - ci-fairy check-commits --junit-xml=results.xml
+  except:
+    - master@libevdev/python-libevdev
+  variables:
+    GIT_DEPTH: 100
+  artifacts:
+    reports:
+      junit: results.xml
+
+container-prep:
+  extends:
+  - .fedora
+  - .fdo.container-build@fedora
+  stage: prep
+  variables:
+    GIT_STRATEGY: none
+
+pre-commit-hooks:
+  extends:
+    - .fdo.ci-fairy
+  stage: prep
+  script:
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip3 install pre-commit
+    - pre-commit run --all-files
+    - git diff --exit-code || (echo "ERROR - Code style errors found, please fix" && false)
+
+pytest:
+  extends:
+    - .fedora
+    - .fdo.distribution-image@fedora
+  stage: test
+  tags:
+    - kvm
+  parallel:
+    matrix:
+      # We tests the ones most likely to break and the current default
+      - PYTHON_VERSION: ["3", "3.9", "3.10", "3.11"]
+  variables:
+    VNG_KERNEL: https://gitlab.freedesktop.org/api/v4/projects/libevdev%2Fhid-tools/packages/generic/kernel-x86_64/v6.14/bzImage
+  script:
+    - curl -LO $VNG_KERNEL
+    - export -p > .vngenv
+    - uv sync --python $PYTHON_VERSION
+    - uv add --dev pytest-timeout
+    - |
+      vng --exec "source $PWD/.vngenv; rm $PWD/.vngenv; uv run --python $PYTHON_VERSION pytest --verbose --junit-xml=results.xml --session-timeout=600" \
+          --run ./bzImage \
+          --user root \
+          --overlay-rwdir=$HOME \
+          --append HOME=$HOME \
+          --overlay-rwdir=$(pwd)
+  artifacts:
+    when: always
+    reports:
+      junit: results.xml
+
+install:
+  extends:
+    - .fedora
+    - .fdo.distribution-image@fedora
+  stage: test
+  needs:
+    - container-prep
+  script:
+    - uv pip install --system .
