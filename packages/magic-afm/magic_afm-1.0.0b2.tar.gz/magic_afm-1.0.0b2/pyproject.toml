@@ -1,0 +1,81 @@
+[project]
+name = "magic-afm"
+dynamic = ["version"]
+#version = "0.9.0"
+description = "Code to analyze and understand Magic Ratio AFM"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+authors = [{ name = "richardsheridan", email = "richard.sheridan@gmail.com" }]
+requires-python = ">= 3.11"
+dependencies = [
+    "attrs>=23.2.0",
+    "numpy>=1.21",
+    "soxr",
+]
+
+[project.scripts]
+magic_afm_cli = "magic_afm.cli._impl:main"
+[project.gui-scripts]
+magic_afm_gui = "magic_afm.gui._impl:main"
+
+[project.urls]
+Homepage = "https://github.com/richardsheridan/magic-afm"
+
+[project.optional-dependencies]
+build = ["pyinstaller", "build", "twine"]
+cli = [
+    "imageio",
+    "click",
+    "cloup",
+    "psutil",
+    "tqdm>=4.56.0",
+]
+gui = [
+    "imageio",
+    "psutil",
+    "matplotlib>=3.8.0",
+    "trio>=0.20.0",
+    "trio-parallel>1.1.0",
+    "tqdm>=4.56.0",
+]
+notebook = ["notebook>=7", "ipywidgets", "scipy", "tqdm>=4.56.0", "matplotlib>=3.8.0", ]
+numba = ["numba>=0.54.0", ]
+h5py = ["h5py>=3", ]
+
+[build-system]
+requires = ["setuptools", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+[tool.pixi.pypi-options]
+no-build = true
+
+[tool.pixi.dependencies]
+python = ">=3.11.0, <3.14.0"
+pixi-pycharm = "*"
+
+[tool.pixi.feature.gui.tasks]
+gui = { cmd = ["python", "-m", "magic_afm.gui"] }
+
+[tool.pixi.feature.cli.tasks]
+cli = { cmd = ["python", "-m", "magic_afm.cli"] }
+
+#[tool.pixi.feature.gui.pypi-dependencies]
+#magic-afm = { path = ".", editable = true }
+
+[tool.pixi.feature.notebook.tasks]
+notebook = { cmd = ["python", "-m", "notebook", "magic fitting workflow.ipynb"] }
+
+[tool.pixi.feature.build.tasks]
+make-version = { cmd = ["python", "magic_afm/_make_version.py"] }
+build = { cmd = ["pyinstaller", "-y", "magic_afm_win.spec"], depends-on = ["make-version"] }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+#gui = { features = ["gui", "numba"], solve-group = "default" }
+build = { features = ["build", "cli", "gui", "numba", "h5py"], solve-group = "default" }
+notebook = { features = ["notebook", "numba", "h5py"], solve-group = "default" }
