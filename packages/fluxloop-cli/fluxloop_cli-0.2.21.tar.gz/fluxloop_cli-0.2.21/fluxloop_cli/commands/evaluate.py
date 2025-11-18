@@ -1,0 +1,199 @@
+"""Evaluate command for scoring experiment outputs."""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+from typing import Optional
+
+import typer
+from rich.console import Console
+
+from ..environment import load_env_chain
+from ..evaluation import EvaluationOptions, load_evaluation_config, run_evaluation
+
+console = Console()
+app = typer.Typer(help="Evaluate experiment outputs and generate reports.")
+
+
+@app.command()
+def experiment(
+    experiment_dir: Path = typer.Argument(
+        ...,
+        help="Path to the experiment output directory",
+        exists=True,
+        dir_okay=True,
+        file_okay=False,
+        resolve_path=True,
+    ),
+    config: Path = typer.Option(
+        Path("configs/evaluation.yaml"),
+        "--config",
+        "-c",
+        help="Path to evaluation configuration file",
+    ),
+    output: Path = typer.Option(
+        Path("evaluation"),
+        "--output",
+        "-o",
+        help="Output directory name (relative to the experiment directory)",
+    ),
+    overwrite: bool = typer.Option(
+        False,
+        "--overwrite",
+        help="Overwrite output directory if it already exists",
+    ),
+    llm_api_key: Optional[str] = typer.Option(
+        None,
+        "--llm-api-key",
+        help="LLM API key for judge evaluators (optional)",
+        envvar="FLUXLOOP_LLM_API_KEY",
+    ),
+    sample_rate: Optional[float] = typer.Option(
+        None,
+        "--sample-rate",
+        help="Override LLM evaluation sample rate (0.0-1.0)",
+    ),
+    max_llm_calls: Optional[int] = typer.Option(
+        None,
+        "--max-llm",
+        help="Maximum number of LLM evaluations to run",
+    ),
+    report: Optional[str] = typer.Option(
+        None,
+        "--report",
+        help="Report output format to generate (md, html, both)",
+        metavar="FORMAT",
+    ),
+    report_template: Optional[Path] = typer.Option(
+        None,
+        "--report-template",
+        help="Path to custom HTML report template",
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+    ),
+    baseline: Optional[Path] = typer.Option(
+        None,
+        "--baseline",
+        help="Path to baseline summary.json file for comparisons",
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+    ),
+    verbose: bool = typer.Option(
+        False,
+        "--verbose",
+        help="Enable verbose logging",
+    ),
+):
+    """
+    Evaluate experiment outputs and generate aggregate reports.
+    """
+
+    resolved_experiment_dir = experiment_dir.resolve()
+    if not resolved_experiment_dir.is_dir():
+        raise typer.BadParameter(f"Experiment directory not found: {resolved_experiment_dir}")
+
+    if not config.is_absolute():
+        config_path = (Path.cwd() / config).resolve()
+    else:
+        config_path = config
+
+    if sample_rate is not None and not 0.0 <= sample_rate <= 1.0:
+        raise typer.BadParameter("--sample-rate must be between 0.0 and 1.0")
+
+    if max_llm_calls is not None and max_llm_calls < 0:
+        raise typer.BadParameter("--max-llm must be a non-negative integer")
+
+    report_format: Optional[str] = None
+    if report is not None:
+        candidate = report.lower()
+        if candidate not in {"md", "html", "both"}:
+            raise typer.BadParameter("--report must be one of: md, html, both")
+        report_format = candidate
+
+    report_template_path: Optional[Path] = None
+    if report_template is not None:
+        resolved_template = report_template
+        if not resolved_template.is_absolute():
+            resolved_template = (Path.cwd() / resolved_template).resolve()
+        if not resolved_template.exists():
+            raise typer.BadParameter(f"Report template not found: {resolved_template}")
+        report_template_path = resolved_template
+
+    baseline_path: Optional[Path] = None
+    if baseline is not None:
+        resolved_baseline = baseline
+        if not resolved_baseline.is_absolute():
+            resolved_baseline = (Path.cwd() / resolved_baseline).resolve()
+        baseline_path = resolved_baseline
+
+    try:
+        evaluation_config = load_evaluation_config(config_path)
+    except FileNotFoundError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001
+        raise typer.BadParameter(f"Failed to load evaluation config: {exc}") from exc
+
+    def _log_env_error(path: Path, exc: Exception) -> None:
+        console.log(
+            f"[yellow]Warning:[/yellow] Failed to load environment from {path}: {exc}"
+        )
+
+    load_env_chain(
+        evaluation_config.get_source_dir(),
+        refresh_config=True,
+        on_error=_log_env_error,
+    )
+
+    if llm_api_key is None:
+        llm_api_key = os.getenv("FLUXLOOP_LLM_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+    output_dir = output
+    if not output_dir.is_absolute():
+        output_dir = resolved_experiment_dir / output_dir
+
+    options = EvaluationOptions(
+        output_dir=output_dir,
+        overwrite=overwrite,
+        llm_api_key=llm_api_key,
+        sample_rate=sample_rate,
+        max_llm_calls=max_llm_calls,
+        verbose=verbose,
+        report_format=report_format,  # type: ignore[arg-type]
+        report_template=report_template_path,
+        baseline_path=baseline_path,
+    )
+
+    effective_report_format = report_format or evaluation_config.report.output
+    template_display = (
+        str(report_template_path)
+        if report_template_path is not None
+        else evaluation_config.report.template_path or "default"
+    )
+    baseline_display = (
+        str(baseline_path)
+        if baseline_path is not None
+        else evaluation_config.additional_analysis.comparison.baseline_path
+    )
+
+    message_lines = [
+        f"📊 Evaluating experiment at [cyan]{resolved_experiment_dir}[/cyan]",
+        f"⚙️  Config: [magenta]{config_path}[/magenta]",
+        f"📁 Output: [green]{output_dir}[/green]",
+        f"📝 Report: [yellow]{effective_report_format.upper()}[/yellow] (template: [cyan]{template_display}[/cyan])",
+    ]
+    if baseline_display:
+        message_lines.append(f"📈 Baseline: [cyan]{baseline_display}[/cyan]")
+
+    console.print("\n".join(message_lines))
+
+    summary = run_evaluation(resolved_experiment_dir, evaluation_config, options)
+
+    if verbose:
+        console.print("\n[bold]Summary[/bold]")
+        for key, value in summary.items():
+            console.print(f"• {key}: {value}")
+
+
