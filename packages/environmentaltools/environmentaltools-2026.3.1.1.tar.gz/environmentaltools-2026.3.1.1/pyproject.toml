@@ -1,0 +1,192 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "environmentaltools"
+version = "2026.3.1.1"
+authors = [
+  { name = "Manuel Cobos", email = "mcobosb@ugr.es" },
+]
+maintainers = [
+   { name = "Manuel Cobos", email = "mcobosb@ugr.es" }
+]
+description = "environmentaltools is an open-source Python package for modular environmental management, integrating timeseries analysis, raster-based processing, decision matrices, sensor workflows, and legal-administrative support for coastal and terrestrial systems."
+readme = { file = "README.md", content-type = "text/markdown"} 
+requires-python = ">=3.12"
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 4 - Beta",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "affine",
+    "cartopy",
+    "cdo",  # download/cordex_data module
+    "cdsapi",  # download/marine_copernicus module
+    "cmocean",
+    "configobj",  # download module
+    "earthengine-api",  # download/google_earth_engine module
+    "esgf-pyclient",  # download/cordex_data module (PyESGF)
+    "folium",  # spatial module
+    "geedim",  # download module
+    "geemap",  # download/google_earth_engine module
+    "geopandas",
+    "glob2",  # spatiotemporal module
+    "intake-esgf",  # download module (modern ESGF client)
+    "loguru",
+    "lxml",
+    "matplotlib",
+    "numpy",
+    "openpyxl",
+    "pandas",
+    "pillow",
+    "pydap",  # download module
+    "pymcdm",  # spatiotemporal/multicriteria module
+    "pypdf2",
+    "pyproj",
+    "pyshp",
+    "python-dotenv",
+    "pytmd",  # spectral/analysis module
+    "rasterio",
+    "requests",
+    "scikit-image",  # spatiotemporal module
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "statsmodels",
+    "tabula-py",
+    "timescale",  # spectral/analysis module (time conversions)
+    "tqdm",  # download module
+    "utide",  # spectral/analysis module
+    "werkzeug",  # download module
+    "windrose",
+    "xarray",
+]
+
+[project.optional-dependencies]
+# Subsets for minimal installations - these are module-specific dependencies
+download = [
+    "cdo",  # cordex_data.py
+    "cdsapi",  # marine_copernicus.py
+    "configobj",  # cordex_data.py
+    "earthengine-api",  # google_earth_engine.py
+    "esgf-pyclient",  # cordex_data.py (PyESGF for CORDEX)
+    "intake-esgf",  # cordex_data.py (modern ESGF client)
+    "geedim",  # google_earth_engine.py
+    "geemap",  # google_earth_engine.py
+    "pandas",  # multiple files
+    "pydap",  # data access
+    "requests",  # multiple files
+    "tqdm",  # cordex_data.py
+    "werkzeug",  # cordex_data.py
+    "xarray",  # cordex_data.py
+]
+spatial = [
+    "folium",  # geotools.py
+    "geopandas",  # analysis.py, geotools.py
+    "matplotlib",  # geotools.py, analysis.py
+    "numpy",  # multiple files
+    "pandas",  # multiple files
+    "pyproj",  # geotools.py
+    "scipy",  # analysis.py, geotools.py
+]
+spatiotemporal = [
+    "folium",  # geotools.py
+    "geopandas",  # analysis.py, geotools.py
+    "matplotlib",  # geotools.py, analysis.py
+    "numpy",  # multiple files
+    "pandas",  # multiple files
+    "pyproj",  # geotools.py
+    "scipy",  # analysis.py, geotools.py
+    "glob2",  # file handling
+    "loguru",  # raster.py
+    "pymcdm",  # multicriteria.py
+    "scikit-image",  # indicators.py (skimage)
+    "scipy",  # indicators.py, utils.py
+    "xarray",  # raster.py
+]
+temporal = [
+    "loguru",  # simulation.py, regimes.py
+    "matplotlib",  # simulation.py
+    "numpy",  # multiple files
+    "pandas",  # multiple files
+    "scipy",  # multiple files
+]
+spectral = [
+    "matplotlib",  # analysis.py
+    "numpy",  # analysis.py
+    "pandas",  # analysis.py
+    "pytmd",  # analysis.py (tide modeling)
+    "scipy",  # analysis.py
+    "timescale",  # analysis.py (time conversions)
+    "utide",  # analysis.py (harmonic analysis)
+]
+processes = [
+    "matplotlib",  # compute.py
+    "numpy",  # multiple files
+    "pandas",  # multiple files
+    "scipy",  # multiple files
+    "xarray",  # load.py, compute.py
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+
+[project.urls]
+Homepage = "https://barrier.dinamicambiental.es"
+Documentation = "https://environmentaltools.readthedocs.io/"
+Tracker = "https://github.com/mcobosb/environmentaltools/issues"
+Repository = "https://github.com/mcobosb/environmentaltools"
+Changelog = "https://github.com/mcobosb/environmentaltools/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/environmentaltools"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "src/environmentaltools/data",
+  "src/environmentaltools/examples",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+# Only include these specific patterns if needed
+# Exclude data and examples from wheel
+[tool.hatch.build]
+exclude = [
+  "src/environmentaltools/data",
+  "src/environmentaltools/examples",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4"
+
+# For updating installed packages
+# pip install -e . 
+# For creating the Documentation
+# sphinx-build -b html docs docs/_build
+# Build the package
+# python -m build
+# Local upload to testpypi
+# pip install twine
+# twine upload --repository testpypi dist/* --verbose
+# For publishing in PyPI
+# git tag v2026.X.X
+# git push origin v2026.X.X

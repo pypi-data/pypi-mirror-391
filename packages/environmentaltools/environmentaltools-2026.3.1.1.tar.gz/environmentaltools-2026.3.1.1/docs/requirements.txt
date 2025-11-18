@@ -1,0 +1,36 @@
+sphinx
+sphinx-rtd-theme
+-e .  # For installing the package in editable mode
+
+# Basic dependencies that should install successfully
+numpy
+pandas
+xarray
+matplotlib
+tqdm
+glob2
+geopandas
+shapely
+
+# Optional dependencies that may fail - these are mocked in conf.py
+# Download module dependencies (all mocked):
+# - cdsapi (ERA5 data)
+# - pydap (CORDEX data)
+# - pyesgf (ESGF search)
+# - werkzeug (utilities)
+# - cartopy (mapping)
+# - configobj (configuration)
+# - earthengine-api, ee, geemap (Google Earth Engine)
+
+# Spatial module dependencies (mocked):
+# - cdo (climate data operators)
+# - skimage (image processing)
+
+# Spectral module dependencies (mocked):  
+# - folium (interactive maps)
+# - pymcdm (decision making)
+# - timescale (time conversion utilities)
+
+# Temporal module dependencies (mocked):
+# - pyTMD, pytmd (tidal analysis)
+# - utide (tidal analysis)
