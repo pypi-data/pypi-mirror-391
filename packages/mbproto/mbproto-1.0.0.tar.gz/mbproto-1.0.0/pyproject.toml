@@ -1,0 +1,24 @@
+[project]
+name = "mbproto"
+version = "1.0.0"
+description = "mbprotocol"
+authors = [
+    {name="Jan Kowalewski", email="<jkowalewski@cthings.co>"},
+    {name="Adam Szewczyk", email="<a.szewczyk@cthings.co>"}
+]
+maintainers = [
+    {name="Jan Kowalewski", email="<jkowalewski@cthings.co>"},
+    {name="Adam Szewczyk", email="<a.szewczyk@cthings.co>"}
+]
+license = {text = "Apache-2.0"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "crccheck (>=1.3.0)",
+    "cthingsco-pymodbus (>=3.8.3)",
+    "protobuf (>=6.32.0)"
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
