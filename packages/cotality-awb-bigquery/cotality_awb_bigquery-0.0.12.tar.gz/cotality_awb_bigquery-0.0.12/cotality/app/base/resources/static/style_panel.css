@@ -1,0 +1,97 @@
+/* Style the button group container */
+
+:root {
+  --Red: #e10600;
+  --Red_Dark: #e10600;
+  --Blue: #1166BB;
+  --Blue_Dark: #191970;
+  --Orange: #ff8b5b;
+  --Orange_Dark: #ff8b5b;
+  --Black: #000000;
+  --CL_Black: #2C2D32;
+  --White: #ffffff;
+  --Gray_Medium: #959595;
+  --primary-color: #F63366;
+  --background-color: #edf2f4;
+  --secondary-background-color: #aaaaaa;
+  --text-color: #000000;
+  --font: "Source Sans Pro";
+}
+
+.success{
+  color: green
+}
+
+.error{
+  color: red
+}
+
+.my-nav{
+  background: #1F323E;
+  width: 100%;
+  padding: 0px;
+  display: flex;
+}
+
+.my-footer-wrapper{
+  background: #1F323E;
+  width: 100%;
+  padding: 5px;
+  margin: 0px;
+}
+
+.my-footer{
+  width: 100%;
+  color: white;
+  text-align: center;
+  margin: 0px;
+}
+
+.my-nav-buttons{
+  margin: 0px;
+  flex: 1;
+}
+
+:host(.my-nav-buttons) .bk-btn-group {
+    margin: 10px 0;
+    gap: 12px;
+}
+
+
+:host(.my-nav-buttons) .bk-btn {
+    border-radius: 0px;
+    font-weight: bold;
+    padding: 8px 16px;
+    max-width: 150px;
+}
+
+:host(.my-nav-buttons) .bk-btn-group .bk-btn:last-of-type {
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.logo-wrapper{
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+#logo {
+  filter: invert(1);
+}
+
+.center-wrapper{
+  margin: auto;
+  width: 400px;
+}
+
+:host(.dashboard-table) .tabulator-header input {
+  display: none;
+}
+
+:host(.dashboard-table) * {
+  font-size: 12px !important;
+}
+
+:host(.run-job-section) .bk-panel-models-widgets-Button{
+  margin-left: auto;
+}
