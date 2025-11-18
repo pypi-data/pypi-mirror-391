@@ -1,0 +1,296 @@
+Metadata-Version: 2.4
+Name: sptbuild
+Version: 0.1.2
+Summary: Build and release tool for SPT client plugins
+Author-email: flir <flir.063ur@passmail.net>
+License-Expression: MIT
+Project-URL: Homepage, https://gitlab.com/flir063-spt/sptbuild
+Project-URL: Issues, https://gitlab.com/flir063-spt/sptbuild/-/issues
+Keywords: spt,tarkov,bepinex,plugin,build,gitlab
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: requests>=2.31.0
+Requires-Dist: semver>=3.0.0
+Provides-Extra: dev
+Requires-Dist: towncrier>=23.11.0; extra == "dev"
+
+# sptbuild
+
+Build and release tool for SPT (Single Player Tarkov) client plugins. This tool provides a unified CLI for packaging, uploading, and releasing BepInEx plugins for SPT.
+
+## Features
+
+- **Package**: Create zip packages for SPT plugins in the correct BepInEx structure
+- **Upload**: Upload release packages to GitLab project uploads
+- **Release**: Create GitLab releases with package registry integration (CI mode)
+- **Setup CI**: Setup and manage NuGet reference packages for CI builds
+
+## Installation
+
+### From source (development)
+
+```bash
+git clone <repository-url>
+cd sptbuild
+pip install -e .
+```
+
+### From PyPI (when published)
+
+```bash
+pip install sptbuild
+```
+
+## Configuration
+
+sptbuild uses environment variables for configuration. Set these in your environment or in a `.envrc` file:
+
+### Required Variables
+
+```bash
+# Package information
+export UPLOAD_PACKAGE_NAME="your.package.name"
+export VERSION_SOURCE_FILE="Plugin.cs"
+
+# GitLab configuration
+export GITLAB_PROJECT_ID="your_project_id"
+export GITLAB_USERNAME="your_username"
+export GITLAB_PROJECT_NAME="your_project_name"
+```
+
+### Authentication (Non-CI)
+
+```bash
+# Personal access token with 'api' scope
+export GITLAB_SECRET_TOKEN="glpat-xxxxxxxxxxxxx"
+```
+
+### CI Mode (Auto-configured in GitLab CI)
+
+```bash
+export CI_JOB_TOKEN="<auto-provided>"
+export CI_API_V4_URL="<auto-provided>"
+```
+
+## Usage
+
+### Package Command
+
+Create a zip package for your SPT plugin:
+
+```bash
+sptbuild package
+```
+
+This will:
+1. Copy the compiled DLL from `bin/Release/net472/`
+2. Create the correct BepInEx directory structure
+3. Generate a zip file in `bin/upload/`
+
+**Prerequisites**: Run `dotnet build --configuration Release <your-project>.csproj` first
+
+### Upload Command
+
+Upload your package to GitLab project uploads:
+
+```bash
+# Upload only
+sptbuild upload
+
+# Upload and create a release
+sptbuild upload --release
+# or
+sptbuild upload -r
+```
+
+The release notes are automatically extracted from `CHANGELOG.md` based on the current version.
+
+### Release Command (CI Mode)
+
+Create a GitLab release with package registry integration. This is designed for CI environments:
+
+```bash
+sptbuild release
+```
+
+This will:
+1. Upload the package to GitLab Package Registry
+2. Create a GitLab release with the package link
+3. Extract release notes from `CHANGELOG.md`
+
+### Setup CI Command
+
+Setup and manage NuGet reference packages for CI builds:
+
+```bash
+# Build package only
+sptbuild setup-ci myproject.csproj
+
+# Build and upload to GitLab
+sptbuild setup-ci myproject.csproj --upload
+# or
+sptbuild setup-ci myproject.csproj -u
+
+# Build, upload, and update csproj with new version
+sptbuild setup-ci myproject.csproj -u -m
+```
+
+This command:
+1. Parses your `.csproj` for reference assemblies
+2. Copies DLLs to a `refs/` directory
+3. Creates a NuGet package with all references
+4. Optionally uploads to GitLab Package Registry
+5. Optionally updates your `.csproj` with the new version
+
+## Example Workflow
+
+### Local Development
+
+```bash
+# 1. Build your plugin (specify the main project .csproj)
+dotnet build --configuration Release yourproject.csproj
+
+# 2. Package it
+sptbuild package
+
+# 3. Upload to GitLab and create a release
+sptbuild upload --release
+```
+
+### CI/CD Pipeline
+
+Example `.gitlab-ci.yml`:
+
+```yaml
+stages:
+  - build
+  - package
+  - release
+
+build:
+  stage: build
+  script:
+    - dotnet restore yourproject.csproj
+    - dotnet build --configuration Release yourproject.csproj
+
+package:
+  stage: package
+  script:
+    - sptbuild package
+  artifacts:
+    paths:
+      - bin/upload/*.zip
+
+release:
+  stage: release
+  script:
+    - sptbuild release
+  only:
+    - tags
+```
+
+**Note**: When you have multiple `.csproj` files in your directory (e.g., `yourproject.csproj` and `ReferencePackage.csproj`), you must specify which one to build in the `dotnet build` command.
+
+### Setting Up CI References
+
+```bash
+# 1. Create reference package
+sptbuild setup-ci myproject.csproj -u
+
+# 2. Update your .csproj to use it
+# Add to your .csproj:
+<PackageReference Include="YourProject.SPT.References" Version="1.0.0" />
+
+# 3. Configure nuget.config for CI
+# Create nuget.config with:
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="gitlab" value="https://gitlab.com/api/v4/projects/%CI_PROJECT_ID%/packages/nuget/index.json" />
+  </packageSources>
+</configuration>
+```
+
+## Version Detection
+
+sptbuild automatically detects the version from your source file (specified by `VERSION_SOURCE_FILE`). It looks for:
+
+```csharp
+public const string Version = "1.0.0";
+```
+
+## Changelog Integration
+
+Release notes are automatically extracted from `CHANGELOG.md`. The expected format is:
+
+```markdown
+## [1.0.0] - 2024-01-15
+
+### Features
+- New feature description
+
+### Bug Fixes
+- Bug fix description
+```
+
+We recommend using [towncrier](https://pypi.org/project/towncrier/) to manage changelogs.
+
+## Environment Setup Example
+
+Create a `.envrc` file in your project root:
+
+```bash
+# Git configuration
+export GIT_SSH_COMMAND='ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes'
+export GIT_COMMITTER_NAME="Your Name"
+export GIT_COMMITTER_EMAIL="your.email@example.com"
+
+# GitLab configuration
+export GITLAB_SECRET_TOKEN="glpat-xxxxxxxxxxxxx"
+export GITLAB_PROJECT_ID="12345678"
+export GITLAB_USERNAME="your-username"
+export GITLAB_PROJECT_NAME="your-project"
+
+# Package configuration
+export UPLOAD_PACKAGE_NAME="your.package.name"
+export VERSION_SOURCE_FILE="Plugin.cs"
+```
+
+Then use [direnv](https://direnv.net/) to automatically load these variables:
+
+```bash
+direnv allow
+```
+
+## Requirements
+
+- Python >= 3.8
+- requests >= 2.31.0
+- semver >= 3.0.0
+
+## Optional Dependencies
+
+For changelog management:
+
+```bash
+pip install sptbuild[dev]
+```
+
+This includes:
+- towncrier >= 23.11.0
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
