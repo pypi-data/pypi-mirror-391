@@ -1,0 +1,41 @@
+Metadata-Version: 2.4
+Name: robot-retarget
+Version: 0.1.3
+Summary: Advanced robot motion retargeting system
+Home-page: https://github.com/dongyi/robot-retarget
+Author: dongyi
+Author-email: dongyi <3308449881@qq.com>
+Project-URL: Homepage, https://github.com/yourusername/robot-retarget
+Project-URL: Bug Reports, https://github.com/yourusername/robot-retarget/issues
+Project-URL: Source, https://github.com/yourusername/robot-retarget
+Requires-Python: >=3.8,<3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: easydict==1.13
+Requires-Dist: hydra-core==1.3.2
+Requires-Dist: imageio==2.37.2
+Requires-Dist: joblib==1.5.2
+Requires-Dist: loop-rate-limiters==1.2.0
+Requires-Dist: lxml==6.0.2
+Requires-Dist: matplotlib<3.10,>=3.7
+Requires-Dist: mink==0.0.13
+Requires-Dist: numpy<3.0,>=1.21
+Requires-Dist: omegaconf==2.3.0
+Requires-Dist: open3d>=0.17
+Requires-Dist: PyYAML==6.0.3
+Requires-Dist: rich==14.2.0
+Requires-Dist: scipy<1.12,>=1.8
+Requires-Dist: smplx==0.1.28
+Requires-Dist: tensordict==0.10.0
+Requires-Dist: torch<2.9,>=2.0
+Requires-Dist: tqdm==4.67.1
+Provides-Extra: simulation
+Requires-Dist: mujoco==3.3.7; extra == "simulation"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
