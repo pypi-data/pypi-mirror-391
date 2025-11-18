@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: sphinx-tojupyter
+Version: 0.4.0
+Summary: Sphinx "Jupyter" extension to build Jupyter notebooks.
+Home-page: https://github.com/QuantEcon/sphinx-tojupyter
+Download-URL: https://github.com/QuantEcon/sphinx-tojupyter/archive/v0.4.0.tar.gz
+Author: QuantEcon
+Author-email: contact@quantecon.org
+License: BSD
+Platform: any
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Sphinx
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Framework :: Sphinx :: Extension
+Classifier: Topic :: Documentation
+Classifier: Topic :: Utilities
+License-File: LICENSE
+Requires-Dist: sphinx>=5
+Requires-Dist: myst-nb>=0.14
+Requires-Dist: pyyaml
+Requires-Dist: nbformat
+Requires-Dist: nbconvert
+Requires-Dist: dask[distributed]
+Requires-Dist: nbdime
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-dist
+Dynamic: summary
+
+
+This package contains a [Sphinx](http://www.sphinx-doc.org/en/master/) extension 
+for building Jupyter notebooks.
+
+The default behavior of the `jupyter` builder is to provide notebooks that are readable
+with an emphasis on supporting basic markdown into the notebooks.
+
+This project is maintained and supported by [QuantEcon](http://quantecon.org/)
