@@ -1,0 +1,71 @@
+Metadata-Version: 2.3
+Name: eeg-step
+Version: 0.0.2
+Summary: Single-trial EEG pipeline
+Project-URL: Changelog, https://github.com/alexenge/eeg-step/releases
+Project-URL: Documentation, https://readthedocs.org/projects/eeg-step
+Project-URL: Issues, https://github.com/alexenge/eeg-step/issues
+Project-URL: Repository, https://github.com/alexenge/eeg-step
+Author-email: Alexander Enge <alex_enge@web.de>
+License: # MIT License
+        
+        Copyright (c) 2025 Alexander Enge
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Keywords: eeg,electroencephalography,neuroscience,psychology,research,science
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Classifier: Topic :: Scientific/Engineering
+Requires-Python: >=3.9
+Requires-Dist: chardet
+Requires-Dist: eeg-ride
+Requires-Dist: joblib
+Requires-Dist: matplotlib
+Requires-Dist: mne
+Requires-Dist: pandas
+Requires-Dist: pooch
+Requires-Dist: scikit-learn
+Provides-Extra: docs
+Requires-Dist: furo; extra == 'docs'
+Requires-Dist: myst-parser; extra == 'docs'
+Requires-Dist: sphinx; extra == 'docs'
+Requires-Dist: sphinx-autodoc-typehints; extra == 'docs'
+Requires-Dist: sphinx-copybutton; extra == 'docs'
+Description-Content-Type: text/markdown
+
+# eeg-step
+
+[![PyPI](https://img.shields.io/pypi/v/eeg-step?label=PyPI)](https://pypi.org/project/eeg-step)
+[![Python](https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fraw.githubusercontent.com%2Falexenge%2Feeg-step%2Frefs%2Fheads%2Fmain%2Fpyproject.toml&label=Python)](https://www.python.org)
+[![License](https://img.shields.io/github/license/alexenge/eeg-step?label=License)](https://github.com/alexenge/eeg-step?tab=readme-ov-file#MIT-1-ov-file)
+[![Docs](https://img.shields.io/readthedocs/eeg-step?label=Docs)](https://eeg-step.readthedocs.io)
+[![Workflow](https://img.shields.io/github/actions/workflow/status/alexenge/eeg-step/workflow.yml?label=Workflow)](https://github.com/alexenge/eeg-step/actions/workflows/workflow.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/alexenge/eeg-step/main?label=Coverage)](https://codecov.io/gh/alexenge/eeg-step)
+
+Single-trial EEG pipeline
