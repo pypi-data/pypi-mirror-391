@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shirly-client"
+version = "0.1.1"
+description = "Python client for the Shirly scheduler API"
+authors = [{ name = "Shirly" }]
+license = "LicenseRef-ShirlyProprietary"
+requires-python = ">=3.10"
+license-files = ["LICENSE.txt"]
+dependencies = [
+    "httpx>=0.25"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+]
+
+[project.urls]
+Homepage = "https://example.com/shirly"
+
