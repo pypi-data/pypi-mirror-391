@@ -1,0 +1,18 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="postgresdbmodel",
+    version="0.0.1",
+    description="Capa de acceso a datos para PostgreSQL integrada con SQLAlchemy",
+    author="darth wayne",
+    author_email="darrthwayne@gmail.com",
+    packages=find_packages(exclude=["tests*"]),
+    install_requires=[
+        "SQLAlchemy",
+        "psycopg2-binary"
+    ],
+    python_requires='>=3.7',
+    include_package_data=True,
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
+)
