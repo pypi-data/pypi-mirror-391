@@ -1,0 +1,63 @@
+# ChatAds Python SDK
+
+A tiny, dependency-light wrapper around the ChatAds `/v1/chatads-script` endpoint. It mirrors the response payloads returned by the FastAPI service so you can drop it into CLIs, serverless functions, or orchestration tools.
+
+## Installation
+
+```bash
+pip install .
+```
+
+(Or build/upload to your internal index as needed.)
+
+## Quickstart
+
+```python
+from chatads_sdk import ChatAdsClient, FunctionItemPayload
+
+client = ChatAdsClient(
+    api_key="YOUR_X_API_KEY",
+    base_url="https://<your-chatads-domain>",
+    raise_on_failure=True,        # Treat success=False payloads as exceptions
+    max_retries=2,                # Optional automatic retries for 429/5xx responses
+    retry_backoff_factor=0.75,    # Exponential backoff multiplier
+)
+
+payload = FunctionItemPayload(
+    message="Looking for a CRM to close more deals",
+    ip="1.2.3.4",
+    user_agent="Mozilla/5.0",
+)
+
+result = client.analyze(payload)
+
+if result.success:
+    print(result.data.ad)
+else:
+    print(result.error.code, result.error.message)
+```
+
+## Error Handling
+
+Non-2xx responses raise `ChatAdsAPIError` and include the parsed error payload plus the original HTTP status code so you can branch on quota/validation failures. Set `raise_on_failure=True` if you want 200 responses with `success=false` to raise the same exception class.
+
+## Notes
+
+- Retries are opt-in. Provide `max_retries>0` to automatically retry transport errors and retryable status codes. The client honors `Retry-After` headers and falls back to exponential backoff.
+- `FunctionItemPayload` matches the server-side `FunctionItem` pydantic model. Keyword arguments passed to `ChatAdsClient.analyze_message()` accept either snake_case (`user_agent`) or camelCase (`userAgent`) keys.
+- Reserved payload keys (e.g., `message`, `pageUrl`, `userAgent`) cannot be overridden through `extra_fields`; doing so raises `ValueError` to prevent silent mutations.
+
+## CLI Smoke Test
+
+For a super-quick check, edit the config block at the top of `python_sdk/run_sdk_smoke.py` (or set the
+`CHATADS_*` env vars) and run:
+
+```bash
+PYTHONPATH=python_sdk python python_sdk/run_sdk_smoke.py
+```
+
+It prints the raw JSON response or surfaces a `ChatAdsAPIError` with status/error fields so you can see
+exactly what the API returned.
+
+- `API_KEY` and `MESSAGE` are the only required values. Leave `CALLER_IP`, `USER_AGENT`, or `CHATADS_EXTRA_FIELDS`
+  blank to omit them from the request.
