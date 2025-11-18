@@ -1,0 +1,20 @@
+[project]
+name = "imgenx"
+version = "0.3.0"
+description = "AI 图片/视频生成与处理套件，支持文本/图生图、文本/图生视频、图片分析与常用编辑（裁剪、缩放、转换、调参），可作为命令行工具或 MCP Server 使用"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.12.4",
+    "python-dotenv>=1.1.1",
+    "volcengine-python-sdk[ark]>=4.0.22",
+    "requests>=2.25.0",
+    "pillow>=12.0.0",
+    "dashscope>=1.25.1",
+]
+
+[project.urls]
+repository = "https://github.com/NewToolAI/imgenx"
+
+[project.scripts]
+imgenx = "imgenx.main:run"
