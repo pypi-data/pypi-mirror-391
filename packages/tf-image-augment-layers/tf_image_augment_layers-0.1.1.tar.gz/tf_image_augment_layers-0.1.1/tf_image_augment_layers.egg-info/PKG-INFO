@@ -1,0 +1,150 @@
+Metadata-Version: 2.4
+Name: tf-image-augment-layers
+Version: 0.1.1
+Summary: TensorFlow augmentation layers including RGBA background compositing, random color temperature, and color cast.
+Author-email: Nao <ozawa_naomitsu@kurume-u.ac.jp>
+License: MIT License
+        
+        Copyright (c) 2025 naomitsu-ozawa
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Project-URL: Homepage, https://https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow
+Project-URL: Source, https://github.com/naomitsu-ozawa/WB_augmentor_for_tensorflow
+Keywords: tensorflow,augmentation,image-processing,keras
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: tensorflow<=2.15.1,>=2.13.2
+Dynamic: license-file
+
+# tf-image-augment-layers
+
+TensorFlow/Keras 用の高性能画像拡張レイヤーコレクション。市販カメラのホワイトバランスのゆらぎを模倣するために、色温度・色被りの拡張を実装してみました。
+RGBA 背景合成・色温度変換・色被り生成など、標準の Keras augmentation にない高度拡張を GPU 上で高速に実行できます。特に背景差し替えは、先行研究で「CNN が対象物へより注視しやすくなる」と報告されており、その検証目的として本実装を追加しました。
+
+---
+
+## 🚀 Features
+
+> **Why this library?** 標準の TensorFlow/Keras では扱えない RGBA 背景合成や高度な色変換が可能になり、データ拡張の幅が大きく広がります。
+
+- 🖼 **RGBA 対応**（透明 PNG を安全に処理）
+- 🎨 **背景ランダム置換（グレー / ノイズ / 白 / 黒）**
+- 🌡 **色温度を Kelvin 指定でランダム変換**
+- 💡 **色被り（Green / Magenta）をランダム付加**
+- ⚡ **すべて TensorFlow グラフ上で実行され GPU / TPU に最適化**
+- 🔄 **Keras Sequential / Functional / tf.data と完全互換**
+
+---
+
+## 📦 Installation
+
+PyPI 公開後に使用できます：
+
+```
+pip install tf-image-augment-layers
+```
+
+---
+
+## 🧩 Available Layers
+
+| Layer                                 | Description                                |
+| ------------------------------------- | ------------------------------------------ |
+| `ReplaceBackgroundWithGrayNoiseLayer` | RGBA 背景をグレー / ノイズ / 白 / 黒に置換 |
+| `RGBAtoRGBLayer`                      | RGBA → RGB に変換                          |
+| `RandomColorTemperatureLayer`         | 色温度を Kelvin 範囲でランダム変換         |
+| `ColorCastLayer`                      | 色被り（Green / Magenta）をランダム追加    |
+| `background_composit()`               | 背景置換を行う関数（単独利用可）           |
+
+---
+
+## 🔧 Usage Example
+
+### Keras Sequential に組み込む
+
+> **Note:** 色温度変換（RandomColorTemperatureLayer）や色被り（ColorCastLayer）は RGB 画像を前提としています。RGBA の場合は必ず RGBAtoRGBLayer を適用して 3 チャンネルに変換してから使用してください。
+
+```python
+from augment_layers import (
+    RGBAtoRGBLayer,
+    ReplaceBackgroundWithGrayNoiseLayer,
+    RandomColorTemperatureLayer,
+    ColorCastLayer,
+)
+import tensorflow as tf
+
+data_augmentation = tf.keras.Sequential([
+    RGBAtoRGBLayer(),
+    ReplaceBackgroundWithGrayNoiseLayer(use_white=True),
+    RandomColorTemperatureLayer(kelvin_range=(3000, 7500)),
+    ColorCastLayer(max_strength=0.3),
+])
+
+model = tf.keras.Sequential([
+    data_augmentation,
+    tf.keras.layers.Rescaling(1./255),
+    tf.keras.layers.Conv2D(32, 3, activation="relu"),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(10, activation="softmax"),
+])
+```
+
+---
+
+## 🧪 Using with tf.data
+
+```python
+augment = ReplaceBackgroundWithGrayNoiseLayer(use_white=True)
+
+def preprocess(image, label):
+    return augment(image, training=True), label
+
+dataset = dataset.map(preprocess)
+```
+
+---
+
+## 🌈 RGBA → RGB
+
+```python
+from augment_layers import RGBAtoRGBLayer
+
+rgba_to_rgb = RGBAtoRGBLayer()
+rgb_image = rgba_to_rgb(rgba_batch, training=True)
+```
+
+---
+
+## 🔥 Background Replacement
+
+```python
+from augment_layers import background_composit
+
+aug_image = background_composit(rgba_image, use_white=True)
+```
+
+## 📜 License
+
+MIT License
+
+---
+
+##
