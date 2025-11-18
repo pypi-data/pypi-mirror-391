@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block preamble %}
+
+	<title>API - JWQL</title>
+
+{% endblock %}
+
+{% block content %}
+
+    <main role="main" class="container">
+        <h2>Explore the JWQL API</h2><hr>
+        <p align="justify">
+            <ul>
+                <li><a href="#introduction">What is the JWQL API?</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="#api_list">List of Avaliable Services</a></li>
+                <li><a href="https://jwql.readthedocs.io/en/latest/website.html#api-views-py">Documentation</a></li>
+            </ul>
+        </p>
+        <br>
+
+        <div id="introduction">
+            <h4>What is the JWQL API?</h4><hr>
+            <p align="justify">
+                An Application Programming Interface (API) accepts requests for services from a system, gathers the items in the request, and returns a response to the user. A
+                popular example used to describe the
+                functionality of an API is describing the role of a waiter in a restaurant. When you enter a restaurant and sit at your table, you are typically
+                provided a menu containing all of the drink and food options. But how do you communicate your food and drink order to
+                the kitchen staff? This is where the waiter (API) comes in, you provide the waiter with your order (request), they will communicate
+                your order to the kitchen staff (system), and bring your food and drinks when they are prepared (the response). The waiter (API) disguises
+                all of the steps that are necessary to getting your final product delivered (cooking the food, counting stock, knowing recipes, etc.) but, is the
+                link to the user and the response they wish to obtain from a system.
+                <br><br>
+                JWQL allows users to access some JWST proposal and filename information through our web-based API. Note that JWQL does
+                not have a programmatic API due to security concerns and the authorization layer between the app and the outside world. The services listed
+                below will return lists of proposal numbers or filenames in json format when the appropriate URL is entered into the browser.
+
+            </p>
+        </div>
+        <br>
+
+        <div id="api_list">
+            <h4>List of Available Services</h4><hr>
+                <ul>
+                    <li>All Proposals (<code class="python">https://jwql.stsci.edu/api/proposals/</code>)</li>
+                    <li>Instrument Proposals (<code class="python">https://jwql.stsci.edu/api/&lt;instrument&gt;/proposals/</code>)</li>
+                    <li>Filenames by Proposal (<code class="python">https://jwql.stsci.edu/api/&lt;proposal&gt;/filenames/</code>)</li>
+                    <li>Preview Images by Proposal (<code class="python">https://jwql.stsci.edu/api/&lt;proposal&gt;/preview_images/</code>)</li>
+                    <li>Thumbnails by Proposal (<code class="python">https://jwql.stsci.edu/api/&lt;proposal&gt;/thumbnails/</code>)</li>
+                    <li>Filenames by Rootname (<code class="python">https://jwql.stsci.edu/api/&lt;rootname&gt;/filenames/</code>)</li>
+                    <li>Preview Images by Rootname (<code class="python">https://jwql.stsci.edu/api/&lt;rootname&gt;/preview_images/</code>)</li>
+                    <li>Thumbnails by Rootname (<code class="python">https://jwql.stsci.edu/api/&lt;rootname&gt;/thumbnails/</code>)</li>
+                    <li>Look Status by Instrument (<code class="python">https://jwql.stsci.edu/api/&lt;instrument&gt;/looks/</code>)</li>
+                    <li>Viewed Data by Instrument (<code class="python">https://jwql.stsci.edu/api/&lt;instrument&gt;/looks/viewed/</code>)</li>
+                    <li>New Data by Instrument (<code class="python">https://jwql.stsci.edu/api/&lt;instrument&gt;/looks/new/</code>)</li>
+
+                </ul>
+            <p> where <code class="python">&lt;instrument&gt;, &lt;rootname&gt;, &lt;proposal&gt;</code> are the values for the instrument name, rootname and proposal ID respectively.</p>
+        </div>
+	</main>
+
+{% endblock %}

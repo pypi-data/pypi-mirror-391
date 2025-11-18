@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block preamble %}
+
+	<title>View {{ inst }} Image - JWQL</title>
+
+{% endblock %}
+
+{% block content %}
+
+    <main role="main" class="image_views">
+    	<!-- Show image group name -->
+    	<h3>{{ file_root }}</h3>
+
+    	<!-- Specify the attributes of what is currently being shown -->
+        <div class="d-flex flex-row">
+    		<div class="APT_parameters">Proposal: <a id="proposal" href="{{ url('jwql:archive_thumb_per_obs', args=[inst, prop_id, obsnum]) }}"></a></div>
+    		<div class="APT_parameters">Observation: <a id="obs_id"></a></div>
+    		<div class="APT_parameters">Visit: <a id="visit_id"></a></div>
+    		<div class="APT_parameters">Detector: <a id="detector"></a></div>
+            <input class="btn btn-primary" id="viewed" value=" " type="button" onclick='toggle_viewed("{{file_root}}", "{{base_url}}");'>
+        </div>
+        <div class="d-flex flex-row">
+            <div class="APT_parameters">Visit Status: {{ basic_info.visit_status }}</div>
+            <div class="APT_parameters">Category: {{ basic_info.category }}</div>
+            <div class="APT_parameters">Exp Type: <a>{{ basic_info.exp_type }}</a></div>
+            <div class="APT_parameters">Subarray: {{ basic_info.subarray }}</div>
+            <div class="APT_parameters">Viewed: {{ marked_viewed }}</div>
+        </div>
+        <div class="d-flex flex-row">
+            <div class="APT_parameters">Filter: {{ basic_info.filter }}</div>
+            {% if 'pupil' in basic_info %}
+            <div class="APT_parameters">Pupil: {{ basic_info.pupil }}</div>
+            {% endif %}
+            {% if 'grating' in basic_info %}
+                <div class="APT_parameters">Grating: {{ basic_info.grating }}</div>
+            {% endif %}
+            <div class="APT_parameters">Exp Start: {{ expstart_str }}</div>
+        </div>
+
+        <div class="collapsible">
+            <button class="collapsible-btn btn-primary">More Exposure Info +</button>
+            <div class="collapsible-content">
+
+                <table id="dynamic-table" class="split-dictionary">
+                    <tbody id="table-body" class="alternate-rows">
+                        <!-- Table body will be populated dynamically with JavaScript -->
+                        <script>
+                        // Line below needed to put dictionary into the proper format
+                        py_dict = {{ additional_info | safe }};
+                        make_table_from_dict(py_dict, "table-body", 2)
+                        </script>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br>
+    	FITS Filename: <a id="fits_filename"></a> &emsp; JPG Filename: <a id="jpg_filename"></a><br><br>
+
+    	<!-- Allow the user to change the file type that is being displayed -->
+    	<a id="view_file_type" data-current-suffix="">View File Type:</a>
+    	<a href="https://jwst-pipeline.readthedocs.io/en/latest/jwst/data_products/product_types.html" target="_blank">
+	      	<span class="help-tip mx-1">i</span>
+	    </a><br>
+	    <form class="my-2">
+	    	{% for suffix in suffixes %}
+	    		<input type="radio" name="filetype" value="{{ suffix }}" id="{{ suffix }}" onclick='handle_change("{{suffix}}", "{{file_root}}", "{{inst}}", {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, "{{num_ints}}", "{{total_ints}}", "{{index}}");'> {{ suffix }} &nbsp;&nbsp;&nbsp;&nbsp;
+	    	{% endfor %}
+		</form>
+		<br>
+
+		<!-- Buttons for viewing header, downloading files -->
+        <p>
+            <a id="view_header" class="btn btn-primary mx-2" role="button" href="#">View Header</a>
+            <a id="view_exposure" class="btn btn-primary mx-2" role="button" href="#">View Exposure</a>
+            <!-- <a id="download_fits" class="btn btn-primary my-2 mx-2" role="button" href='{{ static("") }}preview_images/{{ file_root[:7] }}/{{ file_root }}' download>Download FITS</a>
+            <a id="download_jpg" class="btn btn-primary my-2 mx-2" role="button" href='{{ static("") }}preview_images/{{ file_root[:7] }}/{{ jpg }}' download>Download JPEG</a> -->
+        </p>
+
+    	<!-- Allow the user to change the preview format that is being displayed -->
+    	<a id="view_preview_type" data-current-preview="jpeg">View Preview As:</a>
+        <br>
+	    <form class="my-2">
+            <input type="radio" name="preview_preference" value="jpeg" id="jpeg" onclick='set_view("jpeg", "{{inst}}", {{file_root_list | tojson | safe}}, "{{index}}")' checked>JPEG &nbsp;&nbsp;
+            <input type="radio" name="preview_preference" value="jdaviz" id="jdaviz" onclick='set_view("jdaviz", "{{inst}}", {{file_root_list | tojson | safe}}, "{{index}}")'>JDAViz &nbsp;&nbsp;
+		</form>
+		<br>
+
+
+        <div class="row">
+
+            <div class="col-xl-9 text-center" id="preview-div">
+
+                <div id="jdaviz_preview" style="display: none">
+                    <iframe id="quickview" height="750px" width="900px" src="https://jwqlquickview.stsci.edu?file={{file_paths[suffixes.0] | safe}}"></iframe>
+                </div>
+                
+                <div id="jpeg_preview">
+        		    <span class="image_preview">
+        		    	<img class="image_preview_viewer" id="image_viewer"
+                             onerror="image_error(this, true);"
+                             title="Preview image for {{ file_root }}" width=1000rem height=auto>
+    		        </span>
+
+                    <div class="int_changer">
+                        <button id="int_before" class="btn btn-primary mx-2" role="button" onclick='change_integration("{{file_root}}", "{{num_ints}}", "{{available_ints}}", "button", "left");' disabled>&#9664;</button>
+                        <input type="range" min="1" max="5" value="1" class="slider" id="slider_range" onchange='change_integration("{{file_root}}", "{{num_ints}}",  "{{available_ints}}", "slider")'>
+                        <button id="int_after" class="btn btn-primary mx-2" role="button" onclick='change_integration("{{file_root}}", "{{num_ints}}",  "{{available_ints}}", "button", "right");' disabled>&#9658;</button>
+                        <p>Integration: <span id="slider_val"></span>/<span id="total_ints"></span></p>
+                    </div>
+                </div>
+
+                <!-- Display the Previous/Next buttons -->
+                <div class="previous-next-buttons">
+                    <span class="step-links">
+                        {% if file_root in file_root_list %}
+                            {% set index = file_root_list.index(file_root) %}
+                            {% if index != 0 %}
+                                <a id="prev_button" role="button" class="btn btn-primary my-2" type="submit" href="{{ base_url }}/{{ inst }}/{{ file_root_list[index-1] }}/" style="float: left;">< Previous</a>
+                            {% endif %}
+
+                            {% if index != file_root_list|length - 1 %}
+                                <a id="next_button" role="button" class="btn btn-primary my-2" type="submit" href="{{ base_url }}/{{ inst }}/{{ file_root_list[index+1] }}/" style="float: right;">Next ></a>
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+
+            <!-- Display the anomaly form -->
+            <div class="col-xl-3 text-left">
+                <!--Load the file search form from the view-->
+                <div class="anomaly_form">
+                    <h5>Submit Anomaly</h5>
+                    <form action="" method="post">
+                        <!--Show any errors from a previous form submission-->
+                        {% if anomaly_form.errors %}
+                            <fieldset>
+                                {% for field in anomaly_form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </fieldset>
+                        {% endif %}
+
+                        <!--Django Cross-Site Request Forgery magic-->
+                        {{ csrf_input }}
+
+                        <!--Show the field forms-->
+                        {% for field in anomaly_form %}
+                            <ul>
+                            {% for subwidget in field.subwidgets %}
+                                <li class="anomaly_choice">{{subwidget}}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endfor %}
+                        <h5>Comments</h5>
+                        {{ comment_form.comment }}
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if marked_viewed %}
+            <script>update_viewed_button(true)</script>
+        {% else %}
+            <script>update_viewed_button(false)</script>
+        {% endif %}
+        <!-- Determine which filetype should be shown on load -->
+        {% if (initial_suffix|length > 0) and (initial_suffix in file_paths) %}
+            <script>handle_change('{{ initial_suffix }}', '{{file_root}}', '{{inst}}', {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, '{{num_ints}}', '{{total_ints}}', "{{index}}");</script>
+        {% elif 'rate' in suffixes %}
+            <script>handle_change('rate', '{{file_root}}', '{{inst}}', {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, '{{num_ints}}', '{{total_ints}}', "{{index}}");</script>
+        {% elif 'dark' in suffixes %}
+            <script>handle_change('dark', '{{file_root}}', '{{inst}}', {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, '{{num_ints}}', '{{total_ints}}', "{{index}}");</script>
+        {% elif 'uncal' in suffixes %}
+            <script>handle_change('uncal', '{{file_root}}', '{{inst}}', {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, '{{num_ints}}', '{{total_ints}}', "{{index}}");</script>
+        {% elif suffixes|length == 1 %}
+            <script>handle_change('{{suffixes.0}}', '{{file_root}}', '{{inst}}', {{file_paths | tojson | safe}}, {{file_root_list | tojson | safe}}, '{{num_ints}}', '{{total_ints}}', "{{index}}");</script>
+        {% else %}
+            <a>Unable to show image for: {{suffixes}}</a>
+        {% endif %}
+        <!-- Determine which preview should be shown on load -->
+        {% if (initial_preview|length > 0) %}
+            <script>set_view("{{ initial_preview }}", '{{inst}}', {{file_root_list | tojson | safe}}, '{{index}}');</script>
+        {% endif %}
+
+    </main>
+
+{% endblock %}
