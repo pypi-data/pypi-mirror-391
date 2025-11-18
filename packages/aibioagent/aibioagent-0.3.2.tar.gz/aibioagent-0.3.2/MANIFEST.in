@@ -1,0 +1,29 @@
+# Include documentation and configuration files
+include readme.md
+include LICENSE
+include requirements.txt
+include API_KEY_SETUP.md
+include PUBLISHING_GUIDE.md
+
+# Include prompt files
+recursive-include config/prompts *.py
+
+# Exclude test files
+recursive-exclude tests *
+exclude tests
+
+# Exclude data directories (users should create their own)
+recursive-exclude data/papers *
+recursive-exclude data/uploads *
+recursive-exclude data/chroma_db *
+recursive-exclude test_images *
+
+# Exclude Python bytecode and cache
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
+# Exclude development files
+exclude .gitignore
+exclude .env
+exclude .env.example
+exclude user_study_template.md
