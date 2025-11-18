@@ -1,0 +1,59 @@
+Metadata-Version: 2.4
+Name: c2dataviewer
+Version: 1.15.0
+Summary: Python based data viewer for next generation of APS control system (C2)
+Home-page: https://github.com/epics-extensions/c2dataviewer
+Author: G. Shen
+Author-email: gshen@anl.gov
+License: EPICS
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: psutil
+Requires-Dist: pvapy
+Requires-Dist: pyqtgraph==0.13
+Requires-Dist: PyQt5
+Provides-Extra: blosc-compression
+Requires-Dist: blosc; extra == "blosc-compression"
+Provides-Extra: lz4-compression
+Requires-Dist: lz4; extra == "lz4-compression"
+Provides-Extra: bslz4-compression
+Requires-Dist: bitshuffle; extra == "bslz4-compression"
+Provides-Extra: all
+Requires-Dist: blosc; extra == "all"
+Requires-Dist: lz4; extra == "all"
+Requires-Dist: bitshuffle; extra == "all"
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: summary
+
+<p align="center">
+  <h1 align="center">C2DataViewer: EPICS7 pvObject Data Viewer</h1>
+</p>
+
+C2DataViewer is a Python based data viewer for next generation of APS control system (C2).
+It is developed with pyqtgraph, PyQt, and uses pvaPy as pvAccess Python binding.
+This is a viewer for pvData structured data objects as transported by pvAccess. Some use cases are a 'scope viewer',
+and Area Detector images from the AD pva plugin.
+
+# Download
+```bash
+> python -m pip install c2dataviewer
+> c2dv -h
+```
+
+# Applications
+
+- [Image app](documentation/imageapp.md) - displays Area detector images from the AD pva plugin
+- [Scope app](documentation/scopeapp.md) - plots pvAccess waveform data
+- [Striptool](documentation/striptool.md) - plots channel access and pvAccess scalar data
+
+# Other documentation
+
+- [Building and packaging](documentation/building.md)
