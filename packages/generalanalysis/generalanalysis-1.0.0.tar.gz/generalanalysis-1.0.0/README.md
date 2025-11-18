@@ -1,0 +1,120 @@
+# General Analysis SDK
+
+Python SDK for General Analysis AI Guardrails.
+
+## Installation
+
+```bash
+pip install generalanalysis
+export GA_API_KEY="your_api_key"
+```
+
+## Quick Start
+
+```python
+import generalanalysis
+
+client = generalanalysis.Client()
+result = client.guards.invoke(text="Text to check", guard_name="@pii_guard_llm")
+
+if result.block:
+    print("Blocked:", [p.name for p in result.policies if not p.passed])
+```
+
+## Guard Invocation
+
+All API keys are bound to a single project, so the SDK omits `project_id` entirely and the Guardrails
+service scopes requests server-side. Every guard invocation must provide exactly one selector:
+
+- `guard_name`: Human-friendly handle such as `"@pii_guard_llm"`.
+- `guard_id`: Numeric identifier returned by `guards.list()`.
+- `configuration_id`: Identifier from `guard_configurations.list()`.
+- `configuration`: Inline payload (usually built via `GuardConfigurationBuilder`).
+
+```python
+result = client.guards.invoke(text="Contact me at foo@example.com", guard_name="@pii_guard_llm")
+print(result.block, result.latency_ms)
+```
+
+## Core Operations
+
+```python
+# Guards
+guards = client.guards.list()
+policies = client.guards.list_policies()
+logs = client.guards.list_logs(guard_name="@pii_guard_llm", page=1, page_size=50)
+
+# Guard configurations
+configs = client.guard_configurations.list()
+first_config = configs[0] if configs else None
+
+# Invoke via saved configuration or inline builder
+from generalanalysis import GuardConfigurationBuilder
+
+builder = GuardConfigurationBuilder()
+builder.add_policy(
+    guard_name="@pii_guard_llm",
+    policy_id=10,
+    policy_name="EMAIL_ADDRESS",
+    sensitivity=0.4,
+)
+
+result = client.guards.invoke(text="Reach me at foo@example.com", configuration=builder)
+```
+
+## Workspace Metadata
+
+API keys already embed project scope, but you can inspect workspace data (useful when minting your
+own session/JWT tokens that must pass `project_id` directly to the Guardrails API):
+
+```python
+orgs = client.organizations.list()
+default_org_id = orgs[0].id if orgs else None
+projects = client.projects.list(organization_id=default_org_id)
+for project in projects:
+    print(project.id, project.name, project.is_default)
+```
+
+## Integration Patterns
+
+### Streamed chat guardrail
+
+```python
+async def stream_guarded_chat(user_input: str, chat_client: ChatStreamer) -> None:
+    async with generalanalysis.AsyncClient() as guardrails:
+        await guardrails.guards.invoke(text=user_input, guard_name="@pii_guard_llm")
+        async for chunk in chat_client.stream_chat([...]):
+            if not chunk:
+                continue
+            guard = await guardrails.guards.invoke(text=chunk, guard_name="@pii_guard_llm")
+            if guard.block:
+                print("\n<redacted by guardrails>")
+                break
+            print(chunk, end="", flush=True)
+```
+
+### Blocking guard checks before calling another service
+
+```python
+def guard_or_raise(text: str) -> None:
+    result = client.guards.invoke(text=text, guard_name="@pii_guard_llm")
+    if result.block:
+        violations = [policy.name for policy in result.policies if not policy.passed]
+        raise ValueError(f"Guardrails blocked content: {', '.join(violations)}")
+```
+
+## Async Support
+
+```python
+import asyncio
+import generalanalysis
+
+async def main(texts: list[str]) -> None:
+    async with generalanalysis.AsyncClient() as client:
+        results = await asyncio.gather(
+            *[client.guards.invoke(text=t, guard_name="@pii_guard_llm") for t in texts]
+        )
+        print(results)
+
+asyncio.run(main(["foo", "bar"]))
+```
