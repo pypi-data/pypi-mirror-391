@@ -1,0 +1,15 @@
+[package]
+authors = ["BowTiedDevil <devil@bowtieddevil.com>"]
+name = "degenbot_rs"
+description = "Rust implementations used by the degenbot Python package."
+edition = "2024"
+
+[lib]
+name = "degenbot_rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+alloy-primitives = { version = "*" }
+num-bigint = { version = "*" }
+pyo3 = { version = "0.26", features = [ "extension-module", "num-bigint"] }
+rayon = { version = "*" }
