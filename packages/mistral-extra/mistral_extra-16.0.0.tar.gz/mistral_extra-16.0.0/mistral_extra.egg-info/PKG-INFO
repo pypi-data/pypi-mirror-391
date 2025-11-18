@@ -1,0 +1,67 @@
+Metadata-Version: 2.1
+Name: mistral-extra
+Version: 16.0.0
+Summary: Mistral OpenStack-specific bindings
+Author-email: OpenStack <openstack-discuss@lists.openstack.org>
+License: Apache-2.0
+Project-URL: Homepage, https://docs.openstack.org/mistral/latest/
+Project-URL: Repository, https://opendev.org/openstack/mistral-extra
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Requires-Python: >=3.10
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+Requires-Dist: pbr!=2.1.0,>=2.0.0
+Requires-Dist: oslo.log>=3.36.0
+Requires-Dist: mistral-lib>=2.3.0
+Requires-Dist: aodhclient>=0.9.0
+Requires-Dist: gnocchiclient>=3.3.1
+Requires-Dist: python-barbicanclient>=4.5.2
+Requires-Dist: python-cinderclient!=4.0.0,>=3.3.0
+Requires-Dist: python-zaqarclient>=1.0.0
+Requires-Dist: python-designateclient>=2.7.0
+Requires-Dist: python-glanceclient>=2.8.0
+Requires-Dist: python-heatclient>=1.10.0
+Requires-Dist: python-keystoneclient>=3.8.0
+Requires-Dist: python-mistralclient!=3.2.0,>=3.1.0
+Requires-Dist: python-manilaclient>=1.23.0
+Requires-Dist: python-magnumclient>=2.15.0
+Requires-Dist: python-neutronclient>=6.7.0
+Requires-Dist: python-novaclient>=9.1.0
+Requires-Dist: python-swiftclient>=3.2.0
+Requires-Dist: python-tackerclient>=0.8.0
+Requires-Dist: python-troveclient>=2.2.0
+Requires-Dist: python-ironicclient!=2.7.1,!=3.0.0,>=2.7.0
+Requires-Dist: python-ironic-inspector-client>=1.5.0
+Requires-Dist: python-vitrageclient>=2.0.0
+Requires-Dist: python-zunclient>=3.4.0
+Requires-Dist: oauthlib>=0.6.2
+Requires-Dist: yaql>=1.1.3
+Requires-Dist: keystoneauth1>=3.18.0
+Requires-Dist: alembic>=1.7.7
+Requires-Dist: oslo.config>=8.7.0
+Requires-Dist: Flask>=1.0.2
+Requires-Dist: prometheus_client>=0.15.0
+
+==============
+Mistral Extras
+==============
+
+.. image:: https://governance.openstack.org/tc/badges/mistral-extra.svg
+
+.. Change things from this point on
+
+Mistral Extra is a library which allows contributors to add optional
+functionality to the mistral project, it also contains examples for which
+to base new capabilities.
