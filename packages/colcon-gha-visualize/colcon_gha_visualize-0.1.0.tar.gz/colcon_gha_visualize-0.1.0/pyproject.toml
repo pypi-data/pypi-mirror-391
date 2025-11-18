@@ -1,0 +1,18 @@
+[project]
+name = "colcon-gha-visualize"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ["colcon-common-extensions>=0.3.0", "colcon-core>=0.20.1"]
+keywords = ["colcon"]
+
+[project.entry-points.'colcon_core.extension_point']
+_colcon_gha_visualize = "colcon_gha_visualize:NonFunctionalExtensionPoint"
+
+[project.entry-points.'colcon_core.event_handler']
+gha_visualize = "colcon_gha_visualize.handlers:VisualizeEventHandler"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
