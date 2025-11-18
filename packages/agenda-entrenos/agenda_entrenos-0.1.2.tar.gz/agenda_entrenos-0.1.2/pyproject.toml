@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agenda-entrenos"
+version = "0.1.2"
+description = "Una agenda para entrenamientos."
+authors = [
+  { name = "Cristian Ruiz", email = "cristian.ruiz@alumni.mondragon.edu" },
+  { name = "Alejandro Mata", email = "alejandro.mata@alumni.mondragon.edu" },
+  { name = "Unai Alvarez", email = "unai.alvarez@alumni.mondragon.edu" },
+  { name = "Eleder Martin", email = "eleder.martin@alumni.mondragon.edu" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent"
+]
+urls = { "Homepage" = "https://test.pypi.org/project/agenda_entrenos/" }
+
+[project.optional-dependencies]
+# extras = []
+
+[tool.setuptools]
+py-modules = ["core", "excepciones", "queries", "utils", "test"]
