@@ -1,0 +1,86 @@
+Metadata-Version: 2.4
+Name: fw-curation
+Version: 1.0.0
+Summary: Flywheel Curation tools
+Project-URL: Homepage, https://flywheel-io.gitlab.io/tools/lib/fw-curation
+Project-URL: Repository, https://gitlab.com/flywheel-io/tools/lib/fw-curation.git
+Project-URL: Documentation, https://flywheel-io.gitlab.io/tools/lib/fw-curation
+Author-email: Flywheel <support@flywheel.io>
+License-Expression: MIT
+Classifier: Topic :: Scientific/Engineering :: Medical Science Apps.
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: ~=3.10
+Requires-Dist: flywheel-sdk>=21.0.0
+Requires-Dist: fw-client>=2.1.4
+Requires-Dist: pydantic-settings>=2.11.0
+Requires-Dist: pydantic<3.0,>=2.12.3
+Provides-Extra: sdk
+Requires-Dist: flywheel-sdk>=21.0.0; extra == 'sdk'
+Description-Content-Type: text/markdown
+
+# fw-curation
+
+`fw-curation` is a python package maintained by [Flywheel](https://flywheel.io)
+It provides a set of utilities for writing SDK scripts to perform curation.
+
+## Installation
+
+The package can be installed using pip or a preferred package dependency management
+tool using python 3.10 or later.
+
+```bash
+pip install fw-curation
+```
+
+## Documentation
+
+The documentation for `fw-curation` can be found on the
+[Flywheel Scientific Solutions documentation site](https://flywheel-io.gitlab.io/scientific-solutions/lib/fw-curation).
+
+## Contributing
+
+### Building
+
+The dependency and virtual environment manager for `fw-curation` is [uv](https://docs.astral.sh/uv/).
+
+``` bash
+uv sync
+```
+
+### Testing, Linting, Building Documentation
+
+Linting, testing, and documentation building are all done using `pre-commit`.
+
+Pre-commit hooks are installed by running `pre-commit install`. After hooks are
+installed, they will automatically be run on each `git commit`. They can all be skipped
+by running `git commit --no-verify` or specific hooks can be skipped by setting the
+environmental variable, ex. `SKIP=test:pre-commit:pytest git commit`.
+
+Individual hooks can also be run independently. For example, to run `pyproject_export`
+to update the `requirements.txt` and `requirements-dev.txt` files, you can run
+`pre-commit run pyproject_export -a`. For a list of hooks, view the
+[pre-commit-config](.pre-commit-config.yaml).
+
+### Managing Dependencies
+
+To add new dependencies to this repo, use [uv](https://docs.astral.sh/uv/) and follow
+the below steps:
+
+```bash
+# Install my-package:
+uv add my-package
+# Or install my-package as part of the required packages for development:
+uv add --group dev my-package
+```
+
+To update dependencies with uv:
+
+```bash
+uv sync --upgrade
+```
+
+To remove dependencies with uv:
+
+```bash
+uv remove my-package
+```
