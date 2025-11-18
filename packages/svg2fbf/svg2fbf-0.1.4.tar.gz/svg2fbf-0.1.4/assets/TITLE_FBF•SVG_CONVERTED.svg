@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg id="panther_bird" version="1.1" x="0px" y="0px" width="237.61539" height="89.923073" viewBox="0 0 237.61539 174.98544" sodipodi:docname="logo_FBF•SVG_vector.svg" inkscape:version="1.4.2 (ebf0e940, 2025-05-08)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview id="namedview1" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="true" inkscape:deskcolor="#d1d1d1" showgrid="false" inkscape:zoom="1.1741664" inkscape:cx="118.38186" inkscape:cy="45.138406" inkscape:window-width="976" inkscape:window-height="1027" inkscape:window-x="0" inkscape:window-y="25" inkscape:window-maximized="0" inkscape:current-layer="g1851" showborder="false" />
+  <desc id="desc1">
+	SIMPLE PANTHER AND BIRD FRAME BY FRAME ANIMATION
+	Coded by Emasoft for Opentoonz (https://github.com/opentoonz/opentoonz)
+	
+	Example implementation of basic SVG frame-by-frame animation, for 
+	educational purpouses. A frame based animation is easy to export.
+	No javascript or CSS, just pure SVG.
+	In this way the SVG format is used like an MPEG for vector animations.
+	
+	This animation has two animation groups:
+	- the panther (17 frames, 0.75s per frame)
+	- the bird (9 frames, 0.75s per frame)
+	
+	Usually they would be joined in a single frame sequence. But to show
+	the flexibility of this method, since the cycle of the bird is shorter than
+	the cycle of the panther, we are going to treat them as separate
+	entities standing on the same animation scene. In this way we reduce both the
+	svg file size and the ram used during playback. For small entities like those
+  two it would seem nothing much, but when bigger elements with thousands of
+	vectors are used in more realistic scenarios, the gains become evident.
+	
+	
+	This file is divided in two sections:
+	
+	1) The Definitions (defs) : Here you need to put all frames and clipping paths.
+	All frames require an unique id. For example: frame0001, frame0002, etc.
+	All elements of a frame must be wrapped in a group with such id or, if needed
+	to reduce memory consumption, a frame can be broken into different parts,
+	with different amount of frames for each element. In such case, the ids can be
+	named with the sub element name followed by the frame number (e.g. bird_0001).
+	Objects written here are not displayed until the animation cycle instances them.
+	
+	2) The Animation Scene (a group called &quot;animation_scene&quot;) : Here you need to put
+	the elements on the scene. First the background rectangle (with or without a
+	clipping path), then the animated groups of objects (one called &quot;animated_group_1&quot;
+	and the other called &quot;animated_group_2&quot;).
+	The animation elements needs the following parameters:
+	
+	values : the id of the frames, with a leading # char and separated by a ; char.
+	The frames must be named in the exact order you need them to be displayed.
+	Also the first frame id must be indicated in the &quot;use&quot; element as the href
+	(example: xlink:href=&quot;#frame0001&quot; ).
+	
+	begin : the start time delay, in seconds (example: 0s).
+	
+	repeatCount : this should set on &quot;indefinite&quot; if you want a looping animation. 
+	Otherwise on &quot;0&quot; if you want the animation to stop at the last frame. Any other
+	number would be the number of repetitions of the entire sequence.
+	
+	dur : the duration in seconds of each frame. For example: &quot;1.0&quot; means 1 frame
+	per second. For 60fps is &quot;0.01667&quot;. For 24fps you have &quot;0.04167&quot; seconds.
+	(just divide 1 for the number of frames, i.e. 1/60=0.0166666.., aprox: &quot;0.01667&quot;).
+	
+	Please refer to Opentoonz repository on GitHub for any error/issue/question.
+	Enjoy.
+	
+	</desc>
+  <defs id="defs82" />
+  <!-- Filter for overlay blend mode -->
+  <defs id="defs83" />
+  <!-- FBF.SVG Logo Group -->
+  <g id="g1852" transform="translate(-1581.5454,-280.99008)" inkscape:label="TITLE_FBF•SVG_GROUP">
+    <g id="g1">
+      <g id="g1851" transform="translate(1060.3531,8.6007945)" inkscape:label="text_content">
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="444.7865" y="368.44452" id="text7">F</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="489.225" y="368.44452" id="text6">B</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="540.9205" y="368.44452" id="text5">F</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="585.35901" y="368.44452" id="text4">•</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="651.26971" y="368.44452" id="text3">S</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="702.06876" y="368.44452" id="text2">V</text>
+        <text style="font-weight:500;font-size:87.4256px;font-family:Futura;-inkscape-font-specification:'Futura Medium';text-align:center;fill:#ffffff;stroke-width:36.4275" x="758.28925" y="368.44452" id="text1">G</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="452.88674" y="413.13928" id="text43">T</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="461.36223" y="413.13928" id="text42">h</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="471.86475" y="413.13928" id="text41">e</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="486.80138" y="413.13928" id="text40">F</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="495.69494" y="413.13928" id="text39">r</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="502.77686" y="413.13928" id="text38">a</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="513.01333" y="413.13928" id="text37">m</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="528.86211" y="413.13928" id="text36">e</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="543.79874" y="413.13928" id="text35">B</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="554.47862" y="413.13928" id="text34">y</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="569.41525" y="413.13928" id="text33">F</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="578.30882" y="413.13928" id="text32">r</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="585.39072" y="413.13928" id="text31">a</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="595.62719" y="413.13928" id="text30">m</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="611.47599" y="413.13928" id="text29">e</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="626.41262" y="413.13928" id="text28">V</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="635.50889" y="413.13928" id="text27">e</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="645.07391" y="413.13928" id="text26">c</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="652.48521" y="413.13928" id="text25">t</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="658.19888" y="413.13928" id="text24">o</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="668.19463" y="413.13928" id="text23">r</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="680.49613" y="413.13928" id="text22">A</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="691.07467" y="413.13928" id="text21">n</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="701.57717" y="413.13928" id="text20">i</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="706.73342" y="413.13928" id="text19">m</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="722.58221" y="413.13928" id="text18">a</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="732.81869" y="413.13928" id="text17">t</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="738.58303" y="413.13928" id="text16">i</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="743.73925" y="413.13928" id="text15">o</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="753.73501" y="413.13928" id="text14">n</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="769.60915" y="413.13928" id="text13">F</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="778.70541" y="413.13928" id="text12">o</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="788.70116" y="413.13928" id="text11">r</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="795.68173" y="413.13928" id="text10">m</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="811.53054" y="413.13928" id="text9">a</text>
+        <text style="font-weight:500;font-stretch:condensed;font-size:25.9459px;font-family:Futura;-inkscape-font-specification:'Futura Medium Condensed';text-align:center;fill:#ffffff;stroke-width:19.4595" x="821.76699" y="413.13928" id="text8">t</text>
+      </g>
+      <rect style="fill:none;fill-opacity:1;stroke:#fefefe;stroke-width:4.76099;stroke-dasharray:none;stroke-opacity:1" id="rect1851" width="457.6257" height="170.22446" x="1471.5403" y="283.37057" inkscape:label="rectangular_border" />
+    </g>
+  </g>
+</svg>
