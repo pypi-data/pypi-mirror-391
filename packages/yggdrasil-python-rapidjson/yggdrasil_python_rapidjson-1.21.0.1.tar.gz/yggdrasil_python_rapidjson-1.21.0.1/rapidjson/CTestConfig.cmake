@@ -1,0 +1,6 @@
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|ARMClang")
+    set(COVERAGE_COMMAND "llvm-cov")
+    set(COVERAGE_EXTRA_FLAGS "gcov")
+    set(CTEST_COVERAGE_COMMAND "llvm-cov")
+    set(CTEST_COVERAGE_EXTRA_FLAGS "gcov")
+endif()

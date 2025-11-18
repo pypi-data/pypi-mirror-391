@@ -1,0 +1,211 @@
+# -*- coding: utf-8 -*-
+# :Project:   yggdrasil-python-rapidjson -- Github Actions configuration
+# :Created:   Fri Oct 2 06:52:59 2020 CEST
+# :Author:    Martin Thoma <info@martin-thoma.de>
+# :License:   MIT License
+# :Copyright: © 2020 Martin Thoma
+# :Copyright: © 2020, 2021, 2022, 2023, 2024, 2025 Lele Gaifax
+#
+
+# For more information see:
+# https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# and
+# https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+
+name: Build, test and upload to PyPI
+
+on:
+  push:
+    branches-ignore:
+     - gh-pages
+    tags:
+     - '*'
+  schedule:
+  - cron: 0 10 * * 1
+  - cron: 0 10 1 * *
+
+env:
+  PYTHONVERSION_STD: "3.11"
+
+jobs:
+  tests:
+    name: All tests, on current Python
+    runs-on: ubuntu-latest
+
+    # strategy:
+    #   matrix:
+    #     python-version: [${{ env.PYTHONVERSION_STD }}]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Set up Python ${{ env.PYTHONVERSION_STD }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHONVERSION_STD }}
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-test.txt
+          pip install -v .
+
+      - name: Tests
+        run: |
+          pytest -sv tests
+
+      - name: Doctests
+        run: |
+          make -C docs doctest -e PYTHON=$(which python3)
+
+      # - name: Typing stub tests
+      #   run: |
+      #     stubtest rapidjson
+
+  debug-tests:
+    name: Memory leak tests, on current debug build Python
+    runs-on: ubuntu-latest
+
+    # strategy:
+    #   matrix:
+    #     python-version: [${{ env.PYTHONVERSION_STD }}]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - uses: deadsnakes/action@v3.2.0
+        with:
+          python-version: ${{ env.PYTHONVERSION_STD }}
+          debug: true
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-test.txt
+          pip install --config-settings=cmake.build-type="Debug" --config-settings=cmake.define.YGGDRASIL_RAPIDJSON_CHECK_PYREFS:BOOL=ON -v .
+
+      - run: |
+          pytest -sv tests
+
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHONVERSION_STD }}
+
+      - name: Install pypa/build
+        run: python -m pip install build
+      - name: Build a binary wheel and a source tarball
+        run: python -m build --sdist
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  build_wheels:
+    name: Build wheels on ${{matrix.arch}} for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-24.04
+          - macos-13
+          - windows-2025
+        arch:
+          - auto
+        include:
+          - os: ubuntu-24.04
+            arch: aarch64
+          # - os: ubuntu-24.04
+          #   arch: ppc64le
+          - os: macos-14
+            arch: arm64
+      fail-fast: false
+            
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+        with:
+          submodules: true
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHONVERSION_STD }}
+
+      - uses: docker/setup-qemu-action@v3
+        if:  ${{ matrix.arch == 'aarch64' || matrix.arch == 'ppc64le' }}
+        name: Set up QEMU
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.2.1
+        env:
+          CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
+          CIBW_TEST_REQUIRES: "pytest pytest-benchmark pytz"
+          CIBW_TEST_COMMAND: "pytest -sv {project}/tests"
+          CIBW_SKIP: "cp38* cp310-manylinux_i686 cp311-manylinux_i686 cp312-manylinux_i686 *-musllinux_*"
+          # Skip tests on emulated hardware, take too long or not supported
+          CIBW_TEST_SKIP: "*-*linux_{aarch64,ppc64le} *-macosx_*:arm64"
+          CIBW_ENABLE: cpython-prerelease
+          CIBW_ENVIRONMENT: "PIP_ONLY_BINARY=numpy"
+          # CIBW_BEFORE_BUILD: python -m pip install oldest-supported-numpy
+
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-for-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./wheelhouse/*.whl
+
+  all_tests_passed:
+    runs-on: ubuntu-latest
+    name: All tests passed
+    needs: [tests, debug-tests, build_sdist, build_wheels]
+    if: always()
+    steps:
+      - name: All tests ok
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: exit 0
+      - name: Some tests failed
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+  upload_wheels:
+    name: Upload wheels & sdist to PyPI
+    needs: [build_sdist, build_wheels]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+
+    # Upload to PyPI on every tag starting with 'v'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          path: dist
+          pattern: wheels-for-*
+          merge-multiple: true
+      - uses: actions/download-artifact@v6
+        with:
+          path: dist
+          pattern: sdist
+          merge-multiple: true
+
+      - name: Check downloaded artifacts
+        run: ls dist
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

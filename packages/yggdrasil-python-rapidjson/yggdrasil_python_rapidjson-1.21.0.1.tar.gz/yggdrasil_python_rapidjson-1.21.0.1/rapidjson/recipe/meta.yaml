@@ -1,0 +1,58 @@
+{% set name = "yggdrasil-rapidjson" %}
+{% set version = "1.1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ../
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - cmake >=3.15
+    - ninja
+    - numpy
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - numpy
+  run:
+    - python
+    - numpy
+
+test:
+  commands:
+    - test -f $PREFIX/lib/cmake/YggdrasilRapidJSON/YggdrasilRapidJSONConfig.cmake  # [unix]
+    - test -f $PREFIX/lib/cmake/YggdrasilRapidJSON/YggdrasilRapidJSONConfigVersion.cmake  # [unix]
+    - test -f $PREFIX/include/yggdrasil_rapidjson/yggdrasil_rapidjson.h  # [unix]
+    - if not exist %LIBRARY_PREFIX%\\cmake\\YggdrasilRapidJSONConfig.cmake exit 1  # [win]
+    - if not exist %LIBRARY_PREFIX%\\cmake\\YggdrasilRapidJSONConfigVersion.cmake exit 1  # [win]
+    - if not exist %LIBRARY_PREFIX%\\include\\yggdrasil_rapidjson\\yggdrasil_rapidjson.h exit 1  # [win]
+  source_files:
+    - example
+  requires:
+    - {{ stdlib('c') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake >=3.15
+    - ninja
+
+about:
+  home: https://github.com/cropsinsilico/yggdrasil-rapidjson
+  license: MIT
+  license_file: license.txt
+  summary: |
+    A header-only C++ library for JSON operation extended for use with
+    yggdrasil
+
+extra:
+  recipe-maintainers:
+    - langmm

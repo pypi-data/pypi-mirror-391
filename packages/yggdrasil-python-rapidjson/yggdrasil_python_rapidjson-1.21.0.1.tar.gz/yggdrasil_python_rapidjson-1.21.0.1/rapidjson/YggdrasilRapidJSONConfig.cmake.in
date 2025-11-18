@@ -1,0 +1,35 @@
+@PACKAGE_INIT@
+
+include ("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake")
+
+################################################################################
+# @PROJECT_NAME@ source dir
+if("@CONFIG_SOURCE_DIR@")
+  set_and_check(
+    @PROJECT_NAME@_SOURCE_DIR "@CONFIG_SOURCE_DIR@"
+  )
+endif()
+
+################################################################################
+# @PROJECT_NAME@ build dir
+if("@CONFIG_DIR@")
+  set_and_check(@PROJECT_NAME@_DIR "@CONFIG_DIR@")
+endif()
+
+################################################################################
+# Compute paths
+get_filename_component(@PROJECT_NAME@_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+get_target_property(
+  @PROJECT_NAME@_INCLUDE_DIR
+  @PROJECT_NAME@ INTERFACE_INCLUDE_DIRECTORIES
+)
+list(GET @PROJECT_NAME@_INCLUDE_DIR 1 @PROJECT_NAME@_INCLUDE_DIR)
+
+set_and_check(
+  @PROJECT_NAME@_INCLUDE_DIRS "${@PROJECT_NAME@_INCLUDE_DIR}"
+)
+
+if(NOT TARGET @PROJECT_NAME_LOWER@)
+  add_library(@PROJECT_NAME_LOWER@ ALIAS @PROJECT_NAME@)
+endif()
