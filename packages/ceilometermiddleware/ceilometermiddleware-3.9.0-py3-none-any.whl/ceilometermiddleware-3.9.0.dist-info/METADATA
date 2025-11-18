@@ -1,0 +1,50 @@
+Metadata-Version: 2.1
+Name: ceilometermiddleware
+Version: 3.9.0
+Summary: OpenStack Telemetry middleware for generating metrics
+Author-email: OpenStack <openstack-discuss@lists.openstack.org>
+Project-URL: Homepage, https://docs.openstack.org/ceilometermiddleware
+Project-URL: Repository, https://opendev.org/openstack/ceilometermiddleware
+Classifier: Environment :: OpenStack
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.10
+Description-Content-Type: text/x-rst
+License-File: LICENSE
+License-File: AUTHORS
+Requires-Dist: oslo.config >=3.9.0
+Requires-Dist: oslo.messaging >=5.2.0
+Requires-Dist: oslo.utils >=4.7.0
+Requires-Dist: pbr >=1.6
+Requires-Dist: pycadf >=2.0.1
+Requires-Dist: keystoneauth1 >=2.18.0
+Requires-Dist: python-keystoneclient >=3.8.0
+
+===============================================
+Middleware for OpenStack Telemetry (Ceilometer)
+===============================================
+
+This library provides middleware modules designed to enable metric and event
+data generation to be consumed by Ceilometer.
+
+For information on contributing, see ``CONTRIBUTING.rst``.
+
+* License: Apache License, Version 2.0
+* Documentation: https://docs.openstack.org/ceilometermiddleware/latest/
+* Source: http://opendev.org/openstack/ceilometermiddleware
+* Bugs: http://bugs.launchpad.net/ceilometermiddleware
+* Release notes: https://docs.openstack.org/releasenotes/ceilometermiddleware/
+
+For any other information, refer to the parent project, Ceilometer:
+
+    https://opendev.org/openstack/ceilometer
