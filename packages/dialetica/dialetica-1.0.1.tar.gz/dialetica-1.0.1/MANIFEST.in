@@ -1,0 +1,18 @@
+# Include package files
+include README_PACKAGE.md
+include LICENSE
+include pyproject.toml
+
+# Include only the public SDK package (dialetica)
+recursive-include src/dialetica *.py
+
+# Exclude foundation package entirely (private implementation)
+prune src/foundation
+
+# Exclude other files
+global-exclude *.ipynb
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .DS_Store
+
