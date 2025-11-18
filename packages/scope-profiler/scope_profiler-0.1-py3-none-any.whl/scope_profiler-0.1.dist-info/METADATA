@@ -1,0 +1,108 @@
+Metadata-Version: 2.4
+Name: scope-profiler
+Version: 0.1
+Summary: Profile code regions in python, optionally with LIKWID markers.
+Author: Max
+Project-URL: Source, https://github.com/max-models/scope_profiler
+Keywords: python
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: h5py
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Provides-Extra: dev
+Requires-Dist: black[jupyter]; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+Requires-Dist: scope-profiler[docs,test]; extra == "dev"
+Provides-Extra: docs
+Requires-Dist: ipykernel; extra == "docs"
+Requires-Dist: myst-parser; extra == "docs"
+Requires-Dist: nbconvert; extra == "docs"
+Requires-Dist: nbsphinx; extra == "docs"
+Requires-Dist: jupyterlab; extra == "docs"
+Requires-Dist: pre-commit; extra == "docs"
+Requires-Dist: pyproject-fmt; extra == "docs"
+Requires-Dist: sphinx; extra == "docs"
+Requires-Dist: sphinx-book-theme; extra == "docs"
+Provides-Extra: test
+Requires-Dist: coverage; extra == "test"
+Requires-Dist: pytest; extra == "test"
+
+# scope-profiler - Python Profiling System with Optional LIKWID Integration
+
+This module provides a unified profiling system for Python applications, with optional integration of [LIKWID](https://github.com/RRZE-HPC/likwid) markers using the [pylikwid](https://github.com/RRZE-HPC/pylikwid) marker API for hardware performance counters. It allows you to:
+- Configure profiling globally via a singleton ProfilingConfig.
+- Collect timing data via context-managed profiling regions.
+- Use a clean decorator syntax to profile functions.
+- Optionally record time traces in HDF5 files.
+- Automatically initialize and close LIKWID markers only when needed.
+- Print aggregated summaries of all profiling regions.
+
+Documentation: https://max-models.github.io/scope-profiler/
+
+## Install
+
+```
+pip install scope-profiler
+```
+
+## Usage
+
+```python
+from scope_profiler.profiling import (
+    ProfilingConfig,
+    ProfileManager,
+)
+
+config = ProfilingConfig(
+    use_likwid=False,
+    time_trace=True,
+    flush_to_disk=True,
+)
+
+@ProfileManager.profile("main")
+def main():
+    x = 0
+    for i in range(10):
+        with ProfileManager.profile_region(region_name="iteration"):
+            x += 1
+
+main()    
+
+ProfileManager.print_summary()
+
+ProfileManager.finalize()
+```
+
+Execution:
+
+```bash
+❯ python test.py
+Profiling Summary:
+========================================
+Region: main
+  Number of Calls: 1
+  Total Duration: 0.000315 seconds
+  Average Duration: 0.000315 seconds
+  Min Duration: 0.000315 seconds
+  Max Duration: 0.000315 seconds
+  Std Deviation: 0.000000 seconds
+----------------------------------------
+Region: iteration
+  Number of Calls: 10
+  Total Duration: 0.000007 seconds
+  Average Duration: 0.000001 seconds
+  Min Duration: 0.000000 seconds
+  Max Duration: 0.000003 seconds
+  Std Deviation: 0.000001 seconds
+----------------------------------------
+```
