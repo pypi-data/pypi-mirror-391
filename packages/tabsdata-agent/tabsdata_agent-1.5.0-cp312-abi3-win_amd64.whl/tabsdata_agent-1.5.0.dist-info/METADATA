@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: tabsdata_agent
+Version: 1.5.0
+Summary: Tabsdata Agent is...
+Home-page: https://tabsdata.com
+Author: Tabs Data Inc.
+License: Tabsdata License
+Project-URL: Source, https://github.com/tabsdata/tabsdata
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+License-File: variant/assets/manifest/LICENSE
+Requires-Dist: tabsdata==1.5.0
+Requires-Dist: faiss-cpu==1.12.0
+Requires-Dist: fastapi==0.120.1
+Requires-Dist: langchain==1.0.2
+Requires-Dist: langchain-community==0.4
+Requires-Dist: langchain-openai==1.0.1
+Requires-Dist: langgraph==1.0.1
+Requires-Dist: langgraph-checkpoint-sqlite==3.0.0
+Requires-Dist: openai==2.6.1
+Requires-Dist: uvicorn==0.38.0
+Provides-Extra: test
+Requires-Dist: tabsdata==1.5.0; extra == "test"
+Requires-Dist: faiss-cpu==1.12.0; extra == "test"
+Requires-Dist: fastapi==0.120.1; extra == "test"
+Requires-Dist: langchain==1.0.2; extra == "test"
+Requires-Dist: langchain-community==0.4; extra == "test"
+Requires-Dist: langchain-openai==1.0.1; extra == "test"
+Requires-Dist: langgraph==1.0.1; extra == "test"
+Requires-Dist: langgraph-checkpoint-sqlite==3.0.0; extra == "test"
+Requires-Dist: openai==2.6.1; extra == "test"
+Requires-Dist: uvicorn==0.38.0; extra == "test"
+Requires-Dist: langsmith[pytest]==0.4.38; extra == "test"
+Requires-Dist: pytest-vcr==1.0.2; extra == "test"
+Requires-Dist: tabsdata[deps]==1.5.0; extra == "test"
+Provides-Extra: all
+Dynamic: author
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+<!--
+Copyright 2025 Tabs Data Inc.
+-->
+
+![Tabsdata](https://docs.tabsdata.com/tabsdata.png)
+
+<div align="center">
+    <a href="https://tabsdata.com">Tabsdata</a> |
+    <a href="https://docs.tabsdata.com/1.5.0/guide/intro.html">User Guide</a> |
+    <a href="https://docs.tabsdata.com/1.5.0/api_ref/index.html">API Reference</a>
+</div>
+
+# License
+
+Your use of this product is subject to the terms of use available at https://tabsdata.com/license.
