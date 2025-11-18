@@ -1,0 +1,55 @@
+## Product intent
+- Extract production-ready audio from lecture/screencast videos without a DAW.
+- Provide predictable defaults while surfacing audio engineering knobs only when needed.
+- Run entirely from the terminal so it fits into automation scripts and batch workflows.
+
+> Requires `ffmpeg`/`ffprobe` on PATH (`brew install ffmpeg` on macOS).
+
+## UX design
+### Mental model
+- Primary verb is `extract`; everything else is an option that describes the desired audio file.
+- Default behaviour: first audio track, full timeline, export as high-quality `mp3` next to the source file.
+- Advanced controls are flat flags (no subcommands) to keep the command memorable.
+
+### User journey
+1. **Discovery** - `sound-track-extract --help` lists one-liners for common tasks so a new user can copy/paste.
+2. **Pre-flight** - tool validates: source exists, ffmpeg installed, output path writable, and timecodes sane. Errors are plain-English with fixes.
+3. **Execution** - renders a short status block (input -> output, duration, selected format) before running ffmpeg.
+4. **Completion** - success message with location + file size; failures forward stderr and exit non-zero for scripting.
+
+### Key interactions
+- `sound-track-extract video.mp4` -> default mp3 export (320 kbps, stereo, original length).
+- `--format wav|flac|aac|ogg` switches container/mode; CLI auto-adjusts sane defaults (e.g., bitrate ignored for lossless).
+- `--start/--end` allow clipping a segment; accepts `HH:MM:SS` or seconds.
+- `--sample-rate`, `--channels`, `--bitrate` tune technical audio output, grouped by option help text.
+- `--output-dir` and `--name-template` control where/how files are named (placeholders: `{stem}`, `{format}`, `{track}`).
+- `--title/--artist/--album/--comment` embed metadata; status panel now shows detected duration for confidence.
+- `--list-tracks` prints detected audio streams, `--audio-track` picks one, and `--force` overwrites existing exports.
+- `--dry-run` prints the ffmpeg command without executing, enabling trust before use.
+- Clear error copy for common mistakes (missing ffmpeg, overlapping timecodes, unwritable folders).
+
+## Usage
+```bash
+uv run sound-track-extract kdd_lec7.mp4
+# or run the module directly
+uv run python -m sound_track_extract.cli kdd_lec7.mp4
+```
+
+### Frequently used recipes
+- Quick mp3: `sound-track-extract talk.mov`
+- Lossless FLAC: `sound-track-extract talk.mov --format flac`
+- Clip a quote: `sound-track-extract talk.mov --start 00:10:05 --end 00:12:20`
+- Inspect tracks: `sound-track-extract talk.mov --list-tracks`
+- Pick a dubbed track: `sound-track-extract talk.mov --audio-track 1`
+- Custom destination: `sound-track-extract talk.mov --output-dir exports --name-template "{stem}_clean"`
+- Tag metadata: `sound-track-extract talk.mov --title "Lecture 7" --artist "KDD"`
+- Automate: `find . -name '*.mp4' -exec sound-track-extract {} --format wav --force \;`
+
+## Development
+```bash
+uv sync            # install deps
+uv run --extra dev pytest
+uv run sound-track-extract --help
+```
+
+See `CHANGELOG.md` for progress snapshots.
