@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radio-manager"
+version = "0.2.2"
+description = "A unified library for controlling various radio devices (receivers and transceivers)"
+readme = "README.md"
+authors = [
+    {name = "Thomas D. Stearn", email = "tomn2tsr@gmail.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "pyserial>=3.4",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+audio = [
+    "pyaudio>=0.2.11",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[project.scripts]
+radio-manager = "radio_manager.cli:main"
+# Shortened, convenient alias
+rmgr = "radio_manager.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/tomn2tsr/radio-manager"
+Issues = "https://github.com/tomn2tsr/radio-manager/issues"
