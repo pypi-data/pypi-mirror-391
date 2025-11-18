@@ -1,0 +1,17 @@
+create or replace view irae__dx_infection_rsv as select * from (values
+('http://snomed.info/sct', '10625551000119103', 'Bronchopneumonia caused by respiratory syncytial virus (disorder)')
+,('http://snomed.info/sct', '1163073003', 'Encephalitis caused by human respiratory syncytial virus (disorder)')
+,('http://snomed.info/sct', '195727009', 'Acute respiratory syncytial virus bronchitis (disorder)')
+,('http://snomed.info/sct', '195739001', 'Acute bronchiolitis caused by respiratory syncytial virus (disorder)')
+,('http://snomed.info/sct', '195881003', 'Pneumonia caused by respiratory syncytial virus (disorder)')
+,('http://snomed.info/sct', '31309002', 'Respiratory syncytial virus pharyngitis (disorder)')
+,('http://snomed.info/sct', '408684006', 'Healthcare associated respiratory syncytial virus disease (disorder)')
+,('http://snomed.info/sct', '55735004', 'Respiratory syncytial virus infection (disorder)')
+,('http://snomed.info/sct', '57089007', 'Respiratory syncytial virus bronchiolitis (disorder)')
+,('http://snomed.info/sct', '72204002', 'Respiratory syncytial virus laryngotracheobronchitis (disorder)')
+,('http://snomed.info/sct', '79479005', 'Respiratory syncytial virus bronchitis (disorder)')
+,('http://hl7.org/fhir/sid/icd-10-cm', 'B97.4', 'Respiratory syncytial virus as the cause of diseases classified elsewhere')
+,('http://hl7.org/fhir/sid/icd-10-cm', 'J12.1', 'Respiratory syncytial virus pneumonia')
+,('http://hl7.org/fhir/sid/icd-10-cm', 'J20.5', 'Acute bronchitis due to respiratory syncytial virus')
+,('http://hl7.org/fhir/sid/icd-10-cm', 'J21.0', 'Acute bronchiolitis due to respiratory syncytial virus')
+) AS t (system, code, display) ;

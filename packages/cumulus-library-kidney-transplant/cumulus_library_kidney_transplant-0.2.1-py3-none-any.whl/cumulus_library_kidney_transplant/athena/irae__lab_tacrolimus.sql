@@ -1,0 +1,22 @@
+create or replace view irae__lab_tacrolimus as select * from (values
+
+('http://loinc.org','11253-2','Tacrolimus, Blood'),
+('http://loinc.org','32594-4','Tacrolimus dose'),
+('http://loinc.org','32721-3','Tacrolimus, Blood'),
+('http://loinc.org','33929-1','Tacrolimus trough, Blood'),
+('http://loinc.org','59822-7','Tacrolimus 4 hr after dose, Blood'),
+('http://loinc.org','59823-5','Tacrolimus 2 hr after dose, Blood'),
+('http://loinc.org','72945-9','Tacrolimus induced neutrophil IgM, Blood'),
+('http://loinc.org','72946-7','Tacrolimus induced neutrophil IgG, Blood'),
+('http://loinc.org','73132-3','Tacrolimus induced platelet IgM, Blood'),
+('http://loinc.org','73133-1','Tacrolimus induced platelet IgG, Blood'),
+('http://loinc.org','74096-9','Tacrolimus, Blood'),
+('http://loinc.org','74097-7','Tacrolimus, Blood'),
+('http://loinc.org','76494-4','Tacrolimus, Blood'),
+('http://loinc.org','77348-1','Tacrolimus trough, Blood'),
+('http://loinc.org','80550-7','Tacrolimus, Dried blood spot'),
+('http://loinc.org','92727-7','Tacrolimus, Blood'),
+('http://loinc.org','92728-5','Tacrolimus 4 hr after dose, Blood'),
+('http://loinc.org','92729-3','Tacrolimus 2 hr after dose, Blood'),
+('http://loinc.org','92730-1','Tacrolimus 1 hr after dose, Blood')
+) AS t (system,code,display) ;

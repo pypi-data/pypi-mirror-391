@@ -1,0 +1,16 @@
+create or replace view irae__rx_cancer_keytruda as select * from (values
+('http://www.nlm.nih.gov/research/umls/rxnorm', '1547545', 'pembrolizumab')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1547546', 'pembrolizumab 25 MG/ML')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1547547', 'pembrolizumab Injectable Product')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1547550', 'Keytruda')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1547551', 'pembrolizumab 25 MG/ML [Keytruda]')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1547553', 'Keytruda Injectable Product')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657744', 'pembrolizumab 50 MG')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657745', 'pembrolizumab Injection')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657746', 'pembrolizumab 50 MG Injection')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657747', 'pembrolizumab 50 MG [Keytruda]')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657748', 'pembrolizumab Injection [Keytruda]')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657749', 'pembrolizumab 50 MG Injection [Keytruda]')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657750', '4 ML pembrolizumab 25 MG/ML Injection')
+,('http://www.nlm.nih.gov/research/umls/rxnorm', '1657751', '4 ML pembrolizumab 25 MG/ML Injection [Keytruda]')
+) AS t (system, code, display) ;

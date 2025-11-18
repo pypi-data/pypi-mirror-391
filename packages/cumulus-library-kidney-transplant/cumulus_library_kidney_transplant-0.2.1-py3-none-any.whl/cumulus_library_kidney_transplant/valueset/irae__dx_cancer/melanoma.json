@@ -1,0 +1,1337 @@
+[
+    {
+        "resourceType": "ValueSet",
+        "id": "2.16.840.1.113883.3.526.3.1010",
+        "meta": {
+            "versionId": "34",
+            "lastUpdated": "2023-12-21T17:43:03.000-05:00",
+            "profile": [
+                "http://hl7.org/fhir/StructureDefinition/shareablevalueset",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/computable-valueset-cqfm",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm"
+            ]
+        },
+        "extension": [
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+                "valueDate": "2020-03-06"
+            }
+        ],
+        "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1010",
+        "identifier": [
+            {
+                "system": "urn:ietf:rfc:3986",
+                "value": "urn:oid:2.16.840.1.113883.3.526.3.1010"
+            }
+        ],
+        "version": "20200306",
+        "name": "Cancer",
+        "title": "Cancer",
+        "status": "active",
+        "experimental": false,
+        "date": "2022-03-07T11:14:02-05:00",
+        "publisher": "American Society of Clinical Oncology Steward",
+        "expansion": {
+            "identifier": "urn:uuid:6c15afa9-530a-4e05-8fea-0ad43dc57f02",
+            "timestamp": "2025-08-21T01:41:02-04:00",
+            "total": 7553,
+            "offset": 0,
+            "parameter": [
+                {
+                    "name": "count",
+                    "valueInteger": 1000
+                },
+                {
+                    "name": "offset",
+                    "valueInteger": 0
+                }
+            ],
+            "contains": [
+                {
+                    "code": "1010631005",
+                    "display": "Primary malignant melanoma of overlapping sites of accessory sinuses (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "103511000119103",
+                    "display": "Melanoma carcinomatosis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1080941000119109",
+                    "display": "Malignant melanoma of left choroid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1080981000119104",
+                    "display": "Malignant melanoma of right choroid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "108101000119101",
+                    "display": "Malignant melanoma metastatic to kidney (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1081021000119109",
+                    "display": "Malignant melanoma of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "109267002",
+                    "display": "Overlapping malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197294001",
+                    "display": "Malignant melanoma arising in melanocytic nevus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197324006",
+                    "display": "Metastatic malignant melanoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197332003",
+                    "display": "Primary malignant melanoma of central nervous system (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197334002",
+                    "display": "Malignant melanoma of uveal tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259319007",
+                    "display": "Primary amelanotic malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259378005",
+                    "display": "Primary superficial spreading malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259379002",
+                    "display": "Primary nodular malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259380004",
+                    "display": "Primary acral lentiginous malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259424009",
+                    "display": "Primary lentigo maligna melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259561002",
+                    "display": "Primary balloon cell malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259563004",
+                    "display": "Primary spindle cell malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259564005",
+                    "display": "Primary desmoplastic malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259676000",
+                    "display": "Primary nodular melanoma of mucous membrane (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268881002",
+                    "display": "Primary malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1285321001",
+                    "display": "Nevoid melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15951021000119107",
+                    "display": "Malignant melanoma of skin of bilateral lower limbs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15951061000119102",
+                    "display": "Malignant melanoma of skin of bilateral upper limbs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15958661000119103",
+                    "display": "Metastatic malignant melanoma to left kidney (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15958701000119105",
+                    "display": "Metastatic malignant melanoma to bilateral kidneys (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15958741000119107",
+                    "display": "Metastatic malignant melanoma to right kidney (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188030005",
+                    "display": "Malignant melanoma of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188033007",
+                    "display": "Malignant melanoma of auricle (ear) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188034001",
+                    "display": "Malignant melanoma of external auditory meatus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188038003",
+                    "display": "Malignant melanoma of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188040008",
+                    "display": "Malignant melanoma of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188045003",
+                    "display": "Malignant melanoma of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188046002",
+                    "display": "Malignant melanoma of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188049009",
+                    "display": "Malignant melanoma of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188050009",
+                    "display": "Malignant melanoma of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188051008",
+                    "display": "Malignant melanoma of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188052001",
+                    "display": "Malignant melanoma of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188054000",
+                    "display": "Malignant melanoma of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188055004",
+                    "display": "Malignant melanoma of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188060000",
+                    "display": "Malignant melanoma of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188061001",
+                    "display": "Malignant melanoma of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188062008",
+                    "display": "Malignant melanoma of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188063003",
+                    "display": "Malignant melanoma of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188064009",
+                    "display": "Malignant melanoma of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188065005",
+                    "display": "Malignant melanoma of thumb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188068007",
+                    "display": "Malignant melanoma of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188069004",
+                    "display": "Malignant melanoma of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188070003",
+                    "display": "Malignant melanoma of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188071004",
+                    "display": "Malignant melanoma of popliteal fossa area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188072006",
+                    "display": "Malignant melanoma of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188073001",
+                    "display": "Malignant melanoma of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188074007",
+                    "display": "Malignant melanoma of heel (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188075008",
+                    "display": "Malignant melanoma of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188076009",
+                    "display": "Malignant melanoma of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188077000",
+                    "display": "Malignant melanoma of great toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "231834005",
+                    "display": "Malignant melanoma of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "243971001000119103",
+                    "display": "Malignant melanoma of skin of right ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "249389151000119103",
+                    "display": "Malignant melanoma of skin of right wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254730000",
+                    "display": "Superficial spreading malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254731001",
+                    "display": "Nodular malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254732008",
+                    "display": "Acral lentiginous malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254733003",
+                    "display": "Malignant melanoma arising in intradermal nevus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254734009",
+                    "display": "Malignant melanoma arising in congenital nevus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254896002",
+                    "display": "Malignant melanoma of vulva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255004001",
+                    "display": "Malignant melanoma of conjunctiva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255012009",
+                    "display": "Malignant melanoma of iris (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255015006",
+                    "display": "Malignant melanoma of ciliary body (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255021005",
+                    "display": "Malignant melanoma of choroid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "269578002",
+                    "display": "Malignant melanoma of head and neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "269579005",
+                    "display": "Malignant melanoma of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "269580008",
+                    "display": "Malignant melanoma of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "269581007",
+                    "display": "Malignant melanoma of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "274087000",
+                    "display": "Malignant melanoma of eye (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276751004",
+                    "display": "Amelanotic malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276821000",
+                    "display": "Malignant melanoma of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276822007",
+                    "display": "Malignant melanoma of rectum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "277530005",
+                    "display": "Malignant melanoma of meninges (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "302837001",
+                    "display": "Lentigo maligna melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "310498001",
+                    "display": "Malignant melanoma of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313248004",
+                    "display": "Malignant melanoma of chest wall (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "314976006",
+                    "display": "Local recurrence of malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "351961000119109",
+                    "display": "Malignant melanoma of skin of right upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352001000119100",
+                    "display": "Malignant melanoma of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352201000119105",
+                    "display": "Malignant melanoma of skin of left upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372244006",
+                    "display": "Malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "399660006",
+                    "display": "Ring melanoma of ciliary body (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "400375351000119102",
+                    "display": "Malignant melanoma of skin of left ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402558004",
+                    "display": "Malignant melanoma (vertical growth phase) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402559007",
+                    "display": "Congenital malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402560002",
+                    "display": "Materno-fetal metastatic malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402561003",
+                    "display": "Malignant melanoma of soft tissues (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402562005",
+                    "display": "Malignant melanoma animal-type (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402563000",
+                    "display": "Metastatic malignant melanoma with diffuse hypermelanosis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402564006",
+                    "display": "Multiple primary malignant melanomata (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403714009",
+                    "display": "Psoralen and long-wave ultraviolet radiation therapy-associated malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403921000",
+                    "display": "Borderline malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403922007",
+                    "display": "Balloon cell malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403923002",
+                    "display": "Spindle cell malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403924008",
+                    "display": "Desmoplastic malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403925009",
+                    "display": "Neurotropic malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403926005",
+                    "display": "Malignant melanoma of oral cavity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403927001",
+                    "display": "Malignant melanoma of nail apparatus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423280002",
+                    "display": "Malignant melanoma of skin of canthus of eye (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423447006",
+                    "display": "Malignant melanoma of skin of lower eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423494003",
+                    "display": "Malignant melanoma of skin of upper eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423673009",
+                    "display": "Malignant melanoma of retina (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424190005",
+                    "display": "Malignant melanoma of unknown origin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424302003",
+                    "display": "Malignant melanoma of skin of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424487008",
+                    "display": "Malignant melanoma of skin of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "443493003",
+                    "display": "Metastatic malignant melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "447712006",
+                    "display": "Malignant melanoma of skin of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448273006",
+                    "display": "Malignant melanoma of skin of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448298007",
+                    "display": "Malignant melanoma of skin of penis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448300007",
+                    "display": "Malignant melanoma of skin of vulva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449636007",
+                    "display": "Malignant melanoma of skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449637003",
+                    "display": "Malignant melanoma of skin of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698040004",
+                    "display": "Malignant melanoma of nasal cavity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698041000",
+                    "display": "Malignant melanoma of vestibule of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698042007",
+                    "display": "Malignant melanoma of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698043002",
+                    "display": "Malignant melanoma of floor of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698044008",
+                    "display": "Malignant melanoma of palatine arch (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698045009",
+                    "display": "Malignant melanoma of buccal mucosa (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698285005",
+                    "display": "Malignant melanoma of ethmoid sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698286006",
+                    "display": "Malignant melanoma of palate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698287002",
+                    "display": "Malignant melanoma of gum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698288007",
+                    "display": "Malignant melanoma of maxillary sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707350007",
+                    "display": "Malignant melanoma of accessory sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707361004",
+                    "display": "Malignant melanoma of frontal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707362006",
+                    "display": "Malignant melanoma of sphenoidal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "717968005",
+                    "display": "Melanoma and neural system tumor syndrome (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "720587009",
+                    "display": "Donor derived melanoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721563000",
+                    "display": "Primary malignant melanoma of vagina (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721627007",
+                    "display": "Malignant melanoma of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722543005",
+                    "display": "Primary malignant melanoma of anal canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722665003",
+                    "display": "Primary malignant melanoma of cornea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "723281005",
+                    "display": "Primary malignant melanoma of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "726019003",
+                    "display": "Familial malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "783736003",
+                    "display": "Malignant melanoma of mucous membrane (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "808558991000119105",
+                    "display": "Malignant melanoma of skin of left forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "816204007",
+                    "display": "Nodular melanoma of mucous membrane (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "830150003",
+                    "display": "Malignant melanoma with B-Raf proto-oncogene, serine/threonine kinase V600E mutation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "866072004",
+                    "display": "Malignant melanoma of orbit (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "866073009",
+                    "display": "Malignant melanoma of overlapping sites of eye and adnexa (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "866079008",
+                    "display": "Malignant melanoma of lacrimal gland (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "866082003",
+                    "display": "Malignant melanoma of lacrimal drainage system (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91221000119102",
+                    "display": "Metastatic malignant melanoma to pleura (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93209006",
+                    "display": "Malignant melanoma of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93210001",
+                    "display": "Malignant melanoma of skin of abdomen (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93211002",
+                    "display": "Malignant melanoma of skin of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93213004",
+                    "display": "Malignant melanoma of skin of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93214005",
+                    "display": "Malignant melanoma of skin of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93215006",
+                    "display": "Malignant melanoma of skin of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93216007",
+                    "display": "Malignant melanoma of skin of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93217003",
+                    "display": "Malignant melanoma of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93218008",
+                    "display": "Malignant melanoma of skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93219000",
+                    "display": "Malignant melanoma of skin of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93220006",
+                    "display": "Malignant melanoma of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93221005",
+                    "display": "Malignant melanoma of skin of elbow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93222003",
+                    "display": "Malignant melanoma of skin of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93223008",
+                    "display": "Malignant melanoma of skin of eyebrow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93224002",
+                    "display": "Malignant melanoma of skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93225001",
+                    "display": "Malignant melanoma of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93226000",
+                    "display": "Malignant melanoma of skin of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93227009",
+                    "display": "Malignant melanoma of skin of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93228004",
+                    "display": "Malignant melanoma of skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93229007",
+                    "display": "Malignant melanoma of skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93230002",
+                    "display": "Malignant melanoma of skin of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93636004",
+                    "display": "Malignant melanoma of skin of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93637008",
+                    "display": "Malignant melanoma of skin of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93638003",
+                    "display": "Malignant melanoma of skin of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93640008",
+                    "display": "Malignant melanoma of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93641007",
+                    "display": "Malignant melanoma of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93642000",
+                    "display": "Malignant melanoma of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93643005",
+                    "display": "Malignant melanoma of skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93644004",
+                    "display": "Malignant melanoma of skin of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93645003",
+                    "display": "Malignant melanoma of skin of popliteal area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93646002",
+                    "display": "Malignant melanoma of skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93647006",
+                    "display": "Malignant melanoma of skin of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93648001",
+                    "display": "Malignant melanoma of skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93649009",
+                    "display": "Malignant melanoma of skin of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93650009",
+                    "display": "Malignant melanoma of skin of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93651008",
+                    "display": "Malignant melanoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93652001",
+                    "display": "Malignant melanoma of skin of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93653006",
+                    "display": "Malignant melanoma of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93654000",
+                    "display": "Malignant melanoma of skin of wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93655004",
+                    "display": "Malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "939595491000119108",
+                    "display": "Malignant melanoma of skin of right forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "97051000119105",
+                    "display": "Malignant melanoma metastatic to pancreas (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "985355341000119101",
+                    "display": "Malignant melanoma of skin of left wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "C43.0",
+                    "display": "Malignant melanoma of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.10",
+                    "display": "Malignant melanoma of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.111",
+                    "display": "Malignant melanoma of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.112",
+                    "display": "Malignant melanoma of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.121",
+                    "display": "Malignant melanoma of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.122",
+                    "display": "Malignant melanoma of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.20",
+                    "display": "Malignant melanoma of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.21",
+                    "display": "Malignant melanoma of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.22",
+                    "display": "Malignant melanoma of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.30",
+                    "display": "Malignant melanoma of unspecified part of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.31",
+                    "display": "Malignant melanoma of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.39",
+                    "display": "Malignant melanoma of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.4",
+                    "display": "Malignant melanoma of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.51",
+                    "display": "Malignant melanoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.52",
+                    "display": "Malignant melanoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.59",
+                    "display": "Malignant melanoma of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.60",
+                    "display": "Malignant melanoma of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.61",
+                    "display": "Malignant melanoma of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.62",
+                    "display": "Malignant melanoma of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.70",
+                    "display": "Malignant melanoma of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.71",
+                    "display": "Malignant melanoma of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.72",
+                    "display": "Malignant melanoma of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.8",
+                    "display": "Malignant melanoma of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.9",
+                    "display": "Malignant melanoma of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,3401 @@
+[
+    {
+        "resourceType": "ValueSet",
+        "id": "2.16.840.1.113883.3.526.3.1010",
+        "meta": {
+            "versionId": "34",
+            "lastUpdated": "2023-12-21T17:43:03.000-05:00",
+            "profile": [
+                "http://hl7.org/fhir/StructureDefinition/shareablevalueset",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/computable-valueset-cqfm",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm"
+            ]
+        },
+        "extension": [
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+                "valueDate": "2020-03-06"
+            }
+        ],
+        "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1010",
+        "identifier": [
+            {
+                "system": "urn:ietf:rfc:3986",
+                "value": "urn:oid:2.16.840.1.113883.3.526.3.1010"
+            }
+        ],
+        "version": "20200306",
+        "name": "Cancer",
+        "title": "Cancer",
+        "status": "active",
+        "experimental": false,
+        "date": "2022-03-07T11:14:02-05:00",
+        "publisher": "American Society of Clinical Oncology Steward",
+        "expansion": {
+            "identifier": "urn:uuid:6c15afa9-530a-4e05-8fea-0ad43dc57f02",
+            "timestamp": "2025-08-21T01:41:02-04:00",
+            "total": 7553,
+            "offset": 0,
+            "parameter": [
+                {
+                    "name": "count",
+                    "valueInteger": 1000
+                },
+                {
+                    "name": "offset",
+                    "valueInteger": 0
+                }
+            ],
+            "contains": [
+                {
+                    "code": "1079121000119101",
+                    "display": "Primary basal cell carcinoma of skin of left hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1079141000119107",
+                    "display": "Primary basal cell carcinoma of skin of left shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1079181000119102",
+                    "display": "Primary basal cell carcinoma of skin of right hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1079201000119101",
+                    "display": "Primary basal cell carcinoma of skin of right shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1081021000119109",
+                    "display": "Malignant melanoma of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082051000119106",
+                    "display": "Primary squamous cell carcinoma of skin of left upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082091000119101",
+                    "display": "Primary squamous cell carcinoma of skin of left hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082101000119106",
+                    "display": "Primary squamous cell carcinoma of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082131000119104",
+                    "display": "Primary squamous cell carcinoma of skin of left shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082171000119101",
+                    "display": "Primary squamous cell carcinoma of skin of right upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082211000119104",
+                    "display": "Primary squamous cell carcinoma of skin of right hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082221000119106",
+                    "display": "Primary squamous cell carcinoma of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082261000119101",
+                    "display": "Primary squamous cell carcinoma of skin of right shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "109264009",
+                    "display": "Overlapping malignant neoplasm of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "109267002",
+                    "display": "Overlapping malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "109386008",
+                    "display": "Kaposi's sarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "10976631000119101",
+                    "display": "Leiomyosarcoma of skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1186616001",
+                    "display": "Primary Kaposi sarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197324006",
+                    "display": "Metastatic malignant melanoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1236953005",
+                    "display": "Metastatic carcinoma to bone, connective tissue, skin and breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237424008",
+                    "display": "Metastatic carcinoma to foreskin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237477003",
+                    "display": "Metastatic carcinoma to skin of head (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237478008",
+                    "display": "Metastatic carcinoma to skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237519007",
+                    "display": "Metastatic carcinoma to skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237520001",
+                    "display": "Metastatic carcinoma to skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237521002",
+                    "display": "Metastatic carcinoma to skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254748001",
+                    "display": "Metastatic clear cell squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254750009",
+                    "display": "Metastatic acantholytic squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254753006",
+                    "display": "Metastatic verrucous carcinoma to skin of sole of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254755004",
+                    "display": "Metastatic basosquamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259251005",
+                    "display": "Primary mucoepidermoid carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259260002",
+                    "display": "Primary mucinous eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259319007",
+                    "display": "Primary amelanotic malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259372006",
+                    "display": "Primary clear cell squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259373001",
+                    "display": "Primary spindle cell squamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259374007",
+                    "display": "Primary acantholytic squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259376009",
+                    "display": "Primary basosquamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259378005",
+                    "display": "Primary superficial spreading malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259379002",
+                    "display": "Primary nodular malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259380004",
+                    "display": "Primary acral lentiginous malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259382007",
+                    "display": "Primary epithelioid cell sarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259390007",
+                    "display": "Primary carcinoma of foreskin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259459009",
+                    "display": "Primary nodular basal cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259530006",
+                    "display": "Primary carcinoma of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259532003",
+                    "display": "Primary carcinoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259533008",
+                    "display": "Primary carcinoma of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259567003",
+                    "display": "Primary eccrine ductal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259569000",
+                    "display": "Primary clear cell eccrine hidradenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259571000",
+                    "display": "Primary small cell eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259573002",
+                    "display": "Primary apocrine adenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259575009",
+                    "display": "Primary ceruminous gland adenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259577001",
+                    "display": "Primary mixed eccrine/pilar adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259578006",
+                    "display": "Primary undifferentiated adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259587002",
+                    "display": "Primary carcinosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259592000",
+                    "display": "Primary eccrine porocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259593005",
+                    "display": "Primary digital papillary eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259594004",
+                    "display": "Primary adenoid cystic eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259596002",
+                    "display": "Primary microcystic adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259599009",
+                    "display": "Primary eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259601006",
+                    "display": "Primary myxofibrosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259736002",
+                    "display": "Primary malignant blue nevus of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259777003",
+                    "display": "Primary malignant eccrine spiradenoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259778008",
+                    "display": "Primary malignant chondroid syringoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259779000",
+                    "display": "Primary malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259780002",
+                    "display": "Primary superficial malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259781003",
+                    "display": "Primary giant cell malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259782005",
+                    "display": "Primary inflammatory malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259789001",
+                    "display": "Primary pleomorphic malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259797008",
+                    "display": "Primary Paget disease of skin of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1263651005",
+                    "display": "Metastatic mucoepidermoid carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1264364008",
+                    "display": "Metastatic ceruminous adenocarcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268699008",
+                    "display": "Primary pilomatrix carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268881002",
+                    "display": "Primary malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268956001",
+                    "display": "Primary extramammary Paget disease of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1287332002",
+                    "display": "Primary Merkel cell carcinoma of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1287333007",
+                    "display": "Primary Merkel cell carcinoma of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1287334001",
+                    "display": "Primary Merkel cell carcinoma of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1287335000",
+                    "display": "Primary Merkel cell carcinoma of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1287336004",
+                    "display": "Primary Merkel cell carcinoma of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15950061000119105",
+                    "display": "Primary malignant neoplasm of skin of right breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15950221000119108",
+                    "display": "Primary malignant neoplasm of skin of left breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15951021000119107",
+                    "display": "Malignant melanoma of skin of bilateral lower limbs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15951061000119102",
+                    "display": "Malignant melanoma of skin of bilateral upper limbs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16091131000119108",
+                    "display": "Primary angiosarcoma of skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16091171000119106",
+                    "display": "Angiosarcoma of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16091251000119109",
+                    "display": "Primary angiosarcoma of skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16091371000119108",
+                    "display": "Primary angiosarcoma of skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16091411000119109",
+                    "display": "Primary angiosarcoma of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16905141000119107",
+                    "display": "Primary malignant neoplasm of skin of right upper eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16905341000119105",
+                    "display": "Primary malignant neoplasm of skin of right lower eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16905541000119102",
+                    "display": "Primary malignant neoplasm of skin of left lower eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "16905581000119107",
+                    "display": "Primary malignant neoplasm of skin of left upper eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188089003",
+                    "display": "Malignant neoplasm of skin of ear and external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188090007",
+                    "display": "Malignant neoplasm of skin of auricle (ear) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188091006",
+                    "display": "Malignant neoplasm of skin of external auditory meatus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188095002",
+                    "display": "Malignant neoplasm of skin of cheek, external (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188099008",
+                    "display": "Malignant neoplasm of skin of nose (external) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188100000",
+                    "display": "Malignant neoplasm of skin of temple (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188102008",
+                    "display": "Malignant neoplasm of scalp and/or skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188103003",
+                    "display": "Malignant neoplasm of skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188107002",
+                    "display": "Malignant neoplasm of skin of axillary fold (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188110009",
+                    "display": "Malignant neoplasm of skin of abdominal wall (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188121000",
+                    "display": "Malignant neoplasm of skin of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188122007",
+                    "display": "Malignant neoplasm of skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188125009",
+                    "display": "Malignant neoplasm of skin of thumb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188132000",
+                    "display": "Malignant neoplasm of skin of popliteal fossa area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188133005",
+                    "display": "Malignant neoplasm of skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188135003",
+                    "display": "Malignant neoplasm of skin of heel (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188138001",
+                    "display": "Malignant neoplasm of skin of great toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188454009",
+                    "display": "Metastatic malignant neoplasm to skin of head (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "188458007",
+                    "display": "Metastatic malignant neoplasm to skin of shoulder and arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "233719000",
+                    "display": "Lymphangioleiomyomatosis of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "238863004",
+                    "display": "Giant cell fibroblastoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "243971001000119103",
+                    "display": "Malignant melanoma of skin of right ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "249389151000119103",
+                    "display": "Malignant melanoma of skin of right wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254650008",
+                    "display": "Malignant epithelial neoplasm of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254651007",
+                    "display": "Squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254652000",
+                    "display": "Clear cell squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254653005",
+                    "display": "Spindle cell squamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254654004",
+                    "display": "Acantholytic squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254701007",
+                    "display": "Basal cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254702000",
+                    "display": "Basosquamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254707006",
+                    "display": "Malignant skin tumor with eccrine differentiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254708001",
+                    "display": "Eccrine porocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254709009",
+                    "display": "Digital papillary eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254711000",
+                    "display": "Adenoid cystic eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254712007",
+                    "display": "Microcystic adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254713002",
+                    "display": "Mucoepidermoid carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254714008",
+                    "display": "Mucinous eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254726003",
+                    "display": "Malignant skin tumor with apocrine differentiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254727007",
+                    "display": "Extramammary Paget's disease of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254729005",
+                    "display": "Apudoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254730000",
+                    "display": "Superficial spreading malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254731001",
+                    "display": "Nodular malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254732008",
+                    "display": "Acral lentiginous malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254754005",
+                    "display": "Atypical fibroxanthoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254794007",
+                    "display": "Angiosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254796009",
+                    "display": "Solitary fibrous tumor of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254797000",
+                    "display": "Malignant hemangiopericytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254798005",
+                    "display": "Hemangioendothelioma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254800003",
+                    "display": "Epithelioid cell sarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254908006",
+                    "display": "Malignant tumor of skin of penis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254909003",
+                    "display": "Carcinoma of foreskin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255068000",
+                    "display": "Carcinoma of bone, connective tissue, skin and breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255093003",
+                    "display": "Malignant skin tumor with adnexal differentiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "271467005",
+                    "display": "Malignant neoplasm of bone, connective tissue, skin and breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276738009",
+                    "display": "Primary signet ring cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276750003",
+                    "display": "Malignant tumor of skin with pilar differentiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276751004",
+                    "display": "Amelanotic malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285307007",
+                    "display": "Squamous cell carcinoma of skin of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285308002",
+                    "display": "Squamous cell carcinoma of skin of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285309005",
+                    "display": "Squamous cell carcinoma of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "286891000",
+                    "display": "Carcinoma of skin of head/neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "307603002",
+                    "display": "Malignant blue nevus of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "307610008",
+                    "display": "Pilomatrix carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "311779007",
+                    "display": "Malignant neoplasm of skin of scapular region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "314975005",
+                    "display": "Local recurrence of malignant tumor of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "314976006",
+                    "display": "Local recurrence of malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "351961000119109",
+                    "display": "Malignant melanoma of skin of right upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352001000119100",
+                    "display": "Malignant melanoma of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352201000119105",
+                    "display": "Malignant melanoma of skin of left upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352381000119106",
+                    "display": "Primary malignant neoplasm of skin of left upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352391000119109",
+                    "display": "Primary malignant neoplasm of skin of left ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352421000119102",
+                    "display": "Primary malignant neoplasm of skin of left shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352431000119104",
+                    "display": "Primary malignant neoplasm of skin of right ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352461000119107",
+                    "display": "Primary malignant neoplasm of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352471000119101",
+                    "display": "Primary malignant neoplasm of skin of right shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "352481000119103",
+                    "display": "Primary malignant neoplasm of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "355141000119106",
+                    "display": "Primary malignant neoplasm of skin of right upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "363450006",
+                    "display": "Malignant tumor of foreskin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372122006",
+                    "display": "Malignant neoplasm of skin head and neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372123001",
+                    "display": "Primary malignant neoplasm of skin head and neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372124007",
+                    "display": "Malignant neoplasm of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372125008",
+                    "display": "Carcinoma of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372126009",
+                    "display": "Malignant neoplasm of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372127000",
+                    "display": "Carcinoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372128005",
+                    "display": "Malignant neoplasm of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372129002",
+                    "display": "Carcinoma of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "372130007",
+                    "display": "Malignant neoplasm of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "398670003",
+                    "display": "Pigmented dermatofibrosarcoma protuberans of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "398903003",
+                    "display": "Pleomorphic malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "399897004",
+                    "display": "Basal cell carcinoma of postauricular skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "399934007",
+                    "display": "Basal cell carcinoma of preauricular skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "400173004",
+                    "display": "Eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "400175006",
+                    "display": "Myxofibrosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "400375351000119102",
+                    "display": "Malignant melanoma of skin of left ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402523001",
+                    "display": "Basal cell carcinoma of truncal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402652009",
+                    "display": "Malignant vascular tumor of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402819001",
+                    "display": "Basal cell carcinoma of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402873007",
+                    "display": "Malignant fibrohistiocytic tumor of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402879006",
+                    "display": "T-cell leukemic infiltration of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402882001",
+                    "display": "Hodgkin's disease affecting skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403458008",
+                    "display": "Localized skin involvement by breast carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403711001",
+                    "display": "Primary malignant neoplasm of skin due to psoralen and longwave ultraviolet radiation therapy (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403729006",
+                    "display": "Malignant neoplasm of skin caused by radiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403742006",
+                    "display": "Malignant neoplasm of skin caused by arsenic (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403892001",
+                    "display": "Squamous cell carcinoma of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403894000",
+                    "display": "Squamous cell carcinoma of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403898002",
+                    "display": "Squamous cell carcinoma of skin of lower extremity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403899005",
+                    "display": "Squamous cell carcinoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403939009",
+                    "display": "Eccrine ductal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403940006",
+                    "display": "Clear cell eccrine hidradenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403941005",
+                    "display": "Malignant cylindroma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403942003",
+                    "display": "Malignant eccrine spiradenoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403943008",
+                    "display": "Malignant chondroid syringoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403944002",
+                    "display": "Small cell eccrine carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403949007",
+                    "display": "Apocrine adenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403951006",
+                    "display": "Ceruminous gland adenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403954003",
+                    "display": "Mixed eccrine/pilar adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403955002",
+                    "display": "Undifferentiated adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404011000",
+                    "display": "Plexiform fibrohistiocytic tumor of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404013002",
+                    "display": "Angiomatoid fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404014008",
+                    "display": "Malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404015009",
+                    "display": "Superficial malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404016005",
+                    "display": "Giant cell malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404017001",
+                    "display": "Inflammatory malignant fibrous histiocytoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404045007",
+                    "display": "Epithelioid leiomyosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404046008",
+                    "display": "Myxoid leiomyosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404087009",
+                    "display": "Carcinosarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404091004",
+                    "display": "Malignant infiltration of skin by underlying tumor (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404092006",
+                    "display": "Metastatic carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404093001",
+                    "display": "Sarcomatous metastasis in skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404122003",
+                    "display": "Leukemic infiltration of skin (chronic T-cell lymphocytic leukemia) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404123008",
+                    "display": "Leukemic infiltration of skin (T-cell prolymphocytic leukemia) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404124002",
+                    "display": "Leukemic infiltration of skin (T-cell lymphoblastic leukemia) (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404135007",
+                    "display": "Angiocentric natural killer cell and T-cell malignant lymphoma involving skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404136008",
+                    "display": "Aggressive natural killer-cell leukemia involving skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404137004",
+                    "display": "Precursor B-cell lymphoblastic lymphoma involving skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404138009",
+                    "display": "Small lymphocytic B-cell lymphoma involving skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404139001",
+                    "display": "Leukemic infiltration of skin in hairy-cell leukemia (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404151004",
+                    "display": "Leukemic infiltration of skin in myeloid leukemia (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404152006",
+                    "display": "Leukemic infiltration of skin in acute myeloid leukemia (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404153001",
+                    "display": "Leukemic infiltration of skin in chronic myeloid leukemia (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404154007",
+                    "display": "Leukemic infiltration of skin in monocytic leukemia (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404155008",
+                    "display": "Granulocytic sarcoma affecting skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404156009",
+                    "display": "Leukemic infiltration of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404157000",
+                    "display": "Specific skin infiltration in Hodgkin's disease (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404169008",
+                    "display": "Malignant histiocytosis involving skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "404172001",
+                    "display": "Mast cell leukemia affecting skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423280002",
+                    "display": "Malignant melanoma of skin of canthus of eye (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423284006",
+                    "display": "Squamous cell carcinoma of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423425006",
+                    "display": "Malignant neoplasm of skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423447006",
+                    "display": "Malignant melanoma of skin of lower eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423494003",
+                    "display": "Malignant melanoma of skin of upper eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424302003",
+                    "display": "Malignant melanoma of skin of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424487008",
+                    "display": "Malignant melanoma of skin of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "429114002",
+                    "display": "Malignant basal cell neoplasm of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "443136000",
+                    "display": "Malignant neoplasm of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "447712006",
+                    "display": "Malignant melanoma of skin of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "447738006",
+                    "display": "Paget's disease of skin of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448273006",
+                    "display": "Malignant melanoma of skin of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448298007",
+                    "display": "Malignant melanoma of skin of penis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448300007",
+                    "display": "Malignant melanoma of skin of vulva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448447004",
+                    "display": "Non-Hodgkin's lymphoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448865007",
+                    "display": "Follicular non-Hodgkin's lymphoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449217008",
+                    "display": "Diffuse non-Hodgkin's lymphoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449309003",
+                    "display": "Malignant neoplasm of skin of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449416001",
+                    "display": "Malignant epithelial neoplasm of skin of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449630001",
+                    "display": "Metastatic malignant neoplasm to skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449631002",
+                    "display": "Metastatic malignant neoplasm to skin of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449634005",
+                    "display": "Primary malignant neoplasm of skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449636007",
+                    "display": "Malignant melanoma of skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "449637003",
+                    "display": "Malignant melanoma of skin of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "455733521000119103",
+                    "display": "Primary squamous cell carcinoma of skin of head and/or neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688321000119107",
+                    "display": "Primary malignant neoplasm of skin of bridge of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688381000119106",
+                    "display": "Primary malignant neoplasm of skin of ala nasi (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688411000119109",
+                    "display": "Primary malignant neoplasm of skin of tip of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689211000119102",
+                    "display": "Primary squamous cell carcinoma of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721540005",
+                    "display": "Primary adnexal carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721541009",
+                    "display": "Primary malignant sarcoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721762007",
+                    "display": "Adult T-cell leukemia/lymphoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722712000",
+                    "display": "Occupational cancer of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "724866001",
+                    "display": "Primary malignant neoplasm of skin due to and following radiotherapy (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "726019003",
+                    "display": "Familial malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "78461000119105",
+                    "display": "Metastatic squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "79281000119106",
+                    "display": "Primary adenocarcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "808558991000119105",
+                    "display": "Malignant melanoma of skin of left forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "827186009",
+                    "display": "Metastatic malignant neoplasm to skin of hip and skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91231000119104",
+                    "display": "Metastatic adenocarcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91251000119105",
+                    "display": "Small cell carcinoma metastatic to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93209006",
+                    "display": "Malignant melanoma of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93210001",
+                    "display": "Malignant melanoma of skin of abdomen (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93211002",
+                    "display": "Malignant melanoma of skin of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93213004",
+                    "display": "Malignant melanoma of skin of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93214005",
+                    "display": "Malignant melanoma of skin of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93215006",
+                    "display": "Malignant melanoma of skin of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93216007",
+                    "display": "Malignant melanoma of skin of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93217003",
+                    "display": "Malignant melanoma of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93218008",
+                    "display": "Malignant melanoma of skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93219000",
+                    "display": "Malignant melanoma of skin of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93220006",
+                    "display": "Malignant melanoma of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93221005",
+                    "display": "Malignant melanoma of skin of elbow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93222003",
+                    "display": "Malignant melanoma of skin of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93223008",
+                    "display": "Malignant melanoma of skin of eyebrow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93224002",
+                    "display": "Malignant melanoma of skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93225001",
+                    "display": "Malignant melanoma of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93226000",
+                    "display": "Malignant melanoma of skin of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93227009",
+                    "display": "Malignant melanoma of skin of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93228004",
+                    "display": "Malignant melanoma of skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93229007",
+                    "display": "Malignant melanoma of skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93230002",
+                    "display": "Malignant melanoma of skin of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93636004",
+                    "display": "Malignant melanoma of skin of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93637008",
+                    "display": "Malignant melanoma of skin of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93638003",
+                    "display": "Malignant melanoma of skin of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93640008",
+                    "display": "Malignant melanoma of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93641007",
+                    "display": "Malignant melanoma of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93642000",
+                    "display": "Malignant melanoma of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93643005",
+                    "display": "Malignant melanoma of skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93644004",
+                    "display": "Malignant melanoma of skin of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93645003",
+                    "display": "Malignant melanoma of skin of popliteal area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93646002",
+                    "display": "Malignant melanoma of skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93647006",
+                    "display": "Malignant melanoma of skin of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93648001",
+                    "display": "Malignant melanoma of skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93649009",
+                    "display": "Malignant melanoma of skin of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93650009",
+                    "display": "Malignant melanoma of skin of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93651008",
+                    "display": "Malignant melanoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93652001",
+                    "display": "Malignant melanoma of skin of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93653006",
+                    "display": "Malignant melanoma of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93654000",
+                    "display": "Malignant melanoma of skin of wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93655004",
+                    "display": "Malignant melanoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93663003",
+                    "display": "Primary malignant neoplasm of skin with adnexal differentiation (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "93956001",
+                    "display": "Primary malignant neoplasm of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "939595491000119108",
+                    "display": "Malignant melanoma of skin of right forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94007006",
+                    "display": "Primary malignant neoplasm of skin of abdomen (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94008001",
+                    "display": "Primary malignant neoplasm of skin of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94010004",
+                    "display": "Primary malignant neoplasm of skin of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94011000",
+                    "display": "Primary malignant neoplasm of skin of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94012007",
+                    "display": "Primary malignant neoplasm of skin of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94013002",
+                    "display": "Primary malignant neoplasm of skin of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94014008",
+                    "display": "Primary malignant neoplasm of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94015009",
+                    "display": "Primary malignant neoplasm of skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94016005",
+                    "display": "Primary malignant neoplasm of skin of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94017001",
+                    "display": "Primary malignant neoplasm of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94018006",
+                    "display": "Primary malignant neoplasm of skin of elbow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94019003",
+                    "display": "Primary malignant neoplasm of skin of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94020009",
+                    "display": "Primary malignant neoplasm of skin of eyebrow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94021008",
+                    "display": "Primary malignant neoplasm of skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94022001",
+                    "display": "Primary malignant neoplasm of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94023006",
+                    "display": "Primary malignant neoplasm of skin of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94024000",
+                    "display": "Primary malignant neoplasm of skin of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94025004",
+                    "display": "Primary malignant neoplasm of skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94026003",
+                    "display": "Primary malignant neoplasm of skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94027007",
+                    "display": "Primary malignant neoplasm of skin of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94028002",
+                    "display": "Primary malignant neoplasm of skin of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94029005",
+                    "display": "Primary malignant neoplasm of skin of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94030000",
+                    "display": "Primary malignant neoplasm of skin of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94032008",
+                    "display": "Primary malignant neoplasm of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94033003",
+                    "display": "Primary malignant neoplasm of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94034009",
+                    "display": "Primary malignant neoplasm of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94035005",
+                    "display": "Primary malignant neoplasm of skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94036006",
+                    "display": "Primary malignant neoplasm of skin of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94037002",
+                    "display": "Primary malignant neoplasm of skin of popliteal area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94038007",
+                    "display": "Primary malignant neoplasm of skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94039004",
+                    "display": "Primary malignant neoplasm of skin of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94040002",
+                    "display": "Primary malignant neoplasm of skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94041003",
+                    "display": "Primary malignant neoplasm of skin of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94042005",
+                    "display": "Primary malignant neoplasm of skin of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94043000",
+                    "display": "Primary malignant neoplasm of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94044006",
+                    "display": "Primary malignant neoplasm of skin of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94045007",
+                    "display": "Primary malignant neoplasm of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94046008",
+                    "display": "Primary malignant neoplasm of skin of wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94047004",
+                    "display": "Primary malignant neoplasm of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94159002",
+                    "display": "Metastatic malignant neoplasm to adnexa of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94483003",
+                    "display": "Metastatic malignant neoplasm to perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94539009",
+                    "display": "Metastatic malignant neoplasm to skin of abdomen (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94540006",
+                    "display": "Metastatic malignant neoplasm to skin of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94542003",
+                    "display": "Metastatic malignant neoplasm to skin of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94543008",
+                    "display": "Metastatic malignant neoplasm to skin of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94544002",
+                    "display": "Metastatic malignant neoplasm to skin of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94545001",
+                    "display": "Metastatic malignant neoplasm to skin of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94546000",
+                    "display": "Metastatic malignant neoplasm to skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94547009",
+                    "display": "Metastatic malignant neoplasm to skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94548004",
+                    "display": "Metastatic malignant neoplasm to skin of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94549007",
+                    "display": "Metastatic malignant neoplasm to skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94550007",
+                    "display": "Metastatic malignant neoplasm to skin of elbow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94551006",
+                    "display": "Metastatic malignant neoplasm to skin of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94552004",
+                    "display": "Metastatic malignant neoplasm to skin of eyebrow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94553009",
+                    "display": "Metastatic malignant neoplasm to skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94554003",
+                    "display": "Metastatic malignant neoplasm to skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94555002",
+                    "display": "Metastatic malignant neoplasm to skin of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94556001",
+                    "display": "Metastatic malignant neoplasm to skin of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94557005",
+                    "display": "Metastatic malignant neoplasm to skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94558000",
+                    "display": "Metastatic malignant neoplasm to skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94559008",
+                    "display": "Metastatic malignant neoplasm to skin of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94560003",
+                    "display": "Metastatic malignant neoplasm to skin of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94561004",
+                    "display": "Metastatic malignant neoplasm to skin of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94562006",
+                    "display": "Metastatic malignant neoplasm to skin of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94564007",
+                    "display": "Metastatic malignant neoplasm to skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94565008",
+                    "display": "Metastatic malignant neoplasm to skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94566009",
+                    "display": "Metastatic malignant neoplasm to skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94567000",
+                    "display": "Metastatic malignant neoplasm to skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94568005",
+                    "display": "Metastatic malignant neoplasm to skin of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94569002",
+                    "display": "Metastatic malignant neoplasm to skin of popliteal area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94570001",
+                    "display": "Metastatic malignant neoplasm to skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94571002",
+                    "display": "Metastatic malignant neoplasm to skin of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94572009",
+                    "display": "Metastatic malignant neoplasm to skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94573004",
+                    "display": "Metastatic malignant neoplasm to skin of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94574005",
+                    "display": "Metastatic malignant neoplasm to skin of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94575006",
+                    "display": "Metastatic malignant neoplasm to skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94576007",
+                    "display": "Metastatic malignant neoplasm to skin of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94577003",
+                    "display": "Metastatic malignant neoplasm to skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94578008",
+                    "display": "Metastatic malignant neoplasm to skin of wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94579000",
+                    "display": "Metastatic malignant neoplasm to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94728008",
+                    "display": "Neoplasm of uncertain behavior of adnexa of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "94996007",
+                    "display": "Neoplasm of uncertain behavior of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95047009",
+                    "display": "Neoplasm of uncertain behavior of skin of abdomen (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95048004",
+                    "display": "Neoplasm of uncertain behavior of skin of ankle (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95049007",
+                    "display": "Neoplasm of uncertain behavior of skin of upper arm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95050007",
+                    "display": "Neoplasm of uncertain behavior of skin of axilla (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95051006",
+                    "display": "Neoplasm of uncertain behavior of skin of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95052004",
+                    "display": "Neoplasm of uncertain behavior of skin of breast (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95053009",
+                    "display": "Neoplasm of uncertain behavior of skin of buttock (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95054003",
+                    "display": "Neoplasm of uncertain behavior of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95055002",
+                    "display": "Neoplasm of uncertain behavior of skin of chest (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95056001",
+                    "display": "Neoplasm of uncertain behavior of skin of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95057005",
+                    "display": "Neoplasm of uncertain behavior of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95058000",
+                    "display": "Neoplasm of uncertain behavior of skin of elbow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95059008",
+                    "display": "Neoplasm of uncertain behavior of skin of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95060003",
+                    "display": "Neoplasm of uncertain behavior of skin of eyebrow (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95061004",
+                    "display": "Neoplasm of uncertain behavior of skin of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95062006",
+                    "display": "Neoplasm of uncertain behavior of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95063001",
+                    "display": "Neoplasm of uncertain behavior of skin of finger (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95064007",
+                    "display": "Neoplasm of uncertain behavior of skin of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95065008",
+                    "display": "Neoplasm of uncertain behavior of skin of forearm (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95066009",
+                    "display": "Neoplasm of uncertain behavior of skin of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95067000",
+                    "display": "Neoplasm of uncertain behavior of skin of groin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95068005",
+                    "display": "Neoplasm of uncertain behavior of skin of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95069002",
+                    "display": "Neoplasm of uncertain behavior of skin of hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95070001",
+                    "display": "Neoplasm of uncertain behavior of skin of knee (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95071002",
+                    "display": "Neoplasm of uncertain behavior of skin of lower leg (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95072009",
+                    "display": "Neoplasm of uncertain behavior of skin of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95073004",
+                    "display": "Neoplasm of uncertain behavior of skin of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95074005",
+                    "display": "Neoplasm of uncertain behavior of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95075006",
+                    "display": "Neoplasm of uncertain behavior of skin of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95076007",
+                    "display": "Neoplasm of uncertain behavior of skin of perineum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95077003",
+                    "display": "Neoplasm of uncertain behavior of skin of popliteal area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95078008",
+                    "display": "Neoplasm of uncertain behavior of skin of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95079000",
+                    "display": "Neoplasm of uncertain behavior of skin of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95080002",
+                    "display": "Neoplasm of uncertain behavior of skin of temporal region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95081003",
+                    "display": "Neoplasm of uncertain behavior of skin of thigh (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95082005",
+                    "display": "Neoplasm of uncertain behavior of skin of toe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95083000",
+                    "display": "Neoplasm of uncertain behavior of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95084006",
+                    "display": "Neoplasm of uncertain behavior of skin of umbilicus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95085007",
+                    "display": "Neoplasm of uncertain behavior of skin of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95086008",
+                    "display": "Neoplasm of uncertain behavior of skin of wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "95087004",
+                    "display": "Neoplasm of uncertain behavior of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "985355341000119101",
+                    "display": "Malignant melanoma of skin of left wrist (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "C43.51",
+                    "display": "Malignant melanoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.52",
+                    "display": "Malignant melanoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.8",
+                    "display": "Malignant melanoma of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C43.9",
+                    "display": "Malignant melanoma of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.00",
+                    "display": "Unspecified malignant neoplasm of skin of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.01",
+                    "display": "Basal cell carcinoma of skin of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.02",
+                    "display": "Squamous cell carcinoma of skin of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.09",
+                    "display": "Other specified malignant neoplasm of skin of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.101",
+                    "display": "Unspecified malignant neoplasm of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1021",
+                    "display": "Unspecified malignant neoplasm of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1022",
+                    "display": "Unspecified malignant neoplasm of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1091",
+                    "display": "Unspecified malignant neoplasm of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1092",
+                    "display": "Unspecified malignant neoplasm of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.111",
+                    "display": "Basal cell carcinoma of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1121",
+                    "display": "Basal cell carcinoma of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1122",
+                    "display": "Basal cell carcinoma of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1191",
+                    "display": "Basal cell carcinoma of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1192",
+                    "display": "Basal cell carcinoma of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.121",
+                    "display": "Squamous cell carcinoma of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1221",
+                    "display": "Squamous cell carcinoma of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1222",
+                    "display": "Squamous cell carcinoma of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1291",
+                    "display": "Squamous cell carcinoma of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1292",
+                    "display": "Squamous cell carcinoma of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.131",
+                    "display": "Sebaceous cell carcinoma of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1321",
+                    "display": "Sebaceous cell carcinoma of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1322",
+                    "display": "Sebaceous cell carcinoma of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1391",
+                    "display": "Sebaceous cell carcinoma of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1392",
+                    "display": "Sebaceous cell carcinoma of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.191",
+                    "display": "Other specified malignant neoplasm of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1921",
+                    "display": "Other specified malignant neoplasm of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1922",
+                    "display": "Other specified malignant neoplasm of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1991",
+                    "display": "Other specified malignant neoplasm of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1992",
+                    "display": "Other specified malignant neoplasm of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.201",
+                    "display": "Unspecified malignant neoplasm of skin of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.202",
+                    "display": "Unspecified malignant neoplasm of skin of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.209",
+                    "display": "Unspecified malignant neoplasm of skin of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.211",
+                    "display": "Basal cell carcinoma of skin of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.212",
+                    "display": "Basal cell carcinoma of skin of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.219",
+                    "display": "Basal cell carcinoma of skin of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.221",
+                    "display": "Squamous cell carcinoma of skin of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.222",
+                    "display": "Squamous cell carcinoma of skin of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.229",
+                    "display": "Squamous cell carcinoma of skin of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.291",
+                    "display": "Other specified malignant neoplasm of skin of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.292",
+                    "display": "Other specified malignant neoplasm of skin of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.299",
+                    "display": "Other specified malignant neoplasm of skin of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.300",
+                    "display": "Unspecified malignant neoplasm of skin of unspecified part of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.301",
+                    "display": "Unspecified malignant neoplasm of skin of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.309",
+                    "display": "Unspecified malignant neoplasm of skin of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.310",
+                    "display": "Basal cell carcinoma of skin of unspecified parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.311",
+                    "display": "Basal cell carcinoma of skin of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.319",
+                    "display": "Basal cell carcinoma of skin of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.320",
+                    "display": "Squamous cell carcinoma of skin of unspecified parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.321",
+                    "display": "Squamous cell carcinoma of skin of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.329",
+                    "display": "Squamous cell carcinoma of skin of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.390",
+                    "display": "Other specified malignant neoplasm of skin of unspecified parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.391",
+                    "display": "Other specified malignant neoplasm of skin of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.399",
+                    "display": "Other specified malignant neoplasm of skin of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.40",
+                    "display": "Unspecified malignant neoplasm of skin of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.41",
+                    "display": "Basal cell carcinoma of skin of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.42",
+                    "display": "Squamous cell carcinoma of skin of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.49",
+                    "display": "Other specified malignant neoplasm of skin of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.500",
+                    "display": "Unspecified malignant neoplasm of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.501",
+                    "display": "Unspecified malignant neoplasm of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.509",
+                    "display": "Unspecified malignant neoplasm of skin of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.510",
+                    "display": "Basal cell carcinoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.511",
+                    "display": "Basal cell carcinoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.519",
+                    "display": "Basal cell carcinoma of skin of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.520",
+                    "display": "Squamous cell carcinoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.521",
+                    "display": "Squamous cell carcinoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.529",
+                    "display": "Squamous cell carcinoma of skin of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.590",
+                    "display": "Other specified malignant neoplasm of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.591",
+                    "display": "Other specified malignant neoplasm of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.599",
+                    "display": "Other specified malignant neoplasm of skin of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.601",
+                    "display": "Unspecified malignant neoplasm of skin of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.602",
+                    "display": "Unspecified malignant neoplasm of skin of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.609",
+                    "display": "Unspecified malignant neoplasm of skin of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.611",
+                    "display": "Basal cell carcinoma of skin of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.612",
+                    "display": "Basal cell carcinoma of skin of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.619",
+                    "display": "Basal cell carcinoma of skin of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.621",
+                    "display": "Squamous cell carcinoma of skin of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.622",
+                    "display": "Squamous cell carcinoma of skin of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.629",
+                    "display": "Squamous cell carcinoma of skin of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.691",
+                    "display": "Other specified malignant neoplasm of skin of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.692",
+                    "display": "Other specified malignant neoplasm of skin of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.699",
+                    "display": "Other specified malignant neoplasm of skin of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.701",
+                    "display": "Unspecified malignant neoplasm of skin of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.702",
+                    "display": "Unspecified malignant neoplasm of skin of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.709",
+                    "display": "Unspecified malignant neoplasm of skin of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.711",
+                    "display": "Basal cell carcinoma of skin of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.712",
+                    "display": "Basal cell carcinoma of skin of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.719",
+                    "display": "Basal cell carcinoma of skin of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.721",
+                    "display": "Squamous cell carcinoma of skin of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.722",
+                    "display": "Squamous cell carcinoma of skin of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.729",
+                    "display": "Squamous cell carcinoma of skin of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.791",
+                    "display": "Other specified malignant neoplasm of skin of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.792",
+                    "display": "Other specified malignant neoplasm of skin of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.799",
+                    "display": "Other specified malignant neoplasm of skin of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.80",
+                    "display": "Unspecified malignant neoplasm of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.81",
+                    "display": "Basal cell carcinoma of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.82",
+                    "display": "Squamous cell carcinoma of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.89",
+                    "display": "Other specified malignant neoplasm of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.90",
+                    "display": "Unspecified malignant neoplasm of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.91",
+                    "display": "Basal cell carcinoma of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.92",
+                    "display": "Squamous cell carcinoma of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.99",
+                    "display": "Other specified malignant neoplasm of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C46.0",
+                    "display": "Kaposi's sarcoma of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C4A.51",
+                    "display": "Merkel cell carcinoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C4A.52",
+                    "display": "Merkel cell carcinoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C79.2",
+                    "display": "Secondary malignant neoplasm of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "D48.5",
+                    "display": "Neoplasm of uncertain behavior of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "D49.2",
+                    "display": "Neoplasm of unspecified behavior of bone, soft tissue, and skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                }
+            ]
+        }
+    }
+]

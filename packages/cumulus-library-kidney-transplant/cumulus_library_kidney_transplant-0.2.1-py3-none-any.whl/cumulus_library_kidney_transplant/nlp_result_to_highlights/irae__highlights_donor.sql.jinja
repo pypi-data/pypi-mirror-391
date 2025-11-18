@@ -1,0 +1,79 @@
+{%- macro union_all_delineate(loop) -%}
+{%- if not loop.last -%}
+UNION ALL
+{%- endif -%}
+{%- endmacro -%}
+
+{%- set mention_display_lookup = {
+    'donor_transplant_date_mention' : "Transplant Date",
+    'donor_type_mention' : "Donor Type",
+    'donor_relationship_mention' : "Donor Relationship",
+    'donor_hla_match_quality_mention' : "Hla Match Quality",
+    'donor_hla_mismatch_count_mention' : "Hla Mismatch Count"
+} -%}
+CREATE TABLE irae__highlights_donor AS
+{%- if table_names %}
+{%- for table_name in table_names %}
+    {%- for mention_key in mention_display_lookup.keys() %}
+    SELECT
+        src.note_ref,
+        src.subject_ref,
+        '{{ table_name }}' AS origin,
+        '{{ mention_display_lookup[mention_key] }}' AS label,
+        CONCAT(CAST(span[1] AS VARCHAR), ':', CAST(span[2] AS VARCHAR)) AS span,
+        -- Handle sublabel_name and sublabel_value per {{mention_key}}
+    {%- if mention_key == 'donor_transplant_date_mention' %}
+        '{{ mention_display_lookup[mention_key] }}' AS sublabel_name,
+        CAST(src.result.{{mention_key}}.donor_transplant_date AS VARCHAR) AS sublabel_value
+    {%- elif mention_key == 'donor_type_mention' %}
+        '{{ mention_display_lookup[mention_key] }}' AS sublabel_name,
+        CAST(src.result.{{mention_key}}.donor_type AS VARCHAR) AS sublabel_value
+    {%- elif mention_key == 'donor_relationship_mention' %}
+        '{{ mention_display_lookup[mention_key] }}' AS sublabel_name,
+        CAST(src.result.{{mention_key}}.donor_relationship AS VARCHAR) AS sublabel_value
+    {%- elif mention_key == 'donor_hla_match_quality_mention' %}
+        '{{ mention_display_lookup[mention_key] }}' AS sublabel_name,
+        CAST(src.result.{{mention_key}}.donor_hla_match_quality AS VARCHAR) AS sublabel_value
+    {%- elif mention_key == 'donor_hla_mismatch_count_mention' %}
+        '{{ mention_display_lookup[mention_key] }}' AS sublabel_name,
+        CAST(src.result.{{mention_key}}.donor_hla_mismatch_count AS VARCHAR) AS sublabel_value
+    {%- else %}
+        CAST(NULL AS VARCHAR) AS sublabel_name,
+        CAST(NULL AS VARCHAR) AS sublabel_value
+    {%- endif %}
+    FROM 
+        {{ table_name }} AS src, 
+        UNNEST(src.result.{{mention_key}}.spans) AS t3(span)
+    -- Custom filtering per mention_key
+    {%- if mention_key == 'donor_transplant_date_mention' %}
+    WHERE
+        src.result.{{mention_key}}.donor_transplant_date IS NOT NULL
+    {%- elif mention_key == 'donor_type_mention' %}
+    WHERE
+        src.result.{{mention_key}}.donor_type != 'Donor was not mentioned as living or deceased'
+    {%- elif mention_key == 'donor_relationship_mention' %}
+    WHERE
+        src.result.{{mention_key}}.donor_relationship != 'Donor relationship status was not mentioned' 
+    {%- elif mention_key == 'donor_hla_match_quality_mention' %}
+    WHERE
+        src.result.{{mention_key}}.donor_hla_match_quality != 'HLA match quality not mentioned' 
+    {%- elif mention_key == 'donor_hla_mismatch_count_mention' %}
+    WHERE
+        src.result.{{mention_key}}.donor_hla_mismatch_count != 'HLA mismatch count not mentioned' 
+    {%- else %}
+    {%- endif %}
+    {{ union_all_delineate(loop) }}
+    {%- endfor %}
+{{ union_all_delineate(loop) }}
+{%- endfor %}
+{%- else %}
+SELECT
+    'x' AS note_ref,
+    'x' AS subject_ref,
+    'x' AS origin,
+    'x' AS label,
+    'x' AS span,
+    'x' AS sublabel_name,
+    'x' AS sublabel_value
+WHERE 1=0 -- empty table
+{%- endif %}
