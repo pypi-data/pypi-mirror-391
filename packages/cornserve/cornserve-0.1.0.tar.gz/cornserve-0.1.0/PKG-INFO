@@ -1,0 +1,114 @@
+Metadata-Version: 2.4
+Name: cornserve
+Version: 0.1.0
+Summary: Easy, fast, and scalable multimodal agentic AI
+Author: Cornserve Team
+Classifier: Environment :: GPU :: NVIDIA CUDA
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: grpcio-tools==1.71.0
+Requires-Dist: rich
+Requires-Dist: requests
+Requires-Dist: tyro
+Requires-Dist: kubernetes
+Requires-Dist: kubernetes_asyncio
+Requires-Dist: aiohttp
+Requires-Dist: pydantic>=2.11
+Requires-Dist: opentelemetry-api
+Requires-Dist: opentelemetry-sdk
+Requires-Dist: opentelemetry-exporter-otlp-proto-grpc
+Requires-Dist: websocket-client
+Requires-Dist: openai
+Requires-Dist: sounddevice
+Provides-Extra: sidecar-api
+Requires-Dist: torch==2.9.0; extra == "sidecar-api"
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == "sidecar-api"
+Requires-Dist: opentelemetry-instrumentation-threading; extra == "sidecar-api"
+Provides-Extra: sidecar
+Requires-Dist: torch==2.9.0; extra == "sidecar"
+Requires-Dist: ucxx-cu12; extra == "sidecar"
+Requires-Dist: msgspec; extra == "sidecar"
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == "sidecar"
+Provides-Extra: gateway
+Requires-Dist: fastapi; extra == "gateway"
+Requires-Dist: uvicorn[standard]; extra == "gateway"
+Requires-Dist: opentelemetry-instrumentation-fastapi; extra == "gateway"
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == "gateway"
+Requires-Dist: opentelemetry-instrumentation-aiohttp-client; extra == "gateway"
+Requires-Dist: websocket-client; extra == "gateway"
+Provides-Extra: resource-manager
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == "resource-manager"
+Provides-Extra: task-manager
+Provides-Extra: task-dispatcher
+Requires-Dist: fastapi; extra == "task-dispatcher"
+Requires-Dist: uvicorn[standard]; extra == "task-dispatcher"
+Requires-Dist: opentelemetry-instrumentation-fastapi; extra == "task-dispatcher"
+Requires-Dist: opentelemetry-instrumentation-aiohttp-client; extra == "task-dispatcher"
+Requires-Dist: opentelemetry-instrumentation-grpc; extra == "task-dispatcher"
+Provides-Extra: audio
+Requires-Dist: librosa; extra == "audio"
+Provides-Extra: eric-no-gpu
+Requires-Dist: fastapi; extra == "eric-no-gpu"
+Requires-Dist: uvicorn[standard]; extra == "eric-no-gpu"
+Requires-Dist: pyzmq; extra == "eric-no-gpu"
+Requires-Dist: msgspec; extra == "eric-no-gpu"
+Requires-Dist: psutil; extra == "eric-no-gpu"
+Requires-Dist: torch==2.9.0; extra == "eric-no-gpu"
+Requires-Dist: torchvision; extra == "eric-no-gpu"
+Requires-Dist: transformers==4.57.1; extra == "eric-no-gpu"
+Requires-Dist: huggingface_hub; extra == "eric-no-gpu"
+Requires-Dist: pillow; extra == "eric-no-gpu"
+Requires-Dist: opencv-python-headless; extra == "eric-no-gpu"
+Requires-Dist: einops; extra == "eric-no-gpu"
+Requires-Dist: cornserve[audio,sidecar-api]; extra == "eric-no-gpu"
+Requires-Dist: opentelemetry-instrumentation-fastapi; extra == "eric-no-gpu"
+Requires-Dist: opentelemetry-instrumentation-threading; extra == "eric-no-gpu"
+Provides-Extra: eric
+Requires-Dist: flash-attn==2.7.4.post1; extra == "eric"
+Requires-Dist: xformers==0.0.33; extra == "eric"
+Requires-Dist: cornserve[eric-no-gpu]; extra == "eric"
+Provides-Extra: eric-audio
+Requires-Dist: cornserve[audio,eric]; extra == "eric-audio"
+Provides-Extra: geri-no-gpu
+Requires-Dist: fastapi; extra == "geri-no-gpu"
+Requires-Dist: uvicorn[standard]; extra == "geri-no-gpu"
+Requires-Dist: pyzmq; extra == "geri-no-gpu"
+Requires-Dist: msgspec; extra == "geri-no-gpu"
+Requires-Dist: torch==2.9.0; extra == "geri-no-gpu"
+Requires-Dist: transformers==4.57.1; extra == "geri-no-gpu"
+Requires-Dist: huggingface_hub; extra == "geri-no-gpu"
+Requires-Dist: pillow; extra == "geri-no-gpu"
+Requires-Dist: diffusers>=0.35.1; extra == "geri-no-gpu"
+Requires-Dist: accelerate; extra == "geri-no-gpu"
+Requires-Dist: cornserve[sidecar-api]; extra == "geri-no-gpu"
+Requires-Dist: opentelemetry-instrumentation-fastapi; extra == "geri-no-gpu"
+Requires-Dist: opentelemetry-instrumentation-threading; extra == "geri-no-gpu"
+Provides-Extra: geri
+Requires-Dist: cornserve[geri-no-gpu]; extra == "geri"
+Provides-Extra: huggingface-te
+Requires-Dist: fastapi; extra == "huggingface-te"
+Requires-Dist: uvicorn[standard]; extra == "huggingface-te"
+Requires-Dist: transformers==4.57.1; extra == "huggingface-te"
+Requires-Dist: pillow; extra == "huggingface-te"
+Requires-Dist: diffusers>=0.35.1; extra == "huggingface-te"
+Requires-Dist: qwen_omni_utils==0.0.8; extra == "huggingface-te"
+Requires-Dist: accelerate; extra == "huggingface-te"
+Requires-Dist: opentelemetry-instrumentation-fastapi; extra == "huggingface-te"
+Provides-Extra: dev-common
+Requires-Dist: grpcio-tools; extra == "dev-common"
+Requires-Dist: pyright; extra == "dev-common"
+Requires-Dist: ruff; extra == "dev-common"
+Requires-Dist: pytest; extra == "dev-common"
+Requires-Dist: pytest-asyncio; extra == "dev-common"
+Requires-Dist: pytest-dependency; extra == "dev-common"
+Requires-Dist: datasets; extra == "dev-common"
+Requires-Dist: timm; extra == "dev-common"
+Requires-Dist: cornserve[gateway,resource-manager,sidecar-api,task-dispatcher,task-manager]; extra == "dev-common"
+Provides-Extra: dev
+Requires-Dist: cornserve[dev-common,eric,geri,huggingface-te,sidecar]; extra == "dev"
+Provides-Extra: dev-no-gpu
+Requires-Dist: cornserve[dev-common,eric-no-gpu,geri-no-gpu,huggingface-te]; extra == "dev-no-gpu"

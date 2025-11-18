@@ -1,0 +1,377 @@
+"""Task manager that manages registered and deployed tasks."""
+
+from __future__ import annotations
+
+import asyncio
+import enum
+import uuid
+from collections import defaultdict
+from typing import Any
+
+import aiohttp
+import grpc
+from grpc.aio import AioRpcError
+from opentelemetry import trace
+
+from cornserve.constants import K8S_TASK_DISPATCHER_HTTP_URL
+from cornserve.logging import get_logger
+from cornserve.services.pb import common_pb2
+from cornserve.services.pb.resource_manager_pb2 import (
+    DeployUnitTaskRequest,
+    ScaleUnitTaskRequest,
+    TeardownUnitTaskRequest,
+)
+from cornserve.services.pb.resource_manager_pb2_grpc import ResourceManagerStub
+from cornserve.services.task_registry import TaskRegistry
+from cornserve.task.base import TASK_TIMEOUT, TaskGraphDispatch, UnitTask
+from cornserve.utils import format_grpc_error
+
+logger = get_logger(__name__)
+tracer = trace.get_tracer(__name__)
+
+
+class TaskState(enum.StrEnum):
+    """Possible states of a task."""
+
+    # Task is currently being deployed
+    DEPLOYING = "not ready"
+
+    # Task is ready to be invoked
+    READY = "ready"
+
+    # Task is currently being torn down
+    TEARING_DOWN = "tearing down"
+
+
+class TaskManager:
+    """Manages registered and deployed tasks."""
+
+    def __init__(self, resource_manager_grpc_url: str, task_registry: TaskRegistry) -> None:
+        """Initialize the task manager.
+
+        Args:
+            resource_manager_grpc_url: The gRPC URL of the resource manager.
+            task_registry: Registry service for handling task instances by name.
+        """
+        # A big lock to protect all task states
+        self.task_lock = asyncio.Lock()
+
+        # HTTP client
+        self.client = aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(total=TASK_TIMEOUT),
+            connector=aiohttp.TCPConnector(limit=0),
+        )
+
+        # Task-related state. Key is the task ID.
+        self.tasks: dict[str, UnitTask] = {}
+        self.task_states: dict[str, TaskState] = {}  # Can be read without holding lock.
+        self.unit_task_instance_names: dict[str, str] = {}  # Map task_id -> unit task instance name
+        self.task_uuids: dict[str, str] = {}  # Map task_id -> UUID, used to generate CR names
+        self.task_invocation_tasks: dict[str, list[asyncio.Task]] = defaultdict(list)
+        self.task_usage_counter: dict[str, int] = defaultdict(int)
+
+        # CR Manager for creating/managing unit task instance CRs
+        self.task_registry = task_registry
+
+        # gRPC client for resource manager
+        self.resource_manager_channel = grpc.aio.insecure_channel(resource_manager_grpc_url)
+        self.resource_manager = ResourceManagerStub(self.resource_manager_channel)
+
+    async def declare_used(self, tasks: list[UnitTask]) -> None:
+        """Deploy the given tasks.
+
+        If a task is already deployed, it will be skipped.
+        An error raised during deployment will roll back the deployment of all tasks deployed.
+        """
+        logger.info("Declaring tasks as used: %r", tasks)
+
+        # Check task state to find out which tasks have to be deployed
+        task_ids: list[str] = []
+        to_deploy: list[str] = []
+        async with self.task_lock:
+            # Snapshot current state, used for transactional rollback
+            snapshot_tasks = self.tasks.copy()
+            snapshot_states = self.task_states.copy()
+            snapshot_instance_names = self.unit_task_instance_names.copy()
+            snapshot_uuids = self.task_uuids.copy()
+            snapshot_usage = self.task_usage_counter.copy()
+            for task in tasks:
+                # Check if the task is already deployed
+                for task_id, existing_task in self.tasks.items():
+                    if existing_task.is_equivalent_to(task):
+                        logger.info("Skipping already deployed task: %r", task)
+                        task_ids.append(task_id)
+                        break
+                else:
+                    # If the task is not already deployed, deploy it
+                    logger.info("Should deploy task: %r", task)
+
+                    # Generate a unique ID for the task
+                    while True:
+                        task_uuid = uuid.uuid4().hex
+                        task_id = f"{task.__class__.__name__.lower()}-{task_uuid}"
+                        if task_id not in self.tasks:
+                            break
+
+                    self.tasks[task_id] = task
+                    self.task_states[task_id] = TaskState.DEPLOYING
+                    task_ids.append(task_id)
+                    to_deploy.append(task_id)
+                    # Store the UUID for CR creation
+                    self.task_uuids[task_id] = task_uuid
+
+                # Whether or not it was already deployed, increment the usage counter
+                self.task_usage_counter[task_id] += 1
+
+            # Deploy tasks by creating instances and passing names to resource manager
+            coros = []
+            unit_task_instance_names = {}  # Map task_id -> instance name for cleanup if needed
+            try:
+                for task_id in to_deploy:
+                    task = self.tasks[task_id]
+
+                    # Create named task instance for this task
+                    task_uuid = self.task_uuids[task_id]
+                    # This registers the metadata into stable storage (for now, k8s CRs)
+                    unit_task_instance_name = await self.task_registry.create_task_instance_from_task(task, task_uuid)
+                    unit_task_instance_names[task_id] = unit_task_instance_name
+                    self.unit_task_instance_names[task_id] = unit_task_instance_name  # Store for future teardown
+
+                    coros.append(
+                        self.resource_manager.DeployUnitTask(
+                            DeployUnitTaskRequest(task_instance_name=unit_task_instance_name)
+                        )
+                    )
+
+                responses = await asyncio.gather(*coros, return_exceptions=True)
+            except Exception as e:
+                # Rollback for errors happening before gather (e.g., instance creation failures)
+                cleanup_coros = [
+                    self.resource_manager.TeardownUnitTask(TeardownUnitTaskRequest(task_instance_name=name))
+                    for name in unit_task_instance_names.values()
+                ]
+                if cleanup_coros:
+                    await asyncio.gather(*cleanup_coros, return_exceptions=True)
+
+                # Restore snapshots (preserve defaultdict type)
+                self.tasks.clear()
+                self.tasks.update(snapshot_tasks)
+                self.task_states.clear()
+                self.task_states.update(snapshot_states)
+                self.unit_task_instance_names.clear()
+                self.unit_task_instance_names.update(snapshot_instance_names)
+                self.task_uuids.clear()
+                self.task_uuids.update(snapshot_uuids)
+                self.task_usage_counter.clear()
+                self.task_usage_counter.update(snapshot_usage)
+                logger.info("Rolled back deployment due to pre-deploy error: %r", e)
+                raise
+
+            # Check for deployment errors
+            errors: list[BaseException] = []
+            deployed_tasks: list[str] = []
+            for resp, deployed_task in zip(responses, to_deploy, strict=True):
+                if isinstance(resp, AioRpcError):
+                    # If the response is an AioRpcError, pretty print it
+                    logger.error("gRPC error while deploying task %s: \n%s", deployed_task, format_grpc_error(resp))
+                    errors.append(resp)
+                elif isinstance(resp, BaseException):
+                    logger.error("Error while deploying task: %s", resp)
+                    errors.append(resp)
+                else:
+                    deployed_tasks.append(deployed_task)
+
+            # Roll back successful deployments if something went wrong.
+            # We're treating the whole list of deployments as a single transaction.
+            if errors:
+                cleanup_coros = [
+                    self.resource_manager.TeardownUnitTask(
+                        TeardownUnitTaskRequest(task_instance_name=unit_task_instance_names[task_id])
+                    )
+                    for task_id in to_deploy
+                ]
+
+                if cleanup_coros:
+                    await asyncio.gather(*cleanup_coros, return_exceptions=True)
+
+                # Restore snapshots (preserve defaultdict type)
+                self.tasks.clear()
+                self.tasks.update(snapshot_tasks)
+                self.task_states.clear()
+                self.task_states.update(snapshot_states)
+                self.unit_task_instance_names.clear()
+                self.unit_task_instance_names.update(snapshot_instance_names)
+                self.task_uuids.clear()
+                self.task_uuids.update(snapshot_uuids)
+                self.task_usage_counter.clear()
+                self.task_usage_counter.update(snapshot_usage)
+                logger.info("Rolled back deployment of all deployed tasks")
+                # Errors are logged above, so we just raise a generic error here.
+                raise RuntimeError("Error while deploying tasks")
+
+            # Update task states
+            for task_id in task_ids:
+                if task_id not in self.tasks:
+                    raise ValueError(f"Task with ID {task_id} does not exist")
+                self.task_states[task_id] = TaskState.READY
+
+    async def declare_not_used(self, tasks: list[UnitTask]) -> None:
+        """Declare that the given tasks are not used anymore.
+
+        This will decrease the usage counter of the tasks and tear them down if the usage
+        counter reaches 0. If the specific task is not deployed, it will be skipped.
+        An error raised during tear down will *not* roll back the tear down of other tasks.
+        """
+        async with self.task_lock:
+            to_teardown: list[str] = []
+            for task in tasks:
+                # Check if the task is deployed
+                for task_id, existing_task in self.tasks.items():
+                    if existing_task.is_equivalent_to(task):
+                        usage_counter = self.task_usage_counter[task_id]
+                        assert usage_counter > 0, f"{task!r} has usage counter of 0"
+                        usage_counter -= 1
+                        self.task_usage_counter[task_id] = usage_counter
+                        # This task should be torn down
+                        if usage_counter == 0:
+                            logger.info("Last usage of task was removed, tearing down: %r", task)
+                            to_teardown.append(task_id)
+                            self.task_states[task_id] = TaskState.TEARING_DOWN
+                            # Cancel running invocation of tasks
+                            for invocation_task in self.task_invocation_tasks.pop(task_id, []):
+                                invocation_task.cancel()
+                        else:
+                            logger.info("Usage count is %d, skipping teardown: %r", usage_counter, task)
+                        break
+                # Task is not deployed
+                else:
+                    logger.warning("Cannot find task, skipping teardown: %r", task)
+                    continue
+
+            # Teardown tasks
+            coros = []
+            for task_id in to_teardown:
+                if task_id in self.unit_task_instance_names:
+                    unit_task_instance_name = self.unit_task_instance_names[task_id]
+                    coros.append(
+                        self.resource_manager.TeardownUnitTask(
+                            TeardownUnitTaskRequest(task_instance_name=unit_task_instance_name)
+                        )
+                    )
+                else:
+                    logger.error("No CR name found for task %s during teardown", task_id)
+            responses = await asyncio.gather(*coros, return_exceptions=True)
+
+            # Check for errors and update task states
+            errors: list[BaseException] = []
+            for resp, task_id in zip(responses, to_teardown, strict=True):
+                if isinstance(resp, BaseException):
+                    logger.error("Error while tearing down: %r", resp)
+                    errors.append(resp)
+                else:
+                    del self.tasks[task_id]
+                    del self.task_states[task_id]
+                    del self.unit_task_instance_names[task_id]
+                    del self.task_uuids[task_id]
+                    del self.task_usage_counter[task_id]
+                    logger.info("Teardown complete: %r", task_id)
+
+            if errors:
+                logger.error("Errors occured while tearing down tasks")
+                raise RuntimeError(f"Error while tearing down tasks: {errors}")
+
+    async def scale_unit_task(self, task_id: str, num_gpus: int) -> None:
+        """Scale the given unit task of task_id to add or remove specified number of GPUs."""
+        try:
+            if task_id not in self.tasks:
+                raise KeyError(f"Unit Task with task_id {task_id} is not deployed")
+            if self.task_states[task_id] != TaskState.READY:
+                raise RuntimeError(f"Unit Task {task_id} is not ready yet. Retry when it's ready.")
+            if task_id not in self.unit_task_instance_names:
+                raise RuntimeError(f"No CR name found for task {task_id}")
+
+            unit_task_instance_name = self.unit_task_instance_names[task_id]
+            response = await self.resource_manager.ScaleUnitTask(
+                ScaleUnitTaskRequest(task_instance_name=unit_task_instance_name, num_gpus=num_gpus)
+            )
+            if response.status != common_pb2.Status.STATUS_OK:
+                raise RuntimeError(f"Failed to scale task {task_id} to update {num_gpus} GPUs: {response.message}")
+        except Exception as e:
+            logger.error("Error while scaling unit task %s", task_id)
+            raise RuntimeError(f"Error while scaling unit task {task_id}: {e}") from e
+
+    def list_tasks(self) -> list[tuple[UnitTask, str, TaskState]]:
+        """List all deployed tasks.
+
+        Returns:
+            A list of tuples containing the task, task_id, and its state.
+        """
+        return [(task, task_id, self.task_states[task_id]) for task_id, task in self.tasks.items()]
+
+    async def invoke_tasks(self, dispatch: TaskGraphDispatch) -> list[Any]:
+        """Invoke the given tasks.
+
+        Before invocation, this method ensures that all tasks part of the invocation
+        are deployed and ready to be invoked. It is ensured that the number of outputs
+        returned by the task dispatcher matches the number of invocations.
+
+        Args:
+            dispatch: The dispatch object containing the tasks to invoke.
+
+        Returns:
+            The outputs of all tasks.
+        """
+        # Check if all tasks are deployed
+        running_task_ids: list[str] = []
+        async with self.task_lock:
+            for invocation in dispatch.invocations:
+                for task_id, task in self.tasks.items():
+                    if task.is_equivalent_to(invocation.task):
+                        match self.task_states[task_id]:
+                            case TaskState.READY:
+                                running_task_ids.append(task_id)
+                                break
+                            case TaskState.DEPLOYING:
+                                raise ValueError(f"Task {invocation.task} is being deployed")
+                            case TaskState.TEARING_DOWN:
+                                raise ValueError(f"Task {invocation.task} is being torn down")
+                else:
+                    raise KeyError(f"Task {invocation.task} is not deployed")
+            assert len(running_task_ids) == len(dispatch.invocations)
+
+        # Dispatch to the Task Dispatcher
+        invocation_task = asyncio.create_task(dispatch.dispatch(K8S_TASK_DISPATCHER_HTTP_URL + "/task", self.client))
+        # Store the invocation task under the task IDs of all running tasks.
+        # If any of the unit tasks are unregistered, the whole thing will be cancelled.
+        for task_id in running_task_ids:
+            self.task_invocation_tasks[task_id].append(invocation_task)
+        try:
+            output = await invocation_task
+        except asyncio.CancelledError:
+            logger.info("Invocation task was cancelled: %s", dispatch)
+            raise RuntimeError(
+                "Invocation task was cancelled. This is likely because one or more "
+                "constituent unit tasks were unregistered.",
+            ) from None
+        finally:
+            # Remove the invocation task from all task IDs
+            for task_id in running_task_ids:
+                self.task_invocation_tasks[task_id].remove(invocation_task)
+
+        if not isinstance(output, list):
+            raise RuntimeError(f"Invalid response from task dispatcher: {output}")
+        if len(output) != len(dispatch.invocations):
+            raise RuntimeError(f"Expected {len(dispatch.invocations)} outputs, got {len(output)}: {output}")
+        return output
+
+    async def shutdown(self) -> None:
+        """Shutdown the task manager."""
+        logger.info("Shutting down the Gateway task manager")
+
+        # Close the gRPC channel to the resource manager
+        await self.resource_manager_channel.close()
+
+        # Close the HTTP client session
+        await self.client.close()
+
+        logger.info("Gateway task manager has been shut down")
