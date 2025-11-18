@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iflow-mcp_vibe-worldbuilding-mcp"
+version = "1.0.1"
+description = "A Model Context Protocol server for creating detailed fictional worlds with Claude, complete with automatic image generation"
+authors = [{name = "Vibe Worldbuilding", email = "contact@example.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mcp>=0.1.0",
+    "requests>=2.32.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.9.1",
+    "pylint>=3.0.1", 
+    "mypy>=1.5.1",
+    "isort>=5.12.0",
+    "bandit>=1.7.5",
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.1",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/vibe-worldbuilding-mcp"
+Repository = "https://github.com/example/vibe-worldbuilding-mcp"
+
+[project.scripts]
+vibe-worldbuilding = "vibe_worldbuilding.server:main"
