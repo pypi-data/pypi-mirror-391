@@ -1,0 +1,461 @@
+Metadata-Version: 2.4
+Name: xllify_xllify
+Version: 0.7.7
+Summary: Python SDK for creating Excel XLL add-ins with xllify
+Author: Alex Reid
+License: MIT
+Project-URL: Homepage, https://xllify.com
+Project-URL: Documentation, https://xllify.com
+Project-URL: Repository, https://github.com/xllifycom/xllify-python
+Project-URL: Issues, https://github.com/xllifycom/xllify-python/issues
+Keywords: excel,xll,udf,add-in,finance
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Office/Business :: Financial :: Spreadsheet
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyzmq>=25.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Dynamic: license-file
+
+# xllify Python SDK
+
+A Python SDK for creating high-performance Excel add-ins with xllify. Write Python functions and call them from Excel with automatic type conversion, error handling, and real-time updates.
+
+## Quick Start
+
+### 1. Create your Python functions
+
+```python
+# my_functions.py
+import xllify
+
+@xllify.fn("xllipy.Hello")
+def hello(name: str = "World") -> str:
+    return f"Hello, {name}!"
+
+@xllify.fn("xllipy.Add", category="Math")
+def add(a: float, b: float) -> float:
+    return a + b
+```
+
+### 2. Run the Python process
+
+```bash
+# Basic usage
+xllify-rpc my_functions.py
+# or: python -m xllify my_functions.py
+
+# With auto-reload for development
+xllify-rpc my_functions.py --reload
+```
+
+### 3. Use in Excel
+
+Functions are immediately available:
+```
+=xllipy.Hello("World")       -> "Hello, World!"
+=xllipy.Add(5, 10)           -> 15
+```
+
+Functions execute asynchronously - Excel shows #N/A while processing, then updates automatically when complete.
+
+## Workflow
+
+### Development
+
+During development, use `--reload` to automatically restart when you modify your Python files:
+
+```bash
+xllify-rpc my_functions.py --reload
+```
+
+Edit your functions, save the file, and the process restarts automatically. Excel will pick up the changes (no Excel restart needed if function signatures haven't changed).
+
+### Production Deployment
+
+For production, Python files can be embedded directly into your XLL:
+
+```bash
+xllify build MyAddin.xll main.py --requirements requirements.txt
+```
+
+When the XLL loads in Excel, Python files are extracted to `%LOCALAPPDATA%\xllify\MyAddin\python\` and the Python process starts automatically.
+
+### Distribution
+
+Just distribute the XLL file. Everything else (Python files, dependencies) is embedded and extracted automatically on first load.
+
+## Features
+
+- **Async by default** - Functions run asynchronously so Excel never freezes
+- **Auto-reload** - Hot reload functions during development without restarting Excel
+- **Matrix support** - Return 2D arrays and pandas DataFrames directly to Excel
+- **Type-safe** - Full type hints with `CellValue`, `Matrix`, and `ExcelValue`
+- **Simple API** - Just add the `@xllify.fn()` decorator to your functions
+
+## Best practices
+
+Our recommended approach is for you to implement your business logic in plain Python modules and wrap them with xllify decorators. This keeps your core logic testable, reusable, and independent of the Excel integration layer. Who knows, maybe you already have Python modules to use!
+
+```python
+# my_logic.py - Pure Python, no xllify dependencies
+def calculate_option_price(spot, strike, time, rate, volatility):
+    """Black-Scholes call option pricing - testable business logic"""
+    # ... implementation ...
+    return price
+
+# excel_functions.py - Thin xllify wrapper
+import xllify
+from my_logic import calculate_option_price
+
+@xllify.fn("xllipy.BSCall", category="Finance")
+def bs_call(s: float, k: float, t: float, r: float, sigma: float) -> float:
+    """Excel wrapper for Black-Scholes calculation"""
+    return calculate_option_price(s, k, t, r, sigma)
+```
+
+Benefits:
+- **Testable**: Run `pytest` on `my_logic.py` without Excel or xllify
+- **Reusable**: Use the same logic in web apps, CLIs, or other contexts without needing to import xllify
+- **Maintainable**: Separate concerns between business logic and Excel integration
+- **Debuggable**: Test and debug core logic independently
+
+## Installation
+
+```bash
+pip install xllify
+```
+
+### Requirements
+
+- Python 3.8+
+- `pyzmq` (automatically installed)
+
+## Advanced usage
+
+### Batching configuration
+
+By default, xllify batches RTD updates for better performance (batch_size=500, batch_timeout_ms=50). You can customize this:
+
+```python
+import xllify
+
+# Configure batching before registering functions
+xllify.configure_batching(
+    enabled=True,
+    batch_size=1000,        # Batch up to 1000 updates together
+    batch_timeout_ms=100    # Wait up to 100ms before flushing
+)
+
+@xllify.fn("xllipy.Hello")
+def hello(name: str) -> str:
+    return f"Hello, {name}!"
+```
+
+**When to adjust batching:**
+- **High-volume scenarios**: Increase `batch_size` (1000+) and `batch_timeout_ms` (100+) for better throughput when handling many concurrent calculations
+- **Low-latency requirements**: Decrease `batch_timeout_ms` (10-20ms) or disable batching entirely for faster individual responses
+- **Balanced performance**: Use defaults (batch_size=500, batch_timeout_ms=50)
+
+**Disable batching:**
+```python
+xllify.configure_batching(enabled=False)  # Send updates immediately
+```
+
+### Parameter metadata
+
+Provide detailed parameter information for better documentation:
+
+```python
+from xllify import fn, Parameter
+
+@fn(
+    "xllipy.Calculate",
+    description="Perform calculation with optional delay",
+    category="Math",
+    parameters=[
+        Parameter("value", type="number", description="Value to process"),
+        Parameter("delay", type="number", description="Delay in seconds (optional)")
+    ],
+    return_type="number"
+)
+def calculate(value: float, delay: float = 1.0) -> float:
+    """Process a value with optional delay"""
+    import time
+    if delay > 0:
+        time.sleep(delay)
+    return value * 2
+```
+
+### Working with arrays and matrices
+
+Excel ranges are passed as 2D lists. You can also **return** matrices to Excel:
+
+```python
+from xllify import Matrix
+
+# Input: Accept ranges as 2D lists
+@xllify.fn("xllipy.SumArray", description="Sum all numbers in a range")
+def sum_array(numbers: list) -> float:
+    """Sum a 2D array from Excel range"""
+    total = 0.0
+    for row in numbers:
+        for cell in row:
+            if isinstance(cell, (int, float)):
+                total += cell
+    return total
+
+# Output: Return matrices to Excel
+@xllify.fn("xllipy.GetData")
+def get_data() -> Matrix:
+    """Return a 2D array to Excel"""
+    return [
+        [1.0, True, "hello"],
+        [2.0, False, None],    # None displays as empty cell
+        [3.0, None, "world"]
+    ]
+```
+
+In Excel:
+```
+=xllipy.SumArray(A1:C10)           -> Sum of all numbers
+=xllipy.GetData()                  -> Spills 3x3 array into cells
+```
+
+### Pandas DataFrames
+
+Return DataFrames directly - automatically converted to Excel ranges with headers:
+
+```python
+import pandas as pd
+
+@xllify.fn("xllipy.GetDataFrame")
+def get_dataframe() -> pd.DataFrame:
+    """Return pandas DataFrame to Excel"""
+    return pd.DataFrame({
+        'Name': ['Alice', 'Bob', 'Charlie'],
+        'Age': [25, 30, 35],
+        'Score': [95.5, 87.3, 92.1]
+    })
+```
+
+In Excel, `=xllipy.GetDataFrame()` spills as:
+```
+Name      Age    Score
+Alice     25     95.5
+Bob       30     87.3
+Charlie   35     92.1
+```
+
+### Type mapping
+
+| Excel Type | Python Type |
+|------------|-------------|
+| Number | `float` |
+| String | `str` |
+| Boolean | `bool` |
+| Range | `List[List]` (2D array) |
+| Empty | `None` |
+
+## API reference
+
+### Type definitions
+
+```python
+from xllify import CellValue, Matrix, ExcelValue
+
+CellValue = Union[float, bool, str, None]
+Matrix = List[List[CellValue]]
+ExcelValue = Union[CellValue, Matrix, Any]
+```
+
+- **CellValue**: A single Excel cell value (number, boolean, string, or None for empty cells)
+- **Matrix**: A 2D array of cell values
+- **ExcelValue**: Any value that can be returned to Excel (scalar, matrix, or pandas DataFrame)
+
+### Decorators
+
+#### `@xllify.fn(name, description="", category="", parameters=None, return_type="")`
+
+Register a Python function as an Excel function.
+
+**Arguments:**
+- `name` (str): Excel function name (e.g., "xllipy.MyFunc")
+- `description` (str, optional): Function description (defaults to docstring)
+- `category` (str, optional): Excel function category
+- `parameters` (List[Parameter], optional): Parameter metadata
+- `return_type` (str, optional): Return type override
+
+**Example:**
+```python
+@xllify.fn("xllipy.Add", description="Add numbers", category="Math")
+def add(a: float, b: float) -> float:
+    return a + b
+```
+
+### CLI commands
+
+```bash
+# Run Python process
+xllify-rpc my_functions.py
+# or: python -m xllify my_functions.py
+
+# Auto-reload on file changes
+xllify-rpc my_functions.py --reload
+
+# Custom XLL name (for metadata)
+xllify-rpc my_functions.py --xll-name my_addin
+
+# Clear cache
+xllify-clear-cache
+# or: xllify-rpc --clear-cache
+```
+
+## Error handling
+
+Python exceptions are caught and returned to Excel as error strings:
+
+```python
+@xllify.fn("xllipy.Divide")
+def divide(a, b):
+    if b == 0:
+        raise ValueError("Division by zero")
+    return a / b
+```
+
+In Excel:
+```
+=xllipy.Divide(10, 0)    -> #ERROR: Division by zero
+```
+
+## More examples
+
+### Slow operations (async)
+
+Functions run asynchronously - Excel never freezes:
+
+```python
+@xllify.fn("xllipy.SlowCalc")
+def slow_calc(seconds: float) -> str:
+    import time
+    time.sleep(seconds)
+    return f"Done after {seconds}s"
+```
+
+Excel shows #N/A while waiting, then updates automatically.
+> It is worth pointing out that this WILL however block your Python process. A simple workaround is to run multiple processes of the same Python script. `asyncio` support is planned.
+
+### Black-Scholes option pricing
+
+```python
+from math import log, sqrt, exp, erf
+
+@xllify.fn("xllipy.BSCall", category="Finance")
+def black_scholes_call(s: float, k: float, t: float, r: float, sigma: float) -> float:
+    """Black-Scholes call option price"""
+    if t <= 0:
+        return max(s - k, 0)
+
+    d1 = (log(s / k) + (r + 0.5 * sigma ** 2) * t) / (sigma * sqrt(t))
+    d2 = d1 - sigma * sqrt(t)
+
+    def norm_cdf(x):
+        return 0.5 * (1 + erf(x / sqrt(2)))
+
+    return s * norm_cdf(d1) - k * exp(-r * t) * norm_cdf(d2)
+```
+
+Usage: `=xllipy.BSCall(100, 95, 0.25, 0.05, 0.2)`
+
+### HTTP requests
+
+```python
+@xllify.fn("xllipy.FetchPrice")
+def fetch_price(symbol: str) -> float:
+    import requests
+    resp = requests.get(f"https://api.example.com/price/{symbol}")
+    return resp.json()["price"]
+```
+
+### System info
+
+```python
+@xllify.fn("xllipy.GetInfo")
+def get_info() -> str:
+    import sys
+    import platform
+    return f"Python {sys.version.split()[0]} on {platform.system()}"
+```
+
+## Scaling
+
+### Multiple Python processes
+
+Run multiple Python processes for horizontal scaling and automatic load balancing:
+
+```bash
+# Terminal 1
+xllify-rpc my_functions.py
+
+# Terminal 2
+xllify-rpc my_functions.py
+
+# Terminal 3
+xllify-rpc my_functions.py
+```
+
+xllify automatically load-balances requests across all running processes using round-robin distribution.
+
+**Use cases:**
+- **High request volumes**: Handle many concurrent Excel calculations
+- **CPU-bound work**: Bypass Python's GIL by distributing work across processes/cores
+- **Improved responsiveness**: Reduce wait times under heavy load
+- **I/O-bound work**: Process network/database requests in parallel
+
+**Example:**
+See `examples/multiprocess_example.py` for a complete demonstration with functions that show which process handled each request.
+
+**Performance tips:**
+- Start with 2-3 processes and monitor CPU usage
+- For CPU-bound work: `processes ≈ CPU cores`
+- For I/O-bound work: More processes can help
+- Each process uses ~50-100MB RAM
+
+## Development
+
+### Running tests
+
+```bash
+pip install -e ".[dev]"
+pytest tests/ -v
+```
+
+### Type checking
+
+```bash
+mypy xllify/
+```
+
+### Code formatting
+
+```bash
+black xllify/ tests/ examples/
+```
+
+## License
+
+MIT
+
+## Support
+
+- Issues: https://github.com/acornsoftuk/xllify-python/issues
