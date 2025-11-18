@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "projdump2md"
+description = "Dump project files into a single markdown file with folder structure"
+readme = "README.md"
+authors = [
+    {name = "Jabez Winston", email = "jabezwinston@gmail.com"}
+]
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Utilities",
+]
+keywords = ["documentation", "markdown", "project", "dump", "files"]
+requires-python = ">=3.7"
+dynamic = ["version"]
+
+[tool.setuptools]
+packages = ["projdump2md"]
+
+[project.urls]
+Homepage = "https://github.com/jabezwinston/projdump2md"
+Repository = "https://github.com/jabezwinston/projdump2md"
+"Bug Tracker" = "https://github.com/jabezwinston/projdump2md/issues"
+
+[project.scripts]
+projdump2md = "projdump2md.cli:main"
+
+
+[tool.setuptools.dynamic]
+version = {attr = "projdump2md.version.VERSION"}
