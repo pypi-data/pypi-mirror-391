@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["model_train_protocol*"]
+exclude = ["assets", "examples"]
+
+[project]
+name = "model-train-protocol"
+version = "0.2.0"
+description = "Standardized protocol to train models on Databiomes"
+requires-python = ">=3.9"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+    { name = "Databiomes Inc.", email = "dev@databiomes.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "emoji>=2.8.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "requests>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-xdist>=3.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config"
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests"
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/model-train-protocol/"
+Documentation = "https://modeltrainprotocol.readthedocs.io/"
+Repository = "https://github.com/databiomes/modeltrainprotocol"
+Issues = "https://github.com/databiomes/modeltrainprotocol/issues"
