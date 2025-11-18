@@ -1,0 +1,54 @@
+- name: blocklist
+  title: Blocklist
+  description: "Checks if any of the words in the blocklist occur in the model's output."
+- name: canary_token_output_evaluator
+  title: Canary Token Output Evaluator
+  description: "Checks if there are any canary tokens in the output to detect system prompt leakage."
+- name: contains_exact
+  title: Contains exact
+  description: "Checks if the output and the target are an exact match."
+- name: contains_exact_fuzzy
+  title: Contains exact (fuzzy)
+  description: "Normalizes the output and target strings and checks for an exact match."
+- name: contains_refusal
+  title: Contains refusal
+  description: "Checks if any common refusal phrases are in the output after normalization."
+- name: contains_subset
+  title: Contains subset
+  description: "Checks if the model output contains the target output."
+- name: contains_subset_fuzzy
+  title: Contains subset (fuzzy)
+  description: "Normalizes strings and checks if the target is contained in the output."
+- name: contains_unwanted_exact_fuzzy
+  title: Contains unwanted exact (fuzzy)
+  description: "Normalizes strings and fails if an unwanted string is an exact match."
+- name: contains_unwanted_subset_fuzzy
+  title: Contains unwanted subset (fuzzy)
+  description: "Normalizes strings and fails if an unwanted substring is present."
+- name: f1_threshold
+  title: F1 Threshold
+  description: "Computes F1 overlap between output and target, returning the max for multiple targets."
+- name: fuzzy_blocklist
+  title: Fuzzy Blocklist
+  description: "Normalizes output and block strings, checking for occurrences."
+- name: jailbreak_monitor
+  title: Jailbreak Monitor
+  description: "LLM-based monitor that evaluates whether a response is a successful jailbreak."
+- name: output_target_semantic_similarity
+  title: Output Target Semantic Similarity
+  description: "Computes cosine similarity between output and target against a threshold."
+- name: package_hallucination
+  title: Package Hallucination
+  description: "Checks if code uses Python packages not listed by PyPI."
+- name: python_insecure_code_detector
+  title: Python Insecure Code Detector
+  description: "Detects callbacks or patterns that might compromise security in generated Python code."
+- name: refusal_similarity
+  title: Refusal Similarity
+  description: "Uses embeddings to determine if a response indicates refusal."
+- name: simple_llm_judge
+  title: Simple LLM Judge
+  description: "Uses an LLM to judge whether a conversation step is inappropriate."
+- name: tailmodel_monitor
+  title: Tailmodel Monitor
+  description: "Custom monitor for proprietary detection logic (details unavailable)."

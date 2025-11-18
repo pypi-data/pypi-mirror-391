@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "dtx-models"
+version = "0.47.0"
+description = "Shared model schemas and YAML-based configurations for the DTX framework."
+authors = ["JC <jitendra@detoxio.ai>"]
+readme = "README.md"
+homepage = "https://docs.detoxio.ai"
+packages = [{ include = "dtx_models", from = "src" }]
+
+# Include non-Python files (e.g., YAMLs)
+include = [
+    # Root repo files
+    "dtx_models/repo/plugins.yml",
+    "dtx_models/repo/ai_frameworks.yml", 
+    "dtx_models/repo/taxonomy.yml",
+    "dtx_models/repo/*.yml",
+    
+    # Prompt Canvas data files
+    "dtx_models/repo/data/prompt_canvas/advbench_behaviors.yml",
+    "dtx_models/repo/data/prompt_canvas/attack_recipes.yml",
+    "dtx_models/repo/data/prompt_canvas/attack_strategies.yml",
+    "dtx_models/repo/data/prompt_canvas/converter_prompt_templates.yml",
+    "dtx_models/repo/data/prompt_canvas/converters.yml",
+    "dtx_models/repo/data/prompt_canvas/evaluators.yml",
+    "dtx_models/repo/data/prompt_canvas/harmbench_behaviors.yml",
+    "dtx_models/repo/data/prompt_canvas/README.md",
+
+    # Model data files
+    "dtx_models/repo/data/models/anthropic_models.yml",
+    "dtx_models/repo/data/models/azure_models.yml",
+    "dtx_models/repo/data/models/bedrock_claude_models.yml",
+    "dtx_models/repo/data/models/cerebras_models.yml",
+    "dtx_models/repo/data/models/gemini_models.yml",
+    "dtx_models/repo/data/models/hf_models.yml",
+    "dtx_models/repo/data/models/litellm_models_ag.yml",
+    "dtx_models/repo/data/models/litellm_models_lr.yml",
+    "dtx_models/repo/data/models/litellm_models_sz.yml",
+    "dtx_models/repo/data/models/mistral_models.yml",
+    "dtx_models/repo/data/models/openai_models.yml",
+    "dtx_models/repo/data/models/README.md",
+
+    # Plugin data files
+    "dtx_models/repo/data/plugins/ai_pentresting_templates.yml",
+    "dtx_models/repo/data/plugins/external_art_templates.yml",
+    "dtx_models/repo/data/plugins/genai_redteaming_plugins.yml",
+    "dtx_models/repo/data/plugins/mitre.yml",
+    "dtx_models/repo/data/plugins/owasp_top10_llms.yml",
+
+    # Campaign data files
+    "dtx_models/repo/data/campaigns/data/attack_libraries.yaml",
+    "dtx_models/repo/data/campaigns/data/campaign_objectives.yaml",
+    "dtx_models/repo/data/campaigns/data/campaign_types.yaml",
+    "dtx_models/repo/data/campaigns/data/evaluators.yaml",
+    "dtx_models/repo/data/campaigns/data/manipulators.yaml",
+    "dtx_models/repo/data/campaigns/data/runbook_objectives.yaml",
+    "dtx_models/repo/data/campaigns/data/runbook_templates.yaml",
+    "dtx_models/repo/data/campaigns/data/targets_types.yaml"
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+pydantic = ">=2.11.5,<3.0.0"
+pydantic-yaml = ">=1.5.1,<2.0.0"
+pyyaml = ">=6.0.2,<7.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

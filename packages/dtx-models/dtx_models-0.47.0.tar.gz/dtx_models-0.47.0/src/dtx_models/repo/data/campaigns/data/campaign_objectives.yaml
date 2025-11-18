@@ -1,0 +1,80 @@
+- name: content_policy_violation_misinfo
+  title: Content Policy Violation & Misinformation
+  category: Responsible AI (RAI) / Integrity
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns where the **AI system** is manipulated to generate **unsafe, toxic, or policy-violating content** (e.g., hate speech, misinformation, self-harm) that could damage the company's brand and public trust."
+  target_types: []
+
+- name: private_data_exfiltration
+  title: Private Data & PII Exfiltration
+  category: Confidentiality & Privacy
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns designed to extract **sensitive training data, user PII, or internal system context** through techniques like Inference Attacks or direct output leakage from the **AI service**."
+  target_types: []
+
+- name: agentic_system_misuse
+  title: Agentic System Misuse & Unauthorized Action
+  category: Control & Authorization
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns that use adversarial inputs (e.g., prompt injection) to seize control of **connected tools or AI agents** to perform unauthorized, external, or financially impactful actions."
+  target_types: []
+
+- name: system_ip_theft
+  title: AI System Intellectual Property Theft
+  category: Competitive & IP Risk
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns that attempt to steal or replicate the proprietary **AI asset's core function or architecture** through query manipulation (Asset Extraction) or by exploiting deployment environment vulnerabilities."
+  target_types: []
+
+- name: business_logic_disruption
+  title: Business Logic Disruption & Financial Loss
+  category: Availability & Cost
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns aimed at causing failures or inaccurate outputs in core business functions (e.g., misclassification in fraud detection, incorrect financial guidance), leading to direct financial losses and operational instability."
+  target_types: []
+
+- name: mlops_supply_chain_attack
+  title: MLOps Supply Chain Attack
+  category: Infrastructure & Dependency Risk
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns that exploit weaknesses in the **MLOps pipeline, third-party libraries, or training data sources** to introduce a backdoor or compromise the final production **AI system** (e.g., Data Poisoning)."
+  target_types: []
+
+- name: adversarial_jailbreak_evasion
+  title: Adversarial Jailbreak & Evasion
+  category: Robustness & Security
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns specifically focused on bypassing safety and security mechanisms (**Jailbreaking**) and tricking the **AI system** into making incorrect decisions (**Evasion Attacks**) using adversarial inputs."
+  target_types: []
+
+- name: system_robustness_failure
+  title: AI System Robustness Failure
+  category: Quality & Reliability
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns to test the **fragility** of the **AI system's core component** by crafting subtly modified or unusual inputs that cause the system to fail, generate incoherent output, or suffer significant performance degradation."
+  target_types: []
+
+- name: fairness_and_bias_exploitation
+  title: Fairness and Bias Exploitation
+  category: Responsible AI (RAI) / Ethics
+  campaign_types:
+    - zero_knowledge_red_teaming
+  framework_reference: generic
+  description: "Campaigns to test if the **AI system's behavior** exhibits or can be manipulated to exhibit **discrimination or unfair treatment** toward specific demographic or protected groups based on implicit biases in the training data."
+  target_types: []

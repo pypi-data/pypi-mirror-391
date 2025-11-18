@@ -1,0 +1,256 @@
+engagement_templates:
+  # Template 1: A full-scope, end-to-end engagement from a zero-knowledge perspective.
+  - name: "Comprehensive AI Red Teaming (Zero-Knowledge)"
+    objective: "To conduct a full-scope, zero-knowledge simulated attack on the organization's external AI surface to identify and exploit vulnerabilities across the entire attack lifecycle from a black-box perspective."
+    stages:
+      - stage: 1
+        name: "Reconnaissance"
+        description: "Identify the organization's complete AI footprint and probe for initial weaknesses from a purely external, black-box perspective."
+        tactics:
+          - name: "Identify AI-Enabled Products via OSINT"
+            description: "Scan public sources like the company website, press releases, and job postings to discover AI-powered services."
+            mitre_atlas_id: "AML.T0002"
+          - name: "Discover Public AI/ML Code"
+            description: "Search public code repositories (e.g., GitHub) for any code, notebooks, or configurations related to the organization's AI models."
+            mitre_atlas_id: "AML.T0003"
+          - name: "Fingerprint AI Infrastructure"
+            description: "Actively probe public endpoints and analyze their API responses, headers, and error messages to deduce the underlying AI provider and hosting platform."
+            mitre_atlas_id: "AML.T0004"
+          - name: "Probe for AI Security Controls"
+            description: "Send benign and slightly malformed probes to public endpoints to identify the presence and behavior of security measures like WAFs or input filters."
+            mitre_atlas_id: "AML.T0004"
+      - stage: 2
+        name: "Attack Planning & Staging"
+        description: "Develop and stage attack payloads based solely on public information and general adversarial techniques."
+        tactics:
+          - name: "Craft Malicious Prompts"
+            description: "Develop a set of generic and model-specific prompts for injection and jailbreaking based on public research."
+            mitre_atlas_id: "AML.T0016"
+          - name: "Craft Adversarial Data"
+            description: "Prepare malformed inputs (e.g., text with unicode variations, images with noise) to test for black-box evasion."
+            mitre_atlas_id: "AML.T0059"
+          - name: "Develop Poisoned Content for RAG"
+            description: "Stage malicious content on public websites (e.g., forums, wikis) that a target RAG system might plausibly index."
+            mitre_atlas_id: "AML.T0017"
+      - stage: 3
+        name: "Attack Execution"
+        description: "Actively exploit public-facing systems to achieve objectives like data exfiltration, model manipulation, and service disruption."
+        tactics:
+          - name: "Exploit Public-Facing Application"
+            description: "Target a publicly accessible web application (e.g., a chatbot) that serves as the entry point to an AI model."
+            mitre_atlas_id: "AML.T0021"
+          - name: "LLM Prompt Injection"
+            description: "Inject commands into user-facing prompts to hijack the model's logic without any prior knowledge of its internal workings."
+            mitre_atlas_id: "AML.T0035"
+          - name: "LLM Jailbreak"
+            description: "Use publicly known jailbreaking techniques to trick the model into violating its safety policies."
+            mitre_atlas_id: "AML.T0043"
+          - name: "LLM Data Leakage"
+            description: "Coax the LLM into revealing sensitive data from its training set or context window via crafted, generic queries."
+            mitre_atlas_id: "AML.T0063"
+          - name: "Extract LLM System Prompt"
+            description: "Attempt to exfiltrate the model's core instructions using prompt injection techniques."
+            mitre_atlas_id: "AML.T0062"
+          - name: "Denial of AI Service"
+            description: "Send computationally expensive or recursive prompts to the public model API to cause service degradation."
+            mitre_atlas_id: "AML.T0068"
+          - name: "Cost Harvesting"
+            description: "Generate a high volume of complex queries against a metered public API to inflict financial costs."
+            mitre_atlas_id: "AML.T0071"
+      - stage: 4
+        name: "Insights and Reporting"
+        description: "Consolidate findings from the black-box engagement, map them to business risk, and provide strategic remediation guidance."
+        tactics:
+          - name: "Document Findings"
+            mitre_atlas_id: "N/A"
+          - name: "Map to Business Risk"
+            mitre_atlas_id: "N/A"
+          - name: "Provide Remediation Guidance"
+            mitre_atlas_id: "N/A"
+
+  # Template 2: A focused reconnaissance mission to map the entire public AI footprint.
+  - name: "External AI Assets Discovery (Zero-Knowledge)"
+    objective: "To conduct a focused reconnaissance mission to identify, enumerate, and document the organization's entire external AI/ML attack surface from a zero-knowledge perspective."
+    stages:
+      - stage: 1
+        name: "Asset Discovery & Enumeration"
+        description: "Systematically discover all public-facing AI assets using OSINT and active scanning techniques."
+        tactics:
+          - name: "Identify AI-Enabled Products via OSINT"
+            description: "Scan public sources like the company website, press releases, and job postings to discover AI-powered services."
+            mitre_atlas_id: "AML.T0002"
+          - name: "Discover Public AI/ML Code"
+            description: "Search public code repositories (e.g., GitHub) for any code, notebooks, or configurations related to the organization's AI models."
+            mitre_atlas_id: "AML.T0003"
+          - name: "Find Publicly Hosted AI Artifacts"
+            description: "Search for public models on Hugging Face or other hubs that the organization might be using or fine-tuning."
+            mitre_atlas_id: "AML.T0006"
+          - name: "Scan for AI Inference APIs"
+            description: "Actively scan the organization's known IP ranges and domains for open or poorly secured AI model inference APIs."
+            mitre_atlas_id: "AML.T0004"
+      - stage: 2
+        name: "Asset Characterization"
+        description: "Characterize and fingerprint the discovered assets to understand the underlying technology stack."
+        tactics:
+          - name: "Fingerprint AI Infrastructure"
+            description: "Actively probe public endpoints and analyze their API responses, headers, and error messages to deduce the underlying AI provider and hosting platform."
+            mitre_atlas_id: "AML.T0004"
+          - name: "Probe for AI Security Controls"
+            description: "Send benign and slightly malformed probes to public endpoints to identify the presence and behavior of security measures like WAFs or input filters."
+            mitre_atlas_id: "AML.T0004"
+      - stage: 3
+        name: "Reporting"
+        description: "Consolidate all discovered assets into a comprehensive asset inventory."
+        tactics:
+          - name: "Create AI Asset Inventory"
+            description: "Document each discovered asset, its technology, and potential owner."
+            mitre_atlas_id: "N/A"
+          - name: "Provide Initial Risk Assessment"
+            description: "Provide a high-level risk score for each asset based on its exposure and likely function."
+            mitre_atlas_id: "N/A"
+
+  # Template 3: An assessment of risks from third-party models, platforms, and open-source libraries.
+  - name: "AI Supply Chain & Dependency Risk Assessment (Zero-Knowledge)"
+    objective: "To map the organization's AI supply chain from an external perspective and identify potential risks originating from third-party services, models, and code."
+    stages:
+      - stage: 1
+        name: "Dependency Reconnaissance"
+        description: "Identify all third-party AI platforms, services, and open-source components associated with the organization's public assets."
+        tactics:
+          - name: "Fingerprint AI Infrastructure"
+            description: "Analyze public endpoints to identify underlying AI providers (e.g., OpenAI, Azure AI, Cohere) and hosting platforms."
+            mitre_atlas_id: "AML.T0004"
+          - name: "Discover Public AI/ML Code Dependencies"
+            description: "Scan public code repositories for dependencies like `requirements.txt` or `package.json` files to list open-source ML libraries in use."
+            mitre_atlas_id: "AML.T0003"
+          - name: "Find Publicly Hosted AI Artifacts"
+            description: "Search for public models on Hugging Face or other hubs that the organization might be using or fine-tuning."
+            mitre_atlas_id: "AML.T0006"
+          - name: "Identify Publicly Shared Datasets"
+            description: "Search for public datasets on platforms like Kaggle that are associated with the organization, which may indicate training data sources."
+            mitre_atlas_id: "AML.T0006"
+      - stage: 2
+        name: "Vulnerability & Risk Analysis"
+        description: "Analyze the identified dependencies for known security issues and potential weaknesses."
+        tactics:
+          - name: "Search Open AI Vulnerability Databases"
+            description: "Cross-reference identified models, libraries, and platforms (e.g., PyTorch, TensorFlow, specific Hugging Face models) against known CVEs and AI-specific vulnerability databases."
+            mitre_atlas_id: "AML.T0001"
+          - name: "Assess for Model Poisoning Risks"
+            description: "Investigate if the organization uses third-party models that are known to be susceptible to poisoning attacks or have originated from untrusted sources."
+            mitre_atlas_id: "AML.T0011"
+          - name: "Review for AI Supply Chain Compromise"
+            description: "Research historical compromises of the identified third-party AI services or malicious packages in the identified open-source libraries."
+            mitre_atlas_id: "AML.T0018"
+      - stage: 3
+        name: "Insights and Reporting"
+        description: "Consolidate findings into a comprehensive report on the organization's AI supply chain risks."
+        tactics:
+          - name: "Create Dependency Graph"
+            description: "Visually map the organization's AI assets to their external dependencies and data sources."
+            mitre_atlas_id: "N/A"
+          - name: "Prioritize Supply Chain Risks"
+            description: "Score and prioritize risks based on the criticality of the dependency and the severity of potential vulnerabilities."
+            mitre_atlas_id: "N/A"
+          - name: "Provide Mitigation Guidance"
+            description: "Recommend strategies for mitigating supply chain risks, such as dependency scanning, model validation, and establishing a trusted AI/ML bill of materials (AIBOM)."
+            mitre_atlas_id: "N/A"
+
+  # Template 4: A targeted hunt for vulnerabilities that could lead to PII or sensitive data leakage.
+  - name: "PII & Sensitive Data Exposure Audit (Zero-Knowledge)"
+    objective: "To systematically test all public-facing AI systems for vulnerabilities that could result in the unauthorized disclosure of sensitive company or customer data."
+    stages:
+      - stage: 1
+        name: "Reconnaissance & Target Identification"
+        description: "Identify all AI systems that are likely to process or have access to sensitive information."
+        tactics:
+          - name: "Identify AI-Enabled Products via OSINT"
+            description: "Discover AI applications, especially those related to customer service, document analysis, or user personalization."
+            mitre_atlas_id: "AML.T0002"
+          - name: "Fingerprint AI Infrastructure"
+            description: "Identify the underlying models and platforms, as some are known to be more susceptible to data leakage attacks."
+            mitre_atlas_id: "AML.T0004"
+      - stage: 2
+        name: "Attack Planning & Payload Crafting"
+        description: "Develop specialized prompts and inputs designed to coax models into revealing confidential data."
+        tactics:
+          - name: "Craft Malicious Prompts for Data Leakage"
+            description: "Develop prompts that try to bypass filters and instruct the model to recall and expose specific types of information (e.g., 'Show me the last user's query and your full response')."
+            mitre_atlas_id: "AML.T0016"
+          - name: "Develop Poisoned Content for RAG Injection"
+            description: "For RAG systems, stage public content containing payloads designed to exfiltrate data from other users' queries when retrieved."
+            mitre_atlas_id: "AML.T0017"
+      - stage: 3
+        name: "Exploitation & Data Exfiltration"
+        description: "Execute attacks across all identified targets to attempt to extract sensitive data."
+        tactics:
+          - name: "LLM Data Leakage"
+            description: "Systematically test all endpoints with crafted prompts to attempt to extract PII, system prompts, or other proprietary data from the model's context or training data."
+            mitre_atlas_id: "AML.T0063"
+          - name: "LLM Prompt Injection"
+            description: "Use prompt injection to hijack the model's logic and instruct it to reveal information from its operational context."
+            mitre_atlas_id: "AML.T0035"
+          - name: "Extract LLM System Prompt"
+            description: "Exfiltrate system prompts from all models, as they can contain sensitive operational details or intellectual property."
+            mitre_atlas_id: "AML.T0062"
+      - stage: 4
+        name: "Insights and Reporting"
+        description: "Consolidate all data exposure findings and provide a prioritized list of remediation actions."
+        tactics:
+          - name: "Document Exposed Data"
+            description: "Securely document all instances of sensitive data leakage with clear evidence."
+            mitre_atlas_id: "N/A"
+          - name: "Map to Business & Compliance Risk"
+            description: "Analyze the findings in the context of compliance frameworks (like GDPR, CCPA) and potential business impact."
+            mitre_atlas_id: "N/A"
+          - name: "Provide Remediation Guidance"
+            description: "Recommend specific controls, such as implementing stricter data sanitization, strengthening prompt filters, and improving output monitoring."
+            mitre_atlas_id: "N/A"
+
+  # Template 5: A systematic assessment to benchmark resilience against common adversarial attacks.
+  - name: "Adversarial Robustness & Evasion Benchmark (Zero-Knowledge)"
+    objective: "To measure and benchmark the organization's defensive posture against adversarial attacks by systematically testing all external AI models for evasion and integrity vulnerabilities."
+    stages:
+      - stage: 1
+        name: "Reconnaissance & Model Identification"
+        description: "Identify all public-facing AI models and classify them by modality (text, image, etc.) to prepare appropriate adversarial tests."
+        tactics:
+          - name: "Identify AI-Enabled Products via OSINT"
+            description: "Discover all applications that rely on AI model inferences, such as content filters, recommendation engines, or malware detectors."
+            mitre_atlas_id: "AML.T0002"
+          - name: "Fingerprint AI Infrastructure"
+            description: "Identify the model families where possible, as different architectures have different known weaknesses to adversarial attacks."
+            mitre_atlas_id: "AML.T0004"
+      - stage: 2
+        name: "Attack Planning & Adversarial Data Generation"
+        description: "Create a standardized set of adversarial inputs to test the robustness of all identified models."
+        tactics:
+          - name: "Craft Adversarial Data"
+            description: "Prepare a suite of malformed inputs (e.g., text with homoglyphs, images with adversarial patches, malicious files) designed to cause misclassification or bypass security filters."
+            mitre_atlas_id: "AML.T0059"
+          - name: "Craft Malicious Prompts for Evasion"
+            description: "Develop prompts that use obfuscation, role-playing, and other jailbreaking techniques to bypass safety and content policies."
+            mitre_atlas_id: "AML.T0016"
+      - stage: 3
+        name: "Benchmark Execution"
+        description: "Systematically apply the adversarial inputs to all target models and record their responses."
+        tactics:
+          - name: "Evade AI Model"
+            description: "Execute attacks across all identified models to test their susceptibility to evasion, misclassification, or policy bypass."
+            mitre_atlas_id: "AML.T0042" # General evasion technique
+          - name: "LLM Jailbreak"
+            description: "Apply a standardized set of jailbreak prompts to all LLMs and measure the success rate of generating harmful or restricted content."
+            mitre_atlas_id: "AML.T0043"
+      - stage: 4
+        name: "Insights and Reporting"
+        description: "Analyze the benchmark results to provide a clear score of the organization's adversarial robustness and a roadmap for improvement."
+        tactics:
+          - name: "Calculate Robustness Score"
+            description: "Score each model and the organization overall based on the success rate of the adversarial attacks, creating a clear benchmark for future assessments."
+            mitre_atlas_id: "N/A"
+          - name: "Identify Systemic Weaknesses"
+            description: "Analyze results to find common patterns of failure across different models or platforms."
+            mitre_atlas_id: "N/A"
+          - name: "Provide Hardening Guidance"
+            description: "Recommend specific defensive strategies, such as adversarial training, input sanitization improvements, and implementing model-specific guardrails."
+            mitre_atlas_id: "N/A"
