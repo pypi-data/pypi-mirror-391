@@ -1,0 +1,891 @@
+Metadata-Version: 2.4
+Name: realign-git
+Version: 0.4.2
+Summary: Track and version AI agent chat sessions with git commits
+Author: ReAlign Contributors
+License: MIT
+Project-URL: Homepage, https://github.com/yourusername/ReAlign
+Project-URL: Repository, https://github.com/yourusername/ReAlign
+Project-URL: Documentation, https://github.com/yourusername/ReAlign#readme
+Project-URL: Bug Tracker, https://github.com/yourusername/ReAlign/issues
+Keywords: git,ai,agent,chat,history,version-control,mcp,claude
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Software Development :: Version Control :: Git
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: typer>=0.9.0
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: rich>=13.0.0
+Requires-Dist: mcp>=1.0.0
+Requires-Dist: anthropic>=0.18.0
+Requires-Dist: openai>=1.0.0
+Requires-Dist: detect-secrets>=1.4.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Provides-Extra: redact
+Requires-Dist: detect-secrets>=1.4.0; extra == "redact"
+Dynamic: license-file
+
+# ReAlign
+
+**Track and version AI agent chat sessions with git commits**
+
+ReAlign automatically integrates your AI assistant (like Claude) chat sessions with your git commits, making it easy to understand the context behind code changes and search through your development history.
+
+## 30-Second Quick Start
+
+```bash
+# 1. Install with pipx (recommended)
+pipx install realign-git
+
+# 2. Initialize in your project (auto-detects Claude Code!)
+cd your-project
+realign init
+
+# 3. That's it! Now just commit as usual
+git add .
+git commit -m "Your commit message"
+
+# 4. Search your AI conversations
+realign search "bug fix"
+realign show abc1234  # View session from commit
+```
+
+**Using Claude Code?** No extra setup needed - ReAlign auto-detects your sessions!
+
+**Want MCP integration?** One command: `claude mcp add --scope user --transport stdio realign -- uvx --from realign-git realign-mcp`
+
+**Don't have pipx?** See [Installation](#installation) for alternative methods.
+
+---
+
+## Features
+
+- 🔄 **Automatic Session Tracking**: Copies agent chat histories into your repository on every commit
+- 📝 **Smart Summaries**: Generates concise summaries of chat sessions (with LLM or local fallback)
+- 🔍 **Powerful Search**: Search through both commit messages and chat content
+- 👁️ **Session Viewing**: View full chat sessions from any commit
+- 🔒 **Non-blocking**: Never blocks commits even if session tracking fails
+- 🎯 **Git-native**: Uses git hooks for seamless integration
+- 🤖 **MCP Support**: Integrate with Claude and other AI agents via Model Context Protocol
+
+## Installation
+
+### For Users (Recommended): pipx
+
+**pipx** is the recommended way to install ReAlign for end users. It installs ReAlign in an isolated environment while making the command globally available.
+
+```bash
+# Install pipx (if not already installed)
+# macOS
+brew install pipx
+pipx ensurepath
+
+# Ubuntu/Debian
+sudo apt install pipx
+pipx ensurepath
+
+# Or via pip
+python3 -m pip install --user pipx
+python3 -m pipx ensurepath
+
+# Install ReAlign with pipx
+pipx install realign-git
+
+# Or install from GitHub (latest version)
+pipx install git+https://github.com/yourusername/ReAlign.git
+
+# Upgrade ReAlign
+pipx upgrade realign-git
+
+# Uninstall ReAlign
+pipx uninstall realign-git
+```
+
+**Benefits of pipx:**
+- ✅ **Isolated environment**: No dependency conflicts with other Python projects
+- ✅ **Globally available**: Use `realign` command anywhere without activating virtual environments
+- ✅ **Clean management**: Easy to upgrade, reinstall, or uninstall
+- ✅ **Works everywhere**: Git hooks will always find the realign commands
+
+### For Developers: From Source
+
+If you're developing ReAlign or need to modify the code:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/ReAlign.git
+cd ReAlign
+
+# Create virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install in editable mode
+pip install -e .
+
+# Or with development dependencies
+pip install -e ".[dev]"
+
+# For LLM support (optional)
+pip install -e ".[llm]"
+
+# For MCP (Model Context Protocol) support
+pip install -e ".[mcp]"
+```
+
+**Note for developers**: When developing, the git hooks will use your editable installation from the virtual environment. Make sure to activate the environment when testing hooks.
+
+### Alternative: pip install (Not Recommended)
+
+You can install with pip, but this may cause dependency conflicts:
+
+```bash
+pip install realign-git
+```
+
+⚠️ **Not recommended** because:
+- May conflict with other projects' dependencies
+- Requires virtual environment activation for git hooks to work
+- Harder to manage and uninstall cleanly
+
+### Requirements
+
+- Python 3.11+
+- Git
+- Dependencies (automatically installed):
+  - typer >= 0.9.0
+  - pyyaml >= 6.0
+  - rich >= 13.0.0
+  - mcp >= 1.0.0 (for MCP support)
+  - anthropic >= 0.18.0 (for Claude LLM summaries)
+  - openai >= 1.0.0 (for GPT LLM summaries)
+
+## Common Workflows
+
+### For End Users: pipx Installation Workflow
+
+```bash
+# 1. Install pipx (one-time setup)
+brew install pipx           # macOS
+# or: sudo apt install pipx # Ubuntu/Debian
+pipx ensurepath
+
+# 2. Install ReAlign
+pipx install realign
+
+# 3. Use ReAlign in any project
+cd ~/my-project
+realign init
+git commit -m "your changes"
+
+# 4. Upgrade when new version available
+pipx upgrade realign
+
+# 5. If you encounter issues, reinstall cleanly
+pipx uninstall realign
+pipx install realign
+```
+
+### For Developers: Development Workflow
+
+```bash
+# 1. Clone and setup (one-time)
+git clone https://github.com/yourusername/ReAlign.git
+cd ReAlign
+python3 -m venv venv
+source venv/bin/activate
+pip install -e ".[dev]"
+
+# 2. Make changes and test
+vim src/realign/hooks.py
+pytest
+
+# 3. Test in a real project
+cd ~/test-project
+source ~/Projects/ReAlign/venv/bin/activate  # Use dev version
+realign init
+git commit -m "test"  # Will use your modified code
+
+# 4. When switching to production use
+deactivate
+pipx install ~/Projects/ReAlign  # Install your local version globally
+```
+
+### Switching Between Dev and Production
+
+```bash
+# Scenario: You have pipx-installed ReAlign, but want to test dev version
+
+# Option 1: Temporarily use dev version (in specific project)
+cd your-project
+source ~/Projects/ReAlign/venv/bin/activate
+# Now git hooks will use dev version while venv is active
+
+# Option 2: Replace pipx version with dev version
+pipx uninstall realign
+pipx install -e ~/Projects/ReAlign
+# Now all projects use dev version
+
+# Option 3: Reinstall stable version
+pipx install --force realign
+```
+
+## MCP Integration
+
+ReAlign supports the **Model Context Protocol** for seamless integration with AI agents like Claude!
+
+**Quick Setup (No Pre-Installation Required!):**
+
+```bash
+# For Claude Code - one command, auto-installs from PyPI:
+claude mcp add --scope user --transport stdio realign -- uvx --from realign-git realign-mcp
+
+# For Claude Desktop - add to claude_desktop_config.json:
+{
+  "mcpServers": {
+    "realign": {
+      "command": "uvx",
+      "args": ["--from", "realign-git", "realign-mcp"],
+      "env": {
+        "REALIGN_AUTO_DETECT_CLAUDE": "true",
+        "REALIGN_USE_LLM": "true"
+      }
+    }
+  }
+}
+```
+
+📖 **Full MCP setup guide:** See [MCP_SETUP.md](MCP_SETUP.md)
+
+## Quick Start
+
+### 1. Initialize ReAlign in your repository
+
+```bash
+cd your-project
+realign init
+```
+
+**Note**: If you're not in a git repository yet, ReAlign will offer to initialize one for you automatically!
+
+This will:
+- Initialize a git repository (if not already present)
+- Create `.realign/` directory structure
+- Install the git hook (`prepare-commit-msg`)
+- Set up global configuration at `~/.config/realign/config.yaml`
+- Create local history directory at `~/.local/share/realign/histories`
+
+### 2. Configure your agent to save sessions
+
+#### Option A: Claude Code (Auto-detection - Recommended)
+
+If you're using Claude Code, ReAlign will **automatically detect** your project's session directory! No manual configuration needed.
+
+Claude Code saves sessions to:
+
+```bash
+~/.claude/projects/{project-name}/
+```
+
+ReAlign automatically detects this directory based on your project path and uses it for session tracking.
+
+To disable auto-detection, set in `~/.config/realign/config.yaml`:
+```yaml
+auto_detect_claude: false
+```
+
+#### Option B: Manual Configuration
+
+For other AI agents, configure them to save sessions to:
+
+```bash
+~/.local/share/realign/histories/
+```
+
+Or set a custom path in `~/.config/realign/config.yaml`:
+```yaml
+local_history_path: "/your/custom/path"
+```
+
+Sessions should be in JSON or JSONL format. See `examples/example_session.jsonl` for the expected format.
+
+### 3. Make commits as usual
+
+```bash
+git add .
+git commit -m "Add user authentication"
+```
+
+ReAlign will automatically:
+- Find the latest chat session
+- Generate a summary
+- Copy the session to `.realign/sessions/`
+- Append metadata to your commit message
+
+Your commit message will include:
+```
+Add user authentication
+
+Agent-Summary: Discussion about implementing user authentication with JWT tokens
+Agent-Session-Path: .realign/sessions/1699012345_alice_claude_a1b2c3d4.jsonl
+Agent-Redacted: false
+```
+
+### 4. Search and view sessions
+
+Search for commits and sessions:
+```bash
+realign search "authentication"
+realign search "bug fix" --show-session
+```
+
+View a session from a commit:
+```bash
+realign show abc1234
+realign show --session .realign/sessions/some_session.jsonl
+```
+
+## Configuration
+
+### Global Configuration
+
+Edit `~/.config/realign/config.yaml`:
+
+```yaml
+local_history_path: "~/.local/share/realign/histories"
+summary_max_chars: 500
+redact_on_match: false
+hooks_installation: "repo"
+use_LLM: true
+llm_provider: "auto"  # Options: "auto", "claude", "openai"
+auto_detect_claude: true  # Automatically detect Claude Code sessions
+```
+
+#### Configuration Options
+
+- **`local_history_path`**: Default directory for agent sessions (fallback when Claude not detected)
+- **`summary_max_chars`**: Maximum length of commit message summary
+- **`redact_on_match`**: Auto-redact sensitive information (not yet implemented)
+- **`hooks_installation`**: Git hooks installation mode (`"repo"` sets `core.hooksPath`)
+- **`use_LLM`**: Use LLM API (Anthropic/OpenAI) for intelligent summaries (falls back to local if unavailable)
+- **`llm_provider`**: LLM provider selection - `"auto"` (try Claude then OpenAI), `"claude"` (Anthropic only), or `"openai"` (OpenAI only)
+- **`auto_detect_claude`**: Automatically detect and use Claude Code session directories
+
+### Environment Variables
+
+Override configuration with environment variables:
+
+```bash
+export REALIGN_LOCAL_HISTORY_PATH="/custom/path"
+export REALIGN_SUMMARY_MAX_CHARS=300
+export REALIGN_USE_LLM=true
+export REALIGN_LLM_PROVIDER=auto  # Options: auto, claude, openai
+export REALIGN_AUTO_DETECT_CLAUDE=true
+
+# LLM API Keys
+export ANTHROPIC_API_KEY="your-anthropic-api-key"  # For Claude summaries
+export OPENAI_API_KEY="your-openai-api-key"        # For GPT summaries
+```
+
+**Note**: Setting `REALIGN_LOCAL_HISTORY_PATH` disables Claude auto-detection and uses the specified path directly.
+
+## LLM Summaries
+
+ReAlign can use LLM APIs to generate intelligent summaries. It supports both Anthropic (Claude) and OpenAI (GPT).
+
+### Choosing Your LLM Provider
+
+You can configure which LLM provider to use with the `llm_provider` setting:
+
+```bash
+# Method 1: Using realign config command
+realign config set llm_provider auto    # Try Claude first, then OpenAI (default)
+realign config set llm_provider claude  # Use only Claude (Anthropic)
+realign config set llm_provider openai  # Use only OpenAI (GPT)
+
+# Method 2: Using environment variable
+export REALIGN_LLM_PROVIDER=claude
+
+# Method 3: Edit config file directly
+vim ~/.config/realign/config.yaml
+```
+
+### Option 1: Anthropic Claude (Recommended)
+
+1. Install the anthropic package:
+   ```bash
+   pip install anthropic
+   ```
+
+2. Set your API key:
+   ```bash
+   export ANTHROPIC_API_KEY="your-api-key"
+   ```
+   Get your API key from: https://console.anthropic.com/
+
+### Option 2: OpenAI GPT
+
+1. Install the openai package:
+   ```bash
+   pip install openai
+   ```
+
+2. Set your API key:
+   ```bash
+   export OPENAI_API_KEY="your-api-key"
+   ```
+   Get your API key from: https://platform.openai.com/api-keys
+
+### Configuration
+
+Enable LLM summaries in your config (`~/.config/realign/config.yaml`):
+
+```yaml
+use_LLM: true
+llm_provider: "auto"  # Options: "auto", "claude", or "openai"
+```
+
+**Provider Behavior**:
+
+- `"auto"` (default): Tries Claude first, falls back to OpenAI if Claude fails
+- `"claude"`: Uses only Claude (Anthropic API). Will not fall back to OpenAI if it fails.
+- `"openai"`: Uses only OpenAI (GPT API). Will not try Claude.
+
+If LLM generation fails or no API keys are set, ReAlign automatically falls back to local summarization.
+
+## Commands
+
+### `realign init`
+
+Initialize ReAlign in a git repository. If not in a git repository, offers to initialize one for you.
+
+```bash
+realign init [--yes] [--skip-commit]
+```
+
+Options:
+- `--yes, -y`: Skip all confirmation prompts (including git initialization)
+- `--skip-commit`: Don't auto-commit the hook file
+
+Examples:
+```bash
+# Initialize in existing git repo
+realign init
+
+# Auto-initialize git and skip all prompts
+realign init --yes
+
+# Initialize without committing hooks
+realign init --skip-commit
+```
+
+### `realign search`
+
+Search through commits and sessions.
+
+```bash
+realign search <keyword> [--show-session] [--max N]
+```
+
+Options:
+- `--show-session`: Display session content for matches
+- `--max N, -n N`: Maximum number of results (default: 20)
+
+### `realign show`
+
+Display a session from a commit or file.
+
+```bash
+realign show <commit>
+realign show --session <path>
+```
+
+Options:
+- `--session PATH, -s PATH`: Direct path to session file
+- `--format FORMAT, -f FORMAT`: Output format (pretty, json, raw)
+- `--pager, -p`: Use pager (less) for output
+
+### `realign config`
+
+Manage ReAlign configuration.
+
+```bash
+realign config init                         # Create default config file
+realign config get                          # Show all config values
+realign config get llm_provider             # Get specific config value
+realign config set llm_provider claude      # Set LLM provider to Claude
+realign config set llm_provider openai      # Set LLM provider to OpenAI
+realign config set llm_provider auto        # Set LLM provider to auto (default)
+realign config set use_LLM true             # Enable LLM summaries
+```
+
+Options:
+
+- `init`: Create default config file at `~/.config/realign/config.yaml`
+- `get [key]`: Display all config values or a specific value
+- `set <key> <value>`: Update a configuration value
+
+Available configuration keys: `local_history_path`, `summary_max_chars`, `redact_on_match`, `hooks_installation`, `use_LLM`, `llm_provider`, `auto_detect_claude`, `auto_detect_codex`
+
+### `realign version`
+
+Show ReAlign version.
+
+```bash
+realign version
+```
+
+## Session File Format
+
+ReAlign expects JSONL (JSON Lines) format for chat sessions:
+
+```jsonl
+{"role": "user", "content": "How do I implement X?", "timestamp": "2024-01-01T10:00:00"}
+{"role": "assistant", "content": "Here's how you implement X...", "timestamp": "2024-01-01T10:00:05"}
+```
+
+Required fields:
+- `role`: "user" or "assistant"
+- `content`: The message content
+
+Optional fields:
+- `timestamp`: ISO 8601 timestamp
+- Any other metadata
+
+## Git LFS for Large Histories (Optional)
+
+If your chat histories are large, consider using Git LFS:
+
+```bash
+git lfs install
+git lfs track ".realign/sessions/*.jsonl"
+git add .gitattributes
+git commit -m "chore: track sessions with LFS" --no-verify
+```
+
+## Development
+
+### Running Tests
+
+```bash
+# Install dev dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest
+
+# With coverage
+pytest --cov=realign --cov-report=html
+```
+
+### Project Structure
+
+```
+ReAlign/
+├── src/realign/           # Main package
+│   ├── cli.py            # CLI entry point
+│   ├── config.py         # Configuration management
+│   └── commands/         # CLI commands
+│       ├── init.py       # Init command
+│       ├── search.py     # Search command
+│       └── show.py       # Show command
+├── .realign/             # ReAlign data (in each project)
+│   ├── hooks/            # Git hooks
+│   │   └── prepare-commit-msg
+│   ├── sessions/         # Copied chat sessions
+│   └── tools/            # Helper scripts
+│       └── agent_commit_helper.py
+├── tests/                # Test suite
+├── examples/             # Example files
+└── pyproject.toml        # Project configuration
+```
+
+## How It Works
+
+1. **Hook Installation**: `realign init` sets git's `core.hooksPath` to `.realign/hooks`
+
+2. **Commit Time**: When you commit, the `prepare-commit-msg` hook runs
+
+3. **Helper Execution**: The hook calls `agent_commit_helper.py` which:
+   - Finds the latest chat session
+   - Generates a summary (LLM or local)
+   - Copies the session to `.realign/sessions/`
+   - Returns JSON with summary and path
+
+4. **Message Enhancement**: The hook appends metadata to the commit message
+
+5. **Session Versioning**: The session file is git-added to the same commit
+
+## Security & Privacy
+
+⚠️ **Important**: Chat sessions may contain sensitive information!
+
+### Automatic Secret Redaction (Enabled by Default!)
+
+ReAlign includes built-in secret detection and redaction powered by [detect-secrets](https://github.com/Yelp/detect-secrets), **enabled by default** for your security.
+
+**Quick Setup:**
+
+```bash
+# 1. Install ReAlign (redaction included!)
+pip install realign-git
+
+# 2. Initialize in your project
+realign init
+
+# 3. That's it! Secrets are automatically detected and redacted on every commit
+```
+
+**To disable (if working on private repos only):**
+
+```bash
+realign config set redact_on_match false
+```
+
+**What gets redacted:**
+
+- API keys (OpenAI, Anthropic, AWS, etc.)
+- Access tokens and passwords
+- Private keys and certificates
+- Database connection strings
+- High-entropy strings (likely secrets)
+
+**Features:**
+
+- 🔍 **Automatic Detection**: Uses detect-secrets to scan for 30+ secret types
+- 🛡️ **Auto Redaction**: Replaces secrets with `[REDACTED: Secret Type]`
+- 💾 **Backup**: Original sessions are backed up to `.realign/sessions-original/`
+- ⚡ **Fast**: Minimal performance impact
+- 🚫 **Non-blocking**: Never blocks commits even if detection fails
+
+**Configuration:**
+
+```yaml
+# ~/.config/realign/config.yaml
+redact_on_match: true  # Enable automatic redaction
+```
+
+Or via environment variable:
+
+```bash
+export REALIGN_REDACT_ON_MATCH=true
+```
+
+**Example Output:**
+
+```bash
+$ git commit -m "Add API integration"
+⚠️  Detected 2 potential secret(s) in session:
+   - Base64 High Entropy String at line 42
+   - Secret Keyword at line 45
+   💾 Original session backed up to: .realign/sessions-original/agent-xyz.jsonl
+   ✅ Secrets have been automatically redacted
+```
+
+### Disabling Redaction
+
+Redaction is enabled by default for security. To disable:
+
+```bash
+# Disable globally
+realign config set redact_on_match false
+
+# Or disable per-commit
+REALIGN_REDACT_ON_MATCH=false git commit -m "your message"
+```
+
+**When to disable:**
+
+- Working on private repositories only
+- Sessions don't contain sensitive information
+- You prefer manual review before pushing
+
+**Additional privacy options:**
+
+- Add `.realign/sessions/` to `.gitignore` to keep all sessions local
+- Add `.realign/sessions-original/` to `.gitignore` to keep backups local
+- Use `.gitattributes` to mark sessions as binary or use Git LFS
+
+## Troubleshooting
+
+### Hook not running
+
+Check that the hook is installed:
+
+```bash
+git config core.hooksPath
+# Should output: .realign/hooks
+
+ls -la .realign/hooks/prepare-commit-msg
+# Should be executable
+```
+
+### "realign command not found" in git hooks
+
+This usually means the realign commands are not in your PATH.
+
+**If you installed with pipx:**
+
+```bash
+# Check if pipx binaries are in PATH
+echo $PATH | grep ".local/bin"
+
+# If not, run pipx ensurepath and restart your terminal
+pipx ensurepath
+# Then close and reopen your terminal
+
+# Verify installation
+which realign
+realign version
+```
+
+**If you installed with pip in a virtual environment:**
+
+```bash
+# The virtual environment must be activated when git hooks run
+# This is why pipx is recommended for end users
+
+# Solution 1: Use pipx instead
+pipx install realign
+
+# Solution 2: Make sure venv is always activated
+# Add to your shell rc file (~/.zshrc or ~/.bashrc):
+source ~/path/to/your/venv/bin/activate
+```
+
+### "No module named 'realign'" error
+
+This means Python can't find the realign package.
+
+```bash
+# Check which python is being used
+which python3
+
+# Check if realign is installed for that python
+python3 -c "import realign; print(realign.__file__)"
+
+# If using pipx, verify installation
+pipx list | grep realign
+
+# If missing, reinstall
+pipx install realign
+```
+
+### Dev environment: Changes not taking effect
+
+If you're developing ReAlign and your changes aren't being used:
+
+```bash
+# Check which realign is being used
+which realign
+# If it shows ~/.local/pipx/venvs/realign/..., you're using pipx version
+
+# Option 1: Install in editable mode with pipx
+pipx uninstall realign
+pipx install -e ~/Projects/ReAlign
+
+# Option 2: Use pip in virtual environment
+cd ~/Projects/ReAlign
+source venv/bin/activate
+pip install -e .
+# Now make sure this venv is active when testing
+
+# Verify you're using the dev version
+python3 -c "import realign; print(realign.__file__)"
+# Should show: ~/Projects/ReAlign/src/realign/__init__.py
+```
+
+### No sessions found
+
+Verify your history path:
+
+```bash
+cat ~/.config/realign/config.yaml
+ls ~/.local/share/realign/histories/
+```
+
+### LLM summaries not working
+
+Check your API keys:
+
+```bash
+# Check if API keys are set
+echo $ANTHROPIC_API_KEY  # For Claude
+echo $OPENAI_API_KEY     # For GPT
+
+# At least one should output your key
+
+# Test with LLM disabled to use local fallback
+REALIGN_USE_LLM=false git commit -m "test"
+```
+
+### pipx: command not found
+
+Install pipx first:
+
+```bash
+# macOS
+brew install pipx
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install pipx
+
+# Fedora
+sudo dnf install pipx
+
+# Or via pip (any OS)
+python3 -m pip install --user pipx
+
+# Then ensure PATH is set
+python3 -m pipx ensurepath
+# Restart your terminal after this
+```
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Credits
+
+Developed as part of the ReAlign project to improve the traceability and context of AI-assisted development.
+
+## Roadmap
+
+- [x] Automatic secret detection and redaction (using detect-secrets)
+- [x] Support for Anthropic Claude LLM provider
+- [ ] Support for local models (Ollama, etc.)
+- [ ] Interactive redaction mode
+- [ ] Web UI for browsing sessions
+- [ ] Session diff viewer
+- [ ] Multi-agent support
+- [ ] CI/CD integration
+- [ ] VSCode extension
+- [ ] Session compression
+- [ ] Enhanced search with vector embeddings
+
+## BUGs：
+- [] When a user makes manual modifications without any AI assistance, the commit summary will still default to the last chat history.
+- [] summary is chinese right now
