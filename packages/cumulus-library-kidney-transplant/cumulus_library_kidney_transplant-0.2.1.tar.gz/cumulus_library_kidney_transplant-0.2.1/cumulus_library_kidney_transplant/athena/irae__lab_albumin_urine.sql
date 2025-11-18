@@ -1,0 +1,19 @@
+create or replace view irae__lab_albumin_urine as select * from (values
+
+('http://loinc.org','100158-5','Albumin, Urine'),
+('http://loinc.org','11218-5','Albumin, Urine'),
+('http://loinc.org','14957-5','Albumin, Urine'),
+('http://loinc.org','1754-1','Albumin, Urine'),
+('http://loinc.org','21059-1','Albumin, Urine'),
+('http://loinc.org','30003-8','Albumin, Urine'),
+('http://loinc.org','40857-5','Prealbumin, Urine'),
+('http://loinc.org','43605-5','Albumin, Urine'),
+('http://loinc.org','51190-7','Albumin, Urine'),
+('http://loinc.org','53530-2','Albumin, Urine'),
+('http://loinc.org','53531-0','Albumin, Urine'),
+('http://loinc.org','57369-1','Albumin, Urine'),
+('http://loinc.org','61196-2','Fetal Albumin'),
+('http://loinc.org','6942-7','Albumin, Urine'),
+('http://loinc.org','77940-5','Albumin, Urine'),
+('http://loinc.org','89999-7','Albumin, Urine')
+) AS t (system,code,display) ;

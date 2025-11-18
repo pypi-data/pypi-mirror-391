@@ -1,0 +1,2303 @@
+[
+    {
+        "resourceType": "ValueSet",
+        "id": "2.16.840.1.113883.3.526.3.1010",
+        "meta": {
+            "versionId": "34",
+            "lastUpdated": "2023-12-21T17:43:03.000-05:00",
+            "profile": [
+                "http://hl7.org/fhir/StructureDefinition/shareablevalueset",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/computable-valueset-cqfm",
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/publishable-valueset-cqfm"
+            ]
+        },
+        "extension": [
+            {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-effectiveDate",
+                "valueDate": "2020-03-06"
+            }
+        ],
+        "url": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1010",
+        "identifier": [
+            {
+                "system": "urn:ietf:rfc:3986",
+                "value": "urn:oid:2.16.840.1.113883.3.526.3.1010"
+            }
+        ],
+        "version": "20200306",
+        "name": "Cancer",
+        "title": "Cancer",
+        "status": "active",
+        "experimental": false,
+        "date": "2022-03-07T11:14:02-05:00",
+        "publisher": "American Society of Clinical Oncology Steward",
+        "expansion": {
+            "identifier": "urn:uuid:6c15afa9-530a-4e05-8fea-0ad43dc57f02",
+            "timestamp": "2025-08-21T01:41:02-04:00",
+            "total": 7553,
+            "offset": 0,
+            "parameter": [
+                {
+                    "name": "count",
+                    "valueInteger": 1000
+                },
+                {
+                    "name": "offset",
+                    "valueInteger": 0
+                }
+            ],
+            "contains": [
+                {
+                    "code": "1010656004",
+                    "display": "Adenoid squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010669000",
+                    "display": "Primary squamous cell carcinoma of superior wall of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010674008",
+                    "display": "Basaloid squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010675009",
+                    "display": "Squamous cell carcinoma of posterior wall of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010677001",
+                    "display": "Primary squamous cell carcinomas of anterior wall of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010679003",
+                    "display": "Primary squamous cell carcinoma of lateral wall of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1010681001",
+                    "display": "Primary squamous cell carcinoma of overlapping sites of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "105041000119109",
+                    "display": "Metastatic squamous cell carcinoma to lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "105111000119109",
+                    "display": "Primary squamous cell carcinoma of thymus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "105121000119102",
+                    "display": "Squamous cell carcinoma of vagina (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "107591000119100",
+                    "display": "Primary squamous cell carcinoma of urethra (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "107791000119107",
+                    "display": "Primary adenosquamous carcinoma of endometrium (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "107831000119101",
+                    "display": "Metastatic squamous cell carcinoma to liver (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082051000119106",
+                    "display": "Primary squamous cell carcinoma of skin of left upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082061000119108",
+                    "display": "Primary squamous cell carcinoma of conjunctiva of left eye (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082071000119102",
+                    "display": "Primary squamous cell carcinoma of left ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082091000119101",
+                    "display": "Primary squamous cell carcinoma of skin of left hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082101000119106",
+                    "display": "Primary squamous cell carcinoma of skin of left lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082111000119109",
+                    "display": "Primary squamous cell carcinoma of lower lobe of left lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082121000119102",
+                    "display": "Primary squamous cell carcinoma of left main bronchus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082131000119104",
+                    "display": "Primary squamous cell carcinoma of skin of left shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082141000119108",
+                    "display": "Primary squamous cell carcinoma of upper lobe of left lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082171000119101",
+                    "display": "Primary squamous cell carcinoma of skin of right upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082181000119103",
+                    "display": "Primary squamous cell carcinoma of conjunctiva of right eye (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082191000119100",
+                    "display": "Primary squamous cell carcinoma of right ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082211000119104",
+                    "display": "Primary squamous cell carcinoma of skin of right hip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082221000119106",
+                    "display": "Primary squamous cell carcinoma of skin of right lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082231000119109",
+                    "display": "Primary squamous cell carcinoma of lower lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082241000119100",
+                    "display": "Primary squamous cell carcinoma of right main bronchus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082251000119103",
+                    "display": "Primary squamous cell carcinoma of middle lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082261000119101",
+                    "display": "Primary squamous cell carcinoma of skin of right shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1082271000119107",
+                    "display": "Primary squamous cell carcinoma of upper lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1148901006",
+                    "display": "Squamous cell carcinoma of male genital (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197275006",
+                    "display": "Primary squamous cell carcinoma of fallopian tube (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197276007",
+                    "display": "Primary squamous cell carcinoma of pharyngeal lymphoid ring (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197285007",
+                    "display": "Metastatic squamous cell carcinoma to thoracic lymph node (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197292002",
+                    "display": "Metastatic squamous cell carcinoma of pelvic lymph node (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197293007",
+                    "display": "Metastatic squamous cell carcinoma to lymph nodes of head and neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197295000",
+                    "display": "Metastatic squamous cell carcinoma to lymph nodes of multiple sites (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197297008",
+                    "display": "Metastatic squamous cell carcinoma to lymph node of lower limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197299006",
+                    "display": "Metastatic squamous cell carcinoma to lymph node of upper limb (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1197322005",
+                    "display": "Metastatic squamous cell carcinoma to abdominal lymph node (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "12240951000119107",
+                    "display": "Squamous cell carcinoma of left lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "12240991000119102",
+                    "display": "Squamous cell carcinoma of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1229871006",
+                    "display": "Primary squamous cell carcinoma of nasal cavity and paranasal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237048006",
+                    "display": "Metastatic squamous cell carcinoma to bronchus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237466009",
+                    "display": "Metastatic squamous cell carcinoma to bronchus of left upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237467000",
+                    "display": "Metastatic squamous cell carcinoma to bronchus of right upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237469002",
+                    "display": "Metastatic squamous cell carcinoma to bronchus of left lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237471002",
+                    "display": "Metastatic squamous cell carcinoma to bronchus of right lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1237472009",
+                    "display": "Metastatic squamous cell carcinoma to bronchus of middle lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1240353009",
+                    "display": "Metastatic squamous cell carcinoma to prostate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1240355002",
+                    "display": "Metastatic squamous cell carcinoma to epididymis and spermatic cord (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1240370001",
+                    "display": "Metastatic squamous cell carcinoma to liver and intrahepatic biliary tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254748001",
+                    "display": "Metastatic clear cell squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254749009",
+                    "display": "Metastatic acantholytic squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254750009",
+                    "display": "Metastatic acantholytic squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254755004",
+                    "display": "Metastatic basosquamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254785009",
+                    "display": "Squamous cell adenoid carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254787001",
+                    "display": "Papillary squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254789003",
+                    "display": "Clear cell squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254790007",
+                    "display": "Basaloid squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254800007",
+                    "display": "Squamous cell carcinoma of lateral wall of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254801006",
+                    "display": "Basaloid squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254803009",
+                    "display": "Papillary squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254805002",
+                    "display": "Squamous cell carcinoma of posterior wall of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254806001",
+                    "display": "Spindle cell squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1254852008",
+                    "display": "Squamous cell carcinoma of laryngeal cartilage (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255631006",
+                    "display": "Spindle cell squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255632004",
+                    "display": "Spindle cell squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255646004",
+                    "display": "Basaloid squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255647008",
+                    "display": "Basaloid squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255651005",
+                    "display": "Basaloid squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1255660002",
+                    "display": "Squamous cell carcinoma of sphenoidal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259367002",
+                    "display": "Primary squamous cell carcinoma of bronchus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259371004",
+                    "display": "Primary squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259372006",
+                    "display": "Primary clear cell squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259373001",
+                    "display": "Primary spindle cell squamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259374007",
+                    "display": "Primary acantholytic squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259376009",
+                    "display": "Primary basosquamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259387001",
+                    "display": "Primary adenosquamous carcinoma of cervix (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259409000",
+                    "display": "Primary squamous cell carcinoma of bronchus in left lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259410005",
+                    "display": "Primary squamous cell carcinoma of bronchus in left upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259411009",
+                    "display": "Primary squamous cell carcinoma of bronchus in right lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259412002",
+                    "display": "Primary squamous cell carcinoma of bronchus of middle lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259413007",
+                    "display": "Primary squamous cell carcinoma of bronchus in right upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259445002",
+                    "display": "Primary keratinizing squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259446001",
+                    "display": "Primary undifferentiated nonkeratinizing squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259454004",
+                    "display": "Primary adenosquamous carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259461000",
+                    "display": "Primary squamous cell carcinoma of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259463002",
+                    "display": "Primary squamous cell carcinoma of left lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259551009",
+                    "display": "Primary spindle cell squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259553007",
+                    "display": "Primary acantholytic squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259555000",
+                    "display": "Primary verrucous squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259620008",
+                    "display": "Primary papillary squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259702008",
+                    "display": "Primary adenoid squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259704009",
+                    "display": "Primary basaloid squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259754003",
+                    "display": "Primary squamous non-small cell lung cancer (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1259757005",
+                    "display": "Primary nonsquamous nonsmall cell neoplasm of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260021004",
+                    "display": "Adenoid squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260024007",
+                    "display": "Adenoid squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260037005",
+                    "display": "Adenosquamous carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260038000",
+                    "display": "Adenosquamous carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260039008",
+                    "display": "Adenosquamous carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260040005",
+                    "display": "Adenosquamous carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260042002",
+                    "display": "Adenosquamous carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260046004",
+                    "display": "Squamous cell carcinoma of ethmoidal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260048003",
+                    "display": "Squamous cell carcinoma of frontal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260056000",
+                    "display": "Clear cell squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260071001",
+                    "display": "Papillary squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260073003",
+                    "display": "Papillary squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260074009",
+                    "display": "Papillary squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260076006",
+                    "display": "Small cell non-keratinizing squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260079004",
+                    "display": "Squamous cell carcinoma of hypopharyngeal aspect of aryepiglottic fold (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260080001",
+                    "display": "Squamous cell carcinoma of maxillary sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260081002",
+                    "display": "Squamous cell carcinoma of postcricoid region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260082009",
+                    "display": "Squamous cell carcinoma of posterior wall of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260083004",
+                    "display": "Squamous cell carcinoma of piriform sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1260084005",
+                    "display": "Squamous cell carcinoma of vallecula (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1263786003",
+                    "display": "Metastatic basaloid squamous cell carcinoma to nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1264066001",
+                    "display": "Metastatic keratinizing squamous cell carcinoma to nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1264116009",
+                    "display": "Metastatic adenosquamous carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1264117000",
+                    "display": "Metastatic adenosquamous carcinoma to cervix (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1264258003",
+                    "display": "Metastatic papillary squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268541001",
+                    "display": "Primary squamous cell carcinoma of liver and intrahepatic biliary tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268632002",
+                    "display": "Primary squamous cell carcinoma of gallbladder and extrahepatic biliary tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268633007",
+                    "display": "Primary squamous cell carcinoma of rectum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268634001",
+                    "display": "Primary squamous cell carcinoma of stomach (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268635000",
+                    "display": "Primary squamous cell carcinoma of colon (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1268636004",
+                    "display": "Primary squamous cell carcinoma of small intestine (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1269123008",
+                    "display": "Metastatic squamous cell carcinoma to rectum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1269125001",
+                    "display": "Metastatic squamous cell carcinoma to small intestine (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1269126000",
+                    "display": "Metastatic squamous cell carcinoma to stomach (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15957141000119109",
+                    "display": "Metastatic squamous cell carcinoma to bilateral lungs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15957181000119104",
+                    "display": "Metastatic squamous cell carcinoma to right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15957221000119107",
+                    "display": "Metastatic squamous cell carcinoma to left lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15958301000119109",
+                    "display": "Metastatic squamous cell carcinoma to right kidney (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "15958381000119101",
+                    "display": "Metastatic squamous cell carcinoma to left kidney (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "1671000119100",
+                    "display": "Metastatic squamous cell carcinoma to lymph node (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "18121000119104",
+                    "display": "Primary squamous cell carcinoma of palatine tonsil (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "231831002",
+                    "display": "Squamous cell carcinoma of eyelid (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254437001",
+                    "display": "Squamous cell carcinoma of buccal mucosa (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254620000",
+                    "display": "Squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254622008",
+                    "display": "Squamous cell carcinoma of bronchus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254634000",
+                    "display": "Squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254651007",
+                    "display": "Squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254652000",
+                    "display": "Clear cell squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254653005",
+                    "display": "Spindle cell squamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254654004",
+                    "display": "Acantholytic squamous cell carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254702000",
+                    "display": "Basosquamous carcinoma of skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254886006",
+                    "display": "Squamous cell carcinoma of cervix (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254888007",
+                    "display": "Adenosquamous carcinoma of cervix (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "254895003",
+                    "display": "Squamous cell carcinoma of vulva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255003007",
+                    "display": "Squamous cell carcinoma of conjunctiva (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255008003",
+                    "display": "Squamous cell carcinoma of cornea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255071008",
+                    "display": "Squamous cell carcinoma of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255084004",
+                    "display": "Squamous cell carcinoma of anal margin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "255111004",
+                    "display": "Squamous cell carcinoma of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276804009",
+                    "display": "Squamous cell carcinoma of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276860003",
+                    "display": "Squamous cell carcinoma of scrotum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276952000",
+                    "display": "Squamous cell carcinoma of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276953005",
+                    "display": "Squamous cell carcinoma of gum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276954004",
+                    "display": "Squamous cell carcinoma of floor of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "276962007",
+                    "display": "Squamous cell carcinoma of palate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285307007",
+                    "display": "Squamous cell carcinoma of skin of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285308002",
+                    "display": "Squamous cell carcinoma of skin of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "285309005",
+                    "display": "Squamous cell carcinoma of skin of cheek (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "307502000",
+                    "display": "Squamous cell carcinoma of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313353007",
+                    "display": "Squamous cell carcinoma of bronchus in left lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313354001",
+                    "display": "Squamous cell carcinoma of bronchus in left upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313355000",
+                    "display": "Squamous cell carcinoma of bronchus in right lower lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313356004",
+                    "display": "Squamous cell carcinoma of bronchus of middle lobe of right lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "313357008",
+                    "display": "Squamous cell carcinoma of bronchus in right upper lobe (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "399590005",
+                    "display": "Squamous cell carcinoma of prostate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402815007",
+                    "display": "Squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402816008",
+                    "display": "Squamous cell carcinoma of anogenital area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "402817004",
+                    "display": "Squamous cell carcinoma of nail apparatus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403468003",
+                    "display": "Squamous cell carcinoma of penis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403713003",
+                    "display": "Psoralen and long-wave ultraviolet radiation therapy-associated squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403890009",
+                    "display": "Squamous cell carcinoma of vulva due to lichen sclerosus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403891008",
+                    "display": "Squamous cell carcinoma of scalp (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403892001",
+                    "display": "Squamous cell carcinoma of skin of face (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403893006",
+                    "display": "Squamous cell carcinoma of forehead (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403894000",
+                    "display": "Squamous cell carcinoma of skin of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403895004",
+                    "display": "Squamous cell carcinoma of foot (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403896003",
+                    "display": "Squamous cell carcinoma of hand (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403897007",
+                    "display": "Squamous cell carcinoma of upper extremity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403898002",
+                    "display": "Squamous cell carcinoma of skin of lower extremity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403899005",
+                    "display": "Squamous cell carcinoma of skin of trunk (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403900000",
+                    "display": "Spindle cell squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403901001",
+                    "display": "Acantholytic squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403902008",
+                    "display": "Adenosquamous carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403903003",
+                    "display": "Signet ring squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403904009",
+                    "display": "Verrucous squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403905005",
+                    "display": "Multiple squamous cell carcinomata (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "403906006",
+                    "display": "Metastatic squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "405822008",
+                    "display": "Squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "408648004",
+                    "display": "Squamous cell carcinoma of epiglottis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "408649007",
+                    "display": "Squamous cell carcinoma of pharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "418372008",
+                    "display": "Squamous cell carcinoma of mucous membrane of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "419240004",
+                    "display": "Squamous cell carcinoma of mucous membrane of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "419842002",
+                    "display": "Squamous cell carcinoma of oral mucous membrane (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "422378004",
+                    "display": "Squamous cell carcinoma of bridge of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "422572002",
+                    "display": "Squamous cell carcinoma of chin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "422599000",
+                    "display": "Squamous cell carcinoma of back (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "422676009",
+                    "display": "Squamous cell carcinoma of ala nasi (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "422691006",
+                    "display": "Squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423284006",
+                    "display": "Squamous cell carcinoma of skin of neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423295000",
+                    "display": "Squamous cell carcinoma of lung, TNM stage 1 (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423464009",
+                    "display": "Squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423468007",
+                    "display": "Squamous cell carcinoma of lung, TNM stage 2 (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423506005",
+                    "display": "Squamous cell carcinoma of external auditory canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423700001",
+                    "display": "Squamous cell carcinoma of auricle of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "423896007",
+                    "display": "Squamous cell carcinoma of tip of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "424260006",
+                    "display": "Squamous cell carcinoma of nasolabial fold (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "425148008",
+                    "display": "Squamous cell carcinoma of temple (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "425230006",
+                    "display": "Squamous cell carcinoma of lung, TNM stage 3 (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "425303004",
+                    "display": "Squamous cell carcinomatosis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "425376008",
+                    "display": "Squamous cell carcinoma of lung, TNM stage 4 (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "440173001",
+                    "display": "Nonsquamous nonsmall cell neoplasm of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "440527006",
+                    "display": "Primary squamous cell carcinoma of naris (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448165009",
+                    "display": "Squamous cell carcinoma arising in chronic ulcer (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448930008",
+                    "display": "Squamous cell carcinoma of nose (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "448931007",
+                    "display": "Squamous cell carcinoma of shoulder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "455733521000119103",
+                    "display": "Primary squamous cell carcinoma of skin of head and/or neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688671000119103",
+                    "display": "Primary squamous cell carcinoma of anterior floor of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688681000119100",
+                    "display": "Primary squamous cell carcinoma of body of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688691000119102",
+                    "display": "Primary squamous cell carcinoma of anterior wall of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688711000119104",
+                    "display": "Primary squamous cell carcinoma of aryepiglottic fold (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688731000119109",
+                    "display": "Primary squamous cell carcinoma of neck of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688751000119103",
+                    "display": "Primary squamous cell carcinoma of border of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688781000119105",
+                    "display": "Primary squamous cell carcinoma of commissure of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688801000119109",
+                    "display": "Primary squamous cell carcinoma of dome of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688811000119107",
+                    "display": "Primary squamous cell carcinoma of dorsal surface of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688861000119105",
+                    "display": "Primary squamous cell carcinoma of hard palate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688891000119103",
+                    "display": "Primary squamous cell carcinoma of mucous membrane of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688901000119104",
+                    "display": "Primary squamous cell carcinoma of mucous membrane of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688911000119101",
+                    "display": "Primary squamous cell carcinoma of mucous membrane of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688931000119106",
+                    "display": "Primary squamous cell carcinoma of lateral floor of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688941000119102",
+                    "display": "Primary squamous cell carcinoma of lateral wall of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "688981000119107",
+                    "display": "Primary squamous cell carcinoma of lower gum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689211000119102",
+                    "display": "Primary squamous cell carcinoma of perianal skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689231000119107",
+                    "display": "Primary squamous cell carcinoma of posterior wall of urinary bladder (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689251000119101",
+                    "display": "Primary squamous cell carcinoma of posterior wall of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689281000119108",
+                    "display": "Primary squamous cell carcinoma of retromolar area (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689311000119105",
+                    "display": "Primary squamous cell carcinoma of soft palate (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689361000119108",
+                    "display": "Primary squamous cell carcinoma of tonsillar fossa (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689371000119102",
+                    "display": "Primary squamous cell carcinoma of tonsillar pillar (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689401000119104",
+                    "display": "Primary squamous cell carcinoma of upper gum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689441000119102",
+                    "display": "Primary squamous cell carcinoma of ureteral orifice (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689451000119100",
+                    "display": "Primary squamous cell carcinoma of uvula (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689471000119109",
+                    "display": "Primary squamous cell carcinoma of inferior surface of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689481000119107",
+                    "display": "Primary squamous cell carcinoma of vermilion border of lower lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689491000119105",
+                    "display": "Primary squamous cell carcinoma of vermilion border of upper lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "689501000119103",
+                    "display": "Primary squamous cell carcinoma of vestibule of mouth (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698011002",
+                    "display": "Keratinizing squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "698048006",
+                    "display": "Undifferentiated nonkeratinizing squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707353009",
+                    "display": "Primary squamous cell carcinoma of accessory sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707354003",
+                    "display": "Primary squamous cell carcinoma of maxillary sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707355002",
+                    "display": "Primary squamous cell carcinoma of sphenoidal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707356001",
+                    "display": "Primary squamous cell carcinoma of frontal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707357005",
+                    "display": "Primary squamous cell carcinoma of laryngeal cartilage (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707358000",
+                    "display": "Primary squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707359008",
+                    "display": "Primary squamous cell carcinoma of ethmoidal sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707388009",
+                    "display": "Primary squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707389001",
+                    "display": "Primary clear cell squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707390005",
+                    "display": "Primary basaloid squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707391009",
+                    "display": "Primary papillary squamous cell carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707393007",
+                    "display": "Primary adenosquamous carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707405009",
+                    "display": "Primary adenosquamous carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707408006",
+                    "display": "Primary small cell non-keratinizing squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707422006",
+                    "display": "Primary spindle cell squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707424007",
+                    "display": "Primary adenosquamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707425008",
+                    "display": "Primary adenoid squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707426009",
+                    "display": "Primary papillary squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707429002",
+                    "display": "Overlapping squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707430007",
+                    "display": "Overlapping squamous cell carcinoma of laryngeal cartilage (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707453008",
+                    "display": "Primary clear cell squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707454002",
+                    "display": "Primary basaloid squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707455001",
+                    "display": "Primary papillary squamous cell carcinoma of lung (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707481002",
+                    "display": "Primary basaloid squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707482009",
+                    "display": "Primary papillary squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707484005",
+                    "display": "Primary adenoid squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707485006",
+                    "display": "Primary adenosquamous carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707489000",
+                    "display": "Primary spindle cell squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707492001",
+                    "display": "Primary squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707495004",
+                    "display": "Primary squamous cell adenoid carcinoma of trachea (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707528007",
+                    "display": "Primary squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707529004",
+                    "display": "Overlapping squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707531008",
+                    "display": "Primary squamous cell carcinoma of branchial cleft (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707532001",
+                    "display": "Primary squamous cell carcinoma of posterior wall of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707535004",
+                    "display": "Primary squamous cell carcinoma of lateral wall of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707537007",
+                    "display": "Primary squamous cell carcinoma of anterior surface of epiglottis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707538002",
+                    "display": "Primary squamous cell carcinoma of vallecula (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707575007",
+                    "display": "Primary squamous cell carcinoma of supraglottis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707576008",
+                    "display": "Primary squamous cell carcinoma of subglottis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707579001",
+                    "display": "Primary basaloid squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707581004",
+                    "display": "Primary papillary squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707582006",
+                    "display": "Primary spindle cell squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707583001",
+                    "display": "Primary adenosquamous carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707585008",
+                    "display": "Primary squamous cell carcinoma of oropharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707628004",
+                    "display": "Overlapping squamous cell carcinoma of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707662004",
+                    "display": "Primary basaloid squamous cell carcinoma of larynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707664003",
+                    "display": "Primary squamous cell carcinoma of glottis (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707686002",
+                    "display": "Primary squamous cell carcinoma of posterior wall of hypopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707697002",
+                    "display": "Primary squamous cell carcinoma of hypopharyngeal aspect of aryepiglottic fold (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707703001",
+                    "display": "Primary squamous cell carcinoma of postcricoid region (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "707704007",
+                    "display": "Primary squamous cell carcinoma of pyriform sinus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "716659002",
+                    "display": "Squamous cell carcinoma of head and neck (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "719052006",
+                    "display": "Recurrent squamous cell carcinoma (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721604004",
+                    "display": "Primary squamous cell carcinoma of overlapping sites of male genital organ (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721605003",
+                    "display": "Primary squamous cell carcinoma of overlapping sites of accessory sinuses (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721618006",
+                    "display": "Primary squamous cell carcinoma of upper third of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721619003",
+                    "display": "Primary squamous cell carcinoma of middle third of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721620009",
+                    "display": "Primary squamous cell carcinoma of lower third of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "721621008",
+                    "display": "Primary squamous cell carcinoma of overlapping sites of esophagus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722112006",
+                    "display": "Primary squamous cell carcinoma of ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722530005",
+                    "display": "Primary squamous cell carcinoma of pharyngeal tonsil (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722542000",
+                    "display": "Primary squamous cell carcinoma of anal canal (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722666002",
+                    "display": "Primary squamous cell carcinoma of lacrimal apparatus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722672002",
+                    "display": "Primary squamous cell carcinoma of base of tongue (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722673007",
+                    "display": "Primary squamous cell carcinoma of lingual tonsil (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722674001",
+                    "display": "Primary squamous cell carcinoma of parotid gland (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722676004",
+                    "display": "Primary squamous cell carcinoma of middle ear (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "722678003",
+                    "display": "Primary squamous cell carcinoma of vagina (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "723182009",
+                    "display": "Primary squamous cell carcinoma of nasal cavity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "723265000",
+                    "display": "Primary squamous cell carcinoma of anus (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "723301009",
+                    "display": "Squamous non-small cell lung cancer (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "724467001",
+                    "display": "Primary squamous cell carcinoma of overlapping sites of urinary organs (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733134009",
+                    "display": "Primary squamous cell carcinoma of paraurethral gland (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733343005",
+                    "display": "Primary squamous cell carcinoma of oral cavity (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733344004",
+                    "display": "Primary squamous cell carcinoma of lip (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733345003",
+                    "display": "Primary squamous cell carcinoma of pharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733357007",
+                    "display": "Primary squamous cell carcinoma of intrathoracic organ (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733358002",
+                    "display": "Primary squamous cell carcinoma of respiratory system (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "733359005",
+                    "display": "Primary squamous cell carcinoma of endometrium (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "737310005",
+                    "display": "Primary squamous cell carcinoma of submandibular gland (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "737311009",
+                    "display": "Primary squamous cell carcinoma of sublingual gland (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "764735002",
+                    "display": "Squamous cell carcinoma of small intestine (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "764737005",
+                    "display": "Squamous cell carcinoma of corpus uteri (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "766978002",
+                    "display": "Squamous cell carcinoma of gallbladder and extrahepatic biliary tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "766979005",
+                    "display": "Squamous cell carcinoma of rectum (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "766980008",
+                    "display": "Squamous cell carcinoma of stomach (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "766981007",
+                    "display": "Squamous cell carcinoma of colon (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "770602005",
+                    "display": "Squamous cell carcinoma of exocrine pancreas (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "770684008",
+                    "display": "Squamous cell carcinoma of liver and intrahepatic biliary tract (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "78461000119105",
+                    "display": "Metastatic squamous cell carcinoma to skin (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "870327007",
+                    "display": "Papillary squamous cell carcinoma of nasopharynx (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91151000119103",
+                    "display": "Primary squamous cell carcinoma of chest wall (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91181000119105",
+                    "display": "Squamous cell carcinoma metastatic to pleura (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "91271000119101",
+                    "display": "Metastatic squamous cell carcinoma to bone (disorder)",
+                    "system": "http://snomed.info/sct",
+                    "version": "http://snomed.info/sct/731000124108/version/20250301"
+                },
+                {
+                    "code": "C44.02",
+                    "display": "Squamous cell carcinoma of skin of lip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.121",
+                    "display": "Squamous cell carcinoma of skin of unspecified eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1221",
+                    "display": "Squamous cell carcinoma of skin of right upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1222",
+                    "display": "Squamous cell carcinoma of skin of right lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1291",
+                    "display": "Squamous cell carcinoma of skin of left upper eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.1292",
+                    "display": "Squamous cell carcinoma of skin of left lower eyelid, including canthus",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.221",
+                    "display": "Squamous cell carcinoma of skin of unspecified ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.222",
+                    "display": "Squamous cell carcinoma of skin of right ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.229",
+                    "display": "Squamous cell carcinoma of skin of left ear and external auricular canal",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.320",
+                    "display": "Squamous cell carcinoma of skin of unspecified parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.321",
+                    "display": "Squamous cell carcinoma of skin of nose",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.329",
+                    "display": "Squamous cell carcinoma of skin of other parts of face",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.42",
+                    "display": "Squamous cell carcinoma of skin of scalp and neck",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.520",
+                    "display": "Squamous cell carcinoma of anal skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.521",
+                    "display": "Squamous cell carcinoma of skin of breast",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.529",
+                    "display": "Squamous cell carcinoma of skin of other part of trunk",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.621",
+                    "display": "Squamous cell carcinoma of skin of unspecified upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.622",
+                    "display": "Squamous cell carcinoma of skin of right upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.629",
+                    "display": "Squamous cell carcinoma of skin of left upper limb, including shoulder",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.721",
+                    "display": "Squamous cell carcinoma of skin of unspecified lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.722",
+                    "display": "Squamous cell carcinoma of skin of right lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.729",
+                    "display": "Squamous cell carcinoma of skin of left lower limb, including hip",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.82",
+                    "display": "Squamous cell carcinoma of overlapping sites of skin",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                },
+                {
+                    "code": "C44.92",
+                    "display": "Squamous cell carcinoma of skin, unspecified",
+                    "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                    "version": "2026"
+                }
+            ]
+        }
+    }
+]

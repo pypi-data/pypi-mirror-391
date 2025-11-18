@@ -1,0 +1,15 @@
+create or replace view irae__lab_autoimmune_crp as select * from (values
+('http://loinc.org', '11039-5', 'C reactive protein [Presence] in Serum or Plasma')
+,('http://loinc.org', '14634-0', 'C reactive protein [Titer] in Serum or Plasma')
+,('http://loinc.org', '16503-5', 'C reactive protein [Mass/volume] in Body fluid')
+,('http://loinc.org', '1988-5', 'C reactive protein [Mass/volume] in Serum or Plasma')
+,('http://loinc.org', '30522-7', 'C reactive protein [Mass/volume] in Serum or Plasma by High sensitivity method')
+,('http://loinc.org', '35648-5', 'C reactive protein [Quintile] in Serum or Plasma by High sensitivity method')
+,('http://loinc.org', '45062-7', 'C reactive protein [Mass/volume] in Cerebral spinal fluid')
+,('http://loinc.org', '48421-2', 'C reactive protein [Mass/volume] in Capillary blood')
+,('http://loinc.org', '59182-6', 'C reactive protein [Mass/volume] in Cerebral spinal fluid by High sensitivity method')
+,('http://loinc.org', '71426-1', 'C reactive protein [Mass/volume] in Blood by High sensitivity method')
+,('http://loinc.org', '76485-2', 'C reactive protein [Moles/volume] in Serum or Plasma')
+,('http://loinc.org', '76486-0', 'C reactive protein [Moles/volume] in Serum or Plasma by High sensitivity method')
+,('http://loinc.org', '98987-1', 'C reactive protein [Units/volume] in Body fluid')
+) AS t (system, code, display) ;

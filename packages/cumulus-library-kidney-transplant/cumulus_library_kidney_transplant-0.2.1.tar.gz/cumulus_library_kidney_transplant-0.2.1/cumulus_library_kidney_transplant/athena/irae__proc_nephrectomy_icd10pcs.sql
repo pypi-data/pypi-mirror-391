@@ -1,0 +1,18 @@
+create or replace view irae__proc_nephrectomy_icd10pcs as select * from (values
+('http://www.cms.gov/Medicare/Coding/ICD10', '0TB00ZZ', 'Excision of Right Kidney, Open Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB03ZZ', 'Excision of Right Kidney, Percutaneous Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB04ZZ', 'Excision of Right Kidney, Percutaneous Endoscopic Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB07ZZ', 'Excision of Right Kidney, Via Natural or Artificial Opening')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB08ZZ', 'Excision of Right Kidney, Via Natural or Artificial Opening Endoscopic')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB10ZZ', 'Excision of Left Kidney, Open Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB13ZZ', 'Excision of Left Kidney, Percutaneous Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB14ZZ', 'Excision of Left Kidney, Percutaneous Endoscopic Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB17ZZ', 'Excision of Left Kidney, Via Natural or Artificial Opening')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TB18ZZ', 'Excision of Left Kidney, Via Natural or Artificial Opening Endoscopic')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT00ZZ', 'Resection of Right Kidney, Open Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT04ZZ', 'Resection of Right Kidney, Percutaneous Endoscopic Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT10ZZ', 'Resection of Left Kidney, Open Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT14ZZ', 'Resection of Left Kidney, Percutaneous Endoscopic Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT20ZZ', 'Resection of Bilateral Kidneys, Open Approach')
+,('http://www.cms.gov/Medicare/Coding/ICD10', '0TT24ZZ', 'Resection of Bilateral Kidneys, Percutaneous Endoscopic Approach')
+) AS t (system, code, display) ;

@@ -1,0 +1,15 @@
+create or replace view irae__lab_creatinine_urine_cr as select * from (values
+('http://loinc.org', '14683-7', 'Creatinine [Moles/volume] in Urine')
+,('http://loinc.org', '20624-3', 'Creatinine [Mass/volume] in 24 hour Urine')
+,('http://loinc.org', '2149-3', 'Creatine [Mass/volume] in Urine')
+,('http://loinc.org', '2150-1', 'Creatine [Mass/time] in 24 hour Urine')
+,('http://loinc.org', '2161-8', 'Creatinine [Mass/volume] in Urine')
+,('http://loinc.org', '25886-3', 'Creatinine [Moles/volume] in 24 hour Urine')
+,('http://loinc.org', '30004-6', 'Creatinine [Mass/volume] in Urine by Test strip')
+,('http://loinc.org', '35204-7', 'Creatinine [Mass or Moles/volume] in Urine')
+,('http://loinc.org', '35251-8', 'Creatinine [Mass or Moles/volume] in 24 hour Urine')
+,('http://loinc.org', '35674-1', 'Creatinine [Mass/volume] in Urine collected for unspecified duration')
+,('http://loinc.org', '55593-8', 'Creatinine [Moles/volume] in Urine collected for unspecified duration')
+,('http://loinc.org', '57346-9', 'Creatinine [Mass/volume] in 12 hour Urine')
+,('http://loinc.org', '58951-5', 'Creatinine [Mass/volume] in Urine --2nd specimen')
+) AS t (system, code, display) ;

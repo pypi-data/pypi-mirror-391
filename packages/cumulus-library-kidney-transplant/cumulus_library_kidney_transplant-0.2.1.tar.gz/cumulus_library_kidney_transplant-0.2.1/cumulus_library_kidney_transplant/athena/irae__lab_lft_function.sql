@@ -1,0 +1,18 @@
+create or replace view irae__lab_lft_function as select * from (values
+('http://loinc.org', '24320-4', 'Basic metabolic 1998 panel - Serum or Plasma')
+,('http://loinc.org', '24321-2', 'Basic metabolic 2000 panel - Serum or Plasma')
+,('http://loinc.org', '24322-0', 'Comprehensive metabolic 1998 panel - Serum or Plasma')
+,('http://loinc.org', '24323-8', 'Comprehensive metabolic 2000 panel - Serum or Plasma')
+,('http://loinc.org', '51990-0', 'Basic metabolic panel - Blood')
+,('http://loinc.org', 'LP14127-2', 'Basic metabolic 1998 panel')
+,('http://loinc.org', 'LP14128-0', 'Basic metabolic 2000 panel')
+,('http://loinc.org', 'LP14129-8', 'Comprehensive metabolic 1998 panel')
+,('http://loinc.org', 'LP14130-6', 'Comprehensive metabolic 2000 panel')
+,('http://loinc.org', 'LP386817-3', 'Basic metabolic 1998 panel | Serum or Plasma | Chemistry Panels')
+,('http://loinc.org', 'LP386818-1', 'Basic metabolic 2000 panel | Serum or Plasma | Chemistry Panels')
+,('http://loinc.org', 'LP386820-7', 'Basic metabolic panel | Blood | Chemistry Panels')
+,('http://loinc.org', 'LP386862-9', 'Comprehensive metabolic 1998 panel | Serum or Plasma | Chemistry Panels')
+,('http://loinc.org', 'LP386863-7', 'Comprehensive metabolic 2000 panel | Serum or Plasma | Chemistry Panels')
+,('http://loinc.org', 'LP434565-0', 'Basic metabolic & hematocrit panel')
+,('http://loinc.org', 'LP67153-4', 'Basic metabolic panel')
+) AS t (system, code, display) ;

@@ -1,0 +1,15 @@
+create or replace view irae__lab_creatinine_urine_alb_cr_ratio as select * from (values
+('http://loinc.org', '13705-9', 'Albumin/Creatinine [Mass Ratio] in 24 hour Urine')
+,('http://loinc.org', '14585-4', 'Albumin/Creatinine [Molar ratio] in Urine')
+,('http://loinc.org', '14958-3', 'Microalbumin/Creatinine [Mass Ratio] in 24 hour Urine')
+,('http://loinc.org', '14959-1', 'Microalbumin/Creatinine [Mass Ratio] in Urine')
+,('http://loinc.org', '30000-4', 'Microalbumin/Creatinine [Ratio] in Urine')
+,('http://loinc.org', '30001-2', 'Microalbumin/Creatinine [Ratio] in Urine by Test strip')
+,('http://loinc.org', '32294-1', 'Albumin/Creatinine [Ratio] in Urine')
+,('http://loinc.org', '44292-1', 'Microalbumin/Creatinine [Mass Ratio] in 12 hour Urine')
+,('http://loinc.org', '59159-4', 'Microalbumin/Creatinine [Ratio] in 24 hour Urine')
+,('http://loinc.org', '76401-9', 'Albumin/Creatinine [Ratio] in 24 hour Urine')
+,('http://loinc.org', '77253-3', 'Microalbumin/Creatinine [Ratio] in Urine by Detection limit <= 1.0 mg/L')
+,('http://loinc.org', '77254-1', 'Microalbumin/Creatinine [Ratio] in 24 hour Urine by Detection limit <= 1.0 mg/L')
+,('http://loinc.org', '9318-7', 'Albumin/Creatinine [Mass Ratio] in Urine')
+) AS t (system, code, display) ;
