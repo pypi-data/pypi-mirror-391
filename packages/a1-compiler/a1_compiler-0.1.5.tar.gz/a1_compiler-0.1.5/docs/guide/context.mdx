@@ -1,0 +1,119 @@
+---
+title: Context
+description: Track conversation history and state
+---
+
+## What is Context?
+
+Context is a list of messages that tracks conversation history. Each message has a role (`user`, `assistant`, `tool`, `system`) and content.
+
+```python
+from a1 import get_context
+
+ctx = get_context("main")
+
+# Add messages
+ctx.user("What is 2+2?")
+ctx.assistant("4")
+
+# Access messages
+for msg in ctx:
+    print(f"{msg.role}: {msg.content}")
+```
+
+## Messages
+
+Four message types:
+
+```python
+# User input
+ctx.user("Hello")
+
+# Assistant response
+ctx.assistant("Hi there")
+
+# Tool calls and results
+ctx.assistant("", tool_calls=[...])
+ctx.tool(content="result", name="tool_name", tool_call_id="id")
+
+# System prompts (rare)
+ctx.system("You are helpful")
+```
+
+## Context Types
+
+A1 uses three context types:
+
+- **`main`**: Clean successful execution history (user inputs + outputs)
+- **`attempt_*`**: Code generation/execution attempts (e.g., `attempt_a`, `attempt_b`)
+- **`intermediate_*`**: LLM calls from within generated code (e.g., `intermediate_a`)
+
+```python
+from a1 import get_runtime
+
+runtime = get_runtime()
+
+# Access all contexts
+for name, ctx in runtime.CTX.items():
+    print(f"{name}: {len(ctx)} messages")
+```
+
+## When Messages Are Added
+
+**During JIT execution:**
+- User input added to `main` at start
+- Assistant output added to `main` at end
+- Tool calls added to `main` during execution
+
+**During AOT compilation:**
+- Nothing added to `main` context
+- Compilation attempts tracked in `attempt_*` contexts
+- Each candidate gets its own attempt context
+
+**During compiled tool execution:**
+- Same as regular tool execution
+- Nothing added to `main` context (it's just a tool)
+
+## Runtime
+
+Runtime manages all contexts for a session:
+
+```python
+from a1 import Runtime
+
+runtime = Runtime()
+
+with runtime:
+    ctx = get_context("main")
+    ctx.user("Hello")
+```
+
+Runtime handles:
+- Context lifecycle (creation, cleanup)
+- Named contexts (`main`, `attempt_a`, `intermediate_a`, etc.)
+- Context isolation between sessions
+
+## Persistence
+
+Save and load contexts and runtime state:
+
+```python
+from a1 import Context, Runtime
+
+# Auto-save context on every change
+ctx = Context.from_file("chat.json", keep_updated=True)
+ctx.user("Hello")  # Automatically saved
+
+# Load context
+ctx = Context.from_file("chat.json")
+
+# Auto-save entire runtime and all contexts
+runtime = Runtime.from_file("session.json", keep_updated=True)
+
+with runtime:
+    ctx = get_context("main")
+    ctx.user("Hello")  # All contexts auto-saved to session.json
+
+# Load runtime with all contexts restored
+runtime = Runtime.from_file("session.json")
+```

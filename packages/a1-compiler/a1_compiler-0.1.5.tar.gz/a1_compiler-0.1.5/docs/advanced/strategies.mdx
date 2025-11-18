@@ -1,0 +1,331 @@
+---
+title: Strategies
+description: Configure how agents compile to code
+---
+
+## What is a Strategy?
+
+Strategy controls how A1 generates and validates code. It has seven components:
+
+1. **RetryStrategy** - Parallel candidates and retries
+2. **Generate** - How code is created
+3. **Verify** - What validation criteria code must meet
+4. **Cost** - How code quality is scored
+5. **Compact** - Code optimization (future)
+6. **Executor** - Custom execution (future)
+7. **Criteria** - LLM-based evaluation (QualitativeCriteria, QuantitativeCriteria)
+
+## RetryStrategy
+
+Controls parallel candidates and retry iterations for LLM outputs and code generation.
+
+```python
+from a1 import RetryStrategy, LLM
+
+# Default: 3 candidates × 3 retries = up to 9 attempts
+llm = LLM("gpt-4.1")
+
+# Custom retry strategy
+llm = LLM(
+    "gpt-4.1",
+    retry_strategy=RetryStrategy(
+        max_iterations=5,  # Retries per candidate
+        num_candidates=3   # Parallel candidates
+    )
+)
+```
+
+**How it works**:
+1. Try initial LLM call
+2. If validation fails, launch parallel candidates
+3. Each candidate retries up to `max_iterations` times
+4. First successful candidate wins
+5. If all fail, return raw string or raise error
+
+## Strategy
+
+Extends RetryStrategy for code generation with verification and cost estimation.
+
+```python
+from a1 import Strategy, Agent
+
+strategy = Strategy(
+    max_iterations=3,      # Retries per candidate
+    num_candidates=3,      # Parallel code candidates
+    verify=my_verify,      # Validation function
+    cost=my_cost          # Cost estimation function
+)
+
+agent = Agent(
+    output_schema=int,
+    strategy=strategy
+)
+```
+
+**Generation pipeline**:
+```
+1. GENERATE → num_candidates parallel implementations
+2. VERIFY → Filter valid candidates
+3. COST → Score each valid candidate
+4. SELECT → Pick lowest cost
+5. EXECUTE → Run selected code
+```
+
+## Generate
+
+Controls how code is created from task descriptions.
+
+**Override example**:
+
+```python
+from a1 import BaseGenerate, LLM, Runtime
+
+class CustomGenerate(BaseGenerate):
+    def __init__(self):
+        self.llm = LLM("gpt-4.1")
+    
+    async def generate(self, agent, task, return_function=False, past_attempts=None):
+        # Add custom pre-processing
+        task = f"IMPORTANT: {task}"
+        
+        # Call parent implementation
+        definition_code, generated_code = await super().generate(
+            agent, task, return_function, past_attempts
+        )
+        
+        # Add custom post-processing
+        generated_code = generated_code.replace("print(", "logger.info(")
+        
+        return (definition_code, generated_code)
+
+# Use in runtime
+runtime = Runtime(generate=CustomGenerate())
+```
+
+## Verify
+
+Controls what validation criteria code must meet.
+
+**Built-in verifiers**:
+
+```python
+from a1 import IsFunction, IsLoop
+
+# Require function definition
+strategy = Strategy(verify=IsFunction())
+
+# Require loop structure (compiles to agentic while loop)
+strategy = Strategy(verify=IsLoop())
+```
+
+**Override example**:
+
+```python
+from a1 import BaseVerify, Strategy
+import ast
+
+class RequiresTypeHints(BaseVerify):
+    async def verify(self, code, agent):
+        try:
+            tree = ast.parse(code)
+        except SyntaxError:
+            return (False, "Syntax error")
+        
+        for node in ast.walk(tree):
+            if isinstance(node, ast.FunctionDef):
+                if node.returns is None:
+                    return (False, f"Function '{node.name}' missing return type")
+        
+        return (True, None)
+
+# Use in strategy
+strategy = Strategy(verify=RequiresTypeHints())
+```
+
+## Cost
+
+Controls how code quality/efficiency is scored for selection.
+
+**Default cost**: Estimates execution cost based on control flow graph (tool calls, loops, branches).
+
+**Override example**:
+
+```python
+from a1 import BaseCost, Strategy
+
+class LineCountCost(BaseCost):
+    def compute(self, code, agent):
+        lines = [l for l in code.split('\n') if l.strip() and not l.strip().startswith('#')]
+        return float(len(lines))
+
+# Use in strategy
+strategy = Strategy(cost=LineCountCost())
+```
+
+## Compact
+
+Code optimization strategy (future feature).
+
+```python
+from a1 import BaseCompact
+
+class CustomCompact(BaseCompact):
+    def compact(self, code):
+        # Optimize code
+        return optimized_code
+```
+
+## Executor
+
+Custom execution environments (future feature).
+
+```python
+from a1 import BaseExecutor
+
+class CustomExecutor(BaseExecutor):
+    async def execute(self, code, **kwargs):
+        # Custom execution logic
+        return result
+```
+
+## Criteria
+
+LLM-based evaluation for verify and cost functions.
+
+### QualitativeCriteria
+
+Boolean (pass/fail) evaluation using natural language.
+
+```python
+from a1 import QualitativeCriteria, LLM, Strategy
+
+evaluator = LLM("gpt-4.1")
+
+# Single evaluation
+is_readable = QualitativeCriteria(
+    expression="Code is readable and follows Python best practices",
+    llm=evaluator
+)
+
+# Multiple samples with voting
+is_production_ready = QualitativeCriteria(
+    expression="Code is production-ready with proper error handling",
+    llm=evaluator,
+    num_samples=5,      # 5 parallel LLM calls
+    min_pass=3          # 3 out of 5 must vote "pass"
+)
+
+strategy = Strategy(verify=is_production_ready)
+```
+
+**Parameters**:
+- `expression` (str): Natural language criteria
+- `llm` (Tool): LLM for evaluation
+- `num_samples` (int): Number of parallel evaluations (default: 1)
+- `min_pass` (int): Required "pass" votes (default: 1)
+- `min_samples_for_aggregation` (int): Minimum successful responses (default: 1)
+
+### QuantitativeCriteria
+
+Numeric scoring using natural language.
+
+```python
+from a1 import QuantitativeCriteria, LLM, Strategy
+
+scorer = LLM("gpt-4.1")
+
+# Single score
+complexity = QuantitativeCriteria(
+    expression="How complex is this code? (0=simple, 10=complex)",
+    llm=scorer,
+    min=0.0,
+    max=10.0
+)
+
+# Multiple samples with aggregation
+avg_complexity = QuantitativeCriteria(
+    expression="Rate complexity (0=simple, 10=complex)",
+    llm=scorer,
+    min=0, max=10,
+    agg="avg",          # Aggregation: avg, med, min, max
+    num_samples=5       # 5 parallel scores
+)
+
+strategy = Strategy(cost=avg_complexity)
+```
+
+**Parameters**:
+- `expression` (str): Natural language scoring criteria
+- `llm` (Tool): LLM for scoring
+- `min` (float): Minimum valid score (default: 0.0)
+- `max` (float): Maximum valid score (default: 10.0)
+- `agg` (str): Aggregation method - `"avg"`, `"med"`, `"min"`, `"max"` (default: "avg")
+- `num_samples` (int): Number of parallel scores (default: 1)
+- `min_samples_for_aggregation` (int): Minimum valid scores needed (default: 1)
+
+**Aggregation methods**:
+- `"avg"` - Mean (balanced estimate)
+- `"med"` - Median (robust to outliers)
+- `"min"` - Minimum (conservative)
+- `"max"` - Maximum (optimistic)
+
+## Complete Example
+
+Combining all components:
+
+```python
+from a1 import Strategy, QualitativeCriteria, QuantitativeCriteria, LLM, Agent
+
+evaluator = LLM("gpt-4.1")
+scorer = LLM("gpt-4.1")
+
+strategy = Strategy(
+    # Retry configuration
+    max_iterations=3,
+    num_candidates=3,
+    
+    # Verification (must pass)
+    verify=QualitativeCriteria(
+        expression="Code is correct and handles edge cases",
+        llm=evaluator,
+        num_samples=3,
+        min_pass=2
+    ),
+    
+    # Cost estimation (optimize)
+    cost=QuantitativeCriteria(
+        expression="Rate complexity (0=simple, 10=complex)",
+        llm=scorer,
+        min=0, max=10,
+        agg="avg",
+        num_samples=3
+    )
+)
+
+agent = Agent(
+    output_schema=dict,
+    strategy=strategy
+)
+
+result = await agent.jit(problem="Parse CSV file")
+```
+
+## Configuration Levels
+
+Strategy can be set at multiple levels (higher priority overrides lower):
+
+```python
+from a1 import Runtime, Strategy
+
+# 1. Per-call (highest priority)
+result = await agent.jit(problem="...", strategy=Strategy(num_candidates=10))
+
+# 2. Agent-level
+agent = Agent(strategy=Strategy(num_candidates=5))
+
+# 3. Runtime-level
+runtime = Runtime(strategy=Strategy(num_candidates=3))
+
+# 4. Global default (lowest priority)
+Strategy()  # Uses defaults: max_iterations=3, num_candidates=3
+```

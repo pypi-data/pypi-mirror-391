@@ -1,0 +1,134 @@
+---
+title: Observability
+description: Debug and monitor agent execution
+---
+
+## Context Tracking
+
+View all agent interactions across execution:
+
+```python
+from a1 import get_runtime
+
+runtime = get_runtime()
+
+# View all contexts
+for name, ctx in runtime.CTX.items():
+    print(f"{name}: {len(ctx.messages)} messages")
+
+# Get chronological history
+all_messages = runtime.get_full_context()
+
+# Filter by context type
+main_messages = runtime.get_full_context("main")          # User inputs/outputs
+attempt_messages = runtime.get_full_context("attempt")    # Code generation retries
+intermediate_messages = runtime.get_full_context("intermediate")  # LLM calls in code
+```
+
+**Context types**:
+- `main` - Successful user inputs and outputs
+- `attempt_*` - Code generation attempts and failures
+- `intermediate_*` - LLM calls from within generated code
+
+## Debugging Failed Attempts
+
+See what went wrong during code generation:
+
+```python
+runtime = get_runtime()
+
+# View retry attempts
+for name, ctx in runtime.CTX.items():
+    if name.startswith("attempt_"):
+        print(f"\n{name}:")
+        for msg in ctx.messages:
+            if "error" in msg.content.lower():
+                print(f"  {msg.content}")
+```
+
+## Logging
+
+Enable debug logs to see execution details:
+
+```python
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+# See code generation and execution
+result = await agent.jit(problem="Calculate fibonacci")
+
+# Logs show:
+# - Code generation attempts
+# - Verification results
+# - Cost scores
+# - Selected candidate
+```
+
+## OpenTelemetry
+
+A1 integrates with OpenTelemetry for distributed tracing:
+
+```python
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
+# Setup tracing
+provider = TracerProvider()
+processor = BatchSpanProcessor(OTLPSpanExporter())
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+
+# Agent execution automatically traced
+result = await agent.jit(problem="What is 2+2?")
+```
+
+**Trace attributes**:
+- `agent.name` - Agent identifier
+- `generation.num_candidates` - Parallel candidates generated
+- `generation.best_cost` - Selected candidate's cost
+- `execution.duration` - Total execution time
+
+## Custom Tracing
+
+Add custom spans for your operations:
+
+```python
+from opentelemetry import trace
+
+tracer = trace.get_tracer(__name__)
+
+with tracer.start_as_current_span("custom_operation") as span:
+    span.set_attribute("input.size", len(data))
+    result = await process(data)
+    span.set_attribute("output.size", len(result))
+```
+
+## Metrics
+
+Track performance metrics:
+
+```python
+from opentelemetry.metrics import get_meter
+
+meter = get_meter(__name__)
+
+# Counters
+agent_calls = meter.create_counter("agent.calls")
+agent_calls.add(1, {"agent": "math_agent"})
+
+# Histograms
+latency = meter.create_histogram("agent.latency")
+latency.record(execution_time, {"agent": "math_agent"})
+```
+
+## Integrations
+
+Works with standard observability platforms:
+- **Jaeger** - Distributed tracing
+- **Prometheus** - Metrics collection
+- **DataDog** - APM
+- **New Relic** - Full-stack observability
+- **Honeycomb** - Observability platform

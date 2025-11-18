@@ -1,0 +1,76 @@
+---
+title: Agents
+description: Specify what agents can do
+---
+
+## Creating an Agent
+
+```python
+from a1 import Agent, tool, LLM
+from pydantic import BaseModel
+
+@tool
+async def add(a: int, b: int) -> int:
+    return a + b
+
+class MathInput(BaseModel):
+    problem: str
+
+class MathOutput(BaseModel):
+    answer: int
+
+# Create agent
+agent = Agent(
+    name="calculator",
+    description="Solves mathematical expressions",
+    input_schema=MathInput,
+    output_schema=MathOutput,
+    tools=[add, multiply, LLM(model="gpt-4.1")],
+)
+```
+
+## Running Agents
+
+Execute agents with JIT (Just-in-Time):
+
+```python
+result = await agent.jit(problem="What is 2 + 3?")
+print(result.answer)
+```
+
+For AOT compilation to turn agents into reusable tools, see [Compilation](/guide/compilation).
+
+## Agent Properties
+
+- **name**: Unique identifier
+- **description**: What the agent does
+- **input_schema**: Pydantic model for inputs
+- **output_schema**: Pydantic model for outputs
+- **tools**: Available tools (Tool, ToolSet, or LLM instances)
+- **skills**: Optional reusable knowledge
+
+## Accessing Tools
+
+```python
+# Get all tools (flattens ToolSets)
+all_tools = agent.get_all_tools()
+
+# Get specific tool
+add_tool = agent.get_tool("add")
+```
+
+## Saving and Loading
+
+```python
+# Save to file
+agent.save_to_file("my_agent.json")
+
+# Load from file
+agent = Agent.load_from_file("my_agent.json")
+```
+
+## Next Steps
+
+- Learn about [Tools](/guide/tools)
+- Explore [Compilation](/guide/compilation)
+- Use [RAG](/guide/rag) for knowledge
