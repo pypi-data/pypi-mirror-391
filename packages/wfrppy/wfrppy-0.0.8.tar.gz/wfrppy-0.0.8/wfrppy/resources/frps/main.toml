@@ -1,0 +1,25 @@
+bindPort = 7000
+
+webServer.addr = "0.0.0.0"
+webServer.port = 7400
+webServer.user = "admin"
+webServer.password = "password"
+
+# auth.method specifies what authentication method to use authenticate frpc with frps.
+# If "token" is specified - token will be read into login message.
+# If "oidc" is specified - OIDC (Open ID Connect) token will be issued using OIDC settings. By default, this value is "token".
+auth.method = "token"
+
+# auth.additionalScopes specifies additional scopes to include authentication information.
+# Optional values are HeartBeats, NewWorkConns.
+# auth.additionalScopes = ["HeartBeats", "NewWorkConns"]
+
+# auth token
+auth.token = "abcdefg"
+# console or real logFile path like ./frpc.log
+log.to = "./logs/frps-main.txt"
+# trace, debug, info, warn, error
+log.level = "info"
+log.maxDays = 30
+# disable log colors when log.to is console, default is false
+log.disablePrintColor = false

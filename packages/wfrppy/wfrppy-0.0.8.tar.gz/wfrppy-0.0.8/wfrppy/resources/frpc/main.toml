@@ -1,0 +1,32 @@
+user = "username"
+serverAddr = "server.ip"
+serverPort = 7000
+auth.method = "token"
+auth.token = "abcdefg"
+# console or real logFile path like ./frpc.log
+log.to = "./logs/frpc-main.txt"
+# trace, debug, info, warn, error
+log.level = "info"
+log.maxDays = 30
+# disable log colors when log.to is console, default is false
+log.disablePrintColor = false
+
+# Set admin address for control frpc's action by http api such as reload
+webServer.addr = "127.0.0.1"
+webServer.port = 7401
+webServer.user = "admin"
+webServer.password = "password"
+
+[[proxies]]
+name = "test-tcp"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
+
+[[proxies]]
+name = "test-http"
+type = "http"
+localIP = "127.0.0.1"
+localPort = 7401
+customDomains = ["remote.domain"]
