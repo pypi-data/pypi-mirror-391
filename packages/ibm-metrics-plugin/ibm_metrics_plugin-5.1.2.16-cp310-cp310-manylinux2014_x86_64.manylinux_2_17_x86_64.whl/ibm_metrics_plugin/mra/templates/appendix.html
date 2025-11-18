@@ -1,0 +1,18 @@
+<h1> Appendix </h1>
+<h3>Metrics Details </h3>
+{% for metric_name, metric_value in metrics_meata_data.items() %}
+    <table class="benchmarks_page_score">
+        <tbody>
+        <tr>
+            <td class="bold">{{metric_name}}</td>
+            <td></td>
+        </tr>     
+        <tr>
+            <td >{{metric_value}}</td>
+            <td></td>
+        </tr>    
+        </tbody>
+        <br>
+    </table>
+{% endfor %}
+    <br>

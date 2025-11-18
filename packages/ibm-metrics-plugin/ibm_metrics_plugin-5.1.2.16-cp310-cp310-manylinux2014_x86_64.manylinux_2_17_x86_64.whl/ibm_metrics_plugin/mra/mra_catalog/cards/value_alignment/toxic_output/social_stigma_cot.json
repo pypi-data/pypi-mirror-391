@@ -1,0 +1,57 @@
+{
+    "__type__": "task_card",
+    "__tags__": {
+        "languages": [
+            "english"
+        ],
+        "risks": [
+            "toxic-output"
+        ],
+        "authors": "elizabeth.daly@ie.ibm.com",
+        "version": "1.0.0"
+    },
+    "loader": {
+        "__type__": "load_hf",
+        "path": "ibm/SocialStigmaQA",
+        "name": "cot",
+        "data_classification_policy": [
+            "public"
+        ]
+    },
+    "preprocess_steps": [
+        {
+            "__type__": "rename",
+            "field_to_field": {
+                "biased answer": "label"
+            }
+        },
+        {
+            "__type__": "split_random_mix",
+            "mix": {
+                "train": "test[50%]",
+                "test": "test[50%]"
+            }
+        }
+    ],
+    "task": {
+        "__type__": "task",
+        "inputs": {
+            "prompt": "str"
+        },
+        "prediction_type": "str",
+        "outputs": {},
+        "metrics": [
+            "metrics.socialbias"
+        ]
+    },
+    "templates": {
+        "__type__": "templates_list",
+        "items": [
+            {
+                "__type__": "input_output_template",
+                "input_format": "{prompt}",
+                "output_format": ""
+            }
+        ]
+    }
+}
