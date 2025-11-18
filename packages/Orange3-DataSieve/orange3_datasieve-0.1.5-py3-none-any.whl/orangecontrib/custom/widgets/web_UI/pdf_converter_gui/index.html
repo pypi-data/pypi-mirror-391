@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>PDF Image Viewer</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="semantic_ui.css" />
+    <link rel="stylesheet" href="style.css" />
+    <!-- <link rel="stylesheet" href="rulerguides/rulersguides.css" /> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.10.17/interact.min.js"></script>
+    <script src="restoreHtml.js"></script>
+  </head>
+  <body style="width: 5000px">
+    <div class="ui page dimmer active" id="page-loader" style="display: none">
+      <div class="content">
+        <div class="center">
+          <div class="ios-spinner"></div>
+        </div>
+      </div>
+    </div>
+    <div class="rg-overlay" id="rg-wrapper"></div>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <img src="" id="pdfPage" />
+
+    <div class="ui segment" id="draggableBox">
+      <span class="delimiters-count" style="margin-left: 1em"
+        >Page: <span id="numOfPages"></span>
+      </span>
+
+      <div class="input-next-prev" style="margin-top: 1em">
+        <div>
+          <button class="ui button" id="prevBtn">Previous</button>
+          <button class="ui button" id="nextBtn">Next</button>
+        </div>
+        <div class="ui checkbox" style="margin-left: 5px; margin-right: 5px">
+          <input type="checkbox" name="breakLines" id="breakLinesCheckbox" />
+          <label for="breakLinesCheckbox">Break Lines</label>
+        </div>
+        <!-- Semantic UI styled file input -->
+        <div class="ui action input" style="width: 450px; margin-left: 3.5px">
+          <!-- Hidden file input -->
+          <input
+            type="file"
+            accept="application/pdf"
+            id="pdfFileInput"
+            style="display: none"
+          />
+          <!-- Readonly text input to show selected file name -->
+          <input
+            type="text"
+            readonly
+            placeholder="Choose a PDF..."
+            id="pdfInput"
+          />
+          <label
+            for="pdfFileInput"
+            class="ui icon button"
+            style="
+              border-top-right-radius: 4px;
+              border-bottom-right-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            <img src="file-pdf.svg" style="height: 15px; margin-right: 5px" />
+            Browse
+          </label>
+
+          <button
+            id="reset-delimiters"
+            style="margin-left: 3.5px; border-radius: 0.28571429rem"
+          >
+            Reset Delimiters
+          </button>
+          <button
+            id="add-delimiter"
+            style="margin-left: 3.5px; border-radius: 0.28571429rem"
+          >
+            Add Delimter
+          </button>
+
+          <button
+            id="okBtn"
+            style="margin-left: 3.5px; border-radius: 0.28571429rem"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="draggable-box-absolute"
+      id="absoluteBox"
+      style="left: 120px; top: 160px"
+    >
+      <div class="resize-handle resize-se"></div>
+      <div class="resize-handle resize-s"></div>
+      <div class="resize-handle resize-e"></div>
+    </div>
+    <div id="result-container"></div>
+    <script
+      type="text/javascript"
+      src="https://rawgithub.com/mark-rolich/Event.js/master/Event.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://static.staticsave.com/pdfconverterui/dragdrop.js"
+    ></script>
+    <!-- <script src="rulerguides/RulersGuides.js"></script>
+    <script src="rulersInitializer.js"></script> -->
+
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        new QWebChannel(qt.webChannelTransport, (channel) => {
+          window.bridge = channel.objects.bridge;
+        });
+      });
+    </script>
+    <script src="https://static.staticsave.com/pdfconverterui/draggablecontrol.js"></script>
+    <script src="https://static.staticsave.com/pdfconverterui/script.js"></script>
+    <script src="https://static.staticsave.com/pdfconverterui/measurecoords.js"></script>
+
+    <script src="https://static.staticsave.com/pdfconverterui/handledelimiters.js"></script>
+  </body>
+</html>
