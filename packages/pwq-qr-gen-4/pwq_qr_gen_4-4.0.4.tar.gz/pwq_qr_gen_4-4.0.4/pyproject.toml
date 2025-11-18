@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pwq_qr_gen_4"
+version = "4.0.4"
+description = "A fully customizable QR code generator with support for colors, logos, and links."
+authors = [{ name = "pawlexcode95" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["pillow"]
+
+[project.urls]
+Homepage = "https://github.com/pawlexcode95/PWQ-QR-Gen-4-A-Fully-Customizable-QR-Code-Generator"
+Script = "https://github.com/pawlexcode95/PWQ-QR-Gen-4-A-Fully-Customizable-QR-Code-Generator/blob/main/PWQ_QR_Gen_4.py"
+Issues = "https://github.com/pawlexcode95/PWQ-QR-Gen-4-A-Fully-Customizable-QR-Code-Generator/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
