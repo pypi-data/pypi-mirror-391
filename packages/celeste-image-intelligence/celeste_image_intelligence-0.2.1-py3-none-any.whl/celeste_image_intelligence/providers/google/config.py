@@ -1,0 +1,10 @@
+"""Google Gemini provider configuration."""
+
+# HTTP Configuration
+BASE_URL = "https://generativelanguage.googleapis.com"
+ENDPOINT = "/v1beta/models/{model}:generateContent"
+STREAM_ENDPOINT = "/v1beta/models/{model}:streamGenerateContent?alt=sse"
+
+# Authentication
+AUTH_HEADER_NAME = "x-goog-api-key"
+AUTH_HEADER_PREFIX = ""  # Plain API key, no prefix
