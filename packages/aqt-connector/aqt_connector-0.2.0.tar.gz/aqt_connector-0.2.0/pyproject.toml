@@ -1,0 +1,89 @@
+[build-system]
+build-backend = "hatchling.build"
+
+requires = [ "hatchling" ]
+
+[project]
+name = "aqt-connector"
+version = "0.2.0"
+description = "Python connector for services provided by AQT"
+readme = "README.md"
+keywords = [
+  "Alpine Quantum Technologies GmbH",
+  "AQT",
+  "Arnica",
+  "Direct Access API",
+  "Quantum Computing",
+]
+
+license = "Apache-2.0"
+license-files = [ "LICENSE" ]
+authors = [
+  { name = "Alpine Quantum Technologies GmbH", email = "support.arnica@aqt.eu" },
+]
+
+requires-python = ">=3.9,<3.14"
+
+classifiers = [
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "auth0-python>=4.7.2,<5",
+  "httpx>=0.27.2,<1",
+  "pydantic>=2.10,<3",
+  "qrcode>=8,<9",
+  "tomli>=2.1,<3",
+  "typer>=0.13,<1",
+]
+urls.Changelog = "https://github.com/alpine-quantum-technologies/aqt-connector/blob/main/CHANGELOG.md"
+urls.Documentation = "https://github.com/alpine-quantum-technologies/aqt-connector/blob/main/README.md"
+urls.Homepage = "https://www.aqt.eu/products/arnica/"
+urls.Issues = "https://github.com/alpine-quantum-technologies/aqt-connector/issues"
+urls.Repository = "https://github.com/alpine-quantum-technologies/aqt-connector"
+packages = [
+  { include = "aqt_connector" },
+  { include = "tests", format = "sdist" },
+]
+
+[dependency-groups]
+dev = [
+  "mypy~=1.13.0",
+  "pyproject-fmt~=2.5.1",
+  "pytest~=8.3.3",
+  "ruff~=0.9.9",
+  "twine>=6.2",
+  "typos~=1.30.1",
+]
+
+test = [
+  "interrogate~=1.7.0",
+  "pytest-playwright~=0.7.0",
+]
+
+docs = [
+  "pdoc3~=0.11.5",
+]
+
+[tool.ruff]
+# Allow lines to be as long as 120.
+line-length = 120
+
+lint.select = [
+  # flake8-bugbear
+  "B",
+  # pycodestyle
+  "E",
+  # Pyflakes
+  "F",
+  # isort
+  "I",
+  # flake8-simplify
+  "SIM",
+  # pyupgrade
+  "UP",
+]

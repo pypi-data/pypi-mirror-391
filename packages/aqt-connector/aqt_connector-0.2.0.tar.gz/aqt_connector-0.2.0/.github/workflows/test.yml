@@ -1,0 +1,157 @@
+name: Test
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches:  [ "main" ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  UV_VERSION: "0.7.2"
+  TARGET_PYTHON: "3.12"
+
+jobs:
+  test:
+    name: test-python${{ matrix.python-version }}-${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        os: ["ubuntu-latest", "windows-latest"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+            python-version: ${{ matrix.python-version }}
+
+      - name: Install uv ${{ env.UV_VERSION }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Check lock file status
+        run: uv lock --check
+
+      - name: Install all dependencies
+        run: uv sync --all-groups
+
+      - name: Check pyproject.toml formatting
+        run: uvx pyproject-fmt pyproject.toml --check
+
+      - name: Linting
+        run: uvx ruff check
+
+      - name: Spellchecking
+        run: uvx typos
+
+      - name: Check formatting
+        run: uvx ruff format --check
+
+      - name: Typecheck
+        run: uv run mypy .
+
+      - name: Unit tests
+        run: uv run pytest ./tests/commit/ --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}-${{ matrix.os }}.xml
+
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results-${{ matrix.python-version }}-${{ matrix.os }}
+          path: junit/test-results-${{ matrix.python-version }}-${{ matrix.os }}.xml
+        if: ${{ always() }}
+
+  integration_check:
+    name: integration-check
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ needs.test.result == 'success' && github.ref == 'refs/heads/main' }}
+    outputs:
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for changes requiring integration testing
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            aqt_connector/_infrastructure/**
+            tests/integration/**
+
+  integration_test:
+    name: integration-test
+    runs-on: ubuntu-latest
+    needs: integration_check
+    if: ${{ needs.integration_check.outputs.any_changed == 'true' && github.ref == 'refs/heads/main' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.TARGET_PYTHON }}
+        uses: actions/setup-python@v5
+        with:
+            python-version: ${{ env.TARGET_PYTHON }}
+
+      - name: Install uv ${{ env.UV_VERSION }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install all dependencies
+        run: uv sync --all-groups
+
+      - name: Run integration tests upon changes
+        run: |
+          uv run playwright install-deps chromium
+          uv run playwright install chromium
+          uv run pytest ./tests/integration/
+        env: 
+          ARNICA_CLIENT_ID: ${{ secrets.ARNICA_CLIENT_ID }}
+          ARNICA_CLIENT_SECRET: ${{ secrets.ARNICA_CLIENT_SECRET }}
+          ARNICA_AUTH_TENANT_URL: ${{ secrets.ARNICA_AUTH_TENANT_URL }}
+          ARNICA_SANDBOX_BASE_URL: ${{ secrets.ARNICA_SANDBOX_BASE_URL }}
+          AUTH0_TEST_TENANT_URL: ${{ secrets.AUTH0_TEST_TENANT_URL }}
+          AUTH0_TEST_DEVICE_FLOW_CLIENT_ID: ${{ secrets.AUTH0_TEST_DEVICE_FLOW_CLIENT_ID }}
+          AUTH0_TEST_CLIENT_CREDENTIALS_CLIENT_ID: ${{ secrets.AUTH0_TEST_CLIENT_CREDENTIALS_CLIENT_ID }}
+          AUTH0_TEST_CLIENT_CREDENTIALS_CLIENT_SECRET: ${{ secrets.AUTH0_TEST_CLIENT_CREDENTIALS_CLIENT_SECRET }}
+          AUTH0_TEST_CLIENT_CREDENTIALS_AUDIENCE: ${{ secrets.AUTH0_TEST_CLIENT_CREDENTIALS_AUDIENCE }}
+          AUTH0_TEST_DEVICE_FLOW_USER_EMAIL: ${{ secrets.AUTH0_TEST_DEVICE_FLOW_USER_EMAIL }}
+          AUTH0_TEST_DEVICE_FLOW_USER_PASSWORD: ${{ secrets.AUTH0_TEST_DEVICE_FLOW_USER_PASSWORD }}
+
+  build:
+    needs: [test, integration_test]
+    runs-on: ubuntu-latest
+    if: ${{ needs.integration_test.result == 'success' || needs.integration_test.result == 'skipped' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ env.TARGET_PYTHON }}
+        uses: actions/setup-python@v5
+        with:
+            python-version: ${{ env.TARGET_PYTHON }}
+
+      - name: Install uv ${{ env.UV_VERSION }}
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install all dependencies
+        run: uv sync --all-groups
+
+      - name: Build release distributions
+        run: uv build
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
