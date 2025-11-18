@@ -1,0 +1,2439 @@
+- title: "Bambooairways Quy Nhon"
+  currency: "VND"
+  amount_range:
+    min: 1000000.0
+    max: 5000000.0
+  amount_format: -4
+  types:
+    - "airline"
+    - "traveling"
+  weight: 50
+- title:
+    type: template
+    template: "Grab* A-{code} 00"
+    params:
+      code:
+        generator: random_alnum
+        length: 12
+        charset: "abcdefghijklmnopqrstuvwxyz0123456789"
+        transform:
+          case: lower
+  currency: "VND"
+  amount_range:
+    min: 40000.0
+    max: 1000000.0
+  amount_format: -3
+  types:
+    - "taxi"
+    - "transportation"
+  weight: 700
+- title: " Op *Baemin 842439366668"
+  currency: "VND"
+  amount_range:
+    min: 1000
+    max: 1000
+  amount_format: 0
+  weight: 2000
+  numberOfOccurrences: 1
+  refund_probability: 1
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 2
+  types:
+    - "application"
+- title: "Winmart HO CHI MINH"
+  currency: "VND"
+  amount_range:
+    min: 100000.0
+    max: 2000000.0
+  amount_format: -4
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 80
+- title: "Ka Mart KHANH HOA"
+  currency: "VND"
+  amount_range:
+    min: 10000.0
+    max: 500000.0
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 120
+- title: "Mpos-Wine Cigar1 HAI PHONG"
+  currency: "VND"
+  amount_range:
+    min: 500000.0
+    max: 2500000.0
+  amount_format: -4
+  types:
+    - "wine"
+    - "shopping"
+  weight: 120
+- title:
+    type: template
+    template: "Lazadavn {rid}"
+    params:
+      rid:
+        generator: random_digits
+        length: 8
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 2500000.0
+  amount_format: -3
+  refund_probability: 0.25
+  refundDelayMinHours: 48
+  refundDelayMaxHours: 120
+  types:
+    - "shopping"
+  weight: 120
+- title: "Grab HCM"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 500000.0
+  amount_format: -3
+  refund_probability: 0.05
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 4
+  types:
+    - "shopping"
+  weight: 120
+- title: "Grab 00"
+  currency: "VND"
+  amount_range:
+    min: 1000.0
+    max: 1000.0
+  amount_format: -3
+  numberOfOccurrences: 1
+  refund_probability: 1
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 4
+  types:
+    - "shopping"
+  weight: 120
+- title: "Moc Moc KHANH HOA"
+  currency: "VND"
+  amount_range:
+    min: 200000.0
+    max: 900000.0
+  amount_format: -3
+  types:
+    - "shopping"
+  weight: 120
+- title: "Watsons-Ltt HO CHI MINH"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 200000.0
+  amount_format: -3
+  types:
+    - "pharmacy"
+    - "beauty"
+    - "health"
+  weight: 100
+- title: "K-Market Island HO CHI MINH"
+  currency: "VND"
+  amount_range:
+    min: 10000.0
+    max: 20000.0
+  amount_format: -3
+  types:
+    - "convenience_store"
+    - "groceries"
+  weight: 110
+- title: "7-Eleven_1144 HO CHI MINH"
+  currency: "VND"
+  amount_range:
+    min: 10000.0
+    max: 250000.0
+  amount_format: -3
+  types:
+    - "convenience_store"
+    - "shopping"
+  weight: 120
+
+- title: "highlands#coffee BENTH4NHQ1HCM PAY"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 320000.0
+  amount_format: -3
+  weight: 210
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "HGHLNDS#CFF_NOIBAIT1HN VN#"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 320000.0
+  amount_format: -3
+  weight: 210
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "hghlnds-Coffee*THAODIENHCM 9 VN#"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 320000.0
+  amount_format: -3
+  weight: 210
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "MOBILE th/cff/hs LeLoiD1 43 LTD"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 280000.0
+  amount_format: -3
+  weight: 180
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "ECOM Th_Cff_Hs_TRANHUNGDAOHN VN#"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 280000.0
+  amount_format: -3
+  weight: 180
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "PAYGW-The Coffee HouseHanThuyenHCM ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 280000.0
+  amount_format: -3
+  weight: 180
+  types:
+    - "coffee"
+    - "dining"
+
+- title: "TrungNGUYENLGND-PhamNgocThachHN886 ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 450000.0
+  amount_format: -3
+  weight: 160
+  types:
+    - "coffee"
+    - "shopping"
+
+- title: "VN-TRNG.Nguy3n.Lgnd*AirportSGN VN#"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 450000.0
+  amount_format: -3
+  weight: 160
+  types:
+    - "coffee"
+    - "shopping"
+
+- title: "POS*TRUNG*Ngyn*lgnd_DONGKHOISAIGON"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 450000.0
+  amount_format: -3
+  weight: 160
+  types:
+    - "coffee"
+    - "shopping"
+
+- title: "ECOM GONG Ch VINCOMD1"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 210000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "PAYGW-Gong Ch4E0NL0NGBIEN CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 210000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "gng_cha-OldQuarterHN413 44"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 210000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "ATM Phc-L0ngL4NDM4RK81 Co"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 260000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "tea"
+    - "coffee"
+
+- title: "PHUC_LNG NGUYENTR4ID5 32 Co"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 260000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "tea"
+    - "coffee"
+
+- title: "ATM Phuc Long_Quan1PopUp"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 260000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "tea"
+    - "coffee"
+
+- title: "VN-koi.the_TAKASHIMAYA JSC"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 240000.0
+  amount_format: -3
+  weight: 120
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "ATM Koi-ThPHAMVANDONG ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 240000.0
+  amount_format: -3
+  weight: 120
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "WWW.K_The*MetropolitanHCMC VN#"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 240000.0
+  amount_format: -3
+  weight: 120
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "WWW.mixu3LYTUTRONG48 90 VN"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 180000.0
+  amount_format: -3
+  weight: 130
+  types:
+    - "dessert"
+    - "icecream"
+
+- title: "ECOM mx-PHAMVIETCHANH 17 LTD"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 180000.0
+  amount_format: -3
+  weight: 130
+  types:
+    - "dessert"
+    - "icecream"
+
+- title: "VN-Mx NguyenThaiHoc154 JSC"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 180000.0
+  amount_format: -3
+  weight: 130
+  types:
+    - "dessert"
+    - "icecream"
+
+- title: "MOBILE T0C0T0C0_CAUGIAY CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 190000.0
+  amount_format: -3
+  weight: 110
+  types:
+    - "tea"
+    - "snack"
+
+- title: "ATM tctc PhuNhuan 59 Co"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 190000.0
+  amount_format: -3
+  weight: 110
+  types:
+    - "tea"
+    - "snack"
+
+- title: "MOBILE TOCOTOCO_GoVap CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 190000.0
+  amount_format: -3
+  weight: 110
+  types:
+    - "tea"
+    - "snack"
+
+- title: "APP#TIG3RSUGARSaigonCentre PAY"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 220000.0
+  amount_format: -3
+  weight: 95
+  types:
+    - "dessert"
+    - "tea"
+
+- title: "VN-tiger.sugar RoyalCity 67 ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 220000.0
+  amount_format: -3
+  weight: 95
+  types:
+    - "dessert"
+    - "tea"
+
+- title: "APP#TGRSGRVINCOMMEGAPARK642 VN"
+  currency: "VND"
+  amount_range:
+    min: 65000.0
+    max: 220000.0
+  amount_format: -3
+  weight: 95
+  types:
+    - "dessert"
+    - "tea"
+
+- title: "PAYGW-ding/teaHOANKIEM 41"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 200000.0
+  amount_format: -3
+  weight: 100
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "ATM DINGTEA THUDUC200 30 Co"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 200000.0
+  amount_format: -3
+  weight: 100
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "ATM Dng/Tea_MYDINH 17 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 200000.0
+  amount_format: -3
+  weight: 100
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "WWW.Hng.Tra.ngo.Gia_PhuMyHung VN"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 160000.0
+  amount_format: -3
+  weight: 90
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "MOBILE hng-tr-ngo-gia_THUDUCCITY CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 160000.0
+  amount_format: -3
+  weight: 90
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "ATM hong*Tra*ngo*Gia HADONG 78 GATE"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 160000.0
+  amount_format: -3
+  weight: 90
+  types:
+    - "tea"
+    - "dessert"
+
+- title: "MOBILE xanh-sm-txELECTRICFLEETHN GATE"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 850000.0
+  amount_format: -3
+  weight: 260
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "APP#Xanh#SM#Tx-VINHOMEGRAND 70 VN#"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 850000.0
+  amount_format: -3
+  weight: 260
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "APP#XNHSMTAXI*DANANGNIGHT CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 850000.0
+  amount_format: -3
+  weight: 260
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "QR-B/Grp-Q7Run 69 VN"
+  currency: "VND"
+  amount_range:
+    min: 70000.0
+    max: 650000.0
+  amount_format: -3
+  weight: 200
+  types:
+    - "ride_sharing"
+    - "delivery"
+
+- title: "ECOM B GRP-OLDQUARTER 90 VN#"
+  currency: "VND"
+  amount_range:
+    min: 70000.0
+    max: 650000.0
+  amount_format: -3
+  weight: 200
+  types:
+    - "ride_sharing"
+    - "delivery"
+
+- title: "QR-b.group BIENHOA 23 ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 70000.0
+    max: 650000.0
+  amount_format: -3
+  weight: 200
+  types:
+    - "ride_sharing"
+    - "delivery"
+
+- title: "APP#Ahamove*THUDUCHUB979 85 VN#"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 520000.0
+  amount_format: -3
+  weight: 140
+  types:
+    - "delivery"
+    - "logistics"
+
+- title: "APP#AHAM0VEMYDINHDC GATE"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 520000.0
+  amount_format: -3
+  weight: 140
+  types:
+    - "delivery"
+    - "logistics"
+
+- title: "PAYGW-aham0ve_CANTHOPORT518 VN#"
+  currency: "VND"
+  amount_range:
+    min: 60000.0
+    max: 520000.0
+  amount_format: -3
+  weight: 140
+  types:
+    - "delivery"
+    - "logistics"
+
+- title: "PAYGW-Xnh-SM-BikeDANANGEV Co"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 420000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "MOBILE XANH#SM#bkHUECENTER GATE"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 420000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "ECOM xnhsmbkNhaTrang JSC"
+  currency: "VND"
+  amount_range:
+    min: 50000.0
+    max: 420000.0
+  amount_format: -3
+  weight: 150
+  types:
+    - "ride_sharing"
+    - "transportation"
+
+- title: "MoMoSprpp FintechHub445 GATE"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 900000.0
+  amount_format: -3
+  weight: 190
+  refund_probability: 0.08
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "VN-MOMOSPRPPCashlessD3"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 900000.0
+  amount_format: -3
+  weight: 190
+  refund_probability: 0.08
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "ECOM MoMo SuperApp-LENLADDER ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 900000.0
+  amount_format: -3
+  weight: 190
+  refund_probability: 0.08
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "APP#zlpy PromoQ4120 94 Co"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 550000.0
+  amount_format: -3
+  weight: 150
+  refund_probability: 0.06
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "ECOM ZALOPAY*TechEvent LTD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 550000.0
+  amount_format: -3
+  weight: 150
+  refund_probability: 0.06
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "WWW.ZaloPay-ThuThiem25 37 LTD"
+  currency: "VND"
+  amount_range:
+    min: 55000.0
+    max: 550000.0
+  amount_format: -3
+  weight: 150
+  refund_probability: 0.06
+  types:
+    - "fintech"
+    - "payment"
+
+- title: "SHPMLL*FL4SHS4LESG 25"
+  currency: "VND"
+  amount_range:
+    min: 90000.0
+    max: 3500000.0
+  amount_format: -3
+  weight: 260
+  refund_probability: 0.12
+  refundDelayMinHours: 24
+  refundDelayMaxHours: 96
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "APP#Shop33#MallHanoiHub GATE"
+  currency: "VND"
+  amount_range:
+    min: 90000.0
+    max: 3500000.0
+  amount_format: -3
+  weight: 260
+  refund_probability: 0.12
+  refundDelayMinHours: 24
+  refundDelayMaxHours: 96
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "shp*MALLMega11 16 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 90000.0
+    max: 3500000.0
+  amount_format: -3
+  weight: 260
+  refund_probability: 0.12
+  refundDelayMinHours: 24
+  refundDelayMaxHours: 96
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "APP#lzd/vn WAREHOUSE9 Co"
+  currency: "VND"
+  amount_range:
+    min: 85000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 220
+  refund_probability: 0.1
+  refundDelayMinHours: 36
+  refundDelayMaxHours: 144
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "WWW.lzd.vn-TikTokLane LTD"
+  currency: "VND"
+  amount_range:
+    min: 85000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 220
+  refund_probability: 0.1
+  refundDelayMinHours: 36
+  refundDelayMaxHours: 144
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "QR-LAZADA#VN_H4IPH0NGP0RT Co"
+  currency: "VND"
+  amount_range:
+    min: 85000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 220
+  refund_probability: 0.1
+  refundDelayMinHours: 36
+  refundDelayMaxHours: 144
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "PAYGW-TikTok sh0p-CreatorHub VN#"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 2400000.0
+  amount_format: -3
+  weight: 230
+  refund_probability: 0.15
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 72
+  types:
+    - "ecommerce"
+    - "social_commerce"
+
+- title: "tiktok.shop LIVESTREAMVN 71 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 2400000.0
+  amount_format: -3
+  weight: 230
+  refund_probability: 0.15
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 72
+  types:
+    - "ecommerce"
+    - "social_commerce"
+
+- title: "VN-tikt0k.shp_88MALL 13 VN#"
+  currency: "VND"
+  amount_range:
+    min: 75000.0
+    max: 2400000.0
+  amount_format: -3
+  weight: 230
+  refund_probability: 0.15
+  refundDelayMinHours: 12
+  refundDelayMaxHours: 72
+  types:
+    - "ecommerce"
+    - "social_commerce"
+
+- title: "TIKITRDNGBOOKCITY PAY"
+  currency: "VND"
+  amount_range:
+    min: 95000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 180
+  refund_probability: 0.09
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "MOBILE tiki-trdng-FulfillCenter 4 JSC"
+  currency: "VND"
+  amount_range:
+    min: 95000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 180
+  refund_probability: 0.09
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "WWW.tk#trading-SaiGonLog GATE"
+  currency: "VND"
+  amount_range:
+    min: 95000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 180
+  refund_probability: 0.09
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "ATM SendoMall_ThuThiemD2918 VN"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 1800000.0
+  amount_format: -4
+  weight: 140
+  refund_probability: 0.07
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "APP#sendo_mall-D4N4NGHUB 38 Co"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 1800000.0
+  amount_format: -3
+  weight: 140
+  refund_probability: 0.07
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "PAYGW-s3ndo Mall_RURALNET985 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 80000.0
+    max: 1800000.0
+  amount_format: -3
+  weight: 140
+  refund_probability: 0.07
+  types:
+    - "ecommerce"
+    - "shopping"
+
+- title: "QR-c0.0pmart_VoVanTan 31 Co"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 2800000.0
+  amount_format: -4
+  weight: 200
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "MOBILE C.PMRT THUD4UM0T 55 VN"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 2800000.0
+  amount_format: -4
+  weight: 200
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "VN-c.pmrt HUEDEPOT LTD"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 2800000.0
+  amount_format: -4
+  weight: 200
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "POS*WnCmmrcWinmart+ 27 GATE"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 3200000.0
+  amount_format: -4
+  weight: 210
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "WINCOMMERCE*VinhomesSmart310 JSC"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 3200000.0
+  amount_format: -4
+  weight: 210
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "WNCMMRC-TanSonNhat972 77 ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 3200000.0
+  amount_format: -4
+  weight: 210
+  types:
+    - "groceries"
+    - "supermarket"
+
+- title: "QR-LotteMART_G0V4PH4LL GATE"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 3600000.0
+  amount_format: -4
+  weight: 180
+  types:
+    - "groceries"
+    - "shopping"
+
+- title: "VN-LTT-MART-THUTHIEMMEG4 Co"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 3600000.0
+  amount_format: -4
+  weight: 180
+  types:
+    - "groceries"
+    - "shopping"
+
+- title: "PAYGW-LOTTE/MART_HanoiSky 92 PAY"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 3600000.0
+  amount_format: -4
+  weight: 180
+  types:
+    - "groceries"
+    - "shopping"
+
+- title: "PAYGW-go!#hypermarket*THANGLONG"
+  currency: "VND"
+  amount_range:
+    min: 160000.0
+    max: 3000000.0
+  amount_format: -4
+  weight: 160
+  types:
+    - "groceries"
+    - "household"
+
+- title: "QR-go!hyprmrkt*BienHoa CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 160000.0
+    max: 3000000.0
+  amount_format: -4
+  weight: 160
+  types:
+    - "groceries"
+    - "household"
+
+- title: "ECOM go!_HYPRMRKT HAIPHONG VN"
+  currency: "VND"
+  amount_range:
+    min: 160000.0
+    max: 3000000.0
+  amount_format: -4
+  weight: 160
+  types:
+    - "groceries"
+    - "household"
+
+- title: "ECOM a3on-mallT4NPHU674 35 ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 4200000.0
+  amount_format: -4
+  weight: 190
+  types:
+    - "shopping"
+    - "entertainment"
+
+- title: "POS*n_Mall BINHDUONG PAY"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 4200000.0
+  amount_format: -4
+  weight: 190
+  types:
+    - "shopping"
+    - "entertainment"
+
+- title: "MOBILE AE0NMall HaDong 69 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 150000.0
+    max: 4200000.0
+  amount_format: -4
+  weight: 190
+  types:
+    - "shopping"
+    - "entertainment"
+
+- title: "VN-mgmark3t ThuDucDepot 57 VN#"
+  currency: "VND"
+  amount_range:
+    min: 200000.0
+    max: 5200000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "wholesale"
+    - "groceries"
+
+- title: "QR-MgMarket_LongBienDC LTD"
+  currency: "VND"
+  amount_range:
+    min: 200000.0
+    max: 5200000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "wholesale"
+    - "groceries"
+
+- title: "APP#MGMRKTDaNangLog 60"
+  currency: "VND"
+  amount_range:
+    min: 200000.0
+    max: 5200000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "wholesale"
+    - "groceries"
+
+- title: "QR-Vincom_Center-DongKhoi GATE"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 4800000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "shopping"
+    - "retail"
+
+- title: "ATM vinc0m-cntr-BATRIEU VN#"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 4800000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "shopping"
+    - "retail"
+
+- title: "APP#Vincom-cntrGRANDPARK 15 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 4800000.0
+  amount_format: -4
+  weight: 150
+  types:
+    - "shopping"
+    - "retail"
+
+- title: "ECOM ben-thanh-market GATE4 91 CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "market"
+    - "souvenir"
+
+- title: "APP#ben thanh marketNightBazaar VN#"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "market"
+    - "souvenir"
+
+- title: "ECOM BnThanhMrkt-TourLane VN"
+  currency: "VND"
+  amount_range:
+    min: 120000.0
+    max: 2800000.0
+  amount_format: -3
+  weight: 170
+  types:
+    - "market"
+    - "souvenir"
+
+- title: "QR-vinpearl.rsrtHonTre GATE"
+  currency: "VND"
+  amount_range:
+    min: 960000.0
+    max: 12600000.0
+  amount_format: -4
+  weight: 120
+  types:
+    - "hospitality"
+    - "travel"
+
+- title: "POS*vinpearl-rsrt*PhuQuoc ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 960000.0
+    max: 12600000.0
+  amount_format: -4
+  weight: 120
+  types:
+    - "hospitality"
+    - "travel"
+
+- title: "VNPRL*RESORT-LangVan VN"
+  currency: "VND"
+  amount_range:
+    min: 960000.0
+    max: 12600000.0
+  amount_format: -4
+  weight: 120
+  types:
+    - "hospitality"
+    - "travel"
+
+- title: "MOBILE VnWndrs_THEMEPARK 61"
+  currency: "VND"
+  amount_range:
+    min: 750000.0
+    max: 4500000.0
+  amount_format: -4
+  weight: 130
+  types:
+    - "entertainment"
+    - "travel"
+
+- title: "POS*VNWNDRS*NHATRANG VN#"
+  currency: "VND"
+  amount_range:
+    min: 750000.0
+    max: 4500000.0
+  amount_format: -4
+  weight: 130
+  types:
+    - "entertainment"
+    - "travel"
+
+- title: "ECOM vinwondersPHUQUOC GATE"
+  currency: "VND"
+  amount_range:
+    min: 750000.0
+    max: 4500000.0
+  amount_format: -4
+  weight: 130
+  types:
+    - "entertainment"
+    - "travel"
+
+- title: "WWW.Vinm3c HealthcareCENTRALPARK CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 850000.0
+    max: 9500000.0
+  amount_format: -4
+  weight: 110
+  types:
+    - "healthcare"
+    - "medical"
+
+- title: "vinmec hlthcr TimesCity CLOUD"
+  currency: "VND"
+  amount_range:
+    min: 850000.0
+    max: 9500000.0
+  amount_format: -4
+  weight: 110
+  types:
+    - "healthcare"
+    - "medical"
+
+- title: "QR-vnmc hlthcrCanGio ONLINE"
+  currency: "VND"
+  amount_range:
+    min: 850000.0
+    max: 9500000.0
+  amount_format: -4
+  weight: 110
+  types:
+    - "healthcare"
+    - "medical"
+
+- title: "ATM dreamplexTranQuangKhai476 VN"
+  currency: "VND"
+  amount_range:
+    min: 180000.0
+    max: 2200000.0
+  amount_format: -3
+  weight: 140
+  types:
+    - "coworking"
+    - "services"
+
+
+- title: "KATINAT*CFF#BEN.NGHE Q1"
+  currency: "VND"
+  amount_range:
+    min: 65000
+    max: 260000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "dining"
+  weight: 150
+
+- title: "katinat-sgnCafe tonThatD1"
+  currency: "VND"
+  amount_range:
+    min: 65000
+    max: 260000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "dining"
+  weight: 150
+
+- title: "PAYGW-KATinat VincomD9 VN"
+  currency: "VND"
+  amount_range:
+    min: 65000
+    max: 260000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "dining"
+  weight: 150
+
+- title: "Ktnat Coffee_SkyXX ThuDuc"
+  currency: "VND"
+  amount_range:
+    min: 65000
+    max: 260000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "dining"
+  weight: 150
+
+- title: "CONG-CPHe*HANGTRONG HN"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 240000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "snack"
+  weight: 140
+
+- title: "APP#CongCaphe Q3-DgTr CHARGE"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 240000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "snack"
+  weight: 140
+
+- title: "Cong Cphe--HoiAn#ANCIENT"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 240000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "snack"
+  weight: 140
+
+- title: "POS*CONGcaphe PLus D7"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 240000
+  amount_format: -3
+  types:
+    - "coffee"
+    - "snack"
+  weight: 140
+
+- title: "ChagoTEA Q11**TranPhu"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 190000
+  amount_format: -3
+  types:
+    - "tea"
+    - "dessert"
+  weight: 110
+
+- title: "CHA.GO-TEA House_BEN THANH"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 190000
+  amount_format: -3
+  types:
+    - "tea"
+    - "dessert"
+  weight: 110
+
+- title: "CHGTea@VincomHaiPhong"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 190000
+  amount_format: -3
+  types:
+    - "tea"
+    - "dessert"
+  weight: 110
+
+- title: "PAYGW-chgTea--GoVap Cloud"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 190000
+  amount_format: -3
+  types:
+    - "tea"
+    - "dessert"
+  weight: 110
+
+- title: "PARISBAGUETT#VincomQ2"
+  currency: "VND"
+  amount_range:
+    min: 90000
+    max: 350000
+  amount_format: -3
+  types:
+    - "bakery"
+    - "dining"
+  weight: 130
+
+- title: "PrsBaguet*PhamNguLao"
+  currency: "VND"
+  amount_range:
+    min: 90000
+    max: 350000
+  amount_format: -3
+  types:
+    - "bakery"
+    - "dining"
+  weight: 130
+
+- title: "PBaguette D2 SaigonPearl"
+  currency: "VND"
+  amount_range:
+    min: 90000
+    max: 350000
+  amount_format: -3
+  types:
+    - "bakery"
+    - "dining"
+  weight: 130
+
+- title: "PARIS-BGT Hanoi*KimMa"
+  currency: "VND"
+  amount_range:
+    min: 90000
+    max: 350000
+  amount_format: -3
+  types:
+    - "bakery"
+    - "dining"
+  weight: 130
+
+- title: "PHO24 NGUYENTRAI Q5 POS"
+  currency: "VND"
+  amount_range:
+    min: 85000
+    max: 280000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 125
+
+- title: "Pho24*AEPHamNHo HN"
+  currency: "VND"
+  amount_range:
+    min: 85000
+    max: 280000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 125
+
+- title: "PH024--DanangAirside"
+  currency: "VND"
+  amount_range:
+    min: 85000
+    max: 280000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 125
+
+- title: "Pho24 Express*MyDinh"
+  currency: "VND"
+  amount_range:
+    min: 85000
+    max: 280000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 125
+
+- title: "PIZZA4Ps*ThaoDien Q2"
+  currency: "VND"
+  amount_range:
+    min: 180000
+    max: 1200000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "italian"
+  weight: 140
+
+- title: "P4ps BenThanh Rooftop"
+  currency: "VND"
+  amount_range:
+    min: 180000
+    max: 1200000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "italian"
+  weight: 140
+
+- title: "POS*Pizza4pS DanangBRG"
+  currency: "VND"
+  amount_range:
+    min: 180000
+    max: 1200000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "italian"
+  weight: 140
+
+- title: "Pizza 4PS-L2VincomHN"
+  currency: "VND"
+  amount_range:
+    min: 180000
+    max: 1200000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "italian"
+  weight: 140
+
+- title: "ComTAMCALI Q1-Letrung"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 450000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 120
+
+- title: "CT Cali--PhuNhuan 97"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 450000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 120
+
+- title: "COMTAM*CALI HANOI Aeon"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 450000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 120
+
+- title: "Mobile CTCali ThuDucPay"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 450000
+  amount_format: -3
+  types:
+    - "restaurant"
+    - "vietnamese"
+  weight: 120
+
+- title: "ShopeeFD**HCMHUB DLV"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 600000
+  amount_format: -3
+  refund_probability: 0.2
+  refundDelayMinHours: 6
+  refundDelayMaxHours: 120
+  types:
+    - "delivery"
+    - "food_delivery"
+  weight: 200
+
+- title: "SHOPF00D-Order#1286"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 600000
+  amount_format: -3
+  refund_probability: 0.2
+  refundDelayMinHours: 6
+  refundDelayMaxHours: 120
+  types:
+    - "delivery"
+    - "food_delivery"
+  weight: 200
+
+- title: "SPFood-app QA--ThanhXuan"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 600000
+  amount_format: -3
+  refund_probability: 0.2
+  refundDelayMinHours: 6
+  refundDelayMaxHours: 120
+  types:
+    - "delivery"
+    - "food_delivery"
+  weight: 200
+
+- title: "ShopeeFood*NinhKieu APP"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 600000
+  amount_format: -3
+  refund_probability: 0.2
+  refundDelayMinHours: 6
+  refundDelayMaxHours: 120
+  types:
+    - "delivery"
+    - "food_delivery"
+  weight: 200
+
+- title: "LOSHIP-BenThanh NOW"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 500000
+  amount_format: -3
+  types:
+    - "delivery"
+    - "transport"
+  weight: 160
+
+- title: "App#LoShipDN SonTra"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 500000
+  amount_format: -3
+  types:
+    - "delivery"
+    - "transport"
+  weight: 160
+
+- title: "LO.SHIP Q7 RIDE"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 500000
+  amount_format: -3
+  types:
+    - "delivery"
+    - "transport"
+  weight: 160
+
+- title: "Pos Loship-GoVap Cloud"
+  currency: "VND"
+  amount_range:
+    min: 55000
+    max: 500000
+  amount_format: -3
+  types:
+    - "delivery"
+    - "transport"
+  weight: 160
+
+- title: "COOPMART*HGHIHCM 009"
+  currency: "VND"
+  amount_range:
+    min: 150000
+    max: 3200000
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 180
+
+- title: "QR-Co.opmart THUDUC2"
+  currency: "VND"
+  amount_range:
+    min: 150000
+    max: 3200000
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 180
+
+- title: "Coop Mart PremiumDN"
+  currency: "VND"
+  amount_range:
+    min: 150000
+    max: 3200000
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 180
+
+- title: "CO.OPMART--CanTho QN"
+  currency: "VND"
+  amount_range:
+    min: 150000
+    max: 3200000
+  amount_format: -3
+  types:
+    - "groceries"
+    - "shopping"
+  weight: 180
+
+- title: "AEONMALL BinhTan POS"
+  currency: "VND"
+  amount_range:
+    min: 200000
+    max: 4500000
+  amount_format: -4
+  types:
+    - "hypermarket"
+    - "shopping"
+  weight: 170
+
+- title: "AE0N Citimart*ThaoDien"
+  currency: "VND"
+  amount_range:
+    min: 200000
+    max: 4500000
+  amount_format: -4
+  types:
+    - "hypermarket"
+    - "shopping"
+  weight: 170
+
+- title: "AeonMaxValu-HaiPhong"
+  currency: "VND"
+  amount_range:
+    min: 200000
+    max: 4500000
+  amount_format: -4
+  types:
+    - "hypermarket"
+    - "shopping"
+  weight: 170
+
+- title: "AEON Deli@LongBien"
+  currency: "VND"
+  amount_range:
+    min: 200000
+    max: 4500000
+  amount_format: -4
+  types:
+    - "hypermarket"
+    - "shopping"
+  weight: 170
+
+- title: "DienMayXanh Q9**"
+  currency: "VND"
+  amount_range:
+    min: 300000
+    max: 12000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "appliances"
+  weight: 160
+
+- title: "DMX-Online005864"
+  currency: "VND"
+  amount_range:
+    min: 300000
+    max: 12000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "appliances"
+  weight: 160
+
+- title: "D.M.Xanh BacTuLiem"
+  currency: "VND"
+  amount_range:
+    min: 300000
+    max: 12000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "appliances"
+  weight: 160
+
+- title: "DIENMAYXANH -QUI NHON"
+  currency: "VND"
+  amount_range:
+    min: 300000
+    max: 12000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "appliances"
+  weight: 160
+
+- title: "FPTSHOP*Online 842"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 18000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "mobile"
+  weight: 150
+
+- title: "FptShop Q3 NGVTRA0"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 18000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "mobile"
+  weight: 150
+
+- title: "FPTSHP DanangLyThuong"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 18000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "mobile"
+  weight: 150
+
+- title: "FPT shop-MyDinh Plaza"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 18000000
+  amount_format: -4
+  types:
+    - "electronics"
+    - "mobile"
+  weight: 150
+
+- title: "CANIFA VincomHN L3"
+  currency: "VND"
+  amount_range:
+    min: 120000
+    max: 2400000
+  amount_format: -3
+  types:
+    - "fashion"
+    - "clothing"
+  weight: 130
+
+- title: "CNFA--PhamVanDong"
+  currency: "VND"
+  amount_range:
+    min: 120000
+    max: 2400000
+  amount_format: -3
+  types:
+    - "fashion"
+    - "clothing"
+  weight: 130
+
+- title: "Canifa Q1 Takashimaya"
+  currency: "VND"
+  amount_range:
+    min: 120000
+    max: 2400000
+  amount_format: -3
+  types:
+    - "fashion"
+    - "clothing"
+  weight: 130
+
+- title: "CAN1FA Kids AeonBDuong"
+  currency: "VND"
+  amount_range:
+    min: 120000
+    max: 2400000
+  amount_format: -3
+  types:
+    - "fashion"
+    - "clothing"
+  weight: 130
+
+- title: "CGV*CrescentMall POS"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 780000
+  amount_format: -3
+  types:
+    - "entertainment"
+    - "cinema"
+  weight: 190
+
+- title: "CGv VincomTranDuy"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 780000
+  amount_format: -3
+  types:
+    - "entertainment"
+    - "cinema"
+  weight: 190
+
+- title: "CGV-ONL 458933"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 780000
+  amount_format: -3
+  types:
+    - "entertainment"
+    - "cinema"
+  weight: 190
+
+- title: "CGV Danang Helio"
+  currency: "VND"
+  amount_range:
+    min: 95000
+    max: 780000
+  amount_format: -3
+  types:
+    - "entertainment"
+    - "cinema"
+  weight: 190
+
+- title: "VietJetAir*HUB SGN"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 8500000
+  amount_format: -4
+  types:
+    - "airline"
+    - "traveling"
+  weight: 140
+
+- title: "VJET-AirlineBooking 94"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 8500000
+  amount_format: -4
+  types:
+    - "airline"
+    - "traveling"
+  weight: 140
+
+- title: "VIETJET AIRPORT DANANG"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 8500000
+  amount_format: -4
+  types:
+    - "airline"
+    - "traveling"
+  weight: 140
+
+- title: "VJAIR-Online-1298"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 8500000
+  amount_format: -4
+  types:
+    - "airline"
+    - "traveling"
+  weight: 140
+
+- title: "SAIGONTOURIST-BENNGHE"
+  currency: "VND"
+  amount_range:
+    min: 450000
+    max: 7600000
+  amount_format: -4
+  types:
+    - "travel"
+    - "tour"
+  weight: 120
+
+- title: "SgnTourist TravelDesk"
+  currency: "VND"
+  amount_range:
+    min: 450000
+    max: 7600000
+  amount_format: -4
+  types:
+    - "travel"
+    - "tour"
+  weight: 120
+
+- title: "SaigonTourist HueCtr"
+  currency: "VND"
+  amount_range:
+    min: 450000
+    max: 7600000
+  amount_format: -4
+  types:
+    - "travel"
+    - "tour"
+  weight: 120
+
+- title: "SGNTRST CruiseBooking"
+  currency: "VND"
+  amount_range:
+    min: 450000
+    max: 7600000
+  amount_format: -4
+  types:
+    - "travel"
+    - "tour"
+  weight: 120
+
+- title: "VINPEARL RES*DN PIER"
+  currency: "VND"
+  amount_range:
+    min: 900000
+    max: 12500000
+  amount_format: -4
+  types:
+    - "hotel"
+    - "resort"
+  weight: 110
+
+- title: "VinpearlLand- Nhatrang"
+  currency: "VND"
+  amount_range:
+    min: 900000
+    max: 12500000
+  amount_format: -4
+  types:
+    - "hotel"
+    - "resort"
+  weight: 110
+
+- title: "VINPRL Resort PhuQuoc"
+  currency: "VND"
+  amount_range:
+    min: 900000
+    max: 12500000
+  amount_format: -4
+  types:
+    - "hotel"
+    - "resort"
+  weight: 110
+
+- title: "VINPEARL CLUB HANOI"
+  currency: "VND"
+  amount_range:
+    min: 900000
+    max: 12500000
+  amount_format: -4
+  types:
+    - "hotel"
+    - "resort"
+  weight: 110
+
+- title: "ViettelPay-DataTopUp"
+  currency: "VND"
+  amount_range:
+    min: 80000
+    max: 3500000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "telecom"
+    - "utilities"
+  weight: 160
+
+- title: "VTEL*FIBER Q7 Billing"
+  currency: "VND"
+  amount_range:
+    min: 80000
+    max: 3500000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "telecom"
+    - "utilities"
+  weight: 160
+
+- title: "VIETTEL Store CauGiay"
+  currency: "VND"
+  amount_range:
+    min: 80000
+    max: 3500000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "telecom"
+    - "utilities"
+  weight: 160
+
+- title: "ViettelPost HCMHub"
+  currency: "VND"
+  amount_range:
+    min: 80000
+    max: 3500000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "telecom"
+    - "utilities"
+  weight: 160
+
+- title: "FPTTelecom-FTTH Q2"
+  currency: "VND"
+  amount_range:
+    min: 130000
+    max: 4200000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "internet"
+    - "utilities"
+  weight: 150
+
+- title: "FPT*PlayBox Renewal"
+  currency: "VND"
+  amount_range:
+    min: 130000
+    max: 4200000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "internet"
+    - "utilities"
+  weight: 150
+
+- title: "FPT Telecom HaDong"
+  currency: "VND"
+  amount_range:
+    min: 130000
+    max: 4200000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "internet"
+    - "utilities"
+  weight: 150
+
+- title: "FPTTele-DataCenter HCM"
+  currency: "VND"
+  amount_range:
+    min: 130000
+    max: 4200000
+  amount_format: -3
+  subscription_frequency_days: 30
+  types:
+    - "internet"
+    - "utilities"
+  weight: 150
+
+- title: "MOMO eWallet Topup"
+  currency: "VND"
+  amount_range:
+    min: 50000
+    max: 2750000
+  amount_format: -3
+  refund_probability: 0.15
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 24
+  types:
+    - "fintech"
+    - "wallet"
+  weight: 210
+
+- title: "MOMO QR-LauNam"
+  currency: "VND"
+  amount_range:
+    min: 50000
+    max: 2750000
+  amount_format: -3
+  refund_probability: 0.15
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 24
+  types:
+    - "fintech"
+    - "wallet"
+  weight: 210
+
+- title: "MoMoLoanFee#VN"
+  currency: "VND"
+  amount_range:
+    min: 50000
+    max: 2750000
+  amount_format: -3
+  refund_probability: 0.15
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 24
+  types:
+    - "fintech"
+    - "wallet"
+  weight: 210
+
+- title: "MOMO*TransportPass"
+  currency: "VND"
+  amount_range:
+    min: 50000
+    max: 2750000
+  amount_format: -3
+  refund_probability: 0.15
+  refundDelayMinHours: 1
+  refundDelayMaxHours: 24
+  types:
+    - "fintech"
+    - "wallet"
+  weight: 210
+
+- title: "VIEON Sub#Premium"
+  currency: "VND"
+  amount_range:
+    min: 70000
+    max: 360000
+  amount_format: -3
+  subscription_frequency_days: 30
+  numberOfOccurrences: 12
+  types:
+    - "streaming"
+    - "entertainment"
+  weight: 140
+
+- title: "VieOn*Family PackVN"
+  currency: "VND"
+  amount_range:
+    min: 70000
+    max: 360000
+  amount_format: -3
+  subscription_frequency_days: 30
+  numberOfOccurrences: 12
+  types:
+    - "streaming"
+    - "entertainment"
+  weight: 140
+
+- title: "VIE0N Billing-30days"
+  currency: "VND"
+  amount_range:
+    min: 70000
+    max: 360000
+  amount_format: -3
+  subscription_frequency_days: 30
+  numberOfOccurrences: 12
+  types:
+    - "streaming"
+    - "entertainment"
+  weight: 140
+
+- title: "PayGW-VieOnKidZone"
+  currency: "VND"
+  amount_range:
+    min: 70000
+    max: 360000
+  amount_format: -3
+  subscription_frequency_days: 30
+  numberOfOccurrences: 12
+  types:
+    - "streaming"
+    - "entertainment"
+  weight: 140
+
+- title: "GARENA*Vietnam Topup"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 1800000
+  amount_format: -3
+  numberOfOccurrences: 3
+  types:
+    - "gaming"
+    - "digital_goods"
+  weight: 155
+
+- title: "Garena Shells#App"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 1800000
+  amount_format: -3
+  numberOfOccurrences: 3
+  types:
+    - "gaming"
+    - "digital_goods"
+  weight: 155
+
+- title: "GRNA*FreeFire Pass"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 1800000
+  amount_format: -3
+  numberOfOccurrences: 3
+  types:
+    - "gaming"
+    - "digital_goods"
+  weight: 155
+
+- title: "Garena-Esports Danang"
+  currency: "VND"
+  amount_range:
+    min: 60000
+    max: 1800000
+  amount_format: -3
+  numberOfOccurrences: 3
+  types:
+    - "gaming"
+    - "digital_goods"
+  weight: 155
+
+- title: "ILA VIETNAM Q3 Tuition"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 8500000
+  amount_format: -3
+  types:
+    - "education"
+    - "tuition"
+  weight: 110
+
+- title: "ILA*Teens MyDinh"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 8500000
+  amount_format: -3
+  types:
+    - "education"
+    - "tuition"
+  weight: 110
+
+- title: "ILA Vietnam-PhuMy"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 8500000
+  amount_format: -3
+  types:
+    - "education"
+    - "tuition"
+  weight: 110
+
+- title: "ILA ONLINE ClassVN"
+  currency: "VND"
+  amount_range:
+    min: 250000
+    max: 8500000
+  amount_format: -3
+  types:
+    - "education"
+    - "tuition"
+  weight: 110
+
+- title: "VINMEC INTL*TimesCity"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 14500000
+  amount_format: -4
+  types:
+    - "healthcare"
+    - "medical"
+  weight: 105
+
+- title: "Vinmec*Clinic-PhuQuoc"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 14500000
+  amount_format: -4
+  types:
+    - "healthcare"
+    - "medical"
+  weight: 105
+
+- title: "VINMEC Danang Hosp"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 14500000
+  amount_format: -4
+  types:
+    - "healthcare"
+    - "medical"
+  weight: 105
+
+- title: "VinmecSgn CheckUp"
+  currency: "VND"
+  amount_range:
+    min: 550000
+    max: 14500000
+  amount_format: -4
+  types:
+    - "healthcare"
+    - "medical"
+  weight: 105

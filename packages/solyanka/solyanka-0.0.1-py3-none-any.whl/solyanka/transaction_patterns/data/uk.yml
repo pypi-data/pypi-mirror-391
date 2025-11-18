@@ -1,0 +1,67 @@
+- title: "L B Camden Int LONDON"
+  currency: "GBP"
+  amount_range:
+    min: 120.0
+    max: 300.0
+  amount_format: 0
+  types:
+    - "education"
+    - "institution"
+  weight: 40
+- title:
+    type: template
+    template: "Amazon* {code} LONDON"
+    params:
+      code:
+        generator: random_alnum
+        length: 9
+        charset: "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz0123456789"
+  currency: "GBP"
+  amount_range:
+    min: 50.0
+    max: 260.0
+  amount_format: 2
+  types:
+    - "shopping"
+    - "online"
+  weight: 90
+- title: "Apple.com/bill 08001076285"
+  currency: "GBP"
+  amount_range:
+    min: 2.99
+    max: 10.99
+  amount_format: 2
+  types:
+    - "subscription"
+    - "digital_services"
+  weight: 100
+- title: "Apple.com/bill APPLE.COM/BIL"
+  currency: "GBP"
+  amount_range:
+    min: 2.99
+    max: 10.99
+  amount_format: 2
+  types:
+    - "subscription"
+    - "digital_services"
+  weight: 100
+- title: "Apple.com/bill CORK"
+  currency: "GBP"
+  amount_range:
+    min: 2.99
+    max: 10.99
+  amount_format: 2
+  types:
+    - "subscription"
+    - "digital_services"
+  weight: 100
+- title: "Bitget*Multiexchange Vilnius"
+  currency: "GBP"
+  amount_range:
+    min: 100.0
+    max: 500.0
+  amount_format: -1
+  types:
+    - "cryptocurrency"
+    - "exchange"
+  weight: 30

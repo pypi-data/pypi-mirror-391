@@ -1,0 +1,231 @@
+# Brazil Transaction Patterns
+# Generated from BRL transaction data analysis
+
+# Transportation - Uber rides
+- title: "Uber *Uber *Trip Sao Paulo"
+  currency: "BRL"
+  amount_range:
+    min: 5.00
+    max: 150.00
+  amount_format: 2
+  types: ["transportation", "rideshare", "uber"]
+  weight: 800
+
+- title: "Uber *Trip Help.uber.com SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 5.00
+    max: 150.00
+  amount_format: 2
+  types: ["transportation", "rideshare", "uber"]
+  weight: 600
+
+# Food & Dining - Cafes
+- title: "Cafe Fratelli Franqueador SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 10.00
+    max: 120.00
+  amount_format: 2
+  types: ["food", "cafe", "coffee"]
+  weight: 400
+
+- title: "Cafeteria Bsg SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 10.00
+    max: 120.00
+  amount_format: 2
+  types: ["food", "cafe", "coffee"]
+  weight: 300
+
+- title: "Rac Cafe Ltda SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 10.00
+    max: 120.00
+  amount_format: 2
+  types: ["food", "cafe", "coffee"]
+  weight: 200
+
+# Healthcare - Pharmacies
+- title: "Raia Drogasil SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 5.00
+    max: 150.00
+  amount_format: 2
+  types: ["healthcare", "pharmacy", "medicine"]
+  weight: 300
+
+- title: "Drogaria Sao Paulo Sa SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 5.00
+    max: 150.00
+  amount_format: 2
+  types: ["healthcare", "pharmacy", "medicine"]
+  weight: 250
+
+- title: "Drogaria Discover SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 5.00
+    max: 150.00
+  amount_format: 2
+  types: ["healthcare", "pharmacy", "medicine"]
+  weight: 200
+
+# Personal Care - Barbershops
+- title: "Barbearia Retrogol SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 100.00
+    max: 200.00
+  amount_format: 0
+  types: ["personal_care", "barbershop", "grooming"]
+  weight: 100
+
+# Food & Dining - Restaurants
+- title: "Restaurante Kanpai SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 50.00
+    max: 400.00
+  amount_format: 2
+  types: ["food", "restaurant", "dining"]
+  weight: 200
+
+- title: "Z Deli Sanduiches SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 30.00
+    max: 350.00
+  amount_format: 2
+  types: ["food", "restaurant", "deli", "sandwiches"]
+  weight: 150
+
+# Travel - Hotels
+- title: "Hotel At Booking.com SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 500.00
+    max: 2500.00
+  amount_format: 2
+  types: ["travel", "hotel", "accommodation"]
+  weight: 50
+
+- title: "Booking.com Hotel SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 500.00
+    max: 2500.00
+  amount_format: 2
+  types: ["travel", "hotel", "accommodation"]
+  weight: 50
+
+# Shopping - General retail
+- title: "Shopping Center SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 20.00
+    max: 400.00
+  amount_format: 0
+  types: ["shopping", "retail", "general"]
+  weight: 200
+
+# Supermarkets and grocery stores
+- title: "Supermercado Pao De Acucar SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 20.00
+    max: 300.00
+  amount_format: 2
+  types: ["food", "grocery", "supermarket"]
+  weight: 300
+
+- title: "Extra Supermercados SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 25.00
+    max: 350.00
+  amount_format: 2
+  types: ["food", "grocery", "supermarket"]
+  weight: 250
+
+# Gas stations
+- title: "Posto Ipiranga SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 50.00
+    max: 400.00
+  amount_format: 2
+  types: ["fuel", "gas_station", "automotive"]
+  weight: 200
+
+- title: "Shell Brasil SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 50.00
+    max: 400.00
+  amount_format: 2
+  types: ["fuel", "gas_station", "automotive"]
+  weight: 180
+
+# Fast food chains
+- title: "McDonald's SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 15.00
+    max: 80.00
+  amount_format: 2
+  types: ["food", "fast_food", "restaurant"]
+  weight: 300
+
+- title: "Burger King SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 15.00
+    max: 75.00
+  amount_format: 2
+  types: ["food", "fast_food", "restaurant"]
+  weight: 200
+
+# Public transportation
+- title: "Metro Sao Paulo"
+  currency: "BRL"
+  amount_range:
+    min: 4.00
+    max: 15.00
+  amount_format: 2
+  types: ["transportation", "public_transport", "metro"]
+  weight: 400
+
+# Entertainment
+- title: "Cinema Cinemark SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 20.00
+    max: 60.00
+  amount_format: 2
+  types: ["entertainment", "cinema", "movies"]
+  weight: 100
+
+# Clothing stores
+- title: "C&A SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 30.00
+    max: 300.00
+  amount_format: 2
+  types: ["shopping", "clothing", "fashion"]
+  weight: 150
+
+- title: "Renner SAO PAULO"
+  currency: "BRL"
+  amount_range:
+    min: 40.00
+    max: 350.00
+  amount_format: 2
+  types: ["shopping", "clothing", "fashion"]
+  weight: 120
