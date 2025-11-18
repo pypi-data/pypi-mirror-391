@@ -1,0 +1,207 @@
+Metadata-Version: 2.4
+Name: radio-manager
+Version: 0.2.2
+Summary: A unified library for controlling various radio devices (receivers and transceivers)
+Author-email: "Thomas D. Stearn" <tomn2tsr@gmail.com>
+License: MIT
+Project-URL: Homepage, https://github.com/tomn2tsr/radio-manager
+Project-URL: Issues, https://github.com/tomn2tsr/radio-manager/issues
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyserial>=3.4
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: audio
+Requires-Dist: pyaudio>=0.2.11; extra == "audio"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: black>=23.0; extra == "dev"
+Requires-Dist: flake8>=6.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Dynamic: license-file
+
+# Radio Manager
+
+A unified Python library for controlling various radio devices including receivers, scanners, and transceivers.
+
+## Supported Radios
+
+### Uniden
+- **SDS200** - Digital scanning receiver (serial and network) ✓ **Tested**
+- **BCD996P2** - Analog/digital scanner (serial) ✓ **Tested**
+- **SDS100** - Digital scanning receiver (coming soon)
+- **BCD536HP** - Handheld scanner (coming soon)
+
+### Motorola
+- **XPR4350** - UHF transceiver with GPIO control (planned)
+
+## Installation
+
+### Recommended: pipx (for CLI usage)
+
+`pipx` is the recommended way to install command-line tools on Ubuntu 24.04+ and other modern Linux systems:
+
+```bash
+# Install pipx if you don't have it
+sudo apt install pipx
+pipx ensurepath
+
+# Install radio-manager
+pipx install /home/tomn2tsr/dev/personal/radio-manager
+
+# Or for development (editable install)
+pipx install -e /home/tomn2tsr/dev/personal/radio-manager
+
+# Use the rmgr command anywhere
+rmgr list-radios
+rmgr set-volume 8
+```
+
+### Local Development Installation (library usage)
+
+For development or if you need to use it as a Python library:
+
+```bash
+cd radio-manager
+python3 -m venv venv
+source venv/bin/activate
+pip install -e .
+```
+
+### From PyPI (when available)
+
+```bash
+pipx install radio-manager  # For CLI usage
+# or
+pip install radio-manager   # For library usage in your own projects
+```
+
+## Quick Start
+1. Create a radios.yaml file (see below)
+2. Call the `rmgr` command
+
+### Command Line Interface (rmgr)
+
+The easiest way to control your radios is via the `rmgr` command:
+
+```bash
+# List configured radios
+rmgr list-radios
+
+# Control the default radio
+rmgr set-volume 8
+rmgr get-volume
+rmgr status
+rmgr reboot
+rmgr stream-audio
+
+# Or specify a specific radio
+rmgr set-volume --radio bcd996p2 5
+rmgr status --radio sds200_serial
+```
+
+#### Configuration File
+
+Create a `radios.yaml` file in one of these locations (in priority order):
+1. `./radios.yaml` (current directory)
+2. `~/.config/radio-manager/radios.yaml`
+3. Or specify with `--config /path/to/radios.yaml`
+
+Example `radios.yaml`:
+```yaml
+# Optional: Set a default radio
+default_radio: sds200_desk
+
+radios:
+  sds200_desk:
+    type: sds200
+    host: 192.168.1.23
+    port: 50536
+
+  bcd996p2:
+    type: bcd996p2
+    ser_port: /dev/ttyACM1
+    baudrate: 115200
+```
+
+See `radios.yaml.example` for more examples.
+
+### Python Library
+
+### Uniden SDS200
+
+#### Serial Connection
+
+```python
+from radio_manager.uniden import SDS200
+
+# Connect via USB/serial
+scanner = SDS200({
+    'ser_port': '/dev/ttyACM0',
+    'baudrate': 115200
+})
+
+with scanner:
+    # Get status
+    status = scanner.get_status()
+    print(f"Current channel: {status['channel']}")
+
+    # Control volume
+    scanner.volume = 15
+    print(f"Volume set to: {scanner.volume}")
+```
+
+#### Network Connection
+
+```python
+from radio_manager.uniden import SDS200
+
+# Connect via network
+scanner = SDS200({
+    'host': '192.168.1.1',
+    'port': 50536
+})
+
+with scanner:
+    status = scanner.get_status()
+    print(f"Scanner status: {status}")
+```
+
+### Uniden BCD996P2
+
+```python
+from radio_manager.uniden import BCD996P2
+
+# Connect via USB/serial
+scanner = BCD996P2({
+    'ser_port': '/dev/ttyACM1',
+    'baudrate': 115200
+})
+
+with scanner:
+    # Get status
+    status = scanner.get_status()
+    print(f"Firmware: {status['firmware']}")
+    print(f"Mode: {status['scanner_mode']}")
+
+    # Control volume (0-15 for BCD996P2)
+    scanner.volume = 8
+```
+
+## Development Status
+
+This library is in early alpha development. APIs may change.
+
+## License
+
+MIT License - see LICENSE file for details
