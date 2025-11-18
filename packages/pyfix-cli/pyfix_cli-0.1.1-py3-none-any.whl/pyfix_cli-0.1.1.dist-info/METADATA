@@ -1,0 +1,49 @@
+Metadata-Version: 2.4
+Name: pyfix-cli
+Version: 0.1.1
+Summary: Объясняет Python-ошибки на русском — как друг
+Home-page: https://github.com/thepyfix/pyfix
+Author: SAS
+Author-email: pyfixhelp@gmail.com
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: PyYAML
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# 🛠 `pyfix-cli` — Объясняет ошибки Python по-человечески, на русском языке
+
+> *«TypeError: \'NoneType\' object is not subscriptable»*  
+> → **«Вы пытаетесь сделать `x[0]`, но `x = None`. Проверьте, что функция не вернула `None` — добавьте проверку `if x:`»**
+
+[![PyPI](https://img.shields.io/pypi/v/pyfix-cli?logo=pypi&logoColor=white)](https://pypi.org/project/pyfix-cli/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org)
+[![Downloads](https://static.pepy.tech/badge/pyfix-cli)](https://pepy.tech/project/pyfix-cli)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+🛠 **`pyfix-cli`** — CLI-библиотека, которая превращает пугающие traceback’и в дружелюбные, понятные объяснения **на русском языке**, как будто подсказывает опытный коллега.
+
+> 💡 *«Я устал гуглить `KeyError`, пока не сделал `pyfix`. Теперь я просто читаю — и сразу понимаю, что сломал»*  
+> — довольный пользователь 🐍
+
+---
+
+## 🚀 Быстрый старт
+
+### 1. Установите
+```bash
+pip install pyfix-cli

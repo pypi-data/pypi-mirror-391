@@ -1,0 +1,128 @@
+KeyError:
+  title: "KeyError — вы пытаетесь взять ключ, которого нет в словаре"
+  why: "Словарь не содержит указанного ключа. Например: `d['name']`, но `d = {'age': 25}`."
+  how_to_fix:
+    - "Проверьте написание ключа: `name` vs `Name`"
+    - "Используйте `d.get('name', 'default')` вместо `d['name']`"
+    - "Добавьте проверку: `if 'name' in d:`"
+  example: |
+    # Было:
+    user = {'age': 30}
+    print(user['name'])  # ← ошибка
+
+    # Стало:
+    print(user.get('name', 'Аноним'))
+  common_in: ["джуниоры", "парсеры", "работа с JSON"]
+
+AttributeError:
+  title: "AttributeError — объект не имеет такого атрибута или метода"
+  why: "Вы вызываете `.something()`, но у объекта нет `something`. Часто из-за опечатки или неправильного типа."
+  how_to_fix:
+    - "Проверьте написание: `.append()` vs `.appand()`"
+    - "Убедитесь, что объект не `None`: `if obj is not None:`"
+    - "Посмотрите `dir(obj)` — какие атрибуты есть"
+  example: |
+    # Было:
+    text = "hello"
+    text.appand(" world")  # ← опечатка!
+
+    # Стало:
+    text += " world"
+  common_in: ["студенты", "миграция с JS"]
+
+"TypeError: 'NoneType' object is not subscriptable":
+  title: "'NoneType' object is not subscriptable — вы пытаетесь сделать `x[0]`, но `x = None`"
+  why: "Функция вернула `None` вместо списка/словаря/строки. Например: `get_user()` → `None`, а вы делаете `user['name']`."
+  how_to_fix:
+    - "Проверяйте возвращаемое значение функций"
+    - "Используйте `if result:` перед индексацией"
+    - "Возвращайте пустой объект по умолчанию: `return data or []`"
+  example: |
+    # Было:
+    user = get_user()  # может вернуть None
+    name = user["name"]
+
+    # Стало:
+    user = get_user()
+    if user:
+        name = user["name"]
+    else:
+        name = "Гость"
+  common_in: ["API-интеграции", "джуниоры"]
+
+IndentationError:
+  title: "IndentationError — нарушены отступы (пробелы/табы)"
+  why: "Python требует одинаковые отступы в блоке. Часто: смешаны пробелы и табы, или 3 пробела вместо 4."
+  how_to_fix:
+    - "Включите отображение пробелов/табов в редакторе"
+    - "Используйте только пробелы (4 на уровень)"
+    - "В VS Code: `Ctrl+Shift+P` → 'Convert Indentation to Spaces'"
+  example: |4
+      if True:
+        print("1")  # 2 пробела
+          print("2")  # 4 пробела → ошибка!
+  common_in: ["новички", "скопированный код"]
+
+ModuleNotFoundError:
+  title: "ModuleNotFoundError — модуль не установлен или неправильное имя"
+  why: "Вы импортируете `import requests`, но `requests` не установлен, или опечатались (`requets`)."
+  how_to_fix:
+    - "Установите: `pip install имя_модуля`"
+    - "Проверьте имя: `requests`, а не `request` или `requets`"
+    - "Убедитесь, что работаете в правильном виртуальном окружении"
+  common_in: ["все", "после клонирования репозитория"]
+
+NameError:
+  title: "NameError — переменная не определена"
+  why: "Вы используете `x`, но `x` нигде не создана. Часто: опечатка или забыли `self.` в классе."
+  how_to_fix:
+    - "Проверьте написание переменной"
+    - "Убедитесь, что переменная объявлена выше"
+    - "В классах: `self.x`, а не просто `x`"
+  example: |
+    # Было:
+    print(count)  # ← count не определена
+
+    # Стало:
+    count = 0
+    print(count)
+  common_in: ["студенты", "рефакторинг"]
+
+RecursionError:
+  title: "RecursionError — бесконечная рекурсия"
+  why: "Функция вызывает саму себя без условия выхода. Например: `def f(): return f()`."
+  how_to_fix:
+    - "Добавьте базовый случай: `if n <= 1: return 1`"
+    - "Проверьте, изменяется ли аргумент при рекурсивном вызове"
+    - "Для глубоких рекурсий — используйте цикл вместо рекурсии"
+  common_in: ["алгоритмы", "джуниоры"]
+
+ImportError:
+  title: "ImportError — ошибка при импорте (часто из-за относительных путей)"
+  why: "Вы пишете `from .utils import helper`, но запускаете скрипт как `python main.py` (а не `python -m mypackage`)."
+  how_to_fix:
+    - "Запускайте как модуль: `python -m mypackage.main`"
+    - "Или замените относительные импорты на абсолютные"
+    - "Убедитесь, что папка — пакет (есть `__init__.py`)"
+  common_in: ["структурированные проекты", "тестировщики"]
+
+SyntaxError:
+  title: "SyntaxError — синтаксическая ошибка (незакрытая скобка, двоеточие и т.д.)"
+  why: "Python не может распарсить код. Часто: забыли `:`, `)`, `'`, или поставили `=` вместо `==`."
+  how_to_fix:
+    - "Смотрите строку и позицию в ошибке"
+    - "Проверьте парные символы: (), [], {}, ''"
+    - "Используйте редактор с подсветкой синтаксиса"
+  common_in: ["все", "утренний код"]
+
+FileNotFoundError:
+  title: "FileNotFoundError — файл не найден по указанному пути"
+  why: "Путь `data.txt` — относительный. Запуск из другой папки → файл не там."
+  how_to_fix:
+    - "Используйте абсолютные пути: `os.path.abspath('data.txt')`"
+    - "Или пути относительно скрипта: `Path(__file__).parent / 'data.txt'`"
+    - "Проверьте, существует ли файл: `if Path(path).exists():`"
+  example: |
+    from pathlib import Path
+    DATA_PATH = Path(__file__).parent / "config.yaml"
+  common_in: ["парсеры", "DS"]
