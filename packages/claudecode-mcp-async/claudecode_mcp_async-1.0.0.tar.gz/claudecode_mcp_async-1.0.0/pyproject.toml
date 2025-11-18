@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claudecode-mcp-async"
+version = "1.0.0"
+description = "Asynchronous MCP wrapper for Claude Code CLI"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "jeanchristophe13v"},
+]
+maintainers = [
+    {name = "jeanchristophe13v"},
+]
+keywords = ["mcp", "claude-code", "async", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Shells",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.6"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black",
+    "isort",
+    "flake8",
+]
+
+[project.urls]
+Homepage = "https://github.com/jeanchristophe13v/claudecode-mcp-async"
+Repository = "https://github.com/jeanchristophe13v/claudecode-mcp-async"
+Issues = "https://github.com/jeanchristophe13v/claudecode-mcp-async/issues"
+
+[project.scripts]
+claudecode-mcp-async = "claudecode_mcp_async_server:main"
+
+[tool.setuptools]
+py-modules = ["claudecode_mcp_async_server"]
