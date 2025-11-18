@@ -1,0 +1,8 @@
+name: 🛠️ Build distribution package
+
+steps:
+  - name: 🛠️ Build wheel distribution
+    run: rubisco build
+  - name: 📦 Build source distribution
+    run: rubisco srcdist -d ru-dist
+

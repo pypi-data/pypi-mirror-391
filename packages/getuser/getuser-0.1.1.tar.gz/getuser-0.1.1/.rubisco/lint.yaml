@@ -1,0 +1,18 @@
+name: ✔️ Lint
+
+id: lint
+
+steps:
+  - glob: "${{ project.name }}/**/*.py"
+    save-to: src-files
+    recursive: True
+
+  - name: 🛠️ Analysing the code with ruff
+    run: ruff check ${{ project.name }} --config ruff.toml
+
+  - name: 🛠️ Analysing the code with pylint
+    run: [pylint, -j, "${{ nproc }}", "${{ src-files }}"]
+
+  - name: 🛠️ Running type check
+    run: pyright --verbose --threads ${{ nproc }} --level=warning ${{ project.name }}
+

@@ -1,0 +1,41 @@
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[project]
+authors = [
+    { name = "ChenPi11", email = "wushengwuxi-msctinoulk@outlook.com" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pywin32 ; sys_platform == 'win32'",
+]
+description = "Cross-platform user data retrieval utilities."
+name = "getuser"
+readme = "README.md"
+requires-python = ">=3.8"
+version = "0.1.1"
+
+[project.urls]
+"Homepage" = "https://github.com/ChenPi11/getuser"
+
+[project.optional-dependencies]
+# Don't use `uv add --dev`, use `uv add --optional dev instead`. (If you are using uv)
+dev = [
+    "ipython",
+    "pylint",
+    "pyright",
+    "pytest",
+    "build",
+]
+ruff = ["ruff"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [".vscode"]
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = ["duplicate-code", "line-too-long"]

@@ -1,0 +1,15 @@
+name: 🛠️ Build
+
+steps:
+  - mkdir: ru-dist
+  - name: 🛠️ Build wheel distribution
+    run:
+      [
+        "python",
+        "-m",
+        "build",
+        "--wheel",
+        "--outdir=ru-dist",
+        "--verbose",
+      ]
+
