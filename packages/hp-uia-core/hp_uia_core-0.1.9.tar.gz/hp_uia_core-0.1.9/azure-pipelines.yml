@@ -1,0 +1,79 @@
+trigger:
+  branches:
+    include:
+      - master
+  tags:
+    include:
+      - v*
+
+resources:
+  repositories:
+    - repository: self
+      fetchDepth: 0
+      fetchTags: true
+
+variables:
+  - group: pypi
+
+stages:
+- stage: test
+  jobs:
+  - job: test
+    pool:
+      vmImage: windows-latest
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+      displayName: 'Use Python 3.13'
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+        pip install -e .
+      displayName: 'Install dependencies'
+
+    - script: |
+        pytest -v --maxfail=1 --disable-warnings --cov=src --cov-report=xml:coverage.xml --cov-report=term-missing --junitxml=test-results/pytest.xml
+      displayName: 'Run pytest with coverage'
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'test-results/pytest.xml'
+        failTaskOnFailedTests: true
+        testRunTitle: 'pytest'
+      displayName: 'Publish test results'
+
+    - task: PublishCodeCoverageResults@2
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage.xml'
+        reportDirectory: '$(System.DefaultWorkingDirectory)'
+      displayName: 'Publish coverage'
+
+- stage: release
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+  jobs:
+  - job: build_publish
+    pool:
+      vmImage: windows-latest
+    steps:
+
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.13'
+      displayName: 'Use Python 3.13'
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install build twine setuptools setuptools-scm
+        python -m build
+      displayName: Build sdist/wheel
+
+    - script: |
+        python -m twine upload dist/*
+      env:
+        TWINE_REPOSITORY_URL: 'https://upload.pypi.org/legacy/'
+        TWINE_USERNAME: '__token__'
+        TWINE_PASSWORD: $(PYPI_API_TOKEN)
+      displayName: Upload to PyPI
