@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "rxntools-kit"
+version = "0.1.0"
+description = "A package of custom rdkit-based operations for reaction cheminformatics"
+authors = ["yashchainani21 <yashchainani2026@u.northwestern.edu>"]
+readme = "README.md"
+include = ["./data/raw/all_cofactors.csv",
+           "./data/raw/cofactors.json"]
+exclude = ["./data/raw/enzymemap*"]
+packages = [{ include = "rxntools" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+numpy = "^2.2.0"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+seaborn = "^0.13.2"
+rdkit = "^2024.3.6"
+mols2grid = "^2.0.0"
+scikit-learn = "^1.6.0"
+scipy = "^1.14.1"
+py3dmol = "^2.4.2"
+pytest = "^8.3.4"
+mmpdb = "^2.1"
+notebook = "^7.3.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
