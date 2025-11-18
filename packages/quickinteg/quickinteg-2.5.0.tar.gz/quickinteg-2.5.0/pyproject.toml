@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quickinteg"
+description = "Scripts QGIS Processing pour l'intégration rapide des données."
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+authors = [{name = "Valérian LEBERT"}]
+keywords = ["QGIS", "processing", "spatial", "data", "integration"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+requires-python = ">=3.9"
+dynamic = ["version"]
+
+dependencies = [
+    "xlsxwriter==3.1.9",
+    "openpyxl==3.1.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.0",
+    "basedpyright>=1.21",
+]
+
+[project.urls]
+Homepage = "https://gitlab.com/vlebert/quickinteg/"
+Repository = "https://gitlab.com/vlebert/quickinteg/"
+
+[project.scripts]
+qi-create = "quickinteg.cli:quickinteg_create"
+qi-import = "quickinteg.cli:quickinteg_import"
+qi-delete = "quickinteg.cli:quickinteg_delete"
+qi-rop = "quickinteg.cli:quickinteg_rop"
+qi-formatrop = "quickinteg.cli:quickinteg_formatrop"
+
+# --- Version dynamique depuis __about__.py ---
+[tool.setuptools.dynamic]
+version = {attr = "quickinteg.__about__.__version__"}
+
+# --- Package configuration ---
+[tool.setuptools.packages.find]
+include = ["quickinteg*"]
+exclude = ["contrib", "docs", "*.tests", "*.tests.*", "tests.*", "tests"]
+
+[tool.setuptools.package-data]
+quickinteg = ["external/**/*"]
+
+# --- Ruff (remplace black, flake8, isort) ---
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = []
+
+# --- Basedpyright (type checking) ---
+[tool.basedpyright]
+typeCheckingMode = "standard"
+# reportUnknownParameterType = true
+pythonVersion = "3.9"
+include = ["quickinteg"]
+exclude = ["quickinteg/external"]

@@ -1,0 +1,50 @@
+# QuickInteg
+
+[![pipeline status](https://gitlab.com/vlebert/quickinteg/badges/master/pipeline.svg)](https://gitlab.com/vlebert/quickinteg/-/commits/master)
+
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
+## Installation rapide (CLI)
+
+```bash
+# Installation en mode éditable (développement)
+pip install -e .
+
+# Ou avec les dépendances de développement
+pip install -e ".[dev]"
+```
+
+Les commandes CLI seront disponibles : `qi-create`, `qi-import`, `qi-rop`, `qi-delete`, `qi-formatrop`
+
+Pour l'installation dans QGIS, voir la [documentation complète](https://vlebert.gitlab.io/quickinteg/).
+
+## Documentation
+
+La documentaiton complète de Quickinteg est disponible à cette adresse :
+
+<https://vlebert.gitlab.io/quickinteg/>
+
+_Quickinteg_ est un ensemble d'outils Open Source
+permettant la gestion de jeux de donnée SIG au format GRACE THD. _Quickinteg_ permet :
+
+
+Les fonctionnalités de _Quickinteg_ sont les suivantes :
+ 
+- _Quickinteg_ dispose d'outils administrateur permettant **de créer, de développer et de paramétrer un environnement de contrôle**
+- _Quickinteg_ dispose d'outils utilisateurs permettant **d'intégrer un ou plusieurs livrables SIG et de générer automatiquement un rapport d'erreur**.
+- Il permet la consolidation de bases de données (ajout / suppression successive de livrables dans une même base de donnée)
+- Pour les livrables au format GRACE THD, il dispose d’un **outil de génération de route optique** dans un format tableur mis en forme
+
+![Résultats d'un contrôle avec _Quickinteg_](./docs/static/img/gn-quickinteg-result.webp)
+
+Les avantages de la solution _Quickinteg_ sont :
+
+- Un gain de temps dans l’intégration et le contrôle de données SIG
+- Une installation et utilisation en local, sur le poste de travail utilisateur, sans limites d’utilisation 
+- Des outils libres d’utilisation et open source
+- La possibilité d’adapter complètement les critères de contrôle à chaque projet
+
+Quickinteg est composé d'outils administrateurs permettant de créer des templates
+et d'outils utilsateurs permettant d'intégrer un livrable SIG dans un template et
+de générer automatiquement un rapport d'erreur.
