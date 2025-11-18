@@ -1,0 +1,117 @@
+# {{ name | title_case }}
+
+> API project generated with presto v2.0
+
+## 📋 Tech Stack
+
+- **Framework**: {{ framework }}
+- **ORM**: {{ orm }}
+- **Database**: {{ database }}
+{% if auth_enabled -%}
+- **Authentication**: JWT (JSON Web Tokens)
+{% endif -%}
+{% if docker_support -%}
+- **Containerization**: Docker + Docker Compose
+{% endif -%}
+{% if testing_suite -%}
+- **Testing**: Pytest with coverage
+{% endif -%}
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.11+
+{% if database == 'PostgreSQL' -%}
+- PostgreSQL 14+
+{% elif database == 'MySQL' -%}
+- MySQL 8.0+
+{% endif -%}
+{% if docker_support -%}
+- Docker and Docker Compose (optional)
+{% endif -%}
+
+### Installation
+
+**Clone the repository** (if using git)
+```bash
+git clone <your-repo-url>
+cd {{ name | kebab_case }}
+
+```bash
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/macOS
+# source venv\Scripts\activate  # Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Configuration
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your settings
+nano .env
+```
+
+### Database Setup
+
+{% if orm == 'SQLAlchemy' and framework == 'Flask-Restx' %}
+```bash
+flask db init
+flask db migrate -m "Initial migration"
+flask db upgrade
+```
+{% elif orm == 'SQLAlchemy' and framework == 'FastAPI' %}
+```bash
+alembic revision --autogenerate -m "Initial migration"
+alembic upgrade head
+```
+{% elif orm == 'TortoiseORM' %}
+```bash
+aerich init -t src.config.config.TORTOISE_ORM
+aerich init-db
+```
+{% endif %}
+
+### Run Server
+
+```bash
+{% if framework == 'Flask-Restx' %}
+python app.py
+{% elif framework == 'FastAPI' %}
+uvicorn src.main:app --reload
+{% elif framework == 'Django-Rest' %}
+python manage.py runserver
+{% endif %}
+```
+
+Visit: http://localhost:{{ port }}{% if framework == 'FastAPI' %}/docs{% endif %}
+
+## 🧪 Testing
+
+```bash
+pytest
+pytest --cov=src
+```
+
+## 🐳 Docker
+
+```bash
+docker-compose up -d
+```
+
+## 📚 Documentation
+
+- Framework: [{{ framework }}](https://{{ framework | lower | replace('-', '') }}.com)
+- ORM: [{{ orm }}](https://{{ orm | lower }}.org)
+
+## 📝 License
+
+MIT

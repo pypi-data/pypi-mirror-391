@@ -1,0 +1,61 @@
+# Multi-stage build for {{ name }}
+FROM python:{{ python_version }}-slim as builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    {% if database == 'PostgreSQL' -%}
+    libpq-dev \
+    {% elif database == 'MySQL' -%}
+    default-libmysqlclient-dev \
+    {% endif -%}
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Production stage
+FROM python:{{ python_version }}-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+{% if database == 'PostgreSQL' -%}
+RUN apt-get update && apt-get install -y libpq5 && rm -rf /var/lib/apt/lists/*
+{% elif database == 'MySQL' -%}
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
+{% endif -%}
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser
+
+# Copy dependencies from builder to a location accessible by appuser
+COPY --from=builder /install /usr/local
+
+# Copy application and set ownership
+COPY . .
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port
+EXPOSE {{ port }}
+
+{% if framework == 'FastAPI' -%}
+# Start FastAPI application
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "{{ port }}"]
+{% elif framework == 'Django' -%}
+# Start Django application
+CMD ["gunicorn", "--bind", "0.0.0.0:{{ port }}", "--workers", "4", "{{ name | snake_case }}.wsgi:application"]
+{% else -%}
+# Start Flask application
+CMD ["gunicorn", "--bind", "0.0.0.0:{{ port }}", "--workers", "4", "app:app"]
+{% endif -%}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD python -c "import requests; requests.get('http://localhost:{{ port }}/health')" || exit 1
