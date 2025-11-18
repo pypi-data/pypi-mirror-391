@@ -1,0 +1,33 @@
+# Simple RL Pack
+
+A simple Python package demonstrating an Epsilon-Greedy Multi-Armed Bandit.
+
+This package was created as an individual activity.
+
+## Usage
+
+\`\`\`python
+from simple_rl_pack import EpsilonGreedyBandit
+
+# Create a bandit with 3 arms
+bandit = EpsilonGreedyBandit(num_arms=3, epsilon=0.1)
+
+# --- Simulate pulling arms ---
+
+# 1. Select an action
+action_to_pull = bandit.select_action()
+
+# 2. Get a reward (in a real app, this comes from your environment)
+# Let's pretend arm 1 is the best
+reward = 0.0
+if action_to_pull == 1:
+    reward = 1.0
+elif action_to_pull == 2:
+    reward = 0.5
+
+# 3. Update the bandit's knowledge
+bandit.update_value(action_to_pull, reward)
+
+print(f"Pulled arm {action_to_pull}, received reward {reward}")
+print(f"Current best guess: Arm {bandit.get_best_arm()}")
+\`\`\`
