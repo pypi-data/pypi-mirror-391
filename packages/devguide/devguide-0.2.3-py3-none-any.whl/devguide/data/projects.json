@@ -1,0 +1,122 @@
+[
+    {
+        "title": "Sistema de Reservas Online",
+        "tags": ["reservas", "hotel", "booking", "agendamento"],
+        "stack": ["Django or FastAPI", "PostgreSQL", "React / Next.js", "Docker"],
+        "steps": [
+            "Definir modelos: Hotel, Quarto, Reserva, Usuário",
+            "Implementar autenticação (JWT) e autorização",
+            "Criar endpoints RESTful para busca e reserva de quartos",
+            "Painel admin para gestão de hotéis e reservas"
+        ]
+    },
+    {
+        "title": "E-commerce de Produtos Digitais",
+        "tags": ["ecommerce", "loja", "digital", "pagamento"],
+        "stack": ["Next.js", "Node.js", "Stripe", "MongoDB"],
+        "steps": [
+            "Configurar catálogo de produtos digitais",
+            "Integração com gateway de pagamento (Stripe/PayPal)",
+            "Área do usuário com downloads e histórico de compras"
+        ]
+    },
+    {
+        "title": "Blog Pessoal / Portfolio",
+        "tags": ["blog", "portfolio", "ssg", "markdown"],
+        "stack": ["Next.js or Astro", "TailwindCSS", "Vercel"],
+        "steps": [
+            "Estruturar conteúdo com Markdown/MDX",
+            "Gerar páginas estáticas para posts e projetos",
+            "Configurar CI/CD para deploy automático"
+        ]
+    },
+    {
+        "title": "Organizador Automático de Arquivos",
+        "tags": ["automação", "python", "scripts", "filesystem"],
+        "stack": ["Python", "pathlib", "shutil", "watchdog"],
+        "steps": [
+            "1. Setup: Crie um ambiente virtual e instale a biblioteca 'watchdog' com 'pip install watchdog'.",
+            "2. Mapeamento: Crie um dicionário que mapeia extensões para pastas (ex: '.pdf' -> 'Documentos').",
+            "3. Lógica de Organização: Implemente uma função que recebe um caminho de arquivo e o move para a pasta correta com base no mapeamento.",
+            "4. Monitoramento: Use 'watchdog' para monitorar uma pasta (ex: Downloads) em tempo real, detectando novos arquivos.",
+            "5. Handler de Eventos: Crie uma classe de handler para o 'watchdog' que, no evento 'on_created', chama sua função de organização.",
+            "6. Execução: Inicie o observador do 'watchdog' em um loop infinito para manter o script rodando."
+        ]
+    },
+    {
+        "title": "API de Classificação de Sentimentos",
+        "tags": ["ia", "nlp", "machine learning", "api", "texto"],
+        "stack": ["Python", "FastAPI", "scikit-learn", "NLTK"],
+        "steps": [
+            "1. Coleta de Dados: Baixe um dataset de reviews (ex: IMDb) com labels 'positivo' e 'negativo'.",
+            "2. Pré-processamento: Limpe o texto removendo pontuação, stop words e aplicando stemming/lematização com NLTK.",
+            "3. Vetorização: Use TfidfVectorizer do scikit-learn para transformar o texto em vetores numéricos.",
+            "4. Treinamento: Treine um modelo de classificação simples, como Naive Bayes ou Logistic Regression.",
+            "5. Criação da API: Crie um endpoint no FastAPI que recebe um texto, o processa, e retorna a predição do modelo (positivo/negativo).",
+            "6. Dockerização: Crie um Dockerfile para empacotar e distribuir a API facilmente."
+        ]
+    },
+    {
+        "title": "Detector de Objetos em Imagens",
+        "tags": ["ia", "visão computacional", "deep learning", "imagem"],
+        "stack": ["Python", "OpenCV", "PyTorch", "YOLO"],
+        "steps": [
+            "1. Setup do Ambiente: Instale as bibliotecas 'opencv-python', 'torch' e 'ultralytics'.",
+            "2. Carregar Modelo: Carregue um modelo YOLO pré-treinado (ex: 'yolov8n.pt') usando a biblioteca 'ultralytics'.",
+            "3. Função de Detecção: Crie uma função que recebe uma imagem (carregada com OpenCV), passa pelo modelo YOLO e obtém as predições (caixas delimitadoras, classes e confianças).",
+            "4. Desenhar na Imagem: Itere sobre as predições e use as funções do OpenCV para desenhar as caixas e os labels na imagem original.",
+            "5. Exibição/Salvar: Mostre a imagem com as detecções em uma janela ou salve-a em um novo arquivo.",
+            "6. CLI Simples: Crie uma interface de linha de comando simples com 'argparse' para passar o caminho da imagem a ser processada."
+        ]
+    },
+    {"title": "Sistema de Gestão de Tarefas", "tags": ["tarefas", "produtividade", "kanban", "equipe"], "stack": [], "steps": []},
+    {"title": "Plataforma de Cursos Online", "tags": ["educação", "cursos", "videoaulas", "e-learning"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle Financeiro", "tags": ["finanças", "gastos", "planejamento", "orçamento"], "stack": [], "steps": []},
+    {"title": "Chatbot de Atendimento", "tags": ["chatbot", "IA", "automação", "suporte"], "stack": [], "steps": []},
+    {"title": "Plataforma de Marketplace", "tags": ["marketplace", "loja", "vendas", "produtos"], "stack": [], "steps": []},
+    {"title": "Sistema de Delivery Local", "tags": ["delivery", "comida", "logística", "pedidos"], "stack": [], "steps": []},
+    {"title": "Aplicativo de Lista de Compras", "tags": ["compras", "supermercado", "organização"], "stack": [], "steps": []},
+    {"title": "Sistema de Monitoramento de Estoque", "tags": ["estoque", "inventário", "produtos"], "stack": [], "steps": []},
+    {"title": "Aplicação de Previsão do Tempo", "tags": ["clima", "api", "meteorologia"], "stack": [], "steps": []},
+    {"title": "Gerador de Currículos", "tags": ["currículo", "documento", "emprego"], "stack": [], "steps": []},
+    {"title": "Sistema de Agenda Médica", "tags": ["médico", "consultas", "agendamentos"], "stack": [], "steps": []},
+    {"title": "Aplicativo de Hábitos Saudáveis", "tags": ["saúde", "hábitos", "rotina"], "stack": [], "steps": []},
+    {"title": "Plataforma de Eventos", "tags": ["eventos", "ingressos", "participantes"], "stack": [], "steps": []},
+    {"title": "Sistema de Gestão de Academias", "tags": ["academia", "fitness", "cadastro"], "stack": [], "steps": []},
+    {"title": "Gerenciador de Estudos", "tags": ["estudos", "tempo", "foco", "pomodoro"], "stack": [], "steps": []},
+    {"title": "Sistema de Freelancers", "tags": ["freelas", "propostas", "projetos"], "stack": [], "steps": []},
+    {"title": "Aplicação de Controle de Veículos", "tags": ["frota", "carros", "manutenção"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle de Contratos", "tags": ["contratos", "jurídico", "documentos"], "stack": [], "steps": []},
+    {"title": "Plataforma de Doações", "tags": ["doações", "ong", "financeiro"], "stack": [], "steps": []},
+    {"title": "Sistema de Biblioteca Digital", "tags": ["livros", "leitura", "biblioteca"], "stack": [], "steps": []},
+    {"title": "Monitor de Preços de Produtos", "tags": ["preços", "comparação", "ecommerce"], "stack": [], "steps": []},
+    {"title": "Sistema de Chamados Internos", "tags": ["chamados", "suporte", "tickets"], "stack": [], "steps": []},
+    {"title": "Criador de Propostas Comerciais", "tags": ["vendas", "propostas", "negócios"], "stack": [], "steps": []},
+    {"title": "Aplicação de Meditação", "tags": ["meditação", "saúde mental", "relaxamento"], "stack": [], "steps": []},
+    {"title": "Sistema de Reservas de Salas", "tags": ["salas", "coworking", "agendamento"], "stack": [], "steps": []},
+    {"title": "Plataforma de Podcast", "tags": ["podcast", "áudio", "episódios"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle de Obras", "tags": ["construção", "obras", "planejamento"], "stack": [], "steps": []},
+    {"title": "Aplicativo de Networking Profissional", "tags": ["networking", "contatos"], "stack": [], "steps": []},
+    {"title": "Sistema de Recrutamento", "tags": ["rh", "vagas", "candidatos"], "stack": [], "steps": []},
+    {"title": "Ferramenta de Análise de SEO", "tags": ["seo", "marketing", "análise"], "stack": [], "steps": []},
+    {"title": "Gerenciador de Ideias", "tags": ["ideias", "inovação", "brainstorming"], "stack": [], "steps": []},
+    {"title": "Sistema de Notificação Push", "tags": ["push", "mensagens", "mobile"], "stack": [], "steps": []},
+    {"title": "Plataforma de Feedbacks", "tags": ["feedback", "equipe", "desempenho"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle de Assinaturas", "tags": ["assinaturas", "pagamentos"], "stack": [], "steps": []},
+    {"title": "Aplicação de Lembretes Inteligentes", "tags": ["lembretes", "automação"], "stack": [], "steps": []},
+    {"title": "Plataforma de Votação Online", "tags": ["votação", "enquetes"], "stack": [], "steps": []},
+    {"title": "Sistema de Gestão Escolar", "tags": ["escola", "alunos", "notas"], "stack": [], "steps": []},
+    {"title": "Dashboard de Analytics", "tags": ["analytics", "dados", "gráficos"], "stack": [], "steps": []},
+    {"title": "Sistema de Gamificação", "tags": ["gamificação", "pontos", "badges"], "stack": [], "steps": []},
+    {"title": "Aplicação de Receitas", "tags": ["culinária", "receitas", "cozinha"], "stack": [], "steps": []},
+    {"title": "Plataforma de Mentorias", "tags": ["mentoria", "consultoria"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle de Projetos", "tags": ["projetos", "gestão", "equipes"], "stack": [], "steps": []},
+    {"title": "Catálogo Digital para Lojas", "tags": ["catálogo", "ecommerce"], "stack": [], "steps": []},
+    {"title": "Plataforma de Matching (estilo Tinder)", "tags": ["matching", "perfis", "algoritmo"], "stack": [], "steps": []},
+    {"title": "Sistema de Controle de Senhas", "tags": ["senhas", "segurança"], "stack": [], "steps": []},
+    {"title": "Aplicação de Música Online", "tags": ["música", "playlists", "streaming"], "stack": [], "steps": []},
+    {"title": "Sistema de Gestão de Documentos", "tags": ["documentos", "upload", "organização"], "stack": [], "steps": []},
+    {"title": "Plataforma de Revisão de Textos", "tags": ["revisão", "escrita"], "stack": [], "steps": []},
+    {"title": "Sistema de Registro de Horas Trabalhadas", "tags": ["timesheet", "horas"], "stack": [], "steps": []},
+    {"title": "Aplicação de Análise de Sentimento", "tags": ["sentimento", "IA", "linguagem natural"], "stack": [], "steps": []}
+]
