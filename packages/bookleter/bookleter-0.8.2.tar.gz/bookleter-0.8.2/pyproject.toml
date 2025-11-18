@@ -1,0 +1,23 @@
+[project]
+name = "bookleter"
+version = "0.8.2"
+description = "Turns pdfs into a6 sized foldable booklets"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+  { name = "Mohsen Barzegar", email = "2.mohsenbarzegar@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "pdfcropmargins>=2.2.1",
+    "pdfrw>=0.4",
+    "pillow>=12.0.0",
+    "pypdf2>=3.0.1",
+]
+
+[project.scripts]
+bookleter = "bookleter.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

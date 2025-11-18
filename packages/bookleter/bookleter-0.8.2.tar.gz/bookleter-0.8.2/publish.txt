@@ -1,0 +1,7 @@
+python setup.py sdist bdist_wheel
+python -m twine upload -r pypi dist/*
+
+uv pip install --upgrade twine
+uv run python -m twine upload dist/*
+
+api token = pypi-AgEIcHlwaS5vcmcCJDAyZDUxYTJiLTIxMDktNDFmNS04MzRiLWE4MmRjMjQzODE0NgACEVsxLFsiYm9va2xldGVyIl1dAAIsWzIsWyJmYWQwM2FiZS0xNjU1LTRiN2QtOTZiMy1iYjYwODYxNTYyZTYiXV0AAAYgEs6t2cPiodB1cEbd6vvRhJ4iU1-AsJa4aRBOJVAlzAM
