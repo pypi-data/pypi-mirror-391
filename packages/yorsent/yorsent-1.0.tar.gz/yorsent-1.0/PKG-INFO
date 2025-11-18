@@ -1,0 +1,60 @@
+Metadata-Version: 2.4
+Name: yorsent
+Version: 1.0
+Summary: A Yoruba language model to predict sentiment of Yoruba texts
+Author-email: Abeeb Kasaba <kasabaabeeb@gmail.com>
+License: Apache-2.0
+Project-URL: WebApp, https://yoruba-sentiment-checker.streamlit.app/
+Project-URL: Doc, https://www.researchgate.net/publication/395652737_A_Hybrid_Approach_to_Yoruba_Sentiment_Analysis_Integrating_Lexicon-Based_Rules_and_Machine_-_Learning_Models?_sg%5B0%5D=8vJfQsf1VA-UkFECUunrdXKmy893G3WDsVffPwovvelkg8HGHtWK4tN_ofooxMaR1CrSXAXOGysUtTiw0RS4offeIZaDZmQzqPKTvp53.NaquqpMe6e1m_sRPv-hL08O2uW9DuSDuxErVcgZ0X1zZA4z5ePxo-Yna_LNZBqUHKGFUuKes5Vl2m7yeK9GAsA&_tp=eyJjb250ZXh0Ijp7ImZpcnN0UGFnZSI6InByb2ZpbGUiLCJwYWdlIjoicHJvZmlsZSIsInByZXZpb3VzUGFnZSI6InByb2ZpbGUiLCJwb3NpdGlvbiI6InBhZ2VDb250ZW50In19
+Project-URL: Source, https://github.com/Kasaba6330/yoruba-sentiment-checker
+Description-Content-Type: text/markdown
+Requires-Dist: pandas
+Requires-Dist: scikit-learn
+Requires-Dist: joblib
+
+# Yoruba-sentiment-checker
+Yorùbá Sentiment Checker
+A hybrid (Rule-Based + Machine Learning) sentiment analysis tool for classifying Yorùbá text into Positive, Negative, or Neutral categories. This project addresses the challenge of building NLP tools for low-resource languages by combining the precision of a curated lexicon with the contextual understanding of a statistical model.
+
+**Features**
+Hybrid Architecture: Integrates a comprehensive, hand-curated Yorùbá sentiment lexicon with a Logistic Regression classifier for robust sentiment prediction.
+
+**Web Application:** A user-friendly Streamlit web app for real-time sentiment analysis of text or uploaded files. https://yoruba-sentiment-checker.streamlit.app/
+
+**Public Resources:** Provides a valuable public sentiment lexicon and sentiment analysis language model for Yorùbá to support further NLP research.
+
+**Reproducible Research:** Complete code and methodology are provided for full transparency and reproducibility.
+
+**Installation & Usage**
+
+**Clone the repository:**
+
+bash
+
+git clone https://github.com/Kasaba6330/yoruba-sentiment-checker.git
+
+cd yoruba-sentiment-checker
+
+**Install dependencies:**
+
+bash
+
+pip install -r requirements.txt
+
+**Run the web application:**
+
+bash
+
+streamlit run app.py
+
+**Data**
+
+The model is trained on an extended dataset built upon the Yorùbá portion of the AfriSenti-SemEval dataset.
+
+**Contributing**
+
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+
+**License**
+
+This project is licensed under the Apache-2.0 License.
