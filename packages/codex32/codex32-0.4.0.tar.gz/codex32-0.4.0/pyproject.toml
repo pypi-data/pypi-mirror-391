@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codex32"
+version = "0.4.0"
+authors = [
+  { name = "Ben Westgate", email = "benwestgate@protonmail.com" },
+]
+description = "A Python implementation of BIP93 (Codex32)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE*"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dependencies = ["bip32>=5.0.0"]
+
+[project.optional-dependencies]
+dev = ["pytest", "flake8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.flake8]
+max-line-length = 80
+exclude = ".git,__pycache__,build,dist"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[project.urls]
+Homepage = "https://github.com/benwestgate/python-codex32"
+Issues = "https://github.com/benwestgate/python-codex32/issues"
