@@ -1,0 +1,491 @@
+- project:
+    templates:
+      - check-requirements
+      - tempest-plugin-jobs
+    check:
+      jobs:
+        - cinder-tempest-plugin-lvm-multiattach
+        - cinder-tempest-plugin-lvm-concurrency-tests
+        - cinder-tempest-plugin-lvm-lio-barbican
+        - cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream-py311:
+            voting: false
+        - cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream-2025-1:
+            voting: false
+        # FIXME: the tgt job is broken on jammy, and we may be removing tgt
+        # support anyway.  So make it non-voting until we figure out what to
+        # do about this, which should be at the March 2023 virtual PTG.
+        - cinder-tempest-plugin-lvm-tgt-barbican:
+            voting: false
+        - cinder-tempest-plugin-lvm-lio-barbican-fips-2025-1:
+            voting: false
+        - cinder-tempest-plugin-lvm-lio-barbican-fips-py311:
+            voting: false
+        - cinder-tempest-plugin-lvm-nvmet-barbican
+        - nova-ceph-multistore:
+            voting: false
+        - cinder-tempest-plugin-cbak-ceph
+        - cinder-tempest-plugin-cbak-s3
+        # As per the Tempest "Stable Branch Support Policy", Tempest will only
+        # support the "Maintained" stable branches, so only jobs for the
+        # current stable branches should be listed here.
+        - cinder-tempest-plugin-basic-2025-1
+        - cinder-tempest-plugin-basic-2024-2
+        - cinder-tempest-plugin-basic-2024-1
+        - cinder-tempest-plugin-protection-functional
+    gate:
+      jobs:
+        - cinder-tempest-plugin-lvm-lio-barbican
+        - cinder-tempest-plugin-lvm-nvmet-barbican
+        # FIXME: no sense running a non-voting gate job.  See comment above.
+        # - cinder-tempest-plugin-lvm-tgt-barbican
+        - cinder-tempest-plugin-cbak-ceph
+    experimental:
+      jobs:
+        - cinder-tempest-plugin-cbak-ceph-2025-1
+        - cinder-tempest-plugin-cbak-ceph-2024-2
+        - cinder-tempest-plugin-cbak-ceph-2024-1
+
+- job:
+    name: cinder-tempest-plugin-protection-functional
+    parent: devstack-tempest
+    required-projects:
+      - opendev.org/openstack/cinder-tempest-plugin
+      - opendev.org/openstack/cinder
+    vars:
+      tox_envlist: all
+      tempest_test_regex: 'cinder_tempest_plugin.rbac'
+      devstack_localrc:
+        KEYSTONE_ENFORCE_SCOPE: True
+      devstack_local_conf:
+        test-config:
+          $CINDER_CONF:
+            oslo_policy:
+              enforce_scope: True
+              enforce_new_defaults: True
+          $TEMPEST_CONFIG:
+            enforce_scope:
+              cinder: True
+      tempest_plugins:
+        - cinder-tempest-plugin
+
+- job:
+    name: cinder-tempest-plugin-lvm-multiattach
+    description: |
+      This enables multiattach tests along with standard tempest tests
+    parent: devstack-tempest
+    required-projects:
+      - opendev.org/openstack/tempest
+      - opendev.org/openstack/cinder-tempest-plugin
+      - opendev.org/openstack/cinder
+    vars:
+      configure_swap_size: 8192
+      tempest_test_regex: '(^tempest\.(api|scenario)|(^cinder_tempest_plugin))'
+      tempest_test_exclude_list: '{{ ansible_user_dir }}/{{ zuul.projects["opendev.org/openstack/tempest"].src_dir }}/tools/tempest-integrated-gate-storage-exclude-list.txt'
+      # Temporarily exclude TestMultiAttachVolumeSwap until LP bug #1980816 is resolved.
+      # Other excluded tests are tests that are somewhat time consuming but unrelated
+      # to multi-attach testing.
+      tempest_exclude_regex: 'TestMultiAttachVolumeSwap|^tempest.api.image|^tempest.api.object_storage|^tempest.scenario.test_volume_boot_pattern.TestVolumeBootPattern.test_boot_server_from_encrypted|^tempest.scenario.test_server_advanced_ops|^tempest.scenario.test_unified_limits'
+      tox_envlist: all
+      devstack_localrc:
+        ENABLE_VOLUME_MULTIATTACH: true
+      tempest_plugins:
+        - cinder-tempest-plugin
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^releasenotes/.*$
+    timeout: 10800
+
+- job:
+    name: cinder-tempest-plugin-lvm-concurrency-tests
+    description: |
+      This job runs Cinder concurrency scenario tests from the cinder-tempest-plugin.
+      These tests involve parallel operations on volumes (e.g., backup creation, attachment),
+      which can put stress on system resources.
+
+      To avoid hitting resource limits, `tempest_concurrency` is set to 1, ensuring that
+      the tests themselves run in serial even though each test performs concurrent actions internally.
+    parent: devstack-tempest
+    required-projects:
+      - opendev.org/openstack/tempest
+      - opendev.org/openstack/cinder-tempest-plugin
+      - opendev.org/openstack/cinder
+    vars:
+      tempest_concurrency: 1
+      tox_envlist: all
+      tempest_test_regex: 'cinder_tempest_plugin.scenario.test_volume_concurrency'
+      tempest_plugins:
+        - cinder-tempest-plugin
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            volume-feature-enabled:
+              concurrency_tests: True
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base-abstract
+    description: |
+      This is a base job for lvm with lio & tgt targets
+    parent: devstack-tempest
+    abstract: true
+    timeout: 10800
+    required-projects:
+      - opendev.org/openstack/barbican
+      - opendev.org/openstack/tempest
+      - opendev.org/openstack/cinder-tempest-plugin
+      - opendev.org/openstack/cinder
+    host-vars:
+      controller:
+        devstack_plugins:
+          barbican: https://opendev.org/openstack/barbican
+    vars:
+      configure_swap_size: 8192
+      tempest_test_regex: '(^tempest\.(api|scenario)|(^cinder_tempest_plugin))'
+      tempest_test_exclude_list: '{{ ansible_user_dir }}/{{ zuul.projects["opendev.org/openstack/tempest"].src_dir }}/tools/tempest-integrated-gate-storage-exclude-list.txt'
+      tox_envlist: all
+      devstack_localrc:
+        CINDER_LVM_TYPE: thin
+        CINDER_COORDINATION_URL: 'file://\$state_path'
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            auth:
+              # FIXME: 'creator' should be re-added by the barbican devstack plugin
+              # but the value below override everything.
+              tempest_roles: member,creator
+            volume:
+              build_timeout: 300
+            volume-feature-enabled:
+              volume_revert: True
+      devstack_services:
+        barbican: true
+        # explicitly enable c-bak, as it may be disabled in the parent job
+        c-bak: true
+      tempest_plugins:
+        - cinder-tempest-plugin
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^releasenotes/.*$
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets.
+      No cinderlib testing beginning with 2024.1 development.
+    # FIXME: the following RE2 expression won't work after the 9999.2 release.
+    # If you are reading this during the 9999.2 development cycle, greetings
+    # from the 21st century!
+    branches: ^(master|(stable/(202[4-9]|20[3-9]\d|2[1-9]\d\d|[3-9]\d\d\d))\.[12])$
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets
+      with cinderlib tests.
+    branches: ^(stable/(xena|yoga|zed|2023\.[12]))$
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    roles:
+      - zuul: opendev.org/openstack/cinderlib
+    required-projects:
+      - opendev.org/openstack/cinderlib
+    run: playbooks/tempest-and-cinderlib-run.yaml
+    # Required to collect the tox-based logs of the cinderlib functional tests
+    post-run: playbooks/post-cinderlib.yaml
+    vars:
+      fetch_subunit_output_additional_dirs:
+        - "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/cinderlib'].src_dir }}"
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets
+      with cinderlib tests to run on stable/wallaby
+      testing. To run on those stable branches that are using tempest
+      29.0.0 (which is set in the devstack stackrc file), we must
+      use cinder-tempest-plugin compatible version 1.8.0.
+    branches:
+      - stable/wallaby
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    roles:
+      - zuul: opendev.org/openstack/cinderlib
+    required-projects:
+      - opendev.org/openstack/cinderlib
+      - name: opendev.org/openstack/cinder-tempest-plugin
+        override-checkout: 1.8.0
+    run: playbooks/tempest-and-cinderlib-run.yaml
+    # Required to collect the tox-based logs of the cinderlib functional tests
+    post-run: playbooks/post-cinderlib.yaml
+    vars:
+      fetch_subunit_output_additional_dirs:
+        - "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/cinderlib'].src_dir }}"
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets
+      with cinderlib tests to run on stable/victoria
+      testing. To run on those stable branches that are using tempest
+      26.1.0 (which is set in the devstack stackrc file), we must
+      use cinder-tempest-plugin compatible version 1.3.0.
+    branches:
+      - stable/victoria
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    roles:
+      - zuul: opendev.org/openstack/cinderlib
+    required-projects:
+      - opendev.org/openstack/cinderlib
+      - name: opendev.org/openstack/cinder-tempest-plugin
+        override-checkout: 1.3.0
+    run: playbooks/tempest-and-cinderlib-run.yaml
+    # Required to collect the tox-based logs of the cinderlib functional tests
+    post-run: playbooks/post-cinderlib.yaml
+    vars:
+      fetch_subunit_output_additional_dirs:
+        - "{{ ansible_user_dir }}/{{ zuul.projects['opendev.org/openstack/cinderlib'].src_dir }}"
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets
+      for stable/train and stable/ussuri testing.
+      To run on those stable branches that are using tempest
+      26.1.0 (which is set in the devstack stackrc file), we must
+      use cinder-tempest-plugin compatible version 1.3.0.
+      We no longer test cinderlib because it's EOL on these branches.
+    branches:
+      - stable/train
+      - stable/ussuri
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    required-projects:
+      - name: opendev.org/openstack/cinder-tempest-plugin
+        override-checkout: 1.3.0
+
+- job:
+    name: cinder-tempest-plugin-lvm-barbican-base
+    description: |
+      This is a base job for lvm with lio & tgt targets
+    branches: ^stable/(ocata|pike|queens|rocky|stein).*$
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    required-projects:
+      - name: opendev.org/openstack/cinder-tempest-plugin
+        override-checkout: stein-last
+    vars:
+      tempest_test_blacklist: '{{ ansible_user_dir }}/{{ zuul.projects["opendev.org/openstack/tempest"].src_dir }}/tools/tempest-integrated-gate-storage-exclude-list.txt'
+
+- job:
+    name: cinder-tempest-plugin-cbak-ceph
+    parent: devstack-plugin-ceph-tempest-py3
+    description: |
+      Integration tests that runs with the ceph devstack plugin, py3
+      and enable the backup service.
+    vars:
+      # FIXME: change I29b1af0a4034decad to tempest added image format tests that
+      # cannot pass in this job because the image data takes a optimized path that
+      # bypasses nova's checks.  Until the nova team decides on a strategy to handle
+      # this issue, we skip these tests.
+      tempest_exclude_regex: (tempest.api.image.v2.test_images_formats.ImagesFormatTest.test_compute_rejects)
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            volume-feature-enabled:
+              volume_revert: True
+      devstack_services:
+        c-bak: true
+      devstack_localrc:
+        CINDER_QUOTA_VOLUMES: 25
+    timeout: 10800
+
+- job:
+    name: cinder-tempest-plugin-cbak-ceph-2025-1
+    parent: cinder-tempest-plugin-cbak-ceph
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2025.1
+
+- job:
+    name: cinder-tempest-plugin-cbak-ceph-2024-2
+    parent: cinder-tempest-plugin-cbak-ceph
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: cinder-tempest-plugin-cbak-ceph-2024-1
+    parent: cinder-tempest-plugin-cbak-ceph
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.1
+
+# variant for pre-Ussuri branches (no volume revert for Ceph),
+# should this job be used on those branches
+- job:
+    name: cinder-tempest-plugin-cbak-ceph
+    branches: ^stable/(ocata|pike|queens|rocky|stein|train).*$
+    vars:
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            volume-feature-enabled:
+              volume_revert: False
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican
+    description: |
+      This jobs configures Cinder with LVM, LIO, barbican and
+      runs tempest tests and cinderlib tests.
+    parent: cinder-tempest-plugin-lvm-barbican-base
+    vars:
+      devstack_localrc:
+        CINDER_TARGET_HELPER: lioadm
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream
+    parent: cinder-tempest-plugin-lvm-lio-barbican
+    nodeset: devstack-single-node-centos-9-stream
+    description: |
+      This jobs configures Cinder with LVM, LIO, barbican and
+      runs tempest tests and cinderlib tests on CentOS Stream 9.
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream-2025-1
+    parent: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream
+    override-checkout: stable/2025.1
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream-py311
+    parent: cinder-tempest-plugin-lvm-lio-barbican
+    nodeset: devstack-single-node-centos-9-stream
+    description: |
+      This jobs configures Cinder with LVM, LIO, barbican and
+      runs tempest tests and cinderlib tests on CentOS Stream 9.
+    vars:
+      devstack_localrc:
+        PYTHON3_VERSION: 3.11
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-fips
+    parent: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream
+    description: |
+      This job configures Cinder with LVM, LIO, barbican and
+      runs tempest tests and cinderlib tests on CentOS Stream 9
+      under FIPS mode
+    pre-run: playbooks/enable-fips.yaml
+    vars:
+      nslookup_target: 'opendev.org'
+      tempest_exclude_regex: 'test_encrypted_cinder_volumes_cryptsetup'
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-fips-2025-1
+    parent: cinder-tempest-plugin-lvm-lio-barbican-fips
+    override-checkout: stable/2025.1
+
+- job:
+    name: cinder-tempest-plugin-lvm-lio-barbican-fips-py311
+    parent: cinder-tempest-plugin-lvm-lio-barbican-centos-9-stream-py311
+    nodeset: devstack-single-node-centos-9-stream
+    description: |
+      This job configures Cinder with LVM, LIO, barbican and
+      runs tempest tests and cinderlib tests on CentOS Stream 9
+      under FIPS mode
+    vars:
+      enable_fips: True
+      nslookup_target: 'opendev.org'
+      tempest_exclude_regex: 'test_encrypted_cinder_volumes_cryptsetup'
+      devstack_localrc:
+        PYTHON3_VERSION: 3.11
+
+- job:
+    name: cinder-tempest-plugin-lvm-nvmet-barbican
+    description: |
+      This jobs configures Cinder with LVM, nvmet, barbican and
+      runs tempest tests and cinderlib tests.  nvmet is
+      configured to use the new connection information format,
+      NVMe-oF native multipathing, and sharing the NVMe-oF
+      namespace for all the connections to the same node.
+    # TODO: switch to cinder-tempest-plugin-lvm-barbican-base
+    # when cinderlib support for NVMe is fixed
+    parent: cinder-tempest-plugin-lvm-barbican-base-abstract
+    pre-run: playbooks/install-multipath.yaml
+    vars:
+      devstack_localrc:
+        CINDER_TARGET_HELPER: nvmet
+        CINDER_TARGET_PROTOCOL: nvmet_tcp
+        TEMPEST_STORAGE_PROTOCOL: nvmeof
+      devstack_local_conf:
+        test-config:
+          $TEMPEST_CONFIG:
+            volume-feature-enabled:
+              # NotImplementedError: Revert volume to snapshot not implemented for thin LVM.
+              volume_revert: False
+        post-config:
+          $NOVA_CONF:
+            libvirt:
+              volume_use_multipath: true
+          $CINDER_CONF:
+            lvmdriver-1:
+              nvmeof_conn_info_version: 2
+              lvm_share_target: true
+              target_secondary_ip_addresses: 127.0.0.1
+              use_multipath_for_image_xfer: true
+
+- job:
+    name: cinder-tempest-plugin-lvm-tgt-barbican
+    description: |
+      This jobs configures Cinder with LVM, tgt, barbican and
+      runs tempest tests and cinderlib tests.
+    parent: cinder-tempest-plugin-lvm-barbican-base
+    vars:
+      devstack_localrc:
+        CINDER_TARGET_HELPER: tgtadm
+
+- job:
+    name: cinder-tempest-plugin-cbak-s3
+    parent: cinder-tempest-plugin-basic
+    description: |
+      Integration tests that runs with the s3 backup driver with
+      Swift S3 API.
+    vars:
+      devstack_localrc:
+        CINDER_BACKUP_DRIVER: 's3_swift'
+      devstack_services:
+        c-bak: true
+        s3api: true
+        # Workaround: TLS proxy seems to cause S3 signature mismatch.
+        tls-proxy: false
+      tempest_test_regex: '(test_volume_backup|test_volumes_backup|test_snapshot_backup)'
+- job:
+    name: cinder-tempest-plugin-basic
+    parent: devstack-tempest
+    description: |
+      Cinder tempest plugin tests job which run only cinder-tempest-plugin
+      tests.
+    required-projects:
+      - opendev.org/openstack/cinder-tempest-plugin
+    vars:
+      devstack_localrc:
+        TEMPEST_VOLUME_REVERT_TO_SNAPSHOT: True
+      tox_envlist: all
+      tempest_test_regex: cinder_tempest_plugin
+      tempest_plugins:
+        - cinder-tempest-plugin
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*$
+      - ^releasenotes/.*$
+
+- job:
+    name: cinder-tempest-plugin-basic-2025-1
+    parent: cinder-tempest-plugin-basic
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2025.1
+
+- job:
+    name: cinder-tempest-plugin-basic-2024-2
+    parent: cinder-tempest-plugin-basic
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.2
+
+- job:
+    name: cinder-tempest-plugin-basic-2024-1
+    parent: cinder-tempest-plugin-basic
+    nodeset: openstack-single-node-jammy
+    override-checkout: stable/2024.1
