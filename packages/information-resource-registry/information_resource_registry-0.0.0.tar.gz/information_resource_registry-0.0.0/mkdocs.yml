@@ -1,0 +1,32 @@
+---
+site_name: "Information Resource Registry Model Documentation"
+theme:
+  name: material
+  palette:
+    scheme: black
+    primary: black
+  logo: images/biolink-logo.png
+  features:
+    - content.tabs.link
+plugins:
+  - search
+  - mermaid2
+nav:
+  # - Home: home.md
+  - Overview: index.md
+  - Visualize Translator Data Flow (sankey): data_flow_diagram.png
+  - View the Infores Catalog: https://biolink.github.io/information-resource-registry/infores_catalog.yaml
+  - Download the Infores Catalog: infores_catalog.yaml
+  - Implementation Guidance: implementation-guidance.md
+  - Catalog Metamodel Details: biolink-infores-parameters.md
+  - Addition information: appendices.md
+  - Registry: registry.md
+site_url: https://biolink.github.io/information-resource-registry
+repo_url: https://github.com/biolink/information-resource-registry
+extra_css:
+  - style.css
+extra:
+  analytics:
+    provider: google
+    property: G-J23SCD6JB8
+
