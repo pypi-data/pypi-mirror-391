@@ -1,0 +1,93 @@
+Metadata-Version: 2.4
+Name: pyftpclient
+Version: 0.2.0
+Summary: ftp client wrapper to simplify working with paramiko or ftplib
+Project-URL: Homepage, https://github.com/ahcub/pyftpclient
+Project-URL: Repository, https://github.com/ahcub/pyftpclient
+Author-email: Alex Buchkovsky <alex.buchkovsky@gmail.com>
+License: Copyright (c) 2018, Alexander Buchkovsky
+        All rights reserved.
+        
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+        
+        * Redistributions of source code must retain the above copyright notice, this
+          list of conditions and the following disclaimer.
+        
+        * Redistributions in binary form must reproduce the above copyright notice,
+          this list of conditions and the following disclaimer in the documentation
+          and/or other materials provided with the distribution.
+        
+        * Neither the name of pyftpclient nor the names of its
+          contributors may be used to endorse or promote products derived from
+          this software without specific prior written permission.
+        
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+        DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+        FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+        DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+        SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+        OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+        OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+License-File: LICENCE
+Keywords: client,ftp,sftp,wrapper
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.14
+Requires-Dist: os-utils==0.2.0
+Requires-Dist: paramiko==4.0.0
+Provides-Extra: dev
+Requires-Dist: mypy==1.18.2; extra == 'dev'
+Requires-Dist: pytest-cov==7.0.0; extra == 'dev'
+Requires-Dist: pytest-mock==3.15.1; extra == 'dev'
+Requires-Dist: pytest==9.0.0; extra == 'dev'
+Requires-Dist: ruff==0.14.4; extra == 'dev'
+Requires-Dist: types-paramiko==4.0.0.20250822; extra == 'dev'
+Description-Content-Type: text/markdown
+
+FTP client wrapper
+====================
+
+pyftpclient is a library that is made to make work with FTP/SFTP simple. it has the common functions that you would use when working with a regular file system, like open a file listdir, and glob, delete file or directory. It also has funcitons to simple download/upload of the files and directories from/to remote drive. The library takes care about opening and closing the sessions, so you don't have to worry about it
+
+
+SFTPClient example
+```
+from pyftpclient.sftp_client import SFTPClient
+
+connection_config = {
+    'hostname': '127.0.0.1',
+    'username': 'viewonly',
+    'password': 'viewonly'
+}
+
+
+with SFTPClient(**connection_config) as sftp:
+    print(sftp.listdir('/')
+    sftp.download_file('/home/src_file'), '~/dst_file')
+    sftp.download_tree(src_dir, dst_dir)
+```
+
+
+FTPClient example
+```
+from pyftpclient.ftp_client import FTPClient
+
+connection_config = {
+    'hostname': '127.0.0.1',
+    'username': 'viewonly',
+    'password': 'viewonly'
+    'port': 21
+}
+
+
+with FTPClient(**connection_config) as ftp:
+    print(ftp.listdir('/')
+    ftp.download_file('/home/src_file'), '~/dst_file')
+    ftp.download_tree(src_dir, dst_dir)
+```
