@@ -1,0 +1,36 @@
+# System files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Application runtime files
+app_history.npy
+circuit_denoiser.log
+training_loss.png
+
+# Training artifacts
+*.pth
+*.pkl
+checkpoints/
+
+# Output directories
+output/
+batch_output/
+test_signals/*.txt
+!test_signals/create_test_signals.py
