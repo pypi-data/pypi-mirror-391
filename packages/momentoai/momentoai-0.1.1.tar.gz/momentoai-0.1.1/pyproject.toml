@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "momentoai"
+version = "0.1.1"
+description = "Python SDK for Momento AI — image vectorization, face search, and CLIP embeddings with user-supplied Supabase credentials."
+readme = "README.md"
+authors = [
+  { name = "Manil Modi", email = "msmodi1701@gmail.com" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = [
+  "httpx>=0.24.1",
+  "typing-extensions",
+]
+
+[project.urls]
+Homepage = "https://github.com/ManilModi/MomentoAI-SDK"
+Documentation = "https://github.com/ManilModi/MomentoAI-SDK#readme"
