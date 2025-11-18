@@ -1,0 +1,410 @@
+# fupi
+
+A brute-force shortcut to fix python import hell. Acronym standing for... um, Fixing-Up Python Imports. Sure, let's go with that. 
+
+## Usage
+
+You can use fupi in two ways:
+
+### 1. Auto-Configuration (Quick Start)
+
+Simply import fupi in your project:
+
+```python
+import fupi
+```
+
+This automatically detects and adds relevant directories (`src`, `test`, `app`) and their children to your sys.path, making imports work seamlessly across your project structure regardless of how bad you screw it up. This allows you to run components independently, run tests from anywhere, etc.
+
+If found, fupi will append the comma-delimited contents of two environment variables, allowing for session-wide updates without going full-manual:
+- `FUPI_ADD_DIR_NAMES`: Additional directory names to add to path
+- `FUPI_SKIP_DIR_PATTERNS`: Additional directory name patterns to skip
+
+Note: `add_dir_names` acts as an **exact string-match** to directory names, while `skip_dir_patterns` performs a **regex match** allowing you can add patterns. Two patterns are always added (aka folders skipped): directories starting with a period (`r'\.*'`) or underscore (`r'\_*'`).
+
+Environment Variables are alway additive to defaults. If you need more direct control, then Manual config is for you.
+
+### 2. Manual Configuration
+
+For more control, you can suppress the auto-configuration and configure manually. Using `from fupi import ...` (instead of `import fupi`) prevents automatic configuration and gives you explicit control.
+
+#### Using the ManualFupi Class 
+
+The `ManualFupi` class provides a clean, flexible API for manual configuration:
+
+```python
+from fupi import ManualFupi
+
+mf = ManualFupi(add_dir_names=['src', 'test'],
+                skip_dir_patterns = ['setup', 'venv*'])
+mf.run()
+
+
+# Or more simply:
+mf = ManualFupi(add_dir_names=['src', 'test'],
+                skip_dir_patterns = ['setup', 'venv*'],
+                autorun=True)
+
+
+# Or even MORE simply, if you like the defaults, although
+# this is no different than the `import fupi` auto-run
+mf = ManualFupi(autorun=True)
+
+
+# Or if you're loquacious:
+mf = ManualFupi()
+mf.add_dir_names = ['src', 'test']
+mf.skip_dir_patterns = ['setup', 'venv*']
+mf.run()
+
+
+# Extend defaults, instead of overwrite:
+mf = ManualFupi()
+mf.add_dir_names.extend(['foo','bar'])
+mf.run()
+
+
+# For maximal confusion:
+mf = ManualFupi(add_dir_names = ['foo','bar'], 
+                skip_dir_patterns = ['setup', 'venv*'])
+mf.add_dir_names = ['foo','bar']
+mf.skip_dir_patterns = ['setup', 'venv*']
+mf.run(add_dir_names = ['foo','bar'],
+       skip_dir_patterns = ['setup', 'venv*'])
+# They're all just lists, so each overwrites the last
+# Thus mf.run() wins
+
+
+# if you want to preview changes:
+mf = ManualFupi(add_dir_names=['src', 'test'])
+print(f"Will add {len( mf.get_paths() )} paths to sys.path")
+mf.run()
+```
+
+#### Using the Convenience Function (Legacy)
+
+For backward compatibility, a convenience function is still available:
+
+```python
+from fupi import manual_config
+
+manual_config(add_dirs=['src', 'test'], skip_dirs=['setup', 'venv*'])
+```
+
+### Usage Notes
+
+Auto-configuration can be a bit dangerous in larger projects with potentially duplicate namespaces, as you'd have no idea what you're actually importing unless you're explicit. This is a "move fast and break things" type of project; you have been warned.
+
+On larger projects, you may consider removing `import fupi` once you get deployment and testing automated / located to a centralized starting point, to make sure you're not hiding import bugs. Usually by the time you're closing in on production, you won't need this brute-force tool. Fupi is really good at speeding up rapid-deploy tests / POCs / etc. by allowing you to import from anywhere in your project, starting from anywhere else in your project - aka coding fast and loose. This is most useful for one-person projects (of which AI is increasing the number and velocity).
+
+## Configuration
+
+No configuration is needed if you use the defaults: 
+- **DEFAULT_ADD_DIR_NAMES** = ['src', 'app', 'main', 'test', 'tests']
+- **DEFAULT_SKIP_DIR_PATTERNS** = ['setup', 'venv*', '*egg*', 'old*', '*old', '*bkup', '*backup'], plus period and underscore (always added)
+
+### Default Configuration Values
+
+The default configuration lists are accessible at the module level:
+
+```python
+from fupi import DEFAULT_ADD_DIR_NAMES, DEFAULT_SKIP_DIR_PATTERNS
+
+print(DEFAULT_ADD_DIR_NAMES)     # ['src', 'app', 'main', 'test', 'tests']
+print(DEFAULT_SKIP_DIR_PATTERNS) # ['setup', 'venv*', '*egg*', 'old*', '*old', '*bkup', '*backup']
+```
+
+Each `ManualFupi` instance initializes with copies of these defaults, so instances don't share state.
+
+### ManualFupi Class API
+
+The `ManualFupi` class provides constructor parameters and three main methods:
+
+#### Constructor: `ManualFupi(add_dir_names=None, skip_dir_patterns=None, autorun=False)`
+
+Initialize with custom configuration that overrides defaults:
+
+```python
+from fupi import ManualFupi
+
+# Initialize with custom directories only
+mf = ManualFupi(add_dir_names=['src', 'lib'])
+
+# Initialize with both parameters
+mf = ManualFupi(
+    add_dir_names=['src', 'lib'],
+    skip_dir_patterns=['build', 'dist', 'venv*']
+)
+
+# When parameters are None, defaults are used
+mf = ManualFupi()  # Uses DEFAULT_ADD_DIR_NAMES and DEFAULT_SKIP_DIR_PATTERNS
+```
+
+If environment variables `FUPI_ADD_DIR_NAMES` or `FUPI_SKIP_DIR_PATTERNS` are set, they will be **appended** to the provided or default values.
+
+#### `get_paths(add_dir_names=None, skip_dir_patterns=None) -> list`
+
+Preview what paths will be added **without modifying sys.path**. Useful for validation and debugging:
+
+```python
+mf = ManualFupi()
+
+# Preview using instance attributes
+paths = mf.get_paths()
+
+# Or preview with specific parameters
+paths = mf.get_paths(['src'], ['venv*', 'build'])
+
+# Returns list of Path objects that would be added
+print(f"Found {len(paths)} potential paths")
+```
+
+#### `run(add_dir_names=None, skip_dir_patterns=None) -> list`
+
+Execute the configuration and add paths to sys.path:
+
+```python
+mf = ManualFupi()
+mf.add_dir_names = ['src', 'test']
+mf.skip_dir_patterns = ['venv*', 'build']
+
+# Execute with instance attributes
+added_paths = mf.run()
+
+# Or override with parameters (parameters take precedence)
+added_paths = mf.run(add_dir_names=['custom_src'])
+
+# Returns list of Path objects actually added to sys.path
+print(f"Added {len(added_paths)} paths to sys.path")
+```
+
+### Configuration Details
+
+- **`add_dir_names`**: List of folder names to search for and add to sys.path
+- **`skip_dir_patterns`**: List of regex patterns to skip (with `*` as wildcard)
+  - Folders starting with `.` (like `.git`) are always skipped
+  - Folders starting with `_` (like `__pycache__`) are always skipped
+
+### Environment Variables
+
+You can extend the default configuration without modifying code by setting environment variables. Both auto-run and manual configuration modes will pick up these values:
+
+**`FUPI_ADD_DIR_NAMES`**: Comma-separated directory names to append to defaults
+
+```bash
+export FUPI_ADD_DIR_NAMES='custom_src,custom_app'
+```
+
+```python
+from fupi import ManualFupi
+
+mf = ManualFupi()
+# mf.add_dir_names now contains default dirs plus 'custom_src' and 'custom_app'
+```
+
+**`FUPI_SKIP_DIR_PATTERNS`**: Comma-separated patterns to append to defaults
+
+```bash
+export FUPI_SKIP_DIR_PATTERNS='custom_build,custom_dist'
+```
+
+Both environment variables support optional wrapping with quotes or brackets:
+
+```bash
+# These are all equivalent:
+export FUPI_ADD_DIR_NAMES='src,test'
+export FUPI_ADD_DIR_NAMES="src,test"
+export FUPI_ADD_DIR_NAMES='[src, test]'
+export FUPI_ADD_DIR_NAMES='["src", "test"]'
+```
+
+Environment variables are useful for:
+- **Configuration Management**: Different settings per environment without code changes
+- **CI/CD Integration**: Setting up test runners with specific directory configurations
+- **Docker/Container Deployments**: Configuring paths in docker-compose or Kubernetes
+- **Temporary Overrides**: Quick testing with different directory layouts
+
+## Complete Usage Examples
+
+Here's a comprehensive guide demonstrating all the ways to use fupi:
+
+```python
+import os, sys
+
+# Backup original sys.path for resetting between examples
+bkup_sys_path = sys.path.copy()
+
+def reset(header):
+    """Helper to reset state between examples"""
+    print(f"\n{header}")
+    sys.path = bkup_sys_path.copy()
+    if 'fupi' in sys.modules:
+        del sys.modules['fupi']  # Force re-import
+
+
+# Example 1: No fupi - baseline
+reset('-------- NO fupi (baseline) -------')
+[print(p) for p in sys.path]
+
+
+# Example 2: Auto-run with defaults
+reset('-------- Auto-run: import fupi -------')
+import fupi
+[print(p) for p in sys.path]
+
+
+# Example 3: Auto-run with environment variables
+reset('-------- Auto-run with environment variables -------')
+os.environ['FUPI_ADD_DIR_NAMES'] = 'dist'     # Extends defaults
+os.environ['FUPI_SKIP_DIR_PATTERNS'] = 'some' # Extends defaults
+import fupi
+[print(p) for p in sys.path]
+
+
+# Example 4: Manual import without running
+reset('-------- Manual: from fupi import ManualFupi (no auto-run) -------')
+from fupi import ManualFupi 
+mf = ManualFupi()
+mf.add_dir_names = ['src', 'test', 'dist']  # Overrides defaults
+[print(p) for p in sys.path]  # sys.path unchanged - must call run()
+
+
+# Example 5: Manual with initialization parameters
+reset('-------- Manual: Initialize with parameters and run -------')
+from fupi import ManualFupi 
+mf = ManualFupi(add_dir_names=['test'])  # Overrides defaults
+mf.run()
+[print(p) for p in sys.path]  # Now only 'test' paths are added
+
+
+# Example 6: Respects original sys.path
+reset('-------- Fupi does not remove original paths -------')
+from fupi import ManualFupi 
+mf = ManualFupi(skip_dir_patterns=['Python*', 'venv*', '*egg*'])  # Override skip patterns
+mf.run()
+[print(p) for p in sys.path]  # Still has Python system paths (they're not removed)
+
+
+# Example 7: Preview before running
+reset('-------- Preview paths with get_paths() -------')
+from fupi import ManualFupi 
+mf = ManualFupi(add_dir_names=['src'])
+paths = mf.get_paths()
+print(f"Will add {len(paths)} paths:")
+for p in paths[:3]:
+    print(f"  {p}")
+if len(paths) > 3:
+    print(f"  ... and {len(paths) - 3} more")
+
+
+# Example 8: Mixed init and run parameters
+reset('-------- Mix init parameters with run() overrides -------')
+from fupi import ManualFupi 
+mf = ManualFupi(add_dir_names=['src', 'test'])
+# run() parameters override init parameters
+mf.run(skip_dir_patterns=['build', 'venv*'])
+[print(p) for p in sys.path]
+```
+
+### Key Takeaways from Examples
+
+1. **No Configuration**: `import fupi` adds defaults (`src`, `test`, `app`) automatically
+2. **Environment Variables**: `FUPI_ADD_DIR_NAMES` and `FUPI_SKIP_DIR_PATTERNS` extend (not replace) defaults
+3. **Manual Mode**: `from fupi import ManualFupi` suppresses auto-run, giving you control
+4. **Init Parameters**: Pass config directly to `ManualFupi(add_dir_names=[...], skip_dir_patterns=[...])`
+5. **Method Parameters**: Call `mf.run(add_dir_names=[...])` to override instance values
+6. **Preview First**: Use `mf.get_paths()` to see what will be added before calling `mf.run()`
+7. **Never Removes**: Fupi only adds to `sys.path`, never removes existing entries
+8. **Instance Independence**: Each `ManualFupi` instance has independent copies of defaults
+
+## History Tracking
+
+The `sys_path_history` is a simple list that captures snapshots of `sys.path`, allowing for runtime rollback / recovery if needed:
+
+```python
+from fupi import sys_path_history
+
+# sys_path_history[0] contains the initial state before any modifications
+# sys_path_history[1+] contain snapshots after each modification
+
+print(f"Total snapshots: {len(sys_path_history)}")
+print(f"Initial sys.path: {sys_path_history[0]}")
+
+# To rollback to initial state:
+import sys
+sys.path = sys_path_history[0]
+```
+
+The `autostarted` flag is also available to check if auto-run was executed:
+
+```python
+from fupi import autostarted
+
+if autostarted:
+    print("Fupi ran in auto-mode")
+else:
+    print("Fupi was suppressed by from-import style")
+```
+
+## Linters and AI Coders
+
+The auto-load feature was designed to get down to two words for most use-cases: `import fupi` - nothing else is needed.
+
+One minor disadvantage; linters will often see this as an unused import, and flag it for removal, and/or give you a yellow squiggly underline. Or, an overly-ambitious AI coding tool may drop it without warning. If either bothers you, use the [Manual Configuration](#manual-configuration) approach, or um, `logger.info( fupi.sys_path_history )` for posterity's sake? Couldn't hurt. 
+If it gets to be a real problem, I can add `fupi.do_really_important_things()` that does nothing.  Let AI figure THAT out.
+
+## Architecture
+
+### Module Structure
+
+```
+src/fupi/
+├── __init__.py          # Package initialization with import-style detection
+└── fupi.py              # Core implementation (82% code coverage)
+    ├── DEFAULT_ADD_DIR_NAMES      # Default directories to add
+    ├── DEFAULT_SKIP_DIR_PATTERNS  # Default patterns to skip
+    ├── sys_path_history           # List of sys.path snapshots
+    ├── autostarted                # Flag indicating auto-run execution
+    ├── ManualFupi class           # Main configuration class
+    │   ├── __init__()             # Initialize with defaults + env vars
+    │   ├── get_paths()            # Preview paths without modifying sys.path
+    │   └── run()                  # Execute configuration
+    └── autorun()                  # Auto-run function
+```
+
+### How It Works
+
+1. **Import Detection**: When fupi is imported, stack inspection detects whether it's:
+   - `import fupi` → Auto-run mode (calls `autorun()`)
+   - `from fupi import ...` → Manual mode (suppresses auto-run)
+
+2. **Environment Variables**: On `ManualFupi` initialization:
+   - Starts with copies of `DEFAULT_ADD_DIR_NAMES` and `DEFAULT_SKIP_DIR_PATTERNS`
+   - Appends any values from `FUPI_ADD_DIR_NAMES` and `FUPI_SKIP_DIR_PATTERNS` env vars
+   - Supports quoted/bracketed formats with automatic unwrapping
+
+3. **ManualFupi Class**: Encapsulates all path discovery and modification logic
+   - `get_paths()` scans directory tree without side effects
+   - `run()` calls `get_paths()` then modifies `sys.path`
+
+4. **History Tracking**: `sys_path_history` list captures state before and after modifications
+
+5. **Auto-run**: The `autorun()` function instantiates `ManualFupi` and calls `run()`
+   - Automatically picks up environment variables via `ManualFupi.__init__()`
+
+### Code Coverage
+
+- **fupi.py**: 82% coverage (57 statements)
+  - All class methods fully tested
+  - All path discovery logic tested
+  - Environment variable handling tested with multiple test cases
+  - Edge cases covered
+
+- **Overall**: 78% coverage (import-time code in `__init__.py` not fully testable)
+
+- **Test Suite**: 34 tests total, all passing
+  - 5 basic functionality tests
+  - 10 refactored method tests
+  - 17 ManualFupi class tests (including 5 init parameter tests + 2 environment variable tests)
+  - 1 import behavior test
+  - 1 integration test
