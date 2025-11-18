@@ -1,0 +1,41 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "red_aluminum"
+dynamic = ["version"]
+authors = [
+  { name="Michael Stanley", email="stanley50@marshall.edu" },
+]
+description = "A utility script to convert a folder of text files into a single key-value text file."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Topic :: Text Processing"
+]
+license = {file = "LICENSE"}
+
+dependencies = [
+  "click"
+]
+
+[project.scripts]
+red_aluminum = "red_aluminum:red_aluminum_cli"
+
+
+[project.optional-dependencies]
+test = [
+  "pytest", "pytest-mock", "pyfakefs", "wmul_test_utils"
+]
+tox = [
+  "tox"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/MikeTheHammer/Red_Aluminum"
+"Bug Tracker" = "https://github.com/MikeTheHammer/Red_Aluminum/issues"

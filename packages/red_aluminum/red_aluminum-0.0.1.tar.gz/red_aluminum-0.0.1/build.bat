@@ -1,0 +1,1 @@
+flit build --setup-py

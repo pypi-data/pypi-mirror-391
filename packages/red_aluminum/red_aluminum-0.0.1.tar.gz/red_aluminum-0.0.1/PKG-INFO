@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: red_aluminum
+Version: 0.0.1
+Summary: A utility script to convert a folder of text files into a single key-value text file.
+Author-email: Michael Stanley <stanley50@marshall.edu>
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Text Processing
+License-File: LICENSE
+Requires-Dist: click
+Requires-Dist: pytest ; extra == "test"
+Requires-Dist: pytest-mock ; extra == "test"
+Requires-Dist: pyfakefs ; extra == "test"
+Requires-Dist: wmul_test_utils ; extra == "test"
+Requires-Dist: tox ; extra == "tox"
+Project-URL: Bug Tracker, https://github.com/MikeTheHammer/Red_Aluminum/issues
+Project-URL: Homepage, https://github.com/MikeTheHammer/Red_Aluminum
+Provides-Extra: test
+Provides-Extra: tox
+
+# Red_Aluminum
+
+A utility script to convert a folder of text files into a single key-value text file.
+
+Point it at a watch folder. Every .txt file in that folder will be watched and their contents copied into an output text file as a set of key-value lines. Any line breaks in the source file will be converted into spaces.
+
+## Example
+
+Given:
+
+`foo.txt`:
+``` Text 
+Lorem
+ipsum
+```
+
+`bar.txt`:
+``` Text
+dolor
+```
+
+The output file will be:
+
+``` Text
+foo = Lorem ipsum
+bar = dolor
+```
+
+
