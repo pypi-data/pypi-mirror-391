@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iptw-survival"
+version = "0.1.8"
+description = "A Python package for IPTW-based survival analysis with bootstrapped metrics and covariate balance diagnostics."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "MIT"
+classifiers = [
+    "Development Status :: 3 - Alpha",  
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+keywords = [
+    "IPTW",
+    "survival analysis",
+    "causal inference",
+    "Kaplan-Meier",
+    "real-world data",
+    "oncology",
+    "EHR",
+    "propensity score",
+    "treatment effect",
+    "biostatistics",
+    "python"
+]
+
+authors = [
+    {name = "Xavier Orcutt", email = "xavierorcutt@gmail.com"},
+]
+dependencies = [
+    "pandas>=1.3",
+    "numpy>=1.21",
+    "matplotlib>=3.4",
+    "scikit-learn>=1.0",
+    "lifelines>=0.26",
+]
+
+[project.urls]
+Homepage = "https://github.com/xavier-orcutt/IPTWSurvivalEstimator"
+Documentation = "https://github.com/xavier-orcutt/IPTWSurvivalEstimator#readme"
+"Bug Tracker" = "https://github.com/xavier-orcutt/IPTWSurvivalEstimator/issues"
+
+[tool.setuptools.packages.find]
+include = ["iptw_survival*"]
+exclude = ["tutorial", "myenv", "data"]
