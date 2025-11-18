@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "calculator_pkg_abhinav"
+version = "0.4.0"
+dependencies = [
+    "tqdm~=4.0",
+]
+
+[project.scripts]
+calculator_pkg_abhinav = "calculator_pkg_abhinav.__main__:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "mypy",
+    "ruff",
+    "pre-commit",
+    "tox",
+]
