@@ -1,0 +1,89 @@
+# EC2 Image Builder Construct Library
+
+<!--BEGIN STABILITY BANNER-->---
+
+
+![cdk-constructs: Experimental](https://img.shields.io/badge/cdk--constructs-experimental-important.svg?style=for-the-badge)
+
+> The APIs of higher level constructs in this module are experimental and under active development.
+> They are subject to non-backward compatible changes or removal in any future version. These are
+> not subject to the [Semantic Versioning](https://semver.org/) model and breaking changes will be
+> announced in the release notes. This means that while you may use them, you may need to update
+> your source code when upgrading to a newer version of this package.
+
+---
+<!--END STABILITY BANNER-->
+
+This module is part of the [AWS Cloud Development Kit](https://github.com/aws/aws-cdk) project.
+
+## README
+
+[Amazon EC2 Image Builder](https://docs.aws.amazon.com/imagebuilder/latest/userguide/what-is-image-builder.html) is a
+fully managed AWS service that helps you automate the creation, management, and deployment of customized, secure, and
+up-to-date server images. You can use Image Builder to create Amazon Machine Images (AMIs) and container images for use
+across AWS Regions.
+
+This module is part of the [AWS Cloud Development Kit](https://github.com/aws/aws-cdk) project. It allows you to define
+Image Builder pipelines, images, recipes, components, workflows, and lifecycle policies.
+A component defines the sequence of steps required to customize an instance during image creation (build component) or
+test an instance launched from the created image (test component). Components are created from declarative YAML or JSON
+documents that describe runtime configuration for building, validating, or testing instances. Components are included
+when added to the image recipe or container recipe for an image build.
+
+EC2 Image Builder supports AWS-managed components for common tasks, AWS Marketplace components, and custom components
+that you create. Components run during specific workflow phases: build and validate phases during the build stage, and
+test phase during the test stage.
+
+### Infrastructure Configuration
+
+Infrastructure configuration defines the compute resources and environment settings used during the image building
+process. This includes instance types, IAM instance profile, VPC settings, subnets, security groups, SNS topics for
+notifications, logging configuration, and troubleshooting settings like whether to terminate instances on failure or
+keep them running for debugging. These settings are applied to builds when included in an image or an image pipeline.
+
+```python
+infrastructure_configuration = imagebuilder.InfrastructureConfiguration(self, "InfrastructureConfiguration",
+    infrastructure_configuration_name="test-infrastructure-configuration",
+    description="An Infrastructure Configuration",
+    # Optional - instance types to use for build/test
+    instance_types=[
+        ec2.InstanceType.of(ec2.InstanceClass.STANDARD7_INTEL, ec2.InstanceSize.LARGE),
+        ec2.InstanceType.of(ec2.InstanceClass.BURSTABLE3, ec2.InstanceSize.LARGE)
+    ],
+    # Optional - create an instance profile with necessary permissions
+    instance_profile=iam.InstanceProfile(self, "InstanceProfile",
+        instance_profile_name="test-instance-profile",
+        role=iam.Role(self, "InstanceProfileRole",
+            assumed_by=iam.ServicePrincipal.from_static_service_principle_name("ec2.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"),
+                iam.ManagedPolicy.from_aws_managed_policy_name("EC2InstanceProfileForImageBuilder")
+            ]
+        )
+    ),
+    # Use VPC network configuration
+    vpc=vpc,
+    subnet_selection=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PUBLIC),
+    security_groups=[ec2.SecurityGroup.from_security_group_id(self, "SecurityGroup", vpc.vpc_default_security_group)],
+    key_pair=ec2.KeyPair.from_key_pair_name(self, "KeyPair", "imagebuilder-instance-key-pair"),
+    terminate_instance_on_failure=True,
+    # Optional - IMDSv2 settings
+    http_tokens=imagebuilder.HttpTokens.REQUIRED,
+    http_put_response_hop_limit=1,
+    # Optional - publish image completion messages to an SNS topic
+    notification_topic=sns.Topic.from_topic_arn(self, "Topic",
+        self.format_arn(service="sns", resource="image-builder-topic")),
+    # Optional - log settings. Logging is enabled by default
+    logging=imagebuilder.InfrastructureConfigurationLogging(
+        s3_bucket=s3.Bucket.from_bucket_name(self, "LogBucket", f"imagebuilder-logging-{Aws.ACCOUNT_ID}"),
+        s3_key_prefix="imagebuilder-logs"
+    ),
+    # Optional - host placement settings
+    ec2_instance_availability_zone=Stack.of(self).availability_zones[0],
+    ec2_instance_host_id=dedicated_host.attr_host_id,
+    ec2_instance_tenancy=imagebuilder.Tenancy.HOST,
+    resource_tags={
+        "Environment": "production"
+    }
+)
+```
