@@ -1,0 +1,43 @@
+{
+  "columns": [
+    {
+      "name": "col0",
+      "type": "numeric",
+      "not_null": true,
+      "default": 5,
+      "type_convert_using": "col0::numeric"
+    },
+    {
+      "name": "col1",
+      "type": "text"
+    }
+  ],
+  "constraints": {
+    "primary_key": [
+      "col1"
+    ],
+    "foreign_key": [],
+    "check": [
+      {
+        "name": "col0_gt_2",
+        "condition": "col0 > 3"
+      }
+    ],
+    "unique": [
+      {
+        "name": "unique_1",
+        "columns": [
+          "col0"
+        ]
+      }
+    ]
+  },
+  "indexes": [
+    {
+      "name": "idx_table0",
+      "columns": [
+        "col0"
+      ]
+    }
+  ]
+}
