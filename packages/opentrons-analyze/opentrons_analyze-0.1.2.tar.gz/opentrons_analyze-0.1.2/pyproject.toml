@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opentrons-analyze"
+description = "Opentrons command-line interface for protocol analysis"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Opentrons", email = "engineering@opentrons.com"},
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+version = "0.1.2"
+requires-python = ">=3.6"
+dependencies = [
+    "click",
+    "anyio",
+    "pydantic",
+    "opentrons",
+]
+
+[project.scripts]
+opentrons_analyze = "opentrons_analyze:main"
+
+[project.urls]
+Homepage = "https://github.com/Opentrons/opentrons"
+Documentation = "https://docs.opentrons.com"
+Repository = "https://github.com/Opentrons/opentrons.git"
