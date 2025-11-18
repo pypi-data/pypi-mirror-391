@@ -1,0 +1,132 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-05T15:07:10.689837",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 6
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt status",
+          "description": "Check current Kurt project status"
+        },
+        "timestamp": "2025-11-05T15:06:26.683639"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt map url http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com URL",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T15:06:33.251727"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt fetch",
+          "description": "Fetch discovered content",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T15:06:40.422560"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt fetch --with-status NOT_FETCHED",
+          "description": "Fetch all not-yet-fetched content",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-05T15:06:47.989347"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt content list",
+          "description": "List all fetched documents"
+        },
+        "timestamp": "2025-11-05T15:06:56.418165"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_runrjlgj && kurt status",
+          "description": "Check final Kurt project status"
+        },
+        "timestamp": "2025-11-05T15:07:03.085481"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then discover and fetch content from http://acme-corp.com/\n",
+        "timestamp": "2025-11-05T15:06:20.686234"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and discover/fetch content from http://acme-corp.com/.\n\nLet me start by checking the current state and then proceed with the tasks:",
+        "timestamp": "2025-11-05T15:06:25.879621"
+      },
+      {
+        "speaker": "agent",
+        "message": "Good! The Kurt project is already initialized. Now let me discover content from the URL and then fetch it:",
+        "timestamp": "2025-11-05T15:06:32.215198"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Kurt discovered 6 pages from the sitemap. Now let me fetch the content:",
+        "timestamp": "2025-11-05T15:06:39.608339"
+      },
+      {
+        "speaker": "agent",
+        "message": "I need to specify which content to fetch. Let me fetch all the discovered content:",
+        "timestamp": "2025-11-05T15:06:46.437697"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Now let me verify the content was successfully fetched by checking the status and listing the documents:",
+        "timestamp": "2025-11-05T15:06:55.740555"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Let me also check the final status:",
+        "timestamp": "2025-11-05T15:07:02.219120"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! **Task completed successfully!** \n\n## Summary\n\n\u2705 **Kurt Project Initialized** - The project was already set up with configuration and database\n\n\u2705 **Content Discovery** - Used `kurt map url http://acme-corp.com/` and discovered **6 pages** via sitemap:\n- http://acme-corp.com/home\n- http://acme-corp.com/about\n- http://acme-corp.com/pricing\n- http://acme-corp.com/blog/how-to-build-scalable-apis\n- http://acme-corp.com/blog/announcing-acme-2-0\n- And 1 more page\n\n\u2705 **Content Fetched** - Used `kurt fetch --with-status NOT_FETCHED` to download all 6 documents\n- All documents successfully fetched and indexed with LLM\n- Status: 6/6 documents FETCHED\n\nThe Kurt project now has 6 documents from acme-corp.com ready for analysis and use!",
+        "timestamp": "2025-11-05T15:07:10.628867"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-05T15:06:19.891096",
+      "end": "2025-11-05T15:07:10.687213",
+      "duration_seconds": 50.796117
+    },
+    "counts": {
+      "total_tools": 6,
+      "conversation_turns": 8
+    },
+    "usage": {
+      "total_tokens": 1198,
+      "total_cost_usd": 0.020274999999999998
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 6,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 6,
+      "fetched_documents": 6,
+      "not_fetched_documents": 0
+    }
+  }
+}

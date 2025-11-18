@@ -1,0 +1,170 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-03T10:11:15.345207",
+  "passed": false,
+  "error": "Metric database.total_documents: expected 0, got 602",
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 9
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:10:18.346314"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt content add https://docs.dagster.io/ --discovery-only",
+          "description": "Add Dagster docs with discovery only",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:10:24.739696"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt content --help",
+          "description": "Check Kurt content command options"
+        },
+        "timestamp": "2025-11-03T10:10:31.713283"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt --help",
+          "description": "Check main Kurt commands"
+        },
+        "timestamp": "2025-11-03T10:10:36.710676"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt map --help",
+          "description": "Check Kurt map command options"
+        },
+        "timestamp": "2025-11-03T10:10:41.428774"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt map url --help",
+          "description": "Check Kurt map url options"
+        },
+        "timestamp": "2025-11-03T10:10:45.820919"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt map url https://docs.dagster.io/",
+          "description": "Discover content from Dagster docs",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T10:10:50.800831"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt content list",
+          "description": "List discovered documents"
+        },
+        "timestamp": "2025-11-03T10:10:58.215978"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_yffukhh9 && kurt status",
+          "description": "Verify final Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:11:05.465034"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then add content from https://docs.dagster.io/ using discovery only",
+        "timestamp": "2025-11-03T10:10:13.270965"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and add content from the Dagster documentation URL using discovery only.\n\nLet me start by checking the current state and then execute the commands:",
+        "timestamp": "2025-11-03T10:10:17.600090"
+      },
+      {
+        "speaker": "agent",
+        "message": "Good! The Kurt project is already initialized. Now I'll add content from the Dagster documentation URL using discovery only:",
+        "timestamp": "2025-11-03T10:10:23.542837"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the available Kurt content commands:",
+        "timestamp": "2025-11-03T10:10:30.833974"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the main kurt commands:",
+        "timestamp": "2025-11-03T10:10:35.999789"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I can see the `kurt map` command is for discovering content (which creates NOT_FETCHED documents). Let me check its options:",
+        "timestamp": "2025-11-03T10:10:40.796614"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! Now let me check the `kurt map url` command:",
+        "timestamp": "2025-11-03T10:10:45.189116"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Now I'll run the discovery command for the Dagster documentation:",
+        "timestamp": "2025-11-03T10:10:49.784569"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Let me verify the results by listing the documents:",
+        "timestamp": "2025-11-03T10:10:57.518931"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let me also check the final status to confirm everything:",
+        "timestamp": "2025-11-03T10:11:03.109764"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! The task has been completed successfully. Here's a summary of what was accomplished:\n\n## Summary\n\n\u2705 **Task Completed Successfully**\n\n1. **Kurt Project Status**: The project was already initialized with:\n   - Configuration file: `kurt.config`\n   - Database: `.kurt/kurt.sqlite`\n   - Standard directories created\n\n2. **Content Discovery**: Successfully discovered content from https://docs.dagster.io/ using discovery-only mode:\n   - **602 pages discovered** from the Dagster documentation\n   - Method: Sitemap (automatically detected and used)\n   - All documents are in `NOT_FETCHED` status (discovery only, no content downloaded)\n   - No LLM calls were made during discovery\n\n3. **Next Steps Available** (as suggested by Kurt):\n   - Cluster URLs: `kurt cluster-urls --include \"*docs.dagster.io*\"`\n   - Explore by depth: `kurt content list --include \"*docs.dagster.io*\" --max-depth 2`\n\nThe discovery operation successfully mapped all 602 pages from the Dagster documentation site without fetching or processing the actual content, which is exactly what was requested.",
+        "timestamp": "2025-11-03T10:11:15.333483"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T10:10:12.466069",
+      "end": "2025-11-03T10:11:15.342682",
+      "duration_seconds": 62.876613
+    },
+    "counts": {
+      "total_tools": 9,
+      "conversation_turns": 11
+    },
+    "usage": {
+      "total_tokens": 1622,
+      "total_cost_usd": 0.02731
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 602,
+      "fetched_documents": 0,
+      "not_fetched_documents": 602
+    }
+  }
+}

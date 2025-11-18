@@ -1,0 +1,116 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-05T14:45:52.240190",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 5
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_48b5xl4k && kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-05T14:45:03.933347"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_48b5xl4k && kurt map url http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com"
+        },
+        "timestamp": "2025-11-05T14:45:11.490933"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_48b5xl4k && kurt fetch",
+          "description": "Fetch discovered content"
+        },
+        "timestamp": "2025-11-05T14:45:19.822836"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_48b5xl4k && kurt fetch --with-status NOT_FETCHED",
+          "description": "Fetch all unfetched content"
+        },
+        "timestamp": "2025-11-05T14:45:26.816615"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_48b5xl4k && kurt content list",
+          "description": "List all fetched content"
+        },
+        "timestamp": "2025-11-05T14:45:42.942968"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then discover and fetch content from http://acme-corp.com/\n",
+        "timestamp": "2025-11-05T14:44:57.932215"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and then discover and fetch content from http://acme-corp.com/.\n\nLet me start by checking the current project status and then proceed with discovering and fetching content.",
+        "timestamp": "2025-11-05T14:45:03.040927"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! The Kurt project is already initialized. Now let me discover content from http://acme-corp.com/ and then fetch it.",
+        "timestamp": "2025-11-05T14:45:10.656219"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Kurt discovered 6 pages from the sitemap. Now let me fetch the content:",
+        "timestamp": "2025-11-05T14:45:19.177748"
+      },
+      {
+        "speaker": "agent",
+        "message": "I need to provide a filter for the fetch command. Let me fetch all content that hasn't been fetched yet:",
+        "timestamp": "2025-11-05T14:45:26.053374"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let me verify the results by checking the status again:",
+        "timestamp": "2025-11-05T14:45:42.132170"
+      },
+      {
+        "speaker": "agent",
+        "message": "## \u2705 Success!\n\nI've successfully completed the Kurt project initialization and content discovery/fetch workflow:\n\n### Results Summary:\n\n1. **Project Status**: Kurt project was already initialized with:\n   - Configuration file (`kurt.config`)\n   - Database (`.kurt/kurt.sqlite`)\n   - Standard directories (`sources/`, `rules/`, `projects/`)\n\n2. **Content Discovery**: Discovered **6 pages** from http://acme-corp.com/ including:\n   - Home page\n   - About page\n   - Pricing page\n   - Blog posts (2): \"How to Build Scalable APIs\" and \"Announcing Acme 2.0\"\n   - 1 additional page\n\n3. **Content Fetched**: Successfully fetched and indexed **6/6 documents**:\n   - All documents have `FETCHED` status\n   - Content was downloaded using Firecrawl API\n   - LLM indexing was enabled and completed for all documents\n\nThe Kurt project is now ready with all content from acme-corp.com downloaded and indexed!",
+        "timestamp": "2025-11-05T14:45:52.188216"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-05T14:44:57.102811",
+      "end": "2025-11-05T14:45:52.236696",
+      "duration_seconds": 55.133885
+    },
+    "counts": {
+      "total_tools": 5,
+      "conversation_turns": 7
+    },
+    "usage": {
+      "total_tokens": 1023,
+      "total_cost_usd": 0.01669
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 6,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 6,
+      "fetched_documents": 6,
+      "not_fetched_documents": 0
+    }
+  }
+}

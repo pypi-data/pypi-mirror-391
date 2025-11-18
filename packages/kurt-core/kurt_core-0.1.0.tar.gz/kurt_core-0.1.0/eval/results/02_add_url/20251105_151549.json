@@ -1,0 +1,129 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-05T15:15:49.742504",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 6
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-05T15:15:10.297302"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt map url http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com"
+        },
+        "timestamp": "2025-11-05T15:15:16.583944"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt fetch",
+          "description": "Download discovered content"
+        },
+        "timestamp": "2025-11-05T15:15:23.583214"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt fetch --with-status NOT_FETCHED",
+          "description": "Fetch all not-yet-fetched content"
+        },
+        "timestamp": "2025-11-05T15:15:28.881420"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content list",
+          "description": "List all fetched documents"
+        },
+        "timestamp": "2025-11-05T15:15:36.160642"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check final Kurt project status"
+        },
+        "timestamp": "2025-11-05T15:15:41.428849"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then discover and fetch content from http://acme-corp.com/\n",
+        "timestamp": "2025-11-05T15:15:04.323411"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and then discover and fetch content from http://acme-corp.com/.\n\nLet me start by checking the current status of the Kurt project, then proceed with discovering and fetching content.",
+        "timestamp": "2025-11-05T15:15:09.779537"
+      },
+      {
+        "speaker": "agent",
+        "message": "Good! The Kurt project is already initialized. Now let me discover content from the URL and then fetch it.",
+        "timestamp": "2025-11-05T15:15:16.270054"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Kurt discovered 6 pages from the sitemap. Now let me fetch the content.",
+        "timestamp": "2025-11-05T15:15:22.953651"
+      },
+      {
+        "speaker": "agent",
+        "message": "I need to specify a filter. Let me fetch all the newly discovered content by using the `--with-status NOT_FETCHED` filter:",
+        "timestamp": "2025-11-05T15:15:28.319985"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Now let me verify the content was successfully fetched by listing all documents:",
+        "timestamp": "2025-11-05T15:15:35.833968"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Let me also check the final project status to confirm everything is complete:",
+        "timestamp": "2025-11-05T15:15:40.990179"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! \u2713 **Task completed successfully!**\n\n## Summary\n\nI've successfully initialized the Kurt project and discovered/fetched content from http://acme-corp.com/. Here's what was accomplished:\n\n1. **Project Status**: Kurt project was already initialized with:\n   - Configuration file (`kurt.config`)\n   - Database (`.kurt/kurt.sqlite`)\n   - Standard directories (sources/, rules/, projects/)\n\n2. **Content Discovery**: Used `kurt map url http://acme-corp.com/`\n   - Discovered **6 pages** via sitemap\n   - Pages include: home, about, pricing, blog posts (scalable APIs, Acme 2.0 announcement), and more\n\n3. **Content Fetching**: Used `kurt fetch --with-status NOT_FETCHED`\n   - Successfully fetched all **6 documents**\n   - All documents indexed with LLM\n   - Status: All marked as `FETCHED`\n\n4. **Current State**: \n   - 6 documents from acme-corp.com are now available in the Kurt database\n   - Ready for further analysis (clustering, project creation, etc.)\n\nThe Kurt project is now ready for content analysis and project work!",
+        "timestamp": "2025-11-05T15:15:49.689236"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-05T15:15:03.406027",
+      "end": "2025-11-05T15:15:49.738861",
+      "duration_seconds": 46.332834
+    },
+    "counts": {
+      "total_tools": 6,
+      "conversation_turns": 8
+    },
+    "usage": {
+      "total_tokens": 934,
+      "total_cost_usd": 0.01588
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 6,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 6,
+      "fetched_documents": 6,
+      "not_fetched_documents": 0
+    }
+  }
+}

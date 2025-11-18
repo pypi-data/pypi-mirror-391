@@ -1,0 +1,193 @@
+{
+  "scenario": "02_add_url",
+  "timestamp": "2025-11-11T15:26:28.315070",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 11
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check current Kurt project status"
+        },
+        "timestamp": "2025-11-11T15:25:12.419987"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt map url http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com"
+        },
+        "timestamp": "2025-11-11T15:25:18.481432"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt --help",
+          "description": "Check available Kurt commands"
+        },
+        "timestamp": "2025-11-11T15:25:23.815121"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content --help",
+          "description": "Check content management commands"
+        },
+        "timestamp": "2025-11-11T15:25:27.762414"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content map http://acme-corp.com/",
+          "description": "Discover content from acme-corp.com",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-11T15:25:34.734859"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content map --help",
+          "description": "Check map command syntax"
+        },
+        "timestamp": "2025-11-11T15:25:43.281848"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content map url http://acme-corp.com/",
+          "description": "Discover URLs from acme-corp.com",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-11T15:25:47.707151"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content fetch",
+          "description": "Fetch discovered content",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-11T15:25:53.940113"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content fetch --with-status NOT_FETCHED --force",
+          "description": "Fetch all discovered content",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-11T15:25:59.685230"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt content list",
+          "description": "List all fetched documents"
+        },
+        "timestamp": "2025-11-11T15:26:09.369692"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check final project status"
+        },
+        "timestamp": "2025-11-11T15:26:15.380675"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Initialize a Kurt project, then discover and fetch content from http://acme-corp.com/\n",
+        "timestamp": "2025-11-11T15:25:07.921919"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll help you initialize a Kurt project and discover/fetch content from http://acme-corp.com/. Let me execute these commands for you.",
+        "timestamp": "2025-11-11T15:25:11.752850"
+      },
+      {
+        "speaker": "agent",
+        "message": "Good! The Kurt project is already initialized. Now let me discover and fetch content from http://acme-corp.com/:",
+        "timestamp": "2025-11-11T15:25:18.082495"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the available Kurt commands:",
+        "timestamp": "2025-11-11T15:25:23.549735"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the content command options:",
+        "timestamp": "2025-11-11T15:25:27.367704"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Now let me discover and fetch the content:",
+        "timestamp": "2025-11-11T15:25:34.005177"
+      },
+      {
+        "speaker": "agent",
+        "message": "Now I see - it's a subcommand. Let me use the correct syntax:",
+        "timestamp": "2025-11-11T15:25:47.048626"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Content discovered. Now let me fetch the actual content:",
+        "timestamp": "2025-11-11T15:25:53.396982"
+      },
+      {
+        "speaker": "agent",
+        "message": "Now let me fetch all the NOT_FETCHED documents:",
+        "timestamp": "2025-11-11T15:25:58.967643"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Now let me check the status and list the content:",
+        "timestamp": "2025-11-11T15:26:08.365591"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Let me also check the final status:",
+        "timestamp": "2025-11-11T15:26:14.838540"
+      },
+      {
+        "speaker": "agent",
+        "message": "## Summary\n\nSuccessfully completed the Kurt initialization and content discovery/fetch process:\n\n\u2705 **Kurt project initialized** - The project was already set up with:\n- Configuration file (kurt.config)\n- Database (.kurt/kurt.sqlite)\n- Standard directories (sources/, rules/, projects/)\n\n\u2705 **Content discovered** - Used `kurt content map url http://acme-corp.com/` to discover 6 pages:\n- home\n- about\n- pricing\n- blog/how-to-build-scalable-apis\n- blog/announcing-acme-2-0\n- 1 additional page\n\n\u2705 **Content fetched** - Used `kurt content fetch --with-status NOT_FETCHED --force` to download and index all 6 documents using httpx (fetching) + trafilatura (extraction) with LLM indexing enabled.\n\nAll 6 documents from acme-corp.com are now **FETCHED** and available in the Kurt database for use in writing projects, research, and content analysis.",
+        "timestamp": "2025-11-11T15:26:23.050917"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-11T15:25:06.885309",
+      "end": "2025-11-11T15:26:28.312392",
+      "duration_seconds": 81.427083
+    },
+    "counts": {
+      "total_tools": 11,
+      "conversation_turns": 12
+    },
+    "usage": {
+      "total_tokens": 1375,
+      "total_cost_usd": 0.13332565
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 6,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 6,
+      "fetched_documents": 6,
+      "not_fetched_documents": 0
+    }
+  }
+}

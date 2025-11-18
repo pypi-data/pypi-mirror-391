@@ -1,0 +1,94 @@
+{
+  "scenario": "03_interactive_project",
+  "timestamp": "2025-11-03T15:12:00.510193",
+  "passed": false,
+  "error": "Field `instructions` in `UserAgentResponse` must be declared with InputField or OutputField, but field `instructions` has `field.json_schema_extra=None`",
+  "run_metrics": {
+    "tool_usage": {
+      "slashcommand": 1,
+      "skill": 1,
+      "bash": 1,
+      "read": 1
+    },
+    "tool_calls": [
+      {
+        "tool": "slashcommand",
+        "parameters": {
+          "command": "/create-project"
+        },
+        "timestamp": "2025-11-03T15:11:37.798175"
+      },
+      {
+        "tool": "skill",
+        "parameters": {
+          "command": "project-management"
+        },
+        "timestamp": "2025-11-03T15:11:40.960632"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "ls -la /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_gd8544b4/.claude/skills/project-management-skill/subskills/",
+          "description": "List available subskills"
+        },
+        "timestamp": "2025-11-03T15:11:47.095613"
+      },
+      {
+        "tool": "read",
+        "parameters": {
+          "file_path": "/var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_gd8544b4/.claude/skills/project-management-skill/subskills/create-project.md"
+        },
+        "timestamp": "2025-11-03T15:11:51.814530"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "run /create-project",
+        "timestamp": "2025-11-03T15:11:33.008856"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll execute the `/create-project` command for you.",
+        "timestamp": "2025-11-03T15:11:37.754036"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll now invoke the project-management skill to create a new project.",
+        "timestamp": "2025-11-03T15:11:40.765073"
+      },
+      {
+        "speaker": "agent",
+        "message": "I can see the project-management skill is loaded. Now I'll invoke the create-project subskill to guide you through creating a new Kurt project.",
+        "timestamp": "2025-11-03T15:11:46.169868"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I can see the create-project workflow. Let me guide you through creating a new Kurt project.\n\n## Create New Kurt Project\n\nLet's start by understanding what you want to accomplish.\n\n**What are you looking to accomplish with this project?**\n\na) Update core product positioning + messaging (on website or internally)\nb) Write new marketing assets (e.g., for a product launch)\nc) Make sure technical docs + tutorials are up-to-date (and update or remove stale content)\nd) Nothing specific, just setting up a general project\ne) Something else (please describe)\n\nPlease choose an option (a/b/c/d/e) or describe your intent.",
+        "timestamp": "2025-11-03T15:11:59.245702"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T15:11:32.195852",
+      "end": null,
+      "duration_seconds": null
+    },
+    "counts": {
+      "total_tools": 4,
+      "conversation_turns": 5
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

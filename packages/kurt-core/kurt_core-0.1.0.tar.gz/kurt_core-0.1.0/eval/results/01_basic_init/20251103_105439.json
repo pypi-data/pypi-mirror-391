@@ -1,0 +1,64 @@
+{
+  "scenario": "01_basic_init",
+  "timestamp": "2025-11-03T10:54:39.339693",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 1
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:54:32.075871"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Check the Kurt project status and verify it is initialized correctly",
+        "timestamp": "2025-11-03T10:54:28.661158"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll check the Kurt project status to verify it's initialized correctly.",
+        "timestamp": "2025-11-03T10:54:31.725653"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! The Kurt project is initialized correctly. Here's the verification summary:\n\n\u2705 **Initialization Status: VERIFIED**\n\n**What's Working:**\n- \u2713 Kurt project is initialized\n- \u2713 Config file (`kurt.config`) found\n- \u2713 Database (`.kurt/kurt.sqlite`) exists\n- \u2713 Kurt plugin is installed for Claude Code integration\n\n**Current State:**\n- \u26a0 No documents ingested yet (expected - ready to add content)\n- \u26a0 No projects created yet (expected - clean slate)\n- No topic clusters (expected - requires documents first)\n\n**Next Available Actions:**\n- Add content with: `kurt content add <url>`\n- List documents with: `kurt content list`\n- Create projects in the `projects/` directory\n\nThe project is properly initialized and ready for content ingestion and project creation!",
+        "timestamp": "2025-11-03T10:54:39.306380"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T10:54:27.864186",
+      "end": "2025-11-03T10:54:39.337649",
+      "duration_seconds": 11.473463
+    },
+    "counts": {
+      "total_tools": 1,
+      "conversation_turns": 3
+    },
+    "usage": {
+      "total_tokens": 297,
+      "total_cost_usd": 0.007380000000000001
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

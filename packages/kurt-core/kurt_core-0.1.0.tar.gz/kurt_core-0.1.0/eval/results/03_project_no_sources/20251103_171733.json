@@ -1,0 +1,54 @@
+{
+  "scenario": "03_project_no_sources",
+  "timestamp": "2025-11-03T17:17:33.949826",
+  "passed": false,
+  "error": "Exceeded max duration of 5s",
+  "run_metrics": {
+    "tool_usage": {
+      "slashcommand": 1
+    },
+    "tool_calls": [
+      {
+        "tool": "slashcommand",
+        "parameters": {
+          "command": "/create-project"
+        },
+        "timestamp": "2025-11-03T17:17:30.560715"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "run /create-project",
+        "timestamp": "2025-11-03T17:17:26.762101"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll execute the `/create-project` slash command for you.",
+        "timestamp": "2025-11-03T17:17:30.297526"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T17:17:26.149401",
+      "end": null,
+      "duration_seconds": null
+    },
+    "counts": {
+      "total_tools": 1,
+      "conversation_turns": 2
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

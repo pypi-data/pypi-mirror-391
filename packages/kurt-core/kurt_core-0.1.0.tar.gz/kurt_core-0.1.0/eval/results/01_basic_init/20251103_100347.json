@@ -1,0 +1,64 @@
+{
+  "scenario": "01_basic_init",
+  "timestamp": "2025-11-03T10:03:47.954438",
+  "passed": true,
+  "error": null,
+  "run_metrics": {
+    "tool_usage": {
+      "bash": 1
+    },
+    "tool_calls": [
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "kurt status",
+          "description": "Check Kurt project status"
+        },
+        "timestamp": "2025-11-03T10:03:41.038358"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "Check the Kurt project status and verify it is initialized correctly",
+        "timestamp": "2025-11-03T10:03:36.622646"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll check the Kurt project status to verify it's initialized correctly.",
+        "timestamp": "2025-11-03T10:03:40.540253"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! The Kurt project status shows that it is **initialized correctly**:\n\n\u2705 **Initialization verified:**\n- \u2713 Kurt project initialized\n- \u2713 Config: `kurt.config` found\n- \u2713 Database: `.kurt/kurt.sqlite` exists\n- \u2713 Kurt plugin installed for Claude Code integration\n\n\u26a0\ufe0f **Expected empty state:**\n- No documents ingested yet (as expected for a fresh initialization)\n- No topic clusters (needs documents first)\n- No projects created yet\n\nThe project is ready to use. The next steps would be to add content using `kurt content add <url>` or create projects in the `projects/` directory.",
+        "timestamp": "2025-11-03T10:03:47.911594"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T10:03:35.518573",
+      "end": "2025-11-03T10:03:47.950114",
+      "duration_seconds": 12.431541
+    },
+    "counts": {
+      "total_tools": 1,
+      "conversation_turns": 3
+    },
+    "usage": {
+      "total_tokens": 253,
+      "total_cost_usd": 0.006664999999999999
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 0,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 0,
+      "fetched_documents": 0,
+      "not_fetched_documents": 0
+    }
+  }
+}

@@ -1,0 +1,564 @@
+{
+  "scenario": "04_project_with_sources",
+  "timestamp": "2025-11-03T17:06:33.323643",
+  "passed": false,
+  "error": "File does not exist: projects/fastapi-marketing-launch",
+  "run_metrics": {
+    "tool_usage": {
+      "slashcommand": 1,
+      "skill": 1,
+      "bash": 16,
+      "todowrite": 5
+    },
+    "tool_calls": [
+      {
+        "tool": "slashcommand",
+        "parameters": {
+          "command": "/create-project"
+        },
+        "timestamp": "2025-11-03T17:02:33.166686"
+      },
+      {
+        "tool": "skill",
+        "parameters": {
+          "command": "project-management-skill"
+        },
+        "timestamp": "2025-11-03T17:02:36.050224"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && ls -la",
+          "description": "Check current directory structure"
+        },
+        "timestamp": "2025-11-03T17:02:40.535424"
+      },
+      {
+        "tool": "todowrite",
+        "parameters": {
+          "todos": [
+            {
+              "content": "Check organizational foundation (content map + core rules)",
+              "status": "in_progress",
+              "activeForm": "Checking organizational foundation"
+            },
+            {
+              "content": "Gather project sources (optional)",
+              "status": "pending",
+              "activeForm": "Gathering project sources"
+            },
+            {
+              "content": "Identify target content (optional)",
+              "status": "pending",
+              "activeForm": "Identifying target content"
+            },
+            {
+              "content": "Extract project-specific rules (optional)",
+              "status": "pending",
+              "activeForm": "Extracting project-specific rules"
+            },
+            {
+              "content": "Create project structure and project.md",
+              "status": "pending",
+              "activeForm": "Creating project structure and project.md"
+            }
+          ]
+        },
+        "timestamp": "2025-11-03T17:03:07.694896"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content list",
+          "description": "Check existing content in knowledge base"
+        },
+        "timestamp": "2025-11-03T17:03:12.393681"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && find rules -type f -name \"*.md\" 2>/dev/null | head -20",
+          "description": "Check existing rules"
+        },
+        "timestamp": "2025-11-03T17:03:13.612606"
+      },
+      {
+        "tool": "todowrite",
+        "parameters": {
+          "todos": [
+            {
+              "content": "Check organizational foundation (content map + core rules)",
+              "status": "completed",
+              "activeForm": "Checking organizational foundation"
+            },
+            {
+              "content": "Gather project sources (optional)",
+              "status": "in_progress",
+              "activeForm": "Gathering project sources"
+            },
+            {
+              "content": "Identify target content (optional)",
+              "status": "pending",
+              "activeForm": "Identifying target content"
+            },
+            {
+              "content": "Extract project-specific rules (optional)",
+              "status": "pending",
+              "activeForm": "Extracting project-specific rules"
+            },
+            {
+              "content": "Create project structure and project.md",
+              "status": "pending",
+              "activeForm": "Creating project structure and project.md"
+            }
+          ]
+        },
+        "timestamp": "2025-11-03T17:03:28.503197"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content add https://fastapi.tiangolo.com/",
+          "description": "Add FastAPI URL to content database"
+        },
+        "timestamp": "2025-11-03T17:03:50.766069"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content --help",
+          "description": "Check kurt content command options"
+        },
+        "timestamp": "2025-11-03T17:03:55.576082"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt --help",
+          "description": "Check main kurt commands"
+        },
+        "timestamp": "2025-11-03T17:04:01.533269"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt fetch https://fastapi.tiangolo.com/",
+          "description": "Fetch and index FastAPI homepage",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T17:04:06.958292"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt fetch --help",
+          "description": "Check kurt fetch command options"
+        },
+        "timestamp": "2025-11-03T17:04:11.914921"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt map --help",
+          "description": "Check kurt map command options"
+        },
+        "timestamp": "2025-11-03T17:04:32.464846"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt map url --help",
+          "description": "Check kurt map url command options"
+        },
+        "timestamp": "2025-11-03T17:04:38.976302"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt map url https://fastapi.tiangolo.com/",
+          "description": "Discover content from FastAPI website",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T17:04:43.998504"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt fetch --include \"*fastapi.tiangolo.com*\" --exclude \"*tutorial*\" --exclude \"*advanced*\" --exclude \"*deployment*\" --exclude \"*how-to*\" --limit 10",
+          "description": "Fetch key FastAPI pages for marketing",
+          "timeout": 120000
+        },
+        "timestamp": "2025-11-03T17:04:53.716780"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content list --include \"*fastapi.tiangolo.com*\" | head -20",
+          "description": "List fetched FastAPI content"
+        },
+        "timestamp": "2025-11-03T17:05:21.243243"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content list | grep -i \"FETCHED\" | head -15",
+          "description": "Check fetched documents"
+        },
+        "timestamp": "2025-11-03T17:05:29.630562"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt status",
+          "description": "Check overall Kurt project status"
+        },
+        "timestamp": "2025-11-03T17:05:33.508305"
+      },
+      {
+        "tool": "bash",
+        "parameters": {
+          "command": "cd /var/folders/yr/lv_0z6m15fg8llcm02_kw4m80000gn/T/kurt_eval_mg2fm0ch && kurt content stats",
+          "description": "Get detailed document statistics"
+        },
+        "timestamp": "2025-11-03T17:05:40.040353"
+      },
+      {
+        "tool": "todowrite",
+        "parameters": {
+          "todos": [
+            {
+              "content": "Check organizational foundation (content map + core rules)",
+              "status": "completed",
+              "activeForm": "Checking organizational foundation"
+            },
+            {
+              "content": "Gather project sources (optional)",
+              "status": "completed",
+              "activeForm": "Gathering project sources"
+            },
+            {
+              "content": "Identify target content (optional)",
+              "status": "in_progress",
+              "activeForm": "Identifying target content"
+            },
+            {
+              "content": "Extract project-specific rules (optional)",
+              "status": "pending",
+              "activeForm": "Extracting project-specific rules"
+            },
+            {
+              "content": "Create project structure and project.md",
+              "status": "pending",
+              "activeForm": "Creating project structure and project.md"
+            }
+          ]
+        },
+        "timestamp": "2025-11-03T17:05:48.322464"
+      },
+      {
+        "tool": "todowrite",
+        "parameters": {
+          "todos": [
+            {
+              "content": "Check organizational foundation (content map + core rules)",
+              "status": "completed",
+              "activeForm": "Checking organizational foundation"
+            },
+            {
+              "content": "Gather project sources (optional)",
+              "status": "completed",
+              "activeForm": "Gathering project sources"
+            },
+            {
+              "content": "Identify target content (optional)",
+              "status": "in_progress",
+              "activeForm": "Identifying target content"
+            },
+            {
+              "content": "Extract project-specific rules (optional)",
+              "status": "pending",
+              "activeForm": "Extracting project-specific rules"
+            },
+            {
+              "content": "Create project structure and project.md",
+              "status": "pending",
+              "activeForm": "Creating project structure and project.md"
+            }
+          ]
+        },
+        "timestamp": "2025-11-03T17:06:01.621897"
+      },
+      {
+        "tool": "todowrite",
+        "parameters": {
+          "todos": [
+            {
+              "content": "Check organizational foundation (content map + core rules)",
+              "status": "completed",
+              "activeForm": "Checking organizational foundation"
+            },
+            {
+              "content": "Gather project sources (optional)",
+              "status": "completed",
+              "activeForm": "Gathering project sources"
+            },
+            {
+              "content": "Identify target content (optional)",
+              "status": "completed",
+              "activeForm": "Identifying target content"
+            },
+            {
+              "content": "Extract project-specific rules (optional)",
+              "status": "in_progress",
+              "activeForm": "Extracting project-specific rules"
+            },
+            {
+              "content": "Create project structure and project.md",
+              "status": "pending",
+              "activeForm": "Creating project structure and project.md"
+            }
+          ]
+        },
+        "timestamp": "2025-11-03T17:06:23.601604"
+      }
+    ],
+    "conversation": [
+      {
+        "speaker": "user",
+        "message": "run /create-project",
+        "timestamp": "2025-11-03T17:02:28.332225"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll run the /create-project command for you.",
+        "timestamp": "2025-11-03T17:02:32.955738"
+      },
+      {
+        "speaker": "agent",
+        "message": "I'll invoke the project-management skill to create a new project.",
+        "timestamp": "2025-11-03T17:02:35.812383"
+      },
+      {
+        "speaker": "agent",
+        "message": "I can see the project-management skill is now active. Let me invoke the create-project subskill to start the project creation workflow.",
+        "timestamp": "2025-11-03T17:02:39.649922"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! The Kurt project structure is already initialized. Now let me start the create-project workflow. Based on the skill documentation, I need to guide you through the project creation process.\n\n## Welcome to Kurt Project Creation! \ud83d\ude80\n\nI'll guide you through creating a new project. We'll start with the essentials and you can optionally add sources, targets, and rules.\n\n### Step 1: Project Intent\n\nWhat type of project are you creating? This helps me recommend the right workflows.\n\n**Choose one:**\n1. **Positioning** - Brand messaging, value props, competitive analysis\n2. **Marketing** - Campaigns, landing pages, promotional content\n3. **Documentation** - Technical docs, guides, tutorials\n4. **General** - Mixed content or other purposes\n\nWhat's your project intent?",
+        "timestamp": "2025-11-03T17:02:47.031024"
+      },
+      {
+        "speaker": "user",
+        "message": "Marketing",
+        "timestamp": "2025-11-03T17:02:49.964468"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! You're creating a **Marketing** project.\n\n### Step 2: Project Name and Goal\n\nNow I need two things:\n\n**Project Name:**\n- Short, descriptive identifier (e.g., \"product-launch-q4\", \"email-campaign-webinar\")\n- Used for folder name: `projects/<project-name>/`\n- No spaces (use hyphens or underscores)\n\n**Project Goal:**\n- 1-2 sentences describing what you want to accomplish\n- Example: \"Create landing page and email sequence for new AI feature launch targeting enterprise customers\"\n\n**What's your project name?**",
+        "timestamp": "2025-11-03T17:02:55.629416"
+      },
+      {
+        "speaker": "user",
+        "message": "fastapi-marketing-launch",
+        "timestamp": "2025-11-03T17:02:57.951815"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! **Project name:** `fastapi-marketing-launch`\n\n**Now, what's your project goal?**\n- 1-2 sentences describing what you want to accomplish with this marketing project",
+        "timestamp": "2025-11-03T17:03:00.870037"
+      },
+      {
+        "speaker": "user",
+        "message": "Create marketing content for FastAPI feature launch.",
+        "timestamp": "2025-11-03T17:03:02.483496"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! \n\n**Project:** `fastapi-marketing-launch`  \n**Goal:** Create marketing content for FastAPI feature launch.",
+        "timestamp": "2025-11-03T17:03:05.573707"
+      },
+      {
+        "speaker": "agent",
+        "message": "### Step 3: Foundation Check\n\nBefore we start your project-specific work, I need to verify your organizational foundation is in place. This includes:\n\n1. **Content Map** - Web content in `/sources/` (organizational knowledge base)\n2. **Core Rules** - Publisher profile, primary voice, and personas\n\nLet me check what you currently have:",
+        "timestamp": "2025-11-03T17:03:11.406497"
+      },
+      {
+        "speaker": "agent",
+        "message": "**Foundation Status:**\n- \u274c **Content Map:** No documents in organizational knowledge base\n- \u274c **Core Rules:** No rules extracted yet\n\nFor a marketing project, you'll benefit from having:\n- **Content Map**: Example marketing content from your company/industry (for learning patterns)\n- **Core Rules**: Publisher profile (brand voice), style guide, target personas\n\n**Would you like to:**\n\n1. **Skip foundation for now** - Create minimal project structure, add foundation later\n2. **Add organizational content** - Fetch web content to build your knowledge base\n3. **Extract core rules** - Set up publisher profile, voice, and personas (requires content first)\n\nWhat would you like to do?",
+        "timestamp": "2025-11-03T17:03:22.019077"
+      },
+      {
+        "speaker": "user",
+        "message": "Skip foundation",
+        "timestamp": "2025-11-03T17:03:24.397129"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Skipping foundation for now - you can add it later when needed.",
+        "timestamp": "2025-11-03T17:03:27.171616"
+      },
+      {
+        "speaker": "agent",
+        "message": "### Step 4: Project Sources (Optional)\n\nSources are your ground truth - the content you'll reference when creating marketing materials. For a FastAPI marketing launch, this might include:\n\n- FastAPI documentation or feature pages\n- Existing marketing content or blog posts\n- Competitor analysis or market research\n- Product specs or technical details\n- Research articles or case studies\n\n**Would you like to:**\n\n1. **Skip sources for now** - Add them later as needed\n2. **Add web URLs** - I'll fetch and index them for you\n3. **Reference existing content** - Point to content already in `/sources/`\n4. **Add research** - Use research-skill to gather topic information\n5. **Add from CMS** - Fetch content from your CMS\n\nWhat would you like to do?",
+        "timestamp": "2025-11-03T17:03:35.567681"
+      },
+      {
+        "speaker": "user",
+        "message": "Add web URLs",
+        "timestamp": "2025-11-03T17:03:38.013787"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! Let's add some web URLs as sources for your FastAPI marketing launch project.\n\n**Please provide the URLs you'd like to add.** You can give me:\n- A single URL\n- Multiple URLs (one per line or comma-separated)\n- A URL prefix (I'll fetch multiple pages from the same domain)\n\n**Example sources for FastAPI marketing:**\n- FastAPI official website/docs\n- FastAPI blog posts\n- Feature announcement pages\n- Case studies or testimonials\n- Competitor pages for reference\n\n**What URLs would you like to add?**",
+        "timestamp": "2025-11-03T17:03:43.628793"
+      },
+      {
+        "speaker": "user",
+        "message": "https://fastapi.tiangolo.com/",
+        "timestamp": "2025-11-03T17:03:45.914344"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I'll fetch content from `https://fastapi.tiangolo.com/` for your project.",
+        "timestamp": "2025-11-03T17:03:49.648026"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the correct command syntax:",
+        "timestamp": "2025-11-03T17:03:54.771348"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see - the `kurt content` commands don't include `add`. Let me check the main kurt commands:",
+        "timestamp": "2025-11-03T17:04:00.702545"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I need to use `kurt fetch` to download and index content. Let me do that:",
+        "timestamp": "2025-11-03T17:04:05.838221"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check the correct syntax for the fetch command:",
+        "timestamp": "2025-11-03T17:04:11.591159"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see! I need to use the `--urls` flag. But first, I should check if I need to use `kurt map` to discover the URL first. Let me check:",
+        "timestamp": "2025-11-03T17:04:28.317673"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I should use `kurt map url` to discover the content first, then fetch it. Let me check the map url command:",
+        "timestamp": "2025-11-03T17:04:38.337127"
+      },
+      {
+        "speaker": "agent",
+        "message": "Excellent! Now I'll map the URL to discover the content, then fetch it:",
+        "timestamp": "2025-11-03T17:04:43.045128"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! Discovered 143 pages from the FastAPI website. Now let me fetch a subset of the most relevant pages for your marketing launch project. I'll focus on the main pages and avoid deep technical documentation:",
+        "timestamp": "2025-11-03T17:04:52.355667"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I've successfully fetched 10 key FastAPI pages. Let me check what was fetched:",
+        "timestamp": "2025-11-03T17:05:20.494963"
+      },
+      {
+        "speaker": "agent",
+        "message": "Let me check specifically for the FETCHED documents:",
+        "timestamp": "2025-11-03T17:05:28.787499"
+      },
+      {
+        "speaker": "agent",
+        "message": "I see - 143 documents were discovered but the fetch command seems to have processed them differently. Let me check the stats:",
+        "timestamp": "2025-11-03T17:05:39.307180"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! **10 documents have been successfully fetched** from the FastAPI website. The remaining 133 are discovered but not yet fetched (which is good - we don't need all 143 pages for a marketing project).",
+        "timestamp": "2025-11-03T17:05:46.160607"
+      },
+      {
+        "speaker": "agent",
+        "message": "**\u2713 Sources Added:** 10 FastAPI pages fetched and indexed\n\n**Would you like to add more sources?**\n- More FastAPI pages\n- Other URLs (competitors, case studies, etc.)\n- Research content\n- Or continue to next step\n\nType \"more sources\" to add more, or \"continue\" to proceed to targets.",
+        "timestamp": "2025-11-03T17:05:54.754351"
+      },
+      {
+        "speaker": "user",
+        "message": "Continue",
+        "timestamp": "2025-11-03T17:05:57.137408"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! Let's move on to the next step.",
+        "timestamp": "2025-11-03T17:06:00.107050"
+      },
+      {
+        "speaker": "agent",
+        "message": "### Step 5: Target Content (Optional)\n\nTargets are the content you want to create or update for your FastAPI marketing launch. This helps track your deliverables.\n\n**Common marketing targets include:**\n- Landing pages\n- Blog posts or articles\n- Email sequences\n- Social media content\n- Product announcement copy\n- Feature descriptions\n- Case studies\n- Marketing one-pagers\n\n**Would you like to:**\n\n1. **Skip targets for now** - Add them later as you plan your campaign\n2. **Specify target content** - Tell me what marketing materials you want to create\n\nWhat would you like to do?",
+        "timestamp": "2025-11-03T17:06:08.013411"
+      },
+      {
+        "speaker": "user",
+        "message": "Specify target content",
+        "timestamp": "2025-11-03T17:06:11.132602"
+      },
+      {
+        "speaker": "agent",
+        "message": "Great! Let's identify the marketing content you want to create for the FastAPI feature launch.\n\n**What marketing materials do you want to create?**\n\nYou can specify:\n- Content type (landing page, blog post, email, social post, etc.)\n- Brief description or title\n- Target audience (if relevant)\n\n**Examples:**\n- \"Landing page for FastAPI async features targeting enterprise developers\"\n- \"Blog post announcing new FastAPI performance improvements\"\n- \"Email sequence for FastAPI webinar campaign\"\n- \"Social media posts for FastAPI v2.0 launch\"\n\n**Please list the target content you want to create:**\n(You can list multiple items, one per line)",
+        "timestamp": "2025-11-03T17:06:16.660452"
+      },
+      {
+        "speaker": "user",
+        "message": "Landing page for FastAPI features  \nBlog post for FastAPI launch  \nEmail sequence for developers",
+        "timestamp": "2025-11-03T17:06:19.016729"
+      },
+      {
+        "speaker": "agent",
+        "message": "Perfect! I've captured your three target content pieces:\n\n1. **Landing page for FastAPI features**\n2. **Blog post for FastAPI launch**\n3. **Email sequence for developers**",
+        "timestamp": "2025-11-03T17:06:22.314913"
+      },
+      {
+        "speaker": "agent",
+        "message": "### Step 6: Extract Rules (Optional)\n\nRules help ensure consistency across your marketing content by learning patterns from existing content. For marketing projects, useful rules include:\n\n**Style rules** - Voice, tone, terminology\n**Structure rules** - Content formats (landing page, blog, email templates)\n**Personas** - Target audience profiles and messaging\n\nSince you have 10 FastAPI pages fetched, I could extract:\n- **Style rules** from FastAPI's marketing/docs voice\n- **Structure rules** for landing pages, blog posts, or email formats\n- **Personas** for developer audiences\n\n**Would you like to:**\n\n1. **Skip rules for now** - Create content without predefined patterns\n2. **Extract style rules** - Learn FastAPI's voice and tone\n3. **Extract structure rules** - Learn content format patterns\n4. **Extract persona rules** - Define target developer audiences\n5. **Extract multiple rule types** - Comprehensive rule extraction\n\nWhat would you like to do?",
+        "timestamp": "2025-11-03T17:06:31.259837"
+      },
+      {
+        "speaker": "user",
+        "message": "Skip rules",
+        "timestamp": "2025-11-03T17:06:33.312087"
+      }
+    ],
+    "timing": {
+      "start": "2025-11-03T17:02:27.493401",
+      "end": "2025-11-03T17:06:33.319453",
+      "duration_seconds": 245.826052
+    },
+    "counts": {
+      "total_tools": 23,
+      "conversation_turns": 42
+    },
+    "usage": {
+      "total_tokens": 5258,
+      "total_cost_usd": 0.40493999999999997
+    }
+  },
+  "workspace_metrics": {
+    "files": {
+      "config_exists": true,
+      "db_exists": true,
+      "sources_count": 10,
+      "projects_count": 0
+    },
+    "database": {
+      "total_documents": 143,
+      "fetched_documents": 10,
+      "not_fetched_documents": 133
+    }
+  }
+}
