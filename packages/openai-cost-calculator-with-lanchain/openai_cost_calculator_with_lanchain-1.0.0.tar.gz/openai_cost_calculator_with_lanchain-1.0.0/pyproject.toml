@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openai_cost_calculator_with_lanchain"
+version = "1.0.0"
+description = "A library to estimate OpenAI API costs based on token usage, integrating with Langchain. This is a fork from v1.1.1 of openai_cost_calculator by Orkun Kınay and Murat Barkın Kınay (https://github.com/orkunkinay/openai_cost_calculator)."
+authors = [
+    { name = "Marco Pennacchiotti (forked from openai_cost_calculator by Orkun Kınay and Murat Barkın Kınay)" }
+]
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.8.1"
+dependencies = [
+    "langchain>=0.0.27",
+    "langchain-openai>=0.1.25",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.4",
+]
+ classifiers=[
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ]
+
+[tool.setuptools]
+packages = ["openai_cost_calculator"]
