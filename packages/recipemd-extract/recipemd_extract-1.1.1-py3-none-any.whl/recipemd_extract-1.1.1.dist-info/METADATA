@@ -1,0 +1,53 @@
+Metadata-Version: 2.4
+Name: recipemd-extract
+Version: 1.1.1
+Summary: Extracts recipes from websites and saves them in the RecipeMD format
+Author: AberDerBart
+Author-email: nonatz@web.de
+Project-URL: Source, https://github.com/AberDerBart/recipemd-extract
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Console
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Utilities
+Classifier: Topic :: Text Processing :: Markup
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7,<4
+Description-Content-Type: text/markdown
+Requires-Dist: recipemd~=4.1.0
+Requires-Dist: beautifulsoup4~=4.12.0
+Requires-Dist: requests~=2.32.0
+Requires-Dist: html5lib==1.1
+Requires-Dist: scrape-schema-recipe==0.2.2
+Requires-Dist: recipe-scrapers==15.1.0
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: project-url
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+## recipemd-extract
+
+recipemd-extract extracts recipes from websites and saves them in the [recipemd](https://github.com/tstehr/recipemd/blob/master/specification.md) format. It is based on [recipemd-cli](https://github.com/dnlvgl/recipemd-cli).
+
+## installation
+
+`pip install recipemd-extract`
+
+## usage
+
+`recipemd-extract 'url-of-recipe'`
+
+## supported websites
+
+1. chefkoch.de
+2. seriouseats.com
+3. Any Wordpress blog using [WP Recipe Manager](https://en-ca.wordpress.org/plugins/wp-recipe-manager/)
+4. Any page supporting [recipe schema](https://schema.org/Recipe)
+5. Any page supported by [recipe-scrapers](https://github.com/hhursev/recipe-scrapers)
+
+
