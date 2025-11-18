@@ -1,0 +1,65 @@
+# vpkg — VaultClient
+
+## Overview
+
+`vpkg` is a lightweight wrapper for interacting with, and implementing the Vault API utilized by Dallas Formula Racing. It provides many of the existing API endpoints as easy-to-use Python functions.
+
+## Installation
+
+Install latest version via pip:
+
+```bash
+pip install vpkg
+```
+
+## Usage
+
+```python
+from vpkg import VaultClient
+
+# Create a client
+vc = VaultClient(env_key="your-env-key", product_name="myproduct", api_key="your-api-key")
+
+# Fetch the full vault for the default or given product
+vault_data = vc.fetch_vault()
+
+# Fetch an individual secret
+secret_value = vc.fetch_secret("DB_PASSWORD")
+
+# List available products
+products = vc.fetch_products()
+
+# Get metadata
+meta = vc.fetch_metadata()
+
+# Create a vault (returns the x-env-key from the response)
+new_env_key = vc.create_vault(vault_data={"KEY": "value"}, product_name="myproduct")
+
+# Bulk update secrets
+vc.bulk_update_secrets({"API_KEY": "newvalue", "ANOTHER": "v"})
+
+# Convenience single-secret operations
+vc.update_secret("API_KEY", "anothervalue")
+vc.create_secret("NEW_SECRET", "value")
+vc.delete_secret("OLD_SECRET")
+```
+
+## Requirements
+
+- Python 3.8+
+- requests (test with the same version you use in your environment)
+
+## Quick test snippet
+
+Save and run a small script to validate connectivity (replace placeholders):
+
+```python
+from vpkg import VaultClient
+
+c = VaultClient(env_key="ENV_KEY_HERE", product_name="myproduct")
+try:
+    print("Products:", c.fetch_products())
+    print("Metadata:", c.fetch_metadata())
+except Exception as e:
+    print("Vault request failed:", e)
+```
