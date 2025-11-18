@@ -1,0 +1,15 @@
+bindPort = 7000
+auth.method = "token"
+auth.token = "change-me"
+
+dashboard.addr = "0.0.0.0"
+dashboard.port = 7500
+dashboard.user = "admin"
+dashboard.passwd = "admin"
+
+# console or real logFile path like ./logs/main.log
+log.to = "./logs/main.log"
+log.level = "info"
+log.maxDays = 30
+# disable log colors when log.to is console, default is false
+log.disablePrintColor = false

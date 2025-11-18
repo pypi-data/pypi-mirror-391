@@ -1,0 +1,109 @@
+# This configuration file is a curated subset of the upstream FRP example.
+# It illustrates a wide range of proxy types and options. Adjust according to
+# your own deployment before using it in production.
+
+user = "demo"
+serverAddr = "frps.example.com"
+serverPort = 7000
+
+auth.method = "token"
+auth.token = "change-me"
+
+log.to = "./frpc.log"
+log.level = "info"
+log.maxDays = 7
+log.disablePrintColor = false
+
+webServer.addr = "127.0.0.1"
+webServer.port = 7400
+webServer.user = "admin"
+webServer.password = "admin"
+
+transport.poolCount = 5
+transport.protocol = "tcp"
+transport.tls.enable = true
+
+[[proxies]]
+name = "ssh"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
+
+[[proxies]]
+name = "web-http"
+type = "http"
+localIP = "127.0.0.1"
+localPort = 8080
+customDomains = ["web.example.com"]
+locations = ["/", "/app"]
+hostHeaderRewrite = "127.0.0.1"
+requestHeaders.set.X-From-Where = "frp"
+
+[[proxies]]
+name = "web-https"
+type = "https"
+localIP = "127.0.0.1"
+localPort = 443
+customDomains = ["secure.example.com"]
+
+[[proxies]]
+name = "udp-dns"
+type = "udp"
+localIP = "127.0.0.1"
+localPort = 53
+remotePort = 6053
+
+[[proxies]]
+name = "secret-ssh"
+type = "stcp"
+secretKey = "stcp-secret"
+localIP = "127.0.0.1"
+localPort = 22
+allowUsers = ["demo"]
+
+[[visitors]]
+name = "secret-ssh-visitor"
+type = "stcp"
+serverName = "secret-ssh"
+secretKey = "stcp-secret"
+bindAddr = "127.0.0.1"
+bindPort = 10022
+
+[[proxies]]
+name = "p2p-ssh"
+type = "xtcp"
+secretKey = "xtcp-secret"
+localIP = "127.0.0.1"
+localPort = 22
+allowUsers = ["peer1", "peer2"]
+
+[[visitors]]
+name = "p2p-ssh-visitor"
+type = "xtcp"
+serverName = "p2p-ssh"
+serverUser = "peer1"
+secretKey = "xtcp-secret"
+bindAddr = "0.0.0.0"
+bindPort = 20022
+
+[[proxies]]
+name = "http-proxy-plugin"
+type = "tcp"
+remotePort = 7001
+[proxies.plugin]
+type = "http_proxy"
+httpUser = "proxyuser"
+httpPassword = "proxypass"
+
+[[proxies]]
+name = "static-file-plugin"
+type = "tcp"
+remotePort = 7002
+[proxies.plugin]
+type = "static_file"
+localPath = "/var/www/html"
+stripPrefix = "static"
+httpUser = "static"
+httpPassword = "static"
+

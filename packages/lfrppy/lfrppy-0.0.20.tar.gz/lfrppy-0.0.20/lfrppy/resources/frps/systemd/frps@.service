@@ -1,0 +1,17 @@
+[Unit]
+Description=FRP Server Service (%i)
+After=network.target
+Wants=network.target
+
+[Service]
+WorkingDirectory=<dir>
+Type=simple
+User=<user>
+Restart=on-failure
+RestartSec=5s
+ExecStart=<bin_dir>/frps -c <dir>/%i.toml
+ExecReload=<bin_dir>/frps reload -c <dir>/%i.toml
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target
