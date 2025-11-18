@@ -1,0 +1,58 @@
+
+namespace Dune{
+namespace Fem{
+
+/**
+\page Poisson
+
+Poisson problem 
+===============
+
+This page shows how to solve the poisson problem.
+
+Analytical Model
+----------------
+
+Let \f$ \Omega\subset \mathbb{R}^d\f$ be a domain and \f$\mathcal{T}_h \f$ be a triangulation.
+
+This is an description class for the problem
+\f{eqnarray*}{ 
+               V + \nabla a(U)      & = & 0 \\
+\partial_t U + \nabla (F(U)+A(U,V)) & = & S(U) \\
+                         U          & = & g_D \\
+                  \nabla U \cdot n  & = & g_N 
+\f}
+
+| interface                  | implementation                     |
+| -------------------------- | ---------------------------------- |
+| algorithm                  | EllipticAlgorithm                  |
+| model                      | Poisson::Model                     |
+| problem                    | Poisson::Problem                   |
+
+
+Test cases
+----------
+
+The following classes are derived from PoissonProblem and yield to 
+different test cases.
+
+| available problem implementations |
+| --------------------------------- |
+| AlbertaProblem                    |
+| SinSinSin                         |
+| SinSin                            |
+| CosCos                            |
+| CastilloProblem...                |
+
+
+Global problem structure
+------------------------
+
+This poisson problem is a simple and uncoupled algorithm.
+
+![ProblemCreator structure for poisson problem](poisson.png)
+
+*/
+
+}
+}

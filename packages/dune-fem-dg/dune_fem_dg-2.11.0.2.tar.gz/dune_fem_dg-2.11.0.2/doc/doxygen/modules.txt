@@ -1,0 +1,109 @@
+/* 
+This file determines the order how things appear in the doxygen
+documentation within the Grid group. It works like this:
+
+\defgroup commands appear only in this file here which is
+parsed before the other files (because it is mentioned first 
+in the Doxyfile).
+
+Only \addtogroup is used in the code documentation.
+*/
+
+/**
+
+\defgroup FemDGParameter Dune-Fem-DG parameters
+
+\defgroup ParameterClass Parameter classes
+
+Parameter classes collect information (usually) from parameter files.
+
+Parameter classes are usually closely linked to a class where the
+parameters may change the state of an object of this class.
+
+Main goal of parameter classes are
+1. _encapsulation_ of parameter information for the usage in another class,
+2. easy _modification_ of the state of an object,
+3. allow _key prefixes_ to read local parameters from a parameter files,
+4. allow _user-defined implementation_ to change the state of an object in a user-defined way.   
+
+
+\defgroup Algorithms Algorithm
+
+  \defgroup Callers Caller
+  \ingroup Algorithms
+
+  \defgroup Container
+  \ingroup Algorithms
+  
+\defgroup SubAlgorithms Sub-Algorithm
+
+\defgroup Analytical Analytical Description of Patial Differential Equations
+
+  \defgroup Problems Problem
+  \ingroup Analytical
+
+    \defgroup AdvDiffProblems Advection-Diffusion Problem
+    \ingroup Problems
+
+    \defgroup EulerProblems Euler Problem
+    \ingroup Problems
+
+    \defgroup NavierStokesProblems Navier-Stokes Problem
+    \ingroup Problems
+
+    \defgroup PoissonProblems Poisson Problem
+    \ingroup Problems
+    
+      \defgroup PoissonDataFunctions Data Functions for Poisson Problem
+      \ingroup PoissonProblems
+    
+    \defgroup StokesProblems Stokes Problem
+    \ingroup Problems
+  
+  \defgroup AnalyticalModels Model
+  \ingroup Analytical
+
+    \defgroup AnalyticalFluxes Analytical Fluxes
+    \ingroup AnalyticalModels
+    
+    Defines analytical fluxes.
+
+\defgroup Discretization Discretization
+
+  \defgroup DiscreteFunction Discrete Function and Discrete Function Space
+  \ingroup Discretization 
+
+  \defgroup Operator Spatial Operator
+  \ingroup Discretization
+
+    \defgroup PassOperator Matrix-free Operator (using Passes)
+    \ingroup Operator
+    
+      \defgroup PassBased Classes using Passes
+      \ingroup PassOperator    
+
+    \defgroup AssemblyOperator Assembled Operator (no Passes)
+    \ingroup Operator
+    
+  \defgroup Solvers Solver
+  \ingroup Discretization
+
+  \defgroup Fluxes Numerical Fluxes for Discontinuous Galerkin Schemes
+  \ingroup Discretization
+  
+    A numerical flux is given by...
+    
+    A the moment fluxes can be separated into to categories:
+    An advective flux or a diffusive flux.
+    
+    \defgroup AdvectionFluxes Advection Fluxes
+    \ingroup Fluxes
+    
+    An advective numerical flux is given by...
+   
+    \defgroup DiffusionFluxes Diffusion Fluxes
+    \ingroup Fluxes 
+    A flux class for diffusive numerical fluxes.
+  
+  
+*/
