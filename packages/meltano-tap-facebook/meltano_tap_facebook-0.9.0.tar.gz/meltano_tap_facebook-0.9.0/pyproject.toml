@@ -1,0 +1,83 @@
+[build-system]
+requires = ["poetry-core", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
+
+[project]
+name = "meltano-tap-facebook"
+dynamic = []
+description = "`tap-facebook` is a Singer tap for facebook, built with the Meltano SDK for Singer Taps."
+authors = [ { name = "Meltano", email = "hello@meltano.com" } ]
+keywords = [
+    "ELT",
+    "facebook",
+]
+license = "Elastic-2.0"
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "facebook-business~=21.0.3",
+    "pendulum~=3.1.0",
+    "requests~=2.32",
+    "singer-sdk~=0.47.0",
+]
+version = "0.9.0"
+
+[project.scripts]
+# CLI declaration
+tap-facebook = 'tap_facebook.tap:TapFacebook.cli'
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "singer-sdk[testing]",
+]
+typing = [
+    "mypy>=1.13",
+    "types-requests~=2.32",
+]
+
+[tool.poetry]
+requires-poetry = ">=2.2"
+packages = [
+    { include = "tap_facebook" },
+]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3 # Vertical Hanging Indent
+src_paths = "tap_facebook"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+ignore = ["ANN101", "DJ", "PD", "D101", "D102"]
+select = ["ALL"]
+
+[tool.ruff.lint.flake8-import-conventions]
+banned-from = ["typing"]
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+typing = "t"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN201", "D103", "S101", "PLR2004"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+    "facebook_business.*", # TODO: Remove when https://github.com/facebook/facebook-python-business-sdk/issues/657 is shipped
+]
