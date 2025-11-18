@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsf-scoring-sdk"  # ¡IMPORTANTE: Debe ser único en PyPI!
+version = "1.0.8"  
+authors = [
+    { name = "Jaime Alexander JImenez Lozano", email = "contacto@dsfuptech.cloud" },
+]
+description = "SDK oficial en Python para la API de DSF Scoring"
+readme = "README.md"
+requires-python = ">=3.8"  # Una versión de Python segura y moderna
+license = { text = "Proprietary" } # O "MIT", "Apache-2.0", etc.
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Other/Proprietary License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# ¡CRÍTICO! Aquí le dices a PyPI qué dependencias necesita tu SDK
+dependencies = [
+    "requests" 
+]
+
+[project.urls]
+"Homepage" = "https://github.com/jaimeajl/dsf-scoring-sdk"  # Cambia esto
+"Bug Tracker" = "https://github.com/jaimeajl/dsf-scoring-sdk/issues" # Cambia esto
