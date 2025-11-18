@@ -1,0 +1,50 @@
+[project]
+name = "telegramstats"
+version = "2.0.0"
+description = "Parse GDPR-exported Telegram data and print stats to the console"
+authors = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"}
+]
+maintainers = [
+    {name = "Stefano Pigozzi", email = "me@steffo.eu"}
+]
+license = "EUPL-1.2"
+license-files = ["LICENSE.txt"]
+readme = "README.md"
+
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "click (>=8.3.0,<9.0.0)",
+]
+keywords = [
+    "telegram",
+    "cli",
+    "chat",
+    "stats",
+    "gdpr-export",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Communications :: Chat",
+]
+
+
+[project.urls]
+Source = "https://forge.steffo.eu/steffo/telegramstats"
+Issues = "https://forge.steffo.eu/steffo/telegramstats/issues"
+
+
+[project.scripts]
+telegramstats = "telegramstats.__main__:telegramstats"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
