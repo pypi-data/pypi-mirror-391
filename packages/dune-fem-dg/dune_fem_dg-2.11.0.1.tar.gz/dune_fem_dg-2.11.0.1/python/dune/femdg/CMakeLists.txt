@@ -1,0 +1,12 @@
+add_python_targets(fem-dg
+  __init__
+  __main__
+  _operators
+  boundary
+  model2ufl
+  patch
+  rk
+  testing
+)
+add_subdirectory(dolfin_dg)
+add_subdirectory(landlab)

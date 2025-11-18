@@ -1,0 +1,42 @@
+# Where to search and which files to use
+INPUT                 += @srcdir@/modules.txt \
+                         @srcdir@/pages/mainpage.txt \
+                         @srcdir@/pages/docrules.txt \
+                         @srcdir@/pages/examples.txt \
+                         @srcdir@/pages/poisson.txt \
+                         @srcdir@/pages/euler.txt \
+                         @srcdir@/pages/stokes.txt \
+                         @srcdir@/pages/navierstokes.txt \
+                         @srcdir@/pages/notation.txt \
+                         @srcdir@/pages/parameters.txt \
+                         @srcdir@/pages/advectiondiffusion.txt \
+                         @srcdir@/pages/incompnavierstokes.txt \
+                         @srcdir@/pages/problemstructure.txt \
+                         @top_srcdir@/dune/fem-dg 
+
+#EXCLUDE               += @top_srcdir@/dune/fem-dg/test 
+
+IMAGE_PATH              = @srcdir@/../pics
+ 
+SHOW_NAMESPACES        = NO
+
+SEARCHENGINE           = YES
+
+EXCLUDE_PATTERNS       = 
+
+ALIASES              += notcleardoc="\xrefitem notcleardoc \"documentation will be extended\" \"Needs extended documentation\"" \
+                        parametername="\xrefitem parametername \"DUNE-FEM-DG parameter\" \"Parameters used in DUNE-FEM-DG \"" \
+                        femparam{2}="\parametername <tt>\1</tt> \2 \n\n no default\n "  \
+                        femparam{3}="\parametername <tt>\1</tt> \2 \n\n default: <tt>\3</tt>\n" \
+                        interfaceclass="\xrefitem interfaceclass \"An interface class\" \"Main interface classes\"" \
+                        newimplementation="\xrefitem newimplementation \"Newly added\" \"New interface implementation and other gadgets\"" 
+
+FILE_PATTERNS       += *.hh *.dist *.dev *.page
+
+EXAMPLE_PATH        +=  @top_srcdir@/dune/fem-dg/test
+
+EXTRA_PACKAGES = amsmath xr amsfonts
+
+USE_MATHJAX = YES
+#MATHJAX_RELPATH = ./mathjax
+

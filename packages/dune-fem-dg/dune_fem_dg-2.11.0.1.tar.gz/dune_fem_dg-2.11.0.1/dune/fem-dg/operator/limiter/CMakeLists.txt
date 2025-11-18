@@ -1,0 +1,12 @@
+dune_install(
+  cartesiantvd.hh
+  indicatorbase.hh
+  limiterdiscretemodel.hh
+  limiter.hh
+  limitermodel.hh
+  limiterutility.hh
+  limitpass.hh
+  lpreconstruction.hh
+  scalinglimitpass.hh
+  smoothness.hh
+)

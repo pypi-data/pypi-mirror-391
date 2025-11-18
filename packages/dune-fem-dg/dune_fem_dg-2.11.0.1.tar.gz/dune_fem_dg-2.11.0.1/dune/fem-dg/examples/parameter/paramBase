@@ -1,0 +1,66 @@
+# toggle verbosity of on process 
+# (-1: off, p: process p is verbose, in general 0 is a good choice)
+fem.verboserank: 0 
+fem.verbositylevel: 3
+
+# OMP THREADS 
+#------------
+# number of threads used in OMP program
+fem.parallel.numberofthreads: 1
+# write diagnostics file (
+# 0 don't, 1 only speedup file, 2 write all runfiles 
+# 3 only write 0, others at end, 4 all files at end for scaling) 
+fem.parallel.diagnostics: 1
+# if true non-blocking communication is enabled
+femdg.nonblockingcomm: true
+fem.threads.verbose: true
+# if true thread 0 only communicates data but does not computation
+fem.threads.communicationthread: false
+fem.threads.partitioningmethod: sfc
+
+
+# DATA WRITER
+#------------
+fem.prefix: ./data
+fem.io.outputformat: vtk-cell # binary, vtk-cell, vtk-vertex, gnuplot, sub-vtk-cell
+fem.io.subsamplinglevel: 0
+# checkpointing step 
+fem.io.checkpointstep: 25000000
+# add time stamp to eoc file name
+# to avoid overwriting the eoc files
+fem.io.eocFileTimeStamp: 0
+fem.eoc.outputpath: ./data
+
+
+# GRID SOLUTION 
+#--------------
+gridsol.writesolution: false
+gridsol.usegridsolution: false
+
+
+# STEPPER
+#-----------------
+fem.eoc.steps: 4
+femdg.stepper.printcount: 10
+# maximal number of timesteps done (for debugging)
+# femdg.stepper.maximaltimesteps: 10
+#femdg.stepper.fixedtimestep: 0.002 # when 0 then use dynamic time step
+femdg.fixedtimestepeocloopfactor: 1. # fixed time step is scaled with the inverse of this in each eoc loop
+
+# GRID ADAPTATION
+#----------------
+fem.adaptation.method: none # none | generic | callback
+# specify refinement tolerance 
+fem.adaptation.refineTolerance: 0.5
+# percent of refinement tol used for coarsening 
+fem.adaptation.coarsenPercent: 0.05
+# coarsest level that should be present 
+fem.adaptation.coarsestLevel: 0
+# finest level that should be present
+fem.adaptation.finestLevel: 6
+# marking strategy 
+# shockind = shock indicator, 
+# apost    = aposteriori based indicator, 
+# grad     = gradient based indicator 
+fem.adaptation.markingStrategy: apost
+fem.adaptation.adaptcount: 1 # after this many time step, 0 disables adaptation
