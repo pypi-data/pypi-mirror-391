@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vpn-controller"
+version = "1.0.0"
+description = "Minimal OpenVPN connection manager for ProtonVPN - WSL-optimized"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+authors = [
+    {name = "CCerrer", email = "boymetatron@gmail.com"}
+]
+keywords = ["vpn", "openvpn", "protonvpn", "wsl", "windows"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Networking",
+]
+
+dependencies = [
+    "requests>=2.25.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/CCerrer/vpn-controller"
+Repository = "https://github.com/CCerrer/vpn-controller"
+Issues = "https://github.com/CCerrer/vpn-controller/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
