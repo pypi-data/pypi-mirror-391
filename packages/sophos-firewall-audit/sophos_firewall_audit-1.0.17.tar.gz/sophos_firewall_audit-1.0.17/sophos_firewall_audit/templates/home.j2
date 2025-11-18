@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Sophos Firewall Audit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #005BC8 0%, #003d8f 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .site-logo {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .site-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        select {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+
+        select option {
+            background: #003d8f;
+            color: #ffffff;
+            padding: 0.5rem;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #003d8f;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+    <script>
+        function viewResult() {
+            const dropdown = document.getElementById('auditDropdown');
+            const selectedUrl = dropdown.value;
+            if (selectedUrl) {
+                window.location.href = selectedUrl;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="/en-us" rel="home" class="site-logo">
+                <img src="https://cdn.cookielaw.org/logos/8814ea97-7d41-4933-8a06-f5b8e65f6da8/019875a3-220e-7660-b879-5fc4d8416586/902ccc58-4d41-43a9-8194-dfe1b4404bb0/sophos-logo@2x.png" 
+                     alt="Sophos" 
+                     style="height: 32px; width: auto; filter: brightness(0) invert(1) drop-shadow(1px 1px 2px rgba(0,0,0,0.3));" />
+            </a>
+        </header>
+
+        <main class="main-content">
+            <h1>{{ title }}</h1>
+            <div class="form-container">
+                <label for="auditDropdown">Select an audit result:</label>
+                <select id="auditDropdown">
+                    <!-- Options will be populated here -->
+                </select>
+                <button onclick="viewResult()">View Results</button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
