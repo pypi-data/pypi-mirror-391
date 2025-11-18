@@ -1,0 +1,251 @@
+Metadata-Version: 2.3
+Name: docmind-doc-json-sdk
+Version: 1.1.2
+Summary: doc-json-sdk 调用云上docmind解析能力
+Author-email: 足溪 <sanchuan.ssc@alibaba-inc.com>
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Requires-Python: <4.0,>=3.9
+Requires-Dist: alibabacloud-credentials==1.0.2
+Requires-Dist: alibabacloud-docmind-api20220711==1.4.11
+Requires-Dist: alibabacloud-tea-openapi==0.4.1
+Requires-Dist: dacite>=1.8.1
+Requires-Dist: deepdiff>=7.0.1
+Requires-Dist: numpy>=2.0
+Requires-Dist: pillow>=9.0.0
+Requires-Dist: pydantic>=2.11.5
+Requires-Dist: tqdm>=4.66.5
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == 'dev'
+Description-Content-Type: text/markdown
+
+ 
+# DOC-JSON-SDK （PYTHON）
+
+## 什么是DOC-JSON
+
+![doc-json-model 简要描述](docs/_static/doc-json-model.jpg)
+
+## DOC-JSON-SDK功能特点
+- 提供DocMind文档结构化输出的doc-json结果反序列化对象，以及辅助功能函数SDK
+
+## 使用场景
+
+### 使用场景： DocMind 文档智能解析调用
+[阿里云官网 文档智能解析调用](https://help.aliyun.com/document_detail/450741.html)
+
+
+## 集成方式
+- 源码安装
+```shell
+#uv 准备环境
+uv install
+#使用虚拟环境
+uv shell
+# 构建
+uv build
+twine check $pkg_path
+# 上传
+twine upload -r aliyun-pypi pkg_path --verbose
+```
+
+- python 3.10以上 环境
+
+云上环境
+```shell
+pip install docmind-doc-json-sdk
+```
+
+- 设置DocMind文档智能解析环境变量
+
+```shell
+export ALIBABA_CLOUD_ACCESS_KEY_ID=<access_key_id>
+export ALIBABA_CLOUD_ACCESS_KEY_SECRET=<access_key_secret>
+#调用服务
+```
+
+
+## 功能方法示例
+
+### 1. 基础使用方式
+
+#### 1.1 云上文档智能解析
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentExtractHandler
+
+def test_document_handler():
+    file_path = "/path/to/your/document.pdf"
+    loader = DocumentModelLoader(handler=DocumentExtractHandler())
+    document = loader.load(file_path=file_path, 
+                          structure_type="layout",  # layout:版面OCR, doctree:层级跨页合并
+                          reveal_markdown=True,     # 处理Markdown表格表示、图片链接表示
+                          formula_enhancement=True, # 公式增强
+                          use_url_response_body=True)
+```
+
+#### 1.2 云上电子解析
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentDigitalExtractHandler
+
+def test_document_digital_handler():
+    file_path = "/path/to/your/document.xlsx"
+    file_url = None
+    loader = DocumentModelLoader(handler=DocumentDigitalExtractHandler())
+    document = loader.load(file_path=file_path,
+                           file_url=file_url,
+                           reveal_markdown=True,     # 处理markdown 表格表示、图片链接表示
+                           use_url_response_body=True)
+```
+
+#### 1.3 流式接口解析（支持回调）
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentParserWithCallbackHandler
+
+def test_document_with_callback_handler():
+    file_path = "/path/to/your/document.docx"
+    file_url = None
+    
+    def layout_callback(arg: Dict):
+        if "markdownContent" in arg:
+            print("Received layout:", arg["markdownContent"])
+    
+    handler = DocumentParserWithCallbackHandler(layout_callback)
+    loader = DocumentModelLoader(handler=handler)
+    loader.load(file_path=file_path, file_url=file_url, 
+                save_json_path="/path/to/save/result.json")
+```
+
+#### 1.4 私有化服务文档解析
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_private_handler import PrivateDocumentExtractHandler
+
+def test_private_document_handler():
+    file_url = "https://example.com/document.pdf"
+    loader = DocumentModelLoader(handler=PrivateDocumentExtractHandler(host="your-private-host:port"))
+    document = loader.load(file_url=file_url,
+                          structure_type="doctree",
+                          formula_enhancement=False,
+                          markdown_result=True)
+```
+
+#### 1.5 通过Request ID获取解析结果
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentExtractHandler
+
+def test_get_document_by_request_id():
+    request_id = "your-request-id"
+    loader = DocumentModelLoader(handler=DocumentExtractHandler())
+    document = loader.load(request_id=request_id, 
+                          markdown_result=True,
+                          save_json_path="/path/to/save/result.json")
+```
+
+### 2. 高级功能使用
+
+#### 2.1 公式增强与Markdown输出
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentExtractHandler
+
+def test_render_formula_markdown():
+    file_path = "gongshi.png"
+    file_url = None
+    handler = DocumentExtractHandler()
+    loader = DocumentModelLoader(handler=handler)
+    document = loader.load(file_path=file_path,file_url=file_url,
+                           formula_enhancement=True,
+                           markdown_result=True,
+                           save_json_path="/Users/sanchuan/Downloads/docmind.json")
+```
+
+#### 2.2 文档渲染为Markdown格式
+```python
+from doc_json_sdk.loader.document_model_loader import DocumentModelLoader
+from doc_json_sdk.handler.document_handler import DocumentExtractHandler,DocumentDigitalExtractHandler
+from doc_json_sdk.render.document_model_render import DocumentModelRender
+
+def test_render_markdown():
+    file_path = "gongshi.png"
+    file_url = None
+    loader = DocumentModelLoader(handler=DocumentExtractHandler())
+    document = loader.load(file_path=file_path,file_url=file_url,markdown_result=True)
+    render = DocumentModelRender(document_model=document)
+    with open("/Users/sanchuan/Downloads/docmind.md","w") as f:
+        f.write(render.render_markdown_result())
+```
+
+### 3. 参数说明
+loader.load 支持参数
+#### 3.1 公共参数
+| 参数名 | 类型 | 说明 | 默认值 |
+|--------|------|------|--------|
+| file_path | str | 本地文件路径 | None |
+| file_url | str | 文件URL地址 | None |
+| request_id | str | 请求ID | None |
+| save_json_path | str | 保存JSON结果的路径 | None |
+| markdown_result | bool | 是否处理Markdown格式 | False |
+| reveal_markdown | bool | 是否处理Markdown格式（同markdown_result） | False |
+
+#### 3.2 文档智能解析参数（DocumentExtractHandler）
+| 参数名 | 类型 | 说明 | 默认值 |
+|--------|------|------|--------|
+| structure_type | str | 结构化类型配置，可选值为'layout','doctree' | "doctree" |
+| formula_enhancement | bool | 公式增强开关 | False |
+| use_url_response_body | bool | 是否使用URL响应体 | False |
+| http_proxy | str | HTTP代理 | None |
+| https_proxy | str | HTTPS代理 | None |
+
+#### 3.3 电子解析参数（DocumentDigitalExtractHandler）
+| 参数名 | 类型 | 说明 | 默认值 |
+|--------|------|------|--------|
+| reveal_markdown | bool | 是否处理Markdown格式 | False |
+| use_url_response_body | bool | 是否使用URL响应体 | False |
+
+#### 3.4 流式解析参数（DocumentParserWithCallbackHandler）
+| 参数名 | 类型 | 说明 | 默认值 |
+|--------|------|------|--------|
+| llm_enhancement | bool | 大模型增强开关 | False |
+| llmparam | dict | 大模型参数配置 | None |
+| enhancement_mode | str | 增强模式，如'VLM'表示视觉语言模型增强 | None |
+
+#### 3.5 私有化服务参数（PrivateDocumentExtractHandler）
+| 参数名 | 类型 | 说明 | 默认值 |
+|--------|------|------|--------|
+| host | str | 私有化服务主机地址 | "127.0.0.1:7001" |
+| structure_type | str | 结构化类型配置，可选值为'layout','doctree' | "doctree" |
+| formula_enhancement | bool | 公式增强开关 | False |
+
+### 4. Layout版面块处理
+
+LayoutModel 对象分为内容信息（来源电子解析/OCR）、版面类型信息（来源OCR/NLP）、逻辑关系信息（来源NLP）
+
+![doc-json-layout-model 简要描述](docs/_static/doc-json-layout-model.jpg)
+
+```python
+from doc_json_sdk.model.enums.layout_type_enum import LayoutTypeEnum
+
+for layout in document:
+    type_enum = layout.get_layout_type_enum()
+    if (type_enum == LayoutTypeEnum.Elements.FOOTER or
+            type_enum == LayoutTypeEnum.Elements.HEADER or
+            type_enum == LayoutTypeEnum.Elements.NOTE):
+        #  header and footer notes
+        pass
+    elif type_enum == LayoutTypeEnum.Elements.IMAGE:
+        # image with head_line or split_line
+        if layout.type.find("_line")!=-1:
+            continue
+    elif type_enum == LayoutTypeEnum.Elements.TABLE:
+        #table
+        pass
+    else:
+        # paragraph or note(table or figure)
+        pass
+```
+
