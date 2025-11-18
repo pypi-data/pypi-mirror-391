@@ -1,0 +1,82 @@
+[project]
+name = "aws-authenticator-cli"
+version = "0.0.5"
+description = "Simple AWS CLI authenticator using AWS IAM Identity Center (SSO) with credential_process"
+authors = [{name = "Kamil Filipek"}]
+requires-python = ">=3.10"
+readme = "README.md"
+# PEP 621: dependencies must be an array
+dependencies = [
+    "boto3>=1.28",
+]
+
+[project.optional-dependencies]
+# Install with:
+#   pip install -e .[test]
+#   pip install -e .[lint]
+#   pip install -e .[typecheck]
+#   pip install -e .[dev]
+# Test dependencies
+test = [
+    "pytest>=7.0",
+    "pytest-mock>=3.10",
+    "pytest-cov>=4.1",
+]
+# Linting
+lint = [
+    "ruff>=0.6",
+]
+# Static type checking
+typecheck = [
+    "mypy>=1.8",
+]
+# Everything for local development
+dev = [
+    "pytest>=7.0",
+    "pytest-mock>=3.10",
+    "pytest-cov>=4.1",
+    "ruff>=0.6",
+    "mypy>=1.8",
+    "pre-commit>=3.5",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+# Generate coverage.xml for CI and show missing lines locally
+# Enforce minimum coverage; adjust threshold to 80%
+addopts = "-q --cov=src/aws_authenticator --cov-report=term-missing --cov-report=xml --cov-fail-under=80"
+
+[tool.ruff]
+line-length = 220
+# Target minimum Python version supported
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable basic error codes, Pyflakes (F), pycodestyle (E), and import sorting (I), plus pyupgrade (UP)
+select = ["E", "F", "I", "UP"]
+# ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["aws_authenticator"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = false
+ignore_missing_imports = true
+show_error_codes = true
+pretty = true
+files = ["src/aws_authenticator"]
+
+[project.scripts]
+aws-authenticator = "aws_authenticator.cli:main"
