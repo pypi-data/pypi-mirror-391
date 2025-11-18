@@ -1,0 +1,165 @@
+Metadata-Version: 2.1
+Name: useckit
+Version: 0.5.0a1
+Home-page: https://blindforreview.com
+Author: BlindForReview.com
+Author-email: mail@blindforreview.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: tensorflow
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: tqdm
+Requires-Dist: scikit-learn
+Requires-Dist: scikeras
+Requires-Dist: wheel
+Requires-Dist: twine
+Requires-Dist: numpy
+Requires-Dist: dill
+Requires-Dist: xgboost
+Requires-Dist: natsort
+Requires-Dist: orjson
+
+
+# Useckit: An Open-Source Deep Learning Toolkit for Behavioral Biometrics
+
+Useckit is an open-source Python toolkit designed for the development, evaluation, and deployment of deep learning-based user authentication systems. 
+The toolkit bundles algorithms to evaluate behavioral biometrics for both user verification and identification tasks. 
+It is offering a high-level API for quick experiments and a low-level API for custom model implementations.
+A full description can be found in our [publication](/publication/useckit.pdf).
+
+### Overview
+
+- Useckit bundles several deep learning paradigms for user authentication, including time-series classification, distance metric learning, and anomaly detection.
+- Automatically computes key metrics like accuracy, F1-score, equal error rate (EER), receiver operating characteristic (ROC) curves, and more.
+- Supports open-set and closed-set user identification as well as user verification.
+- Customizable neural network models for advanced users.
+- Extensible with custom datasets, preprocessing functions, and evaluation methods.
+
+## Usage
+
+### Installation
+
+Use pip to install useckit and dependencies:
+
+```bash
+pip install useckit
+```
+
+### Features
+
+- Useckit offers a high-level API and a low-level API.
+- The high-level API allows the quick application of predefined models that are grounded in literature.
+  - We provide implementations, for example, for the approaches of [Fawaz et al.](https://doi.org/10.1007/s10618-019-00619-1) (Time-Series Classification), [Chen et al.](https://doi.org/10.1145/3411764.3445441) (AutoEncoder-based authentication), and [Schroff et al](https://www.cv-foundation.org/openaccess/content_cvpr_2015/html/Schroff_FaceNet_A_Unified_2015_CVPR_paper.html) (Two-Stream Networks).
+- The low-level API exists behind the facade of the high-level API and can also be used to use custom models within useckit.
+- All results are automatically serialized to the filesystem.
+
+### Basic Usage (High-Level API)
+
+To evaluate a dataset using default models:
+
+```python
+import numpy as np
+import useckit
+from useckit.Evaluators import TSCEvaluator, DistanceLearningEvaluator
+
+# Prepare dataset
+x_train, y_train = np.array([...]), np.array([...])
+x_test, y_test = np.array([...]), np.array([...])
+
+dataset = useckit.Dataset(
+    trainset_data=x_train,
+    trainset_labels=y_train,
+    testset_enrollment_data=x_train,
+    testset_enrollment_labels=y_train,
+    testset_matching_data=x_test,
+    testset_matching_labels=y_test
+)
+
+# E.g., run time series classification evaluator
+tse = TSCEvaluator(dataset, epochs=1000, verbose=False)
+tse.evaluate()
+
+# E.g., distance learning evaluator
+dle = DistanceLearningEvaluator(dataset, epochs=1000, verbose=False)
+dle.evaluate()
+```
+
+A comprehensible example can also be found in **[examples/useckit-high-level.ipynb](examples/deprecated/useckit-high-level.ipynb)**.
+
+### Advanced Usage (Low-Level API)
+
+You can customize models or extend Useckit with your own deep learning architectures.
+Examples and documentation are provided in **[examples/useckit-low-level.ipynb](examples/deprecated/useckit-low-level.ipynb)**.
+
+### API Documentation
+
+A sphinx-based documentation is work in progress and soon to be released. 
+For now, we recommend checking the comprehensive [**examples**](/examples) and [tests](useckit/tests).
+
+## Features
+
+### Evaluation Methods
+
+Useckit supports several evaluation paradigms, including:
+
+- **Verification Mode**: For user verification tasks where a claim of identity is verified against a reference sample.
+- **Closed-Set Identification**: For identifying users from a predefined set of identities.
+- **Open-Set Identification**: Identifies known users and rejects unknown users.
+
+### Models
+
+Useckit provides the following model architectures:
+
+- **Time Series Classification:** FCN, Inception, ResNet, Encoder, TWIESN, MCDCNN, MLP, CNN (valid/same padding) padding, MCNN, t-leNet from Fawaz et al.
+- **Distance Learning:** Two-stream networks with contrastive and triplet loss from Schroff et al.
+- **Outlier Detection**: AutoEncoders from Chen et al.
+
+### Dataset Preparation
+
+Datasets need to be provided in the following format:
+
+- **Train Set**: Data and labels for model training.
+- **Validation Set**: (Optional) Data and labels for model validation.
+- **Test Enrollment Set**: Data and labels for system enrollment during testing.
+- **Test Matching Set**: Data and labels for matching during testing.
+
+Useckit supports k-fold cross-validation if your dataset is small.
+
+### Preprocessing Functions
+
+The toolkit provides several preprocessing methods, including:
+
+- **Window Slicing**: Sliding window for time-series data augmentation.
+- **Majority Voting**: Aggregates predictions from window-sliced data.
+- **Normalization**: Ensures data is normalized between [-1, +1].
+- **Data Checks**: Verifies data integrity and format.
+
+### Evaluation Metrics
+
+Useckit automatically computes the following key metrics:
+
+- Accuracy
+- Precision, Recall, F1-score
+- Equal Error Rate (EER)
+- Receiver Operating Characteristic (ROC) Curve
+- Area Under the ROC Curve (AUC/AUROC)
+- Confusion Matrix
+
+Metrics are saved in both human-readable text format and machine-readable JSON format.
+
+## Authors
+
+- Jonathan Liebers, University of Duisburg-Essen ([jonathan.liebers@uni-due.de](mailto:jonathan.liebers@uni-due.de))
+- Tristan Kley, University of Duisburg-Essen ([tristan.kley@stud.uni-due.de](mailto:tristan.kley@stud.uni-due.de))
+- Carina Liebers, University of Duisburg-Essen ([carina.liebers@uni-due.de](mailto:carina.liebers@uni-due.de))
+- Uwe Gruenefeld, University of Duisburg-Essen ([uwe.gruenefeld@uni-due.de](mailto:uwe.gruenefeld@uni-due.de))
+- Stefan Schneegass, University of Duisburg-Essen ([stefan.schneegass@uni-due.de](mailto:stefan.schneegass@uni-due.de))
+
+## License
+
+See [LICENSE](LICENSE).
