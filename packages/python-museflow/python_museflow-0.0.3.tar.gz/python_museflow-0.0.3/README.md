@@ -1,0 +1,765 @@
+## <ins> Museflow </ins>
+
+MuseFlow is a Python framework for developing full-stack applications entirely in Python, eliminating the need for HTML,
+CSS, or JavaScript <br>
+With MuseFlow, developers can build web applications and APIs using pure Python code, streamlining development and
+reducing context switching between programming languages <br>
+
+Museflow operates on two core mechanics: <br>
+
+- Flexible Server: <br>
+  Museflow provides a Python-based server that can handle HTTP requests, serve pages, and manage APIs - <br>
+  allowing you to run full-stack applications without leaving Python <br>
+- HTML Tree: <br>
+  Instead of using HTML, CSS, and JavaScript, Museflow lets you construct an HTML tree using Python objects <br>
+  Elements can be nested, styled, and combined programmatically - <br>
+  giving you full control over page structure and dynamic content <br>
+
+Together, these mechanics enable developers to build interactive, full-featured web applications entirely in Python.
+
+### <ins> Installation </ins> <br>
+
+Pip: `pip install python-museflow` <br>
+
+### <ins> Features </ins>
+
+<ins> Client Side / Frontend </ins> <br>
+
+- Python-Based HTML Tree – Build and manage HTML structures entirely using Python <br>
+- Python-to-JavaScript Compilation – Automatically convert Python code to JavaScript, with full support for dynamic
+  imports and namespaces <br>
+
+<ins> Server Side / Backend (Flexible Server) </ins> <br>
+
+- Routing: <br>
+  Add routes with support for all standard HTTP methods (GET, POST, PUT, PATCH, DELETE) <br>
+  Routes can be safely added even while the server is running <br>
+
+- Easy Route Handlers: <br>
+  Quickly define HTTP route handlers using `@route_handler` decorator minimal boilerplate and automatic parameter
+  parsing <br>
+
+- Request Size Limiting: <br>
+  Optionally limit the maximum size of incoming request bodies to prevent abuse or accidental overloads <br>
+  Returns HTTP 413 if exceeded <br>
+  _* In production, it is recommended to enforce request size limits at the proxy or load balancer_ <br>
+
+- Concurrency Control: <br>
+  Optionally limit the number of concurrent requests to avoid resource exhaustion <br>
+  _* In production, it is recommended to enforce concurrent request limits at the proxy or load balancer_ <br>
+
+- Request Timeouts: <br>
+  Protect against handlers that hang or take too long by enforcing per-request timeouts <br>
+  Returns HTTP 504 if exceeded <br>
+  _* In production, it is recommended to enforce request timeouts at the proxy or load balancer_ <br>
+
+- Graceful Shutdown: <br>
+  Proper handling of system signals (SIGINT/SIGTERM) allows clean shutdown without dropping ongoing requests <br>
+
+- Built-in Logging: <br>
+  Optional configurable logging for requests and internal errors <br>
+  Logging can be completely disabled for silent operation or redirected via a custom logger <br>
+
+- Error Handling: <br>
+  Automatic HTTP 500 responses for uncaught exceptions in handlers, preventing the server from crashing <br>
+
+- Custom Response Headers: <br>
+  Ability to set global headers for all responses, useful for security headers or default CORS configuration <br>
+
+- Thread-Safe Route Management: <br>
+  Supports safe modification of routes while the server is serving requests <br>
+
+- Streaming File Handling: <br>
+  Streaming file handling allows FlexibleServer to process large uploads and downloads efficiently by - <br>
+  reading and writing data in chunks instead of loading entire files into memory <br>
+  This greatly reduces memory usage and enables stable performance even with multi-gigabyte files <br>
+
+- Cipher & SSL Features: <br>
+  `generate_key()` - Securely creates and stores an RSA private key (PEM format) with optional password-based
+  encryption <br>
+  Supports configurable key size and exponent for flexible cryptographic strength <br>
+  `generate_certificate()` - Generates X.509 certificates (Self-Signed or CA-Signed) - <br>
+  with full control over subject attributes, validity period, and SAN entries, ensuring robust SSL identity
+  management <br>
+  `self_signed_ssl_context()` - Provides an automatic, temporary self-signed SSL context for - <br>
+  HTTPS testing and local development eliminating the need for pre-existing certificate files <br>
+
+<ins> Production-Ready Recommendations </ins> <br>
+
+FlexibleServer can enforce request size limits, concurrent request limits, and timeouts - <br>
+but for maximum robustness in production it is recommended to deploy it behind a reverse proxy like Nginx - <br>
+which handles rate limiting, SSL/TLS, and request management more efficiently <br>
+
+### <ins> Museflow Guide </ins> <br>
+
+<ins> 1. Basic HTML Page </ins> <br>
+
+Each HTML element is represented by a Python object (Element) <br>
+You build a tree by attaching child elements to their parent using the `.adopt()` method <br>
+Any element can serve as the root of a tree, giving you flexibility to start from `<html>` or even a single `<div>` <br>
+Trees can also be combined by adopting one tree into another, allowing you to reuse and compose UI parts <br>
+
+```python
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.museflow import Museflow
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div(_id='container').adopt(
+      h1(content='Hello World')
+    )
+  )
+])
+
+Museflow.render(root=root)
+
+"""
+Output:
+
+<html>
+  <head></head>
+  <body>
+    <div id="container">
+      <h1>
+        Hello World
+      </h1>
+    </div>
+  </body>
+</html>
+"""
+```
+
+<ins> 2. Render to HTML File </ins> <br>
+
+The `Museflow.render_file()` method generates a complete HTML file from a root element tree <br>
+You provide the root of your tree and a target filename, and Museflow writes the fully rendered HTML <br>
+
+```python
+from pathlib import Path
+
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.museflow import Museflow
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div(_id='container').adopt(
+      h1(content='Hello World')
+    )
+  )
+])
+
+Museflow.render_file(root=root, target_file=Path('index.html'))
+```
+
+<ins> 3. Custom Indentation </ins> <br>
+
+The `Museflow.render()` method converts an element tree into an HTML string <br>
+By setting the indent parameter, you can control the formatting: `indent=0` - <br>
+produces compact HTML without extra spaces while higher values create nicely indented, readable output <br>
+
+```python
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.museflow import Museflow
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div(_id='container').adopt(
+      h1(content='Hello World')
+    )
+  )
+])
+
+Museflow.render(root=root, indent=0)
+
+"""
+Output:
+
+<html>
+<head></head>
+<body>
+<div id="container">
+<h1>
+Hello World
+</h1>
+</div>
+</body>
+</html>
+"""
+```
+
+<ins> 4. Style Object </ins> <br>
+
+The Style object is a Python representation of CSS styles, encapsulating all CSS properties as attributes <br>
+It allows developers to define and manage styling programmatically - <br>
+while benefiting from Python’s type checking and IDE autocomplete features <br>
+_* It is recommended to store 'Style' objects in dedicated files, to enhance reusability and maintainability_ <br>
+
+```python
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.element.style import Style
+from museflow.museflow import Museflow
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div().adopt(
+      h1(
+        content='Hello World',
+        style=Style(
+          font_size='16px',
+          color='red'
+        )
+      )
+    )
+  )
+])
+
+Museflow.render(root=root)
+
+"""
+Output:
+
+<html>
+  <head></head>
+  <body>
+    <div>
+      <h1 style="color: red; font-size: 16px">
+        Hello World
+      </h1>
+    </div>
+  </body>
+</html>
+"""
+```
+
+<ins> 5. Style Updating </ins> <br>
+
+The `Style.update()` method provides a clean way to extend or override existing style definitions <br>
+It returns a new Style object, combining the attributes of the original style with those of another <br>
+This makes it easy to reuse base style configurations and adapt them for specific elements without mutation <br>
+
+```python
+from museflow.element.style import Style
+
+base_style = Style(font_size='14px', color='black')
+highlight_style = Style(color='red', font_weight='bold')
+
+updated_style = base_style.update(highlight_style)
+
+"""
+Updated style attributes:
+
+font_size='14px'
+color='red'
+font_weight='bold'
+"""
+```
+
+<ins> 6. Dynamic Rendering </ins> <br>
+
+Dynamic rendering is the ability to manipulate the HTML tree using Python logic - <br>
+such as loops, conditionals, and functions, to generate content programmatically <br>
+This allows you to create flexible, data-driven UI structures, apply conditional styling, and reuse components - <br>
+without manually writing repetitive HTML <br>
+
+```python
+from museflow.element.inventory import html, head, body, div, h1, ul, li
+from museflow.element.style import Style
+from museflow.museflow import Museflow
+
+items = ['Apple', 'Banana', 'Cherry']
+highlight_fruit = 'Banana'
+
+
+def generate_list(items, highlight=None):
+  """ Create a <ul> with <li> items, optionally highlighting one item """
+  children = []
+  for item in items:
+    style = Style(color='red') if item == highlight else Style()
+    children.append(li(content=item, style=style))
+  return ul().adopt(children)
+
+
+root = html().adopt([
+  head(),
+  body().adopt([
+    div().adopt(
+      h1(
+        content='Fruit List',
+        style=Style(font_size='18px', color='blue')
+      )
+    ),
+    div().adopt(
+      generate_list(items, highlight=highlight_fruit)
+    )
+  ])
+])
+
+Museflow.render(root=root)
+
+"""
+Output:
+
+<html>
+  <head></head>
+  <body>
+    <div>
+      <h1 style="color: blue; font-size: 18px">
+        Fruit List
+      </h1>
+    </div>
+    <div>
+      <ul>
+        <li style="">
+          Apple
+        </li>
+        <li style="color: red">
+          Banana
+        </li>
+        <li style="">
+          Cherry
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
+"""
+```
+
+<ins> 7. Simple Embedded Script </ins> <br>
+
+Embedded Script is a Python script that is compiled to JavaScript using the compiler and injected into a tree <br>
+This enables you to write logic in Python—such as handling events, updating content, or manipulating the DOM - <br>
+while keeping your code modular and maintainable <br>
+By embedding scripts, you can seamlessly integrate Python logic with your HTML for fully interactive trees <br>
+
+```python
+# - - - embedded_script.py - - - #
+# <-PY_SKIP->
+from museflow.toolkit.pyjs_stubs import console
+
+# <-PY_SKIP_END->
+
+console.log('Hello World')
+
+# - - - main.py - - - #
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.museflow import Museflow
+from pathlib import Path
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div(_id='container').adopt(
+      h1(content='Hello World')
+    )
+  )
+])
+
+py_script = Museflow.load_py_script(Path('./embedded_script.py'))
+Museflow.render(root=root, script=py_script)
+
+"""
+Output:
+
+<html>
+  <head>
+    <script>
+      console.log ('Hello World');
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <h1>
+        Hello World
+      </h1>
+    </div>
+  </body>
+</html>
+"""
+```
+
+<ins> 8. Embedded Script - load_py_script </ins> <br>
+
+Scripts in Museflow must be loaded via `load_py_script()` rather than directly passed as text <br>
+This is because it resolves the absolute path of the script and correctly handles relative imports - <br>
+ensuring that any `# <-PY_IMPORT->` statements are properly inlined and namespaced <br>
+_* Embedding a script as a string could lead to missing dependencies or naming conflicts !_ <br>
+Using `load_py_script()` guarantees that the full dependency tree is processed and integrated correctly <br>
+
+<ins> 9. Embedded Script - PY SKIP </ins> <br>
+
+Code placed between `# <-PY_SKIP-> and # <-PY_SKIP_END->` will not be compiled or executed <br>
+This is typically used for offline development or stubbing <br>
+The `toolkit.pyjs_stubs` module provides fake browser objects such as `document`, `console`, and `alert` - <br>
+that simulate the DOM and browser APIs in Python, allowing you to write code without a browser - <br>
+while still supporting autocomplete and type checking in your IDE <br>
+
+<ins> 10. Embedded Script - PY IMPORT </ins> <br>
+
+Museflow supports custom script imports using the `# <-PY_IMPORT-> <namespace>:<relative path>` syntax. <br>
+This allows you to modularize your Python code and include other scripts <br>
+The `<namespace>` is used to prefix all top-level functions, classes, and variables from the imported script - <br>
+to prevent naming collisions <br>
+The `<relative path>` specifies the location of the script relative to the importing file <br>
+When the page is rendered, Museflow automatically inlines and namespaces the imported script - <br>
+making it available for use in your main code <br>
+
+Remember ! <br>
+`# <-PY_IMPORT->` is not intended for IDE autocomplete or syntax checking <br>
+For those purposes, you should use a standard Python import inside a `# <-PY_SKIP-> … <-PY_SKIP_END->` block, <br>
+which allows your editor to understand the module without affecting the Museflow compilation <br>
+
+```python  
+"""
+scripts/
+├── main.py
+├── script_a.py
+└── script_b.py
+"""
+
+
+# - - - script_a.py - - - #
+# <-PY_IMPORT-> b:./script_b.py
+
+def greet_a():
+    return 'Hello from Script A!'
+
+
+# - - - script_b.py - - - #
+def greet_b():
+    return 'Hello from Script B!'
+
+
+# - - - main.py - - - #
+# <-PY_IMPORT-> a:./script_a.py
+# <-PY_IMPORT-> b:./script_b.py
+
+def main():
+    greet_a()
+    greet_b()
+```
+
+<ins> 11. Development Server </ins> <br>
+
+MuseflowDevServer is a development server that automatically watches your Python source files and re-runs the specified render module whenever changes are detected <br>
+It serves the rendered HTML on a local web server and supports live-reloading in the browser, ensuring that updates to your code are reflected immediately <br>
+The server isolates itself from the caller module to prevent recursion ! <br>
+
+```
+# - - - Project Structure - - - #
+
+Museflow/
+├── museflow_webpage/ 
+│   ├── dev_server.py                # The dev server starter script
+│   ├── main.py                      # The main module that defines `render_file(root, target_file)` 
+│   ├── index.html                   # The generated HTML (output)
+│   ├── page/                        # Subpages or components
+│   │   ├── __init__.py
+│   │   └── home.py                  # Example page module
+│   ├── script/                      # Any JS modules (optional)
+│   │   └── __init__.py
+│   ├── style/                       # CSS/Palette modules
+│   │   ├── palette.py
+│   │   ├── style.py
+│   │   └── __init__.py
+│   └── assets/                      # Static assets like images or fonts
+│       └── logo.png
+└── .venv/                           # Your Python virtual environment
+```
+
+```python
+# - - - main.py - - - #
+from pathlib import Path
+
+from museflow.element.inventory import html, head, body, div, h1
+from museflow.element.style import Style
+from museflow.museflow import Museflow
+
+root = html().adopt([
+  head(),
+  body().adopt(
+    div().adopt(
+      h1(
+        content='Hello World',
+        style=Style(font_size='16px')
+      )
+    )
+  )
+])
+
+Museflow.render_file(root=root, script=None, target_file=Path('index.html'))
+
+# - - - dev_server.py - - - #
+from pathlib import Path
+
+from museflow.museflow_dev_server import MuseflowDevServer
+
+"""
+Parameters:
+
+- project_to_watch:
+  Path to the root of your project to watch for changes
+  All Python files under this path will be monitored for automatic reload
+
+- render_module_file:
+  The Python module that the development server executes whenever a change is detected in the project
+  This module must call render_file(root, target_file) during its execution
+  If render_file is not called, the server will not generate or update the HTML, and nothing will be served to the browser
+  Path must be relative to the project directory !
+
+- target_file:
+  The HTML file that will be generated/rendered by render_file and served in the browser
+  Path must be relative to the project directory !
+
+- port:
+  The port number where the dev server will listen for HTTP requests
+
+- log:
+  Enable logging for server events, file changes, and module reloads
+
+- watch_interval:
+  Interval (in seconds) to check for file changes in the project
+"""
+MuseflowDevServer().serve(
+  project_to_watch=Path(__file__).parent.resolve(),
+  render_module_file=Path('main.py'),
+  target_file=Path('index.html'),
+  port=8001,
+  log=True,
+  watch_interval=0.5
+)
+```
+
+_`FileNotFoundError: [Errno 2] No such file or directory: '<File>'`_ - Indicates: <br>
+
+- Invalid render_module_file (Missing `render_file()`) <br>
+- Invalid `target_file` <br>
+- Invalid `project_to_watch` <br>
+
+<ins> 12. Inject </ins> <br>
+
+Unlike `adopt()`, `inject()` inserts an item at the top of the element's content <br>
+If the element has no content, the item becomes the content <br>
+If the content is a list, the item is inserted at index 0 (top) <br>
+If the content is a single item, it is converted into a list with <br>
+the new item placed first <br>
+
+```python
+from museflow.element.inventory import html, h1
+
+root = html().inject(h1(content='Hello World'))
+```
+
+### <ins> FlexibleServer Guide </ins> <br>
+
+<ins> 1. Instantiating Flexible Server </ins> <br>
+
+```python
+import logging
+
+from museflow.flexible_server import FlexibleServer
+
+logger = logging.getLogger('Flexible Server')
+
+server = FlexibleServer(
+    logger=logger,  # Optional: Custom logger (Default: None)
+    log=True,  # Enable server logging (Default: True)
+    request_size_limit=1024 * 1024,  # Optional: Max request size in bytes (Default: None - Unlimited)
+    max_concurrent_requests=10,  # Optional: Max concurrent requests (Default: None - Unlimited)
+    request_timeout=5.0,  # Optional: Per-request timeout in seconds (Default: None - Unlimited)
+    global_response_headers=None  # Optional: Dict of headers added to server responses (Default: None)
+)
+```
+
+_* FlexibleServer must be instantiated in the main thread due to Python’s signal handling limitations_ <br>
+_Attempting to create it in a background thread will raise an exception_ <br>
+
+```python
+import threading
+from museflow.flexible_server import FlexibleServer, FlexibleServerException
+
+
+def create_server_in_thread():
+    try:
+        _ = FlexibleServer()  # ❌ Raises FlexibleServerException
+    except FlexibleServerException as e:
+        print(f'Error: {e}')
+
+
+thread = threading.Thread(target=create_server_in_thread)
+thread.start()
+thread.join()
+```
+
+<ins> 2. Serving the FlexibleServer </ins> <br>
+
+```python
+from museflow.flexible_server import FlexibleServer
+
+server = FlexibleServer()
+
+server.serve(
+    host='localhost',  # Host to bind to (Default: "localhost")
+    port=8001,  # Port to listen on (Default: 8001)
+    cert_file=None,  # Optional: Path to SSL certificate for HTTPS (Default: None)
+    key_file=None,  # Optional: Path to private key for HTTPS (Default: None)
+    ca_file=None  # Optional: Path to CA bundle for HTTPS client verification (Default: None)
+)
+```
+
+HTTPS Support: <br>
+If both `cert_file` and `key_file` are provided when calling `server.serve()` - <br>
+FlexibleServer automatically runs in HTTPS mode <br>
+The server will use the provided certificate and private key to encrypt all connections <br>
+If either parameter is None, the server defaults to plain HTTP <br>
+You can optionally provide `ca_file` for client certificate verification in mutual TLS setups <br>
+_* Always use HTTPS in production to protect sensitive data_ <br>
+
+```python
+from museflow.flexible_server import FlexibleServer
+
+server = FlexibleServer()
+
+# Start HTTPS server
+server.serve(
+    host='localhost',
+    port=8443,
+    cert_file='path/to/server.crt',  # Server certificate
+    key_file='path/to/server.key',  # Private key
+    ca_file=None  # Optional: CA file for client verification
+)
+```
+
+Running in Background: <br>
+
+```python
+import threading
+from museflow.flexible_server import FlexibleServer
+
+server = FlexibleServer()
+
+# Run the server in a thread
+thread = threading.Thread(
+    target=server.serve,
+    kwargs={'host': 'localhost', 'port': 8001},
+    daemon=True
+)
+thread.start()
+```
+
+<ins> 3. Routing </ins> <br>
+
+`@route_handler` decorator simplifies implementing request handlers for FlexibleServer <br>
+It automatically adapts the raw HTTP request data into Python-friendly arguments <br>
+
+Route-Handler Key Features: <br>
+
+- Automatic Request Parsing: <br>
+  body: Converts raw bytes to a string <br>
+  query: Converts query parameters into a flat dictionary <br>
+  request: Optionally gives access to the request object <br>
+  files: Optionally gives access to uploaded files <br>
+- Signature-Based Mapping: <br>
+  Only passes body, query, files, and request if your handler declares them <br>
+- Consistent Return: <br>
+  Handlers return a (body, status_code) tuple <br>
+
+```python
+import json
+import os
+import tempfile
+from http import HTTPStatus
+
+import requests
+
+from museflow.flexible_server import FlexibleServer, route_handler
+
+server = FlexibleServer()
+
+
+# --- Query Example (GET /hello?name=Alice)
+@route_handler
+def hello_get(query):
+    name = query.get('name', 'World')
+    return f'<h1>Hello (GET), {name}!</h1>', HTTPStatus.OK
+
+
+# --- GET with Query and Request
+@route_handler
+def hello_get(request, query):
+    client_ip = request.client_address[0]
+    name = query.get('name', 'World')
+    return f'<h1>Hello {name}!</h1><p>From {client_ip}</p>', HTTPStatus.OK
+
+
+# --- JSON Body Example (POST /hello)
+@route_handler
+def hello_post(body):
+    data = json.loads(body) if body else {}
+    return f'<h1>Hello (POST), body={data}</h1>', HTTPStatus.OK
+
+
+# --- File Upload Example (POST /upload)
+@route_handler
+def upload_file(files):
+    """ Save uploaded file to temp dir """
+    upload_dir = tempfile.gettempdir()
+    saved_paths = []
+
+    for filename, filepath in files.items():
+        dest = os.path.join(upload_dir, filename)
+        os.replace(filepath, dest)
+        saved_paths.append(dest)
+
+    return {'uploaded_files': saved_paths}, HTTPStatus.OK
+
+
+# --- File Download Example (GET /download?file=example.txt)
+@route_handler
+def download_file(query):
+    filename = query.get('file')
+    if not filename:
+        return 'Missing "file" parameter', HTTPStatus.BAD_REQUEST
+
+    filepath = os.path.join(tempfile.gettempdir(), filename)
+    if not os.path.exists(filepath):
+        return 'File not found', HTTPStatus.NOT_FOUND
+
+    with open(filepath, 'rb') as fd:
+        content = fd.read()
+    return content, HTTPStatus.OK
+
+
+# Register routes
+server.add_route('GET', '/hello', hello_get)
+server.add_route('POST', '/hello', hello_post)
+server.add_route('POST', '/upload', upload_file)
+server.add_route('GET', '/download', download_file)
+
+# --- GET query example
+r = requests.get('http://localhost:8001/hello', params={'name': 'Alice'})
+print(r.text)  # <h1>Hello (GET), Alice!</h1>
+
+# --- POST body example
+r = requests.post('http://localhost:8001/hello', data=json.dumps({'lang': 'Python'}))
+print(r.text)  # <h1>Hello (POST), body={'lang': 'Python'}</h1>
+
+# --- File upload example
+tmp = tempfile.NamedTemporaryFile(delete=False)
+tmp.write(b'example content')
+tmp.close()
+
+with open(tmp.name, 'rb') as f:
+    files = {'file': ('example.txt', f)}
+    res = requests.post('http://localhost:8001/upload', files=files)
+    print(res.json())
+
+# --- File download example
+filename = os.path.basename(tmp.name)
+res = requests.get('http://localhost:8001/download', params={'file': 'example.txt'})
+print(res.status_code, len(res.content))
+```
