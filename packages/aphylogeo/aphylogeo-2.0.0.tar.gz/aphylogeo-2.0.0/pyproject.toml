@@ -1,0 +1,82 @@
+[tool.poetry]
+name = "aphylogeo"
+version = "2.0.0"
+description = "A phylogenetic and geographic analysis tool"
+authors = ["'Tahiri Lab'"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/tahiri-lab/aPhyloGeo"
+include = ["bin/**"]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+bio = "^1.5.9"
+multiprocess = "^0.70.15"
+pandas = "^2.1.1"
+psutil = "^5.9.5"
+pyyaml = "^6.0.1"
+pytest = "^7.4.2"
+numpy = "^1.26.0"
+cython = "^3.0.2"
+robinson-foulds = "^1.2"
+ete3 = "^3.1.3"
+dendropy = "^4.6.1"
+textdistance = "^4.6.0"
+typer = "^0.13.1"
+scipy = "^1.11.4"
+scikit-bio = "^0.7.0"
+scikit-learn = "^1.7.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "aphylogeo/"
+testpaths = "tests/"
+filterwarnings = [
+  "ignore:.*cgi.*:DeprecationWarning"
+]
+
+[tool.ruff]
+line-length = 130
+ignore = ["F405"]
+fix = true
+
+[tool.black]
+--line-length = 130
+exclude = '''
+(
+    tests/testFiles
+  | img
+  | bin
+  | build
+  | dist
+  | setup.py
+  | .venv
+)
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 130
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = '''
+(
+    tests/testFiles
+  | img
+  | bin
+  | build
+  | dist
+  | setup.py
+  | .venv
+)
+'''
