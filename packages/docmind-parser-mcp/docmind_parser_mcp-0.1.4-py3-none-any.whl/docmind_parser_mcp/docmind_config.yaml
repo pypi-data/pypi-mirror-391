@@ -1,0 +1,21 @@
+# 服务器配置
+# 可通过以下环境变量覆盖:
+# SERVER_PROTOCOL_MODE - 服务器协议模式 (stdio/sse)
+# SERVER_BIND_HOST - 绑定主机地址
+# SERVER_LISTEN_PORT - 监听端口
+server:
+  protocol_mode: 
+  bind_host:
+  listen_port:
+
+# 解析配置
+# 可通过以下环境变量覆盖:
+# DOC_MIND_STRUCTURE_TYPE - 结构化类型 (layout/doctree)
+# DOC_MIND_FORMULA_ENHANCEMENT - 公式增强 (true/false)
+# DOC_MIND_LLM_ENHANCEMENT - 大模型增强 (true/false)
+# DOC_MIND_ENHANCEMENT_MODE - 增强模式 (VLM等)
+parse:
+  structure_type: layout
+  formula_enhancement: False
+  llm_enhancement: False
+  enhancement_mode: "VLM"
